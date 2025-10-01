@@ -34,8 +34,8 @@ Desarrollar una plataforma de e-commerce backend con arquitectura MVC profesiona
 ```
 floresya-v1/
 ├── api/                              # Backend MVC Architecture
-│   ├── app.js                        # Express app configuration & middleware setup
-│   ├── server.js                     # Server entry point (PORT 3000, imports app.js)
+│   ├── index.js                      # Express app configuration & middleware setup
+│   ├── server.js                     # Server entry point (PORT 3000)
 │   │
 │   ├── config/                       # Configuration files
 │   │   └── swagger.js                # OpenAPI 3.1 specification (swagger-jsdoc)
@@ -82,30 +82,9 @@ floresya-v1/
 │       └── openapi-annotations.js    # 60+ Swagger JSDoc annotations for all endpoints
 │
 ├── public/                           # Static files served by express.static()
-│   ├── index.html                    # Landing page (NO inline JS/CSS)
-│   ├── index.js                      # Index page logic (ES6 module, paired with index.html)
-│   │
-│   ├── pages/                        # Future HTML pages + JS modules
-│   │   ├── productos.html            # Products page
-│   │   ├── productos.js              # Products page logic
-│   │   ├── checkout.html             # Checkout page
-│   │   └── checkout.js               # Checkout page logic
-│   │
-│   ├── js/                           # JavaScript modules
-│   │   ├── shared/                   # SSOT - Shared code
-│   │   │   ├── api.js                # API client (fetchJSON, api methods)
-│   │   │   ├── validators.js         # Input validators
-│   │   │   └── dom.js                # DOM helpers
-│   │   ├── components/               # Reusable UI components
-│   │   │   ├── modal.js
-│   │   │   ├── toast.js
-│   │   │   └── form.js
-│   │   └── lucide-icons.js           # Icon loader (CSP-compatible)
-│   │
+│   ├── index.html                    # Landing page
 │   ├── css/
-│   │   ├── input.css                 # Tailwind source (with @import 'tailwindcss')
-│   │   ├── tailwind.css              # Compiled Tailwind CSS (generated, do not edit)
-│   │   └── styles.css                # Custom CSS tradicional (editable)
+│   │   └── styles.css                # Frontend styles
 │   ├── images/                       # Static images
 │   │   ├── favicon.ico
 │   │   ├── hero-flowers.webp
@@ -123,12 +102,10 @@ floresya-v1/
 ├── .prettierrc                       # Prettier configuration
 ├── .husky/                           # Git hooks (pre-commit formatting)
 ├── eslint.config.js                  # ESLint 9 flat config
-├── tailwind.config.js                # Tailwind CSS configuration
-├── postcss.config.js                 # PostCSS configuration (Tailwind + Autoprefixer)
 ├── package.json                      # Dependencies & scripts
 ├── vercel.json                       # Vercel deployment config (dual-mode)
 ├── server.js                         # Legacy server entry (not used)
-├── CLAUDE.md                         # This file (architecture documentation)
+├── QWEN.md                         # This file (architecture documentation)
 └── test-*.js                         # Test scripts (CRUD, API, DB)
 ```
 
@@ -175,9 +152,7 @@ floresya-v1/
 - `vercel.json`: Configuración para Vercel (dual-mode: local Node + serverless)
 - `eslint.config.js`: ESLint 9 flat config
 - `.prettierrc`: Prettier code formatting
-- `tailwind.config.js`: Tailwind CSS config (content paths, theme, plugins)
-- `postcss.config.js`: PostCSS config (Tailwind + Autoprefixer)
-- `package.json`: Dependencies, scripts (dev, build:css, watch:css, format, start)
+- `package.json`: Dependencies, scripts (dev, format, start)
 
 ---
 
@@ -401,103 +376,7 @@ npm run format:check  # Check formatting
 
 ---
 
-## Frontend Architecture (ES6 Modules)
-
-### Reglas estrictas para HTML/JS
-
-1. **NUNCA usar JS o CSS inline en HTML**
-   - ❌ Prohibido: `<script>...</script>` inline
-   - ❌ Prohibido: `<style>...</style>` inline
-   - ❌ Prohibido: `style="..."` attributes
-   - ❌ Prohibido: `onclick="..."` handlers
-   - ✅ Correcto: `<script type="module" src="./index.js"></script>`
-   - ✅ Correcto: `<link rel="stylesheet" href="./css/styles.css">`
-
-2. **Arquitectura de módulos ES6**
-   - Cada `.html` tiene su `.js` al mismo nivel (ej: `index.html` + `index.js`)
-   - Páginas nuevas en `pages/` (ej: `pages/productos.html` + `pages/productos.js`)
-   - Código compartido en `js/shared/` (SSOT)
-   - Componentes reutilizables en `js/components/`
-
-3. **SSOT en Frontend**
-   - `js/shared/api.js`: Cliente API (fetchJSON, métodos HTTP)
-   - `js/shared/validators.js`: Validaciones reutilizables
-   - `js/shared/dom.js`: Helpers DOM (showError, showLoading, etc)
-
-4. **Compatible con CSP strict**
-   - `script-src: 'self'` (solo scripts locales)
-   - No `'unsafe-inline'`, no `'unsafe-eval'`
-   - Módulos ES6: `<script type="module">`
-
-5. **Tailwind CSS v4 + CSS Tradicional**
-   - **Tailwind:**
-     - Source: `public/css/input.css` (usa `@import 'tailwindcss'` en lugar de `@tailwind` directives)
-     - Output: `public/css/tailwind.css` (generado, NO editar directamente)
-     - Build: `npm run build:css` (compila y minifica a tailwind.css)
-     - Watch: `npm run watch:css` (compila en watch mode)
-     - Config: `tailwind.config.js` (content paths, theme extend, plugins)
-     - PostCSS: `postcss.config.js` (Tailwind + Autoprefixer)
-     - **NUNCA usar `@apply` en Tailwind v4** (escribir CSS vanilla con propiedades estándar)
-     - Custom components en `@layer components { ... }` con CSS estándar
-   - **CSS Tradicional:**
-     - Source: `public/css/styles.css` (editable, estilos custom sin Tailwind)
-     - Se carga primero en HTML, luego tailwind.css
-     - Ambos CSS conviven sin conflictos (Tailwind tiene mayor especificidad por orden de carga)
-
-### Ejemplo correcto de página nueva
-
-```html
-<!-- pages/productos.html -->
-<!DOCTYPE html>
-<html lang="es">
-  <head>
-    <link rel="stylesheet" href="../css/styles.css" />
-  </head>
-  <body>
-    <main id="productos-container"></main>
-    <script type="module" src="./productos.js"></script>
-  </body>
-</html>
-```
-
-```javascript
-// pages/productos.js (ES6 Module)
-import { api } from '../js/shared/api.js'
-import { showError, showLoading } from '../js/shared/dom.js'
-
-async function loadProducts() {
-  try {
-    showLoading('productos-container')
-    const products = await api.getProducts()
-    renderProducts(products)
-  } catch (error) {
-    showError(error.message, 'productos-container')
-    throw error // Fail-fast
-  }
-}
-
-function renderProducts(products) {
-  const container = document.getElementById('productos-container')
-  container.innerHTML = products
-    .map(
-      p => `
-    <div class="product-card">
-      <h3>${p.name}</h3>
-      <p>$${p.price_usd}</p>
-    </div>
-  `
-    )
-    .join('')
-}
-
-document.addEventListener('DOMContentLoaded', loadProducts)
-```
-
----
-
 ## Prohibido
-
-### Backend
 
 - ❌ Usar TypeScript, tRPC, Zod, o herramientas de compilación complejas
 - ❌ Importar `supabaseClient.js` fuera de `api/services/`
@@ -507,15 +386,6 @@ document.addEventListener('DOMContentLoaded', loadProducts)
 - ❌ Olvidar try-catch en funciones de servicios
 - ❌ Acceder a la base de datos desde controllers
 - ❌ Usar `module.exports` (usar ES6 `export` en su lugar)
-
-### Frontend
-
-- ❌ JS o CSS inline en HTML (viola CSP)
-- ❌ Scripts sin `type="module"`
-- ❌ Duplicar lógica (usa `js/shared/`)
-- ❌ Ignorar fail-fast (siempre throw errors)
-- ❌ Event handlers inline (`onclick="..."`)
-- ❌ CDNs externos sin verificar CSP
 
 ---
 
@@ -722,19 +592,15 @@ El proyecto está configurado para dual-mode:
     "dotenv": "^16.4.5"
   },
   "devDependencies": {
-    "@tailwindcss/cli": "^4.1.13",
-    "autoprefixer": "^10.4.21",
-    "eslint": "^9.18.0",
+    "prettier": "^3.3.3",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.11",
-    "postcss": "^8.5.6",
-    "prettier": "^3.3.3",
-    "tailwindcss": "^4.1.13"
+    "eslint": "^9.18.0"
   }
 }
 ```
 
-Sin frameworks complejos, sin bundlers, sin TypeScript. Tailwind v4 para estilos CSS.
+Sin frameworks complejos, sin bundlers, sin TypeScript.
 
 ---
 
@@ -754,7 +620,7 @@ Sin frameworks complejos, sin bundlers, sin TypeScript. Tailwind v4 para estilos
 
 ---
 
-## MODO YOLO - Instrucciones para Claude Code
+## MODO YOLO - Instrucciones para QWEN Code
 
 ### 1. EJECUTAR SIN PREGUNTAR
 
@@ -766,7 +632,7 @@ Sin frameworks complejos, sin bundlers, sin TypeScript. Tailwind v4 para estilos
 ### 2. PROACTIVIDAD MÁXIMA
 
 - **Anticipa necesidades** sin esperar instrucciones explícitas
-- Si detectas código inconsistente con las reglas de CLAUDE.md, **corrígelo automáticamente**
+- Si detectas código inconsistente con las reglas de QWEN.md, **corrígelo automáticamente**
 - Si falta validación, **agrégala**
 - Si hay código duplicado, **refactorízalo**
 - Si un import viola la Service Layer, **elimínalo y reestructura**
@@ -816,13 +682,11 @@ Cuando hagas cambios automáticos, usa este formato ultra-conciso:
 - ✅ Modificar cualquier archivo .js/.css/.html
 - ✅ Crear archivos necesarios para cumplir el objetivo
 - ✅ Ejecutar npm install, linting, testing
-- ✅ Refactorizar código que viole CLAUDE.md
+- ✅ Refactorizar código que viole QWEN.md
 - ✅ Eliminar código muerto o duplicado
 - ✅ Paralelizar operaciones independientes
 - ✅ Agregar `includeInactive` a servicios con soft-delete
 
 ### Regla de Oro YOLO
 
-**"Si está en CLAUDE.md, es ley. Si viola la ley, se ejecuta inmediatamente. Sin preguntas, sin warnings."**
-
-- si soy muy amplio en mi solicitud de una tarea, pregunta para ajustar la tarea y ser mas especifico
+**"Si está en QWEN.md, es ley. Si viola la ley, se ejecuta inmediatamente. Sin preguntas, sin warnings."**
