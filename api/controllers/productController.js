@@ -17,6 +17,7 @@ export const getAllProducts = asyncHandler(async (req, res) => {
       req.query.featured === 'true' ? true : req.query.featured === 'false' ? false : undefined,
     sku: req.query.sku,
     search: req.query.search,
+    occasion: req.query.occasion,
     sortBy: req.query.sortBy,
     limit: req.query.limit ? parseInt(req.query.limit, 10) : undefined,
     offset: req.query.offset ? parseInt(req.query.offset, 10) : undefined
@@ -27,7 +28,8 @@ export const getAllProducts = asyncHandler(async (req, res) => {
   res.json({
     success: true,
     data: products,
-    message: 'Products retrieved successfully'
+    message:
+      products.length === 0 ? 'No products found for filters' : 'Products retrieved successfully'
   })
 })
 
@@ -36,7 +38,17 @@ export const getAllProducts = asyncHandler(async (req, res) => {
  * Get product by ID
  */
 export const getProductById = asyncHandler(async (req, res) => {
-  const product = await productService.getProductById(req.params.id)
+  const productId = parseInt(req.params.id, 10)
+
+  if (isNaN(productId) || productId <= 0) {
+    return res.status(400).json({
+      success: false,
+      error: 'Invalid id: must be a positive integer',
+      message: 'Invalid id: must be a positive integer'
+    })
+  }
+
+  const product = await productService.getProductById(productId)
 
   res.json({
     success: true,

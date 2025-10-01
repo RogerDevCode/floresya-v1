@@ -103,12 +103,6 @@ export async function createImageCarousel(container, productId) {
     }
   } catch (error) {
     console.error(`createImageCarousel(${productId}) failed:`, error)
-    // Fallback: show placeholder
-    container.innerHTML = `
-      <div class="product-image-container">
-        <div class="carousel-placeholder">Sin imágenes</div>
-      </div>
-    `
-    return { destroy: () => {} }
+    throw error // Fail-fast: propagate error to caller
   }
 }

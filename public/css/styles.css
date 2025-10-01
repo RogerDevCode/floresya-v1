@@ -3,6 +3,25 @@
 ::before,
 ::after {
   box-sizing: border-box;
+}
+
+/* Base reset for common elements that have default margins/paddings */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
   margin: 0;
   padding: 0;
 }
@@ -735,4 +754,47 @@ i[data-lucide] {
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+/* ===== PRODUCT DETAIL PAGE ===== */
+.product-main-image-container {
+  position: relative;
+  background-color: #ffffff;
+}
+
+.product-main-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.thumbnail-btn {
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.thumbnail-btn:hover {
+  transform: scale(1.05);
+}
+
+.thumbnail-btn img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Quantity input number arrows removal (modern browsers) */
+#quantity-input::-webkit-outer-spin-button,
+#quantity-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#quantity-input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }

@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Detalles del producto - FloresYa" />
+    <title>Producto - FloresYa</title>
+
+    <!-- CSS tradicional -->
+    <link rel="stylesheet" href="../css/styles.css" />
+
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="../css/tailwind.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+  </head>
+  <body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+      <div class="container">
+        <div class="navbar-content">
+          <!-- Logo -->
+          <a class="navbar-brand" href="/" aria-label="Ir a la página principal de FloresYa">
+            <img src="../images/logoFloresYa.jpeg" alt="Logo de FloresYa" class="brand-logo" />
+            <span class="brand-text">FloresYa</span>
+          </a>
+
+          <!-- Desktop Navigation -->
+          <div class="desktop-nav">
+            <ul class="nav-links" role="menubar">
+              <li><a href="/" class="nav-link">Inicio</a></li>
+              <li><a href="/#productos" class="nav-link">Productos</a></li>
+              <li><a href="/#contacto" class="nav-link">Contacto</a></li>
+            </ul>
+          </div>
+
+          <!-- Actions (Desktop) -->
+          <div class="nav-actions">
+            <!-- Cart -->
+            <a href="#carrito" class="nav-icon" aria-label="Carrito de compras" id="cart-icon">
+              <i data-lucide="shopping-cart" class="icon"></i>
+              <span class="cart-badge" id="cart-count" aria-label="0 productos">0</span>
+            </a>
+            <!-- Login -->
+            <a href="#login" class="btn btn-login">Iniciar Sesión</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Spacer for fixed navbar -->
+    <div class="navbar-spacer"></div>
+
+    <!-- Breadcrumb -->
+    <nav class="bg-white border-b border-gray-200" aria-label="Breadcrumb">
+      <div class="container mx-auto px-4 py-3">
+        <ol class="flex items-center space-x-2 text-sm text-gray-500">
+          <li><a href="/" class="hover:text-pink-600 transition-colors">Inicio</a></li>
+          <li class="flex items-center">
+            <i data-lucide="chevron-right" class="h-4 w-4 mx-2"></i>
+          </li>
+          <li><a href="/#productos" class="hover:text-pink-600 transition-colors">Productos</a></li>
+          <li class="flex items-center">
+            <i data-lucide="chevron-right" class="h-4 w-4 mx-2"></i>
+          </li>
+          <li class="text-pink-600 font-medium" id="breadcrumb-product">Producto</li>
+        </ol>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+      <!-- Loading Spinner -->
+      <div id="loading-spinner" class="flex justify-center items-center min-h-[60vh]">
+        <div class="text-center">
+          <div
+            class="inline-block w-12 h-12 border-4 border-pink-600 border-t-transparent rounded-full animate-spin mb-4"
+          ></div>
+          <p class="text-gray-500">Cargando producto...</p>
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div id="error-message" class="hidden">
+        <div class="max-w-2xl mx-auto bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+          <i data-lucide="alert-circle" class="h-12 w-12 text-red-500 mx-auto mb-4"></i>
+          <h2 class="text-2xl font-bold text-red-800 mb-2">Error al cargar el producto</h2>
+          <p class="text-red-600 mb-4" id="error-text">Producto no encontrado</p>
+          <a
+            href="/"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"
+          >
+            <i data-lucide="arrow-left" class="h-4 w-4"></i>
+            Volver al inicio
+          </a>
+        </div>
+      </div>
+
+      <!-- Product Content (Hidden initially) -->
+      <div id="product-content" class="hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+          <!-- Left Column: Image Gallery -->
+          <div class="space-y-4">
+            <!-- Main Image -->
+            <div
+              class="product-main-image-container relative bg-white rounded-2xl shadow-lg overflow-hidden aspect-square"
+            >
+              <img
+                id="main-image"
+                src=""
+                alt="Producto principal"
+                class="w-full h-full object-cover cursor-zoom-in hover:scale-105 transition-transform duration-300"
+              />
+              <!-- Zoom hint -->
+              <div
+                class="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm opacity-0 hover:opacity-100 transition-opacity flex items-center gap-1"
+              >
+                <i data-lucide="zoom-in" class="h-4 w-4"></i>
+                <span>Click para ampliar</span>
+              </div>
+            </div>
+
+            <!-- Thumbnails -->
+            <div id="thumbnails-container" class="grid grid-cols-4 gap-3 max-h-32 overflow-x-auto">
+              <!-- Thumbnails populated by JS -->
+            </div>
+          </div>
+
+          <!-- Right Column: Product Info -->
+          <div class="space-y-6">
+            <!-- Title & Occasion Badge -->
+            <div>
+              <h1 id="product-title" class="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
+                Producto
+              </h1>
+              <div id="occasion-badges" class="flex flex-wrap gap-2">
+                <!-- Badges populated by JS -->
+              </div>
+            </div>
+
+            <!-- Price Section -->
+            <div class="bg-gradient-to-r from-pink-50 to-green-50 rounded-xl p-6">
+              <div class="flex items-baseline gap-3 mb-2">
+                <span id="product-price" class="text-4xl font-bold text-pink-600">$0.00</span>
+                <span id="product-price-ves" class="text-lg text-gray-500"></span>
+              </div>
+              <div class="flex flex-wrap gap-2 text-sm text-green-600 mt-3">
+                <span
+                  class="bg-green-100 px-3 py-1 rounded-full flex items-center gap-1 font-medium"
+                >
+                  <i data-lucide="truck" class="h-3 w-3"></i>
+                  Disponible para entrega
+                </span>
+                <span
+                  class="bg-green-100 px-3 py-1 rounded-full flex items-center gap-1 font-medium"
+                >
+                  <i data-lucide="zap" class="h-3 w-3"></i>
+                  Entrega el mismo día
+                </span>
+              </div>
+            </div>
+
+            <!-- Stock Info -->
+            <div id="stock-info" class="flex items-center gap-2 text-gray-700">
+              <i data-lucide="package" class="h-5 w-5"></i>
+              <span class="font-medium">Stock: <span id="stock-count">0</span> unidades</span>
+            </div>
+
+            <!-- Quantity Selector -->
+            <div class="flex items-center gap-4">
+              <label for="quantity-input" class="text-gray-700 font-medium">Cantidad:</label>
+              <div class="flex border-2 border-gray-300 rounded-lg overflow-hidden">
+                <button
+                  id="qty-minus"
+                  type="button"
+                  class="px-4 py-2 bg-gray-100 hover:bg-gray-200 transition-colors font-semibold text-gray-700"
+                  aria-label="Disminuir cantidad"
+                >
+                  -
+                </button>
+                <input
+                  id="quantity-input"
+                  type="number"
+                  value="1"
+                  min="1"
+                  class="w-16 text-center border-none font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  aria-label="Cantidad"
+                />
+                <button
+                  id="qty-plus"
+                  type="button"
+                  class="px-4 py-2 bg-gray-100 hover:bg-gray-200 transition-colors font-semibold text-gray-700"
+                  aria-label="Aumentar cantidad"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3">
+              <button
+                id="add-to-cart-btn"
+                type="button"
+                class="flex-1 py-4 px-6 bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold rounded-xl hover:from-teal-500 hover:to-green-500 transform hover:-translate-y-0.5 shadow-lg transition-all flex items-center justify-center gap-2"
+              >
+                <i data-lucide="shopping-bag" class="h-5 w-5"></i>
+                Agregar al Carrito
+              </button>
+              <button
+                id="buy-now-btn"
+                type="button"
+                class="flex-1 py-4 px-6 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold rounded-xl hover:from-rose-500 hover:to-pink-500 transform hover:-translate-y-0.5 shadow-lg transition-all flex items-center justify-center gap-2"
+              >
+                <i data-lucide="gift" class="h-5 w-5"></i>
+                Comprar Ahora
+              </button>
+            </div>
+
+            <!-- Description -->
+            <div class="border-t border-gray-200 pt-6">
+              <h3 class="text-xl font-bold text-gray-900 mb-3">Descripción</h3>
+              <p id="product-description" class="text-gray-600 leading-relaxed">
+                Hermoso arreglo floral perfecto para cualquier ocasión especial.
+              </p>
+            </div>
+
+            <!-- Features -->
+            <div class="border-t border-gray-200 pt-6">
+              <h3 class="text-xl font-bold text-gray-900 mb-4">Características</h3>
+              <ul class="space-y-2 text-gray-600">
+                <li class="flex items-center gap-2">
+                  <i data-lucide="sun" class="h-4 w-4 text-green-600"></i>
+                  Flores frescas del día
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="sparkles" class="h-4 w-4 text-pink-600"></i>
+                  Diseño profesional
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="mail" class="h-4 w-4 text-blue-500"></i>
+                  Incluye tarjeta de dedicatoria
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="shield-check" class="h-4 w-4 text-green-500"></i>
+                  Garantía de frescura
+                </li>
+              </ul>
+            </div>
+
+            <!-- Help Section -->
+            <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6">
+              <h4 class="font-bold text-purple-600 mb-2 flex items-center gap-2">
+                <i data-lucide="headphones" class="h-5 w-5"></i>
+                ¿Necesitas ayuda personalizada?
+              </h4>
+              <p class="text-gray-600 mb-4">
+                Contáctanos para personalizar tu pedido o resolver cualquier duda.
+              </p>
+              <div class="flex gap-3">
+                <a
+                  href="https://wa.me/584121234567"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex-1 bg-green-500 text-white px-4 py-3 rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2 font-medium"
+                >
+                  <i data-lucide="message-circle" class="h-5 w-5"></i>
+                  WhatsApp
+                </a>
+                <a
+                  href="tel:+584121234567"
+                  class="flex-1 bg-blue-500 text-white px-4 py-3 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-2 font-medium"
+                >
+                  <i data-lucide="phone" class="h-5 w-5"></i>
+                  Llamar
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-section bg-gray-900 text-white py-12 mt-16">
+      <div class="container mx-auto px-4">
+        <div class="text-center">
+          <div class="flex items-center justify-center space-x-2 mb-4">
+            <i data-lucide="flower" class="h-6 w-6 text-pink-400"></i>
+            <span class="text-xl font-bold">FloresYa</span>
+          </div>
+          <p class="text-gray-300 mb-4">
+            Tu floristería en línea de confianza. Llevamos la belleza de las flores directamente a
+            tu hogar.
+          </p>
+          <div class="border-t border-gray-800 pt-6">
+            <p class="text-gray-400">&copy; 2025 FloresYa. Todos los derechos reservados.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts al final (ES6 Modules) -->
+    <script type="module" src="./product-detail.js"></script>
+  </body>
+</html>

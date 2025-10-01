@@ -226,19 +226,24 @@
         aria-label="Sección de productos destacados"
       >
         <div class="container mx-auto px-4">
-          <div class="text-center mb-8">
-            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Productos Destacados</h2>
+          <div class="text-center mb-4">
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mt-10 mb-2">
+              Productos Destacados
+            </h2>
             <p class="text-lg text-gray-600">Nuestras flores más populares y arreglos especiales</p>
           </div>
 
           <!-- Search and Filters -->
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 mt-16">
             <div class="md:col-span-2">
+              <label for="searchInput" class="block text-sm font-semibold text-gray-700 mb-2">
+                Buscar productos
+              </label>
               <div class="relative">
                 <input
                   type="text"
-                  class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
-                  placeholder="Buscar productos..."
+                  class="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors shadow-sm"
+                  placeholder="Buscar por nombre..."
                   id="searchInput"
                   aria-label="Buscar productos"
                 />
@@ -248,30 +253,31 @@
               </div>
             </div>
             <div>
+              <label for="occasionFilter" class="block text-sm font-semibold text-gray-700 mb-2">
+                Ocasión
+              </label>
               <select
-                class="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                class="w-full py-3 px-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors shadow-sm bg-white"
                 id="occasionFilter"
                 aria-label="Filtrar por ocasión"
               >
                 <option value="">Todas las ocasiones</option>
-                <option value="cumpleaños">Cumpleaños</option>
-                <option value="aniversario">Aniversario</option>
-                <option value="bodas">Bodas</option>
-                <option value="condolencias">Condolencias</option>
-                <option value="dia-madre">Día de la Madre</option>
-                <option value="san-valentin">San Valentín</option>
+                <!-- Options loaded dynamically from /api/occasions -->
               </select>
             </div>
             <div>
+              <label for="sortFilter" class="block text-sm font-semibold text-gray-700 mb-2">
+                Ordenar por
+              </label>
               <select
-                class="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                class="w-full py-3 px-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors shadow-sm bg-white"
                 id="sortFilter"
                 aria-label="Ordenar productos"
               >
-                <option value="created_at:desc">Más recientes</option>
-                <option value="price_usd:asc">Precio: Menor a mayor</option>
-                <option value="price_usd:desc">Precio: Mayor a menor</option>
-                <option value="name:asc">Nombre: A-Z</option>
+                <option value="">Más recientes</option>
+                <option value="price_asc">Precio: Menor a mayor</option>
+                <option value="price_desc">Precio: Mayor a menor</option>
+                <option value="name_asc">Nombre: A-Z</option>
               </select>
             </div>
           </div>

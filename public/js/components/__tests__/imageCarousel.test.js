@@ -69,30 +69,16 @@ describe('imageCarousel', () => {
 
       const carousel = await createImageCarousel(container, 67)
 
-      // Verify carousel HTML structure
-      expect(container.querySelector('.carousel-container')).toBeTruthy()
-      expect(container.querySelector('.carousel-track')).toBeTruthy()
+      // Verify hover-activated carousel structure
+      expect(container.querySelector('.product-image-container')).toBeTruthy()
+      expect(container.querySelector('.product-carousel-image')).toBeTruthy()
 
-      // Verify slides
-      const slides = container.querySelectorAll('.carousel-slide')
-      expect(slides.length).toBe(3)
+      // Verify image count badge (3 images)
+      const badge = container.querySelector('.image-count-badge')
+      expect(badge).toBeTruthy()
+      expect(badge.textContent).toContain('3')
 
-      // Verify first slide is active
-      expect(slides[0].classList.contains('active')).toBe(true)
-
-      // Verify arrows exist (more than 1 image)
-      expect(container.querySelector('.carousel-arrow-prev')).toBeTruthy()
-      expect(container.querySelector('.carousel-arrow-next')).toBeTruthy()
-
-      // Verify dots exist
-      const dots = container.querySelectorAll('.carousel-dot')
-      expect(dots.length).toBe(3)
-      expect(dots[0].classList.contains('active')).toBe(true)
-
-      // Verify carousel instance has control methods
-      expect(carousel).toHaveProperty('next')
-      expect(carousel).toHaveProperty('prev')
-      expect(carousel).toHaveProperty('goTo')
+      // Verify carousel instance has destroy method
       expect(carousel).toHaveProperty('destroy')
     })
 
@@ -116,16 +102,13 @@ describe('imageCarousel', () => {
 
       await createImageCarousel(container, 67)
 
-      // Should not have carousel controls
-      expect(container.querySelector('.carousel-arrow')).toBeFalsy()
-      expect(container.querySelector('.carousel-dot')).toBeFalsy()
-
-      // Should have single image
-      expect(container.querySelector('.carousel-image-wrapper')).toBeTruthy()
-      expect(container.querySelector('.carousel-image')).toBeTruthy()
+      // Should have simple image container (no badge for single image)
+      expect(container.querySelector('.product-image-container')).toBeTruthy()
+      expect(container.querySelector('.product-carousel-image')).toBeTruthy()
+      expect(container.querySelector('.image-count-badge')).toBeFalsy()
     })
 
-    it('should show placeholder when no images found', async () => {
+    it('should throw error when no images found', async () => {
       // Mock API response with no images
       global.fetch.mockResolvedValueOnce({
         ok: true,
@@ -135,21 +118,14 @@ describe('imageCarousel', () => {
         })
       })
 
-      await createImageCarousel(container, 67)
-
-      // Should show placeholder
-      expect(container.querySelector('.carousel-placeholder')).toBeTruthy()
-      expect(container.textContent).toContain('No images available')
+      await expect(createImageCarousel(container, 67)).rejects.toThrow('No images found')
     })
 
-    it('should handle API errors gracefully', async () => {
+    it('should throw error on API failure', async () => {
       // Mock API error
       global.fetch.mockRejectedValueOnce(new Error('Network error'))
 
-      await createImageCarousel(container, 67)
-
-      // Should show placeholder on error
-      expect(container.querySelector('.carousel-placeholder')).toBeTruthy()
+      await expect(createImageCarousel(container, 67)).rejects.toThrow('Network error')
     })
   })
 
@@ -170,13 +146,10 @@ describe('imageCarousel', () => {
 
       await createImageCarousel(container, 67)
 
-      const slides = container.querySelectorAll('.carousel-slide')
-      const images = Array.from(slides).map(slide => slide.querySelector('img').src)
-
-      // Verify images are sorted by index
-      expect(images[0]).toContain('img1.webp')
-      expect(images[1]).toContain('img2.webp')
-      expect(images[2]).toContain('img3.webp')
+      // Verify first image is displayed (should be img1.webp after sorting)
+      const img = container.querySelector('.product-carousel-image')
+      expect(img).toBeTruthy()
+      expect(img.src).toContain('img1.webp')
     })
   })
 
@@ -204,7 +177,7 @@ describe('imageCarousel', () => {
         ok: true,
         json: async () => ({
           success: true,
-          data: []
+          data: [{ id: 1, image_index: 1, url: 'img.webp', size: 'small' }]
         })
       })
 
@@ -258,11 +231,14 @@ describe('imageCarousel', () => {
 
       await createImageCarousel(container, 67)
 
-      const prevBtn = container.querySelector('.carousel-arrow-prev')
-      const nextBtn = container.querySelector('.carousel-arrow-next')
+      // Hover-activated carousel doesn't have arrow buttons
+      // It auto-cycles on hover, so no accessibility concerns with manual controls
+      const imageContainer = container.querySelector('.product-image-container')
+      expect(imageContainer).toBeTruthy()
 
-      expect(prevBtn.getAttribute('aria-label')).toBe('Previous image')
-      expect(nextBtn.getAttribute('aria-label')).toBe('Next image')
+      // Verify image has alt text
+      const img = container.querySelector('.product-carousel-image')
+      expect(img.getAttribute('alt')).toBeTruthy()
     })
 
     it('should have proper ARIA labels on dots', async () => {
@@ -279,9 +255,10 @@ describe('imageCarousel', () => {
 
       await createImageCarousel(container, 67)
 
-      const dots = container.querySelectorAll('.carousel-dot')
-      expect(dots[0].getAttribute('aria-label')).toBe('Go to image 1')
-      expect(dots[1].getAttribute('aria-label')).toBe('Go to image 2')
+      // Hover-activated carousel uses image count badge instead of dots
+      const badge = container.querySelector('.image-count-badge')
+      expect(badge).toBeTruthy()
+      expect(badge.textContent).toContain('2')
     })
   })
 })

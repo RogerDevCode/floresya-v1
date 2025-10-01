@@ -54,7 +54,36 @@ function validateProductData(data, isUpdate = false) {
  */
 export async function getAllProducts(filters = {}, includeInactive = false) {
   try {
-    let query = supabase.from(TABLE).select('*')
+    // If filtering by occasion slug, first resolve it to occasion_id
+    let occasionId = null
+    if (filters.occasion) {
+      const { data: occasionData, error: occasionError } = await supabase
+        .from(DB_SCHEMA.occasions.table)
+        .select('id')
+        .eq('slug', filters.occasion)
+        .eq('is_active', true)
+        .single()
+
+      if (occasionError || !occasionData) {
+        console.warn(`Occasion not found for slug: ${filters.occasion}`)
+        return []
+      }
+
+      occasionId = occasionData.id
+      console.log(`🔍 Resolved occasion slug "${filters.occasion}" to ID ${occasionId}`)
+    }
+
+    let query
+
+    // If filtering by occasion, join with product_occasions
+    if (occasionId) {
+      query = supabase
+        .from(TABLE)
+        .select(`*, product_occasions!inner(occasion_id)`)
+        .eq('product_occasions.occasion_id', occasionId)
+    } else {
+      query = supabase.from(TABLE).select('*')
+    }
 
     // By default, only return active products
     if (!includeInactive) {
@@ -78,6 +107,12 @@ export async function getAllProducts(filters = {}, includeInactive = false) {
     // Sorting
     if (filters.sortBy === 'carousel_order') {
       query = query.order('carousel_order', { ascending: true, nullsLast: true })
+    } else if (filters.sortBy === 'price_asc') {
+      query = query.order('price_usd', { ascending: true })
+    } else if (filters.sortBy === 'price_desc') {
+      query = query.order('price_usd', { ascending: false })
+    } else if (filters.sortBy === 'name_asc') {
+      query = query.order('name', { ascending: true })
     } else {
       query = query.order('created_at', { ascending: false })
     }
@@ -92,7 +127,7 @@ export async function getAllProducts(filters = {}, includeInactive = false) {
       query = query.range(filters.offset, filters.offset + (filters.limit || 50) - 1)
     }
 
-    console.log(`🔍 Query filters:`, { ...filters, includeInactive })
+    console.log(`🔍 Query filters:`, { ...filters, occasionId, includeInactive })
 
     const { data: products, error } = await query
 
@@ -100,7 +135,8 @@ export async function getAllProducts(filters = {}, includeInactive = false) {
       throw new Error(`Database error: ${error.message}`)
     }
     if (!products || products.length === 0) {
-      throw new Error('No products found')
+      console.log('No products found for filters:', filters)
+      return []
     }
 
     console.log(`📦 getAllProducts: Found ${products.length} products before fetching images`)

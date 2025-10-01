@@ -233,6 +233,8 @@ let currentPage = 1
 const PRODUCTS_PER_PAGE = 16 // 4x4 grid
 
 async function initProductsGrid() {
+  // Load occasions first, then products
+  await loadOccasionsFilter()
   await loadProducts(currentPage)
 
   // Search functionality
@@ -266,6 +268,42 @@ async function initProductsGrid() {
   }
 }
 
+/**
+ * Load occasions from API and populate filter dropdown
+ */
+async function loadOccasionsFilter() {
+  const occasionFilter = document.getElementById('occasionFilter')
+  if (!occasionFilter) {
+    return
+  }
+
+  try {
+    const response = await fetch('/api/occasions')
+    const result = await response.json()
+
+    if (!result.success || !result.data) {
+      console.error('Failed to load occasions:', result)
+      return
+    }
+
+    // Clear existing options except "Todas las ocasiones"
+    occasionFilter.innerHTML = '<option value="">Todas las ocasiones</option>'
+
+    // Add dynamic options from API
+    result.data.forEach(occasion => {
+      const option = document.createElement('option')
+      option.value = occasion.slug
+      option.textContent = occasion.name
+      occasionFilter.appendChild(option)
+    })
+
+    console.info(`✓ Loaded ${result.data.length} occasions from API`)
+  } catch (error) {
+    console.error('❌ Failed to load occasions:', error)
+    throw error
+  }
+}
+
 async function loadProducts(page = 1) {
   const productsContainer = document.getElementById('productsContainer')
   const paginationContainer = document.getElementById('pagination')
@@ -285,12 +323,17 @@ async function loadProducts(page = 1) {
     // Build query params
     const offset = (page - 1) * PRODUCTS_PER_PAGE
     const searchInput = document.getElementById('searchInput')
+    const occasionFilter = document.getElementById('occasionFilter')
     const sortFilter = document.getElementById('sortFilter')
 
     let url = `/api/products?limit=${PRODUCTS_PER_PAGE}&offset=${offset}`
 
     if (searchInput?.value) {
       url += `&search=${encodeURIComponent(searchInput.value)}`
+    }
+
+    if (occasionFilter?.value) {
+      url += `&occasion=${encodeURIComponent(occasionFilter.value)}`
     }
 
     if (sortFilter?.value) {
@@ -333,36 +376,36 @@ async function loadProducts(page = 1) {
               </p>
               <div class="flex items-center justify-between mt-4">
                 <span class="text-2xl font-bold text-pink-600">$${price.toFixed(2)}</span>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1 pr-1">
                   <button
-                    class="quick-view-btn bg-gray-300 hover:bg-gray-400 text-gray-900 p-2.5 rounded-full shadow-md transition-all duration-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                    class="quick-view-btn bg-gray-300 hover:bg-gray-400 text-gray-900 p-2 rounded-full shadow-md transition-all duration-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                     type="button"
                     aria-label="Vista rápida"
                     data-product-id="${product.id}"
                     data-action="quick-view"
                     title="Vista rápida"
                   >
-                    <i data-lucide="eye" class="h-5 w-5" style="stroke: #111827; stroke-width: 2.5;"></i>
+                    <i data-lucide="eye" class="h-4 w-4" style="stroke: #111827; stroke-width: 2.5;"></i>
                   </button>
                   <button
-                    class="add-to-cart-btn bg-pink-600 hover:bg-pink-700 text-white p-2.5 rounded-full text-sm font-semibold shadow-md transition-all duration-200 focus:ring-2 focus:ring-pink-500 focus:ring-offset-2"
+                    class="add-to-cart-btn bg-pink-600 hover:bg-pink-700 text-white p-2 rounded-full text-sm font-semibold shadow-md transition-all duration-200 focus:ring-2 focus:ring-pink-500 focus:ring-offset-2"
                     type="button"
                     aria-label="Agregar al carrito"
                     data-product-id="${product.id}"
                     data-action="add-to-cart"
                     title="Agregar al carrito"
                   >
-                    <i data-lucide="shopping-cart" class="h-5 w-5" style="stroke: white; stroke-width: 2.5;"></i>
+                    <i data-lucide="shopping-cart" class="h-4 w-4" style="stroke: white; stroke-width: 2.5;"></i>
                   </button>
                   <button
-                    class="buy-now-btn bg-green-600 hover:bg-green-700 text-white p-2.5 rounded-full text-sm font-semibold shadow-md transition-all duration-200 focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                    class="buy-now-btn bg-green-600 hover:bg-green-700 text-white p-2 rounded-full text-sm font-semibold shadow-md transition-all duration-200 focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                     type="button"
                     aria-label="Comprar ahora"
                     data-product-id="${product.id}"
                     data-action="buy-now"
                     title="Comprar ahora"
                   >
-                    <i data-lucide="zap" class="h-5 w-5" style="stroke: white; stroke-width: 2.5;"></i>
+                    <i data-lucide="zap" class="h-4 w-4" style="stroke: white; stroke-width: 2.5;"></i>
                   </button>
                 </div>
               </div>
@@ -383,6 +426,9 @@ async function loadProducts(page = 1) {
 
     // Reinitialize icons for cart buttons
     createIcons()
+
+    // Add click handlers for quick-view buttons (eye icon)
+    addQuickViewHandlers()
 
     // Render pagination
     if (paginationContainer) {
@@ -413,7 +459,7 @@ function renderPagination(container, currentPage, hasMore) {
       aria-label="Página anterior"
       data-page="${currentPage - 1}"
     >
-      <i data-lucide="chevron-left" class="h-5 w-5"></i>
+      <i data-lucide="chevron-left" class="h-4 w-4"></i>
     </button>
   `
 
@@ -447,7 +493,7 @@ function renderPagination(container, currentPage, hasMore) {
       aria-label="Página siguiente"
       data-page="${currentPage + 1}"
     >
-      <i data-lucide="chevron-right" class="h-5 w-5"></i>
+      <i data-lucide="chevron-right" class="h-4 w-4"></i>
     </button>
   `
 
@@ -468,6 +514,28 @@ function renderPagination(container, currentPage, hasMore) {
 
   // Reinitialize icons for pagination buttons
   createIcons()
+}
+
+/**
+ * Add click handlers for quick-view buttons (eye icon)
+ */
+function addQuickViewHandlers() {
+  const quickViewBtns = document.querySelectorAll('.quick-view-btn[data-action="quick-view"]')
+
+  quickViewBtns.forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault()
+      const productId = btn.getAttribute('data-product-id')
+
+      if (!productId) {
+        console.error('Quick view: missing product ID')
+        return
+      }
+
+      // Navigate to product detail page
+      window.location.href = `/pages/product-detail.html?id=${productId}`
+    })
+  })
 }
 
 /**
