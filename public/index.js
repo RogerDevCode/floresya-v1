@@ -322,35 +322,47 @@ async function loadProducts(page = 1) {
         const description = product.summary || product.description || 'Hermoso arreglo floral'
 
         return `
-          <div class="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
+          <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
             <div class="relative aspect-square bg-gray-100" data-carousel-container data-product-id="${product.id}">
               <!-- Carousel will be initialized here -->
             </div>
-            <div class="p-4">
-              <h3 class="text-lg font-semibold text-gray-900 mb-2">${product.name}</h3>
+            <div class="p-6">
+              <h3 class="text-lg font-bold text-gray-900 mb-2">${product.name}</h3>
               <p class="text-gray-600 text-sm mb-3 line-clamp-2">
                 ${description}
               </p>
               <div class="flex items-center justify-between mt-4">
                 <span class="text-2xl font-bold text-pink-600">$${price.toFixed(2)}</span>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
                   <button
-                    class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2.5 rounded-lg transition-colors focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                    class="quick-view-btn bg-gray-300 hover:bg-gray-400 text-gray-900 p-2.5 rounded-full shadow-md transition-all duration-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                     type="button"
                     aria-label="Vista rápida"
                     data-product-id="${product.id}"
                     data-action="quick-view"
+                    title="Vista rápida"
                   >
-                    <i data-lucide="eye" class="h-5 w-5"></i>
+                    <i data-lucide="eye" class="h-5 w-5" style="stroke: #111827; stroke-width: 2.5;"></i>
                   </button>
                   <button
-                    class="bg-pink-600 hover:bg-pink-700 text-white p-2.5 rounded-lg transition-colors focus:ring-2 focus:ring-pink-500 focus:ring-offset-2"
+                    class="add-to-cart-btn bg-pink-600 hover:bg-pink-700 text-white p-2.5 rounded-full text-sm font-semibold shadow-md transition-all duration-200 focus:ring-2 focus:ring-pink-500 focus:ring-offset-2"
                     type="button"
                     aria-label="Agregar al carrito"
                     data-product-id="${product.id}"
                     data-action="add-to-cart"
+                    title="Agregar al carrito"
                   >
-                    <i data-lucide="shopping-cart" class="h-5 w-5"></i>
+                    <i data-lucide="shopping-cart" class="h-5 w-5" style="stroke: white; stroke-width: 2.5;"></i>
+                  </button>
+                  <button
+                    class="buy-now-btn bg-green-600 hover:bg-green-700 text-white p-2.5 rounded-full text-sm font-semibold shadow-md transition-all duration-200 focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                    type="button"
+                    aria-label="Comprar ahora"
+                    data-product-id="${product.id}"
+                    data-action="buy-now"
+                    title="Comprar ahora"
+                  >
+                    <i data-lucide="zap" class="h-5 w-5" style="stroke: white; stroke-width: 2.5;"></i>
                   </button>
                 </div>
               </div>

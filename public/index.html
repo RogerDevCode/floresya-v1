@@ -100,14 +100,17 @@
     <div class="navbar-spacer"></div>
 
     <!-- Hero Section -->
-    <section class="hero-section" role="banner" aria-labelledby="hero-title">
+    <section
+      class="hero-section relative overflow-hidden"
+      role="banner"
+      aria-labelledby="hero-title"
+    >
       <div class="container">
         <div class="hero-content">
           <div class="hero-text">
-            <h1 id="hero-title" class="hero-title">Flores Frescas Para Toda Ocasión</h1>
+            <h1 id="hero-title" class="hero-title">Flores frescas para cada ocasión 🌸</h1>
             <p class="hero-subtitle">
-              Descubre nuestra hermosa colección de ramos, arreglos florales y plantas. Entrega
-              fresca y puntual en la Gran Caracas.
+              Ramos y arreglos florales diseñados con amor, entregados en la puerta de tu casa.
             </p>
             <div class="hero-cta">
               <a href="#productos" class="btn btn-primary btn-lg">
@@ -116,7 +119,7 @@
               </a>
               <a href="#bodas" class="btn btn-secondary btn-lg">
                 <i data-lucide="heart" class="icon"></i>
-                Bodas Especiales
+                Arreglos para Bodas
               </a>
             </div>
             <div class="hero-features">
@@ -134,7 +137,7 @@
               </div>
             </div>
           </div>
-          <div class="hero-image-wrapper">
+          <div class="hero-image-wrapper relative">
             <div class="hero-image-container">
               <img
                 src="./images/hero-flowers.webp"
@@ -145,6 +148,9 @@
                 loading="eager"
               />
             </div>
+            <!-- Hero decorations -->
+            <div class="hero-decoration pink"></div>
+            <div class="hero-decoration green"></div>
           </div>
         </div>
       </div>
@@ -291,6 +297,37 @@
       </section>
     </main>
 
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">Lo que dicen nuestros clientes</h2>
+          <p class="text-lg text-gray-600">Experiencias reales con FloresYa</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Testimonial 1 -->
+          <div class="testimonial-card pink">
+            <p class="testimonial-quote">
+              "El ramo llegó perfecto y justo a tiempo. Hermoso servicio."
+            </p>
+            <h4 class="testimonial-author pink">— Mi Mamá</h4>
+          </div>
+          <!-- Testimonial 2 -->
+          <div class="testimonial-card green">
+            <p class="testimonial-quote">
+              "Excelente atención y las flores duraron mucho más de lo esperado."
+            </p>
+            <h4 class="testimonial-author green">— Mi Papá</h4>
+          </div>
+          <!-- Testimonial 3 -->
+          <div class="testimonial-card yellow">
+            <p class="testimonial-quote">"Muy fácil comprar en línea. Definitivamente repetiré."</p>
+            <h4 class="testimonial-author yellow">— Mi Hermana</h4>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Features Section -->
     <section class="features-section py-16 bg-gray-50">
       <div class="container mx-auto px-4">
@@ -340,11 +377,13 @@
     </section>
 
     <!-- Special CTA Section -->
-    <section class="special-cta-section py-16 bg-gradient-to-br from-primary-600 to-primary-700">
+    <section class="special-cta-section text-white text-center">
       <div class="container mx-auto px-6">
         <div class="text-center mb-12">
           <h2 class="text-3xl font-bold text-white mb-4">¿Buscas algo especial?</h2>
-          <p class="text-xl text-pink-100">Descubre nuestros servicios premium y exclusivos</p>
+          <p class="text-xl text-white mb-8">
+            Personalizamos ramos únicos para cada ocasión inolvidable
+          </p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
           <!-- FloresYa Novias -->
@@ -352,8 +391,12 @@
             <div
               class="bg-white rounded-lg shadow-lg p-8 h-full flex flex-col items-center justify-center text-center hover:shadow-xl transition-shadow"
             >
-              <i data-lucide="heart" class="h-16 w-16 text-primary-600 mb-4"></i>
-              <h3 class="text-2xl font-bold text-primary-600 mb-3">FloresYa Novias</h3>
+              <i
+                data-lucide="heart"
+                class="h-16 w-16 text-pink-600 mb-4"
+                style="stroke-width: 2"
+              ></i>
+              <h3 class="text-2xl font-bold text-pink-600 mb-3">FloresYa Novias</h3>
               <p class="text-gray-600 mb-4 flex-grow">
                 Arreglos exclusivos para el día más especial de tu vida
               </p>
@@ -365,7 +408,11 @@
             <div
               class="bg-white rounded-lg shadow-lg p-8 h-full flex flex-col items-center justify-center text-center hover:shadow-xl transition-shadow"
             >
-              <i data-lucide="zap" class="h-16 w-16 text-yellow-500 mb-4"></i>
+              <i
+                data-lucide="zap"
+                class="h-16 w-16 text-yellow-500 mb-4"
+                style="stroke-width: 2"
+              ></i>
               <h3 class="text-2xl font-bold text-yellow-600 mb-3">Entrega Express</h3>
               <p class="text-gray-600 mb-4 flex-grow">
                 ¿Necesitas flores urgente? Entregamos en 2 horas
