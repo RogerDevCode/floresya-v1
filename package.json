@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "npm run build:css && node api/server.js",
     "start": "node api/server.js",
-    "build:css": "tailwindcss -i ./public/css/input.css -o ./public/css/tailwind.css --minify",
+    "build:css": "tailwindcss -i ./public/css/input.css -o ./public/css/tailwind.css --minify && npm run format",
     "watch:css": "tailwindcss -i ./public/css/input.css -o ./public/css/tailwind.css --watch",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -17,8 +17,7 @@
     "seed": "node seed-products.js",
     "vercel-dev": "vercel dev --yes --listen 3000",
     "serve": "serve public -p 3000",
-    "kill-and-vercel": "bash kill-port-and-run-vercel.sh",
-    "kver": "bash kver.sh",
+    "qs": "kver.sh",
     "prepare": "husky"
   },
   "dependencies": {
@@ -62,13 +61,11 @@
   "author": "FloresYa Team",
   "license": "MIT",
   "lint-staged": {
-    "*.{js,css,json,md}": [
-      "prettier --write",
-      "git add"
+    "*.{js,css,json,md,html}": [
+      "prettier --write"
     ],
     "*.js": [
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ]
   },
   "main": "cleanup-test-products.js",

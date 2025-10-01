@@ -83,23 +83,53 @@ export async function getAllProducts(filters = {}, includeInactive = false) {
     }
 
     if (filters.limit) {
+      console.log(`🔧 Applying limit: ${filters.limit} (type: ${typeof filters.limit})`)
       query = query.limit(filters.limit)
     }
 
     if (filters.offset) {
+      console.log(`🔧 Applying offset: ${filters.offset}`)
       query = query.range(filters.offset, filters.offset + (filters.limit || 50) - 1)
     }
 
-    const { data, error } = await query
+    console.log(`🔍 Query filters:`, { ...filters, includeInactive })
+
+    const { data: products, error } = await query
 
     if (error) {
       throw new Error(`Database error: ${error.message}`)
     }
-    if (!data) {
+    if (!products || products.length === 0) {
       throw new Error('No products found')
     }
 
-    return data
+    console.log(`📦 getAllProducts: Found ${products.length} products before fetching images`)
+
+    // Fetch small image for each product (first image, image_index=1)
+    const IMAGES_TABLE = DB_SCHEMA.product_images.table
+    const productsWithImages = await Promise.all(
+      products.map(async product => {
+        const { data: images, error: imgError } = await supabase
+          .from(IMAGES_TABLE)
+          .select('url')
+          .eq('product_id', product.id)
+          .eq('size', 'small')
+          .order('image_index', { ascending: true })
+          .limit(1)
+          .maybeSingle()
+
+        if (imgError) {
+          console.warn(`Failed to fetch image for product ${product.id}:`, imgError.message)
+        }
+
+        return {
+          ...product,
+          image_url_small: images?.url || null
+        }
+      })
+    )
+
+    return productsWithImages
   } catch (error) {
     console.error('getAllProducts failed:', error)
     throw error
@@ -224,10 +254,11 @@ export async function getProductsByOccasion(occasionId, limit = 50) {
 
 /**
  * Get products in carousel (carousel_order IS NOT NULL)
+ * Includes primary image in 'small' size (300x300px)
  */
 export async function getCarouselProducts() {
   try {
-    const { data, error } = await supabase
+    const { data: products, error } = await supabase
       .from(TABLE)
       .select('*')
       .eq('active', true)
@@ -238,11 +269,35 @@ export async function getCarouselProducts() {
     if (error) {
       throw new Error(`Database error: ${error.message}`)
     }
-    if (!data || data.length === 0) {
+    if (!products || products.length === 0) {
       throw new Error('No carousel products found')
     }
 
-    return data
+    // Fetch small image for each product (first image, image_index=1)
+    const IMAGES_TABLE = DB_SCHEMA.product_images.table
+    const productsWithImages = await Promise.all(
+      products.map(async product => {
+        const { data: images, error: imgError } = await supabase
+          .from(IMAGES_TABLE)
+          .select('url')
+          .eq('product_id', product.id)
+          .eq('size', 'small')
+          .order('image_index', { ascending: true })
+          .limit(1)
+          .maybeSingle()
+
+        if (imgError) {
+          console.warn(`Failed to fetch image for product ${product.id}:`, imgError.message)
+        }
+
+        return {
+          ...product,
+          image_url_small: images?.url || null
+        }
+      })
+    )
+
+    return productsWithImages
   } catch (error) {
     console.error('getCarouselProducts failed:', error)
     throw error

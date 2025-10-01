@@ -4,7 +4,16 @@
  */
 
 import dotenv from 'dotenv'
-import { createProductWithOccasions, getAllProducts, getProductById, updateProduct, decrementStock, updateStock, deleteProduct as softDeleteProduct, reactivateProduct } from './src/services/productService.js'
+import {
+  createProductWithOccasions,
+  getAllProducts,
+  getProductById,
+  updateProduct,
+  decrementStock,
+  updateStock,
+  deleteProduct as softDeleteProduct,
+  reactivateProduct
+} from './src/services/productService.js'
 import { getAllOccasions } from './src/services/occasionService.js'
 
 dotenv.config({ path: '.env.local' })
@@ -28,7 +37,8 @@ async function runProductCRUDTest() {
     const testProductData = {
       name: 'Test Product - FloresYa CRUD Test',
       summary: 'Test product for CRUD operations',
-      description: 'This is a test product created specifically for CRUD testing. It will be deleted after the test.',
+      description:
+        'This is a test product created specifically for CRUD testing. It will be deleted after the test.',
       price_usd: 29.99,
       price_ves: 1199.6,
       stock: 10,
@@ -60,13 +70,17 @@ async function runProductCRUDTest() {
 
     const updatedProduct = await updateProduct(createdProduct.id, updateData)
     console.log(`  ✅ Product updated: ${updatedProduct.name}`)
-    console.log(`  💡 New price: $${updatedProduct.price_usd}, New stock: ${updatedProduct.stock}\n`)
+    console.log(
+      `  💡 New price: $${updatedProduct.price_usd}, New stock: ${updatedProduct.stock}\n`
+    )
 
     // READ: Get the updated product to confirm changes
     console.log(`🔍 READ: Getting updated product by ID ${createdProduct.id}...`)
     const updatedProductCheck = await getProductById(createdProduct.id)
     console.log(`  ✅ Updated product retrieved: ${updatedProductCheck.name}`)
-    console.log(`  💡 Price: $${updatedProductCheck.price_usd}, Stock: ${updatedProductCheck.stock}\n`)
+    console.log(
+      `  💡 Price: $${updatedProductCheck.price_usd}, Stock: ${updatedProductCheck.stock}\n`
+    )
 
     // Additional UPDATE: Test stock functions
     console.log('✏️  UPDATE: Testing stock update functions...')
@@ -103,8 +117,9 @@ async function runProductCRUDTest() {
     console.log(`  ✅ Found ${finalProducts.length} active products after test\n`)
 
     console.log('🎉 Product CRUD tests completed successfully!')
-    console.log(`📝 Summary: Created, read, updated, and deleted a test product (ID: ${createdProduct.id})`)
-
+    console.log(
+      `📝 Summary: Created, read, updated, and deleted a test product (ID: ${createdProduct.id})`
+    )
   } catch (error) {
     console.error('💥 Product CRUD test failed:', error)
     throw error

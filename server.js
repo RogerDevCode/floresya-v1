@@ -44,7 +44,7 @@ app.post('/api/orders', ordersHandler)
 app.get('/api/orders', ordersHandler)
 
 // Dynamic routes for API endpoints that need path parameters
-app.get('/api/products/:id', productsHandler)  // For individual product by ID
+app.get('/api/products/:id', productsHandler) // For individual product by ID
 app.get('/api/occasions', (req, res) => {
   import('./src/api/occasions.js')
     .then(module => module.default(req, res))

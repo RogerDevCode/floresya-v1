@@ -31,7 +31,6 @@
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="./images/favicon.ico" />
-
   </head>
   <body>
     <!-- Las secciones se agregarán aquí progresivamente -->
@@ -66,7 +65,12 @@
             <!-- Login -->
             <a href="#login" class="btn btn-login">Iniciar Sesión</a>
             <!-- Mobile menu toggle -->
-            <button class="mobile-menu-toggle" aria-label="Abrir menú móvil" aria-expanded="false" id="mobile-menu-btn">
+            <button
+              class="mobile-menu-toggle"
+              aria-label="Abrir menú móvil"
+              aria-expanded="false"
+              id="mobile-menu-btn"
+            >
               <i data-lucide="menu" class="icon"></i>
             </button>
           </div>
@@ -146,8 +150,149 @@
       </div>
     </section>
 
+    <!-- Featured Products Carousel -->
+    <section class="py-16 mb-8 bg-white" role="region" aria-labelledby="carousel-title">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12 px-4">
+          <h3 id="carousel-title" class="text-2xl lg:text-3xl font-bold text-pink-600 mb-2">
+            Nuestras Creaciones Destacadas
+          </h3>
+          <p class="text-gray-600">Descubre nuestros arreglos más populares</p>
+        </div>
+
+        <!-- Dynamic Carousel - populated by JavaScript -->
+        <div
+          id="featuredCarousel"
+          class="relative rounded-lg shadow-lg overflow-hidden bg-gray-50"
+          role="region"
+          aria-roledescription="carousel"
+          aria-label="Productos destacados"
+        >
+          <!-- Indicators will be generated dynamically -->
+          <div
+            class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10"
+            id="carouselIndicators"
+            role="tablist"
+            aria-label="Slides"
+          >
+            <!-- Dynamic indicators -->
+          </div>
+
+          <!-- Slides will be generated dynamically -->
+          <div
+            class="relative h-[300px] bg-gray-100 flex items-center justify-center"
+            id="carouselSlides"
+            aria-live="polite"
+          >
+            <!-- Temporary placeholder until JS loads products -->
+            <div class="text-center text-gray-400">
+              <p class="text-lg">Cargando productos destacados...</p>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <button
+            class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110 z-10 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            type="button"
+            id="carousel-prev"
+            aria-label="Producto anterior"
+          >
+            <i data-lucide="chevron-left" class="h-6 w-6 text-gray-700"></i>
+          </button>
+          <button
+            class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110 z-10 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            type="button"
+            id="carousel-next"
+            aria-label="Producto siguiente"
+          >
+            <i data-lucide="chevron-right" class="h-6 w-6 text-gray-700"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Products -->
+    <main id="main-content">
+      <section
+        id="productos"
+        class="py-16 mb-8 bg-white"
+        role="main"
+        aria-label="Sección de productos destacados"
+      >
+        <div class="container mx-auto px-4">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Productos Destacados</h2>
+            <p class="text-lg text-gray-600">Nuestras flores más populares y arreglos especiales</p>
+          </div>
+
+          <!-- Search and Filters -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="md:col-span-2">
+              <div class="relative">
+                <input
+                  type="text"
+                  class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                  placeholder="Buscar productos..."
+                  id="searchInput"
+                  aria-label="Buscar productos"
+                />
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i data-lucide="search" class="h-5 w-5 text-gray-400"></i>
+                </div>
+              </div>
+            </div>
+            <div>
+              <select
+                class="w-full py-2 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                id="occasionFilter"
+                aria-label="Filtrar por ocasión"
+              >
+                <option value="">Todas las ocasiones</option>
+                <option value="cumpleaños">Cumpleaños</option>
+                <option value="aniversario">Aniversario</option>
+                <option value="bodas">Bodas</option>
+                <option value="condolencias">Condolencias</option>
+                <option value="dia-madre">Día de la Madre</option>
+                <option value="san-valentin">San Valentín</option>
+              </select>
+            </div>
+            <div>
+              <select
+                class="w-full py-2 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                id="sortFilter"
+                aria-label="Ordenar productos"
+              >
+                <option value="created_at:desc">Más recientes</option>
+                <option value="price_usd:asc">Precio: Menor a mayor</option>
+                <option value="price_usd:desc">Precio: Mayor a menor</option>
+                <option value="name:asc">Nombre: A-Z</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Products Grid (dynamically loaded) -->
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            id="productsContainer"
+          >
+            <!-- Products will be loaded here by JavaScript -->
+            <div class="col-span-full text-center py-12">
+              <p class="text-gray-500">Cargando productos...</p>
+            </div>
+          </div>
+
+          <!-- Pagination (dynamically loaded) -->
+          <nav aria-label="Paginación de productos" class="mt-12">
+            <div class="flex justify-center items-center space-x-2" id="pagination">
+              <!-- Pagination buttons will be loaded here by JavaScript -->
+            </div>
+          </nav>
+        </div>
+      </section>
+    </main>
+
     <!-- Features Section -->
-    <section class="features-section py-12 bg-gray-100">
+    <section class="features-section py-16 bg-gray-50">
       <div class="container">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
           <!-- Feature 1 -->
@@ -195,17 +340,17 @@
     </section>
 
     <!-- Special CTA Section -->
-    <section class="special-cta-section py-12 bg-gradient-to-br from-primary-600 to-primary-700">
-      <div class="container">
-        <div class="text-center mb-8">
+    <section class="special-cta-section py-16 bg-gradient-to-br from-primary-600 to-primary-700">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-12 px-4">
           <h2 class="text-3xl font-bold text-white mb-4">¿Buscas algo especial?</h2>
           <p class="text-xl text-pink-100">Descubre nuestros servicios premium y exclusivos</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto px-4">
           <!-- FloresYa Novias -->
           <a href="#novias" class="block cta-card" aria-label="Conocer más sobre FloresYa Novias">
             <div
-              class="bg-white rounded-lg shadow-lg p-6 h-full flex flex-col items-center justify-center text-center hover:shadow-xl transition-shadow"
+              class="bg-white rounded-lg shadow-lg p-8 h-full flex flex-col items-center justify-center text-center hover:shadow-xl transition-shadow"
             >
               <i data-lucide="heart" class="h-16 w-16 text-primary-600 mb-4"></i>
               <h3 class="text-2xl font-bold text-primary-600 mb-3">FloresYa Novias</h3>
@@ -218,7 +363,7 @@
           <!-- Entrega Express -->
           <div class="cta-card">
             <div
-              class="bg-white rounded-lg shadow-lg p-6 h-full flex flex-col items-center justify-center text-center hover:shadow-xl transition-shadow"
+              class="bg-white rounded-lg shadow-lg p-8 h-full flex flex-col items-center justify-center text-center hover:shadow-xl transition-shadow"
             >
               <i data-lucide="zap" class="h-16 w-16 text-yellow-500 mb-4"></i>
               <h3 class="text-2xl font-bold text-yellow-600 mb-3">Entrega Express</h3>

@@ -25,7 +25,9 @@ async function testAPIEndpoint(endpoint, description) {
     const { exec } = await import('child_process')
     const execAsync = promisify(exec)
 
-    const result = await execAsync(`curl -s -w "HTTPSTATUS:%{http_code}" -o /tmp/curl_output.txt "http://localhost:3000${endpoint}"`)
+    const result = await execAsync(
+      `curl -s -w "HTTPSTATUS:%{http_code}" -o /tmp/curl_output.txt "http://localhost:3000${endpoint}"`
+    )
 
     // Extract HTTP status code from curl output
     const output = result.stdout
@@ -52,7 +54,9 @@ async function testAPIEndpoint(endpoint, description) {
 
     if (isValidJson) {
       if (jsonData.success === true) {
-        console.log(`  💡 Success response with ${jsonData.data ? (Array.isArray(jsonData.data) ? `${jsonData.data.length} items` : '1 item') : 'no data'}`)
+        console.log(
+          `  💡 Success response with ${jsonData.data ? (Array.isArray(jsonData.data) ? `${jsonData.data.length} items` : '1 item') : 'no data'}`
+        )
       } else {
         console.log(`  ⚠️  Response: ${jsonData.error || jsonData.message || 'Unknown error'}`)
       }
@@ -61,7 +65,9 @@ async function testAPIEndpoint(endpoint, description) {
       if (response.includes('<!doctype html>') || response.includes('<html')) {
         console.log('  💡 HTML response received (likely homepage or static content)')
       } else {
-        console.log(`  ⚠️  Non-JSON response: ${response.substring(0, 100)}${response.length > 100 ? '...' : ''}`)
+        console.log(
+          `  ⚠️  Non-JSON response: ${response.substring(0, 100)}${response.length > 100 ? '...' : ''}`
+        )
       }
     }
   } catch (error) {
@@ -82,11 +88,11 @@ async function runAPITests() {
   })
 
   // Capture server output
-  server.stdout.on('data', (data) => {
+  server.stdout.on('data', data => {
     console.log(`Server: ${data}`)
   })
 
-  server.stderr.on('data', (data) => {
+  server.stderr.on('data', data => {
     console.log(`Server error: ${data}`)
   })
 

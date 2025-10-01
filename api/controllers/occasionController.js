@@ -10,7 +10,7 @@ import { asyncHandler } from '../middleware/errorHandler.js'
  * GET /api/occasions
  * Get all active occasions
  */
-export const getAllOccasions = asyncHandler(async(req, res) => {
+export const getAllOccasions = asyncHandler(async (req, res) => {
   const filters = {
     limit: req.query.limit
   }
@@ -28,7 +28,7 @@ export const getAllOccasions = asyncHandler(async(req, res) => {
  * GET /api/occasions/:id
  * Get occasion by ID
  */
-export const getOccasionById = asyncHandler(async(req, res) => {
+export const getOccasionById = asyncHandler(async (req, res) => {
   const occasion = await occasionService.getOccasionById(req.params.id)
 
   res.json({
@@ -42,7 +42,7 @@ export const getOccasionById = asyncHandler(async(req, res) => {
  * GET /api/occasions/slug/:slug
  * Get occasion by slug
  */
-export const getOccasionBySlug = asyncHandler(async(req, res) => {
+export const getOccasionBySlug = asyncHandler(async (req, res) => {
   const occasion = await occasionService.getOccasionBySlug(req.params.slug)
 
   res.json({
@@ -56,7 +56,7 @@ export const getOccasionBySlug = asyncHandler(async(req, res) => {
  * POST /api/occasions
  * Create new occasion
  */
-export const createOccasion = asyncHandler(async(req, res) => {
+export const createOccasion = asyncHandler(async (req, res) => {
   const occasion = await occasionService.createOccasion(req.body)
 
   res.status(201).json({
@@ -70,7 +70,7 @@ export const createOccasion = asyncHandler(async(req, res) => {
  * PUT /api/occasions/:id
  * Update occasion
  */
-export const updateOccasion = asyncHandler(async(req, res) => {
+export const updateOccasion = asyncHandler(async (req, res) => {
   const occasion = await occasionService.updateOccasion(req.params.id, req.body)
 
   res.json({
@@ -84,7 +84,7 @@ export const updateOccasion = asyncHandler(async(req, res) => {
  * PATCH /api/occasions/:id/display-order
  * Update display order
  */
-export const updateDisplayOrder = asyncHandler(async(req, res) => {
+export const updateDisplayOrder = asyncHandler(async (req, res) => {
   const { order } = req.body
 
   const occasion = await occasionService.updateDisplayOrder(req.params.id, order)
@@ -100,7 +100,7 @@ export const updateDisplayOrder = asyncHandler(async(req, res) => {
  * DELETE /api/occasions/:id
  * Soft-delete occasion
  */
-export const deleteOccasion = asyncHandler(async(req, res) => {
+export const deleteOccasion = asyncHandler(async (req, res) => {
   const occasion = await occasionService.deleteOccasion(req.params.id)
 
   res.json({
@@ -114,7 +114,7 @@ export const deleteOccasion = asyncHandler(async(req, res) => {
  * PATCH /api/occasions/:id/reactivate
  * Reactivate occasion
  */
-export const reactivateOccasion = asyncHandler(async(req, res) => {
+export const reactivateOccasion = asyncHandler(async (req, res) => {
   const occasion = await occasionService.reactivateOccasion(req.params.id)
 
   res.json({

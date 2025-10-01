@@ -25,11 +25,11 @@ async function runAPIProductCRUDTest() {
   })
 
   // Capture server output
-  server.stdout.on('data', (data) => {
+  server.stdout.on('data', data => {
     // console.log(`Server: ${data}`);
   })
 
-  server.stderr.on('data', (data) => {
+  server.stderr.on('data', data => {
     console.log(`Server error: ${data}`)
   })
 
@@ -64,11 +64,15 @@ async function runAPIProductCRUDTest() {
       featured: false
     }
 
-    result = await execAsync(`curl -X POST http://localhost:3000/api/products -H "Content-Type: application/json" -d '${JSON.stringify(testProductData)}'`)
+    result = await execAsync(
+      `curl -X POST http://localhost:3000/api/products -H "Content-Type: application/json" -d '${JSON.stringify(testProductData)}'`
+    )
     console.log('  ⚠️  Product creation via API endpoint not implemented yet in the API handler')
 
     // For now, let's just use the service directly to create a product for testing the other operations
-    const { createProductWithOccasions, getAllOccasions} = await import('./src/services/productService.js')
+    const { createProductWithOccasions, getAllOccasions } = await import(
+      './src/services/productService.js'
+    )
     const { getAllOccasions: getOccasions } = await import('./src/services/occasionService.js')
 
     // Get occasions to link to the test product
@@ -91,11 +95,15 @@ async function runAPIProductCRUDTest() {
     }
 
     // UPDATE: Update the product via API (this endpoint likely doesn't exist yet)
-    console.log(`✏️  UPDATE: The update would happen via a PUT request to /api/products/${createdProduct.id}...`)
+    console.log(
+      `✏️  UPDATE: The update would happen via a PUT request to /api/products/${createdProduct.id}...`
+    )
     console.log('  ⚠️  Product update via API endpoint not implemented yet in the API handler')
 
     // DELETE: The delete would happen via API as well
-    console.log(`🗑️  DELETE: The delete would happen via a DELETE request to /api/products/${createdProduct.id}...`)
+    console.log(
+      `🗑️  DELETE: The delete would happen via a DELETE request to /api/products/${createdProduct.id}...`
+    )
     console.log('  ⚠️  Product delete via API endpoint not implemented yet in the API handler')
 
     // READ: Get all products again to confirm state
@@ -109,9 +117,10 @@ async function runAPIProductCRUDTest() {
     }
 
     console.log('\n🎉 Product API CRUD tests completed!')
-    console.log('📝 Note: Full API CRUD requires implementing POST, PUT, and DELETE endpoints for /api/products')
+    console.log(
+      '📝 Note: Full API CRUD requires implementing POST, PUT, and DELETE endpoints for /api/products'
+    )
     console.log('📝 Currently implemented: GET /api/products and GET /api/products/:id')
-
   } catch (error) {
     console.error('💥 Product API CRUD test failed:', error)
   } finally {

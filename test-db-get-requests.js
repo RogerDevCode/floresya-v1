@@ -36,10 +36,7 @@ import {
   getOccasionBySlug
 } from './src/services/occasionService.js'
 
-import {
-  getAllUsers,
-  getUserById
-} from './src/services/userService.js'
+import { getAllUsers, getUserById } from './src/services/userService.js'
 
 import {
   getOrderStatusHistory as getStatusHistoryByOrder,
@@ -146,7 +143,9 @@ async function runTests() {
     try {
       // Using a placeholder user ID - this will likely fail but shows the method
       const orders = await getOrdersByUser(1)
-      console.log(`  ⚠️  getOrdersByUser(): ${orders.length} orders found (only if user ID 1 exists)`)
+      console.log(
+        `  ⚠️  getOrdersByUser(): ${orders.length} orders found (only if user ID 1 exists)`
+      )
     } catch (error) {
       console.log(`  ⚠️  getOrdersByUser(): ${error.message} (Expected without valid user ID)`)
     }
@@ -182,7 +181,9 @@ async function runTests() {
       const statusHistory = await getStatusHistoryByOrder(1)
       console.log(`  ⚠️  getStatusHistoryByOrder(): ${statusHistory.length} history items found`)
     } catch (error) {
-      console.log(`  ⚠️  getStatusHistoryByOrder(): ${error.message} (Expected without valid order ID)`)
+      console.log(
+        `  ⚠️  getStatusHistoryByOrder(): ${error.message} (Expected without valid order ID)`
+      )
     }
 
     try {
@@ -203,7 +204,9 @@ async function runTests() {
       const images = await getAllProductImages(1)
       console.log(`  ⚠️  getAllProductImages(): ${images.length} images found for product`)
     } catch (error) {
-      console.log(`  ⚠️  getAllProductImages(): ${error.message} (Expected without valid product ID)`)
+      console.log(
+        `  ⚠️  getAllProductImages(): ${error.message} (Expected without valid product ID)`
+      )
     }
 
     // Test Images by Product
@@ -216,7 +219,6 @@ async function runTests() {
     }
 
     console.log('\n🎉 All database GET tests completed!')
-
   } catch (error) {
     console.error('💥 Test suite failed:', error)
   }

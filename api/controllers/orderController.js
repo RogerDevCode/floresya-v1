@@ -10,7 +10,7 @@ import { asyncHandler } from '../middleware/errorHandler.js'
  * GET /api/orders
  * Get all orders with filters
  */
-export const getAllOrders = asyncHandler(async(req, res) => {
+export const getAllOrders = asyncHandler(async (req, res) => {
   const filters = {
     user_id: req.query.user_id,
     status: req.query.status,
@@ -33,7 +33,7 @@ export const getAllOrders = asyncHandler(async(req, res) => {
  * GET /api/orders/:id
  * Get order by ID with items
  */
-export const getOrderById = asyncHandler(async(req, res) => {
+export const getOrderById = asyncHandler(async (req, res) => {
   const order = await orderService.getOrderById(req.params.id)
 
   res.json({
@@ -47,7 +47,7 @@ export const getOrderById = asyncHandler(async(req, res) => {
  * GET /api/orders/user/:userId
  * Get orders by user
  */
-export const getOrdersByUser = asyncHandler(async(req, res) => {
+export const getOrdersByUser = asyncHandler(async (req, res) => {
   const filters = {
     status: req.query.status,
     limit: req.query.limit
@@ -66,7 +66,7 @@ export const getOrdersByUser = asyncHandler(async(req, res) => {
  * GET /api/orders/:id/status-history
  * Get order status history
  */
-export const getOrderStatusHistory = asyncHandler(async(req, res) => {
+export const getOrderStatusHistory = asyncHandler(async (req, res) => {
   const history = await orderService.getOrderStatusHistory(req.params.id)
 
   res.json({
@@ -80,7 +80,7 @@ export const getOrderStatusHistory = asyncHandler(async(req, res) => {
  * POST /api/orders
  * Create order with items (atomic)
  */
-export const createOrder = asyncHandler(async(req, res) => {
+export const createOrder = asyncHandler(async (req, res) => {
   const { order, items } = req.body
 
   const result = await orderService.createOrderWithItems(order, items)
@@ -96,7 +96,7 @@ export const createOrder = asyncHandler(async(req, res) => {
  * PUT /api/orders/:id
  * Update order (limited fields)
  */
-export const updateOrder = asyncHandler(async(req, res) => {
+export const updateOrder = asyncHandler(async (req, res) => {
   const order = await orderService.updateOrder(req.params.id, req.body)
 
   res.json({
@@ -110,7 +110,7 @@ export const updateOrder = asyncHandler(async(req, res) => {
  * PATCH /api/orders/:id/status
  * Update order status with history
  */
-export const updateOrderStatus = asyncHandler(async(req, res) => {
+export const updateOrderStatus = asyncHandler(async (req, res) => {
   const { status, notes, changedBy } = req.body
 
   const result = await orderService.updateOrderStatus(
@@ -131,7 +131,7 @@ export const updateOrderStatus = asyncHandler(async(req, res) => {
  * PATCH /api/orders/:id/cancel
  * Cancel order
  */
-export const cancelOrder = asyncHandler(async(req, res) => {
+export const cancelOrder = asyncHandler(async (req, res) => {
   const { notes } = req.body
 
   const result = await orderService.cancelOrder(req.params.id, notes, req.user?.id)

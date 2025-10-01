@@ -12,14 +12,15 @@ import { NotFoundError } from '../errors/AppError.js'
  * GET /api/products
  * Get all products with filters
  */
-export const getAllProducts = asyncHandler(async(req, res) => {
+export const getAllProducts = asyncHandler(async (req, res) => {
   const filters = {
-    featured: req.query.featured === 'true',
+    featured:
+      req.query.featured === 'true' ? true : req.query.featured === 'false' ? false : undefined,
     sku: req.query.sku,
     search: req.query.search,
     sortBy: req.query.sortBy,
-    limit: req.query.limit,
-    offset: req.query.offset
+    limit: req.query.limit ? parseInt(req.query.limit, 10) : undefined,
+    offset: req.query.offset ? parseInt(req.query.offset, 10) : undefined
   }
 
   const products = await productService.getAllProducts(filters)
@@ -35,7 +36,7 @@ export const getAllProducts = asyncHandler(async(req, res) => {
  * GET /api/products/:id
  * Get product by ID
  */
-export const getProductById = asyncHandler(async(req, res) => {
+export const getProductById = asyncHandler(async (req, res) => {
   const product = await productService.getProductById(req.params.id)
 
   res.json({
@@ -49,7 +50,7 @@ export const getProductById = asyncHandler(async(req, res) => {
  * GET /api/products/sku/:sku
  * Get product by SKU
  */
-export const getProductBySku = asyncHandler(async(req, res) => {
+export const getProductBySku = asyncHandler(async (req, res) => {
   const product = await productService.getProductBySku(req.params.sku)
 
   res.json({
@@ -63,7 +64,7 @@ export const getProductBySku = asyncHandler(async(req, res) => {
  * GET /api/products/carousel
  * Get carousel products
  */
-export const getCarouselProducts = asyncHandler(async(req, res) => {
+export const getCarouselProducts = asyncHandler(async (req, res) => {
   const products = await productService.getCarouselProducts()
 
   res.json({
@@ -77,7 +78,7 @@ export const getCarouselProducts = asyncHandler(async(req, res) => {
  * GET /api/products/with-occasions
  * Get products with occasions (stored function)
  */
-export const getProductsWithOccasions = asyncHandler(async(req, res) => {
+export const getProductsWithOccasions = asyncHandler(async (req, res) => {
   const limit = req.query.limit || 50
   const offset = req.query.offset || 0
 
@@ -94,7 +95,7 @@ export const getProductsWithOccasions = asyncHandler(async(req, res) => {
  * GET /api/products/occasion/:occasionId
  * Get products by occasion
  */
-export const getProductsByOccasion = asyncHandler(async(req, res) => {
+export const getProductsByOccasion = asyncHandler(async (req, res) => {
   const occasionId = req.params.occasionId
   const limit = req.query.limit || 50
 
@@ -111,7 +112,7 @@ export const getProductsByOccasion = asyncHandler(async(req, res) => {
  * POST /api/products
  * Create new product
  */
-export const createProduct = asyncHandler(async(req, res) => {
+export const createProduct = asyncHandler(async (req, res) => {
   const product = await productService.createProduct(req.body)
 
   res.status(201).json({
@@ -125,7 +126,7 @@ export const createProduct = asyncHandler(async(req, res) => {
  * POST /api/products/with-occasions
  * Create product with occasions (atomic)
  */
-export const createProductWithOccasions = asyncHandler(async(req, res) => {
+export const createProductWithOccasions = asyncHandler(async (req, res) => {
   const { product, occasionIds } = req.body
 
   const result = await productService.createProductWithOccasions(product, occasionIds)
@@ -141,7 +142,7 @@ export const createProductWithOccasions = asyncHandler(async(req, res) => {
  * PUT /api/products/:id
  * Update product
  */
-export const updateProduct = asyncHandler(async(req, res) => {
+export const updateProduct = asyncHandler(async (req, res) => {
   const product = await productService.updateProduct(req.params.id, req.body)
 
   res.json({
@@ -155,7 +156,7 @@ export const updateProduct = asyncHandler(async(req, res) => {
  * PATCH /api/products/:id/carousel-order
  * Update carousel order (atomic)
  */
-export const updateCarouselOrder = asyncHandler(async(req, res) => {
+export const updateCarouselOrder = asyncHandler(async (req, res) => {
   const { order } = req.body
 
   const result = await productService.updateCarouselOrder(req.params.id, order)
@@ -171,7 +172,7 @@ export const updateCarouselOrder = asyncHandler(async(req, res) => {
  * PATCH /api/products/:id/stock
  * Update stock
  */
-export const updateStock = asyncHandler(async(req, res) => {
+export const updateStock = asyncHandler(async (req, res) => {
   const { quantity } = req.body
 
   const product = await productService.updateStock(req.params.id, quantity)
@@ -187,7 +188,7 @@ export const updateStock = asyncHandler(async(req, res) => {
  * DELETE /api/products/:id
  * Soft-delete product
  */
-export const deleteProduct = asyncHandler(async(req, res) => {
+export const deleteProduct = asyncHandler(async (req, res) => {
   const product = await productService.deleteProduct(req.params.id)
 
   res.json({
@@ -201,7 +202,7 @@ export const deleteProduct = asyncHandler(async(req, res) => {
  * PATCH /api/products/:id/reactivate
  * Reactivate product
  */
-export const reactivateProduct = asyncHandler(async(req, res) => {
+export const reactivateProduct = asyncHandler(async (req, res) => {
   const product = await productService.reactivateProduct(req.params.id)
 
   res.json({

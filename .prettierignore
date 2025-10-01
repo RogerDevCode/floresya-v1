@@ -1,8 +1,33 @@
-node_modules
-dist
-build
-.vercel
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.vercel/
+public/css/tailwind.css
+
+# Logs
 *.log
+
+# Lock files
 package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Minified files
 *.min.js
 *.min.css
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Environment
+.env
+.env.*
+!.env.example

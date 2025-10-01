@@ -4,7 +4,10 @@
  */
 
 import dotenv from 'dotenv'
-import { getAllProducts, deleteProduct as softDeleteProduct } from './src/services/productService.js'
+import {
+  getAllProducts,
+  deleteProduct as softDeleteProduct
+} from './src/services/productService.js'
 
 dotenv.config({ path: '.env.local' })
 
@@ -17,11 +20,12 @@ async function cleanupTestProducts() {
     console.log(`🔍 Found ${allProducts.length} total products`)
 
     // Find and delete test products
-    const testProducts = allProducts.filter(product =>
-      product.name.includes('Test Product - FloresYa CRUD Test') ||
-      product.name.includes('API Test Product - FloresYa CRUD Test') ||
-      product.sku.includes('TEST-') ||
-      product.sku.includes('API-TEST-')
+    const testProducts = allProducts.filter(
+      product =>
+        product.name.includes('Test Product - FloresYa CRUD Test') ||
+        product.name.includes('API Test Product - FloresYa CRUD Test') ||
+        product.sku.includes('TEST-') ||
+        product.sku.includes('API-TEST-')
     )
 
     console.log(`🗑️  Found ${testProducts.length} test products to clean up\n`)
@@ -37,7 +41,6 @@ async function cleanupTestProducts() {
     // Verify cleanup
     const remainingProducts = await getAllProducts()
     console.log(`📋 Remaining active products: ${remainingProducts.length}`)
-
   } catch (error) {
     console.error('💥 Cleanup failed:', error)
     throw error

@@ -826,3 +826,4 @@ Cuando hagas cambios automáticos, usa este formato ultra-conciso:
 **"Si está en CLAUDE.md, es ley. Si viola la ley, se ejecuta inmediatamente. Sin preguntas, sin warnings."**
 
 - si soy muy amplio en mi solicitud de una tarea, pregunta para ajustar la tarea y ser mas especifico
+- think more, usa "Chain-of-thought", planifica y piensa detenidamente, soluciona paso a paso

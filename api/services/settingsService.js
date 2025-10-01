@@ -106,14 +106,14 @@ export async function getSettingValue(key) {
 
     // Parse value based on type
     switch (setting.type) {
-    case 'number':
-      return parseFloat(setting.value)
-    case 'boolean':
-      return setting.value === 'true' || setting.value === '1'
-    case 'json':
-      return JSON.parse(setting.value)
-    default:
-      return setting.value
+      case 'number':
+        return parseFloat(setting.value)
+      case 'boolean':
+        return setting.value === 'true' || setting.value === '1'
+      case 'json':
+        return JSON.parse(setting.value)
+      default:
+        return setting.value
     }
   } catch (error) {
     console.error(`getSettingValue(${key}) failed:`, error)
@@ -278,17 +278,17 @@ export async function getSettingsMap(publicOnly = false) {
     for (const setting of settings) {
       // Parse value based on type
       switch (setting.type) {
-      case 'number':
-        map[setting.key] = parseFloat(setting.value)
-        break
-      case 'boolean':
-        map[setting.key] = setting.value === 'true' || setting.value === '1'
-        break
-      case 'json':
-        map[setting.key] = JSON.parse(setting.value)
-        break
-      default:
-        map[setting.key] = setting.value
+        case 'number':
+          map[setting.key] = parseFloat(setting.value)
+          break
+        case 'boolean':
+          map[setting.key] = setting.value === 'true' || setting.value === '1'
+          break
+        case 'json':
+          map[setting.key] = JSON.parse(setting.value)
+          break
+        default:
+          map[setting.key] = setting.value
       }
     }
 
