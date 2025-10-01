@@ -151,9 +151,9 @@
     </section>
 
     <!-- Featured Products Carousel -->
-    <section class="py-16 mb-8 bg-white" role="region" aria-labelledby="carousel-title">
+    <section class="py-12 bg-white" role="region" aria-labelledby="carousel-title">
       <div class="container mx-auto px-4">
-        <div class="text-center mb-12 px-4">
+        <div class="text-center mb-8">
           <h3 id="carousel-title" class="text-2xl lg:text-3xl font-bold text-pink-600 mb-2">
             Nuestras Creaciones Destacadas
           </h3>
@@ -215,23 +215,23 @@
     <main id="main-content">
       <section
         id="productos"
-        class="py-16 mb-8 bg-white"
+        class="py-12 bg-white"
         role="main"
         aria-label="Sección de productos destacados"
       >
         <div class="container mx-auto px-4">
-          <div class="text-center mb-12">
+          <div class="text-center mb-8">
             <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Productos Destacados</h2>
             <p class="text-lg text-gray-600">Nuestras flores más populares y arreglos especiales</p>
           </div>
 
           <!-- Search and Filters -->
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
             <div class="md:col-span-2">
               <div class="relative">
                 <input
                   type="text"
-                  class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                  class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
                   placeholder="Buscar productos..."
                   id="searchInput"
                   aria-label="Buscar productos"
@@ -243,7 +243,7 @@
             </div>
             <div>
               <select
-                class="w-full py-2 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                class="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
                 id="occasionFilter"
                 aria-label="Filtrar por ocasión"
               >
@@ -258,7 +258,7 @@
             </div>
             <div>
               <select
-                class="w-full py-2 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                class="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
                 id="sortFilter"
                 aria-label="Ordenar productos"
               >
@@ -272,7 +272,7 @@
 
           <!-- Products Grid (dynamically loaded) -->
           <div
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
             id="productsContainer"
           >
             <!-- Products will be loaded here by JavaScript -->
@@ -282,7 +282,7 @@
           </div>
 
           <!-- Pagination (dynamically loaded) -->
-          <nav aria-label="Paginación de productos" class="mt-12 mb-8">
+          <nav aria-label="Paginación de productos" class="mt-10 mb-4">
             <div class="flex justify-center items-center space-x-2" id="pagination">
               <!-- Pagination buttons will be loaded here by JavaScript -->
             </div>
@@ -293,8 +293,8 @@
 
     <!-- Features Section -->
     <section class="features-section py-16 bg-gray-50">
-      <div class="container">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 text-center">
           <!-- Feature 1 -->
           <div class="feature-card space-y-4">
             <div class="feature-icon-wrapper">
@@ -342,11 +342,11 @@
     <!-- Special CTA Section -->
     <section class="special-cta-section py-16 bg-gradient-to-br from-primary-600 to-primary-700">
       <div class="container mx-auto px-6">
-        <div class="text-center mb-12 px-4">
+        <div class="text-center mb-12">
           <h2 class="text-3xl font-bold text-white mb-4">¿Buscas algo especial?</h2>
           <p class="text-xl text-pink-100">Descubre nuestros servicios premium y exclusivos</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
           <!-- FloresYa Novias -->
           <a href="#novias" class="block cta-card" aria-label="Conocer más sobre FloresYa Novias">
             <div
@@ -379,10 +379,10 @@
 
     <!-- Footer -->
     <footer class="footer-section bg-gray-900 text-white py-12">
-      <div class="container">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           <!-- Brand -->
-          <div class="space-y-4">
+          <div class="space-y-6">
             <div class="flex items-center space-x-2">
               <i data-lucide="flower" class="h-6 w-6 text-primary-400"></i>
               <span class="text-xl font-bold">FloresYa</span>
@@ -422,9 +422,9 @@
             </div>
           </div>
           <!-- Products -->
-          <div class="space-y-4">
+          <div class="space-y-6">
             <h6 class="font-bold text-lg">Productos</h6>
-            <ul class="space-y-2 text-gray-300">
+            <ul class="space-y-3 text-gray-300">
               <li><a href="#" class="hover:text-white transition-colors">Rosas</a></li>
               <li><a href="#" class="hover:text-white transition-colors">Bouquets</a></li>
               <li><a href="#" class="hover:text-white transition-colors">Plantas</a></li>
@@ -432,9 +432,9 @@
             </ul>
           </div>
           <!-- Occasions -->
-          <div class="space-y-4">
+          <div class="space-y-6">
             <h6 class="font-bold text-lg">Ocasiones</h6>
-            <ul class="space-y-2 text-gray-300">
+            <ul class="space-y-3 text-gray-300">
               <li><a href="#" class="hover:text-white transition-colors">Amor</a></li>
               <li><a href="#" class="hover:text-white transition-colors">Cumpleaños</a></li>
               <li><a href="#" class="hover:text-white transition-colors">Aniversarios</a></li>
@@ -442,9 +442,9 @@
             </ul>
           </div>
           <!-- Contact -->
-          <div class="space-y-4">
+          <div class="space-y-6">
             <h6 class="font-bold text-lg">Contacto</h6>
-            <div class="space-y-2 text-gray-300">
+            <div class="space-y-3 text-gray-300">
               <p class="flex items-center">
                 <i data-lucide="map-pin" class="h-4 w-4 mr-2"></i> Gran Caracas, Venezuela
               </p>
