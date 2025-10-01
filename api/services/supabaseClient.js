@@ -6,14 +6,28 @@
 
 import { createClient } from '@supabase/supabase-js'
 import dotenv from 'dotenv'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
 
-// Load environment variables
-dotenv.config({ path: '.env.local' })
+// Load environment variables only in local development
+const IS_VERCEL = process.env.VERCEL === '1'
+if (!IS_VERCEL) {
+  const __filename = fileURLToPath(import.meta.url)
+  const __dirname = dirname(__filename)
+  dotenv.config({ path: join(__dirname, '../../.env.local') })
+}
 
 const supabaseUrl = process.env.SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseKey) {
+  console.error('Environment variables available:', {
+    SUPABASE_URL: !!process.env.SUPABASE_URL,
+    SUPABASE_SERVICE_ROLE_KEY: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+    SUPABASE_ANON_KEY: !!process.env.SUPABASE_ANON_KEY,
+    VERCEL: process.env.VERCEL,
+    NODE_ENV: process.env.NODE_ENV
+  })
   throw new Error(
     'Missing environment variables: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY'
   )
