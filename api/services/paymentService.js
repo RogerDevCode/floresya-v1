@@ -9,7 +9,8 @@ import { supabase, DB_SCHEMA } from './supabaseClient.js'
 
 const TABLE = DB_SCHEMA.payments.table
 const VALID_STATUSES = DB_SCHEMA.payments.enums.status
-const VALID_TYPES = DB_SCHEMA.payment_methods.enums.type
+// Payment types validation (reserved for future use)
+// const VALID_TYPES = DB_SCHEMA.payment_methods.enums.type
 
 /**
  * Validate payment data

@@ -17,18 +17,11 @@ const __dirname = path.dirname(__filename)
 import {
   getAllProducts,
   getProductById,
-  getProductBySku,
   getProductsWithOccasions,
-  getProductsByOccasion,
   getCarouselProducts
 } from './src/services/productService.js'
 
-import {
-  getAllOrders,
-  getOrderById,
-  getOrdersByUser,
-  getOrderStatusHistory
-} from './src/services/orderService.js'
+import { getAllOrders, getOrdersByUser } from './src/services/orderService.js'
 
 import {
   getAllOccasions as getOccasions,
@@ -188,7 +181,7 @@ async function runTests() {
 
     try {
       // This will likely fail without a real order ID
-      const latestStatus = await getLatestStatus(1)
+      await getLatestStatus(1)
       console.log('  ⚠️  getLatestStatus(): Latest status retrieved successfully')
     } catch (error) {
       console.log(`  ⚠️  getLatestStatus(): ${error.message} (Expected without valid order ID)`)

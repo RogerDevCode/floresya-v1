@@ -337,6 +337,68 @@
 
 /**
  * @swagger
+ * /api/products/{id}/images:
+ *   get:
+ *     tags: [Products]
+ *     summary: Get product images
+ *     description: Public - Returns all images for a product, filtered by size if specified
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *       - name: size
+ *         in: query
+ *         schema:
+ *           type: string
+ *           enum: [thumb, small, medium, large]
+ *         description: Filter images by size
+ *     responses:
+ *       200:
+ *         description: Product images retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/ProductImage'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+
+/**
+ * @swagger
+ * /api/products/{id}/images/primary:
+ *   get:
+ *     tags: [Products]
+ *     summary: Get primary product image
+ *     description: Public - Returns the primary (featured) image for a product (medium size)
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Primary image retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/ProductImage'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+
+/**
+ * @swagger
  * /api/products/{id}/reactivate:
  *   patch:
  *     tags: [Products]

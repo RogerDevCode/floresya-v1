@@ -5,6 +5,7 @@
 
 import express from 'express'
 import * as productController from '../controllers/productController.js'
+import * as productImageController from '../controllers/productImageController.js'
 import { authenticate, authorize } from '../middleware/auth.js'
 import { validate, validateId, validatePagination } from '../middleware/validate.js'
 
@@ -20,6 +21,12 @@ router.get(
   productController.getProductsByOccasion
 )
 router.get('/sku/:sku', productController.getProductBySku)
+
+// Product images routes (MUST be before /:id to avoid conflicts)
+router.get('/:id/images/primary', validateId(), productImageController.getPrimaryImage)
+router.get('/:id/images', validateId(), productImageController.getProductImages)
+
+// Product by ID (must be last parameterized route)
 router.get('/:id', validateId(), productController.getProductById)
 
 // Admin-only routes

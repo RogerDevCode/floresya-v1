@@ -49,7 +49,7 @@ function validateImageData(data, isUpdate = false) {
  */
 export async function getProductImages(productId, filters = {}) {
   try {
-    if (!productId || typeof productId !== 'number') {
+    if (!productId || typeof productId !== 'number' || productId <= 0) {
       throw new Error('Invalid product ID: must be a number')
     }
 
@@ -86,7 +86,7 @@ export async function getProductImages(productId, filters = {}) {
  */
 export async function getPrimaryImage(productId) {
   try {
-    if (!productId || typeof productId !== 'number') {
+    if (!productId || typeof productId !== 'number' || productId <= 0) {
       throw new Error('Invalid product ID: must be a number')
     }
 

@@ -10,7 +10,7 @@ import { AppError } from '../errors/AppError.js'
  * Error handler middleware
  * Must be last middleware in the stack
  */
-export function errorHandler(err, req, res, next) {
+export function errorHandler(err, req, res, _next) {
   let error = err
 
   // Convert non-AppError errors to AppError

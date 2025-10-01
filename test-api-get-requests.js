@@ -4,9 +4,8 @@
  */
 
 import dotenv from 'dotenv'
-import { spawn } from 'child_process'
 import { promisify } from 'util'
-import { writeFile, readFile } from 'fs/promises'
+import { spawn } from 'child_process'
 
 dotenv.config({ path: '.env.local' })
 
@@ -44,7 +43,7 @@ async function testAPIEndpoint(endpoint, description) {
     try {
       jsonData = JSON.parse(response)
       isValidJson = true
-    } catch (e) {
+    } catch (_e) {
       // Response might not be JSON (for HTML pages or errors)
     }
 

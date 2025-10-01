@@ -129,6 +129,25 @@ const options = {
             updated_at: { type: 'string', format: 'date-time' }
           }
         },
+        ProductImage: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer', example: 1 },
+            product_id: { type: 'integer', example: 67 },
+            image_index: { type: 'integer', example: 1 },
+            size: { type: 'string', enum: ['thumb', 'small', 'medium', 'large'], example: 'small' },
+            url: {
+              type: 'string',
+              format: 'uri',
+              example:
+                'https://abc123.supabase.co/storage/v1/object/public/product-images/67_1_small.webp'
+            },
+            file_hash: { type: 'string', example: 'abc123def456...' },
+            mime_type: { type: 'string', example: 'image/webp' },
+            is_primary: { type: 'boolean', example: false },
+            created_at: { type: 'string', format: 'date-time' }
+          }
+        },
         Order: {
           type: 'object',
           properties: {

@@ -44,6 +44,11 @@ export const api = {
     return fetchJSON(`/products?${params}`)
   },
   getProduct: id => fetchJSON(`/products/${id}`),
+  getProductImages: (productId, size = 'small') => {
+    const params = new URLSearchParams({ size })
+    return fetchJSON(`/products/${productId}/images?${params}`)
+  },
+  getProductPrimaryImage: productId => fetchJSON(`/products/${productId}/images/primary`),
 
   // Orders
   createOrder: data => fetchJSON('/orders', { method: 'POST', body: JSON.stringify(data) }),

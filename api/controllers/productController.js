@@ -6,7 +6,6 @@
 
 import * as productService from '../services/productService.js'
 import { asyncHandler } from '../middleware/errorHandler.js'
-import { NotFoundError } from '../errors/AppError.js'
 
 /**
  * GET /api/products

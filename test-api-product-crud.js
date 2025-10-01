@@ -25,8 +25,8 @@ async function runAPIProductCRUDTest() {
   })
 
   // Capture server output
-  server.stdout.on('data', data => {
-    // console.log(`Server: ${data}`);
+  server.stdout.on('data', _data => {
+    // console.log(`Server: ${_data}`);
   })
 
   server.stderr.on('data', data => {
@@ -70,9 +70,7 @@ async function runAPIProductCRUDTest() {
     console.log('  ⚠️  Product creation via API endpoint not implemented yet in the API handler')
 
     // For now, let's just use the service directly to create a product for testing the other operations
-    const { createProductWithOccasions, getAllOccasions } = await import(
-      './src/services/productService.js'
-    )
+    const { createProductWithOccasions } = await import('./src/services/productService.js')
     const { getAllOccasions: getOccasions } = await import('./src/services/occasionService.js')
 
     // Get occasions to link to the test product

@@ -4,6 +4,7 @@
  */
 
 import { createIcons } from './js/lucide-icons.js'
+import { createImageCarousel } from './js/components/imageCarousel.js'
 
 /**
  * Initialize mobile menu toggle
@@ -317,36 +318,41 @@ async function loadProducts(page = 1) {
     // Render products
     productsContainer.innerHTML = result.data
       .map(product => {
-        const imageUrl = product.image_url_small || './images/placeholder-flower.svg'
         const price = product.price_usd || 0
         const description = product.summary || product.description || 'Hermoso arreglo floral'
 
         return `
           <div class="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
-            <div class="relative aspect-square bg-gray-100">
-              <img
-                src="${imageUrl}"
-                alt="${product.name}"
-                class="product-image w-full h-full object-cover"
-                loading="lazy"
-                data-fallback="./images/placeholder-flower.svg"
-              />
+            <div class="relative aspect-square bg-gray-100" data-carousel-container data-product-id="${product.id}">
+              <!-- Carousel will be initialized here -->
             </div>
             <div class="p-4">
               <h3 class="text-lg font-semibold text-gray-900 mb-2">${product.name}</h3>
               <p class="text-gray-600 text-sm mb-3 line-clamp-2">
                 ${description}
               </p>
-              <div class="flex items-center justify-between">
+              <div class="flex items-center justify-between mt-4">
                 <span class="text-2xl font-bold text-pink-600">$${price.toFixed(2)}</span>
-                <button
-                  class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg transition-colors focus:ring-2 focus:ring-pink-500 focus:ring-offset-2"
-                  type="button"
-                  aria-label="Agregar al carrito"
-                  data-product-id="${product.id}"
-                >
-                  <i data-lucide="shopping-cart" class="h-5 w-5"></i>
-                </button>
+                <div class="flex items-center gap-3">
+                  <button
+                    class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2.5 rounded-lg transition-colors focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                    type="button"
+                    aria-label="Vista rápida"
+                    data-product-id="${product.id}"
+                    data-action="quick-view"
+                  >
+                    <i data-lucide="eye" class="h-5 w-5"></i>
+                  </button>
+                  <button
+                    class="bg-pink-600 hover:bg-pink-700 text-white p-2.5 rounded-lg transition-colors focus:ring-2 focus:ring-pink-500 focus:ring-offset-2"
+                    type="button"
+                    aria-label="Agregar al carrito"
+                    data-product-id="${product.id}"
+                    data-action="add-to-cart"
+                  >
+                    <i data-lucide="shopping-cart" class="h-5 w-5"></i>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -354,16 +360,13 @@ async function loadProducts(page = 1) {
       })
       .join('')
 
-    // Image error handling
-    const productImages = productsContainer.querySelectorAll('.product-image')
-    productImages.forEach(img => {
-      img.addEventListener('error', function () {
-        const fallback = this.getAttribute('data-fallback')
-        if (fallback && this.src !== fallback) {
-          console.warn('⚠️ Product image failed to load:', this.src, '→ Using fallback')
-          this.src = fallback
-        }
-      })
+    // Initialize hover-activated carousels for each product card
+    const carouselContainers = productsContainer.querySelectorAll('[data-carousel-container]')
+    carouselContainers.forEach(async container => {
+      const productId = parseInt(container.getAttribute('data-product-id'), 10)
+      if (productId) {
+        await createImageCarousel(container, productId)
+      }
     })
 
     // Reinitialize icons for cart buttons
