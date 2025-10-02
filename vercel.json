@@ -28,12 +28,71 @@
       "dest": "/public/index.html"
     },
     {
-      "src": "/(.*\\.(css|js|png|jpg|jpeg|svg|webp|ico|json))",
+      "src": "/pages/(.*)\\.html$",
+      "headers": {
+        "Content-Type": "text/html; charset=utf-8"
+      },
+      "dest": "/public/pages/$1.html"
+    },
+    {
+      "src": "/pages/(.*)",
+      "dest": "/public/pages/$1"
+    },
+    {
+      "src": "/(.*\\.js)$",
+      "headers": {
+        "Content-Type": "application/javascript; charset=utf-8"
+      },
+      "dest": "/public/$1"
+    },
+    {
+      "src": "/(.*\\.css)$",
+      "headers": {
+        "Content-Type": "text/css; charset=utf-8"
+      },
+      "dest": "/public/$1"
+    },
+    {
+      "src": "/(.*\\.(png|jpg|jpeg|svg|webp|ico))$",
+      "dest": "/public/$1"
+    },
+    {
+      "src": "/(.*\\.json)$",
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "dest": "/public/$1"
+    },
+    {
+      "src": "/(.*\\.html)$",
+      "headers": {
+        "Content-Type": "text/html; charset=utf-8"
+      },
       "dest": "/public/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/public/index.html"
+      "dest": "/public/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*\\.js)$",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/javascript; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/(.*\\.mjs)$",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/javascript; charset=utf-8"
+        }
+      ]
     }
   ],
   "env": {

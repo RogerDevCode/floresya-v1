@@ -3,7 +3,7 @@
  * Loads product details from API and renders UI
  */
 
-import { createIcons } from '../js/lucide-icons.js'
+import { createIcons } from '/js/lucide-icons.js'
 
 /**
  * State
@@ -158,7 +158,7 @@ function renderProductImages(images) {
 
   // Fallback to placeholder if no images
   if (mediumImages.length === 0) {
-    mainImageEl.src = '../images/placeholder-flower.svg'
+    mainImageEl.src = '/images/placeholder-flower.svg'
     mainImageEl.alt = 'Imagen no disponible'
     thumbnailsContainer.innerHTML =
       '<p class="col-span-4 text-center text-gray-500 text-sm">No hay imágenes disponibles</p>'
@@ -172,7 +172,7 @@ function renderProductImages(images) {
   // Image error handler
   mainImageEl.addEventListener('error', function () {
     console.warn('Main image failed to load:', this.src)
-    this.src = '../images/placeholder-flower.svg'
+    this.src = '/images/placeholder-flower.svg'
   })
 
   // Render thumbnails
