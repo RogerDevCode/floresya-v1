@@ -10,81 +10,80 @@
       "use": "@vercel/static"
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "api/server.js"
+      "source": "/api/:path*",
+      "destination": "/api/server.js"
     },
     {
-      "src": "/health",
-      "dest": "api/server.js"
+      "source": "/health",
+      "destination": "/api/server.js"
     },
     {
-      "src": "/api-docs(.*)",
-      "dest": "api/server.js"
+      "source": "/api-docs:path*",
+      "destination": "/api/server.js"
     },
     {
-      "src": "/",
-      "dest": "/public/index.html"
+      "source": "/",
+      "destination": "/public/index.html"
     },
     {
-      "src": "/pages/(.*)\\.html$",
-      "headers": {
-        "Content-Type": "text/html; charset=utf-8"
-      },
-      "dest": "/public/pages/$1.html"
+      "source": "/css/:path*",
+      "destination": "/public/css/:path*"
     },
     {
-      "src": "/pages/(.*)\\.js$",
-      "headers": {
-        "Content-Type": "application/javascript; charset=utf-8"
-      },
-      "dest": "/public/pages/$1.js"
+      "source": "/js/:path*",
+      "destination": "/public/js/:path*"
     },
     {
-      "src": "/pages/(.*)",
-      "dest": "/public/pages/$1"
+      "source": "/images/:path*",
+      "destination": "/public/images/:path*"
     },
     {
-      "src": "/(.*\\.js)$",
-      "headers": {
-        "Content-Type": "application/javascript; charset=utf-8"
-      },
-      "dest": "/public/$1"
+      "source": "/products/:path*",
+      "destination": "/public/products/:path*"
     },
     {
-      "src": "/(.*\\.css)$",
-      "headers": {
-        "Content-Type": "text/css; charset=utf-8"
-      },
-      "dest": "/public/$1"
+      "source": "/pages/:path*",
+      "destination": "/public/pages/:path*"
     },
     {
-      "src": "/(.*\\.(png|jpg|jpeg|svg|webp|ico))$",
-      "dest": "/public/$1"
+      "source": "/:path*.js",
+      "destination": "/public/:path*.js"
     },
     {
-      "src": "/(.*\\.json)$",
-      "headers": {
-        "Content-Type": "application/json; charset=utf-8"
-      },
-      "dest": "/public/$1"
+      "source": "/:path*.css",
+      "destination": "/public/:path*.css"
     },
     {
-      "src": "/(.*\\.html)$",
-      "headers": {
-        "Content-Type": "text/html; charset=utf-8"
-      },
-      "dest": "/public/$1"
+      "source": "/:path*.html",
+      "destination": "/public/:path*.html"
     },
     {
-      "src": "/(.*)",
-      "dest": "/public/$1"
+      "source": "/:path*.(png|jpg|jpeg|svg|webp|ico)",
+      "destination": "/public/:path*.$1"
     }
   ],
   "headers": [
     {
-      "source": "/(.*\\.js)$",
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET,HEAD,PUT,PATCH,POST,DELETE"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "*"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.js$",
       "headers": [
         {
           "key": "Content-Type",
@@ -93,11 +92,29 @@
       ]
     },
     {
-      "source": "/(.*\\.mjs)$",
+      "source": "/(.*)\\.css$",
       "headers": [
         {
           "key": "Content-Type",
-          "value": "application/javascript; charset=utf-8"
+          "value": "text/css; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.html$",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.json$",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
         }
       ]
     }
