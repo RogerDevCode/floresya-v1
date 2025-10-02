@@ -35,6 +35,13 @@
       "dest": "/public/pages/$1.html"
     },
     {
+      "src": "/pages/(.*)\\.js$",
+      "headers": {
+        "Content-Type": "application/javascript; charset=utf-8"
+      },
+      "dest": "/public/pages/$1.js"
+    },
+    {
       "src": "/pages/(.*)",
       "dest": "/public/pages/$1"
     },
