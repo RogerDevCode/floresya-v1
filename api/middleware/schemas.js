@@ -138,13 +138,79 @@ export const productFilterSchema = {
 // ==================== ORDERS ====================
 
 export const orderCreateSchema = {
-  // Required fields
-  user_id: {
+  // Customer information (required for Venezuelan orders)
+  customer_email: {
+    type: 'string',
+    required: true,
+    email: true
+  },
+  customer_name: {
+    type: 'string',
+    required: true,
+    minLength: 2,
+    maxLength: 255
+  },
+  customer_phone: {
+    type: 'string',
+    required: true,
+    pattern: /^\+?[\d\s-()]+$/
+  },
+  // Delivery information
+  delivery_address: {
+    type: 'string',
+    required: true,
+    minLength: 10,
+    maxLength: 500
+  },
+  delivery_city: {
+    type: 'string',
+    required: true,
+    minLength: 2,
+    maxLength: 100
+  },
+  delivery_state: {
+    type: 'string',
+    required: true,
+    minLength: 2,
+    maxLength: 100
+  },
+  delivery_zip: {
+    type: 'string',
+    required: false,
+    maxLength: 20
+  },
+  delivery_notes: {
+    type: 'string',
+    required: false,
+    maxLength: 500
+  },
+  // Order information
+  total_amount_usd: {
     type: 'number',
     required: true,
-    integer: true,
-    min: 1
+    min: 0
   },
+  total_amount_ves: {
+    type: 'number',
+    required: false,
+    min: 0
+  },
+  currency_rate: {
+    type: 'number',
+    required: false,
+    min: 0
+  },
+  status: {
+    type: 'string',
+    required: false,
+    enum: ['pending', 'verified', 'preparing', 'shipped', 'delivered', 'cancelled']
+  },
+  notes: {
+    type: 'string',
+    required: false,
+    maxLength: 1000
+  },
+  // Order items
   items: {
     type: 'array',
     required: true,
@@ -158,29 +224,22 @@ export const orderCreateSchema = {
         if (!item.product_id || typeof item.product_id !== 'number') {
           return `items[${i}].product_id is required and must be a number`
         }
+        if (!item.product_name || typeof item.product_name !== 'string') {
+          return `items[${i}].product_name is required and must be a string`
+        }
+        if (
+          !item.unit_price_usd ||
+          typeof item.unit_price_usd !== 'number' ||
+          item.unit_price_usd < 0
+        ) {
+          return `items[${i}].unit_price_usd must be a non-negative number`
+        }
         if (!item.quantity || typeof item.quantity !== 'number' || item.quantity < 1) {
           return `items[${i}].quantity must be a positive number`
-        }
-        if (!item.price_usd || typeof item.price_usd !== 'number' || item.price_usd < 0) {
-          return `items[${i}].price_usd must be a non-negative number`
         }
       }
       return null
     }
-  },
-  // Optional fields
-  delivery_address: {
-    type: 'string',
-    required: false
-  },
-  delivery_date: {
-    type: 'string',
-    required: false,
-    pattern: /^\d{4}-\d{2}-\d{2}$/ // YYYY-MM-DD
-  },
-  notes: {
-    type: 'string',
-    required: false
   }
 }
 
@@ -381,6 +440,29 @@ export const paymentStatusUpdateSchema = {
   notes: {
     type: 'string',
     required: false
+  }
+}
+
+export const paymentConfirmSchema = {
+  payment_method: {
+    type: 'string',
+    required: true,
+    enum: ['cash', 'mobile_payment', 'bank_transfer', 'zelle', 'crypto']
+  },
+  reference_number: {
+    type: 'string',
+    required: true,
+    minLength: 3,
+    maxLength: 100
+  },
+  payment_details: {
+    type: 'object',
+    required: false
+  },
+  receipt_image_url: {
+    type: 'string',
+    required: false,
+    pattern: /^https?:\/\/.+/
   }
 }
 

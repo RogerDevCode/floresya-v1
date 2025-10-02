@@ -1,132 +1,204 @@
 /**
- * Payment Controller
- * Handles HTTP logic for payment operations
+ * Payment Controller - Venezuelan Payment Methods
+ * Handles payment processing and order creation
  */
 
 import * as paymentService from '../services/paymentService.js'
 import { asyncHandler } from '../middleware/errorHandler.js'
 
 /**
- * GET /api/payments
- * Get all payments with filters
+ * @swagger
+ * /api/payments/methods:
+ *   get:
+ *     tags: [Payments]
+ *     summary: Get available payment methods for Venezuela
+ *     responses:
+ *       200:
+ *         description: Payment methods retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
  */
-export const getAllPayments = asyncHandler(async (req, res) => {
-  const filters = {
-    order_id: req.query.order_id,
-    status: req.query.status,
-    user_id: req.query.user_id,
-    limit: req.query.limit,
-    offset: req.query.offset
-  }
+export const getPaymentMethods = asyncHandler(async (req, res) => {
+  const paymentMethods = await paymentService.getPaymentMethods()
 
-  const payments = await paymentService.getAllPayments(filters)
-
-  res.json({
+  res.status(200).json({
     success: true,
-    data: payments,
-    message: 'Payments retrieved successfully'
-  })
-})
-
-/**
- * GET /api/payments/:id
- * Get payment by ID
- */
-export const getPaymentById = asyncHandler(async (req, res) => {
-  const payment = await paymentService.getPaymentById(req.params.id)
-
-  res.json({
-    success: true,
-    data: payment,
-    message: 'Payment retrieved successfully'
-  })
-})
-
-/**
- * GET /api/payments/order/:orderId
- * Get payments by order
- */
-export const getPaymentsByOrder = asyncHandler(async (req, res) => {
-  const payments = await paymentService.getPaymentsByOrder(req.params.orderId)
-
-  res.json({
-    success: true,
-    data: payments,
-    message: 'Order payments retrieved successfully'
-  })
-})
-
-/**
- * GET /api/payments/user/:userId
- * Get payments by user
- */
-export const getPaymentsByUser = asyncHandler(async (req, res) => {
-  const filters = {
-    status: req.query.status,
-    limit: req.query.limit
-  }
-
-  const payments = await paymentService.getPaymentsByUser(req.params.userId, filters)
-
-  res.json({
-    success: true,
-    data: payments,
-    message: 'User payments retrieved successfully'
-  })
-})
-
-/**
- * GET /api/payments/methods
- * Get active payment methods
- */
-export const getActivePaymentMethods = asyncHandler(async (req, res) => {
-  const methods = await paymentService.getActivePaymentMethods()
-
-  res.json({
-    success: true,
-    data: methods,
+    data: paymentMethods,
     message: 'Payment methods retrieved successfully'
   })
 })
 
 /**
- * POST /api/payments
- * Create new payment
+ * @swagger
+ * /api/orders:
+ *   post:
+ *     tags: [Orders]
+ *     summary: Create new order with customer and payment information
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - customer_email
+ *               - customer_name
+ *               - customer_phone
+ *               - delivery_address
+ *               - delivery_city
+ *               - delivery_state
+ *               - total_amount_usd
+ *               - items
+ *             properties:
+ *               customer_email:
+ *                 type: string
+ *                 format: email
+ *               customer_name:
+ *                 type: string
+ *                 minLength: 2
+ *               customer_phone:
+ *                 type: string
+ *               delivery_address:
+ *                 type: string
+ *                 minLength: 10
+ *               delivery_city:
+ *                 type: string
+ *               delivery_state:
+ *                 type: string
+ *               delivery_zip:
+ *                 type: string
+ *               delivery_notes:
+ *                 type: string
+ *               notes:
+ *                 type: string
+ *               total_amount_usd:
+ *                 type: number
+ *                 minimum: 0
+ *               total_amount_ves:
+ *                 type: number
+ *                 minimum: 0
+ *               currency_rate:
+ *                 type: number
+ *                 minimum: 0
+ *               status:
+ *                 type: string
+ *                 enum: [pending, verified, preparing, shipped, delivered, cancelled]
+ *               items:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - product_id
+ *                     - product_name
+ *                     - unit_price_usd
+ *                     - quantity
+ *                   properties:
+ *                     product_id:
+ *                       type: integer
+ *                     product_name:
+ *                       type: string
+ *                     product_summary:
+ *                       type: string
+ *                     unit_price_usd:
+ *                       type: number
+ *                     unit_price_ves:
+ *                       type: number
+ *                     quantity:
+ *                       type: integer
+ *                       minimum: 1
+ *                     subtotal_usd:
+ *                       type: number
+ *                     subtotal_ves:
+ *                       type: number
+ *     responses:
+ *       201:
+ *         description: Order created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
  */
-export const createPayment = asyncHandler(async (req, res) => {
-  const payment = await paymentService.createPayment(req.body)
+export const createOrder = asyncHandler(async (req, res) => {
+  const orderData = {
+    customer_email: req.body.customer_email,
+    customer_name: req.body.customer_name,
+    customer_phone: req.body.customer_phone,
+    delivery_address: req.body.delivery_address,
+    delivery_city: req.body.delivery_city,
+    delivery_state: req.body.delivery_state,
+    delivery_zip: req.body.delivery_zip,
+    delivery_notes: req.body.delivery_notes,
+    notes: req.body.notes,
+    total_amount_usd: req.body.total_amount_usd,
+    total_amount_ves: req.body.total_amount_ves,
+    currency_rate: req.body.currency_rate,
+    status: req.body.status || 'pending',
+    items: req.body.items
+  }
+
+  const order = await paymentService.createOrderWithItems(orderData)
 
   res.status(201).json({
     success: true,
-    data: payment,
-    message: 'Payment created successfully'
+    data: order,
+    message: 'Order created successfully'
   })
 })
 
 /**
- * PUT /api/payments/:id
- * Update payment
- */
-export const updatePayment = asyncHandler(async (req, res) => {
-  const payment = await paymentService.updatePayment(req.params.id, req.body)
-
-  res.json({
-    success: true,
-    data: payment,
-    message: 'Payment updated successfully'
-  })
-})
-
-/**
- * PATCH /api/payments/:id/confirm
- * Confirm payment
+ * @swagger
+ * /api/payments/{id}/confirm:
+ *   post:
+ *     tags: [Payments]
+ *     summary: Confirm payment for an order
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - payment_method
+ *               - reference_number
+ *             properties:
+ *               payment_method:
+ *                 type: string
+ *                 enum: [cash, mobile_payment, bank_transfer, zelle, crypto]
+ *               reference_number:
+ *                 type: string
+ *               payment_details:
+ *                 type: object
+ *               receipt_image_url:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Payment confirmed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
  */
 export const confirmPayment = asyncHandler(async (req, res) => {
-  const { adminNotes } = req.body
+  const { id } = req.params
+  const paymentData = {
+    payment_method: req.body.payment_method,
+    reference_number: req.body.reference_number,
+    payment_details: req.body.payment_details,
+    receipt_image_url: req.body.receipt_image_url,
+    confirmed_by: req.user?.id
+  }
 
-  const payment = await paymentService.confirmPayment(req.params.id, adminNotes)
+  const payment = await paymentService.confirmPayment(parseInt(id), paymentData)
 
-  res.json({
+  res.status(200).json({
     success: true,
     data: payment,
     message: 'Payment confirmed successfully'
@@ -134,33 +206,83 @@ export const confirmPayment = asyncHandler(async (req, res) => {
 })
 
 /**
- * PATCH /api/payments/:id/fail
- * Mark payment as failed
+ * @swagger
+ * /api/orders/{id}:
+ *   get:
+ *     tags: [Orders]
+ *     summary: Get order by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Order retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
  */
-export const failPayment = asyncHandler(async (req, res) => {
-  const { reason } = req.body
+export const getOrderById = asyncHandler(async (req, res) => {
+  const { id } = req.params
+  const includeInactive = req.user?.role === 'admin' && req.query.includeInactive === 'true'
 
-  const payment = await paymentService.failPayment(req.params.id, reason)
+  const order = await paymentService.getOrderById(parseInt(id), includeInactive)
 
-  res.json({
+  res.status(200).json({
     success: true,
-    data: payment,
-    message: 'Payment marked as failed'
+    data: order,
+    message: 'Order retrieved successfully'
   })
 })
 
 /**
- * PATCH /api/payments/:id/refund
- * Refund payment
+ * @swagger
+ * /api/orders:
+ *   get:
+ *     tags: [Orders]
+ *     summary: Get all orders with filters
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *       - in: query
+ *         name: offset
+ *         schema:
+ *           type: integer
+ *           minimum: 0
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [pending, verified, preparing, shipped, delivered, cancelled]
+ *       - in: query
+ *         name: user_id
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Orders retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
  */
-export const refundPayment = asyncHandler(async (req, res) => {
-  const { isPartial, notes } = req.body
+export const getAllOrders = asyncHandler(async (req, res) => {
+  const { limit, offset, status, user_id } = req.query
+  const includeInactive = req.user?.role === 'admin' && req.query.includeInactive === 'true'
 
-  const payment = await paymentService.refundPayment(req.params.id, isPartial, notes)
+  const filters = { limit, offset, status, user_id }
+  const orders = await paymentService.getAllOrders(filters, includeInactive)
 
-  res.json({
+  res.status(200).json({
     success: true,
-    data: payment,
-    message: 'Payment refunded successfully'
+    data: orders,
+    message: 'Orders retrieved successfully'
   })
 })

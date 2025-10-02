@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Proceso de Pago Seguro - FloresYa" />
+    <title>Proceso de Pago - FloresYa</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/tailwind.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+
+    <!-- Custom styles for gradient background -->
+    <style>
+      body {
+        background: linear-gradient(135deg, #ec4899 0%, #10b981 100%);
+        min-height: 100vh;
+      }
+    </style>
+  </head>
+  <body class="font-sans antialiased">
+    <!-- Navigation (same as index.html) -->
+    <nav class="navbar bg-white/95 backdrop-blur-sm shadow-md" role="navigation">
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+          <!-- Logo -->
+          <a class="flex items-center space-x-2" href="/" aria-label="FloresYa">
+            <img
+              src="../images/logoFloresYa.jpeg"
+              alt="Logo FloresYa"
+              class="h-10 w-10 rounded-full"
+            />
+            <span class="text-xl font-bold text-pink-600">FloresYa</span>
+          </a>
+
+          <!-- Desktop Navigation -->
+          <div class="hidden md:flex items-center space-x-6">
+            <a href="/#inicio" class="text-gray-700 hover:text-pink-600 transition-colors"
+              >Inicio</a
+            >
+            <a href="/#productos" class="text-gray-700 hover:text-pink-600 transition-colors"
+              >Productos</a
+            >
+            <a href="/#ocasiones" class="text-gray-700 hover:text-pink-600 transition-colors"
+              >Ocasiones</a
+            >
+            <a href="/#contacto" class="text-gray-700 hover:text-pink-600 transition-colors"
+              >Contacto</a
+            >
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center space-x-4">
+            <!-- Cart Icon -->
+            <a
+              href="/pages/cart.html"
+              class="relative p-2 text-pink-600 hover:text-pink-700 transition-colors"
+              aria-label="Carrito de compras"
+            >
+              <i data-lucide="shopping-cart" class="h-6 w-6"></i>
+              <span
+                id="cart-count-badge"
+                class="absolute -top-1 -right-1 bg-pink-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold"
+              >
+                0
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Spacer for fixed navbar -->
+    <div class="h-16"></div>
+
+    <!-- Payment Container -->
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+      <!-- Back Button -->
+      <div class="mb-6">
+        <button
+          id="back-button"
+          class="flex items-center space-x-2 text-white/90 hover:text-white transition-colors bg-white/20 hover:bg-white/30 rounded-lg px-4 py-2 backdrop-blur-sm"
+        >
+          <i data-lucide="arrow-left" class="h-5 w-5"></i>
+          <span class="font-medium">Regresar al Carrito</span>
+        </button>
+      </div>
+
+      <!-- Main Content -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Customer Information (Left Side) -->
+        <div class="lg:col-span-1">
+          <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+              <i data-lucide="user" class="h-6 w-6 text-pink-600 mr-3"></i>
+              Información del Cliente
+            </h2>
+
+            <form id="customer-form" class="space-y-6">
+              <!-- Full Name -->
+              <div>
+                <label for="customer-name" class="block text-sm font-semibold text-gray-700 mb-2">
+                  Nombre Completo *
+                </label>
+                <input
+                  type="text"
+                  id="customer-name"
+                  name="customer-name"
+                  required
+                  class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-pink-400 focus:ring-pink-400 transition-colors"
+                  placeholder="Ingrese su nombre completo"
+                />
+                <div class="error-message text-red-500 text-sm mt-1 hidden"></div>
+              </div>
+
+              <!-- Email -->
+              <div>
+                <label for="customer-email" class="block text-sm font-semibold text-gray-700 mb-2">
+                  Correo Electrónico *
+                </label>
+                <input
+                  type="email"
+                  id="customer-email"
+                  name="customer-email"
+                  required
+                  class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-pink-400 focus:ring-pink-400 transition-colors"
+                  placeholder="su.email@ejemplo.com"
+                />
+                <div class="error-message text-red-500 text-sm mt-1 hidden"></div>
+              </div>
+
+              <!-- Phone -->
+              <div>
+                <label for="customer-phone" class="block text-sm font-semibold text-gray-700 mb-2">
+                  Teléfono *
+                </label>
+                <input
+                  type="tel"
+                  id="customer-phone"
+                  name="customer-phone"
+                  required
+                  class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-pink-400 focus:ring-pink-400 transition-colors"
+                  placeholder="+58 414 123 4567"
+                />
+                <div class="error-message text-red-500 text-sm mt-1 hidden"></div>
+              </div>
+
+              <!-- Delivery Address -->
+              <div>
+                <label
+                  for="delivery-address"
+                  class="block text-sm font-semibold text-gray-700 mb-2"
+                >
+                  Dirección de Entrega *
+                </label>
+                <textarea
+                  id="delivery-address"
+                  name="delivery-address"
+                  rows="3"
+                  required
+                  class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-pink-400 focus:ring-pink-400 transition-colors"
+                  placeholder="Calle, número, apartamento, edificio..."
+                ></textarea>
+                <div class="error-message text-red-500 text-sm mt-1 hidden"></div>
+              </div>
+
+              <!-- City, State, ZIP -->
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label for="delivery-city" class="block text-sm font-semibold text-gray-700 mb-2">
+                    Ciudad *
+                  </label>
+                  <input
+                    type="text"
+                    id="delivery-city"
+                    name="delivery-city"
+                    required
+                    class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-pink-400 focus:ring-pink-400 transition-colors"
+                    placeholder="Caracas"
+                  />
+                  <div class="error-message text-red-500 text-sm mt-1 hidden"></div>
+                </div>
+                <div>
+                  <label
+                    for="delivery-state"
+                    class="block text-sm font-semibold text-gray-700 mb-2"
+                  >
+                    Estado *
+                  </label>
+                  <select
+                    id="delivery-state"
+                    name="delivery-state"
+                    required
+                    class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-pink-400 focus:ring-pink-400 transition-colors"
+                  >
+                    <option value="">Seleccionar Estado</option>
+                    <option value="Distrito Capital">Distrito Capital</option>
+                    <option value="Miranda">Miranda</option>
+                    <option value="Carabobo">Carabobo</option>
+                    <option value="Zulia">Zulia</option>
+                    <option value="Táchira">Táchira</option>
+                    <option value="Mérida">Mérida</option>
+                    <option value="Lara">Lara</option>
+                    <option value="Aragua">Aragua</option>
+                    <option value="Bolívar">Bolívar</option>
+                    <option value="Anzoátegui">Anzoátegui</option>
+                    <option value="Nueva Esparta">Nueva Esparta</option>
+                    <option value="Sucre">Sucre</option>
+                    <option value="Monagas">Monagas</option>
+                    <option value="Guárico">Guárico</option>
+                    <option value="Trujillo">Trujillo</option>
+                    <option value="Falcón">Falcón</option>
+                    <option value="Portuguesa">Portuguesa</option>
+                    <option value="Barinas">Barinas</option>
+                    <option value="Mérida">Mérida</option>
+                    <option value="Yaracuy">Yaracuy</option>
+                    <option value="Cojedes">Cojedes</option>
+                    <option value="Apure">Apure</option>
+                    <option value="Amazonas">Amazonas</option>
+                    <option value="Delta Amacuro">Delta Amacuro</option>
+                    <option value="Vargas">Vargas</option>
+                  </select>
+                  <div class="error-message text-red-500 text-sm mt-1 hidden"></div>
+                </div>
+                <div>
+                  <label for="delivery-zip" class="block text-sm font-semibold text-gray-700 mb-2">
+                    Código Postal
+                  </label>
+                  <input
+                    type="text"
+                    id="delivery-zip"
+                    name="delivery-zip"
+                    class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-pink-400 focus:ring-pink-400 transition-colors"
+                    placeholder="1010"
+                  />
+                  <div class="error-message text-red-500 text-sm mt-1 hidden"></div>
+                </div>
+              </div>
+
+              <!-- Delivery References -->
+              <div>
+                <label
+                  for="delivery-references"
+                  class="block text-sm font-semibold text-gray-700 mb-2"
+                >
+                  Referencias de Entrega
+                </label>
+                <textarea
+                  id="delivery-references"
+                  name="delivery-references"
+                  rows="2"
+                  class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-pink-400 focus:ring-pink-400 transition-colors"
+                  placeholder="Punto de referencia, color de la casa, etc."
+                ></textarea>
+                <div class="error-message text-red-500 text-sm mt-1 hidden"></div>
+              </div>
+
+              <!-- Additional Notes -->
+              <div>
+                <label
+                  for="additional-notes"
+                  class="block text-sm font-semibold text-gray-700 mb-2"
+                >
+                  Notas Adicionales
+                </label>
+                <textarea
+                  id="additional-notes"
+                  name="additional-notes"
+                  rows="2"
+                  class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-pink-400 focus:ring-pink-400 transition-colors"
+                  placeholder="Instrucciones especiales, horarios preferidos, etc."
+                ></textarea>
+                <div class="error-message text-red-500 text-sm mt-1 hidden"></div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Payment Methods & Order Summary (Right Side) -->
+        <div class="lg:col-span-1">
+          <!-- Order Summary -->
+          <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-6 mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+              <i data-lucide="shopping-bag" class="h-6 w-6 text-pink-600 mr-3"></i>
+              Resumen del Pedido
+            </h2>
+
+            <!-- Cart Items Summary -->
+            <div id="cart-summary" class="space-y-3 mb-6">
+              <!-- Items will be loaded here -->
+            </div>
+
+            <!-- Delivery Option -->
+            <div class="mb-6">
+              <label class="block text-sm font-semibold text-gray-700 mb-3">
+                Método de Entrega
+              </label>
+              <div class="space-y-3">
+                <label
+                  class="flex items-center p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-pink-400 transition-colors"
+                >
+                  <input
+                    type="radio"
+                    name="delivery"
+                    value="pickup"
+                    class="h-4 w-4 text-pink-600 focus:ring-pink-500"
+                    checked
+                  />
+                  <div class="ml-3 flex-1">
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm font-medium text-gray-900">Recoger en tienda</span>
+                      <span class="text-sm font-bold text-green-600">Gratis</span>
+                    </div>
+                  </div>
+                </label>
+                <label
+                  class="flex items-center p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-pink-400 transition-colors"
+                >
+                  <input
+                    type="radio"
+                    name="delivery"
+                    value="delivery"
+                    class="h-4 w-4 text-pink-600 focus:ring-pink-500"
+                  />
+                  <div class="ml-3 flex-1">
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm font-medium text-gray-900">Envío a domicilio</span>
+                      <span id="delivery-cost-display" class="text-sm font-bold text-gray-900"
+                        >$5.00</span
+                      >
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Price Summary -->
+            <div class="space-y-3 mb-6">
+              <div class="flex justify-between text-gray-700">
+                <span>Subtotal (<span id="total-items">0</span> productos)</span>
+                <span id="subtotal">$0.00</span>
+              </div>
+              <div class="flex justify-between text-gray-700">
+                <span>Envío</span>
+                <span id="shipping-cost">$0.00</span>
+              </div>
+              <div class="h-px bg-gray-300"></div>
+              <div class="flex justify-between text-xl font-bold text-gray-900">
+                <span>Total</span>
+                <span id="total">$0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Methods -->
+          <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+              <i data-lucide="credit-card" class="h-6 w-6 text-pink-600 mr-3"></i>
+              Método de Pago
+            </h2>
+
+            <!-- Cash Payment -->
+            <div class="mb-6">
+              <label
+                class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-pink-400 transition-colors"
+              >
+                <input
+                  type="radio"
+                  name="payment-method"
+                  value="cash"
+                  class="h-4 w-4 text-pink-600 focus:ring-pink-500"
+                  checked
+                />
+                <div class="ml-3 flex-1">
+                  <div class="flex items-center space-x-3">
+                    <i data-lucide="dollar-sign" class="h-6 w-6 text-green-600"></i>
+                    <div>
+                      <span class="text-sm font-medium text-gray-900">Efectivo</span>
+                      <p class="text-xs text-gray-500">Pago en efectivo contra entrega</p>
+                    </div>
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <!-- Pago Móvil -->
+            <div class="mb-6">
+              <label
+                class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-pink-400 transition-colors"
+              >
+                <input
+                  type="radio"
+                  name="payment-method"
+                  value="mobile_payment"
+                  class="h-4 w-4 text-pink-600 focus:ring-pink-500"
+                />
+                <div class="ml-3 flex-1">
+                  <div class="flex items-center space-x-3">
+                    <i data-lucide="smartphone" class="h-6 w-6 text-blue-600"></i>
+                    <div>
+                      <span class="text-sm font-medium text-gray-900">Pago Móvil</span>
+                      <p class="text-xs text-gray-500">Transferencia por número de teléfono</p>
+                    </div>
+                  </div>
+                </div>
+              </label>
+
+              <!-- Pago Móvil Form (Hidden by default) -->
+              <div id="mobile-payment-form" class="hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label for="mobile-phone" class="block text-sm font-medium text-gray-700 mb-2">
+                      Número de Teléfono *
+                    </label>
+                    <input
+                      type="tel"
+                      id="mobile-phone"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-pink-400 focus:ring-pink-400"
+                      placeholder="0414 123 4567"
+                    />
+                  </div>
+                  <div>
+                    <label for="mobile-bank" class="block text-sm font-medium text-gray-700 mb-2">
+                      Banco *
+                    </label>
+                    <select
+                      id="mobile-bank"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-pink-400 focus:ring-pink-400"
+                    >
+                      <option value="">Seleccionar Banco</option>
+                      <option value="Banco de Venezuela">Banco de Venezuela</option>
+                      <option value="Banesco">Banesco</option>
+                      <option value="Provincial">BBVA Provincial</option>
+                      <option value="Mercantil">Mercantil</option>
+                      <option value="BOD">BOD</option>
+                      <option value="Bicentenario">Bicentenario</option>
+                      <option value="Venezolano de Crédito">Venezolano de Crédito</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <p class="text-xs text-gray-600">
+                    <strong>Referencia:</strong>
+                    <span id="mobile-reference" class="font-mono">FY-001234</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bank Transfer -->
+            <div class="mb-6">
+              <label
+                class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-pink-400 transition-colors"
+              >
+                <input
+                  type="radio"
+                  name="payment-method"
+                  value="bank_transfer"
+                  class="h-4 w-4 text-pink-600 focus:ring-pink-500"
+                />
+                <div class="ml-3 flex-1">
+                  <div class="flex items-center space-x-3">
+                    <i data-lucide="building-2" class="h-6 w-6 text-purple-600"></i>
+                    <div>
+                      <span class="text-sm font-medium text-gray-900">Transferencia Bancaria</span>
+                      <p class="text-xs text-gray-500">Transferencia desde cuenta bancaria</p>
+                    </div>
+                  </div>
+                </div>
+              </label>
+
+              <!-- Bank Transfer Form (Hidden by default) -->
+              <div id="bank-transfer-form" class="hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                <div class="space-y-4">
+                  <div>
+                    <label for="bank-name" class="block text-sm font-medium text-gray-700 mb-2">
+                      Banco *
+                    </label>
+                    <select
+                      id="bank-name"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-pink-400 focus:ring-pink-400"
+                    >
+                      <option value="">Seleccionar Banco</option>
+                      <option value="Banco de Venezuela">Banco de Venezuela</option>
+                      <option value="Banesco">Banesco</option>
+                      <option value="Provincial">BBVA Provincial</option>
+                      <option value="Mercantil">Mercantil</option>
+                      <option value="BOD">BOD</option>
+                      <option value="Bicentenario">Bicentenario</option>
+                      <option value="Venezolano de Crédito">Venezolano de Crédito</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label
+                      for="account-number"
+                      class="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                      Número de Cuenta *
+                    </label>
+                    <input
+                      type="text"
+                      id="account-number"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-pink-400 focus:ring-pink-400"
+                      placeholder="0102 1234 5678 9012 3456"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      for="account-holder"
+                      class="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                      Nombre del Titular *
+                    </label>
+                    <input
+                      type="text"
+                      id="account-holder"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-pink-400 focus:ring-pink-400"
+                      placeholder="Nombre completo del titular"
+                    />
+                  </div>
+                  <div>
+                    <p class="text-xs text-gray-600">
+                      <strong>Referencia:</strong>
+                      <span id="transfer-reference" class="font-mono">FY-001234</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Zelle -->
+            <div class="mb-6">
+              <label
+                class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-pink-400 transition-colors"
+              >
+                <input
+                  type="radio"
+                  name="payment-method"
+                  value="zelle"
+                  class="h-4 w-4 text-pink-600 focus:ring-pink-500"
+                />
+                <div class="ml-3 flex-1">
+                  <div class="flex items-center space-x-3">
+                    <i data-lucide="mail" class="h-6 w-6 text-orange-600"></i>
+                    <div>
+                      <span class="text-sm font-medium text-gray-900">Zelle</span>
+                      <p class="text-xs text-gray-500">Pago internacional por email</p>
+                    </div>
+                  </div>
+                </div>
+              </label>
+
+              <!-- Zelle Form (Hidden by default) -->
+              <div id="zelle-form" class="hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <label for="zelle-email" class="block text-sm font-medium text-gray-700 mb-2">
+                    Correo Electrónico (Zelle) *
+                  </label>
+                  <input
+                    type="email"
+                    id="zelle-email"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-pink-400 focus:ring-pink-400"
+                    placeholder="su.email@ejemplo.com"
+                  />
+                </div>
+                <div class="mt-3">
+                  <p class="text-xs text-gray-600">
+                    <strong>Referencia:</strong>
+                    <span id="zelle-reference" class="font-mono">FY-001234</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Crypto -->
+            <div class="mb-6">
+              <label
+                class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-pink-400 transition-colors"
+              >
+                <input
+                  type="radio"
+                  name="payment-method"
+                  value="crypto"
+                  class="h-4 w-4 text-pink-600 focus:ring-pink-500"
+                />
+                <div class="ml-3 flex-1">
+                  <div class="flex items-center space-x-3">
+                    <i data-lucide="bitcoin" class="h-6 w-6 text-yellow-600"></i>
+                    <div>
+                      <span class="text-sm font-medium text-gray-900">Binance Pay</span>
+                      <p class="text-xs text-gray-500">Pago con criptomonedas</p>
+                    </div>
+                  </div>
+                </div>
+              </label>
+
+              <!-- Crypto Form (Hidden by default) -->
+              <div id="crypto-form" class="hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <label for="crypto-address" class="block text-sm font-medium text-gray-700 mb-2">
+                    Dirección de Billetera
+                  </label>
+                  <input
+                    type="text"
+                    id="crypto-address"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-pink-400 focus:ring-pink-400 font-mono text-sm"
+                    placeholder="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+                  />
+                </div>
+                <div class="mt-3">
+                  <p class="text-xs text-gray-600">
+                    <strong>Monto en VES:</strong>
+                    <span id="crypto-amount" class="font-mono">₿ 0.00001234</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Process Payment Button -->
+            <button
+              id="process-payment-button"
+              class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-4 rounded-lg transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <i data-lucide="lock" class="h-5 w-5"></i>
+              <span>Procesar Pago</span>
+            </button>
+
+            <!-- Security Badge -->
+            <div class="mt-4 flex items-center justify-center text-sm text-gray-500">
+              <i data-lucide="shield-check" class="h-4 w-4 mr-2"></i>
+              <span>Pago 100% seguro</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="../js/lucide-icons.js"></script>
+    <script type="module" src="./payment.js"></script>
+  </body>
+</html>

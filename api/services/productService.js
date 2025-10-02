@@ -3,47 +3,86 @@
  * Full CRUD operations with soft-delete (active flag)
  * Uses stored functions for atomic operations
  * Uses indexed columns (sku, active, featured, carousel_order)
+ * ENTERPRISE FAIL-FAST: All errors use custom error classes with metadata
  */
 
 import { supabase, DB_SCHEMA, DB_FUNCTIONS } from './supabaseClient.js'
+import {
+  ValidationError,
+  NotFoundError,
+  DatabaseError,
+  DatabaseConstraintError,
+  InsufficientStockError,
+  BadRequestError
+} from '../errors/AppError.js'
 
 const TABLE = DB_SCHEMA.products.table
 
 /**
- * Validate product data
+ * Validate product data (ENTERPRISE FAIL-FAST)
+ * @throws {ValidationError} With detailed field-level validation errors
  */
 function validateProductData(data, isUpdate = false) {
+  const errors = {}
+
+  // Required fields for creation
   if (!isUpdate) {
-    if (!data.name || typeof data.name !== 'string') {
-      throw new Error('Invalid name: must be a non-empty string')
+    if (!data.name || typeof data.name !== 'string' || data.name.trim() === '') {
+      errors.name = 'Name is required and must be a non-empty string'
     }
     if (!data.price_usd || typeof data.price_usd !== 'number' || data.price_usd <= 0) {
-      throw new Error('Invalid price_usd: must be a positive number')
+      errors.price_usd = 'Price USD is required and must be a positive number'
     }
   }
 
-  if (data.name !== undefined && (typeof data.name !== 'string' || data.name.trim() === '')) {
-    throw new Error('Invalid name: must be a non-empty string')
+  // Optional/update fields
+  if (data.name !== undefined) {
+    if (typeof data.name !== 'string' || data.name.trim() === '') {
+      errors.name = 'Name must be a non-empty string'
+    } else if (data.name.length > 255) {
+      errors.name = 'Name must not exceed 255 characters'
+    }
   }
 
-  if (data.price_usd !== undefined && (typeof data.price_usd !== 'number' || data.price_usd <= 0)) {
-    throw new Error('Invalid price_usd: must be a positive number')
+  if (data.price_usd !== undefined) {
+    if (typeof data.price_usd !== 'number' || data.price_usd <= 0) {
+      errors.price_usd = 'Price USD must be a positive number'
+    }
   }
 
   if (data.price_ves !== undefined && data.price_ves !== null) {
     if (typeof data.price_ves !== 'number' || data.price_ves < 0) {
-      throw new Error('Invalid price_ves: must be a non-negative number')
+      errors.price_ves = 'Price VES must be a non-negative number'
     }
   }
 
-  if (data.stock !== undefined && (typeof data.stock !== 'number' || data.stock < 0)) {
-    throw new Error('Invalid stock: must be a non-negative number')
+  if (data.stock !== undefined) {
+    if (typeof data.stock !== 'number' || data.stock < 0 || !Number.isInteger(data.stock)) {
+      errors.stock = 'Stock must be a non-negative integer'
+    }
   }
 
   if (data.carousel_order !== undefined && data.carousel_order !== null) {
-    if (typeof data.carousel_order !== 'number' || data.carousel_order < 0) {
-      throw new Error('Invalid carousel_order: must be a non-negative number')
+    if (
+      typeof data.carousel_order !== 'number' ||
+      data.carousel_order < 0 ||
+      !Number.isInteger(data.carousel_order)
+    ) {
+      errors.carousel_order = 'Carousel order must be a non-negative integer'
     }
+  }
+
+  if (data.sku !== undefined && data.sku !== null) {
+    if (typeof data.sku !== 'string' || data.sku.trim() === '') {
+      errors.sku = 'SKU must be a non-empty string'
+    } else if (data.sku.length > 50) {
+      errors.sku = 'SKU must not exceed 50 characters'
+    }
+  }
+
+  // Throw if validation errors exist
+  if (Object.keys(errors).length > 0) {
+    throw new ValidationError('Product validation failed', errors)
   }
 }
 
@@ -193,16 +232,25 @@ export async function getProductById(id, includeInactive = false) {
     const { data, error } = await query.single()
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      if (error.code === 'PGRST116') {
+        throw new NotFoundError('Product', id, { includeInactive })
+      }
+      throw new DatabaseError('SELECT', TABLE, error, { productId: id })
     }
+
     if (!data) {
-      throw new Error(`Product ${id} not found`)
+      throw new NotFoundError('Product', id, { includeInactive })
     }
 
     return data
   } catch (error) {
+    // Re-throw AppError instances as-is (fail-fast)
+    if (error.name && error.name.includes('Error')) {
+      throw error
+    }
+    // Wrap unexpected errors
     console.error(`getProductById(${id}) failed:`, error)
-    throw error
+    throw new DatabaseError('SELECT', TABLE, error, { productId: id })
   }
 }
 
@@ -363,20 +411,30 @@ export async function createProduct(productData) {
     const { data, error } = await supabase.from(TABLE).insert(newProduct).select().single()
 
     if (error) {
+      // PostgreSQL unique constraint violation (duplicate SKU)
       if (error.code === '23505') {
-        throw new Error(`Product with SKU ${productData.sku} already exists`)
+        throw new DatabaseConstraintError('unique_sku', TABLE, {
+          sku: productData.sku,
+          message: `Product with SKU ${productData.sku} already exists`
+        })
       }
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('INSERT', TABLE, error, { productData: newProduct })
     }
 
     if (!data) {
-      throw new Error('Failed to create product')
+      throw new DatabaseError('INSERT', TABLE, new Error('No data returned after insert'), {
+        productData: newProduct
+      })
     }
 
     return data
   } catch (error) {
+    // Re-throw AppError instances as-is (fail-fast)
+    if (error.name && error.name.includes('Error')) {
+      throw error
+    }
     console.error('createProduct failed:', error)
-    throw error
+    throw new DatabaseError('INSERT', TABLE, error, { productData })
   }
 }
 
@@ -622,25 +680,31 @@ export async function updateStock(id, quantity) {
 export async function decrementStock(id, quantity) {
   try {
     if (!id || typeof id !== 'number') {
-      throw new Error('Invalid product ID: must be a number')
+      throw new BadRequestError('Invalid product ID: must be a number', { productId: id })
     }
 
     if (typeof quantity !== 'number' || quantity <= 0) {
-      throw new Error('Invalid quantity: must be a positive number')
+      throw new BadRequestError('Invalid quantity: must be a positive number', { quantity })
     }
 
-    // Get current stock
+    // Get current stock (may throw NotFoundError)
     const product = await getProductById(id)
 
+    // ENTERPRISE FAIL-FAST: Insufficient stock = specific business error
     if (product.stock < quantity) {
-      throw new Error(`Insufficient stock: available ${product.stock}, requested ${quantity}`)
+      throw new InsufficientStockError(id, quantity, product.stock)
     }
 
     const newStock = product.stock - quantity
 
     return await updateStock(id, newStock)
   } catch (error) {
+    // Re-throw AppError instances as-is (fail-fast)
+    if (error.name && error.name.includes('Error')) {
+      throw error
+    }
+    // Wrap unexpected errors
     console.error(`decrementStock(${id}) failed:`, error)
-    throw error
+    throw new DatabaseError('UPDATE', TABLE, error, { productId: id, quantity })
   }
 }

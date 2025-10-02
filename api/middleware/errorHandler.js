@@ -1,70 +1,98 @@
 /**
- * Centralized Error Handler Middleware
- * Catches all errors and formats consistent responses
+ * Centralized Error Handler Middleware (ENTERPRISE-GRADE)
+ * - Catches all errors and formats consistent responses
+ * - Uses error.toJSON() for serialization
+ * - Severity-based logging
+ * - Structured error metadata
+ * - Security: Never expose sensitive data in production
  */
 
 import logger from './logger.js'
-import { AppError } from '../errors/AppError.js'
+import { AppError, InternalServerError } from '../errors/AppError.js'
 
 /**
  * Error handler middleware
  * Must be last middleware in the stack
+ * @param {Error} err - Error object
+ * @param {Request} req - Express request
+ * @param {Response} res - Express response
+ * @param {Function} _next - Express next (unused but required by Express)
  */
 export function errorHandler(err, req, res, _next) {
   let error = err
 
-  // Convert non-AppError errors to AppError
+  // Convert non-AppError errors to AppError (fail-fast wrapper)
   if (!(err instanceof AppError)) {
-    const statusCode = err.statusCode || 500
     const message = err.message || 'Internal server error'
-    error = new AppError(message, statusCode, false)
+    error = new InternalServerError(message, {
+      originalError: err.message,
+      originalStatusCode: err.statusCode || 500,
+      stack: err.stack
+    })
     error.stack = err.stack
   }
 
-  // Log error
-  if (error.statusCode >= 500) {
-    logger.error('Server Error', {
-      message: error.message,
-      statusCode: error.statusCode,
-      stack: error.stack,
-      path: req.path,
-      method: req.method
-    })
-  } else {
-    logger.warn('Client Error', {
-      message: error.message,
-      statusCode: error.statusCode,
-      path: req.path,
-      method: req.method
-    })
+  // ENTERPRISE LOGGING: Severity-based with structured metadata
+  const logMetadata = {
+    errorName: error.name,
+    errorCode: error.code,
+    statusCode: error.statusCode,
+    severity: error.severity,
+    path: req.path,
+    method: req.method,
+    userAgent: req.get('user-agent'),
+    ip: req.ip,
+    timestamp: error.timestamp,
+    context: error.context,
+    isOperational: error.isOperational
   }
 
-  // Format error response
-  const response = {
-    success: false,
-    error: error.message,
-    message: error.message
+  // Log based on severity (not just statusCode)
+  switch (error.severity) {
+    case 'critical':
+      logger.error('CRITICAL ERROR', { ...logMetadata, stack: error.stack })
+      // TODO: Send to monitoring service (Sentry, Datadog)
+      break
+    case 'high':
+      logger.error('High Severity Error', { ...logMetadata, stack: error.stack })
+      break
+    case 'medium':
+      logger.warn('Medium Severity Error', logMetadata)
+      break
+    case 'low':
+      logger.info('Low Severity Error', logMetadata)
+      break
+    default:
+      logger.warn('Unknown Severity Error', logMetadata)
   }
 
-  // Add validation details if present
-  if (error.details) {
-    response.details = error.details
-  }
+  // Use error.toJSON() for consistent serialization
+  const isDevelopment = process.env.NODE_ENV === 'development'
+  const response = error.toJSON(isDevelopment)
 
-  // Add stack trace in development
-  if (process.env.NODE_ENV === 'development') {
-    response.stack = error.stack
+  // SECURITY: Never expose stack traces or internal context in production
+  if (!isDevelopment && error.statusCode >= 500) {
+    delete response.details
   }
 
   res.status(error.statusCode).json(response)
 }
 
 /**
- * Handle 404 Not Found
+ * Handle 404 Not Found (ENTERPRISE)
  * Place before errorHandler
  */
 export function notFoundHandler(req, res, next) {
-  const error = new AppError(`Route ${req.originalUrl} not found`, 404)
+  const error = new AppError(`Route ${req.originalUrl} not found`, {
+    statusCode: 404,
+    code: 'ROUTE_NOT_FOUND',
+    context: {
+      path: req.originalUrl,
+      method: req.method
+    },
+    userMessage: 'The requested endpoint does not exist.',
+    severity: 'low'
+  })
   next(error)
 }
 

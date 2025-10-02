@@ -333,15 +333,79 @@ export const getAllProducts = asyncHandler(async (req, res) => {
 })
 ```
 
-### 3. Fail-Fast en Servicios
+### 3. Fail-Fast con Custom Error Classes (ENTERPRISE-GRADE)
 
-Toda función de servicio debe usar try-catch y lanzar errores:
+**FILOSOFÍA**: Los errores son datos valiosos. Lanza errores específicos con metadata rica para debugging y monitoring.
+
+#### Error Class Hierarchy
+
+**Arquitectura:**
+
+```
+api/errors/
+└── AppError.js                    # Base error + 15 specialized error classes
+    ├── HTTP 4xx Errors
+    │   ├── BadRequestError        # 400 - Invalid input
+    │   ├── UnauthorizedError      # 401 - Auth required
+    │   ├── ForbiddenError         # 403 - Access denied
+    │   ├── NotFoundError          # 404 - Resource not found
+    │   ├── ConflictError          # 409 - Resource conflict
+    │   └── ValidationError        # 422 - Validation failed
+    ├── HTTP 5xx Errors
+    │   ├── InternalServerError    # 500 - Programming error
+    │   └── ServiceUnavailableError # 503 - Service down
+    ├── Database Errors (severity: critical)
+    │   ├── DatabaseError          # Generic DB operation error
+    │   ├── DatabaseConnectionError # DB connection failed
+    │   └── DatabaseConstraintError # Unique/FK constraint violation
+    ├── Business Logic Errors
+    │   ├── InsufficientStockError  # Stock validation
+    │   ├── PaymentFailedError      # Payment processing
+    │   ├── OrderNotProcessableError # Order validation
+    │   └── InvalidStateTransitionError # State machine
+    └── External Service Errors
+        ├── ExternalServiceError    # 3rd party API failure
+        └── RateLimitExceededError  # 429 - Too many requests
+```
+
+#### Error Metadata (Structured)
+
+Todas las custom errors incluyen:
 
 ```javascript
+{
+  name: 'DatabaseError',           // Error class name
+  code: 'DATABASE_ERROR',          // Machine-readable code (UPPER_SNAKE_CASE)
+  message: 'Technical message',    // For logs
+  userMessage: 'User-friendly msg', // Safe for frontend
+  statusCode: 500,                 // HTTP status
+  severity: 'critical',            // 'low' | 'medium' | 'high' | 'critical'
+  context: {                       // Additional metadata
+    operation: 'SELECT',
+    table: 'products',
+    productId: 123
+  },
+  timestamp: '2025-10-02T...',     // ISO timestamp
+  isOperational: false,            // true = expected, false = bug
+  stack: '...'                     // Stack trace
+}
+```
+
+#### Ejemplo Correcto (Service Layer)
+
+```javascript
+import {
+  ValidationError,
+  NotFoundError,
+  DatabaseError,
+  InsufficientStockError
+} from '../errors/AppError.js'
+
 export async function getProductById(id, includeInactive = false) {
   try {
+    // Validación de entrada
     if (!id || typeof id !== 'number') {
-      throw new Error('Invalid product ID: must be a number')
+      throw new BadRequestError('Invalid product ID: must be a number', { productId: id })
     }
 
     let query = supabase.from(TABLE).select('*').eq('id', id)
@@ -352,21 +416,148 @@ export async function getProductById(id, includeInactive = false) {
 
     const { data, error } = await query.single()
 
-    if (error) throw new Error(`Database error: ${error.message}`)
-    if (!data) throw new Error(`Product ${id} not found`)
+    // Error específico de DB
+    if (error) {
+      if (error.code === 'PGRST116') {
+        throw new NotFoundError('Product', id, { includeInactive })
+      }
+      throw new DatabaseError('SELECT', TABLE, error, { productId: id })
+    }
+
+    // Data missing (fail-fast)
+    if (!data) {
+      throw new NotFoundError('Product', id, { includeInactive })
+    }
 
     return data
   } catch (error) {
+    // Re-throw AppError instances as-is (fail-fast)
+    if (error.name && error.name.includes('Error')) {
+      throw error
+    }
+    // Wrap unexpected errors
     console.error(`getProductById(${id}) failed:`, error)
-    throw error // Fail-fast: always throw
+    throw new DatabaseError('SELECT', TABLE, error, { productId: id })
   }
+}
+
+// Business logic error example
+export async function decrementStock(id, quantity) {
+  const product = await getProductById(id)
+
+  // ENTERPRISE FAIL-FAST: Specific business error with context
+  if (product.stock < quantity) {
+    throw new InsufficientStockError(id, quantity, product.stock)
+    // Results in:
+    // {
+    //   code: 'INSUFFICIENT_STOCK',
+    //   statusCode: 409,
+    //   context: { productId: 123, requested: 5, available: 2 },
+    //   userMessage: 'Only 2 units available. Please adjust quantity.'
+    // }
+  }
+
+  return await updateStock(id, product.stock - quantity)
 }
 ```
 
-**Ejemplo incorrecto:**
+#### Serialización Automática
+
+Todas las errors tienen `.toJSON()`:
 
 ```javascript
-const products = (await getProducts()) || [] // ❌ NUNCA usar fallbacks silenciosos
+// api/middleware/errorHandler.js
+export function errorHandler(err, req, res, _next) {
+  const isDevelopment = process.env.NODE_ENV === 'development'
+  const response = err.toJSON(isDevelopment)
+
+  // SECURITY: Never expose internals in production
+  if (!isDevelopment && err.statusCode >= 500) {
+    delete response.details
+  }
+
+  res.status(err.statusCode).json(response)
+}
+```
+
+**Respuesta API:**
+
+```json
+{
+  "success": false,
+  "error": "InsufficientStockError",
+  "code": "INSUFFICIENT_STOCK",
+  "message": "Only 2 units available. Please adjust quantity.",
+  "details": {
+    "productId": 123,
+    "requested": 5,
+    "available": 2
+  },
+  "timestamp": "2025-10-02T14:23:45.123Z"
+}
+```
+
+#### Logging por Severity
+
+```javascript
+// Severity-based logging (not just statusCode)
+switch (error.severity) {
+  case 'critical':
+    logger.error('CRITICAL ERROR', { ...metadata, stack })
+    // TODO: Send to Sentry/Datadog
+    break
+  case 'high':
+    logger.error('High Severity', metadata)
+    break
+  case 'medium':
+    logger.warn('Medium Severity', metadata)
+    break
+  case 'low':
+    logger.info('Low Severity', metadata)
+    break
+}
+```
+
+#### Prohibido (ANTI-PATTERNS)
+
+```javascript
+// ❌ NUNCA - Generic errors sin metadata
+throw new Error('Something went wrong')
+
+// ❌ NUNCA - Fallbacks silenciosos
+const products = (await getProducts()) || []
+
+// ❌ NUNCA - Swallow errors
+try {
+  await dangerousOperation()
+} catch (e) {
+  console.log('Error:', e)
+  return [] // ❌ Silent failure
+}
+
+// ❌ NUNCA - Exponer stack traces en producción
+if (process.env.NODE_ENV === 'production') {
+  response.stack = error.stack // ❌ SECURITY RISK
+}
+
+// ✅ CORRECTO - Custom error con contexto
+throw new DatabaseError('INSERT', 'products', error, {
+  sku: productData.sku
+})
+
+// ✅ CORRECTO - Business logic error específico
+throw new InsufficientStockError(productId, requested, available)
+
+// ✅ CORRECTO - Fail-fast sin catch
+const product = await getProductById(id) // Throws NotFoundError if missing
+
+// ✅ CORRECTO - Re-throw AppErrors as-is
+catch (error) {
+  if (error.name && error.name.includes('Error')) {
+    throw error // Preserve error metadata
+  }
+  throw new InternalServerError('Unexpected error', { originalError: error.message })
+}
 ```
 
 ### 4. Respuestas API Estandarizadas
@@ -1217,6 +1408,24 @@ Cuando hagas cambios automáticos, usa este formato ultra-conciso:
 ✓ Added: includeInactive parameter to userService.getAllUsers()
 ✓ Refactored: Removed || fallback from orderService.js:78
 ✓ Cleaned: Removed 3 unused imports
+```
+
+### AFI (Awaiting Further Instruction)
+
+**Definición**: "AFI" significa "Awaiting Further Instruction" (Esperando Más Instrucciones).
+
+**Uso**: Cuando el usuario dice "AFI", significa:
+
+- ✅ Has completado la tarea actual correctamente
+- ✅ Usuario está listo para siguiente paso
+- ✅ Espera instrucciones para próxima tarea
+- ❌ NO significa "hazlo automáticamente" - espera instrucción explícita
+
+**Respuesta correcta a AFI**:
+
+```
+✅ Entendido. Tarea actual completada.
+🎯 Esperando instrucciones para próximo paso.
 ```
 
 ### Prohibido en Modo YOLO
