@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Panel de Administración - FloresYa" />
+    <title>Panel de Administración - FloresYa</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/tailwind.css" />
+    <link rel="stylesheet" href="admin.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+
+    <!-- Custom styles for admin panel -->
+    <style>
+      :root {
+        --sidebar-width: 260px;
+        --navbar-height: 64px;
+      }
+
+      body {
+        background-color: #f8fafc;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .sidebar {
+        width: var(--sidebar-width);
+        min-height: calc(100vh - var(--navbar-height));
+        position: fixed;
+        left: 0;
+        top: var(--navbar-height);
+        z-index: 90;
+        background: linear-gradient(to bottom, #ec4899, #db2777);
+        transition: all 0.3s ease;
+      }
+
+      .sidebar.collapsed {
+        width: 80px;
+      }
+
+      .main-content {
+        margin-left: var(--sidebar-width);
+        min-height: calc(100vh - var(--navbar-height));
+        transition: margin-left 0.3s ease;
+      }
+
+      .sidebar.collapsed ~ .main-content {
+        margin-left: 80px;
+      }
+
+      .admin-card {
+        box-shadow:
+          0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .admin-card:hover {
+        transform: translateY(-2px);
+        box-shadow:
+          0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+
+      .sidebar-menu-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        color: white;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        margin-bottom: 0.25rem;
+      }
+
+      .sidebar-menu-item:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+      }
+
+      .sidebar-menu-item.active {
+        background-color: rgba(255, 255, 255, 0.25);
+      }
+
+      .menu-text {
+        transition: opacity 0.3s ease;
+      }
+
+      .sidebar.collapsed .menu-text {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+      }
+
+      .dashboard-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .stat-card {
+        background: white;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      .stat-icon {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+      }
+
+      .stat-title {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-bottom: 0.25rem;
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1f2937;
+      }
+
+      .chart-container {
+        background: white;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .recent-orders-table {
+        background: white;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      .table-header {
+        background-color: #f9fafb;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        padding: 1rem 1.5rem;
+      }
+
+      .table-row {
+        border-bottom: 1px solid #e5e7eb;
+        padding: 1rem 1.5rem;
+      }
+
+      .table-row:last-child {
+        border-bottom: none;
+      }
+
+      .table-cell {
+        padding: 0.75rem 0;
+      }
+    </style>
+  </head>
+  <body class="font-sans antialiased">
+    <!-- Navbar -->
+    <nav
+      class="navbar bg-white/95 backdrop-blur-sm shadow-md fixed top-0 left-0 right-0 z-50"
+      role="navigation"
+    >
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+          <!-- Sidebar Toggle -->
+          <button
+            id="sidebar-toggle"
+            class="p-2 rounded-lg text-gray-600 hover:text-pink-600 hover:bg-gray-100 transition-colors"
+          >
+            <i data-lucide="menu" class="h-6 w-6"></i>
+          </button>
+
+          <!-- Logo -->
+          <div class="flex items-center space-x-2">
+            <img
+              src="../images/logoFloresYa.jpeg"
+              alt="Logo FloresYa Admin"
+              class="h-10 w-10 rounded-full"
+            />
+            <span class="text-xl font-bold text-pink-600 hidden md:block">FloresYa Admin</span>
+          </div>
+
+          <!-- User Info -->
+          <div class="flex items-center space-x-4">
+            <span class="text-sm text-gray-600 hidden md:block" id="admin-user-display">Admin</span>
+            <button
+              id="logout-btn"
+              class="text-gray-600 hover:text-pink-600 transition-colors"
+              title="Cerrar sesión"
+            >
+              <i data-lucide="log-out" class="h-6 w-6"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+      <div class="p-4">
+        <div class="space-y-1">
+          <!-- Dashboard -->
+          <a href="#" class="sidebar-menu-item active" data-view="dashboard">
+            <i data-lucide="grid" class="h-5 w-5 mr-3"></i>
+            <span class="menu-text">Dashboard</span>
+          </a>
+
+          <!-- Products -->
+          <a href="#" class="sidebar-menu-item" data-view="products">
+            <i data-lucide="flower" class="h-5 w-5 mr-3"></i>
+            <span class="menu-text">Productos</span>
+          </a>
+
+          <!-- Orders -->
+          <a href="#" class="sidebar-menu-item" data-view="orders">
+            <i data-lucide="shopping-cart" class="h-5 w-5 mr-3"></i>
+            <span class="menu-text">Pedidos</span>
+          </a>
+
+          <!-- Users -->
+          <a href="#" class="sidebar-menu-item" data-view="users">
+            <i data-lucide="users" class="h-5 w-5 mr-3"></i>
+            <span class="menu-text">Usuarios</span>
+          </a>
+
+          <!-- Ocasiones -->
+          <a href="#" class="sidebar-menu-item" data-view="occasions">
+            <i data-lucide="calendar" class="h-5 w-5 mr-3"></i>
+            <span class="menu-text">Ocasiones</span>
+          </a>
+
+          <!-- Contact Editor -->
+          <a href="#" class="sidebar-menu-item" data-view="contact-editor">
+            <i data-lucide="contact" class="h-5 w-5 mr-3"></i>
+            <span class="menu-text">Editor de Contacto</span>
+          </a>
+
+          <!-- Settings -->
+          <a href="#" class="sidebar-menu-item" data-view="settings">
+            <i data-lucide="settings" class="h-5 w-5 mr-3"></i>
+            <span class="menu-text">Configuración</span>
+          </a>
+        </div>
+
+        <!-- Version Info -->
+        <div class="mt-auto pt-4 border-t border-white/20 text-white/70 text-xs">
+          <p>Version 1.0.0</p>
+          <p>FloresYa Admin</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main id="main-content" class="main-content p-6">
+      <!-- Dashboard View -->
+      <div id="dashboard-view" class="space-y-6">
+        <!-- Welcome Banner -->
+        <div class="bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl p-8 text-white">
+          <h1 class="text-3xl font-bold mb-2">¡Bienvenido al Panel de Administración!</h1>
+          <p class="text-pink-100">Gestiona tu tienda de flores de forma eficiente y sencilla</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="dashboard-stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon bg-pink-100 text-pink-600">
+              <i data-lucide="shopping-cart" class="h-6 w-6"></i>
+            </div>
+            <div class="stat-title">Total Productos</div>
+            <div class="stat-value">24</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon bg-green-100 text-green-600">
+              <i data-lucide="package" class="h-6 w-6"></i>
+            </div>
+            <div class="stat-title">Stock Total</div>
+            <div class="stat-value">1,240</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon bg-blue-100 text-blue-600">
+              <i data-lucide="shopping-bag" class="h-6 w-6"></i>
+            </div>
+            <div class="stat-title">Ventas Hoy</div>
+            <div class="stat-value">$1,240</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon bg-yellow-100 text-yellow-600">
+              <i data-lucide="user" class="h-6 w-6"></i>
+            </div>
+            <div class="stat-title">Nuevos Clientes</div>
+            <div class="stat-value">12</div>
+          </div>
+        </div>
+
+        <!-- Charts and Recent Orders Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Sales Chart -->
+          <div class="chart-container">
+            <div class="text-center">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">Ventas Mensuales</h3>
+              <div class="text-gray-500">Gráfico de ventas (simulado)</div>
+              <div class="mt-4 text-sm text-gray-600">Aquí se mostraría un gráfico de ventas</div>
+            </div>
+          </div>
+
+          <!-- Recent Orders -->
+          <div class="recent-orders-table">
+            <div class="table-header">Pedidos Recientes</div>
+            <div>
+              <div class="table-row grid grid-cols-4">
+                <div class="table-cell text-sm font-medium text-gray-900">Pedido</div>
+                <div class="table-cell text-sm text-gray-500">Cliente</div>
+                <div class="table-cell text-sm text-gray-500">Total</div>
+                <div class="table-cell text-sm text-gray-500">Estado</div>
+              </div>
+              <div class="table-row grid grid-cols-4">
+                <div class="table-cell text-sm font-medium">#1234</div>
+                <div class="table-cell text-sm text-gray-900">Juan Pérez</div>
+                <div class="table-cell text-sm text-gray-900">$45.99</div>
+                <div class="table-cell text-sm text-green-600">Completado</div>
+              </div>
+              <div class="table-row grid grid-cols-4">
+                <div class="table-cell text-sm font-medium">#1233</div>
+                <div class="table-cell text-sm text-gray-900">María González</div>
+                <div class="table-cell text-sm text-gray-900">$32.50</div>
+                <div class="table-cell text-sm text-yellow-600">Pendiente</div>
+              </div>
+              <div class="table-row grid grid-cols-4">
+                <div class="table-cell text-sm font-medium">#1232</div>
+                <div class="table-cell text-sm text-gray-900">Carlos Rodríguez</div>
+                <div class="table-cell text-sm text-gray-900">$65.00</div>
+                <div class="table-cell text-sm text-blue-600">Procesando</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top Products -->
+        <div class="bg-white rounded-xl shadow-md p-6 admin-card">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Productos Más Vendidos</h2>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+              <div>
+                <p class="font-medium">Ramo Tropical Vibrante</p>
+                <p class="text-sm text-gray-500">ID: 67</p>
+              </div>
+              <p class="font-bold text-gray-900">24 ventas</p>
+            </div>
+            <div class="flex justify-between items-center border-b pb-3">
+              <div>
+                <p class="font-medium">Rosas Rojas Clásicas</p>
+                <p class="text-sm text-gray-500">ID: 68</p>
+              </div>
+              <p class="font-bold text-gray-900">18 ventas</p>
+            </div>
+            <div class="flex justify-between items-center border-b pb-3">
+              <div>
+                <p class="font-medium">Orquídeas Elegantes</p>
+                <p class="text-sm text-gray-500">ID: 69</p>
+              </div>
+              <p class="font-bold text-gray-900">15 ventas</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products View -->
+      <div id="products-view" class="hidden">
+        <div class="flex justify-between items-center mb-6">
+          <h1 class="text-3xl font-bold text-gray-900">Gestión de Productos</h1>
+          <button
+            id="new-product-btn"
+            class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded-lg flex items-center space-x-2"
+          >
+            <i data-lucide="plus" class="h-5 w-5"></i>
+            <span>Nuevo Producto</span>
+          </button>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6 admin-card">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Buscar</label>
+              <input
+                type="text"
+                id="search-input"
+                placeholder="Buscar productos..."
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
+              <select
+                id="category-filter"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
+              >
+                <option value="">Todas</option>
+                <option value="flores">Flores</option>
+                <option value="ramos">Ramos</option>
+                <option value="plantas">Plantas</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Estado</label>
+              <select
+                id="status-filter"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
+              >
+                <option value="">Todos</option>
+                <option value="active">Activo</option>
+                <option value="inactive">Inactivo</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+              <button
+                id="search-btn"
+                class="w-full bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg"
+              >
+                Filtrar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Products List -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden admin-card">
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Producto
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Precio
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Stock
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Estado
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Acciones
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="products-list" class="bg-white divide-y divide-gray-200">
+                <!-- Products will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders View -->
+      <div id="orders-view" class="hidden">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Gestión de Pedidos</h1>
+        <div class="bg-white rounded-xl shadow-md p-6 admin-card">
+          <p class="text-gray-600">Sección de gestión de pedidos en desarrollo</p>
+          <p class="text-gray-500 mt-2">
+            Aquí podrás ver, procesar y gestionar los pedidos de tus clientes
+          </p>
+        </div>
+      </div>
+
+      <!-- Users View -->
+      <div id="users-view" class="hidden">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Gestión de Usuarios</h1>
+        <div class="bg-white rounded-xl shadow-md p-6 admin-card">
+          <p class="text-gray-600">Sección de gestión de usuarios en desarrollo</p>
+          <p class="text-gray-500 mt-2">
+            Aquí podrás administrar la información de usuarios y clientes
+          </p>
+        </div>
+      </div>
+
+      <!-- Ocasiones View -->
+      <div id="occasions-view" class="hidden">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Gestión de Ocasiones</h1>
+        <div class="bg-white rounded-xl shadow-md p-6 admin-card">
+          <p class="text-gray-600">Sección de gestión de ocasiones en desarrollo</p>
+          <p class="text-gray-500 mt-2">Aquí podrás administrar las ocasiones para los productos</p>
+        </div>
+      </div>
+
+      <!-- Contact Editor View -->
+      <div id="contact-editor-view" class="hidden">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Editor de Contacto</h1>
+        <div class="bg-white rounded-xl shadow-md p-6 admin-card">
+          <p class="text-gray-600">Editor de la página de contacto</p>
+          <p class="text-gray-500 mt-2">Puedes gestionar la información de contacto de la tienda</p>
+          <button
+            id="open-contact-editor-btn"
+            class="mt-4 bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded-lg"
+          >
+            Abrir Editor de Contacto
+          </button>
+        </div>
+      </div>
+
+      <!-- Settings View -->
+      <div id="settings-view" class="hidden">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Configuración General</h1>
+        <div class="bg-white rounded-xl shadow-md p-6 admin-card">
+          <p class="text-gray-600">Sección de configuración en desarrollo</p>
+          <p class="text-gray-500 mt-2">
+            Aquí podrás administrar la configuración general del sitio
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Scripts -->
+    <script type="module" src="../js/lucide-icons.js"></script>
+    <script type="module" src="admin.js"></script>
+  </body>
+</html>
