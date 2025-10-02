@@ -3,9 +3,8 @@
  * Testing CRUD operations for product images
  */
 
-import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import * as productImageService from '../productImageService.js'
-import { supabase } from '../supabaseClient.js'
 
 // Skip service tests for now (requires integration testing with real DB or complex mocking)
 // These tests should be integration tests, not unit tests

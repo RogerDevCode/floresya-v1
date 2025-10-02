@@ -1,6 +1,7 @@
 /**
  * Product Routes
  * Defines routes for product operations
+ * Uses centralized validation schemas from api/middleware/schemas.js
  */
 
 import express from 'express'
@@ -8,6 +9,7 @@ import * as productController from '../controllers/productController.js'
 import * as productImageController from '../controllers/productImageController.js'
 import { authenticate, authorize } from '../middleware/auth.js'
 import { validate, validateId, validatePagination } from '../middleware/validate.js'
+import { productCreateSchema, productUpdateSchema } from '../middleware/schemas.js'
 
 const router = express.Router()
 
@@ -34,15 +36,7 @@ router.post(
   '/',
   authenticate,
   authorize('admin'),
-  validate({
-    name: { type: 'string', required: true, minLength: 2, maxLength: 255 },
-    price_usd: { type: 'number', required: true, min: 0 },
-    price_ves: { type: 'number', min: 0 },
-    stock: { type: 'number', integer: true, min: 0 },
-    sku: { type: 'string', maxLength: 50 },
-    featured: { type: 'boolean' },
-    carousel_order: { type: 'number', integer: true, min: 0 }
-  }),
+  validate(productCreateSchema), // From schemas.js - matches OpenAPI exactly
   productController.createProduct
 )
 
@@ -57,7 +51,14 @@ router.post(
   productController.createProductWithOccasions
 )
 
-router.put('/:id', authenticate, authorize('admin'), validateId(), productController.updateProduct)
+router.put(
+  '/:id',
+  authenticate,
+  authorize('admin'),
+  validateId(),
+  validate(productUpdateSchema), // From schemas.js - matches OpenAPI exactly
+  productController.updateProduct
+)
 
 router.patch(
   '/:id/carousel-order',

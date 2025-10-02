@@ -40,15 +40,16 @@ floresya-v1/
 │   ├── config/                       # Configuration files
 │   │   └── swagger.js                # OpenAPI 3.1 specification (swagger-jsdoc)
 │   │
-│   ├── controllers/                  # HTTP Controllers (HTTP Layer)
+│   ├── controllers/                  # HTTP Controllers (HTTP Layer) - 7 controllers
 │   │   ├── occasionController.js     # Occasions CRUD endpoints
 │   │   ├── orderController.js        # Orders CRUD + status management
 │   │   ├── paymentController.js      # Payments CRUD
 │   │   ├── productController.js      # Products CRUD + carousel
+│   │   ├── productImageController.js # Product images CRUD (NEW)
 │   │   ├── settingsController.js     # Settings CRUD (key-value store)
 │   │   └── userController.js         # Users CRUD + auth
 │   │
-│   ├── services/                     # Business Logic (ONLY layer with DB access)
+│   ├── services/                     # Business Logic (ONLY layer with DB access) - 10 services
 │   │   ├── supabaseClient.js         # Supabase client + DB_SCHEMA + DB_FUNCTIONS (SSOT)
 │   │   ├── authService.js            # Authentication logic (simulated JWT)
 │   │   ├── occasionService.js        # Occasions business logic
@@ -56,24 +57,26 @@ floresya-v1/
 │   │   ├── orderStatusService.js     # Order status transitions
 │   │   ├── paymentService.js         # Payments business logic
 │   │   ├── productService.js         # Products business logic
-│   │   ├── productImageService.js    # Product images relationship
+│   │   ├── productImageService.js    # Product images relationship (NEW)
 │   │   ├── settingsService.js        # Settings business logic
 │   │   └── userService.js            # Users business logic
 │   │
-│   ├── routes/                       # Express route definitions
+│   ├── routes/                       # Express route definitions - 7 routes
 │   │   ├── occasionRoutes.js         # /api/occasions
 │   │   ├── orderRoutes.js            # /api/orders
 │   │   ├── paymentRoutes.js          # /api/payments
-│   │   ├── productRoutes.js          # /api/products
+│   │   ├── productRoutes.js          # /api/products + /api/products/:id/images
+│   │   ├── productImageRoutes.js     # Product images routes (standalone, NEW)
 │   │   ├── settingsRoutes.js         # /api/settings
 │   │   └── userRoutes.js             # /api/users
 │   │
-│   ├── middleware/                   # Express middleware
+│   ├── middleware/                   # Express middleware - 6 files
 │   │   ├── auth.js                   # Authentication & authorization (simulated JWT)
-│   │   ├── errorHandler.js           # Global error handler
+│   │   ├── errorHandler.js           # Global error handler + asyncHandler
 │   │   ├── logger.js                 # Winston logger (info, warn, error)
+│   │   ├── schemas.js                # Validation schemas (SSOT, matches OpenAPI) (NEW)
 │   │   ├── security.js               # Helmet, CORS, Rate Limiting, XSS, Sanitization
-│   │   └── validate.js               # Request validation helpers
+│   │   └── validate.js               # Request validation helpers (validate, validateId, validatePagination)
 │   │
 │   ├── errors/                       # Custom error classes
 │   │   └── AppError.js               # BadRequestError, NotFoundError, UnauthorizedError, etc.
@@ -85,11 +88,13 @@ floresya-v1/
 │   ├── index.html                    # Landing page (NO inline JS/CSS)
 │   ├── index.js                      # Index page logic (ES6 module, paired with index.html)
 │   │
-│   ├── pages/                        # Future HTML pages + JS modules
-│   │   ├── productos.html            # Products page
-│   │   ├── productos.js              # Products page logic
-│   │   ├── checkout.html             # Checkout page
-│   │   └── checkout.js               # Checkout page logic
+│   ├── pages/                        # HTML pages + JS modules
+│   │   ├── product-detail.html       # Product detail page (IMPLEMENTED)
+│   │   ├── product-detail.js         # Product detail page logic (IMPLEMENTED)
+│   │   ├── productos.html            # Products page (TODO)
+│   │   ├── productos.js              # Products page logic (TODO)
+│   │   ├── checkout.html             # Checkout page (TODO)
+│   │   └── checkout.js               # Checkout page logic (TODO)
 │   │
 │   ├── js/                           # JavaScript modules
 │   │   ├── shared/                   # SSOT - Shared code
@@ -97,9 +102,10 @@ floresya-v1/
 │   │   │   ├── validators.js         # Input validators
 │   │   │   └── dom.js                # DOM helpers
 │   │   ├── components/               # Reusable UI components
-│   │   │   ├── modal.js
-│   │   │   ├── toast.js
-│   │   │   └── form.js
+│   │   │   ├── imageCarousel.js      # Product image carousel (IMPLEMENTED)
+│   │   │   ├── modal.js              # Modal component (TODO)
+│   │   │   ├── toast.js              # Toast notifications (TODO)
+│   │   │   └── form.js               # Form component (TODO)
 │   │   └── lucide-icons.js           # Icon loader (CSP-compatible)
 │   │
 │   ├── css/
@@ -140,13 +146,38 @@ floresya-v1/
 
 **Subdirectorios clave:**
 
-- `controllers/`: Manejan HTTP requests/responses, validan inputs, llaman servicios
-- `services/`: Contienen toda la lógica de negocio, **única capa con acceso a Supabase**
-- `routes/`: Definen endpoints REST y aplican middleware
-- `middleware/`: Autenticación, logging, seguridad, validación
+- `controllers/` (7 files): Manejan HTTP requests/responses, llaman servicios
+  - productController, productImageController, orderController, userController, etc.
+  - Usan `asyncHandler` para manejo de errores
+  - Retornan respuestas estandarizadas: `{ success, data, message }`
+
+- `services/` (10 files): Contienen toda la lógica de negocio, **única capa con acceso a Supabase**
+  - supabaseClient.js: SSOT para DB_SCHEMA + DB_FUNCTIONS
+  - productService, orderService, userService, authService, etc.
+  - Implementan soft-delete pattern con `includeInactive` param
+  - Fail-fast: siempre lanzan errores, nunca retornan valores por defecto
+
+- `routes/` (7 files): Definen endpoints REST y aplican middleware
+  - Usan validation schemas centralizados desde `middleware/schemas.js`
+  - Aplican `authenticate` y `authorize('admin')` para rutas protegidas
+  - Usan `validateId()` y `validatePagination()` helpers
+
+- `middleware/` (6 files): Autenticación, logging, seguridad, validación
+  - `auth.js`: JWT simulation, authenticate, authorize(role)
+  - `schemas.js`: 11 validation schemas (SSOT, matches OpenAPI 3.1)
+  - `validate.js`: Generic validator, validateId, validatePagination
+  - `security.js`: Helmet, CORS, Rate Limiting, XSS, Sanitization
+  - `logger.js`: Winston logger (info, warn, error)
+  - `errorHandler.js`: Global error handler + asyncHandler wrapper
+
 - `errors/`: Custom error classes (extends Error)
+  - BadRequestError, NotFoundError, UnauthorizedError, ForbiddenError, etc.
+
 - `docs/`: OpenAPI 3.1 annotations (JSDoc)
+  - openapi-annotations.js: 60+ endpoint annotations
+
 - `config/`: Configuraciones (Swagger, DB)
+  - swagger.js: swagger-jsdoc configuration
 
 #### `public/` - Frontend Estático
 
@@ -154,16 +185,39 @@ floresya-v1/
 
 **Contenido:**
 
-- `index.html`: Landing page principal
+- `index.html` + `index.js`: Landing page principal (ES6 module)
+- `pages/`: Páginas HTML + JS modules
+  - `product-detail.html` + `product-detail.js` (IMPLEMENTED)
+  - `productos.html` + `productos.js` (TODO)
+  - `checkout.html` + `checkout.js` (TODO)
+- `js/shared/`: SSOT - Código compartido
+  - `api.js`: API client (fetchJSON, métodos HTTP)
+  - `validators.js`: Validaciones reutilizables
+  - `dom.js`: Helpers DOM (showError, showLoading, etc.)
+- `js/components/`: Componentes UI reutilizables
+  - `imageCarousel.js`: Product image carousel (IMPLEMENTED)
+  - `modal.js`, `toast.js`, `form.js` (TODO)
 - `css/`: Estilos CSS
+  - `input.css`: Tailwind source (usa `@import 'tailwindcss'`)
+  - `tailwind.css`: Compiled CSS (generado, NO editar)
+  - `styles.css`: CSS tradicional custom
 - `images/`: Imágenes estáticas (logo, favicon, hero)
-- `products/`: Imágenes de productos (10 samples)
+- `products/`: Imágenes de productos (10+ samples)
 
 **URL Mapping:**
 
 - `http://localhost:3000/` → `public/index.html`
+- `http://localhost:3000/pages/product-detail.html?id=67` → Product detail page
 - `http://localhost:3000/images/logo.jpeg` → `public/images/logoFloresYa.jpeg`
-- `http://localhost:3000/css/styles.css` → `public/css/styles.css`
+- `http://localhost:3000/css/tailwind.css` → Compiled Tailwind CSS
+- `http://localhost:3000/js/components/imageCarousel.js` → ES6 module
+
+**Reglas estrictas:**
+
+- ❌ NO usar JS o CSS inline en HTML
+- ✅ Todos los scripts como ES6 modules (`type="module"`)
+- ✅ CSP-compatible (`script-src: 'self'`, no `'unsafe-inline'`)
+- ✅ Cada página `.html` tiene su `.js` paired module
 
 #### `database/` - Scripts de BD
 
@@ -367,23 +421,93 @@ Todos los endpoints están documentados en `api/docs/openapi-annotations.js` usa
 
 Acceder a documentación interactiva: `http://localhost:3000/api-docs/`
 
-### 6. Validación Manual Simple
+### 6. Validación Manual Robusta (SSOT)
 
-Sin Zod. Usa validaciones directas en JS:
+**Sin Zod.** Validación manual en JavaScript puro con schemas centralizados.
+
+**Arquitectura:**
+
+```
+api/middleware/
+├── validate.js        # Generic validator + helpers (validateId, validatePagination)
+└── schemas.js         # Validation schemas (SSOT, matches OpenAPI 3.1 exactly)
+```
+
+**schemas.js** contiene 11 schemas que coinciden 100% con OpenAPI:
+
+- `productCreateSchema` - Required: name, price_usd (line 168 OpenAPI)
+- `productUpdateSchema` - All optional (line 234 OpenAPI)
+- `productFilterSchema` - Query params (limit, offset, featured, etc.)
+- `orderCreateSchema` - With custom array validation for items
+- `orderStatusUpdateSchema` - Enum: pending, verified, preparing, etc.
+- `userCreateSchema` - Email validation + phone pattern
+- `userUpdateSchema` - Optional fields with role enum
+- `occasionCreateSchema` - Slug pattern validation (lowercase-hyphen)
+- `settingCreateSchema` - Key pattern (UPPERCASE_SNAKE_CASE)
+- `paymentCreateSchema` - Amount validation
+- `productImageCreateSchema` - Size enum + URL pattern
+
+**Ejemplo de uso en routes:**
 
 ```javascript
-function validateProductData(data, isUpdate = false) {
-  if (!isUpdate) {
-    if (!data.name || typeof data.name !== 'string') {
-      throw new Error('Invalid name: must be a non-empty string')
-    }
-    if (!data.price_usd || typeof data.price_usd !== 'number' || data.price_usd <= 0) {
-      throw new Error('Invalid price_usd: must be a positive number')
-    }
-  }
+import { validate, validateId } from '../middleware/validate.js'
+import { productCreateSchema, productUpdateSchema } from '../middleware/schemas.js'
 
-  if (data.price_usd !== undefined && (typeof data.price_usd !== 'number' || data.price_usd <= 0)) {
-    throw new Error('Invalid price_usd: must be a positive number')
+// Create product with centralized schema
+router.post(
+  '/',
+  authenticate,
+  authorize('admin'),
+  validate(productCreateSchema), // From schemas.js - matches OpenAPI exactly
+  productController.createProduct
+)
+
+// Update product
+router.put(
+  '/:id',
+  authenticate,
+  authorize('admin'),
+  validateId(), // Validates id param is positive integer
+  validate(productUpdateSchema), // From schemas.js
+  productController.updateProduct
+)
+```
+
+**Características de validación:**
+
+- Type checking (string, number, boolean, array, object)
+- String: minLength, maxLength, pattern (RegEx), email
+- Number: min, max, integer
+- Array: minLength, maxLength, items type
+- Enum validation
+- Custom validation functions
+- Required/optional fields
+- Fail-fast on validation errors
+
+**Ejemplo de schema:**
+
+```javascript
+export const productCreateSchema = {
+  name: {
+    type: 'string',
+    required: true,
+    minLength: 2,
+    maxLength: 255
+  },
+  price_usd: {
+    type: 'number',
+    required: true,
+    min: 0
+  },
+  stock: {
+    type: 'number',
+    required: false,
+    integer: true,
+    min: 0
+  },
+  featured: {
+    type: 'boolean',
+    required: false
   }
 }
 ```
@@ -657,6 +781,96 @@ export const DB_FUNCTIONS = {
 
 ---
 
+## API Endpoints (26 rutas)
+
+### Public Endpoints (sin autenticación)
+
+**Products:**
+
+- `GET /api/products` - Lista de productos con filtros (limit, offset, featured, sku, search, sortBy)
+- `GET /api/products/:id` - Producto por ID
+- `GET /api/products/sku/:sku` - Producto por SKU
+- `GET /api/products/carousel` - Productos destacados para carousel
+- `GET /api/products/with-occasions` - Productos con ocasiones (stored function)
+- `GET /api/products/occasion/:occasionId` - Productos por ocasión
+- `GET /api/products/:id/images` - Imágenes de producto (query: size)
+- `GET /api/products/:id/images/primary` - Imagen principal de producto
+
+**Occasions:**
+
+- `GET /api/occasions` - Lista de ocasiones
+- `GET /api/occasions/:id` - Ocasión por ID
+- `GET /api/occasions/slug/:slug` - Ocasión por slug
+
+**Settings:**
+
+- `GET /api/settings/public` - Settings públicos
+
+**Users:**
+
+- `POST /api/users` - Registro de usuario (public)
+
+**Health:**
+
+- `GET /health` - Health check
+
+### Protected Endpoints (requiere autenticación)
+
+**Admin Only:**
+
+**Products (admin):**
+
+- `POST /api/products` - Crear producto
+- `POST /api/products/with-occasions` - Crear producto con ocasiones
+- `PUT /api/products/:id` - Actualizar producto
+- `PATCH /api/products/:id/carousel-order` - Actualizar orden en carousel
+- `PATCH /api/products/:id/stock` - Actualizar stock
+- `DELETE /api/products/:id` - Soft-delete producto
+- `PATCH /api/products/:id/reactivate` - Reactivar producto
+
+**Orders (admin/owner):**
+
+- `GET /api/orders` - Lista de todas las órdenes (admin)
+- `GET /api/orders/:id` - Orden por ID (admin/owner)
+- `GET /api/orders/user/:userId` - Órdenes por usuario (admin/owner)
+- `GET /api/orders/:id/status-history` - Historial de cambios de status
+- `PATCH /api/orders/:id/status` - Actualizar status de orden
+- `PATCH /api/orders/:id/cancel` - Cancelar orden
+
+**Users (admin/owner):**
+
+- `GET /api/users` - Lista de usuarios (admin)
+- `GET /api/users/:id` - Usuario por ID (admin/owner)
+- `PUT /api/users/:id` - Actualizar usuario (admin/owner)
+- `DELETE /api/users/:id` - Soft-delete usuario (admin)
+
+**Occasions (admin):**
+
+- `POST /api/occasions` - Crear ocasión
+- `PUT /api/occasions/:id` - Actualizar ocasión
+- `DELETE /api/occasions/:id` - Soft-delete ocasión
+
+**Settings (admin):**
+
+- `GET /api/settings` - Todos los settings
+- `POST /api/settings` - Crear setting
+- `PUT /api/settings/:id` - Actualizar setting
+- `DELETE /api/settings/:id` - Eliminar setting
+
+**Payments (admin):**
+
+- `GET /api/payments` - Lista de pagos
+- `GET /api/payments/methods` - Métodos de pago disponibles
+- `POST /api/payments/:id/confirm` - Confirmar pago
+
+**Documentación:**
+
+- `GET /api-docs` → Redirect a /api-docs/
+- `GET /api-docs/` → Swagger UI interactivo
+- `GET /api-docs.json` → OpenAPI 3.1 spec JSON
+
+---
+
 ## Despliegue
 
 ### Desarrollo Local
@@ -665,12 +879,12 @@ export const DB_FUNCTIONS = {
 npm run dev  # Inicia servidor en http://localhost:3000
 ```
 
-**Endpoints disponibles:**
+**Endpoints locales:**
 
 - `http://localhost:3000/` → Landing page (index.html)
 - `http://localhost:3000/health` → Health check
 - `http://localhost:3000/api-docs/` → Swagger UI
-- `http://localhost:3000/api/*` → REST API
+- `http://localhost:3000/api/*` → REST API (26 endpoints)
 
 ### Producción (Vercel)
 
@@ -685,16 +899,127 @@ El proyecto está configurado para dual-mode:
 {
   "version": 2,
   "builds": [
-    { "src": "api/server.js", "use": "@vercel/node" },
-    { "src": "public/**", "use": "@vercel/static" }
+    {
+      "src": "api/server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
+    }
   ],
-  "routes": [
-    { "src": "/health", "dest": "api/server.js" },
-    { "src": "/api-docs(.*)", "dest": "api/server.js" },
-    { "src": "/api/(.*)", "dest": "api/server.js" },
-    { "src": "/(.*\\.(css|js|png|jpg|jpeg|svg|webp|ico|json))", "dest": "/public/$1" },
-    { "src": "/(.*)", "dest": "/public/$1" }
-  ]
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api/server.js"
+    },
+    {
+      "source": "/health",
+      "destination": "/api/server.js"
+    },
+    {
+      "source": "/api-docs:path*",
+      "destination": "/api/server.js"
+    },
+    {
+      "source": "/",
+      "destination": "/public/index.html"
+    },
+    {
+      "source": "/css/:path*",
+      "destination": "/public/css/:path*"
+    },
+    {
+      "source": "/js/:path*",
+      "destination": "/public/js/:path*"
+    },
+    {
+      "source": "/images/:path*",
+      "destination": "/public/images/:path*"
+    },
+    {
+      "source": "/products/:path*",
+      "destination": "/public/products/:path*"
+    },
+    {
+      "source": "/pages/:path*",
+      "destination": "/public/pages/:path*"
+    },
+    {
+      "source": "/:path*.js",
+      "destination": "/public/:path*.js"
+    },
+    {
+      "source": "/:path*.css",
+      "destination": "/public/:path*.css"
+    },
+    {
+      "source": "/:path*.html",
+      "destination": "/public/:path*.html"
+    },
+    {
+      "source": "/:path*.(png|jpg|jpeg|svg|webp|ico)",
+      "destination": "/public/:path*.$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET,HEAD,PUT,PATCH,POST,DELETE"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "*"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.js$",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/javascript; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.css$",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/css; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.html$",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.json$",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
 }
 ```
 
@@ -711,30 +1036,121 @@ El proyecto está configurado para dual-mode:
 ```json
 {
   "dependencies": {
-    "@supabase/supabase-js": "^2.47.10",
-    "express": "^5.0.1",
-    "express-rate-limit": "^7.4.0",
-    "helmet": "^8.0.0",
+    "@supabase/supabase-js": "^2.48.0",
     "cors": "^2.8.5",
-    "winston": "^3.17.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "helmet": "^8.0.0",
+    "http-proxy-middleware": "^3.0.5",
+    "lucide": "^0.544.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
-    "dotenv": "^16.4.5"
+    "winston": "^3.17.0",
+    "xss-clean": "^0.1.4"
   },
   "devDependencies": {
+    "@eslint/js": "^9.17.0",
     "@tailwindcss/cli": "^4.1.13",
+    "@vitest/ui": "^3.2.4",
     "autoprefixer": "^10.4.21",
-    "eslint": "^9.18.0",
+    "eslint": "^9.17.0",
+    "globals": "^15.14.0",
+    "happy-dom": "^19.0.2",
     "husky": "^9.1.7",
-    "lint-staged": "^15.2.11",
+    "lint-staged": "^16.2.3",
     "postcss": "^8.5.6",
-    "prettier": "^3.3.3",
-    "tailwindcss": "^4.1.13"
+    "prettier": "^3.6.2",
+    "serve": "^14.2.5",
+    "supertest": "^7.1.4",
+    "tailwindcss": "^4.1.13",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
   }
 }
 ```
 
+**Nuevas dependencias agregadas:**
+
+- `http-proxy-middleware`: Proxy para desarrollo
+- `lucide`: Iconos SVG (CSP-compatible, sin CDN)
+- `xss-clean`: Sanitización XSS
+- `vitest` + `@vitest/ui` + `happy-dom`: Testing framework (reemplaza Jest)
+- `supertest`: Testing de HTTP endpoints
+- `serve`: Static file server para testing
+
 Sin frameworks complejos, sin bundlers, sin TypeScript. Tailwind v4 para estilos CSS.
+
+---
+
+## Testing (Vitest + Happy DOM)
+
+**Framework:** Vitest 3.2.4 (reemplaza Jest, más rápido)
+
+**Estructura de tests:**
+
+```
+api/
+├── controllers/__tests__/
+│   ├── productController.test.js
+│   └── productImageController.test.js
+├── services/__tests__/
+│   └── productImageService.test.js
+public/
+├── js/components/__tests__/
+│   └── imageCarousel.test.js
+└── pages/__tests__/
+    └── product-detail.test.js
+```
+
+**Scripts de testing:**
+
+```bash
+npm test              # Run all tests once
+npm run test:watch    # Watch mode
+npm run test:ui       # Vitest UI (interactive)
+npm run test:coverage # Coverage report
+```
+
+**Configuración:**
+
+- **Vitest:** Fast unit testing, compatible con ESM
+- **Happy DOM:** Lightweight DOM implementation (sin JSDOM)
+- **Supertest:** HTTP endpoint testing
+- **Mocking:** `vi.mock()` para services y fetch
+
+**Ejemplo de test (controller):**
+
+```javascript
+import { describe, it, expect, vi } from 'vitest'
+import request from 'supertest'
+import app from '../../app.js'
+
+// Mock service
+vi.mock('../../services/productService.js', () => ({
+  getProductById: vi.fn((productId, _includeInactive) => {
+    if (productId === 67) {
+      return Promise.resolve({ id: 67, name: 'Test Product' })
+    }
+    throw new Error('Product not found')
+  })
+}))
+
+describe('Product Controller', () => {
+  it('should return product for valid ID', async () => {
+    const response = await request(app).get('/api/products/67').expect(200)
+
+    expect(response.body.success).toBe(true)
+    expect(response.body.data.id).toBe(67)
+  })
+})
+```
+
+**Coverage actual:** Parcial (controllers + components implementados)
+
+**TODO:** Aumentar coverage a 80%+ (services, routes, middleware)
 
 ---
 
@@ -827,3 +1243,5 @@ Cuando hagas cambios automáticos, usa este formato ultra-conciso:
 
 - si soy muy amplio en mi solicitud de una tarea, pregunta para ajustar la tarea y ser mas especifico
 - think more, usa "Chain-of-thought", planifica y piensa detenidamente, soluciona paso a paso
+
+AFI (Awaiting Further Instruction)

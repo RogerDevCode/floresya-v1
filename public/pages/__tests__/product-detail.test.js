@@ -66,11 +66,12 @@ describe('Product Detail Page - API Integration', () => {
     global.fetch.mockResolvedValueOnce({
       ok: true,
       status: 200,
-      json: async () => ({
-        success: true,
-        data: mockProduct,
-        message: 'Product retrieved successfully'
-      })
+      json: () =>
+        Promise.resolve({
+          success: true,
+          data: mockProduct,
+          message: 'Product retrieved successfully'
+        })
     })
 
     const response = await fetch('/api/products/67')
@@ -113,11 +114,12 @@ describe('Product Detail Page - API Integration', () => {
     global.fetch.mockResolvedValueOnce({
       ok: true,
       status: 200,
-      json: async () => ({
-        success: true,
-        data: mockImages,
-        message: 'Images retrieved successfully'
-      })
+      json: () =>
+        Promise.resolve({
+          success: true,
+          data: mockImages,
+          message: 'Images retrieved successfully'
+        })
     })
 
     const response = await fetch('/api/products/67/images')
@@ -135,11 +137,12 @@ describe('Product Detail Page - API Integration', () => {
     global.fetch.mockResolvedValueOnce({
       ok: false,
       status: 404,
-      json: async () => ({
-        success: false,
-        error: 'Product not found',
-        message: 'Product 999 not found'
-      })
+      json: () =>
+        Promise.resolve({
+          success: false,
+          error: 'Product not found',
+          message: 'Product 999 not found'
+        })
     })
 
     const response = await fetch('/api/products/999')
@@ -306,14 +309,12 @@ describe('Product Detail Page - Image Gallery Logic', () => {
 describe('Product Detail Page - Error Handling', () => {
   it('should show error message on invalid product ID', () => {
     const errorMessage = 'Product ID is required in URL (?id=123)'
-    const expectedBehavior = 'showError(errorMessage)'
 
     expect(errorMessage).toContain('Product ID is required')
   })
 
   it('should show error message on product not found', () => {
     const errorMessage = 'Producto no encontrado'
-    const expectedBehavior = 'showError(errorMessage)'
 
     expect(errorMessage).toBe('Producto no encontrado')
   })
@@ -322,10 +323,11 @@ describe('Product Detail Page - Error Handling', () => {
     global.fetch.mockResolvedValueOnce({
       ok: false,
       status: 500,
-      json: async () => ({
-        success: false,
-        error: 'Internal server error'
-      })
+      json: () =>
+        Promise.resolve({
+          success: false,
+          error: 'Internal server error'
+        })
     })
 
     const response = await fetch('/api/products/67')

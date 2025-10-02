@@ -9,7 +9,7 @@ import app from '../../app.js'
 
 // Mock productService
 vi.mock('../../services/productService.js', () => ({
-  getProductById: vi.fn((productId, includeInactive) => {
+  getProductById: vi.fn((productId, _includeInactive) => {
     if (productId === 67) {
       return Promise.resolve({
         id: 67,
@@ -33,7 +33,7 @@ vi.mock('../../services/productService.js', () => ({
     }
     throw new Error('Invalid product ID')
   }),
-  getAllProducts: vi.fn((filters, includeInactive) => {
+  getAllProducts: vi.fn((_filters, _includeInactive) => {
     return Promise.resolve([
       {
         id: 67,

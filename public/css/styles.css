@@ -38,15 +38,7 @@ html {
     'kern' 1,
     'liga' 1,
     'calt' 1;
-  visibility: hidden;
-  opacity: 0;
   background-color: #ffffff;
-}
-
-html.loaded {
-  visibility: visible;
-  opacity: 1;
-  transition: opacity 0.15s ease-in;
 }
 
 body {
@@ -744,6 +736,12 @@ body {
   stroke-width: 2;
   stroke: currentColor;
   fill: none;
+}
+
+/* Ajuste de posición para los iconos de acción en las tarjetas de producto */
+.product-card .flex.items-center.justify-between div:last-child {
+  margin-left: auto; /* Mueve el contenedor de iconos hacia la derecha */
+  padding-left: 1rem; /* Espacio entre el precio y los iconos */
 }
 
 /* Global SVG icon styles */

@@ -39,32 +39,33 @@ describe('imageCarousel', () => {
       // Mock API response with multiple images
       global.fetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
-          success: true,
-          data: [
-            {
-              id: 1,
-              product_id: 67,
-              image_index: 1,
-              url: 'https://example.com/img1.webp',
-              size: 'small'
-            },
-            {
-              id: 2,
-              product_id: 67,
-              image_index: 2,
-              url: 'https://example.com/img2.webp',
-              size: 'small'
-            },
-            {
-              id: 3,
-              product_id: 67,
-              image_index: 3,
-              url: 'https://example.com/img3.webp',
-              size: 'small'
-            }
-          ]
-        })
+        json: () =>
+          Promise.resolve({
+            success: true,
+            data: [
+              {
+                id: 1,
+                product_id: 67,
+                image_index: 1,
+                url: 'https://example.com/img1.webp',
+                size: 'small'
+              },
+              {
+                id: 2,
+                product_id: 67,
+                image_index: 2,
+                url: 'https://example.com/img2.webp',
+                size: 'small'
+              },
+              {
+                id: 3,
+                product_id: 67,
+                image_index: 3,
+                url: 'https://example.com/img3.webp',
+                size: 'small'
+              }
+            ]
+          })
       })
 
       const carousel = await createImageCarousel(container, 67)
@@ -86,18 +87,19 @@ describe('imageCarousel', () => {
       // Mock API response with single image
       global.fetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
-          success: true,
-          data: [
-            {
-              id: 1,
-              product_id: 67,
-              image_index: 1,
-              url: 'https://example.com/img1.webp',
-              size: 'small'
-            }
-          ]
-        })
+        json: () =>
+          Promise.resolve({
+            success: true,
+            data: [
+              {
+                id: 1,
+                product_id: 67,
+                image_index: 1,
+                url: 'https://example.com/img1.webp',
+                size: 'small'
+              }
+            ]
+          })
       })
 
       await createImageCarousel(container, 67)
@@ -112,10 +114,11 @@ describe('imageCarousel', () => {
       // Mock API response with no images
       global.fetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
-          success: true,
-          data: []
-        })
+        json: () =>
+          Promise.resolve({
+            success: true,
+            data: []
+          })
       })
 
       await expect(createImageCarousel(container, 67)).rejects.toThrow('No images found')
@@ -134,14 +137,15 @@ describe('imageCarousel', () => {
       // Mock API response with unsorted images
       global.fetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
-          success: true,
-          data: [
-            { id: 3, image_index: 3, url: 'img3.webp', size: 'small' },
-            { id: 1, image_index: 1, url: 'img1.webp', size: 'small' },
-            { id: 2, image_index: 2, url: 'img2.webp', size: 'small' }
-          ]
-        })
+        json: () =>
+          Promise.resolve({
+            success: true,
+            data: [
+              { id: 3, image_index: 3, url: 'img3.webp', size: 'small' },
+              { id: 1, image_index: 1, url: 'img1.webp', size: 'small' },
+              { id: 2, image_index: 2, url: 'img2.webp', size: 'small' }
+            ]
+          })
       })
 
       await createImageCarousel(container, 67)
@@ -157,10 +161,11 @@ describe('imageCarousel', () => {
     it('should call correct API endpoint with productId and size', async () => {
       global.fetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
-          success: true,
-          data: [{ id: 1, image_index: 1, url: 'img.webp', size: 'small' }]
-        })
+        json: () =>
+          Promise.resolve({
+            success: true,
+            data: [{ id: 1, image_index: 1, url: 'img.webp', size: 'small' }]
+          })
       })
 
       await createImageCarousel(container, 67)
@@ -175,10 +180,11 @@ describe('imageCarousel', () => {
     it('should set correct Content-Type header', async () => {
       global.fetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
-          success: true,
-          data: [{ id: 1, image_index: 1, url: 'img.webp', size: 'small' }]
-        })
+        json: () =>
+          Promise.resolve({
+            success: true,
+            data: [{ id: 1, image_index: 1, url: 'img.webp', size: 'small' }]
+          })
       })
 
       await createImageCarousel(container, 67)
@@ -198,13 +204,14 @@ describe('imageCarousel', () => {
     it('should set loading="lazy" on images', async () => {
       global.fetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
-          success: true,
-          data: [
-            { id: 1, image_index: 1, url: 'img1.webp', size: 'small' },
-            { id: 2, image_index: 2, url: 'img2.webp', size: 'small' }
-          ]
-        })
+        json: () =>
+          Promise.resolve({
+            success: true,
+            data: [
+              { id: 1, image_index: 1, url: 'img1.webp', size: 'small' },
+              { id: 2, image_index: 2, url: 'img2.webp', size: 'small' }
+            ]
+          })
       })
 
       await createImageCarousel(container, 67)
@@ -220,13 +227,14 @@ describe('imageCarousel', () => {
     it('should have proper ARIA labels on arrows', async () => {
       global.fetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
-          success: true,
-          data: [
-            { id: 1, image_index: 1, url: 'img1.webp', size: 'small' },
-            { id: 2, image_index: 2, url: 'img2.webp', size: 'small' }
-          ]
-        })
+        json: () =>
+          Promise.resolve({
+            success: true,
+            data: [
+              { id: 1, image_index: 1, url: 'img1.webp', size: 'small' },
+              { id: 2, image_index: 2, url: 'img2.webp', size: 'small' }
+            ]
+          })
       })
 
       await createImageCarousel(container, 67)
@@ -244,13 +252,14 @@ describe('imageCarousel', () => {
     it('should have proper ARIA labels on dots', async () => {
       global.fetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
-          success: true,
-          data: [
-            { id: 1, image_index: 1, url: 'img1.webp', size: 'small' },
-            { id: 2, image_index: 2, url: 'img2.webp', size: 'small' }
-          ]
-        })
+        json: () =>
+          Promise.resolve({
+            success: true,
+            data: [
+              { id: 1, image_index: 1, url: 'img1.webp', size: 'small' },
+              { id: 2, image_index: 2, url: 'img2.webp', size: 'small' }
+            ]
+          })
       })
 
       await createImageCarousel(container, 67)

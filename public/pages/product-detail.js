@@ -199,7 +199,7 @@ function renderProductImages(images) {
 
     // Add click handlers to thumbnails
     const thumbnailBtns = thumbnailsContainer.querySelectorAll('.thumbnail-btn')
-    thumbnailBtns.forEach((btn, index) => {
+    thumbnailBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const mediumUrl = btn.getAttribute('data-medium-url')
         if (mediumUrl) {

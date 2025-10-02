@@ -45,7 +45,6 @@ export async function createImageCarousel(container, productId) {
     // Carousel state
     let currentIndex = 0
     let autoplayTimer = null
-    let isHovering = false
 
     const imageContainer = container.querySelector('.product-image-container')
     const imgElement = imageContainer.querySelector('img')
@@ -73,7 +72,6 @@ export async function createImageCarousel(container, productId) {
       if (autoplayTimer) {
         return
       }
-      isHovering = true
       autoplayTimer = setInterval(nextImage, 800) // Fast cycling on hover
     }
 
@@ -81,7 +79,6 @@ export async function createImageCarousel(container, productId) {
      * Stop cycling and reset to default
      */
     function stopCycling() {
-      isHovering = false
       if (autoplayTimer) {
         clearInterval(autoplayTimer)
         autoplayTimer = null
