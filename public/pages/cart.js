@@ -285,6 +285,11 @@ function handleCheckout() {
   )
 
   // TODO: Navigate to checkout page
+  /* Store cart items in localStorage before navigating */
+  localStorage.setItem('cartItems', JSON.stringify(cartItems))
+
+  // Navigate to payment page
+  window.location.href = '/pages/payment.html'
   // window.location.href = '/pages/checkout.html'
 }
 
