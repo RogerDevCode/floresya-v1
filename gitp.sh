@@ -1,11 +1,11 @@
 #!/bin/bash
-# Git Push Script - Enhanced version
-# Usage: ./gitp_new.sh "commit message"
+# Git Push Script - Enhanced version with HTTPS support
+# Usage: ./gitp.sh "commit message"
 
 # Check if message was provided
 if [ -z "$1" ]; then
   echo "❌ Error: Commit message required"
-  echo "Usage: ./gitp_new.sh \"your commit message\""
+  echo "Usage: ./gitp.sh \"your commit message\""
   exit 1
 fi
 
