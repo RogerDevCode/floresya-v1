@@ -62,6 +62,8 @@ Este script ejecutará: `git add .`, `git commit -m "mensaje"`, `git pull --reba
 
 Si prefieres usar SSH en lugar de HTTPS, necesitas:
 
+### Método 1: Clave SSH única para un repositorio
+
 1. Generar un par de claves SSH:
 
    ```bash
@@ -86,4 +88,37 @@ Si prefieres usar SSH en lugar de HTTPS, necesitas:
 5. Cambiar la URL remota a SSH:
    ```bash
    git remote set-url origin git@github.com:tu_usuario/nombre_repo.git
+   ```
+
+### Método 2: Claves SSH específicas para múltiples repositorios (Recomendado para FloresYa)
+
+Este método es especialmente útil si trabajas con múltiples repositorios, como en el caso de FloresYa:
+
+1. Generar clave SSH específica para este repositorio:
+
+   ```bash
+   ssh-keygen -t ed25519 -C "floresya-v1@manager.com" -f ~/.ssh/floresya-v1-deploy-key -N ""
+   ```
+
+2. Configurar el archivo SSH (~/.ssh/config) con un alias específico:
+
+   ```
+   Host github.com-floresya-v1
+     HostName github.com
+     IdentityFile ~/.ssh/floresya-v1-deploy-key
+     IdentitiesOnly yes
+   ```
+
+3. Copiar la clave pública generada:
+
+   ```bash
+   cat ~/.ssh/floresya-v1-deploy-key.pub
+   ```
+
+4. Agregar la clave pública a tu cuenta de GitHub en [github.com/settings/keys](https://github.com/settings/keys)
+
+5. Cambiar la URL remota a usar el alias SSH:
+
+   ```bash
+   git remote set-url origin git@github.com-floresya-v1:RogerDevCode/floresya-v1.git
    ```
