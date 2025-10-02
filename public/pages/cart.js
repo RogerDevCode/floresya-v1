@@ -284,13 +284,13 @@ function handleCheckout() {
     `Procesando compra:\n\nSubtotal: $${subtotal.toFixed(2)}\nEnvío: $${shippingCost.toFixed(2)}\nTotal: $${total.toFixed(2)}\n\nMétodo: ${deliveryMethod === 'pickup' ? 'Recoger en tienda' : 'Envío a domicilio'}`
   )
 
-  // TODO: Navigate to checkout page
-  /* Store cart items in localStorage before navigating */
+  // Store cart items in localStorage before navigating to payment page
   localStorage.setItem('cartItems', JSON.stringify(cartItems))
+  localStorage.setItem('deliveryMethod', deliveryMethod)
+  localStorage.setItem('orderSummary', JSON.stringify({ subtotal, shippingCost, total }))
 
   // Navigate to payment page
   window.location.href = '/pages/payment.html'
-  // window.location.href = '/pages/checkout.html'
 }
 
 // Initialize when DOM is ready

@@ -163,7 +163,7 @@
               <div class="bg-white rounded-xl p-6 shadow-sm">
                 <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
                   <i data-lucide="crown" class="h-6 w-6 text-yellow-500 mr-3"></i>
-                  FloresYa - Tu Floristería de Confianza
+                  <span data-contact="shop_name">FloresYa - Tu Floristería de Confianza</span>
                 </h3>
 
                 <!-- Imagen del local -->
@@ -274,7 +274,10 @@
                     </svg>
 
                     <!-- Texto debajo de la imagen -->
-                    <p class="text-center text-sm text-gray-600 mt-2 italic">
+                    <p
+                      class="text-center text-sm text-gray-600 mt-2 italic"
+                      data-contact="shop_location_text"
+                    >
                       Nuestro local en Chacao - ¡Te esperamos!
                     </p>
                   </div>
@@ -283,17 +286,22 @@
                 <div class="space-y-3 text-gray-700">
                   <p class="flex items-start">
                     <i data-lucide="user-check" class="h-5 w-5 text-green-600 mr-3 mt-0.5"></i>
-                    <strong>Propietario:</strong> María González
+                    <strong>Propietario:</strong>
+                    <span data-contact="owner_name">María González</span>
                   </p>
                   <p class="flex items-start">
                     <i data-lucide="award" class="h-5 w-5 text-blue-600 mr-3 mt-0.5"></i>
-                    <strong>Experiencia:</strong> Más de 15 años creando momentos inolvidables con
-                    flores
+                    <strong>Experiencia:</strong>
+                    <span data-contact="owner_experience"
+                      >Más de 15 años creando momentos inolvidables con flores</span
+                    >
                   </p>
                   <p class="flex items-start">
                     <i data-lucide="heart" class="h-5 w-5 text-pink-600 mr-3 mt-0.5"></i>
-                    <strong>Especialidad:</strong> Arreglos personalizados y flores frescas de
-                    temporada
+                    <strong>Especialidad:</strong>
+                    <span data-contact="owner_specialty"
+                      >Arreglos personalizados y flores frescas de temporada</span
+                    >
                   </p>
                 </div>
               </div>
@@ -319,14 +327,22 @@
                 <div class="space-y-2">
                   <p class="text-gray-700">
                     <strong>Principal:</strong>
-                    <a href="tel:+584121234567" class="text-green-600 hover:text-green-700 ml-2">
-                      +58 412-1234567
+                    <a
+                      href="tel:+584121234567"
+                      data-contact-href="phone_primary"
+                      class="text-green-600 hover:text-green-700 ml-2"
+                    >
+                      <span data-contact="phone_primary">+58 412-1234567</span>
                     </a>
                   </p>
                   <p class="text-gray-700">
                     <strong>Secundario:</strong>
-                    <a href="tel:+582121234567" class="text-green-600 hover:text-green-700 ml-2">
-                      +58 212-1234567
+                    <a
+                      href="tel:+582121234567"
+                      data-contact-href="phone_secondary"
+                      class="text-green-600 hover:text-green-700 ml-2"
+                    >
+                      <span data-contact="phone_secondary">+58 212-1234567</span>
                     </a>
                   </p>
                 </div>
@@ -343,22 +359,24 @@
                     <strong>Atención inmediata:</strong>
                     <a
                       href="https://wa.me/584121234567"
+                      data-contact-href="whatsapp_main"
                       class="text-green-600 hover:text-green-700 ml-2"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      +58 412-1234567 🌸
+                      <span data-contact="whatsapp_main">+58 412-1234567</span> 🌸
                     </a>
                   </p>
                   <p class="text-gray-700">
                     <strong>Pedidos especiales:</strong>
                     <a
                       href="https://wa.me/584121234568"
+                      data-contact-href="whatsapp_special"
                       class="text-green-600 hover:text-green-700 ml-2"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      +58 412-1234568 💐
+                      <span data-contact="whatsapp_special">+58 412-1234568</span> 💐
                     </a>
                   </p>
                 </div>
@@ -371,11 +389,15 @@
                   Correo Electrónico
                 </h4>
                 <p class="text-gray-700">
-                  <a href="mailto:contacto@floresya.com" class="text-blue-600 hover:text-blue-700">
-                    contacto@floresya.com 📧
+                  <a
+                    href="mailto:contacto@floresya.com"
+                    data-contact-href="email_main"
+                    class="text-blue-600 hover:text-blue-700"
+                  >
+                    <span data-contact="email_main">contacto@floresya.com</span> 📧
                   </a>
                 </p>
-                <p class="text-sm text-gray-500 mt-1">
+                <p class="text-sm text-gray-500 mt-1" data-contact="email_response_time">
                   Respondemos en menos de 2 horas durante horario laboral
                 </p>
               </div>
@@ -387,11 +409,16 @@
                   Ubicación
                 </h4>
                 <p class="text-gray-700">
-                  <strong>Gran Caracas, Venezuela</strong>
+                  <strong data-contact="location_main">Gran Caracas, Venezuela</strong>
                 </p>
-                <p class="text-gray-700">Entregamos en toda el área metropolitana de Caracas</p>
+                <p class="text-gray-700" data-contact="location_delivery_area">
+                  Entregamos en toda el área metropolitana de Caracas
+                </p>
                 <p class="text-gray-700">
-                  <strong>Cobertura:</strong> Caracas, Chacao, Baruta, Sucre, El Hatillo
+                  <strong>Cobertura:</strong>
+                  <span data-contact="location_coverage"
+                    >Caracas, Chacao, Baruta, Sucre, El Hatillo</span
+                  >
                 </p>
               </div>
 
@@ -402,10 +429,19 @@
                   Horario de Atención
                 </h4>
                 <div class="space-y-1 text-gray-700">
-                  <p><strong>Lunes - Viernes:</strong> 8:00 AM - 6:00 PM</p>
-                  <p><strong>Sábados:</strong> 9:00 AM - 4:00 PM</p>
-                  <p><strong>Domingos:</strong> 10:00 AM - 2:00 PM (Solo WhatsApp)</p>
-                  <p class="text-sm text-gray-500 mt-2">
+                  <p>
+                    <strong>Lunes - Viernes:</strong>
+                    <span data-contact="hours_weekday">8:00 AM - 6:00 PM</span>
+                  </p>
+                  <p>
+                    <strong>Sábados:</strong>
+                    <span data-contact="hours_saturday">9:00 AM - 4:00 PM</span>
+                  </p>
+                  <p>
+                    <strong>Domingos:</strong>
+                    <span data-contact="hours_sunday">10:00 AM - 2:00 PM (Solo WhatsApp)</span>
+                  </p>
+                  <p class="text-sm text-gray-500 mt-2" data-contact="delivery_same_day">
                     ¡Entregas el mismo día hasta las 4:00 PM!
                   </p>
                 </div>
@@ -448,20 +484,38 @@
             <div class="space-y-4">
               <div class="bg-green-50 rounded-lg p-4">
                 <h4 class="font-semibold text-green-800 mb-2">Banco de Venezuela</h4>
-                <p class="text-gray-700"><strong>Teléfono:</strong> 0412-1234567</p>
-                <p class="text-gray-700"><strong>Cédula:</strong> V-12345678</p>
+                <p class="text-gray-700">
+                  <strong>Teléfono:</strong>
+                  <span data-contact="payment_movil_venezuela_phone">0412-1234567</span>
+                </p>
+                <p class="text-gray-700">
+                  <strong>Cédula:</strong>
+                  <span data-contact="payment_movil_venezuela_cedula">V-12345678</span>
+                </p>
               </div>
 
               <div class="bg-green-50 rounded-lg p-4">
                 <h4 class="font-semibold text-green-800 mb-2">Banesco</h4>
-                <p class="text-gray-700"><strong>Teléfono:</strong> 0414-8765432</p>
-                <p class="text-gray-700"><strong>Cédula:</strong> V-12345678</p>
+                <p class="text-gray-700">
+                  <strong>Teléfono:</strong>
+                  <span data-contact="payment_movil_banesco_phone">0414-8765432</span>
+                </p>
+                <p class="text-gray-700">
+                  <strong>Cédula:</strong>
+                  <span data-contact="payment_movil_banesco_cedula">V-12345678</span>
+                </p>
               </div>
 
               <div class="bg-green-50 rounded-lg p-4">
                 <h4 class="font-semibold text-green-800 mb-2">Mercantil</h4>
-                <p class="text-gray-700"><strong>Teléfono:</strong> 0424-1122334</p>
-                <p class="text-gray-700"><strong>Cédula:</strong> V-12345678</p>
+                <p class="text-gray-700">
+                  <strong>Teléfono:</strong>
+                  <span data-contact="payment_movil_mercantil_phone">0424-1122334</span>
+                </p>
+                <p class="text-gray-700">
+                  <strong>Cédula:</strong>
+                  <span data-contact="payment_movil_mercantil_cedula">V-12345678</span>
+                </p>
               </div>
             </div>
           </div>
@@ -482,17 +536,39 @@
               <div class="bg-blue-50 rounded-lg p-4">
                 <h4 class="font-semibold text-blue-800 mb-2">Banco de Venezuela</h4>
                 <p class="text-gray-700"><strong>Cuenta Corriente:</strong></p>
-                <p class="text-gray-700 font-mono text-sm">0102-1234-5678-90123456</p>
-                <p class="text-gray-700"><strong>Titular:</strong> FloresYa C.A.</p>
-                <p class="text-gray-700"><strong>RIF:</strong> J-123456789</p>
+                <p
+                  class="text-gray-700 font-mono text-sm"
+                  data-contact="payment_transfer_venezuela_account"
+                >
+                  0102-1234-5678-90123456
+                </p>
+                <p class="text-gray-700">
+                  <strong>Titular:</strong>
+                  <span data-contact="payment_transfer_venezuela_holder">FloresYa C.A.</span>
+                </p>
+                <p class="text-gray-700">
+                  <strong>RIF:</strong>
+                  <span data-contact="payment_transfer_venezuela_rif">J-123456789</span>
+                </p>
               </div>
 
               <div class="bg-blue-50 rounded-lg p-4">
                 <h4 class="font-semibold text-blue-800 mb-2">Banesco</h4>
                 <p class="text-gray-700"><strong>Cuenta Corriente:</strong></p>
-                <p class="text-gray-700 font-mono text-sm">0134-5678-9012-34567890</p>
-                <p class="text-gray-700"><strong>Titular:</strong> María González</p>
-                <p class="text-gray-700"><strong>Cédula:</strong> V-12345678</p>
+                <p
+                  class="text-gray-700 font-mono text-sm"
+                  data-contact="payment_transfer_banesco_account"
+                >
+                  0134-5678-9012-34567890
+                </p>
+                <p class="text-gray-700">
+                  <strong>Titular:</strong>
+                  <span data-contact="payment_transfer_banesco_holder">María González</span>
+                </p>
+                <p class="text-gray-700">
+                  <strong>Cédula:</strong>
+                  <span data-contact="payment_transfer_banesco_cedula">V-12345678</span>
+                </p>
               </div>
             </div>
           </div>
@@ -512,14 +588,23 @@
             <div class="space-y-4">
               <div class="bg-purple-50 rounded-lg p-4">
                 <h4 class="font-semibold text-purple-800 mb-2">Zelle</h4>
-                <p class="text-gray-700"><strong>Email:</strong> pagos@floresya.com</p>
-                <p class="text-gray-700"><strong>Nombre:</strong> María González</p>
+                <p class="text-gray-700">
+                  <strong>Email:</strong>
+                  <span data-contact="payment_zelle_email">pagos@floresya.com</span>
+                </p>
+                <p class="text-gray-700">
+                  <strong>Nombre:</strong>
+                  <span data-contact="payment_zelle_name">María González</span>
+                </p>
                 <p class="text-gray-700 text-sm">* Disponible para clientes internacionales</p>
               </div>
 
               <div class="bg-purple-50 rounded-lg p-4">
                 <h4 class="font-semibold text-purple-800 mb-2">PayPal</h4>
-                <p class="text-gray-700"><strong>Email:</strong> paypal@floresya.com</p>
+                <p class="text-gray-700">
+                  <strong>Email:</strong>
+                  <span data-contact="payment_paypal_email">paypal@floresya.com</span>
+                </p>
                 <p class="text-gray-700 text-sm">* Para pedidos internacionales</p>
               </div>
 
@@ -601,6 +686,7 @@
           <!-- Facebook -->
           <a
             href="https://facebook.com/floresya"
+            data-contact-href="social_facebook"
             target="_blank"
             rel="noopener noreferrer"
             class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center group"
@@ -611,13 +697,14 @@
               <i data-lucide="facebook" class="h-12 w-12 text-white"></i>
             </div>
             <h3 class="text-xl font-bold text-gray-900 mb-2">Facebook</h3>
-            <p class="text-gray-600">@floresya</p>
+            <p class="text-gray-600" data-contact="social_facebook_handle">@floresya</p>
             <p class="text-sm text-gray-500 mt-2">Arreglos del día</p>
           </a>
 
           <!-- Instagram -->
           <a
-            href="https://instagram.com/floresya"
+            href="https://instagram.com/floresya_ve"
+            data-contact-href="social_instagram"
             target="_blank"
             rel="noopener noreferrer"
             class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center group"
@@ -628,13 +715,14 @@
               <i data-lucide="instagram" class="h-12 w-12 text-white"></i>
             </div>
             <h3 class="text-xl font-bold text-gray-900 mb-2">Instagram</h3>
-            <p class="text-gray-600">@floresya_ve</p>
+            <p class="text-gray-600" data-contact="social_instagram_handle">@floresya_ve</p>
             <p class="text-sm text-gray-500 mt-2">Stories diarios</p>
           </a>
 
           <!-- WhatsApp Business -->
           <a
             href="https://wa.me/584121234567"
+            data-contact-href="whatsapp_main"
             target="_blank"
             rel="noopener noreferrer"
             class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center group"
@@ -645,13 +733,14 @@
               <i data-lucide="message-circle" class="h-12 w-12 text-white"></i>
             </div>
             <h3 class="text-xl font-bold text-gray-900 mb-2">WhatsApp</h3>
-            <p class="text-gray-600">+58 412-1234567</p>
+            <p class="text-gray-600" data-contact="whatsapp_main">+58 412-1234567</p>
             <p class="text-sm text-gray-500 mt-2">Consulta inmediata</p>
           </a>
 
           <!-- TikTok -->
           <a
             href="https://tiktok.com/@floresya"
+            data-contact-href="social_tiktok"
             target="_blank"
             rel="noopener noreferrer"
             class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center group"
@@ -662,7 +751,7 @@
               <i data-lucide="play" class="h-12 w-12 text-white"></i>
             </div>
             <h3 class="text-xl font-bold text-gray-900 mb-2">TikTok</h3>
-            <p class="text-gray-600">@floresya</p>
+            <p class="text-gray-600" data-contact="social_tiktok_handle">@floresya</p>
             <p class="text-sm text-gray-500 mt-2">Tips florales</p>
           </a>
         </div>
@@ -716,8 +805,11 @@
               Próximamente: Mapa interactivo con ubicación exacta y rutas de entrega
             </p>
             <p class="text-gray-600">
-              <strong>Dirección:</strong> Av. Principal de Chacao, Centro Comercial Flores, Local
-              15-B, Caracas, Venezuela
+              <strong>Dirección:</strong>
+              <span data-contact="location_address"
+                >Av. Principal de Chacao, Centro Comercial Flores, Local 15-B, Caracas,
+                Venezuela</span
+              >
             </p>
           </div>
         </div>
@@ -843,6 +935,7 @@
 
     <!-- Scripts al final (ES6 Modules) -->
     <script type="module" src="../js/lucide-icons.js"></script>
+    <script type="module" src="./contacto.js"></script>
     <script type="module">
       // Initialize Lucide icons
       document.addEventListener('DOMContentLoaded', function () {

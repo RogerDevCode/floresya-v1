@@ -44,6 +44,10 @@ export const api = {
     return fetchJSON(`/products?${params}`)
   },
   getProduct: id => fetchJSON(`/products/${id}`),
+  createProduct: data => fetchJSON('/products', { method: 'POST', body: JSON.stringify(data) }),
+  updateProduct: (id, data) =>
+    fetchJSON(`/products/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteProduct: id => fetchJSON(`/products/${id}`, { method: 'DELETE' }),
   getProductImages: (productId, size = 'small') => {
     const params = new URLSearchParams({ size })
     return fetchJSON(`/products/${productId}/images?${params}`)
@@ -56,5 +60,17 @@ export const api = {
 
   // Users
   login: data => fetchJSON('/users/login', { method: 'POST', body: JSON.stringify(data) }),
-  register: data => fetchJSON('/users/register', { method: 'POST', body: JSON.stringify(data) })
+  register: data => fetchJSON('/users/register', { method: 'POST', body: JSON.stringify(data) }),
+
+  // Settings
+  getSettings: (publicOnly = false) => {
+    const params = new URLSearchParams({ public: publicOnly })
+    return fetchJSON(`/settings?${params}`)
+  },
+  getPublicSettings: () => fetchJSON('/settings/public'),
+  getSettingByKey: key => fetchJSON(`/settings/${key}`),
+  createSetting: data => fetchJSON('/settings', { method: 'POST', body: JSON.stringify(data) }),
+  updateSetting: (key, data) =>
+    fetchJSON(`/settings/${key}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteSetting: key => fetchJSON(`/settings/${key}`, { method: 'DELETE' })
 }

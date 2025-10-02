@@ -5,43 +5,51 @@
 
 class ProductImageManager {
   constructor(containerId) {
-    this.container = document.getElementById(containerId);
-    this.images = [];
-    this.setupEventListeners();
+    this.container = document.getElementById(containerId)
+    this.images = []
+    this.setupEventListeners()
   }
 
   /**
    * Setup event listeners for image management
    */
   setupEventListeners() {
-    if (!this.container) {return;}
+    if (!this.container) {
+      throw new Error('Image manager container not found')
+    }
 
     // Drag and drop functionality
-    const uploadArea = this.container.querySelector('.upload-area');
+    const uploadArea = this.container.querySelector('.upload-area')
     if (uploadArea) {
-      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        uploadArea.addEventListener(eventName, this.preventDefaults, false);
-      });
+      ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, this.preventDefaults, false)
+      })
+      ;['dragenter', 'dragover'].forEach(eventName => {
+        uploadArea.addEventListener(
+          eventName,
+          () => {
+            uploadArea.classList.add('dragover')
+          },
+          false
+        )
+      })
+      ;['dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(
+          eventName,
+          () => {
+            uploadArea.classList.remove('dragover')
+          },
+          false
+        )
+      })
 
-      ['dragenter', 'dragover'].forEach(eventName => {
-        uploadArea.addEventListener(eventName, () => {
-          uploadArea.classList.add('dragover');
-        }, false);
-      });
-
-      ['dragleave', 'drop'].forEach(eventName => {
-        uploadArea.addEventListener(eventName, () => {
-          uploadArea.classList.remove('dragover');
-        }, false);
-      });
-
-      uploadArea.addEventListener('drop', this.handleDrop.bind(this), false);
+      uploadArea.addEventListener('drop', this.handleDrop.bind(this), false)
     }
 
     // File input change
-    const fileInput = document.getElementById('image-upload');
+    const fileInput = document.getElementById('image-upload')
     if (fileInput) {
-      fileInput.addEventListener('change', this.handleFileSelect.bind(this));
+      fileInput.addEventListener('change', this.handleFileSelect.bind(this))
     }
   }
 
@@ -49,57 +57,57 @@ class ProductImageManager {
    * Prevent default drag behaviors
    */
   preventDefaults(e) {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault()
+    e.stopPropagation()
   }
 
   /**
    * Handle file drop
    */
   handleDrop(e) {
-    const dt = e.dataTransfer;
-    const files = dt.files;
-    this.handleFiles(files);
+    const dt = e.dataTransfer
+    const files = dt.files
+    this.handleFiles(files)
   }
 
   /**
    * Handle file selection
    */
   handleFileSelect(e) {
-    const files = e.target.files;
-    this.handleFiles(files);
+    const files = e.target.files
+    this.handleFiles(files)
   }
 
   /**
    * Process selected files
    */
   handleFiles(files) {
-    [...files].forEach(file => {
+    ;[...files].forEach(file => {
       if (this.isValidImageFile(file)) {
-        this.addImage(file);
+        this.addImage(file)
       } else {
-        alert('Por favor selecciona solo archivos de imagen (JPG, PNG, WEBP)');
+        alert('Por favor selecciona solo archivos de imagen (JPG, PNG, WEBP)')
       }
-    });
+    })
   }
 
   /**
    * Validate if file is an image
    */
   isValidImageFile(file) {
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml'];
-    return validTypes.includes(file.type);
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml']
+    return validTypes.includes(file.type)
   }
 
   /**
    * Add image to the list
    */
   addImage(file) {
-    const reader = new FileReader();
-    
-    reader.onload = (e) => {
-      const imageId = Date.now() + Math.floor(Math.random() * 1000); // Unique ID
-      
+    const reader = new FileReader()
+
+    reader.onload = e => {
+      const imageId = Date.now() + Math.floor(Math.random() * 1000) // Unique ID
+
       const imageObj = {
         id: imageId,
         file: file,
@@ -108,25 +116,27 @@ class ProductImageManager {
         type: file.type,
         name: file.name,
         isPrimary: this.images.length === 0 // First image is primary by default
-      };
-      
-      this.images.push(imageObj);
-      this.renderImage(imageObj);
-    };
-    
-    reader.readAsDataURL(file);
+      }
+
+      this.images.push(imageObj)
+      this.renderImage(imageObj)
+    }
+
+    reader.readAsDataURL(file)
   }
 
   /**
    * Render image in the UI
    */
   renderImage(image) {
-    if (!this.container) {return;}
+    if (!this.container) {
+      throw new Error('Image manager container not found')
+    }
 
-    const imgContainer = document.createElement('div');
-    imgContainer.className = 'relative group image-container';
-    imgContainer.dataset.imageId = image.id;
-    
+    const imgContainer = document.createElement('div')
+    imgContainer.className = 'relative group image-container'
+    imgContainer.dataset.imageId = image.id
+
     imgContainer.innerHTML = `
       <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 group-hover:border-pink-400 transition-colors">
         <img 
@@ -151,37 +161,39 @@ class ProductImageManager {
             <i data-lucide="x" class="h-4 w-4"></i>
           </button>
         </div>
-        ${image.isPrimary ? 
-          '<div class="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">Principal</div>' : 
-          ''}
+        ${
+          image.isPrimary
+            ? '<div class="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">Principal</div>'
+            : ''
+        }
       </div>
-    `;
-    
+    `
+
     // Add to the beginning of the images preview container
-    const imagesPreview = document.getElementById('images-preview');
+    const imagesPreview = document.getElementById('images-preview')
     if (imagesPreview) {
       // Insert as first child to maintain order
       if (imagesPreview.firstChild) {
-        imagesPreview.insertBefore(imgContainer, imagesPreview.firstChild);
+        imagesPreview.insertBefore(imgContainer, imagesPreview.firstChild)
       } else {
-        imagesPreview.appendChild(imgContainer);
+        imagesPreview.appendChild(imgContainer)
       }
     }
-    
+
     // Add event listeners
-    imgContainer.querySelector('.delete-image-btn').addEventListener('click', (e) => {
-      const imageId = parseInt(e.target.closest('.delete-image-btn').dataset.imageId);
-      this.deleteImage(imageId);
-    });
-    
-    imgContainer.querySelector('.set-primary-btn').addEventListener('click', (e) => {
-      const imageId = parseInt(e.target.closest('.set-primary-btn').dataset.imageId);
-      this.setAsPrimary(imageId);
-    });
-    
+    imgContainer.querySelector('.delete-image-btn').addEventListener('click', e => {
+      const imageId = parseInt(e.target.closest('.delete-image-btn').dataset.imageId)
+      this.deleteImage(imageId)
+    })
+
+    imgContainer.querySelector('.set-primary-btn').addEventListener('click', e => {
+      const imageId = parseInt(e.target.closest('.set-primary-btn').dataset.imageId)
+      this.setAsPrimary(imageId)
+    })
+
     // Reinitialize icons
     if (window.lucide && window.lucide.createIcons) {
-      window.lucide.createIcons();
+      window.lucide.createIcons()
     }
   }
 
@@ -189,16 +201,16 @@ class ProductImageManager {
    * Delete image from the list
    */
   deleteImage(imageId) {
-    this.images = this.images.filter(img => img.id !== imageId);
-    const imgElement = document.querySelector(`.image-container[data-image-id="${imageId}"]`);
+    this.images = this.images.filter(img => img.id !== imageId)
+    const imgElement = document.querySelector(`.image-container[data-image-id="${imageId}"]`)
     if (imgElement) {
-      imgElement.remove();
+      imgElement.remove()
     }
-    
+
     // If we deleted the primary image, set another as primary
     if (this.images.length > 0 && !this.hasPrimaryImage()) {
-      this.images[0].isPrimary = true;
-      this.refreshImagesDisplay();
+      this.images[0].isPrimary = true
+      this.refreshImagesDisplay()
     }
   }
 
@@ -207,22 +219,22 @@ class ProductImageManager {
    */
   setAsPrimary(imageId) {
     // Remove primary status from all images
-    this.images.forEach(img => img.isPrimary = false);
-    
+    this.images.forEach(img => (img.isPrimary = false))
+
     // Set the selected image as primary
-    const image = this.images.find(img => img.id === imageId);
+    const image = this.images.find(img => img.id === imageId)
     if (image) {
-      image.isPrimary = true;
+      image.isPrimary = true
     }
-    
-    this.refreshImagesDisplay();
+
+    this.refreshImagesDisplay()
   }
 
   /**
    * Check if there's a primary image
    */
   hasPrimaryImage() {
-    return this.images.some(img => img.isPrimary);
+    return this.images.some(img => img.isPrimary)
   }
 
   /**
@@ -230,29 +242,29 @@ class ProductImageManager {
    */
   refreshImagesDisplay() {
     // Clear the container
-    const imagesPreview = document.getElementById('images-preview');
+    const imagesPreview = document.getElementById('images-preview')
     if (imagesPreview) {
-      imagesPreview.innerHTML = '';
+      imagesPreview.innerHTML = ''
     }
-    
+
     // Re-render all images
     this.images.forEach(image => {
-      this.renderImage(image);
-    });
+      this.renderImage(image)
+    })
   }
 
   /**
    * Get all images data
    */
   getImages() {
-    return this.images;
+    return this.images
   }
 
   /**
    * Get primary image
    */
   getPrimaryImage() {
-    return this.images.find(img => img.isPrimary);
+    return this.images.find(img => img.isPrimary)
   }
 }
 
@@ -260,6 +272,6 @@ class ProductImageManager {
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize only if we're on the product edit page
   if (document.getElementById('images-preview')) {
-    window.productImageManager = new ProductImageManager('images-preview');
+    window.productImageManager = new ProductImageManager('images-preview')
   }
-});
+})
