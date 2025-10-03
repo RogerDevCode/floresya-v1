@@ -12,213 +12,6 @@
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="../../images/favicon.ico" />
-
-    <!-- Custom styles for admin panel -->
-    <style>
-      :root {
-        --sidebar-width: 260px;
-        --navbar-height: 64px;
-      }
-
-      body {
-        background-color: #f8fafc;
-        min-height: 100vh;
-        overflow-x: hidden;
-      }
-
-      .sidebar {
-        width: var(--sidebar-width);
-        min-height: calc(100vh - var(--navbar-height));
-        position: fixed;
-        left: 0;
-        top: var(--navbar-height);
-        z-index: 90;
-        background: linear-gradient(to bottom, #ec4899, #db2777);
-        transition: all 0.3s ease;
-      }
-
-      .sidebar.collapsed {
-        width: 80px;
-      }
-
-      .main-content {
-        margin-left: var(--sidebar-width);
-        min-height: calc(100vh - var(--navbar-height));
-        transition: margin-left 0.3s ease;
-      }
-
-      .sidebar.collapsed ~ .main-content {
-        margin-left: 80px;
-      }
-
-      .admin-card {
-        box-shadow:
-          0 4px 6px -1px rgba(0, 0, 0, 0.1),
-          0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        transition:
-          transform 0.2s ease,
-          box-shadow 0.2s ease;
-      }
-
-      .admin-card:hover {
-        transform: translateY(-2px);
-        box-shadow:
-          0 10px 15px -3px rgba(0, 0, 0, 0.1),
-          0 4px 6px -2px rgba(0, 0, 0, 0.05);
-      }
-
-      .sidebar-menu-item {
-        display: flex;
-        align-items: center;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        color: white;
-        text-decoration: none;
-        transition: all 0.2s ease;
-        margin-bottom: 0.25rem;
-      }
-
-      .sidebar-menu-item:hover {
-        background-color: rgba(255, 255, 255, 0.15);
-      }
-
-      .sidebar-menu-item.active {
-        background-color: rgba(255, 255, 255, 0.25);
-      }
-
-      .menu-text {
-        transition: opacity 0.3s ease;
-      }
-
-      .sidebar.collapsed .menu-text {
-        opacity: 0;
-        width: 0;
-        height: 0;
-        overflow: hidden;
-      }
-
-      .dashboard-stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 1.5rem;
-      }
-
-      .stat-card {
-        background: white;
-        border-radius: 0.75rem;
-        padding: 1.5rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-      }
-
-      .stat-icon {
-        width: 3rem;
-        height: 3rem;
-        border-radius: 0.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 1rem;
-      }
-
-      .stat-title {
-        font-size: 0.875rem;
-        color: #6b7280;
-        margin-bottom: 0.25rem;
-      }
-
-      .stat-value {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #1f2937;
-      }
-
-      .chart-container {
-        background: white;
-        border-radius: 0.75rem;
-        padding: 1.5rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        height: 300px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .recent-orders-table {
-        background: white;
-        border-radius: 0.75rem;
-        overflow: hidden;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-      }
-
-      .table-header {
-        background-color: #f9fafb;
-        font-weight: 600;
-        color: #6b7280;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        letter-spacing: 0.05em;
-        padding: 1rem 1.5rem;
-      }
-
-      .table-row {
-        border-bottom: 1px solid #e5e7eb;
-        padding: 1rem 1.5rem;
-      }
-
-      .table-row:last-child {
-        border-bottom: none;
-      }
-
-      .table-cell {
-        padding: 0.75rem 0;
-      }
-
-      /* Occasions Styles */
-      .table-row-occasion {
-        border-bottom: 1px solid #e5e7eb;
-        padding: 1rem 1.5rem;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-      }
-
-      .table-row-occasion:hover {
-        background-color: #f9fafb;
-      }
-
-      .table-row-occasion.selected-occasion {
-        background-color: #fef2f2; /* Light red for highlighting selected */
-      }
-
-      .status-badge-occasion {
-        padding: 0.25rem 0.5rem;
-        border-radius: 9999px;
-        font-size: 0.75rem;
-        font-weight: 500;
-      }
-
-      .status-active-occasion {
-        background-color: #dcfce7;
-        color: #166534;
-      }
-
-      .status-inactive-occasion {
-        background-color: #fee2e2;
-        color: #991b1b;
-      }
-
-      /* Filter buttons */
-      .filter-btn-occasion {
-        transition: all 0.2s ease;
-      }
-
-      .filter-btn-occasion:hover {
-        transform: translateY(-1px);
-      }
-
-      .filter-btn-occasion.active {
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-      }
-    </style>
   </head>
   <body class="font-sans antialiased admin-page">
     <!-- Navbar -->
@@ -277,8 +70,14 @@
             <span class="menu-text">Productos</span>
           </a>
 
+          <!-- Product Editor -->
+          <a href="./product-editor.html" class="sidebar-menu-item">
+            <i data-lucide="edit" class="h-5 w-5 mr-3"></i>
+            <span class="menu-text">Editor de Productos</span>
+          </a>
+
           <!-- Orders -->
-          <a href="#" class="sidebar-menu-item" data-view="orders">
+          <a href="./orders.html" class="sidebar-menu-item">
             <i data-lucide="shopping-cart" class="h-5 w-5 mr-3"></i>
             <span class="menu-text">Pedidos</span>
           </a>
@@ -290,13 +89,13 @@
           </a>
 
           <!-- Ocasiones -->
-          <a href="#" class="sidebar-menu-item" data-view="occasions">
+          <a href="./occasions.html" class="sidebar-menu-item">
             <i data-lucide="calendar" class="h-5 w-5 mr-3"></i>
             <span class="menu-text">Ocasiones</span>
           </a>
 
           <!-- Contact Editor -->
-          <a href="#" class="sidebar-menu-item" data-view="contact-editor">
+          <a href="./contact-editor.html" class="sidebar-menu-item">
             <i data-lucide="contact" class="h-5 w-5 mr-3"></i>
             <span class="menu-text">Editor de Contacto</span>
           </a>

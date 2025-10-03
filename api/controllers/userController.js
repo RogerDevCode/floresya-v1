@@ -9,11 +9,13 @@ import { asyncHandler } from '../middleware/errorHandler.js'
 /**
  * GET /api/users
  * Get all active users with filters
+ * Supports search query: ?search=jose (searches in full_name and email)
  */
 export const getAllUsers = asyncHandler(async (req, res) => {
   const filters = {
     role: req.query.role,
     email_verified: req.query.email_verified === 'true',
+    search: req.query.search, // New: accent-insensitive search
     limit: req.query.limit,
     offset: req.query.offset
   }

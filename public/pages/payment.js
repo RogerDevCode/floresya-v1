@@ -462,20 +462,23 @@ function validatePaymentMethod() {
  * Create order via API
  */
 async function createOrder(customerData, paymentData) {
+  // OpenAPI contract: POST /api/orders expects { order: {...}, items: [...] }
   const orderPayload = {
-    customer_email: customerData.customerEmail,
-    customer_name: customerData.customerName,
-    customer_phone: customerData.customerPhone,
-    delivery_address: customerData.deliveryAddress,
-    delivery_city: customerData.deliveryCity,
-    delivery_state: customerData.deliveryState,
-    delivery_zip: customerData.deliveryZip,
-    delivery_notes: customerData.deliveryReferences,
-    notes: customerData.additionalNotes,
-    total_amount_usd: paymentData.total,
-    total_amount_ves: paymentData.total * 40, // Assuming 40 VES per USD
-    currency_rate: 40,
-    status: 'pending',
+    order: {
+      customer_email: customerData.customerEmail,
+      customer_name: customerData.customerName,
+      customer_phone: customerData.customerPhone,
+      delivery_address: customerData.deliveryAddress,
+      delivery_city: customerData.deliveryCity,
+      delivery_state: customerData.deliveryState,
+      delivery_zip: customerData.deliveryZip || '',
+      delivery_notes: customerData.deliveryReferences || '',
+      notes: customerData.additionalNotes || '',
+      total_amount_usd: paymentData.total,
+      total_amount_ves: paymentData.total * 40,
+      currency_rate: 40,
+      status: 'pending'
+    },
     items: cartItems.map(item => ({
       product_id: item.id,
       product_name: item.name,
@@ -497,7 +500,8 @@ async function createOrder(customerData, paymentData) {
   })
 
   if (!response.ok) {
-    throw new Error(`Error creando orden: ${response.statusText}`)
+    const errorData = await response.json()
+    throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`)
   }
 
   const result = await response.json()

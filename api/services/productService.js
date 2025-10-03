@@ -15,8 +15,10 @@ import {
   InsufficientStockError,
   BadRequestError
 } from '../errors/AppError.js'
+import { buildSearchCondition } from '../utils/normalize.js'
 
 const TABLE = DB_SCHEMA.products.table
+const SEARCH_COLUMNS = DB_SCHEMA.products.search
 
 /**
  * Validate product data (ENTERPRISE FAIL-FAST)
@@ -138,9 +140,10 @@ export async function getAllProducts(filters = {}, includeInactive = false) {
       query = query.eq('sku', filters.sku)
     }
 
-    // Text search
-    if (filters.search) {
-      query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%`)
+    // Text search (uses indexed normalized columns for accent-insensitive search)
+    const searchCondition = buildSearchCondition(SEARCH_COLUMNS, filters.search)
+    if (searchCondition) {
+      query = query.or(searchCondition)
     }
 
     // Sorting

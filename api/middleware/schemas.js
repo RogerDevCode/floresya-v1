@@ -116,15 +116,17 @@ export const productFilterSchema = {
     integer: true,
     min: 0
   },
+  search: {
+    type: 'string',
+    required: false,
+    minLength: 1,
+    maxLength: 255
+  },
   featured: {
     type: 'boolean',
     required: false
   },
   sku: {
-    type: 'string',
-    required: false
-  },
-  search: {
     type: 'string',
     required: false
   },

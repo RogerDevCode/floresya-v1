@@ -33,18 +33,22 @@ async function loadSettings() {
   try {
     const response = await api.getPublicSettings()
 
-    if (!response.success || !response.data) {
+    if (!response || !response.success || !response.data) {
       throw new Error('Failed to load settings')
     }
 
-    // Convert array to map
     const allSettings = response.data
+    if (!Array.isArray(allSettings)) {
+      throw new Error('Invalid settings format')
+    }
+
     settings = {}
     allSettings.forEach(setting => {
-      settings[setting.key] = setting
+      if (setting && setting.key) {
+        settings[setting.key] = setting
+      }
     })
 
-    // Populate form
     populateForm()
   } catch (error) {
     console.error('loadSettings failed:', error)
@@ -130,12 +134,16 @@ function updateSaveButtons() {
  * Save all settings
  */
 async function saveAllSettings() {
+  const saveBtn = document.getElementById('save-all-btn')
+  const saveBottomBtn = document.getElementById('save-all-bottom-btn')
+
+  if (!saveBtn || !saveBottomBtn) {
+    console.error('Save buttons not found')
+    return
+  }
+
   try {
-    // Disable buttons
-    const buttons = [
-      document.getElementById('save-all-btn'),
-      document.getElementById('save-all-bottom-btn')
-    ]
+    const buttons = [saveBtn, saveBottomBtn]
 
     buttons.forEach(btn => {
       btn.disabled = true
@@ -148,16 +156,19 @@ async function saveAllSettings() {
       `
     })
 
-    // Collect all input values
     const inputs = document.querySelectorAll('.setting-input')
     const updates = []
 
     for (const input of inputs) {
       const settingKey = input.dataset.setting
+      if (!settingKey) {
+        console.warn('Input without setting key:', input)
+        continue
+      }
+
       const newValue = input.value.trim()
       const currentSetting = settings[settingKey]
 
-      // Only update if value changed
       if (currentSetting && currentSetting.value !== newValue) {
         updates.push({
           key: settingKey,
@@ -171,7 +182,6 @@ async function saveAllSettings() {
       return
     }
 
-    // Update all settings
     let successCount = 0
     let errorCount = 0
 
@@ -179,13 +189,14 @@ async function saveAllSettings() {
       try {
         const response = await api.updateSetting(update.key, { value: update.value })
 
-        if (response.success) {
+        if (response && response.success) {
           successCount++
-          // Update local state
-          settings[update.key].value = update.value
+          if (settings[update.key]) {
+            settings[update.key].value = update.value
+          }
         } else {
           errorCount++
-          console.error(`Failed to update ${update.key}:`, response.message)
+          console.error(`Failed to update ${update.key}:`, response?.message)
         }
       } catch (error) {
         errorCount++
@@ -193,7 +204,6 @@ async function saveAllSettings() {
       }
     }
 
-    // Show result
     if (errorCount === 0) {
       alert(`✅ ${successCount} configuraciones guardadas exitosamente`)
       hasChanges = false
@@ -208,16 +218,10 @@ async function saveAllSettings() {
     alert(`Error al guardar: ${error.message}`)
     throw error
   } finally {
-    // Re-enable buttons
-    const buttons = [
-      document.getElementById('save-all-btn'),
-      document.getElementById('save-all-bottom-btn')
-    ]
-
+    const buttons = [saveBtn, saveBottomBtn]
     buttons.forEach(btn => {
       btn.disabled = false
     })
-
     updateSaveButtons()
   }
 }

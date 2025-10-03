@@ -1,0 +1,4425 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "",
+    "title": "standard public schema",
+    "version": "13.0.4"
+  },
+  "host": "dcbavpdlkcjdtjdkntde.supabase.co:443",
+  "basePath": "/",
+  "schemes": ["https"],
+  "consumes": [
+    "application/json",
+    "application/vnd.pgrst.object+json;nulls=stripped",
+    "application/vnd.pgrst.object+json",
+    "text/csv"
+  ],
+  "produces": [
+    "application/json",
+    "application/vnd.pgrst.object+json;nulls=stripped",
+    "application/vnd.pgrst.object+json",
+    "text/csv"
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "produces": ["application/openapi+json", "application/json"],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "summary": "OpenAPI description (this document)",
+        "tags": ["Introspection"]
+      }
+    },
+    "/order_status_history": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.order_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.old_status"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.new_status"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.notes"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.changed_by"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.created_at"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/order_status_history"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "tags": ["order_status_history"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.order_status_history"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "tags": ["order_status_history"]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.order_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.old_status"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.new_status"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.notes"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.changed_by"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.created_at"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": ["order_status_history"]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.order_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.old_status"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.new_status"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.notes"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.changed_by"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_status_history.created_at"
+          },
+          {
+            "$ref": "#/parameters/body.order_status_history"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": ["order_status_history"]
+      }
+    },
+    "/payments": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.payments.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.order_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.payment_method_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.user_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.amount_usd"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.amount_ves"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.currency_rate"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.status"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.payment_method_name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.transaction_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.reference_number"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.payment_details"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.receipt_image_url"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.admin_notes"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.payment_date"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.confirmed_date"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.updated_at"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/payments"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "tags": ["payments"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.payments"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "tags": ["payments"]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.payments.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.order_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.payment_method_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.user_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.amount_usd"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.amount_ves"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.currency_rate"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.status"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.payment_method_name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.transaction_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.reference_number"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.payment_details"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.receipt_image_url"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.admin_notes"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.payment_date"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.confirmed_date"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.updated_at"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": ["payments"]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.payments.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.order_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.payment_method_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.user_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.amount_usd"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.amount_ves"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.currency_rate"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.status"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.payment_method_name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.transaction_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.reference_number"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.payment_details"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.receipt_image_url"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.admin_notes"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.payment_date"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.confirmed_date"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payments.updated_at"
+          },
+          {
+            "$ref": "#/parameters/body.payments"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": ["payments"]
+      }
+    },
+    "/orders": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.orders.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.user_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.customer_email"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.customer_name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.customer_phone"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_address"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_city"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_state"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_zip"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_date"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_time_slot"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_notes"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.status"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.total_amount_usd"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.total_amount_ves"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.currency_rate"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.notes"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.admin_notes"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.updated_at"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/orders"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "tags": ["orders"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.orders"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "tags": ["orders"]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.orders.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.user_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.customer_email"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.customer_name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.customer_phone"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_address"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_city"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_state"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_zip"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_date"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_time_slot"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_notes"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.status"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.total_amount_usd"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.total_amount_ves"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.currency_rate"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.notes"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.admin_notes"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.updated_at"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": ["orders"]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.orders.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.user_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.customer_email"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.customer_name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.customer_phone"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_address"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_city"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_state"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_zip"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_date"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_time_slot"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.delivery_notes"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.status"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.total_amount_usd"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.total_amount_ves"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.currency_rate"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.notes"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.admin_notes"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.orders.updated_at"
+          },
+          {
+            "$ref": "#/parameters/body.orders"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": ["orders"]
+      }
+    },
+    "/occasions": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.occasions.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.description"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.is_active"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.display_order"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.updated_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.slug"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/occasions"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "tags": ["occasions"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.occasions"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "tags": ["occasions"]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.occasions.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.description"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.is_active"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.display_order"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.updated_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.slug"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": ["occasions"]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.occasions.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.description"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.is_active"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.display_order"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.updated_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.occasions.slug"
+          },
+          {
+            "$ref": "#/parameters/body.occasions"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": ["occasions"]
+      }
+    },
+    "/payment_methods": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.type"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.description"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.account_info"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.is_active"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.display_order"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.updated_at"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/payment_methods"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "tags": ["payment_methods"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.payment_methods"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "tags": ["payment_methods"]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.type"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.description"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.account_info"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.is_active"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.display_order"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.updated_at"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": ["payment_methods"]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.type"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.description"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.account_info"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.is_active"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.display_order"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.payment_methods.updated_at"
+          },
+          {
+            "$ref": "#/parameters/body.payment_methods"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": ["payment_methods"]
+      }
+    },
+    "/product_occasions": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.product_occasions.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_occasions.product_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_occasions.occasion_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_occasions.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_occasions.updated_at"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/product_occasions"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "summary": "Relaci\u00f3n muchos-a-muchos entre productos y ocasiones. Evita duplicados gracias al UNIQUE.",
+        "tags": ["product_occasions"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.product_occasions"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "summary": "Relaci\u00f3n muchos-a-muchos entre productos y ocasiones. Evita duplicados gracias al UNIQUE.",
+        "tags": ["product_occasions"]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.product_occasions.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_occasions.product_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_occasions.occasion_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_occasions.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_occasions.updated_at"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Relaci\u00f3n muchos-a-muchos entre productos y ocasiones. Evita duplicados gracias al UNIQUE.",
+        "tags": ["product_occasions"]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.product_occasions.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_occasions.product_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_occasions.occasion_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_occasions.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_occasions.updated_at"
+          },
+          {
+            "$ref": "#/parameters/body.product_occasions"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Relaci\u00f3n muchos-a-muchos entre productos y ocasiones. Evita duplicados gracias al UNIQUE.",
+        "tags": ["product_occasions"]
+      }
+    },
+    "/settings": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.settings.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.key"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.value"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.description"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.type"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.is_public"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.updated_at"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/settings"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "tags": ["settings"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.settings"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "tags": ["settings"]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.settings.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.key"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.value"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.description"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.type"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.is_public"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.updated_at"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": ["settings"]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.settings.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.key"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.value"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.description"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.type"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.is_public"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.settings.updated_at"
+          },
+          {
+            "$ref": "#/parameters/body.settings"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": ["settings"]
+      }
+    },
+    "/products": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.products.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.summary"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.description"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.price_usd"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.price_ves"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.stock"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.sku"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.active"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.featured"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.carousel_order"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.updated_at"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/products"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "summary": "Productos vendidos en la tienda. Cada producto puede tener m\u00faltiples im\u00e1genes y ocasiones.",
+        "tags": ["products"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.products"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "summary": "Productos vendidos en la tienda. Cada producto puede tener m\u00faltiples im\u00e1genes y ocasiones.",
+        "tags": ["products"]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.products.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.summary"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.description"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.price_usd"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.price_ves"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.stock"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.sku"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.active"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.featured"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.carousel_order"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.updated_at"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Productos vendidos en la tienda. Cada producto puede tener m\u00faltiples im\u00e1genes y ocasiones.",
+        "tags": ["products"]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.products.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.summary"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.description"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.price_usd"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.price_ves"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.stock"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.sku"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.active"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.featured"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.carousel_order"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.products.updated_at"
+          },
+          {
+            "$ref": "#/parameters/body.products"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Productos vendidos en la tienda. Cada producto puede tener m\u00faltiples im\u00e1genes y ocasiones.",
+        "tags": ["products"]
+      }
+    },
+    "/order_items": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.order_items.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.order_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.product_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.product_name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.product_summary"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.unit_price_usd"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.unit_price_ves"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.quantity"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.subtotal_usd"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.subtotal_ves"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.updated_at"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/order_items"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "tags": ["order_items"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.order_items"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "tags": ["order_items"]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.order_items.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.order_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.product_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.product_name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.product_summary"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.unit_price_usd"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.unit_price_ves"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.quantity"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.subtotal_usd"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.subtotal_ves"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.updated_at"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": ["order_items"]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.order_items.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.order_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.product_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.product_name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.product_summary"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.unit_price_usd"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.unit_price_ves"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.quantity"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.subtotal_usd"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.subtotal_ves"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.order_items.updated_at"
+          },
+          {
+            "$ref": "#/parameters/body.order_items"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": ["order_items"]
+      }
+    },
+    "/product_images": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.product_images.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.product_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.image_index"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.size"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.url"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.file_hash"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.mime_type"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.is_primary"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.updated_at"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/product_images"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "tags": ["product_images"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.product_images"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "tags": ["product_images"]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.product_images.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.product_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.image_index"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.size"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.url"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.file_hash"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.mime_type"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.is_primary"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.updated_at"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": ["product_images"]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.product_images.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.product_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.image_index"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.size"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.url"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.file_hash"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.mime_type"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.is_primary"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.product_images.updated_at"
+          },
+          {
+            "$ref": "#/parameters/body.product_images"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": ["product_images"]
+      }
+    },
+    "/users": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.users.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.email"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.password_hash"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.full_name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.phone"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.role"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.is_active"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.email_verified"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.updated_at"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/users"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "tags": ["users"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.users"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "tags": ["users"]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.users.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.email"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.password_hash"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.full_name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.phone"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.role"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.is_active"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.email_verified"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.updated_at"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": ["users"]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.users.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.email"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.password_hash"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.full_name"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.phone"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.role"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.is_active"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.email_verified"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.created_at"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.users.updated_at"
+          },
+          {
+            "$ref": "#/parameters/body.users"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": ["users"]
+      }
+    },
+    "/rpc/get_products_by_occasion": {
+      "get": {
+        "parameters": [
+          {
+            "format": "integer",
+            "in": "query",
+            "name": "p_occasion_id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "format": "integer",
+            "in": "query",
+            "name": "p_limit",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) get_products_by_occasion"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "args",
+            "required": true,
+            "schema": {
+              "properties": {
+                "p_limit": {
+                  "format": "integer",
+                  "type": "integer"
+                },
+                "p_occasion_id": {
+                  "format": "integer",
+                  "type": "integer"
+                }
+              },
+              "required": ["p_occasion_id"],
+              "type": "object"
+            }
+          },
+          {
+            "$ref": "#/parameters/preferParams"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) get_products_by_occasion"]
+      }
+    },
+    "/rpc/reset_sequence": {
+      "get": {
+        "parameters": [
+          {
+            "format": "text",
+            "in": "query",
+            "name": "sequence_name",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) reset_sequence"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "args",
+            "required": true,
+            "schema": {
+              "properties": {
+                "sequence_name": {
+                  "format": "text",
+                  "type": "string"
+                }
+              },
+              "required": ["sequence_name"],
+              "type": "object"
+            }
+          },
+          {
+            "$ref": "#/parameters/preferParams"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) reset_sequence"]
+      }
+    },
+    "/rpc/create_order_with_items": {
+      "get": {
+        "parameters": [
+          {
+            "format": "jsonb",
+            "in": "query",
+            "name": "order_data",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "format": "jsonb[]",
+            "in": "query",
+            "name": "order_items",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) create_order_with_items"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "args",
+            "required": true,
+            "schema": {
+              "properties": {
+                "order_data": {
+                  "format": "jsonb"
+                },
+                "order_items": {
+                  "format": "jsonb[]",
+                  "items": {},
+                  "type": "array"
+                }
+              },
+              "required": ["order_data", "order_items"],
+              "type": "object"
+            }
+          },
+          {
+            "$ref": "#/parameters/preferParams"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) create_order_with_items"]
+      }
+    },
+    "/rpc/create_product_with_occasions": {
+      "get": {
+        "parameters": [
+          {
+            "format": "jsonb",
+            "in": "query",
+            "name": "product_data",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "format": "integer[]",
+            "in": "query",
+            "name": "occasion_ids",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) create_product_with_occasions"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "args",
+            "required": true,
+            "schema": {
+              "properties": {
+                "occasion_ids": {
+                  "format": "integer[]",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "type": "array"
+                },
+                "product_data": {
+                  "format": "jsonb"
+                }
+              },
+              "required": ["product_data", "occasion_ids"],
+              "type": "object"
+            }
+          },
+          {
+            "$ref": "#/parameters/preferParams"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) create_product_with_occasions"]
+      }
+    },
+    "/rpc/update_carousel_order_atomic": {
+      "get": {
+        "parameters": [
+          {
+            "format": "integer",
+            "in": "query",
+            "name": "product_id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "format": "integer",
+            "in": "query",
+            "name": "new_order",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) update_carousel_order_atomic"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "args",
+            "required": true,
+            "schema": {
+              "properties": {
+                "new_order": {
+                  "format": "integer",
+                  "type": "integer"
+                },
+                "product_id": {
+                  "format": "integer",
+                  "type": "integer"
+                }
+              },
+              "required": ["product_id", "new_order"],
+              "type": "object"
+            }
+          },
+          {
+            "$ref": "#/parameters/preferParams"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) update_carousel_order_atomic"]
+      }
+    },
+    "/rpc/get_existing_image_by_hash": {
+      "get": {
+        "parameters": [
+          {
+            "format": "character varying",
+            "in": "query",
+            "name": "hash_input",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) get_existing_image_by_hash"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "args",
+            "required": true,
+            "schema": {
+              "properties": {
+                "hash_input": {
+                  "format": "character varying",
+                  "type": "string"
+                }
+              },
+              "required": ["hash_input"],
+              "type": "object"
+            }
+          },
+          {
+            "$ref": "#/parameters/preferParams"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) get_existing_image_by_hash"]
+      }
+    },
+    "/rpc/get_product_occasions": {
+      "get": {
+        "parameters": [
+          {
+            "format": "integer",
+            "in": "query",
+            "name": "p_product_id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) get_product_occasions"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "args",
+            "required": true,
+            "schema": {
+              "properties": {
+                "p_product_id": {
+                  "format": "integer",
+                  "type": "integer"
+                }
+              },
+              "required": ["p_product_id"],
+              "type": "object"
+            }
+          },
+          {
+            "$ref": "#/parameters/preferParams"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) get_product_occasions"]
+      }
+    },
+    "/rpc/update_order_status_with_history": {
+      "get": {
+        "parameters": [
+          {
+            "format": "integer",
+            "in": "query",
+            "name": "order_id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "format": "public.order_status",
+            "in": "query",
+            "name": "new_status",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "format": "text",
+            "in": "query",
+            "name": "notes",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "format": "integer",
+            "in": "query",
+            "name": "changed_by",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) update_order_status_with_history"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "args",
+            "required": true,
+            "schema": {
+              "properties": {
+                "changed_by": {
+                  "format": "integer",
+                  "type": "integer"
+                },
+                "new_status": {
+                  "format": "public.order_status",
+                  "type": "string"
+                },
+                "notes": {
+                  "format": "text",
+                  "type": "string"
+                },
+                "order_id": {
+                  "format": "integer",
+                  "type": "integer"
+                }
+              },
+              "required": ["order_id", "new_status"],
+              "type": "object"
+            }
+          },
+          {
+            "$ref": "#/parameters/preferParams"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) update_order_status_with_history"]
+      }
+    },
+    "/rpc/create_product_images_atomic": {
+      "get": {
+        "parameters": [
+          {
+            "format": "integer",
+            "in": "query",
+            "name": "product_id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "format": "integer",
+            "in": "query",
+            "name": "image_index",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "format": "jsonb[]",
+            "in": "query",
+            "name": "images_data",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "format": "boolean",
+            "in": "query",
+            "name": "is_primary",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) create_product_images_atomic"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "args",
+            "required": true,
+            "schema": {
+              "properties": {
+                "image_index": {
+                  "format": "integer",
+                  "type": "integer"
+                },
+                "images_data": {
+                  "format": "jsonb[]",
+                  "items": {},
+                  "type": "array"
+                },
+                "is_primary": {
+                  "format": "boolean",
+                  "type": "boolean"
+                },
+                "product_id": {
+                  "format": "integer",
+                  "type": "integer"
+                }
+              },
+              "required": ["product_id", "image_index", "images_data"],
+              "type": "object"
+            }
+          },
+          {
+            "$ref": "#/parameters/preferParams"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) create_product_images_atomic"]
+      }
+    },
+    "/rpc/delete_product_images_safe": {
+      "get": {
+        "parameters": [
+          {
+            "format": "integer",
+            "in": "query",
+            "name": "product_id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) delete_product_images_safe"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "args",
+            "required": true,
+            "schema": {
+              "properties": {
+                "product_id": {
+                  "format": "integer",
+                  "type": "integer"
+                }
+              },
+              "required": ["product_id"],
+              "type": "object"
+            }
+          },
+          {
+            "$ref": "#/parameters/preferParams"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) delete_product_images_safe"]
+      }
+    },
+    "/rpc/get_products_with_occasions": {
+      "get": {
+        "parameters": [
+          {
+            "format": "integer",
+            "in": "query",
+            "name": "p_limit",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "format": "integer",
+            "in": "query",
+            "name": "p_offset",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) get_products_with_occasions"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "args",
+            "required": true,
+            "schema": {
+              "properties": {
+                "p_limit": {
+                  "format": "integer",
+                  "type": "integer"
+                },
+                "p_offset": {
+                  "format": "integer",
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "$ref": "#/parameters/preferParams"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": ["(rpc) get_products_with_occasions"]
+      }
+    }
+  },
+  "definitions": {
+    "order_status_history": {
+      "required": ["id", "order_id", "new_status"],
+      "properties": {
+        "id": {
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "order_id": {
+          "description": "Note:\nThis is a Foreign Key to `orders.id`.<fk table='orders' column='id'/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "old_status": {
+          "enum": ["pending", "verified", "preparing", "shipped", "delivered", "cancelled"],
+          "format": "public.order_status",
+          "type": "string"
+        },
+        "new_status": {
+          "enum": ["pending", "verified", "preparing", "shipped", "delivered", "cancelled"],
+          "format": "public.order_status",
+          "type": "string"
+        },
+        "notes": {
+          "format": "text",
+          "type": "string"
+        },
+        "changed_by": {
+          "description": "Note:\nThis is a Foreign Key to `users.id`.<fk table='users' column='id'/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "created_at": {
+          "default": "CURRENT_TIMESTAMP",
+          "format": "timestamp with time zone",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "payments": {
+      "required": ["id", "order_id", "amount_usd", "payment_method_name"],
+      "properties": {
+        "id": {
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "order_id": {
+          "description": "Note:\nThis is a Foreign Key to `orders.id`.<fk table='orders' column='id'/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "payment_method_id": {
+          "description": "Note:\nThis is a Foreign Key to `payment_methods.id`.<fk table='payment_methods' column='id'/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "user_id": {
+          "description": "Note:\nThis is a Foreign Key to `users.id`.<fk table='users' column='id'/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "amount_usd": {
+          "format": "numeric",
+          "type": "number"
+        },
+        "amount_ves": {
+          "format": "numeric",
+          "type": "number"
+        },
+        "currency_rate": {
+          "format": "numeric",
+          "type": "number"
+        },
+        "status": {
+          "default": "pending",
+          "enum": ["pending", "completed", "failed", "refunded", "partially_refunded"],
+          "format": "public.payment_status",
+          "type": "string"
+        },
+        "payment_method_name": {
+          "format": "character varying",
+          "maxLength": 100,
+          "type": "string"
+        },
+        "transaction_id": {
+          "format": "character varying",
+          "maxLength": 255,
+          "type": "string"
+        },
+        "reference_number": {
+          "format": "character varying",
+          "maxLength": 255,
+          "type": "string"
+        },
+        "payment_details": {
+          "format": "jsonb"
+        },
+        "receipt_image_url": {
+          "format": "text",
+          "type": "string"
+        },
+        "admin_notes": {
+          "format": "text",
+          "type": "string"
+        },
+        "payment_date": {
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "confirmed_date": {
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "created_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "updated_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "orders": {
+      "required": ["id", "customer_email", "customer_name", "delivery_address", "total_amount_usd"],
+      "properties": {
+        "id": {
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "user_id": {
+          "description": "Note:\nThis is a Foreign Key to `users.id`.<fk table='users' column='id'/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "customer_email": {
+          "format": "character varying",
+          "maxLength": 255,
+          "type": "string"
+        },
+        "customer_name": {
+          "format": "character varying",
+          "maxLength": 255,
+          "type": "string"
+        },
+        "customer_phone": {
+          "format": "character varying",
+          "maxLength": 20,
+          "type": "string"
+        },
+        "delivery_address": {
+          "format": "text",
+          "type": "string"
+        },
+        "delivery_city": {
+          "format": "character varying",
+          "maxLength": 100,
+          "type": "string"
+        },
+        "delivery_state": {
+          "format": "character varying",
+          "maxLength": 100,
+          "type": "string"
+        },
+        "delivery_zip": {
+          "format": "character varying",
+          "maxLength": 20,
+          "type": "string"
+        },
+        "delivery_date": {
+          "format": "date",
+          "type": "string"
+        },
+        "delivery_time_slot": {
+          "format": "character varying",
+          "maxLength": 100,
+          "type": "string"
+        },
+        "delivery_notes": {
+          "format": "text",
+          "type": "string"
+        },
+        "status": {
+          "default": "pending",
+          "enum": ["pending", "verified", "preparing", "shipped", "delivered", "cancelled"],
+          "format": "public.order_status",
+          "type": "string"
+        },
+        "total_amount_usd": {
+          "format": "numeric",
+          "type": "number"
+        },
+        "total_amount_ves": {
+          "format": "numeric",
+          "type": "number"
+        },
+        "currency_rate": {
+          "format": "numeric",
+          "type": "number"
+        },
+        "notes": {
+          "format": "text",
+          "type": "string"
+        },
+        "admin_notes": {
+          "format": "text",
+          "type": "string"
+        },
+        "created_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "updated_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "occasions": {
+      "required": ["id", "name", "slug"],
+      "properties": {
+        "id": {
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "name": {
+          "format": "character varying",
+          "maxLength": 100,
+          "type": "string"
+        },
+        "description": {
+          "format": "text",
+          "type": "string"
+        },
+        "is_active": {
+          "default": true,
+          "format": "boolean",
+          "type": "boolean"
+        },
+        "display_order": {
+          "default": 0,
+          "format": "integer",
+          "type": "integer"
+        },
+        "created_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "updated_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "slug": {
+          "format": "character varying",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "payment_methods": {
+      "required": ["id", "name", "type"],
+      "properties": {
+        "id": {
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "name": {
+          "format": "character varying",
+          "maxLength": 100,
+          "type": "string"
+        },
+        "type": {
+          "enum": ["bank_transfer", "mobile_payment", "cash", "crypto", "international"],
+          "format": "public.payment_method_type",
+          "type": "string"
+        },
+        "description": {
+          "format": "text",
+          "type": "string"
+        },
+        "account_info": {
+          "format": "jsonb"
+        },
+        "is_active": {
+          "default": true,
+          "format": "boolean",
+          "type": "boolean"
+        },
+        "display_order": {
+          "default": 0,
+          "format": "integer",
+          "type": "integer"
+        },
+        "created_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "updated_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "product_occasions": {
+      "description": "Relaci\u00f3n muchos-a-muchos entre productos y ocasiones. Evita duplicados gracias al UNIQUE.",
+      "required": ["id", "product_id", "occasion_id"],
+      "properties": {
+        "id": {
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "product_id": {
+          "description": "Note:\nThis is a Foreign Key to `products.id`.<fk table='products' column='id'/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "occasion_id": {
+          "description": "Note:\nThis is a Foreign Key to `occasions.id`.<fk table='occasions' column='id'/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "created_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "updated_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "settings": {
+      "required": ["id", "key"],
+      "properties": {
+        "id": {
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "key": {
+          "format": "character varying",
+          "maxLength": 100,
+          "type": "string"
+        },
+        "value": {
+          "format": "text",
+          "type": "string"
+        },
+        "description": {
+          "format": "text",
+          "type": "string"
+        },
+        "type": {
+          "default": "string",
+          "format": "character varying",
+          "maxLength": 20,
+          "type": "string"
+        },
+        "is_public": {
+          "default": false,
+          "format": "boolean",
+          "type": "boolean"
+        },
+        "created_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "updated_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "products": {
+      "description": "Productos vendidos en la tienda. Cada producto puede tener m\u00faltiples im\u00e1genes y ocasiones.",
+      "required": ["id", "name", "price_usd"],
+      "properties": {
+        "id": {
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "name": {
+          "format": "character varying",
+          "maxLength": 255,
+          "type": "string"
+        },
+        "summary": {
+          "format": "text",
+          "type": "string"
+        },
+        "description": {
+          "format": "text",
+          "type": "string"
+        },
+        "price_usd": {
+          "format": "numeric",
+          "type": "number"
+        },
+        "price_ves": {
+          "format": "numeric",
+          "type": "number"
+        },
+        "stock": {
+          "default": 0,
+          "format": "integer",
+          "type": "integer"
+        },
+        "sku": {
+          "format": "character varying",
+          "maxLength": 50,
+          "type": "string"
+        },
+        "active": {
+          "default": true,
+          "format": "boolean",
+          "type": "boolean"
+        },
+        "featured": {
+          "default": false,
+          "format": "boolean",
+          "type": "boolean"
+        },
+        "carousel_order": {
+          "description": "Orden en que aparece en el carousel. NULL = no aparece. Valores >= 0.",
+          "format": "integer",
+          "type": "integer"
+        },
+        "created_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "updated_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "order_items": {
+      "required": ["id", "order_id", "product_name", "unit_price_usd", "quantity", "subtotal_usd"],
+      "properties": {
+        "id": {
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "order_id": {
+          "description": "Note:\nThis is a Foreign Key to `orders.id`.<fk table='orders' column='id'/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "product_id": {
+          "description": "Note:\nThis is a Foreign Key to `products.id`.<fk table='products' column='id'/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "product_name": {
+          "format": "character varying",
+          "maxLength": 255,
+          "type": "string"
+        },
+        "product_summary": {
+          "format": "text",
+          "type": "string"
+        },
+        "unit_price_usd": {
+          "format": "numeric",
+          "type": "number"
+        },
+        "unit_price_ves": {
+          "format": "numeric",
+          "type": "number"
+        },
+        "quantity": {
+          "format": "integer",
+          "type": "integer"
+        },
+        "subtotal_usd": {
+          "format": "numeric",
+          "type": "number"
+        },
+        "subtotal_ves": {
+          "format": "numeric",
+          "type": "number"
+        },
+        "created_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "updated_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "product_images": {
+      "required": [
+        "id",
+        "product_id",
+        "image_index",
+        "size",
+        "url",
+        "file_hash",
+        "mime_type",
+        "is_primary"
+      ],
+      "properties": {
+        "id": {
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "product_id": {
+          "description": "Note:\nThis is a Foreign Key to `products.id`.<fk table='products' column='id'/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "image_index": {
+          "format": "integer",
+          "type": "integer"
+        },
+        "size": {
+          "enum": ["thumb", "small", "medium", "large"],
+          "format": "public.image_size",
+          "type": "string"
+        },
+        "url": {
+          "format": "text",
+          "type": "string"
+        },
+        "file_hash": {
+          "format": "character varying",
+          "maxLength": 64,
+          "type": "string"
+        },
+        "mime_type": {
+          "default": "image/webp",
+          "format": "character varying",
+          "maxLength": 50,
+          "type": "string"
+        },
+        "is_primary": {
+          "default": false,
+          "format": "boolean",
+          "type": "boolean"
+        },
+        "created_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "updated_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "users": {
+      "required": ["id", "email"],
+      "properties": {
+        "id": {
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "integer",
+          "type": "integer"
+        },
+        "email": {
+          "format": "character varying",
+          "maxLength": 255,
+          "type": "string"
+        },
+        "password_hash": {
+          "format": "text",
+          "type": "string"
+        },
+        "full_name": {
+          "format": "character varying",
+          "maxLength": 255,
+          "type": "string"
+        },
+        "phone": {
+          "format": "character varying",
+          "maxLength": 20,
+          "type": "string"
+        },
+        "role": {
+          "default": "user",
+          "enum": ["user", "admin"],
+          "format": "public.user_role",
+          "type": "string"
+        },
+        "is_active": {
+          "default": true,
+          "format": "boolean",
+          "type": "boolean"
+        },
+        "email_verified": {
+          "default": false,
+          "format": "boolean",
+          "type": "boolean"
+        },
+        "created_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "updated_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "parameters": {
+    "preferParams": {
+      "name": "Prefer",
+      "description": "Preference",
+      "required": false,
+      "enum": [],
+      "in": "header",
+      "type": "string"
+    },
+    "preferReturn": {
+      "name": "Prefer",
+      "description": "Preference",
+      "required": false,
+      "enum": ["return=representation", "return=minimal", "return=none"],
+      "in": "header",
+      "type": "string"
+    },
+    "preferCount": {
+      "name": "Prefer",
+      "description": "Preference",
+      "required": false,
+      "enum": ["count=none"],
+      "in": "header",
+      "type": "string"
+    },
+    "preferPost": {
+      "name": "Prefer",
+      "description": "Preference",
+      "required": false,
+      "enum": [
+        "return=representation",
+        "return=minimal",
+        "return=none",
+        "resolution=ignore-duplicates",
+        "resolution=merge-duplicates"
+      ],
+      "in": "header",
+      "type": "string"
+    },
+    "select": {
+      "name": "select",
+      "description": "Filtering Columns",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "on_conflict": {
+      "name": "on_conflict",
+      "description": "On Conflict",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "order": {
+      "name": "order",
+      "description": "Ordering",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "range": {
+      "name": "Range",
+      "description": "Limiting and Pagination",
+      "required": false,
+      "in": "header",
+      "type": "string"
+    },
+    "rangeUnit": {
+      "name": "Range-Unit",
+      "description": "Limiting and Pagination",
+      "required": false,
+      "default": "items",
+      "in": "header",
+      "type": "string"
+    },
+    "offset": {
+      "name": "offset",
+      "description": "Limiting and Pagination",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "limit": {
+      "name": "limit",
+      "description": "Limiting and Pagination",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.order_status_history": {
+      "name": "order_status_history",
+      "description": "order_status_history",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/order_status_history"
+      }
+    },
+    "rowFilter.order_status_history.id": {
+      "name": "id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.order_status_history.order_id": {
+      "name": "order_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.order_status_history.old_status": {
+      "name": "old_status",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.order_status_history.new_status": {
+      "name": "new_status",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.order_status_history.notes": {
+      "name": "notes",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.order_status_history.changed_by": {
+      "name": "changed_by",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.order_status_history.created_at": {
+      "name": "created_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.payments": {
+      "name": "payments",
+      "description": "payments",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/payments"
+      }
+    },
+    "rowFilter.payments.id": {
+      "name": "id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payments.order_id": {
+      "name": "order_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payments.payment_method_id": {
+      "name": "payment_method_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payments.user_id": {
+      "name": "user_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payments.amount_usd": {
+      "name": "amount_usd",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payments.amount_ves": {
+      "name": "amount_ves",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payments.currency_rate": {
+      "name": "currency_rate",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payments.status": {
+      "name": "status",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payments.payment_method_name": {
+      "name": "payment_method_name",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payments.transaction_id": {
+      "name": "transaction_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payments.reference_number": {
+      "name": "reference_number",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payments.payment_details": {
+      "name": "payment_details",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payments.receipt_image_url": {
+      "name": "receipt_image_url",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payments.admin_notes": {
+      "name": "admin_notes",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payments.payment_date": {
+      "name": "payment_date",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payments.confirmed_date": {
+      "name": "confirmed_date",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payments.created_at": {
+      "name": "created_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payments.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.orders": {
+      "name": "orders",
+      "description": "orders",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/orders"
+      }
+    },
+    "rowFilter.orders.id": {
+      "name": "id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.user_id": {
+      "name": "user_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.customer_email": {
+      "name": "customer_email",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.customer_name": {
+      "name": "customer_name",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.customer_phone": {
+      "name": "customer_phone",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.delivery_address": {
+      "name": "delivery_address",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.delivery_city": {
+      "name": "delivery_city",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.delivery_state": {
+      "name": "delivery_state",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.delivery_zip": {
+      "name": "delivery_zip",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.delivery_date": {
+      "name": "delivery_date",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.delivery_time_slot": {
+      "name": "delivery_time_slot",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.delivery_notes": {
+      "name": "delivery_notes",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.status": {
+      "name": "status",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.total_amount_usd": {
+      "name": "total_amount_usd",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.total_amount_ves": {
+      "name": "total_amount_ves",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.currency_rate": {
+      "name": "currency_rate",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.notes": {
+      "name": "notes",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.admin_notes": {
+      "name": "admin_notes",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.created_at": {
+      "name": "created_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.orders.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.occasions": {
+      "name": "occasions",
+      "description": "occasions",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/occasions"
+      }
+    },
+    "rowFilter.occasions.id": {
+      "name": "id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.occasions.name": {
+      "name": "name",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.occasions.description": {
+      "name": "description",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.occasions.is_active": {
+      "name": "is_active",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.occasions.display_order": {
+      "name": "display_order",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.occasions.created_at": {
+      "name": "created_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.occasions.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.occasions.slug": {
+      "name": "slug",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.payment_methods": {
+      "name": "payment_methods",
+      "description": "payment_methods",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/payment_methods"
+      }
+    },
+    "rowFilter.payment_methods.id": {
+      "name": "id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payment_methods.name": {
+      "name": "name",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payment_methods.type": {
+      "name": "type",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payment_methods.description": {
+      "name": "description",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payment_methods.account_info": {
+      "name": "account_info",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payment_methods.is_active": {
+      "name": "is_active",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payment_methods.display_order": {
+      "name": "display_order",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payment_methods.created_at": {
+      "name": "created_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.payment_methods.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.product_occasions": {
+      "name": "product_occasions",
+      "description": "product_occasions",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/product_occasions"
+      }
+    },
+    "rowFilter.product_occasions.id": {
+      "name": "id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.product_occasions.product_id": {
+      "name": "product_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.product_occasions.occasion_id": {
+      "name": "occasion_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.product_occasions.created_at": {
+      "name": "created_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.product_occasions.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.settings": {
+      "name": "settings",
+      "description": "settings",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/settings"
+      }
+    },
+    "rowFilter.settings.id": {
+      "name": "id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.settings.key": {
+      "name": "key",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.settings.value": {
+      "name": "value",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.settings.description": {
+      "name": "description",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.settings.type": {
+      "name": "type",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.settings.is_public": {
+      "name": "is_public",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.settings.created_at": {
+      "name": "created_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.settings.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.products": {
+      "name": "products",
+      "description": "products",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/products"
+      }
+    },
+    "rowFilter.products.id": {
+      "name": "id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.products.name": {
+      "name": "name",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.products.summary": {
+      "name": "summary",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.products.description": {
+      "name": "description",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.products.price_usd": {
+      "name": "price_usd",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.products.price_ves": {
+      "name": "price_ves",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.products.stock": {
+      "name": "stock",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.products.sku": {
+      "name": "sku",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.products.active": {
+      "name": "active",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.products.featured": {
+      "name": "featured",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.products.carousel_order": {
+      "name": "carousel_order",
+      "description": "Orden en que aparece en el carousel. NULL = no aparece. Valores >= 0.",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.products.created_at": {
+      "name": "created_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.products.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.order_items": {
+      "name": "order_items",
+      "description": "order_items",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/order_items"
+      }
+    },
+    "rowFilter.order_items.id": {
+      "name": "id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.order_items.order_id": {
+      "name": "order_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.order_items.product_id": {
+      "name": "product_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.order_items.product_name": {
+      "name": "product_name",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.order_items.product_summary": {
+      "name": "product_summary",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.order_items.unit_price_usd": {
+      "name": "unit_price_usd",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.order_items.unit_price_ves": {
+      "name": "unit_price_ves",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.order_items.quantity": {
+      "name": "quantity",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.order_items.subtotal_usd": {
+      "name": "subtotal_usd",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.order_items.subtotal_ves": {
+      "name": "subtotal_ves",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.order_items.created_at": {
+      "name": "created_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.order_items.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.product_images": {
+      "name": "product_images",
+      "description": "product_images",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/product_images"
+      }
+    },
+    "rowFilter.product_images.id": {
+      "name": "id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.product_images.product_id": {
+      "name": "product_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.product_images.image_index": {
+      "name": "image_index",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.product_images.size": {
+      "name": "size",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.product_images.url": {
+      "name": "url",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.product_images.file_hash": {
+      "name": "file_hash",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.product_images.mime_type": {
+      "name": "mime_type",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.product_images.is_primary": {
+      "name": "is_primary",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.product_images.created_at": {
+      "name": "created_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.product_images.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.users": {
+      "name": "users",
+      "description": "users",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/users"
+      }
+    },
+    "rowFilter.users.id": {
+      "name": "id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.users.email": {
+      "name": "email",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.users.password_hash": {
+      "name": "password_hash",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.users.full_name": {
+      "name": "full_name",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.users.phone": {
+      "name": "phone",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.users.role": {
+      "name": "role",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.users.is_active": {
+      "name": "is_active",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.users.email_verified": {
+      "name": "email_verified",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.users.created_at": {
+      "name": "created_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.users.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    }
+  },
+  "externalDocs": {
+    "description": "PostgREST Documentation",
+    "url": "https://postgrest.org/en/v\"13\"/references/api.html"
+  }
+}

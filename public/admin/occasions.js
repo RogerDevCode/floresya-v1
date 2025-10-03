@@ -3,37 +3,10 @@
  * Handles CRUD operations for occasions with soft delete functionality
  */
 
-import '../../js/lucide-icons.js'
-
-// API base URL
-const API_URL = '/api/occasions'
-
 // Global state
 let currentFilter = 'all' // 'all', 'active', 'inactive'
 let selectedOccasion = null
-let occasions = []
-
-/**
- * Fetch occasions from API
- */
-async function fetchOccasions() {
-  try {
-    const response = await fetch(API_URL)
-    if (!response.ok) {
-      throw new Error('Error fetching occasions')
-    }
-    const data = await response.json()
-    occasions = data.data || []
-    return occasions
-  } catch (error) {
-    console.error('fetchOccasions failed:', error)
-    alert('Error al cargar ocasiones: ' + error.message)
-    throw error
-  }
-}
-
-// OLD Mock data (kept for reference, will be replaced by API)
-const _oldMockData = [
+const occasions = [
   {
     id: 16,
     name: 'Cumpleaños',
@@ -41,8 +14,8 @@ const _oldMockData = [
     slug: 'cumpleanos',
     is_active: true,
     display_order: 0,
-    created_at: '2025-09-25T05:04:48.026907+00:00',
-    updated_at: '2025-09-25T05:04:48.026907+00:00',
+    created_at: '2025-09-25T05:04:48.026907+00',
+    updated_at: '2025-09-25T05:04:48.026907+00',
     icon: 'gift',
     color: '#db2777'
   },
@@ -53,8 +26,8 @@ const _oldMockData = [
     slug: 'aniversario',
     is_active: true,
     display_order: 0,
-    created_at: '2025-09-25T05:04:48.026907+00:00',
-    updated_at: '2025-09-25T05:04:48.026907+00:00',
+    created_at: '2025-09-25T05:04:48.026907+00',
+    updated_at: '2025-09-25T05:04:48.026907+00',
     icon: 'heart',
     color: '#10b981'
   },
@@ -65,8 +38,8 @@ const _oldMockData = [
     slug: 'san-valentin',
     is_active: true,
     display_order: 0,
-    created_at: '2025-09-25T05:04:48.026907+00:00',
-    updated_at: '2025-09-25T05:04:48.026907+00:00',
+    created_at: '2025-09-25T05:04:48.026907+00',
+    updated_at: '2025-09-25T05:04:48.026907+00',
     icon: 'heart',
     color: '#ef4444'
   },
@@ -77,8 +50,8 @@ const _oldMockData = [
     slug: 'dia-de-la-madre',
     is_active: true,
     display_order: 0,
-    created_at: '2025-09-25T05:04:48.026907+00:00',
-    updated_at: '2025-09-25T05:04:48.026907+00:00',
+    created_at: '2025-09-25T05:04:48.026907+00',
+    updated_at: '2025-09-25T05:04:48.026907+00',
     icon: 'flower',
     color: '#8b5cf6'
   },
@@ -89,8 +62,8 @@ const _oldMockData = [
     slug: 'graduacion',
     is_active: false, // Inactive for demonstration
     display_order: 0,
-    created_at: '2025-09-25T05:04:48.026907+00:00',
-    updated_at: '2025-09-25T05:04:48.026907+00:00',
+    created_at: '2025-09-25T05:04:48.026907+00',
+    updated_at: '2025-09-25T05:04:48.026907+00',
     icon: 'graduation-cap',
     color: '#f59e0b'
   }
@@ -166,6 +139,7 @@ function setupEventListeners() {
   // Auto-generate slug from name
   document.getElementById('occasion-name').addEventListener('input', function () {
     if (!selectedOccasion) {
+      // Only auto-generate if creating new
       const name = this.value
       const slug = generateSlug(name)
       document.getElementById('occasion-slug').value = slug
@@ -180,34 +154,27 @@ function generateSlug(name) {
   return name
     .toLowerCase()
     .trim()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove accents
     .replace(/[^\w\s-]/g, '') // Remove special characters
-    .replace(/[\s_-]+/g, '-') // Replace spaces with hyphens
+    .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
     .replace(/^-+|-+$/g, '') // Remove leading/trailing hyphens
 }
 
 /**
  * Load occasions based on current filter
  */
-async function loadOccasions() {
-  try {
-    await fetchOccasions()
-    let filteredOccasions = [...occasions]
+function loadOccasions() {
+  let filteredOccasions = [...occasions]
 
-    switch (currentFilter) {
-      case 'active':
-        filteredOccasions = filteredOccasions.filter(occasion => occasion.is_active)
-        break
-      case 'inactive':
-        filteredOccasions = filteredOccasions.filter(occasion => !occasion.is_active)
-        break
-    }
-
-    renderOccasionsTable(filteredOccasions)
-  } catch (error) {
-    console.error('loadOccasions failed:', error)
+  switch (currentFilter) {
+    case 'active':
+      filteredOccasions = filteredOccasions.filter(occasion => occasion.is_active)
+      break
+    case 'inactive':
+      filteredOccasions = filteredOccasions.filter(occasion => !occasion.is_active)
+      break
   }
+
+  renderOccasionsTable(filteredOccasions)
 }
 
 /**
@@ -223,15 +190,7 @@ function renderOccasionsTable(occasionsToRender) {
     row.dataset.id = occasion.id
 
     // Format date for display
-    let updatedAt = 'N/A'
-    try {
-      const date = new Date(occasion.updated_at)
-      if (!isNaN(date.getTime())) {
-        updatedAt = date.toLocaleDateString('es-ES')
-      }
-    } catch (error) {
-      console.error('Error parsing date:', occasion.updated_at, error)
-    }
+    const updatedAt = new Date(occasion.updated_at).toLocaleDateString('es-ES')
 
     row.innerHTML = `
       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${occasion.id}</td>
@@ -289,7 +248,7 @@ function selectOccasion(occasion) {
 /**
  * Save occasion (create or update)
  */
-async function saveOccasion() {
+function saveOccasion() {
   const id = document.getElementById('occasion-id').value
   const name = document.getElementById('occasion-name').value.trim()
   const slug = document.getElementById('occasion-slug').value.trim()
@@ -305,84 +264,72 @@ async function saveOccasion() {
     return
   }
 
-  try {
-    const occasionData = {
+  if (id) {
+    // Update existing occasion
+    const index = occasions.findIndex(o => o.id === id)
+    if (index !== -1) {
+      occasions[index] = {
+        ...occasions[index],
+        name,
+        slug,
+        description,
+        icon,
+        color,
+        display_order: displayOrder,
+        is_active: isActive,
+        updated_at: new Date().toISOString()
+      }
+    }
+  } else {
+    // Create new occasion
+    const newId = Math.max(...occasions.map(o => o.id), 0) + 1
+    const newOccasion = {
+      id: newId,
       name,
       slug,
       description,
       icon,
       color,
       display_order: displayOrder,
-      is_active: isActive
+      is_active: isActive,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     }
-
-    let response
-    if (id) {
-      // Update existing occasion
-      response = await fetch(`${API_URL}/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(occasionData)
-      })
-    } else {
-      // Create new occasion
-      response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(occasionData)
-      })
-    }
-
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || 'Error al guardar ocasión')
-    }
-
-    // Reset form and reload table
-    resetForm()
-    await loadOccasions()
-
-    alert(`Ocasión ${id ? 'actualizada' : 'creada'} exitosamente!`)
-  } catch (error) {
-    console.error('saveOccasion failed:', error)
-    alert('Error al guardar ocasión: ' + error.message)
+    occasions.push(newOccasion)
   }
+
+  // Reset form and reload table
+  resetForm()
+  loadOccasions()
+
+  alert(`Ocasión ${id ? 'actualizada' : 'creada'} exitosamente!`)
 }
 
 /**
  * Delete occasion (soft delete)
  */
-async function deleteOccasion() {
+function deleteOccasion() {
   if (!selectedOccasion) {
     return
   }
 
   if (
-    !confirm(
+    confirm(
       `¿Está seguro de que desea eliminar la ocasión "${selectedOccasion.name}"? Esta acción desactivará la ocasión.`
     )
   ) {
-    return
-  }
-
-  try {
-    const response = await fetch(`${API_URL}/${selectedOccasion.id}`, {
-      method: 'DELETE'
-    })
-
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || 'Error al eliminar ocasión')
+    // For soft delete, we just set is_active to false
+    const index = occasions.findIndex(o => o.id === selectedOccasion.id)
+    if (index !== -1) {
+      occasions[index].is_active = false
+      occasions[index].updated_at = new Date().toISOString()
     }
 
     // Reset form and reload table
     resetForm()
-    await loadOccasions()
+    loadOccasions()
 
     alert('Ocasión desactivada exitosamente!')
-  } catch (error) {
-    console.error('deleteOccasion failed:', error)
-    alert('Error al eliminar ocasión: ' + error.message)
   }
 }
 

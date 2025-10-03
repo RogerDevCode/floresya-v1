@@ -51,6 +51,7 @@ floresya-v1/
 │   │   ├── security.js               # Helmet, CORS, Rate Limit, XSS
 │   │   ├── logger.js                 # Winston
 │   │   └── errorHandler.js           # Global error handler
+│   ├── utils/normalize.js            # Text normalization (accent-insensitive search)
 │   ├── errors/AppError.js            # 15+ custom error classes
 │   └── docs/openapi-annotations.js   # 60+ endpoint annotations
 │
@@ -105,6 +106,42 @@ Service → Controller → JSON Response
 ```
 
 **CRITICAL**: Only `api/services/` can import `supabaseClient.js`
+
+---
+
+## Accent-Insensitive Search (Normalized Columns)
+
+All text search uses **indexed normalized columns** for performance and accent-insensitive matching.
+
+**Database**: PostgreSQL GENERATED columns with B-tree indexes
+
+- `products`: `name_normalized`, `description_normalized`
+- `orders`: `customer_name_normalized`, `customer_email_normalized`
+- `users`: `full_name_normalized`, `email_normalized`
+
+**Backend** (`api/utils/normalize.js`):
+
+```javascript
+import { buildSearchCondition } from '../utils/normalize.js'
+
+const SEARCH_COLUMNS = DB_SCHEMA.products.search // ['name_normalized', 'description_normalized']
+
+const searchCondition = buildSearchCondition(SEARCH_COLUMNS, filters.search)
+if (searchCondition) {
+  query = query.or(searchCondition) // Uses .ilike with normalized text
+}
+```
+
+**Frontend**: Use `normalizeSearch()` in search inputs before sending to API
+
+```javascript
+import { normalizeSearch } from './shared/api.js' // Or create utility
+
+const searchTerm = normalizeSearch(inputValue) // "jose" === "josé"
+const results = await api.getProducts({ search: searchTerm })
+```
+
+**Rule**: Search queries MUST normalize text client-side to match server-side indexed columns.
 
 ---
 

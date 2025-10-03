@@ -54,9 +54,40 @@ export const api = {
   },
   getProductPrimaryImage: productId => fetchJSON(`/products/${productId}/images/primary`),
 
-  // Orders
-  createOrder: data => fetchJSON('/orders', { method: 'POST', body: JSON.stringify(data) }),
-  getOrders: () => fetchJSON('/orders'),
+  // Orders (OpenAPI contract compliant)
+  createOrder: (order, items) =>
+    fetchJSON('/orders', {
+      method: 'POST',
+      body: JSON.stringify({ order, items })
+    }),
+  getOrders: filters => {
+    const params = new URLSearchParams(filters)
+    return fetchJSON(`/orders?${params}`)
+  },
+  getOrderById: id => fetchJSON(`/orders/${id}`),
+  getOrdersByUser: (userId, filters = {}) => {
+    const params = new URLSearchParams(filters)
+    return fetchJSON(`/orders/user/${userId}?${params}`)
+  },
+  getOrderStatusHistory: orderId => fetchJSON(`/orders/${orderId}/status-history`),
+  updateOrderStatus: (orderId, status, notes) =>
+    fetchJSON(`/orders/${orderId}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status, notes })
+    }),
+  cancelOrder: (orderId, notes) =>
+    fetchJSON(`/orders/${orderId}/cancel`, {
+      method: 'PATCH',
+      body: JSON.stringify({ notes })
+    }),
+
+  // Payments
+  getPaymentMethods: () => fetchJSON('/payments/methods'),
+  confirmPayment: (orderId, paymentData) =>
+    fetchJSON(`/payments/${orderId}/confirm`, {
+      method: 'PATCH',
+      body: JSON.stringify(paymentData)
+    }),
 
   // Users
   login: data => fetchJSON('/users/login', { method: 'POST', body: JSON.stringify(data) }),

@@ -9,7 +9,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="../css/styles.css" />
     <link rel="stylesheet" href="../css/tailwind.css" />
-    <link rel="stylesheet" href="admin.css" />
+    <link rel="stylesheet" href="../admin.css" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
@@ -245,13 +245,13 @@
           </a>
 
           <!-- Ocasiones -->
-          <a href="#" class="sidebar-menu-item" data-view="occasions">
+          <a href="occasions.html" class="sidebar-menu-item" data-external="true">
             <i data-lucide="calendar" class="h-5 w-5 mr-3"></i>
             <span class="menu-text">Ocasiones</span>
           </a>
 
           <!-- Contact Editor -->
-          <a href="#" class="sidebar-menu-item" data-view="contact-editor">
+          <a href="contact-editor.html" class="sidebar-menu-item" data-external="true">
             <i data-lucide="contact" class="h-5 w-5 mr-3"></i>
             <span class="menu-text">Editor de Contacto</span>
           </a>
@@ -508,30 +508,6 @@
           <p class="text-gray-500 mt-2">
             Aquí podrás administrar la información de usuarios y clientes
           </p>
-        </div>
-      </div>
-
-      <!-- Ocasiones View -->
-      <div id="occasions-view" class="hidden">
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Gestión de Ocasiones</h1>
-        <div class="bg-white rounded-xl shadow-md p-6 admin-card">
-          <p class="text-gray-600">Sección de gestión de ocasiones en desarrollo</p>
-          <p class="text-gray-500 mt-2">Aquí podrás administrar las ocasiones para los productos</p>
-        </div>
-      </div>
-
-      <!-- Contact Editor View -->
-      <div id="contact-editor-view" class="hidden">
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Editor de Contacto</h1>
-        <div class="bg-white rounded-xl shadow-md p-6 admin-card">
-          <p class="text-gray-600">Editor de la página de contacto</p>
-          <p class="text-gray-500 mt-2">Puedes gestionar la información de contacto de la tienda</p>
-          <button
-            id="open-contact-editor-btn"
-            class="mt-4 bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded-lg"
-          >
-            Abrir Editor de Contacto
-          </button>
         </div>
       </div>
 

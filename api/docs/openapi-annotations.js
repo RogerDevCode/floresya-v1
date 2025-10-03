@@ -25,7 +25,7 @@
  *       - name: search
  *         in: query
  *         schema: { type: string }
- *         description: Search in name and description
+ *         description: Search in name and description (accent-insensitive, uses indexed normalized columns)
  *       - name: sortBy
  *         in: query
  *         schema: { type: string, enum: [name, price_usd, created_at, carousel_order] }
@@ -424,13 +424,35 @@
  * /api/orders:
  *   get:
  *     tags: [Orders]
- *     summary: Get all orders
- *     description: Admin only - Returns paginated list of all orders
+ *     summary: Get all orders with filters
+ *     description: Admin only - Returns paginated list of orders with optional filters (uses indexed columns for performance)
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/LimitParam'
  *       - $ref: '#/components/parameters/OffsetParam'
+ *       - name: status
+ *         in: query
+ *         schema:
+ *           type: string
+ *           enum: [pending, verified, preparing, shipped, delivered, cancelled]
+ *         description: Filter by order status (uses idx_orders_status)
+ *       - name: user_id
+ *         in: query
+ *         schema: { type: integer }
+ *         description: Filter by user ID (uses idx_orders_user_id)
+ *       - name: date_from
+ *         in: query
+ *         schema: { type: string, format: date-time }
+ *         description: Filter orders from date (uses idx_orders_created_at)
+ *       - name: date_to
+ *         in: query
+ *         schema: { type: string, format: date-time }
+ *         description: Filter orders to date
+ *       - name: search
+ *         in: query
+ *         schema: { type: string }
+ *         description: Search in customer_name and customer_email (accent-insensitive, uses indexed normalized columns)
  *     responses:
  *       200:
  *         description: Orders retrieved successfully
@@ -453,8 +475,8 @@
  * /api/orders/{id}:
  *   get:
  *     tags: [Orders]
- *     summary: Get order by ID
- *     description: Owner or admin - Returns order details
+ *     summary: Get order by ID with items
+ *     description: Owner or admin - Returns order details with order_items (uses idx_order_items_order_id for JOIN performance)
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -469,7 +491,15 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { $ref: '#/components/schemas/Order' }
+ *                     data:
+ *                       allOf:
+ *                         - $ref: '#/components/schemas/Order'
+ *                         - type: object
+ *                           properties:
+ *                             order_items:
+ *                               type: array
+ *                               items:
+ *                                 $ref: '#/components/schemas/OrderItem'
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
@@ -483,8 +513,8 @@
  * /api/orders/user/{userId}:
  *   get:
  *     tags: [Orders]
- *     summary: Get orders by user
- *     description: Owner or admin - Returns user's orders
+ *     summary: Get orders by user with items
+ *     description: Owner or admin - Returns user's orders with items (uses idx_orders_user_id)
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -492,9 +522,38 @@
  *         in: path
  *         required: true
  *         schema: { type: integer }
+ *         description: User ID
+ *       - name: status
+ *         in: query
+ *         schema:
+ *           type: string
+ *           enum: [pending, verified, preparing, shipped, delivered, cancelled]
+ *         description: Filter by status
+ *       - name: limit
+ *         in: query
+ *         schema: { type: integer, minimum: 1, maximum: 100 }
+ *         description: Limit results
  *     responses:
  *       200:
  *         description: Orders retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: array
+ *                       items:
+ *                         allOf:
+ *                           - $ref: '#/components/schemas/Order'
+ *                           - type: object
+ *                             properties:
+ *                               order_items:
+ *                                 type: array
+ *                                 items:
+ *                                   $ref: '#/components/schemas/OrderItem'
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
@@ -507,7 +566,7 @@
  *   get:
  *     tags: [Orders]
  *     summary: Get order status history
- *     description: Authenticated - Returns complete status change history
+ *     description: Authenticated - Returns complete status change history ordered by created_at DESC (uses idx_order_status_history_created_at)
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -515,6 +574,21 @@
  *     responses:
  *       200:
  *         description: Status history retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/OrderStatusHistory'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
  */
 
 /**
@@ -640,6 +714,20 @@
  *     parameters:
  *       - $ref: '#/components/parameters/LimitParam'
  *       - $ref: '#/components/parameters/OffsetParam'
+ *       - name: role
+ *         in: query
+ *         schema:
+ *           type: string
+ *           enum: [user, admin]
+ *         description: Filter by user role
+ *       - name: email_verified
+ *         in: query
+ *         schema: { type: boolean }
+ *         description: Filter by email verification status
+ *       - name: search
+ *         in: query
+ *         schema: { type: string }
+ *         description: Search in full_name and email (accent-insensitive, uses indexed normalized columns)
  *     responses:
  *       200:
  *         description: Users retrieved successfully
@@ -769,13 +857,31 @@
  * /api/payments:
  *   get:
  *     tags: [Payments]
- *     summary: Get all payments
- *     description: Admin only - Returns paginated list of all payments
+ *     summary: Get all payments with filters
+ *     description: Admin only - Returns paginated list of payments with optional filters (uses indexed columns)
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/LimitParam'
  *       - $ref: '#/components/parameters/OffsetParam'
+ *       - name: status
+ *         in: query
+ *         schema:
+ *           type: string
+ *           enum: [pending, completed, failed, refunded, partially_refunded]
+ *         description: Filter by payment status (uses idx_payments_status)
+ *       - name: order_id
+ *         in: query
+ *         schema: { type: integer }
+ *         description: Filter by order ID (uses idx_payments_order_id)
+ *       - name: payment_method_id
+ *         in: query
+ *         schema: { type: integer }
+ *         description: Filter by payment method (uses idx_payments_payment_method_id)
+ *       - name: user_id
+ *         in: query
+ *         schema: { type: integer }
+ *         description: Filter by user ID (uses idx_payments_user_id)
  *     responses:
  *       200:
  *         description: Payments retrieved successfully

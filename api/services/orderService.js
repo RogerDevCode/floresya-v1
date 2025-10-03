@@ -6,9 +6,11 @@
  */
 
 import { supabase, DB_SCHEMA, DB_FUNCTIONS } from './supabaseClient.js'
+import { buildSearchCondition } from '../utils/normalize.js'
 
 const TABLE = DB_SCHEMA.orders.table
 const VALID_STATUSES = DB_SCHEMA.orders.enums.status
+const SEARCH_COLUMNS = DB_SCHEMA.orders.search
 
 /**
  * Validate order data
@@ -44,10 +46,17 @@ function validateOrderData(data, isUpdate = false) {
 
 /**
  * Get all orders with filters
+ * Supports accent-insensitive search via normalized columns
  */
 export async function getAllOrders(filters = {}) {
   try {
     let query = supabase.from(TABLE).select('*')
+
+    // Search filter (uses indexed normalized columns)
+    const searchCondition = buildSearchCondition(SEARCH_COLUMNS, filters.search)
+    if (searchCondition) {
+      query = query.or(searchCondition)
+    }
 
     // Indexed filters
     if (filters.user_id) {

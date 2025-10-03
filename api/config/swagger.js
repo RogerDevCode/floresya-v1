@@ -151,23 +151,67 @@ const options = {
         Order: {
           type: 'object',
           properties: {
-            id: { type: 'integer', example: 1 },
-            user_id: { type: 'integer', example: 1 },
-            customer_name: { type: 'string', example: 'John Doe' },
-            customer_email: { type: 'string', format: 'email', example: 'john@example.com' },
-            customer_phone: { type: 'string', example: '+1234567890' },
-            delivery_address: { type: 'string', example: '123 Main St, City' },
-            delivery_date: { type: 'string', format: 'date' },
-            delivery_notes: { type: 'string', example: 'Leave at door' },
+            id: { type: 'integer', example: 1001 },
+            user_id: { type: 'integer', example: 5 },
+            customer_email: { type: 'string', format: 'email', example: 'maria@example.com' },
+            customer_name: { type: 'string', example: 'María González' },
+            customer_phone: { type: 'string', example: '+58 412-1234567' },
+            delivery_address: { type: 'string', example: 'Av. Principal, Caracas' },
+            delivery_city: { type: 'string', example: 'Caracas' },
+            delivery_state: { type: 'string', example: 'Miranda' },
+            delivery_zip: { type: 'string', example: '1060' },
+            delivery_date: { type: 'string', format: 'date', example: '2025-10-05' },
+            delivery_time_slot: { type: 'string', example: '10:00-12:00' },
+            delivery_notes: { type: 'string', example: 'Llamar al llegar' },
             status: {
               type: 'string',
               enum: ['pending', 'verified', 'preparing', 'shipped', 'delivered', 'cancelled'],
               example: 'pending'
             },
-            total_amount_usd: { type: 'number', format: 'decimal', example: 59.99 },
-            total_amount_ves: { type: 'number', format: 'decimal', example: 2400.0 },
+            total_amount_usd: { type: 'number', format: 'decimal', example: 89.99 },
+            total_amount_ves: { type: 'number', format: 'decimal', example: 3599.6 },
+            currency_rate: { type: 'number', format: 'decimal', example: 40.0 },
+            notes: { type: 'string', example: 'Ocasión especial' },
+            admin_notes: { type: 'string', example: 'Cliente frecuente' },
             created_at: { type: 'string', format: 'date-time' },
             updated_at: { type: 'string', format: 'date-time' }
+          }
+        },
+        OrderItem: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer', example: 1 },
+            order_id: { type: 'integer', example: 1001 },
+            product_id: { type: 'integer', example: 67 },
+            product_name: { type: 'string', example: 'Ramo Tropical Vibrante' },
+            product_summary: { type: 'string', example: 'Flores tropicales vibrantes' },
+            unit_price_usd: { type: 'number', format: 'decimal', example: 45.99 },
+            unit_price_ves: { type: 'number', format: 'decimal', example: 1839.6 },
+            quantity: { type: 'integer', example: 2 },
+            subtotal_usd: { type: 'number', format: 'decimal', example: 91.98 },
+            subtotal_ves: { type: 'number', format: 'decimal', example: 3679.2 },
+            created_at: { type: 'string', format: 'date-time' },
+            updated_at: { type: 'string', format: 'date-time' }
+          }
+        },
+        OrderStatusHistory: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer', example: 1 },
+            order_id: { type: 'integer', example: 1001 },
+            old_status: {
+              type: 'string',
+              enum: ['pending', 'verified', 'preparing', 'shipped', 'delivered', 'cancelled'],
+              example: 'pending'
+            },
+            new_status: {
+              type: 'string',
+              enum: ['pending', 'verified', 'preparing', 'shipped', 'delivered', 'cancelled'],
+              example: 'verified'
+            },
+            notes: { type: 'string', example: 'Pago verificado' },
+            changed_by: { type: 'integer', example: 1 },
+            created_at: { type: 'string', format: 'date-time' }
           }
         },
         Payment: {

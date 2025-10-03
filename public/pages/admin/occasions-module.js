@@ -4,10 +4,12 @@
  * Integrated with the main admin dashboard
  */
 
+import '../../js/lucide-icons.js'
+
 // Global state for occasions management
 let currentOccasionsFilter = 'all' // 'all', 'active', 'inactive'
 let selectedOccasion = null
-let occasionsData = [
+const occasionsData = [
   {
     id: 16,
     name: 'Cumpleaños',
@@ -15,8 +17,8 @@ let occasionsData = [
     slug: 'cumpleanos',
     is_active: true,
     display_order: 0,
-    created_at: '2025-09-25T05:04:48.026907+00',
-    updated_at: '2025-09-25T05:04:48.026907+00',
+    created_at: '2025-09-25T05:04:48.026907+00:00',
+    updated_at: '2025-09-25T05:04:48.026907+00:00',
     icon: 'gift',
     color: '#db2777'
   },
@@ -27,8 +29,8 @@ let occasionsData = [
     slug: 'aniversario',
     is_active: true,
     display_order: 0,
-    created_at: '2025-09-25T05:04:48.026907+00',
-    updated_at: '2025-09-25T05:04:48.026907+00',
+    created_at: '2025-09-25T05:04:48.026907+00:00',
+    updated_at: '2025-09-25T05:04:48.026907+00:00',
     icon: 'heart',
     color: '#10b981'
   },
@@ -39,8 +41,8 @@ let occasionsData = [
     slug: 'san-valentin',
     is_active: true,
     display_order: 0,
-    created_at: '2025-09-25T05:04:48.026907+00',
-    updated_at: '2025-09-25T05:04:48.026907+00',
+    created_at: '2025-09-25T05:04:48.026907+00:00',
+    updated_at: '2025-09-25T05:04:48.026907+00:00',
     icon: 'heart',
     color: '#ef4444'
   },
@@ -51,8 +53,8 @@ let occasionsData = [
     slug: 'dia-de-la-madre',
     is_active: true,
     display_order: 0,
-    created_at: '2025-09-25T05:04:48.026907+00',
-    updated_at: '2025-09-25T05:04:48.026907+00',
+    created_at: '2025-09-25T05:04:48.026907+00:00',
+    updated_at: '2025-09-25T05:04:48.026907+00:00',
     icon: 'flower',
     color: '#8b5cf6'
   },
@@ -63,8 +65,8 @@ let occasionsData = [
     slug: 'graduacion',
     is_active: false, // Inactive for demonstration
     display_order: 0,
-    created_at: '2025-09-25T05:04:48.026907+00',
-    updated_at: '2025-09-25T05:04:48.026907+00',
+    created_at: '2025-09-25T05:04:48.026907+00:00',
+    updated_at: '2025-09-25T05:04:48.026907+00:00',
     icon: 'graduation-cap',
     color: '#f59e0b'
   }
@@ -120,9 +122,13 @@ function setupOccasionsEventListeners() {
     newOccasionBtn.addEventListener('click', () => {
       resetOccasionForm()
       const titleElement = document.getElementById('edition-title-occasion')
-      if (titleElement) titleElement.textContent = 'Nueva Ocasión'
+      if (titleElement) {
+        titleElement.textContent = 'Nueva Ocasión'
+      }
       const deleteBtn = document.getElementById('delete-occasion-btn')
-      if (deleteBtn) deleteBtn.classList.add('hidden')
+      if (deleteBtn) {
+        deleteBtn.classList.add('hidden')
+      }
     })
   }
 
@@ -200,8 +206,10 @@ function generateSlug(name) {
   return name
     .toLowerCase()
     .trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove accents
     .replace(/[^\w\s-]/g, '') // Remove special characters
-    .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
+    .replace(/[\s_-]+/g, '-') // Replace spaces with hyphens
     .replace(/^-+|-+$/g, '') // Remove leading/trailing hyphens
 }
 
@@ -228,7 +236,9 @@ function loadOccasionsData() {
  */
 function renderOccasionsTable(occasionsToRender) {
   const tableBody = document.getElementById('occasions-table-body')
-  if (!tableBody) return
+  if (!tableBody) {
+    return
+  }
 
   tableBody.innerHTML = ''
 
@@ -238,7 +248,15 @@ function renderOccasionsTable(occasionsToRender) {
     row.dataset.id = occasion.id
 
     // Format date for display
-    const updatedAt = new Date(occasion.updated_at).toLocaleDateString('es-ES')
+    let updatedAt = 'N/A'
+    try {
+      const date = new Date(occasion.updated_at)
+      if (!isNaN(date.getTime())) {
+        updatedAt = date.toLocaleDateString('es-ES')
+      }
+    } catch (error) {
+      console.error('Error parsing date:', occasion.updated_at, error)
+    }
 
     row.innerHTML = `
       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${occasion.id}</td>
@@ -290,16 +308,36 @@ function selectOccasion(occasion) {
   const isActiveCheckbox = document.getElementById('occasion-is-active')
   const deleteBtn = document.getElementById('delete-occasion-btn')
 
-  if (idInput) idInput.value = occasion.id
-  if (titleElement) titleElement.textContent = `Editar: ${occasion.name}`
-  if (nameInput) nameInput.value = occasion.name
-  if (slugInput) slugInput.value = occasion.slug
-  if (descriptionInput) descriptionInput.value = occasion.description || ''
-  if (iconInput) iconInput.value = occasion.icon || ''
-  if (colorInput) colorInput.value = occasion.color || '#000000'
-  if (displayOrderInput) displayOrderInput.value = occasion.display_order || 0
-  if (isActiveCheckbox) isActiveCheckbox.checked = occasion.is_active
-  if (deleteBtn) deleteBtn.classList.remove('hidden')
+  if (idInput) {
+    idInput.value = occasion.id
+  }
+  if (titleElement) {
+    titleElement.textContent = `Editar: ${occasion.name}`
+  }
+  if (nameInput) {
+    nameInput.value = occasion.name
+  }
+  if (slugInput) {
+    slugInput.value = occasion.slug
+  }
+  if (descriptionInput) {
+    descriptionInput.value = occasion.description || ''
+  }
+  if (iconInput) {
+    iconInput.value = occasion.icon || ''
+  }
+  if (colorInput) {
+    colorInput.value = occasion.color || '#000000'
+  }
+  if (displayOrderInput) {
+    displayOrderInput.value = occasion.display_order || 0
+  }
+  if (isActiveCheckbox) {
+    isActiveCheckbox.checked = occasion.is_active
+  }
+  if (deleteBtn) {
+    deleteBtn.classList.remove('hidden')
+  }
 }
 
 /**
@@ -315,7 +353,9 @@ function saveOccasion() {
   const displayOrderInput = document.getElementById('occasion-display-order')
   const isActiveCheckbox = document.getElementById('occasion-is-active')
 
-  if (!nameInput || !slugInput) return
+  if (!nameInput || !slugInput) {
+    return
+  }
 
   const id = idInput ? idInput.value : ''
   const name = nameInput.value.trim()
@@ -334,19 +374,28 @@ function saveOccasion() {
 
   if (id) {
     // Update existing occasion
-    const index = occasionsData.findIndex(o => o.id === id)
-    if (index !== -1) {
-      occasionsData[index] = {
-        ...occasionsData[index],
-        name,
-        slug,
-        description,
-        icon,
-        color,
-        display_order: displayOrder,
-        is_active: isActive,
-        updated_at: new Date().toISOString()
-      }
+    const numericId = parseInt(id, 10)
+    if (isNaN(numericId)) {
+      console.error('Invalid occasion ID:', id)
+      alert('Error: ID de ocasión inválido')
+      return
+    }
+    const index = occasionsData.findIndex(o => o.id === numericId)
+    if (index === -1) {
+      console.error('Occasion not found:', numericId)
+      alert('Error: Ocasión no encontrada')
+      return
+    }
+    occasionsData[index] = {
+      ...occasionsData[index],
+      name,
+      slug,
+      description,
+      icon,
+      color,
+      display_order: displayOrder,
+      is_active: isActive,
+      updated_at: new Date().toISOString()
     }
   } else {
     // Create new occasion
@@ -377,26 +426,33 @@ function saveOccasion() {
  * Delete occasion (soft delete)
  */
 function deleteOccasion() {
-  if (!selectedOccasion) return
+  if (!selectedOccasion) {
+    console.error('No occasion selected')
+    return
+  }
 
   if (
-    confirm(
+    !confirm(
       `¿Está seguro de que desea eliminar la ocasión "${selectedOccasion.name}"? Esta acción desactivará la ocasión.`
     )
   ) {
-    // For soft delete, we just set is_active to false
-    const index = occasionsData.findIndex(o => o.id === selectedOccasion.id)
-    if (index !== -1) {
-      occasionsData[index].is_active = false
-      occasionsData[index].updated_at = new Date().toISOString()
-    }
-
-    // Reset form and reload table
-    resetOccasionForm()
-    loadOccasionsData()
-
-    alert('Ocasión desactivada exitosamente!')
+    return
   }
+
+  const index = occasionsData.findIndex(o => o.id === selectedOccasion.id)
+  if (index === -1) {
+    console.error('Occasion not found:', selectedOccasion.id)
+    alert('Error: Ocasión no encontrada')
+    return
+  }
+
+  occasionsData[index].is_active = false
+  occasionsData[index].updated_at = new Date().toISOString()
+
+  resetOccasionForm()
+  loadOccasionsData()
+
+  alert('Ocasión desactivada exitosamente!')
 }
 
 /**
@@ -414,15 +470,33 @@ function resetOccasionForm() {
   const isActiveCheckbox = document.getElementById('occasion-is-active')
   const deleteBtn = document.getElementById('delete-occasion-btn')
 
-  if (idInput) idInput.value = ''
-  if (titleElement) titleElement.textContent = 'Nueva Ocasión'
-  if (nameInput) nameInput.value = ''
-  if (slugInput) slugInput.value = ''
-  if (descriptionInput) descriptionInput.value = ''
-  if (iconInput) iconInput.value = ''
-  if (colorInput) colorInput.value = '#000000'
-  if (displayOrderInput) displayOrderInput.value = '0'
-  if (isActiveCheckbox) isActiveCheckbox.checked = true
+  if (idInput) {
+    idInput.value = ''
+  }
+  if (titleElement) {
+    titleElement.textContent = 'Nueva Ocasión'
+  }
+  if (nameInput) {
+    nameInput.value = ''
+  }
+  if (slugInput) {
+    slugInput.value = ''
+  }
+  if (descriptionInput) {
+    descriptionInput.value = ''
+  }
+  if (iconInput) {
+    iconInput.value = ''
+  }
+  if (colorInput) {
+    colorInput.value = '#000000'
+  }
+  if (displayOrderInput) {
+    displayOrderInput.value = '0'
+  }
+  if (isActiveCheckbox) {
+    isActiveCheckbox.checked = true
+  }
   selectedOccasion = null
 
   // Remove selection from table rows
@@ -431,7 +505,9 @@ function resetOccasionForm() {
   })
 
   // Hide delete button
-  if (deleteBtn) deleteBtn.classList.add('hidden')
+  if (deleteBtn) {
+    deleteBtn.classList.add('hidden')
+  }
 }
 
 // Export functions for use in the main dashboard

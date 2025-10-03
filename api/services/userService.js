@@ -5,9 +5,11 @@
  */
 
 import { supabase, DB_SCHEMA } from './supabaseClient.js'
+import { buildSearchCondition } from '../utils/normalize.js'
 
 const TABLE = DB_SCHEMA.users.table
 const VALID_ROLES = DB_SCHEMA.users.enums.role
+const SEARCH_COLUMNS = DB_SCHEMA.users.search
 
 /**
  * Validate user data
@@ -36,12 +38,19 @@ function validateUserData(data, isUpdate = false) {
 
 /**
  * Get all users with filters
+ * Supports accent-insensitive search via normalized columns
  * @param {Object} filters - Filter options
  * @param {boolean} includeInactive - Include inactive users (default: false, admin only)
  */
 export async function getAllUsers(filters = {}, includeInactive = false) {
   try {
     let query = supabase.from(TABLE).select('*')
+
+    // Search filter (uses indexed normalized columns)
+    const searchCondition = buildSearchCondition(SEARCH_COLUMNS, filters.search)
+    if (searchCondition) {
+      query = query.or(searchCondition)
+    }
 
     // By default, only return active users
     if (!includeInactive) {

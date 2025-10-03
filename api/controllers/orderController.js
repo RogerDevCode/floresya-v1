@@ -9,6 +9,7 @@ import { asyncHandler } from '../middleware/errorHandler.js'
 /**
  * GET /api/orders
  * Get all orders with filters
+ * Supports search query: ?search=jose (searches in customer_name and customer_email)
  */
 export const getAllOrders = asyncHandler(async (req, res) => {
   const filters = {
@@ -16,6 +17,7 @@ export const getAllOrders = asyncHandler(async (req, res) => {
     status: req.query.status,
     date_from: req.query.date_from,
     date_to: req.query.date_to,
+    search: req.query.search, // New: accent-insensitive search
     limit: req.query.limit,
     offset: req.query.offset
   }

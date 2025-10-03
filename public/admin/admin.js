@@ -4,12 +4,13 @@
  */
 
 // Global state
-let currentView = 'dashboard';
+let currentView = 'dashboard'
 const mockProducts = [
   {
     id: 67,
     name: 'Ramo Tropical Vibrante',
-    description: 'Explosión de colores tropicales con aves del paraíso, heliconias y flores exóticas',
+    description:
+      'Explosión de colores tropicales con aves del paraíso, heliconias y flores exóticas',
     price_usd: 45.99,
     price_ves: 1837.96,
     stock: 15,
@@ -26,7 +27,7 @@ const mockProducts = [
     name: 'Bouquet Arcoíris de Rosas',
     description: 'Rosas multicolores que forman un hermoso arcoíris de emociones',
     price_usd: 52.99,
-    price_ves: 2119.60,
+    price_ves: 2119.6,
     stock: 20,
     sku: 'FY-002',
     active: true,
@@ -41,7 +42,7 @@ const mockProducts = [
     name: 'Girasoles Gigantes Alegres',
     description: 'Girasoles enormes que irradian alegría y energía positiva',
     price_usd: 38.99,
-    price_ves: 1559.60,
+    price_ves: 1559.6,
     stock: 25,
     sku: 'FY-003',
     active: true,
@@ -51,7 +52,7 @@ const mockProducts = [
     updated_at: '2025-09-30T02:22:35.04999+00',
     image_url: '/products/happy-giant-sunflowers.jpg'
   }
-];
+]
 
 /**
  * Initialize admin panel
@@ -59,52 +60,69 @@ const mockProducts = [
 function init() {
   // Initialize Lucide icons
   if (window.lucide && window.lucide.createIcons) {
-    window.lucide.createIcons();
+    window.lucide.createIcons()
   }
 
   // Setup navigation
-  setupNavigation();
+  setupNavigation()
 
   // Setup sidebar toggle
-  setupSidebarToggle();
+  setupSidebarToggle()
 
   // Setup event listeners
-  setupEventListeners();
+  setupEventListeners()
 
   // Load initial view
-  showView('dashboard');
+  showView('dashboard')
 }
 
 /**
  * Setup navigation between admin sections
  */
 function setupNavigation() {
-  // Get all sidebar menu items
-  const menuItems = document.querySelectorAll('.sidebar-menu-item');
-  menuItems.forEach(item => {
-    item.addEventListener('click', (e) => {
-      e.preventDefault();
-      const view = item.getAttribute('data-view');
-      showView(view);
-      
+  // Get all sidebar menu items that are internal views (not external pages)
+  const internalMenuItems = document.querySelectorAll('.sidebar-menu-item[data-view]')
+  internalMenuItems.forEach(item => {
+    item.addEventListener('click', e => {
+      e.preventDefault()
+      const view = item.getAttribute('data-view')
+      showView(view)
+
       // Update active class
-      menuItems.forEach(menuItem => menuItem.classList.remove('active'));
-      item.classList.add('active');
-    });
-  });
+      internalMenuItems.forEach(menuItem => menuItem.classList.remove('active'))
+      item.classList.add('active')
+
+      // Remove active from external links too
+      document.querySelectorAll('.sidebar-menu-item[data-external]').forEach(extItem => {
+        extItem.classList.remove('active')
+      })
+    })
+  })
+
+  // Handle external links (like occasions.html)
+  const externalMenuItems = document.querySelectorAll('.sidebar-menu-item[data-external]')
+  externalMenuItems.forEach(item => {
+    item.addEventListener('click', e => {
+      // Update active class for external links
+      document
+        .querySelectorAll('.sidebar-menu-item')
+        .forEach(menuItem => menuItem.classList.remove('active'))
+      item.classList.add('active')
+    })
+  })
 }
 
 /**
  * Setup sidebar toggle functionality
  */
 function setupSidebarToggle() {
-  const sidebarToggle = document.getElementById('sidebar-toggle');
-  const sidebar = document.getElementById('sidebar');
-  
+  const sidebarToggle = document.getElementById('sidebar-toggle')
+  const sidebar = document.getElementById('sidebar')
+
   if (sidebarToggle && sidebar) {
     sidebarToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed');
-    });
+      sidebar.classList.toggle('collapsed')
+    })
   }
 }
 
@@ -113,40 +131,31 @@ function setupSidebarToggle() {
  */
 function setupEventListeners() {
   // New product button
-  const newProductBtn = document.getElementById('new-product-btn');
+  const newProductBtn = document.getElementById('new-product-btn')
   if (newProductBtn) {
     newProductBtn.addEventListener('click', () => {
-      alert('Funcionalidad de nuevo producto en desarrollo');
-    });
+      alert('Funcionalidad de nuevo producto en desarrollo')
+    })
   }
 
   // Search button
-  const searchBtn = document.getElementById('search-btn');
+  const searchBtn = document.getElementById('search-btn')
   if (searchBtn) {
     searchBtn.addEventListener('click', () => {
-      filterProducts();
-    });
-  }
-
-  // Open contact editor button
-  const openContactBtn = document.getElementById('open-contact-editor-btn');
-  if (openContactBtn) {
-    openContactBtn.addEventListener('click', () => {
-      // Redirect to the existing contact editor page
-      window.location.href = 'contact-editor.html';
-    });
+      filterProducts()
+    })
   }
 
   // Logout button
-  const logoutBtn = document.getElementById('logout-btn');
+  const logoutBtn = document.getElementById('logout-btn')
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
         // Simulate logout
-        alert('Sesión cerrada. Redirigiendo al login...');
-        window.location.href = '/'; // Redirect to home or login page
+        alert('Sesión cerrada. Redirigiendo al login...')
+        window.location.href = '/' // Redirect to home or login page
       }
-    });
+    })
   }
 }
 
@@ -154,23 +163,23 @@ function setupEventListeners() {
  * Show specified view and hide others
  */
 function showView(view) {
-  currentView = view;
+  currentView = view
 
   // Hide all views
-  const views = document.querySelectorAll('[id$="-view"]');
+  const views = document.querySelectorAll('[id$="-view"]')
   views.forEach(viewElement => {
-    viewElement.classList.add('hidden');
-  });
+    viewElement.classList.add('hidden')
+  })
 
   // Show requested view
-  const requestedView = document.getElementById(`${view}-view`);
+  const requestedView = document.getElementById(`${view}-view`)
   if (requestedView) {
-    requestedView.classList.remove('hidden');
+    requestedView.classList.remove('hidden')
   }
 
   // Special handling for products view
   if (view === 'products') {
-    renderProducts(mockProducts);
+    renderProducts(mockProducts)
   }
 }
 
@@ -178,55 +187,66 @@ function showView(view) {
  * Filter products based on search criteria
  */
 function filterProducts() {
-  const searchTerm = document.getElementById('search-input').value?.toLowerCase() || '';
-  const category = document.getElementById('category-filter').value || '';
-  const status = document.getElementById('status-filter').value || '';
-  
-  let filtered = [...mockProducts];
-  
+  const searchTerm = document.getElementById('search-input').value?.toLowerCase() || ''
+  const category = document.getElementById('category-filter').value || ''
+  const status = document.getElementById('status-filter').value || ''
+
+  let filtered = [...mockProducts]
+
   if (searchTerm) {
-    filtered = filtered.filter(product => 
-      product.name.toLowerCase().includes(searchTerm) || 
-      product.description.toLowerCase().includes(searchTerm) ||
-      product.sku.toLowerCase().includes(searchTerm)
-    );
+    filtered = filtered.filter(
+      product =>
+        product.name.toLowerCase().includes(searchTerm) ||
+        product.description.toLowerCase().includes(searchTerm) ||
+        product.sku.toLowerCase().includes(searchTerm)
+    )
   }
-  
+
   if (category) {
     // Mock categories for demonstration
     filtered = filtered.filter(product => {
-      if (category === 'flores') {return product.name.includes('Rosa') || product.name.includes('Girasol') || product.name.includes('Orquídea');}
-      if (category === 'ramos') {return product.name.includes('Ramo') || product.name.includes('Bouquet');}
-      if (category === 'plantas') {return product.name.includes('Planta');}
-      return true;
-    });
+      if (category === 'flores') {
+        return (
+          product.name.includes('Rosa') ||
+          product.name.includes('Girasol') ||
+          product.name.includes('Orquídea')
+        )
+      }
+      if (category === 'ramos') {
+        return product.name.includes('Ramo') || product.name.includes('Bouquet')
+      }
+      if (category === 'plantas') {
+        return product.name.includes('Planta')
+      }
+      return true
+    })
   }
-  
+
   if (status) {
-    filtered = filtered.filter(product => 
-      status === 'active' ? product.active : !product.active
-    );
+    filtered = filtered.filter(product => (status === 'active' ? product.active : !product.active))
   }
-  
-  renderProducts(filtered);
+
+  renderProducts(filtered)
 }
 
 /**
  * Render products in the table
  */
 function renderProducts(products) {
-  const productsList = document.getElementById('products-list');
-  if (!productsList) {return;}
+  const productsList = document.getElementById('products-list')
+  if (!productsList) {
+    return
+  }
 
-  productsList.innerHTML = '';
+  productsList.innerHTML = ''
 
   products.forEach(product => {
-    const row = document.createElement('tr');
-    
+    const row = document.createElement('tr')
+
     // Determine status badge class
-    let statusClass = 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ';
-    statusClass += product.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
-    
+    let statusClass = 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full '
+    statusClass += product.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+
     row.innerHTML = `
       <td class="px-6 py-4 whitespace-nowrap">
         <div class="flex items-center">
@@ -266,28 +286,28 @@ function renderProducts(products) {
           Eliminar
         </a>
       </td>
-    `;
-    
-    productsList.appendChild(row);
-  });
+    `
+
+    productsList.appendChild(row)
+  })
 
   // Add event listeners to edit links
   document.querySelectorAll('.edit-product-link').forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const productId = parseInt(e.target.getAttribute('data-product-id'));
-      editProduct(productId);
-    });
-  });
+    link.addEventListener('click', e => {
+      e.preventDefault()
+      const productId = parseInt(e.target.getAttribute('data-product-id'))
+      editProduct(productId)
+    })
+  })
 
   // Add event listeners to delete links
   document.querySelectorAll('.delete-product-link').forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const productId = parseInt(e.target.getAttribute('data-product-id'));
-      deleteProduct(productId);
-    });
-  });
+    link.addEventListener('click', e => {
+      e.preventDefault()
+      const productId = parseInt(e.target.getAttribute('data-product-id'))
+      deleteProduct(productId)
+    })
+  })
 }
 
 /**
@@ -296,19 +316,21 @@ function renderProducts(products) {
 function editProduct(productId) {
   // In a real implementation, you would navigate to a product detail page
   // For this mock, just show an alert
-  alert(`Editar producto con ID: ${productId}`);
+  alert(`Editar producto con ID: ${productId}`)
 }
 
 /**
  * Delete product
  */
 function deleteProduct(productId) {
-  if (confirm('¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.')) {
-    const index = mockProducts.findIndex(p => p.id === productId);
+  if (
+    confirm('¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.')
+  ) {
+    const index = mockProducts.findIndex(p => p.id === productId)
     if (index !== -1) {
-      mockProducts.splice(index, 1);
-      renderProducts(mockProducts);
-      alert('Producto eliminado exitosamente');
+      mockProducts.splice(index, 1)
+      renderProducts(mockProducts)
+      alert('Producto eliminado exitosamente')
     }
   }
 }
@@ -317,9 +339,9 @@ function deleteProduct(productId) {
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize icons first
   if (window.lucide && window.lucide.createIcons) {
-    window.lucide.createIcons();
+    window.lucide.createIcons()
   }
 
   // Then initialize admin functionality
-  init();
-});
+  init()
+})

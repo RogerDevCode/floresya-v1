@@ -84,13 +84,18 @@ function setupNavigation() {
   const menuItems = document.querySelectorAll('.sidebar-menu-item')
   menuItems.forEach(item => {
     item.addEventListener('click', e => {
-      e.preventDefault()
       const view = item.getAttribute('data-view')
-      showView(view)
 
-      // Update active class
-      menuItems.forEach(menuItem => menuItem.classList.remove('active'))
-      item.classList.add('active')
+      // Only prevent default and handle view switching for items with data-view
+      if (view) {
+        e.preventDefault()
+        showView(view)
+
+        // Update active class
+        menuItems.forEach(menuItem => menuItem.classList.remove('active'))
+        item.classList.add('active')
+      }
+      // Items without data-view (with href) will navigate normally
     })
   })
 }
@@ -187,9 +192,18 @@ function showView(view) {
  * Filter products based on search criteria
  */
 function filterProducts() {
-  const searchTerm = document.getElementById('search-input').value?.toLowerCase() || ''
-  const category = document.getElementById('category-filter').value || ''
-  const status = document.getElementById('status-filter').value || ''
+  const searchInput = document.getElementById('search-input')
+  const categoryFilter = document.getElementById('category-filter')
+  const statusFilter = document.getElementById('status-filter')
+
+  if (!searchInput || !categoryFilter || !statusFilter) {
+    console.error('Filter elements not found')
+    return
+  }
+
+  const searchTerm = searchInput.value.toLowerCase()
+  const category = categoryFilter.value
+  const status = statusFilter.value
 
   let filtered = [...mockProducts]
 
@@ -203,7 +217,6 @@ function filterProducts() {
   }
 
   if (category) {
-    // Mock categories for demonstration
     filtered = filtered.filter(product => {
       if (category === 'flores') {
         return (
@@ -295,7 +308,11 @@ function renderProducts(products) {
   document.querySelectorAll('.edit-product-link').forEach(link => {
     link.addEventListener('click', e => {
       e.preventDefault()
-      const productId = parseInt(e.target.getAttribute('data-product-id'))
+      const productId = parseInt(e.target.getAttribute('data-product-id'), 10)
+      if (!productId || isNaN(productId)) {
+        console.error('Invalid product ID')
+        return
+      }
       editProduct(productId)
     })
   })
@@ -304,7 +321,11 @@ function renderProducts(products) {
   document.querySelectorAll('.delete-product-link').forEach(link => {
     link.addEventListener('click', e => {
       e.preventDefault()
-      const productId = parseInt(e.target.getAttribute('data-product-id'))
+      const productId = parseInt(e.target.getAttribute('data-product-id'), 10)
+      if (!productId || isNaN(productId)) {
+        console.error('Invalid product ID')
+        return
+      }
       deleteProduct(productId)
     })
   })
@@ -320,19 +341,23 @@ function editProduct(productId) {
 }
 
 /**
- * Delete product
+ * Delete product (soft delete - mark as inactive)
  */
 function deleteProduct(productId) {
-  if (
-    confirm('¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.')
-  ) {
-    const index = mockProducts.findIndex(p => p.id === productId)
-    if (index !== -1) {
-      mockProducts.splice(index, 1)
-      renderProducts(mockProducts)
-      alert('Producto eliminado exitosamente')
-    }
+  if (!confirm('¿Estás seguro de que deseas desactivar este producto?')) {
+    return
   }
+
+  const product = mockProducts.find(p => p.id === productId)
+  if (!product) {
+    console.error('Product not found:', productId)
+    return
+  }
+
+  product.active = false
+  product.updated_at = new Date().toISOString()
+  renderProducts(mockProducts)
+  alert('Producto desactivado exitosamente')
 }
 
 // Initialize when DOM is ready

@@ -873,3 +873,313 @@ body.admin-page {
   border-color: #10b981;
   background-color: #d1fae5;
 }
+
+/* Admin Panel CSS Variables and Layout */
+:root {
+  --sidebar-width: 260px;
+  --navbar-height: 64px;
+}
+
+body.admin-page {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  min-height: calc(100vh - var(--navbar-height));
+  position: fixed;
+  left: 0;
+  top: var(--navbar-height);
+  z-index: 90;
+  background: linear-gradient(to bottom, #ec4899, #db2777);
+  transition: all 0.3s ease;
+}
+
+.main-content {
+  margin-left: var(--sidebar-width);
+  min-height: calc(100vh - var(--navbar-height));
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar.collapsed ~ .main-content {
+  margin-left: 80px;
+}
+
+.menu-text {
+  transition: opacity 0.3s ease;
+}
+
+/* Admin sidebar styles */
+.sidebar-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  color: white;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  margin-bottom: 0.25rem;
+}
+
+.sidebar-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.sidebar-menu-item.active {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Collapsed sidebar */
+.sidebar.collapsed {
+  width: 80px;
+}
+
+.sidebar.collapsed .menu-text {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Dashboard specific styles */
+.dashboard-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.stat-title {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.chart-container {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recent-orders-table {
+  background: white;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.table-header {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 1rem 1.5rem;
+}
+
+.table-row {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem 1.5rem;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-cell {
+  padding: 0.75rem 0;
+}
+
+/* Occasions panel specific styles */
+.table-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.table-row:hover {
+  background-color: #f9fafb;
+}
+
+.table-row.selected {
+  background-color: #fef2f2;
+}
+
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-active {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.status-inactive {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Occasions table specific classes for dashboard integration */
+.table-row-occasion {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.table-row-occasion:hover {
+  background-color: #f9fafb;
+}
+
+.table-row-occasion.selected-occasion {
+  background-color: #fef2f2;
+}
+
+.status-badge-occasion {
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-active-occasion {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.status-inactive-occasion {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Image Manager Specific Styles */
+.upload-area {
+  transition: all 0.3s ease;
+}
+
+.upload-area.dragover {
+  border-color: #ec4899;
+  background-color: #fdf2f8;
+  transform: scale(1.02);
+}
+
+.image-container {
+  animation: fadeInScale 0.3s ease-out;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.delete-image-btn,
+.set-primary-btn {
+  transition: all 0.2s ease;
+}
+
+.delete-image-btn:hover {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.set-primary-btn:hover {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+/* Filter Button Styles for Occasions View */
+.filter-btn-occasion {
+  transition: all 0.2s ease;
+}
+
+.filter-btn-occasion:hover {
+  transform: translateY(-1px);
+}
+
+.filter-btn-occasion.active {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Orders Management Styles */
+.status-select {
+  transition: all 0.2s ease;
+}
+
+.status-select:hover {
+  filter: brightness(0.95);
+}
+
+.status-select:focus {
+  outline: none;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+/* Responsive adjustments for admin sidebar */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 70px;
+  }
+
+  .main-content {
+    margin-left: 70px;
+  }
+
+  .menu-text {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+}

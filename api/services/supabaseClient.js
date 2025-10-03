@@ -53,7 +53,8 @@ export const DB_SCHEMA = {
   users: {
     table: 'users',
     pk: 'id',
-    indexes: ['email'],
+    indexes: ['email', 'full_name_normalized', 'email_normalized'],
+    search: ['full_name_normalized', 'email_normalized'],
     enums: {
       role: ['user', 'admin']
     }
@@ -67,9 +68,17 @@ export const DB_SCHEMA = {
   products: {
     table: 'products',
     pk: 'id',
-    indexes: ['sku', 'active', 'featured', 'carousel_order'],
+    indexes: [
+      'sku',
+      'active',
+      'featured',
+      'carousel_order',
+      'name_normalized',
+      'description_normalized'
+    ],
     filters: ['active', 'featured'],
-    sorts: ['created_at', 'carousel_order']
+    sorts: ['created_at', 'carousel_order'],
+    search: ['name_normalized', 'description_normalized']
   },
   product_occasions: {
     table: 'product_occasions',
@@ -89,23 +98,72 @@ export const DB_SCHEMA = {
   orders: {
     table: 'orders',
     pk: 'id',
-    indexes: ['user_id', 'status', 'created_at'],
-    filters: ['status', 'user_id'],
+    indexes: [
+      'user_id',
+      'status',
+      'created_at',
+      'customer_email',
+      'customer_name_normalized',
+      'customer_email_normalized'
+    ],
+    filters: ['status', 'user_id', 'customer_email'],
     sorts: ['created_at'],
+    search: ['customer_name_normalized', 'customer_email_normalized'],
     enums: {
       status: ['pending', 'verified', 'preparing', 'shipped', 'delivered', 'cancelled']
-    }
+    },
+    columns: [
+      'id',
+      'user_id',
+      'customer_email',
+      'customer_name',
+      'customer_phone',
+      'delivery_address',
+      'delivery_city',
+      'delivery_state',
+      'delivery_zip',
+      'delivery_date',
+      'delivery_time_slot',
+      'delivery_notes',
+      'status',
+      'total_amount_usd',
+      'total_amount_ves',
+      'currency_rate',
+      'notes',
+      'admin_notes',
+      'created_at',
+      'updated_at',
+      'customer_name_normalized',
+      'customer_email_normalized'
+    ]
   },
   order_items: {
     table: 'order_items',
     pk: 'id',
-    indexes: ['order_id'],
-    filters: ['order_id']
+    indexes: ['order_id', 'product_id'],
+    filters: ['order_id', 'product_id'],
+    columns: [
+      'id',
+      'order_id',
+      'product_id',
+      'product_name',
+      'product_summary',
+      'unit_price_usd',
+      'unit_price_ves',
+      'quantity',
+      'subtotal_usd',
+      'subtotal_ves',
+      'created_at',
+      'updated_at'
+    ]
   },
   order_status_history: {
     table: 'order_status_history',
     pk: 'id',
-    indexes: ['order_id']
+    indexes: ['order_id', 'created_at'],
+    filters: ['order_id'],
+    sorts: ['created_at'],
+    columns: ['id', 'order_id', 'old_status', 'new_status', 'notes', 'changed_by', 'created_at']
   },
   payment_methods: {
     table: 'payment_methods',
@@ -119,11 +177,32 @@ export const DB_SCHEMA = {
   payments: {
     table: 'payments',
     pk: 'id',
-    indexes: ['order_id', 'status'],
-    filters: ['status', 'order_id'],
+    indexes: ['order_id', 'status', 'payment_method_id', 'user_id'],
+    filters: ['status', 'order_id', 'payment_method_id', 'user_id'],
+    sorts: ['created_at', 'payment_date'],
     enums: {
       status: ['pending', 'completed', 'failed', 'refunded', 'partially_refunded']
-    }
+    },
+    columns: [
+      'id',
+      'order_id',
+      'payment_method_id',
+      'user_id',
+      'amount_usd',
+      'amount_ves',
+      'currency_rate',
+      'status',
+      'payment_method_name',
+      'transaction_id',
+      'reference_number',
+      'payment_details',
+      'receipt_image_url',
+      'admin_notes',
+      'payment_date',
+      'confirmed_date',
+      'created_at',
+      'updated_at'
+    ]
   },
   settings: {
     table: 'settings',
