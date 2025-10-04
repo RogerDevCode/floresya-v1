@@ -6,7 +6,7 @@
  * ENTERPRISE FAIL-FAST: All errors use custom error classes with metadata
  */
 
-import { supabase, DB_SCHEMA, DB_FUNCTIONS } from './supabaseClient.js'
+import { supabase, DB_SCHEMA } from './supabaseClient.js'
 import {
   ValidationError,
   NotFoundError,
@@ -288,14 +288,29 @@ export async function getProductBySku(sku) {
 }
 
 /**
- * Get products with occasions (stored function)
+ * Get products with occasions (using join query instead of stored function)
  */
 export async function getProductsWithOccasions(limit = 50, offset = 0) {
   try {
-    const { data, error } = await supabase.rpc(DB_FUNCTIONS.getProductsWithOccasions, {
-      p_limit: limit,
-      p_offset: offset
-    })
+    const { data, error } = await supabase
+      .from(TABLE)
+      .select(
+        `
+        *,
+        product_occasions (
+          occasion_id,
+          occasions (
+            id,
+            name,
+            slug
+          )
+        )
+      `
+      )
+      .eq('active', true)
+      .order('created_at', { ascending: false })
+      .limit(limit)
+      .range(offset, offset + limit - 1)
 
     if (error) {
       throw new Error(`Database error: ${error.message}`)
@@ -312,7 +327,7 @@ export async function getProductsWithOccasions(limit = 50, offset = 0) {
 }
 
 /**
- * Get products by occasion ID (stored function)
+ * Get products by occasion ID (using join query instead of stored function)
  */
 export async function getProductsByOccasion(occasionId, limit = 50) {
   try {
@@ -320,10 +335,13 @@ export async function getProductsByOccasion(occasionId, limit = 50) {
       throw new Error('Invalid occasion ID: must be a number')
     }
 
-    const { data, error } = await supabase.rpc(DB_FUNCTIONS.getProductsByOccasion, {
-      p_occasion_id: occasionId,
-      p_limit: limit
-    })
+    const { data, error } = await supabase
+      .from(TABLE)
+      .select(`*, product_occasions!inner(occasion_id)`)
+      .eq('product_occasions.occasion_id', occasionId)
+      .eq('active', true)
+      .order('created_at', { ascending: false })
+      .limit(limit)
 
     if (error) {
       throw new Error(`Database error: ${error.message}`)
@@ -442,7 +460,7 @@ export async function createProduct(productData) {
 }
 
 /**
- * Create product with occasions (atomic stored function)
+ * Create product with occasions (manual transaction)
  */
 export async function createProductWithOccasions(productData, occasionIds = []) {
   try {
@@ -452,32 +470,31 @@ export async function createProductWithOccasions(productData, occasionIds = []) 
       throw new Error('Invalid occasionIds: must be an array')
     }
 
-    const productPayload = {
-      name: productData.name,
-      summary: productData.summary || null,
-      description: productData.description || null,
-      price_usd: productData.price_usd,
-      price_ves: productData.price_ves || null,
-      stock: productData.stock || 0,
-      sku: productData.sku || null,
-      active: true,
-      featured: productData.featured || false,
-      carousel_order: productData.carousel_order || null
+    // Step 1: Create product
+    const product = await createProduct(productData)
+
+    // Step 2: Create product_occasions entries if occasionIds provided
+    if (occasionIds.length > 0) {
+      const occasionEntries = occasionIds.map(occasionId => ({
+        product_id: product.id,
+        occasion_id: occasionId
+      }))
+
+      const { error: occasionError } = await supabase
+        .from('product_occasions')
+        .insert(occasionEntries)
+
+      if (occasionError) {
+        // Rollback: delete product
+        await supabase.from(TABLE).delete().eq('id', product.id)
+        throw new DatabaseError('INSERT', 'product_occasions', occasionError, {
+          productId: product.id,
+          occasionIds
+        })
+      }
     }
 
-    const { data, error } = await supabase.rpc(DB_FUNCTIONS.createProductWithOccasions, {
-      product_data: productPayload,
-      occasion_ids: occasionIds
-    })
-
-    if (error) {
-      throw new Error(`Database error: ${error.message}`)
-    }
-    if (!data || !data[0]) {
-      throw new Error('Failed to create product with occasions')
-    }
-
-    return data[0]
+    return product
   } catch (error) {
     console.error('createProductWithOccasions failed:', error)
     throw error
@@ -549,7 +566,7 @@ export async function updateProduct(id, updates) {
 }
 
 /**
- * Update carousel order (atomic stored function)
+ * Update carousel order (direct update)
  */
 export async function updateCarouselOrder(productId, newOrder) {
   try {
@@ -561,10 +578,13 @@ export async function updateCarouselOrder(productId, newOrder) {
       throw new Error('Invalid carousel_order: must be between 0-7 or null')
     }
 
-    const { data, error } = await supabase.rpc(DB_FUNCTIONS.updateCarouselOrderAtomic, {
-      product_id: productId,
-      new_order: newOrder
-    })
+    const { data, error } = await supabase
+      .from(TABLE)
+      .update({ carousel_order: newOrder })
+      .eq('id', productId)
+      .eq('active', true)
+      .select()
+      .single()
 
     if (error) {
       throw new Error(`Database error: ${error.message}`)

@@ -78,8 +78,8 @@ async function initCarousel() {
     })
 
     if (result.success && result.data && result.data.length > 0) {
-      // Show all carousel products
-      featuredProducts = result.data
+      // Filter: Only products WITH images (exclude products without image_url_small)
+      featuredProducts = result.data.filter(p => p.image_url_small)
 
       console.info(
         '🖼️ Product Images:',
@@ -90,6 +90,10 @@ async function initCarousel() {
           hasImage: !!p.image_url_small
         }))
       )
+
+      if (featuredProducts.length === 0) {
+        throw new Error('No carousel products with images found')
+      }
     } else {
       throw new Error('No carousel products found')
     }

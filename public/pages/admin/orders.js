@@ -4,14 +4,17 @@
  */
 
 import '../../js/lucide-icons.js'
+import { initAdminCommon } from '../../js/admin-common.js'
 
 // Global state
 let currentFilter = 'all'
-let currentDateFilter = 'all' // 30, 60, 90, 'all', 'custom'
-let customDateRange = { from: null, to: null }
+let currentYearFilter = new Date().getFullYear().toString() // Default: current year
+let currentDateFilter = '' // Date range filter (30, 60, 90, custom, empty = all)
+let customDateFrom = ''
+let customDateTo = ''
 let searchQuery = ''
 let currentPage = 1
-let itemsPerPage = 20
+let itemsPerPage = 50
 let allOrders = [] // All orders from API
 let orders = [] // Filtered orders
 
@@ -55,75 +58,7 @@ const ORDER_STATUSES = {
   }
 }
 
-// Mock data (fallback if API fails)
-const mockOrders = [
-  {
-    id: 1001,
-    customer_name: 'María González',
-    customer_email: 'maria@example.com',
-    customer_phone: '+58 412-1234567',
-    total_usd: 89.99,
-    status: 'pending',
-    created_at: '2025-10-02T10:30:00Z',
-    items: [{ product_name: 'Ramo Tropical Vibrante', quantity: 2, price_usd: 45.99 }],
-    shipping_address: 'Av. Principal, Caracas'
-  },
-  {
-    id: 1002,
-    customer_name: 'Carlos Pérez',
-    customer_email: 'carlos@example.com',
-    customer_phone: '+58 424-9876543',
-    total_usd: 52.99,
-    status: 'processing',
-    created_at: '2025-10-02T09:15:00Z',
-    items: [{ product_name: 'Bouquet Arcoíris de Rosas', quantity: 1, price_usd: 52.99 }],
-    shipping_address: 'Calle 5, Valencia'
-  },
-  {
-    id: 1003,
-    customer_name: 'Ana Rodríguez',
-    customer_email: 'ana@example.com',
-    customer_phone: '+58 414-5551234',
-    total_usd: 116.97,
-    status: 'completed',
-    created_at: '2025-10-01T14:20:00Z',
-    items: [{ product_name: 'Girasoles Gigantes Alegres', quantity: 3, price_usd: 38.99 }],
-    shipping_address: 'Urbanización Los Palos Grandes, Caracas'
-  },
-  {
-    id: 1004,
-    customer_name: 'Luis Martínez',
-    customer_email: 'luis@example.com',
-    customer_phone: '+58 426-7778888',
-    total_usd: 45.99,
-    status: 'cancelled',
-    created_at: '2025-10-01T08:00:00Z',
-    items: [{ product_name: 'Ramo Tropical Vibrante', quantity: 1, price_usd: 45.99 }],
-    shipping_address: 'Centro Comercial, Maracay'
-  },
-  {
-    id: 1005,
-    customer_name: 'Sofia Torres',
-    customer_email: 'sofia@example.com',
-    customer_phone: '+58 412-3334444',
-    total_usd: 105.98,
-    status: 'pending',
-    created_at: '2025-10-02T11:45:00Z',
-    items: [{ product_name: 'Bouquet Arcoíris de Rosas', quantity: 2, price_usd: 52.99 }],
-    shipping_address: 'Av. Libertador, Caracas'
-  },
-  {
-    id: 1006,
-    customer_name: 'Pedro Sánchez',
-    customer_email: 'pedro@example.com',
-    customer_phone: '+58 424-2223333',
-    total_usd: 77.98,
-    status: 'processing',
-    created_at: '2025-10-02T08:30:00Z',
-    items: [{ product_name: 'Girasoles Gigantes Alegres', quantity: 2, price_usd: 38.99 }],
-    shipping_address: 'Residencias El Rosal, Barquisimeto'
-  }
-]
+// No mock data - using real API only
 
 /**
  * Initialize orders management
@@ -131,6 +66,12 @@ const mockOrders = [
 async function init() {
   if (window.lucide && window.lucide.createIcons) {
     window.lucide.createIcons()
+  }
+
+  // Set initial year filter to current year
+  const yearFilter = document.getElementById('year-filter')
+  if (yearFilter) {
+    yearFilter.value = currentYearFilter
   }
 
   setupEventListeners()
@@ -142,48 +83,71 @@ async function init() {
  */
 async function fetchOrdersFromAPI() {
   try {
-    const response = await fetch('/api/orders')
+    const response = await fetch('/api/orders', {
+      headers: {
+        Authorization: 'Bearer admin:1:admin' // TODO: Use real auth token
+      }
+    })
+
     if (!response.ok) {
-      console.error('Failed to fetch orders from API, using mock data')
-      orders = [...mockOrders]
-      return
+      throw new Error(`HTTP error! status: ${response.status}`)
     }
 
     const result = await response.json()
-    if (result.success && Array.isArray(result.data)) {
-      allOrders = result.data.map(order => ({
-        id: order.id,
-        customer_name: order.customer_name || 'Cliente Desconocido',
-        customer_email: order.customer_email || '',
-        customer_phone: order.customer_phone || '',
-        delivery_address: order.delivery_address || '',
-        delivery_city: order.delivery_city || '',
-        delivery_state: order.delivery_state || '',
-        delivery_date: order.delivery_date || '',
-        delivery_time_slot: order.delivery_time_slot || '',
-        items: [], // Will be populated from order_items if needed
-        total_usd: parseFloat(order.total_amount_usd) || 0,
-        total_ves: parseFloat(order.total_amount_ves) || 0,
-        status: order.status || 'pending',
-        created_at: order.created_at || new Date().toISOString(),
-        notes: order.notes || '',
-        delivery_notes: order.delivery_notes || ''
-      }))
-
-      // Sort by date DESC (most recent first)
-      allOrders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-
-      console.log(`Loaded ${allOrders.length} orders from API`)
-      applyFilters()
-    } else {
-      console.error('Invalid API response format, using mock data')
-      allOrders = [...mockOrders]
-      applyFilters()
+    if (!result.success || !Array.isArray(result.data)) {
+      throw new Error('Invalid API response format')
     }
+
+    allOrders = result.data.map(order => ({
+      id: order.id,
+      customer_name: order.customer_name || 'Cliente Desconocido',
+      customer_email: order.customer_email || '',
+      customer_phone: order.customer_phone || '',
+      delivery_address: order.delivery_address || '',
+      delivery_city: order.delivery_city || '',
+      delivery_state: order.delivery_state || '',
+      delivery_date: order.delivery_date || '',
+      delivery_time_slot: order.delivery_time_slot || '',
+      items: order.order_items || [],
+      total_usd: parseFloat(order.total_amount_usd) || 0,
+      total_ves: parseFloat(order.total_amount_ves) || 0,
+      status: order.status || 'pending',
+      created_at: order.created_at || new Date().toISOString(),
+      notes: order.notes || '',
+      delivery_notes: order.delivery_notes || ''
+    }))
+
+    // Sort by date DESC (most recent first)
+    allOrders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+
+    console.log(`✓ Loaded ${allOrders.length} orders from Supabase API`)
+    applyFilters()
   } catch (error) {
     console.error('Error fetching orders from API:', error)
-    allOrders = [...mockOrders]
-    applyFilters()
+    showErrorState(error.message)
+  }
+}
+
+/**
+ * Show error state in orders table
+ */
+function showErrorState(errorMessage) {
+  const tbody = document.getElementById('orders-tbody')
+  if (tbody) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" class="px-6 py-12 text-center">
+          <div class="text-red-600 mb-2">Error al cargar pedidos</div>
+          <div class="text-sm text-gray-500 mb-4">${errorMessage}</div>
+          <button
+            onclick="location.reload()"
+            class="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700"
+          >
+            Reintentar
+          </button>
+        </td>
+      </tr>
+    `
   }
 }
 
@@ -191,27 +155,62 @@ async function fetchOrdersFromAPI() {
  * Setup event listeners
  */
 function setupEventListeners() {
-  // Status filter buttons
-  document.querySelectorAll('.filter-btn').forEach(button => {
-    button.addEventListener('click', e => {
-      const filter = e.target.getAttribute('data-filter')
-      setActiveFilter(filter)
-      currentFilter = filter
+  // Status filter dropdown
+  const statusFilter = document.getElementById('status-filter')
+  if (statusFilter) {
+    statusFilter.addEventListener('change', e => {
+      currentFilter = e.target.value
       currentPage = 1
       applyFilters()
     })
-  })
+  }
 
-  // Date filter buttons
-  document.querySelectorAll('.date-filter-btn').forEach(button => {
-    button.addEventListener('click', e => {
-      const days = e.target.getAttribute('data-days')
-      setActiveDateFilter(days)
-      currentDateFilter = days
+  // Year filter dropdown
+  const yearFilter = document.getElementById('year-filter')
+  if (yearFilter) {
+    yearFilter.addEventListener('change', e => {
+      currentYearFilter = e.target.value
       currentPage = 1
       applyFilters()
     })
-  })
+  }
+
+  // Date range filter dropdown
+  const dateRangeFilter = document.getElementById('date-range-filter')
+  const customDateRow = document.getElementById('custom-date-row')
+  if (dateRangeFilter) {
+    dateRangeFilter.addEventListener('change', e => {
+      currentDateFilter = e.target.value
+      currentPage = 1
+
+      // Show/hide custom date inputs
+      if (currentDateFilter === 'custom') {
+        customDateRow.classList.remove('hidden')
+      } else {
+        customDateRow.classList.add('hidden')
+        customDateFrom = ''
+        customDateTo = ''
+        applyFilters()
+      }
+    })
+  }
+
+  // Custom date range apply
+  const applyCustomBtn = document.getElementById('apply-custom-date')
+  if (applyCustomBtn) {
+    applyCustomBtn.addEventListener('click', () => {
+      customDateFrom = document.getElementById('date-from').value
+      customDateTo = document.getElementById('date-to').value
+
+      if (!customDateFrom || !customDateTo) {
+        alert('Por favor selecciona ambas fechas')
+        return
+      }
+
+      currentPage = 1
+      applyFilters()
+    })
+  }
 
   // Pagination buttons
   document.getElementById('btn-first-page').addEventListener('click', () => goToPage(1))
@@ -233,41 +232,41 @@ function setupEventListeners() {
     applyFilters()
   })
 
-  document.getElementById('clear-search-btn').addEventListener('click', () => {
-    searchInput.value = ''
-    searchQuery = ''
-    currentPage = 1
-    applyFilters()
-  })
+  // Clear all filters
+  const clearAllBtn = document.getElementById('clear-all-btn')
+  if (clearAllBtn) {
+    clearAllBtn.addEventListener('click', () => {
+      const currentYear = new Date().getFullYear().toString()
+
+      // Reset all filters
+      searchInput.value = ''
+      searchQuery = ''
+      currentFilter = 'all'
+      currentYearFilter = currentYear
+      currentDateFilter = ''
+      customDateFrom = ''
+      customDateTo = ''
+      currentPage = 1
+
+      // Reset dropdowns
+      document.getElementById('status-filter').value = 'all'
+      document.getElementById('year-filter').value = currentYear
+      document.getElementById('date-range-filter').value = ''
+      document.getElementById('date-from').value = ''
+      document.getElementById('date-to').value = ''
+
+      // Hide custom date row
+      customDateRow.classList.add('hidden')
+
+      applyFilters()
+    })
+  }
 
   // Items per page
   document.getElementById('items-per-page').addEventListener('change', e => {
     itemsPerPage = parseInt(e.target.value, 10)
     currentPage = 1
     renderPage()
-  })
-
-  // Custom date range
-  document.getElementById('apply-custom-date').addEventListener('click', () => {
-    const dateFrom = document.getElementById('date-from').value
-    const dateTo = document.getElementById('date-to').value
-
-    if (!dateFrom || !dateTo) {
-      alert('Por favor selecciona ambas fechas')
-      return
-    }
-
-    customDateRange = { from: dateFrom, to: dateTo }
-    currentDateFilter = 'custom'
-    currentPage = 1
-
-    // Deactivate preset buttons
-    document.querySelectorAll('.date-filter-btn').forEach(btn => {
-      btn.classList.remove('bg-pink-600', 'text-white')
-      btn.classList.add('bg-gray-200', 'text-gray-700')
-    })
-
-    applyFilters()
   })
 
   // Export CSV
@@ -280,38 +279,20 @@ function setupEventListeners() {
       closeModal()
     }
   })
-}
 
-/**
- * Set active filter button
- */
-function setActiveFilter(filter) {
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.classList.remove('bg-pink-600', 'text-white')
-    btn.classList.add('bg-gray-200', 'text-gray-700')
+  // History Modal close
+  document.getElementById('close-history-modal').addEventListener('click', closeHistoryModal)
+  document.getElementById('history-modal').addEventListener('click', e => {
+    if (e.target.id === 'history-modal') {
+      closeHistoryModal()
+    }
   })
 
-  const activeBtn = document.getElementById(`filter-${filter}`)
-  if (activeBtn) {
-    activeBtn.classList.remove('bg-gray-200', 'text-gray-700')
-    activeBtn.classList.add('bg-pink-600', 'text-white')
-  }
-}
+  // Setup scroll indicators
+  setupScrollIndicators()
 
-/**
- * Set active date filter button
- */
-function setActiveDateFilter(days) {
-  document.querySelectorAll('.date-filter-btn').forEach(btn => {
-    btn.classList.remove('bg-pink-600', 'text-white')
-    btn.classList.add('bg-gray-200', 'text-gray-700')
-  })
-
-  const activeBtn = document.getElementById(`date-filter-${days}`)
-  if (activeBtn) {
-    activeBtn.classList.remove('bg-gray-200', 'text-gray-700')
-    activeBtn.classList.add('bg-pink-600', 'text-white')
-  }
+  // Setup ESC key to close modals
+  setupEscapeKeyHandler()
 }
 
 /**
@@ -329,10 +310,59 @@ function normalizeText(text) {
 }
 
 /**
- * Apply all filters (search + status + date)
+ * Apply all filters (search + status + date + year)
  */
 function applyFilters() {
   let filtered = [...allOrders]
+
+  // Filter by year first
+  if (currentYearFilter) {
+    const year = parseInt(currentYearFilter)
+    filtered = filtered.filter(order => {
+      const orderYear = new Date(order.created_at).getFullYear()
+      return orderYear === year
+    })
+  }
+
+  // Filter by date range
+  if (currentDateFilter === 'custom' && customDateFrom && customDateTo) {
+    const fromDate = new Date(customDateFrom)
+    const toDate = new Date(customDateTo)
+    toDate.setHours(23, 59, 59, 999)
+
+    filtered = filtered.filter(order => {
+      const orderDate = new Date(order.created_at)
+      return orderDate >= fromDate && orderDate <= toDate
+    })
+  } else if (currentDateFilter === 'today') {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    filtered = filtered.filter(order => new Date(order.created_at) >= today)
+  } else if (currentDateFilter === 'current-month') {
+    const now = new Date()
+    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+    firstDayOfMonth.setHours(0, 0, 0, 0)
+
+    filtered = filtered.filter(order => new Date(order.created_at) >= firstDayOfMonth)
+  } else if (currentDateFilter === 'last-month') {
+    const now = new Date()
+    const firstDayOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+    const lastDayOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0)
+    firstDayOfLastMonth.setHours(0, 0, 0, 0)
+    lastDayOfLastMonth.setHours(23, 59, 59, 999)
+
+    filtered = filtered.filter(order => {
+      const orderDate = new Date(order.created_at)
+      return orderDate >= firstDayOfLastMonth && orderDate <= lastDayOfLastMonth
+    })
+  } else if (currentDateFilter && !isNaN(parseInt(currentDateFilter))) {
+    const days = parseInt(currentDateFilter)
+    const cutoffDate = new Date()
+    cutoffDate.setDate(cutoffDate.getDate() - days)
+
+    filtered = filtered.filter(order => new Date(order.created_at) >= cutoffDate)
+  }
 
   // Filter by search query (name, email, ID)
   if (searchQuery.trim()) {
@@ -350,49 +380,82 @@ function applyFilters() {
     })
   }
 
-  // Filter by date range
-  if (currentDateFilter === 'custom' && customDateRange.from && customDateRange.to) {
-    const fromDate = new Date(customDateRange.from)
-    const toDate = new Date(customDateRange.to)
-    toDate.setHours(23, 59, 59, 999) // Include entire day
-
-    filtered = filtered.filter(order => {
-      const orderDate = new Date(order.created_at)
-      return orderDate >= fromDate && orderDate <= toDate
-    })
-  } else if (currentDateFilter !== 'all') {
-    const days = parseInt(currentDateFilter, 10)
-    const cutoffDate = new Date()
-    cutoffDate.setDate(cutoffDate.getDate() - days)
-
-    filtered = filtered.filter(order => new Date(order.created_at) >= cutoffDate)
-  }
-
   // Filter by status
   if (currentFilter !== 'all') {
     filtered = filtered.filter(order => order.status === currentFilter)
   }
 
   orders = filtered
-  updateStats()
+  updateStats(filtered) // Pass ALL filtered orders (including status + search)
+  updateActiveFiltersText() // Update filter indicator text
   renderPage()
 }
 
 /**
- * Update statistics
+ * Update statistics based on fully filtered orders (all filters applied)
  */
-function updateStats() {
+function updateStats(filteredOrders) {
   const stats = {
-    pending: allOrders.filter(o => o.status === 'pending').length,
-    processing: allOrders.filter(o => o.status === 'processing').length,
-    completed: allOrders.filter(o => o.status === 'completed').length,
-    cancelled: allOrders.filter(o => o.status === 'cancelled').length
+    pending: filteredOrders.filter(o => o.status === 'pending').length,
+    processing: filteredOrders.filter(
+      o => o.status === 'verified' || o.status === 'preparing' || o.status === 'shipped'
+    ).length,
+    completed: filteredOrders.filter(o => o.status === 'delivered').length,
+    cancelled: filteredOrders.filter(o => o.status === 'cancelled').length
   }
 
   document.getElementById('stats-pending').textContent = stats.pending
   document.getElementById('stats-processing').textContent = stats.processing
   document.getElementById('stats-completed').textContent = stats.completed
   document.getElementById('stats-cancelled').textContent = stats.cancelled
+}
+
+/**
+ * Update active filters text indicator
+ */
+function updateActiveFiltersText() {
+  const filters = []
+
+  if (currentYearFilter) {
+    filters.push(`Año: ${currentYearFilter}`)
+  }
+
+  if (currentDateFilter === 'custom' && customDateFrom && customDateTo) {
+    filters.push(`Período: ${customDateFrom} a ${customDateTo}`)
+  } else if (currentDateFilter === 'today') {
+    filters.push('Período: Día de hoy')
+  } else if (currentDateFilter === 'current-month') {
+    filters.push('Período: Mes actual')
+  } else if (currentDateFilter === 'last-month') {
+    filters.push('Período: Mes pasado')
+  } else if (currentDateFilter && !isNaN(parseInt(currentDateFilter))) {
+    filters.push(`Período: Últimos ${currentDateFilter} días`)
+  }
+
+  if (currentFilter !== 'all') {
+    const statusLabel = {
+      pending: 'Pendiente',
+      verified: 'Verificado',
+      preparing: 'Preparando',
+      shipped: 'Enviado',
+      delivered: 'Entregado',
+      cancelled: 'Cancelado'
+    }[currentFilter]
+    filters.push(`Estado: ${statusLabel}`)
+  }
+
+  if (searchQuery.trim()) {
+    filters.push(`Búsqueda: "${searchQuery}"`)
+  }
+
+  const textEl = document.getElementById('active-filters-text')
+  if (textEl) {
+    if (filters.length === 0) {
+      textEl.textContent = 'Mostrando todos los pedidos (sin filtros aplicados)'
+    } else {
+      textEl.textContent = `Filtros activos: ${filters.join(' • ')}`
+    }
+  }
 }
 
 /**
@@ -489,9 +552,6 @@ function renderOrdersTable(ordersToRender) {
     const statusInfo = ORDER_STATUSES[order.status]
 
     row.innerHTML = `
-      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-        #${order.id}
-      </td>
       <td class="px-6 py-4 whitespace-nowrap">
         <div class="text-sm font-medium text-gray-900">${order.customer_name}</div>
         <div class="text-sm text-gray-500">${order.customer_phone}</div>
@@ -531,6 +591,15 @@ function renderOrdersTable(ordersToRender) {
           Ver detalles
         </button>
       </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
+        <button
+          class="text-blue-600 hover:text-blue-800 font-medium view-history-btn inline-flex items-center justify-center p-1 rounded hover:bg-blue-50 transition-colors"
+          data-order-id="${order.id}"
+          title="Ver historial de cambios"
+        >
+          <i data-lucide="clock" class="h-5 w-5"></i>
+        </button>
+      </td>
     `
 
     tableBody.appendChild(row)
@@ -561,6 +630,19 @@ function renderOrdersTable(ordersToRender) {
     })
   })
 
+  // Add event listeners for view history
+  document.querySelectorAll('.view-history-btn').forEach(button => {
+    button.addEventListener('click', e => {
+      const target = e.target.closest('button')
+      const orderId = parseInt(target.getAttribute('data-order-id'), 10)
+      if (isNaN(orderId)) {
+        console.error('Invalid order ID')
+        return
+      }
+      showOrderHistory(orderId)
+    })
+  })
+
   // Reinitialize icons
   if (window.lucide && window.lucide.createIcons) {
     window.lucide.createIcons()
@@ -570,8 +652,8 @@ function renderOrdersTable(ordersToRender) {
 /**
  * Change order status
  */
-function changeOrderStatus(orderId, newStatus) {
-  const order = orders.find(o => o.id === orderId)
+async function changeOrderStatus(orderId, newStatus) {
+  const order = allOrders.find(o => o.id === orderId)
   if (!order) {
     console.error('Order not found:', orderId)
     return
@@ -582,13 +664,40 @@ function changeOrderStatus(orderId, newStatus) {
     return
   }
 
-  order.status = newStatus
+  try {
+    // Update via API
+    const response = await fetch(`/api/orders/${orderId}/status`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer admin:1:admin'
+      },
+      body: JSON.stringify({ status: newStatus })
+    })
 
-  updateStats()
-  applyFilters()
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
 
-  const statusInfo = ORDER_STATUSES[newStatus]
-  showNotification(`Pedido #${orderId} cambiado a: ${statusInfo.label}`)
+    const result = await response.json()
+    if (!result.success) {
+      throw new Error(result.error || 'Failed to update status')
+    }
+
+    // Update local state
+    order.status = newStatus
+
+    // Re-apply filters to update UI
+    applyFilters()
+
+    console.log(`✓ Order ${orderId} status updated to ${newStatus}`)
+  } catch (error) {
+    console.error('Error updating order status:', error)
+    alert(`Error al actualizar estado: ${error.message}`)
+
+    // Reload orders on error to sync state
+    await fetchOrdersFromAPI()
+  }
 }
 
 /**
@@ -651,24 +760,49 @@ function showOrderDetails(orderId) {
           </div>
           <div class="flex items-start">
             <i data-lucide="map-pin" class="h-4 w-4 text-gray-400 mr-2 mt-0.5"></i>
-            <span class="text-sm text-gray-700">${order.shipping_address}</span>
+            <span class="text-sm text-gray-700">${order.delivery_address}, ${order.delivery_city}, ${order.delivery_state}</span>
           </div>
+        </div>
+      </div>
+
+      <!-- Delivery Info -->
+      <div>
+        <h4 class="text-sm font-medium text-gray-900 mb-3">Información de Entrega</h4>
+        <div class="bg-gray-50 rounded-lg p-4 space-y-2">
+          <div class="flex items-center">
+            <i data-lucide="calendar" class="h-4 w-4 text-gray-400 mr-2"></i>
+            <span class="text-sm text-gray-700">Fecha: ${order.delivery_date || 'No especificada'}</span>
+          </div>
+          <div class="flex items-center">
+            <i data-lucide="clock" class="h-4 w-4 text-gray-400 mr-2"></i>
+            <span class="text-sm text-gray-700">Horario: ${order.delivery_time_slot || 'No especificado'}</span>
+          </div>
+          ${
+            order.delivery_notes
+              ? `
+          <div class="flex items-start">
+            <i data-lucide="message-circle" class="h-4 w-4 text-gray-400 mr-2 mt-0.5"></i>
+            <span class="text-sm text-gray-700">Notas: ${order.delivery_notes}</span>
+          </div>
+          `
+              : ''
+          }
         </div>
       </div>
 
       <!-- Items -->
       <div>
         <h4 class="text-sm font-medium text-gray-900 mb-3">Productos</h4>
-        <div class="space-y-3">
+        <div class="space-y-2 max-h-60 overflow-y-auto">
           ${order.items
             .map(
               item => `
             <div class="flex justify-between items-center bg-gray-50 rounded-lg p-3">
-              <div>
+              <div class="flex-1">
                 <p class="text-sm font-medium text-gray-900">${item.product_name}</p>
-                <p class="text-xs text-gray-500">Cantidad: ${item.quantity}</p>
+                <p class="text-xs text-gray-500">Cantidad: ${item.quantity} × $${parseFloat(item.unit_price_usd).toFixed(2)}</p>
               </div>
-              <p class="text-sm font-semibold text-gray-900">$${(item.price_usd * item.quantity).toFixed(2)}</p>
+              <p class="text-sm font-semibold text-gray-900 ml-4">$${parseFloat(item.subtotal_usd).toFixed(2)}</p>
             </div>
           `
             )
@@ -704,6 +838,7 @@ function showOrderDetails(orderId) {
   `
 
   modal.classList.remove('hidden')
+  updateScrollIndicator('modal')
 
   // Reinitialize icons
   if (window.lucide && window.lucide.createIcons) {
@@ -808,5 +943,185 @@ function exportToCSV() {
   showNotification(`${orders.length} pedidos exportados a CSV`)
 }
 
+/**
+ * Show order status history modal
+ */
+async function showOrderHistory(orderId) {
+  try {
+    const response = await fetch(`/api/orders/${orderId}/status-history`, {
+      headers: {
+        Authorization: 'Bearer admin:1:admin'
+      }
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const result = await response.json()
+    if (!result.success) {
+      throw new Error(result.error || 'Failed to load history')
+    }
+
+    const history = result.data || []
+    const modal = document.getElementById('history-modal')
+    const content = document.getElementById('history-content')
+
+    if (!modal || !content) {
+      console.error('History modal elements not found')
+      return
+    }
+
+    if (history.length === 0) {
+      content.innerHTML = `
+        <div class="text-center py-8">
+          <i data-lucide="inbox" class="h-12 w-12 text-gray-400 mx-auto mb-3"></i>
+          <p class="text-gray-500">No hay cambios de estado registrados</p>
+        </div>
+      `
+    } else {
+      content.innerHTML = `
+        <div class="space-y-4">
+          ${history
+            .map((item, index) => {
+              const date = new Date(item.created_at)
+              const formattedDate = date.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              })
+
+              const oldStatusLabel = ORDER_STATUSES[item.old_status]?.label || item.old_status
+              const newStatusLabel = ORDER_STATUSES[item.new_status]?.label || item.new_status
+              const newStatusInfo = ORDER_STATUSES[item.new_status] || {}
+
+              return `
+                <div class="relative ${index < history.length - 1 ? 'pb-4' : ''}">
+                  ${index < history.length - 1 ? '<div class="absolute left-5 top-10 bottom-0 w-0.5 bg-gray-200"></div>' : ''}
+                  <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0">
+                      <div class="h-10 w-10 rounded-full ${newStatusInfo.bgClass || 'bg-gray-100'} flex items-center justify-center">
+                        <i data-lucide="arrow-right" class="h-5 w-5 ${newStatusInfo.textClass || 'text-gray-600'}"></i>
+                      </div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center justify-between">
+                        <p class="text-sm font-medium text-gray-900">
+                          ${oldStatusLabel} → ${newStatusLabel}
+                        </p>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${newStatusInfo.bgClass || 'bg-gray-100'} ${newStatusInfo.textClass || 'text-gray-800'}">
+                          ${newStatusLabel}
+                        </span>
+                      </div>
+                      <p class="text-xs text-gray-500 mt-1">${formattedDate}</p>
+                      ${item.notes ? `<p class="text-sm text-gray-600 mt-2 bg-gray-50 p-2 rounded">${item.notes}</p>` : ''}
+                    </div>
+                  </div>
+                </div>
+              `
+            })
+            .join('')}
+        </div>
+      `
+    }
+
+    modal.classList.remove('hidden')
+    updateScrollIndicator('history')
+
+    if (window.lucide && window.lucide.createIcons) {
+      window.lucide.createIcons()
+    }
+  } catch (error) {
+    console.error('Error loading order history:', error)
+    alert(`Error al cargar historial: ${error.message}`)
+  }
+}
+
+/**
+ * Close history modal
+ */
+function closeHistoryModal() {
+  const modal = document.getElementById('history-modal')
+  if (modal) {
+    modal.classList.add('hidden')
+  }
+}
+
+/**
+ * Setup scroll indicators for modals
+ */
+function setupScrollIndicators() {
+  const containers = [
+    { id: 'modal-scroll-container', indicator: 'modal-scroll-indicator' },
+    { id: 'history-scroll-container', indicator: 'history-scroll-indicator' }
+  ]
+
+  containers.forEach(({ id, indicator }) => {
+    const container = document.getElementById(id)
+    const indicatorEl = document.getElementById(indicator)
+
+    if (container && indicatorEl) {
+      container.addEventListener('scroll', () => {
+        updateScrollIndicator(id === 'modal-scroll-container' ? 'modal' : 'history')
+      })
+    }
+  })
+}
+
+/**
+ * Update scroll indicator visibility
+ */
+function updateScrollIndicator(type) {
+  const containerId = type === 'modal' ? 'modal-scroll-container' : 'history-scroll-container'
+  const indicatorId = type === 'modal' ? 'modal-scroll-indicator' : 'history-scroll-indicator'
+
+  const container = document.getElementById(containerId)
+  const indicator = document.getElementById(indicatorId)
+
+  if (!container || !indicator) {
+    return
+  }
+
+  // Check if there's more content to scroll
+  const hasMoreContent = container.scrollHeight > container.clientHeight
+  const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 50
+
+  if (hasMoreContent && !isAtBottom) {
+    indicator.classList.remove('hidden')
+  } else {
+    indicator.classList.add('hidden')
+  }
+}
+
+/**
+ * Setup ESC key handler to close modals
+ */
+function setupEscapeKeyHandler() {
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      const orderModal = document.getElementById('order-modal')
+      const historyModal = document.getElementById('history-modal')
+
+      // Close order detail modal if open
+      if (orderModal && !orderModal.classList.contains('hidden')) {
+        closeModal()
+        e.preventDefault()
+        return
+      }
+
+      // Close history modal if open
+      if (historyModal && !historyModal.classList.contains('hidden')) {
+        closeHistoryModal()
+        e.preventDefault()
+      }
+    }
+  })
+}
+
 // Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', init)
+document.addEventListener('DOMContentLoaded', () => {
+  init()
+  initAdminCommon()
+})

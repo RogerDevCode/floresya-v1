@@ -5,6 +5,8 @@
 
 import express from 'express'
 import * as productImageController from '../controllers/productImageController.js'
+import { authenticate, authorize } from '../middleware/auth.js'
+import { uploadSingle, handleMulterError } from '../middleware/uploadImage.js'
 
 const router = express.Router()
 
@@ -20,5 +22,44 @@ router.get('/:id/images', productImageController.getProductImages)
  * Get primary image for a product
  */
 router.get('/:id/images/primary', productImageController.getPrimaryImage)
+
+/**
+ * POST /api/products/:id/images
+ * Create images for a product (all sizes for a single image_index)
+ * Admin only
+ * Supports multipart/form-data (file upload) or JSON body
+ */
+router.post(
+  '/:id/images',
+  authenticate,
+  authorize('admin'),
+  uploadSingle, // Multer middleware for file upload
+  handleMulterError, // Handle multer-specific errors
+  productImageController.createProductImages
+)
+
+/**
+ * DELETE /api/products/:id/images/:imageIndex
+ * Delete images by image_index (all sizes)
+ * Admin only
+ */
+router.delete(
+  '/:id/images/:imageIndex',
+  authenticate,
+  authorize('admin'),
+  productImageController.deleteImagesByIndex
+)
+
+/**
+ * PATCH /api/products/:id/images/primary/:imageIndex
+ * Set primary image by image_index
+ * Admin only
+ */
+router.patch(
+  '/:id/images/primary/:imageIndex',
+  authenticate,
+  authorize('admin'),
+  productImageController.setPrimaryImage
+)
 
 export default router

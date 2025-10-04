@@ -20,6 +20,10 @@ export const productCreateSchema = {
     min: 0
   },
   // Optional fields (from OpenAPI lines 171-177)
+  summary: {
+    type: 'string',
+    required: false
+  },
   description: {
     type: 'string',
     required: false
@@ -59,6 +63,10 @@ export const productUpdateSchema = {
     required: false,
     minLength: 2,
     maxLength: 255
+  },
+  summary: {
+    type: 'string',
+    required: false
   },
   description: {
     type: 'string',

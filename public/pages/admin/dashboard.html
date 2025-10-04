@@ -21,23 +21,27 @@
     >
       <div class="container mx-auto px-4">
         <div class="flex items-center justify-between h-16">
-          <!-- Sidebar Toggle -->
-          <button
-            id="sidebar-toggle"
-            class="p-2 rounded-lg text-gray-600 hover:text-pink-600 hover:bg-gray-100 transition-colors"
+          <!-- Back Button -->
+          <a
+            href="../../index.html"
+            class="text-gray-600 hover:text-pink-600 transition-colors"
+            title="Volver a la página principal"
           >
-            <i data-lucide="menu" class="h-6 w-6"></i>
-          </button>
+            <i data-lucide="arrow-left" class="h-6 w-6"></i>
+          </a>
 
-          <!-- Logo -->
-          <div class="flex items-center space-x-2">
+          <!-- Logo (Clickable) -->
+          <a
+            href="../../index.html"
+            class="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+          >
             <img
               src="../../images/logoFloresYa.jpeg"
               alt="Logo FloresYa Admin"
               class="h-10 w-10 rounded-full"
             />
             <span class="text-xl font-bold text-pink-600 hidden md:block">FloresYa Admin</span>
-          </div>
+          </a>
 
           <!-- User Info -->
           <div class="flex items-center space-x-4">
@@ -68,12 +72,6 @@
           <a href="#" class="sidebar-menu-item" data-view="products">
             <i data-lucide="flower" class="h-5 w-5 mr-3"></i>
             <span class="menu-text">Productos</span>
-          </a>
-
-          <!-- Product Editor -->
-          <a href="./product-editor.html" class="sidebar-menu-item">
-            <i data-lucide="edit" class="h-5 w-5 mr-3"></i>
-            <span class="menu-text">Editor de Productos</span>
           </a>
 
           <!-- Orders -->
@@ -116,117 +114,186 @@
     </aside>
 
     <!-- Main Content -->
-    <main id="main-content" class="main-content p-6">
+    <main id="main-content" class="main-content">
       <!-- Dashboard View -->
-      <div id="dashboard-view" class="space-y-6">
+      <div id="dashboard-view">
         <!-- Welcome Banner -->
-        <div class="bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl p-8 text-white">
-          <h1 class="text-3xl font-bold mb-2">¡Bienvenido al Panel de Administración!</h1>
-          <p class="text-pink-100">Gestiona tu tienda de flores de forma eficiente y sencilla</p>
+        <div class="bg-gradient-to-r from-pink-500 to-purple-600 p-8 text-white">
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="text-3xl font-bold mb-2">¡Bienvenido al Panel de Administración!</h1>
+              <p class="text-pink-100">
+                Gestiona tu tienda de flores de forma eficiente y sencilla
+              </p>
+            </div>
+            <!-- Filters for Dashboard -->
+            <div class="flex gap-3">
+              <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <label class="block text-sm font-medium text-white/80 mb-2">Año</label>
+                <select
+                  id="dashboard-year-filter"
+                  class="px-4 py-2 border border-white/30 rounded-lg bg-white/20 text-white focus:ring-pink-300 focus:border-pink-300"
+                >
+                  <option value="2025" selected>2025</option>
+                  <option value="2026">2026</option>
+                  <option value="2027">2027</option>
+                  <option value="2028">2028</option>
+                  <option value="2029">2029</option>
+                  <option value="2030">2030</option>
+                </select>
+              </div>
+              <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <label class="block text-sm font-medium text-white/80 mb-2">Período</label>
+                <select
+                  id="dashboard-date-filter"
+                  class="px-4 py-2 border border-white/30 rounded-lg bg-white/20 text-white focus:ring-pink-300 focus:border-pink-300"
+                >
+                  <option value="" selected>Todos</option>
+                  <option value="today">Día de hoy</option>
+                  <option value="current-month">Este mes</option>
+                  <option value="last-month">Mes pasado</option>
+                  <option value="30">30 días</option>
+                  <option value="60">60 días</option>
+                  <option value="90">90 días</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Indicator -->
+        <div class="bg-white/50 backdrop-blur-sm rounded-lg p-3 mb-4 mx-6 mt-6">
+          <p class="text-sm text-gray-700 flex items-center">
+            <i data-lucide="filter" class="h-4 w-4 mr-2 text-pink-600"></i>
+            <span id="dashboard-filter-indicator">Mostrando: Año 2025 | Todos los pedidos</span>
+          </p>
         </div>
 
         <!-- Stats Grid -->
-        <div class="dashboard-stats-grid">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 mx-6">
+          <!-- Total Pedidos -->
           <div class="stat-card">
-            <div class="stat-icon bg-pink-100 text-pink-600">
-              <i data-lucide="shopping-cart" class="h-6 w-6"></i>
-            </div>
-            <div class="stat-title">Total Productos</div>
-            <div class="stat-value">24</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-icon bg-green-100 text-green-600">
+            <div class="stat-icon bg-gray-100 text-gray-600">
               <i data-lucide="package" class="h-6 w-6"></i>
             </div>
-            <div class="stat-title">Stock Total</div>
-            <div class="stat-value">1,240</div>
+            <div class="stat-title">Total Pedidos</div>
+            <div class="stat-value" id="dash-total-orders">-</div>
+            <div class="text-xs text-gray-500 mt-1">(incluye cancelados)</div>
           </div>
 
+          <!-- Ventas Totales -->
+          <div class="stat-card">
+            <div class="stat-icon bg-green-100 text-green-600">
+              <i data-lucide="dollar-sign" class="h-6 w-6"></i>
+            </div>
+            <div class="stat-title">Ventas Totales USD</div>
+            <div class="stat-value" id="dash-total-sales">$0</div>
+            <div class="text-xs text-gray-500 mt-1">(excluye cancelados)</div>
+          </div>
+
+          <!-- Pendientes -->
           <div class="stat-card">
             <div class="stat-icon bg-blue-100 text-blue-600">
-              <i data-lucide="shopping-bag" class="h-6 w-6"></i>
+              <i data-lucide="clock" class="h-6 w-6"></i>
             </div>
-            <div class="stat-title">Ventas Hoy</div>
-            <div class="stat-value">$1,240</div>
+            <div class="stat-title">Pendientes</div>
+            <div class="stat-value" id="dash-status-pending">-</div>
           </div>
 
+          <!-- Verificados -->
+          <div class="stat-card">
+            <div class="stat-icon bg-indigo-100 text-indigo-600">
+              <i data-lucide="check-circle" class="h-6 w-6"></i>
+            </div>
+            <div class="stat-title">Verificados</div>
+            <div class="stat-value" id="dash-status-verified">-</div>
+          </div>
+
+          <!-- Preparando -->
           <div class="stat-card">
             <div class="stat-icon bg-yellow-100 text-yellow-600">
-              <i data-lucide="user" class="h-6 w-6"></i>
+              <i data-lucide="box" class="h-6 w-6"></i>
             </div>
-            <div class="stat-title">Nuevos Clientes</div>
-            <div class="stat-value">12</div>
+            <div class="stat-title">Preparando</div>
+            <div class="stat-value" id="dash-status-preparing">-</div>
+          </div>
+
+          <!-- Enviados -->
+          <div class="stat-card">
+            <div class="stat-icon bg-purple-100 text-purple-600">
+              <i data-lucide="truck" class="h-6 w-6"></i>
+            </div>
+            <div class="stat-title">Enviados</div>
+            <div class="stat-value" id="dash-status-shipped">-</div>
+          </div>
+
+          <!-- Entregados -->
+          <div class="stat-card">
+            <div class="stat-icon bg-green-100 text-green-600">
+              <i data-lucide="check-check" class="h-6 w-6"></i>
+            </div>
+            <div class="stat-title">Entregados</div>
+            <div class="stat-value" id="dash-status-delivered">-</div>
+          </div>
+
+          <!-- Cancelados -->
+          <div class="stat-card">
+            <div class="stat-icon bg-red-100 text-red-600">
+              <i data-lucide="x-circle" class="h-6 w-6"></i>
+            </div>
+            <div class="stat-title">Cancelados</div>
+            <div class="stat-value" id="dash-status-cancelled">-</div>
           </div>
         </div>
 
-        <!-- Charts and Recent Orders Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Sales Chart -->
-          <div class="chart-container">
-            <div class="text-center">
-              <h3 class="text-lg font-semibold text-gray-900 mb-4">Ventas Mensuales</h3>
-              <div class="text-gray-500">Gráfico de ventas (simulado)</div>
-              <div class="mt-4 text-sm text-gray-600">Aquí se mostraría un gráfico de ventas</div>
+        <!-- Sales Chart Section -->
+        <div class="bg-white rounded-xl shadow-md p-6 admin-card mx-6 mb-6">
+          <div class="mb-4">
+            <div class="flex justify-between items-start mb-3">
+              <div class="flex-1">
+                <h3 class="text-lg font-semibold text-gray-900">Ventas Mensuales</h3>
+                <p class="text-sm text-gray-600 mt-1" id="chart-subtitle">
+                  Últimos 12 meses (pedidos no cancelados)
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="text-sm font-medium text-gray-700 whitespace-nowrap">
+                Filtrar por Estado:
+              </label>
+              <select
+                id="chart-status-filter"
+                class="flex-1 max-w-xs px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              >
+                <option value="all-non-cancelled" selected>Todos (no cancelados)</option>
+                <option value="all">Todos (incluye cancelados)</option>
+                <option value="pending">Pendientes</option>
+                <option value="verified">Verificados</option>
+                <option value="preparing">Preparando</option>
+                <option value="shipped">Enviados</option>
+                <option value="delivered">Entregados</option>
+                <option value="cancelled">Cancelados</option>
+              </select>
             </div>
           </div>
-
-          <!-- Recent Orders -->
-          <div class="recent-orders-table">
-            <div class="table-header">Pedidos Recientes</div>
-            <div>
-              <div class="table-row grid grid-cols-4">
-                <div class="table-cell text-sm font-medium text-gray-900">Pedido</div>
-                <div class="table-cell text-sm text-gray-500">Cliente</div>
-                <div class="table-cell text-sm text-gray-500">Total</div>
-                <div class="table-cell text-sm text-gray-500">Estado</div>
-              </div>
-              <div class="table-row grid grid-cols-4">
-                <div class="table-cell text-sm font-medium">#1234</div>
-                <div class="table-cell text-sm text-gray-900">Juan Pérez</div>
-                <div class="table-cell text-sm text-gray-900">$45.99</div>
-                <div class="table-cell text-sm text-green-600">Completado</div>
-              </div>
-              <div class="table-row grid grid-cols-4">
-                <div class="table-cell text-sm font-medium">#1233</div>
-                <div class="table-cell text-sm text-gray-900">María González</div>
-                <div class="table-cell text-sm text-gray-900">$32.50</div>
-                <div class="table-cell text-sm text-yellow-600">Pendiente</div>
-              </div>
-              <div class="table-row grid grid-cols-4">
-                <div class="table-cell text-sm font-medium">#1232</div>
-                <div class="table-cell text-sm text-gray-900">Carlos Rodríguez</div>
-                <div class="table-cell text-sm text-gray-900">$65.00</div>
-                <div class="table-cell text-sm text-blue-600">Procesando</div>
-              </div>
-            </div>
+          <div class="relative" style="height: 400px">
+            <canvas id="monthly-sales-chart"></canvas>
           </div>
         </div>
 
         <!-- Top Products -->
         <div class="bg-white rounded-xl shadow-md p-6 admin-card">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6">Productos Más Vendidos</h2>
-          <div class="space-y-4">
-            <div class="flex justify-between items-center border-b pb-3">
-              <div>
-                <p class="font-medium">Ramo Tropical Vibrante</p>
-                <p class="text-sm text-gray-500">ID: 67</p>
-              </div>
-              <p class="font-bold text-gray-900">24 ventas</p>
-            </div>
-            <div class="flex justify-between items-center border-b pb-3">
-              <div>
-                <p class="font-medium">Rosas Rojas Clásicas</p>
-                <p class="text-sm text-gray-500">ID: 68</p>
-              </div>
-              <p class="font-bold text-gray-900">18 ventas</p>
-            </div>
-            <div class="flex justify-between items-center border-b pb-3">
-              <div>
-                <p class="font-medium">Orquídeas Elegantes</p>
-                <p class="text-sm text-gray-500">ID: 69</p>
-              </div>
-              <p class="font-bold text-gray-900">15 ventas</p>
+          <div class="mb-4">
+            <h2 class="text-2xl font-bold text-gray-900">Productos Más Vendidos (Top 3)</h2>
+            <p class="text-sm text-gray-600 mt-1" id="top-products-subtitle">
+              Filtros: Año 2025 | Todos los pedidos (excluye cancelados)
+            </p>
+          </div>
+          <div id="top-products-list" class="space-y-4">
+            <!-- Top products will be rendered here by JS -->
+            <div class="text-center text-gray-500 py-8">
+              <i data-lucide="loader" class="h-8 w-8 mx-auto animate-spin"></i>
+              <p class="mt-2">Cargando productos...</p>
             </div>
           </div>
         </div>
@@ -234,19 +301,19 @@
 
       <!-- Products View -->
       <div id="products-view" class="hidden">
-        <div class="flex justify-between items-center mb-6">
+        <div class="flex justify-between items-center mb-6 mx-6">
           <h1 class="text-3xl font-bold text-gray-900">Gestión de Productos</h1>
-          <button
-            id="new-product-btn"
+          <a
+            href="./create-product.html"
             class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded-lg flex items-center space-x-2"
           >
             <i data-lucide="plus" class="h-5 w-5"></i>
             <span>Nuevo Producto</span>
-          </button>
+          </a>
         </div>
 
         <!-- Search and Filters -->
-        <div class="bg-white rounded-xl shadow-md p-6 mb-6 admin-card">
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6 admin-card mx-6">
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">Buscar</label>
@@ -258,15 +325,13 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Ocasión</label>
               <select
-                id="category-filter"
+                id="occasion-filter"
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500"
               >
-                <option value="">Todas</option>
-                <option value="flores">Flores</option>
-                <option value="ramos">Ramos</option>
-                <option value="plantas">Plantas</option>
+                <option value="">Todas las ocasiones</option>
+                <!-- Options will be populated dynamically from API -->
               </select>
             </div>
             <div>
@@ -280,20 +345,33 @@
                 <option value="inactive">Inactivo</option>
               </select>
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
-              <button
-                id="search-btn"
-                class="w-full bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg"
-              >
-                Filtrar
-              </button>
+            <div class="flex gap-2">
+              <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+                <button
+                  id="apply-filters-btn"
+                  class="w-full bg-pink-600 hover:bg-pink-700 text-white py-2 px-4 rounded-lg inline-flex items-center justify-center gap-2"
+                >
+                  <i data-lucide="filter" class="h-4 w-4"></i>
+                  <span>Aplicar Filtros</span>
+                </button>
+              </div>
+              <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+                <button
+                  id="clear-filters-btn"
+                  class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded-lg inline-flex items-center justify-center gap-2"
+                >
+                  <i data-lucide="x" class="h-4 w-4"></i>
+                  <span>Limpiar</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Products List -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden admin-card">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden admin-card mx-6 mb-6">
           <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
@@ -578,6 +656,7 @@
     </main>
 
     <!-- Scripts -->
+    <script src="../../js/chart.min.js"></script>
     <script type="module" src="../../js/lucide-icons.js"></script>
     <script type="module" src="./occasions-module.js"></script>
     <script type="module" src="./dashboard.js"></script>

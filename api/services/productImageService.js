@@ -5,7 +5,7 @@
  * Uses indexed columns (product_id, size, is_primary)
  */
 
-import { supabase, DB_SCHEMA, DB_FUNCTIONS } from './supabaseClient.js'
+import { supabase, DB_SCHEMA } from './supabaseClient.js'
 
 const TABLE = DB_SCHEMA.product_images.table
 const VALID_SIZES = DB_SCHEMA.product_images.enums.size
@@ -203,7 +203,7 @@ export async function createImage(imageData) {
 }
 
 /**
- * Create multiple images atomically (stored function)
+ * Create multiple images atomically (manual batch insert)
  * Creates all sizes for a single image_index
  */
 export async function createProductImagesAtomic(
@@ -225,8 +225,8 @@ export async function createProductImagesAtomic(
       throw new Error('Invalid imagesData: must be a non-empty array')
     }
 
-    // Validate each image
-    for (const img of imagesData) {
+    // Validate and prepare each image
+    const imagesToInsert = imagesData.map(img => {
       if (!img.size || !VALID_SIZES.includes(img.size)) {
         throw new Error(`Invalid size: must be one of ${VALID_SIZES.join(', ')}`)
       }
@@ -236,14 +236,21 @@ export async function createProductImagesAtomic(
       if (!img.file_hash || typeof img.file_hash !== 'string') {
         throw new Error('Invalid file_hash: must be a non-empty string')
       }
-    }
 
-    const { data, error } = await supabase.rpc(DB_FUNCTIONS.createProductImagesAtomic, {
-      product_id: productId,
-      image_index: imageIndex,
-      images_data: imagesData,
-      is_primary: isPrimary
+      return {
+        product_id: productId,
+        image_index: imageIndex,
+        size: img.size,
+        url: img.url,
+        file_hash: img.file_hash,
+        mime_type: img.mime_type || 'image/webp',
+        // IMPORTANT: Only ONE image can be primary per product (DB constraint)
+        // Mark only the 'medium' size as primary when isPrimary=true
+        is_primary: isPrimary && img.size === 'medium'
+      }
     })
+
+    const { data, error } = await supabase.from(TABLE).insert(imagesToInsert).select()
 
     if (error) {
       throw new Error(`Database error: ${error.message}`)
@@ -382,7 +389,7 @@ export async function deleteImage(id) {
 }
 
 /**
- * Delete all images for a product (stored function)
+ * Delete all images for a product (direct delete)
  */
 export async function deleteProductImagesSafe(productId) {
   try {
@@ -390,15 +397,13 @@ export async function deleteProductImagesSafe(productId) {
       throw new Error('Invalid product ID: must be a number')
     }
 
-    const { data, error } = await supabase.rpc(DB_FUNCTIONS.deleteProductImagesSafe, {
-      product_id: productId
-    })
+    const { data, error } = await supabase.from(TABLE).delete().eq('product_id', productId).select()
 
     if (error) {
       throw new Error(`Database error: ${error.message}`)
     }
 
-    return { success: data, product_id: productId }
+    return { success: true, deleted_count: data?.length || 0, product_id: productId }
   } catch (error) {
     console.error(`deleteProductImagesSafe(${productId}) failed:`, error)
     throw error
@@ -418,6 +423,39 @@ export async function deleteImagesByIndex(productId, imageIndex) {
       throw new Error('Invalid image_index: must be a positive number')
     }
 
+    // 1. Get images to delete (we need URLs to delete from storage)
+    const { data: images, error: selectError } = await supabase
+      .from(TABLE)
+      .select('*')
+      .eq('product_id', productId)
+      .eq('image_index', imageIndex)
+
+    if (selectError) {
+      throw new Error(`Database error: ${selectError.message}`)
+    }
+    if (!images || images.length === 0) {
+      throw new Error(`No images found for product ${productId}, index ${imageIndex}`)
+    }
+
+    // 2. Extract filename from URL to delete from storage
+    // URL format: https://.../storage/v1/object/public/product-images/medium/product_1_1_abc123.webp
+    // We need: product_1_1_abc123 (without size prefix and extension)
+    const firstImageUrl = images[0].url
+    const urlParts = firstImageUrl.split('/')
+    const filename = urlParts[urlParts.length - 1] // e.g., product_1_1_abc123.webp
+    const filenameBase = filename.replace('.webp', '') // Remove extension
+
+    // 3. Delete from Supabase Storage (all sizes: thumb, small, medium, large)
+    const { deleteImageSizes } = await import('../utils/supabaseStorage.js')
+    try {
+      await deleteImageSizes(filenameBase)
+      console.log(`✓ Deleted ${filenameBase} from storage (all sizes)`)
+    } catch (storageError) {
+      console.warn('Failed to delete from storage:', storageError.message)
+      // Continue to delete from database even if storage deletion fails
+    }
+
+    // 4. Delete from database
     const { data, error } = await supabase
       .from(TABLE)
       .delete()
@@ -427,9 +465,6 @@ export async function deleteImagesByIndex(productId, imageIndex) {
 
     if (error) {
       throw new Error(`Database error: ${error.message}`)
-    }
-    if (!data || data.length === 0) {
-      throw new Error(`No images found for product ${productId}, index ${imageIndex}`)
     }
 
     return data

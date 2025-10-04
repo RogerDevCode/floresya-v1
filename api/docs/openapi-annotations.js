@@ -399,6 +399,161 @@
 
 /**
  * @swagger
+ * /api/products/{id}/images:
+ *   post:
+ *     tags: [Products]
+ *     summary: Create product images
+ *     description: Admin only - Batch insert all sizes for a single image_index (1-5)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [image_index, images]
+ *             properties:
+ *               image_index:
+ *                 type: integer
+ *                 minimum: 1
+ *                 maximum: 5
+ *                 description: Image index (1-5) for ordering in carousel
+ *               images:
+ *                 type: array
+ *                 description: All sizes for this image (thumb, small, medium, large)
+ *                 items:
+ *                   type: object
+ *                   required: [size, url, file_hash, mime_type]
+ *                   properties:
+ *                     size:
+ *                       type: string
+ *                       enum: [thumb, small, medium, large]
+ *                     url:
+ *                       type: string
+ *                       format: uri
+ *                       description: Image URL (CDN or storage path)
+ *                     file_hash:
+ *                       type: string
+ *                       description: Hash for deduplication
+ *                     mime_type:
+ *                       type: string
+ *                       example: image/webp
+ *               is_primary:
+ *                 type: boolean
+ *                 default: false
+ *                 description: Mark this image as primary/featured
+ *     responses:
+ *       201:
+ *         description: Images created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/ProductImage'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ */
+
+/**
+ * @swagger
+ * /api/products/{id}/images/{imageIndex}:
+ *   delete:
+ *     tags: [Products]
+ *     summary: Delete images by image_index
+ *     description: Admin only - Deletes all sizes for a specific image_index (1-5)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *       - name: imageIndex
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 5
+ *         description: Image index to delete
+ *     responses:
+ *       200:
+ *         description: Images deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         deleted_count:
+ *                           type: integer
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+
+/**
+ * @swagger
+ * /api/products/{id}/images/primary/{imageIndex}:
+ *   patch:
+ *     tags: [Products]
+ *     summary: Set primary image by image_index
+ *     description: Admin only - Marks a specific image_index as primary/featured
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *       - name: imageIndex
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 5
+ *         description: Image index to set as primary
+ *     responses:
+ *       200:
+ *         description: Primary image set successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/ProductImage'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+
+/**
+ * @swagger
  * /api/products/{id}/reactivate:
  *   patch:
  *     tags: [Products]

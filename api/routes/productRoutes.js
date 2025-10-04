@@ -10,6 +10,7 @@ import * as productImageController from '../controllers/productImageController.j
 import { authenticate, authorize } from '../middleware/auth.js'
 import { validate, validateId, validatePagination } from '../middleware/validate.js'
 import { productCreateSchema, productUpdateSchema } from '../middleware/schemas.js'
+import { uploadSingle } from '../middleware/uploadImage.js'
 
 const router = express.Router()
 
@@ -80,6 +81,32 @@ router.patch(
     quantity: { type: 'number', required: true, integer: true, min: 0 }
   }),
   productController.updateStock
+)
+
+// Product image management routes (admin only) - MUST come before /:id routes
+router.post(
+  '/:id/images',
+  authenticate,
+  authorize('admin'),
+  validateId(),
+  uploadSingle, // Multer middleware for file upload
+  productImageController.createProductImages
+)
+
+router.delete(
+  '/:id/images/:imageIndex',
+  authenticate,
+  authorize('admin'),
+  validateId(),
+  productImageController.deleteImagesByIndex
+)
+
+router.patch(
+  '/:id/images/primary/:imageIndex',
+  authenticate,
+  authorize('admin'),
+  validateId(),
+  productImageController.setPrimaryImage
 )
 
 router.delete(

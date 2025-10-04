@@ -113,14 +113,10 @@ export const updateOrder = asyncHandler(async (req, res) => {
  * Update order status with history
  */
 export const updateOrderStatus = asyncHandler(async (req, res) => {
-  const { status, notes, changedBy } = req.body
+  const { status, notes } = req.body
 
-  const result = await orderService.updateOrderStatus(
-    req.params.id,
-    status,
-    notes,
-    changedBy || req.user?.id
-  )
+  // TODO: Get real admin user_id from auth
+  const result = await orderService.updateOrderStatus(req.params.id, status, notes, null)
 
   res.json({
     success: true,

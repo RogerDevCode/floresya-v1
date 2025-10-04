@@ -17,8 +17,23 @@ export async function createImageCarousel(container, productId) {
     // Fetch product images (small size)
     const response = await api.getProductImages(productId, 'small')
 
+    // Fallback: Use placeholder if no images found
     if (!response.success || !response.data || response.data.length === 0) {
-      throw new Error('No images found for product')
+      const placeholders = ['/images/placeholder-flower.svg', '/images/placeholder-hero.svg']
+      const placeholderIndex = productId % placeholders.length
+      const placeholderUrl = placeholders[placeholderIndex]
+
+      container.innerHTML = `
+        <div class="product-image-container" data-product-id="${productId}">
+          <img
+            src="${placeholderUrl}"
+            alt="Product placeholder"
+            class="product-carousel-image"
+            loading="lazy"
+          />
+        </div>
+      `
+      return { destroy: () => {} }
     }
 
     const images = response.data.sort((a, b) => a.image_index - b.image_index)
@@ -30,8 +45,9 @@ export async function createImageCarousel(container, productId) {
         <img
           src="${defaultImage.url}"
           alt="Product image"
-          class="product-carousel-image"
+          class="product-carousel-image bg-gray-100"
           loading="lazy"
+          onerror="this.src='/images/placeholder-flower.svg'; this.classList.add('bg-gray-100'); console.warn('Failed to load product image:', '${defaultImage.url}')"
         />
         ${images.length > 1 ? `<div class="image-count-badge">${images.length} fotos</div>` : ''}
       </div>
@@ -55,6 +71,7 @@ export async function createImageCarousel(container, productId) {
     function nextImage() {
       currentIndex = (currentIndex + 1) % images.length
       imgElement.src = images[currentIndex].url
+      imgElement.classList.remove('bg-gray-100')
     }
 
     /**
@@ -63,6 +80,7 @@ export async function createImageCarousel(container, productId) {
     function resetToDefault() {
       currentIndex = 0
       imgElement.src = defaultImage.url
+      imgElement.classList.remove('bg-gray-100')
     }
 
     /**

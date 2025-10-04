@@ -18,25 +18,39 @@
     <nav class="navbar bg-white/95 backdrop-blur-sm shadow-md" role="navigation">
       <div class="container mx-auto px-4">
         <div class="flex items-center justify-between h-16">
-          <!-- Logo -->
+          <!-- Back Button -->
           <a
-            class="flex items-center space-x-2"
             href="./dashboard.html"
-            aria-label="FloresYa Admin"
+            class="text-gray-600 hover:text-pink-600 transition-colors"
+            title="Volver al Dashboard"
+          >
+            <i data-lucide="arrow-left" class="h-6 w-6"></i>
+          </a>
+
+          <!-- Logo & Title (Clickable) -->
+          <a
+            href="../../index.html"
+            class="flex items-center space-x-2 hover:opacity-80 transition-opacity"
           >
             <img
               src="../../images/logoFloresYa.jpeg"
               alt="Logo FloresYa Admin"
               class="h-10 w-10 rounded-full"
             />
-            <span class="text-xl font-bold text-pink-600">FloresYa Admin</span>
+            <span class="text-xl font-bold text-pink-600 hidden md:block">FloresYa Admin</span>
+            <span class="text-sm text-gray-500 hidden md:block">/ Editor de Contacto</span>
           </a>
 
+          <!-- User Info -->
           <div class="flex items-center space-x-4">
-            <a href="./dashboard.html" class="text-gray-600 hover:text-pink-600 transition-colors">
-              <i data-lucide="arrow-left" class="h-6 w-6"></i>
-            </a>
-            <span class="text-sm text-gray-600">Editor de Contacto</span>
+            <span class="text-sm text-gray-600 hidden md:block" id="admin-user-display">Admin</span>
+            <button
+              id="logout-btn"
+              class="text-gray-600 hover:text-pink-600 transition-colors"
+              title="Cerrar sesión"
+            >
+              <i data-lucide="log-out" class="h-6 w-6"></i>
+            </button>
           </div>
         </div>
       </div>

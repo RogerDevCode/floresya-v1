@@ -57,13 +57,37 @@ export const DB_SCHEMA = {
     search: ['full_name_normalized', 'email_normalized'],
     enums: {
       role: ['user', 'admin']
-    }
+    },
+    columns: [
+      'id',
+      'email',
+      'password_hash',
+      'full_name',
+      'phone',
+      'role',
+      'is_active',
+      'email_verified',
+      'created_at',
+      'updated_at',
+      'full_name_normalized',
+      'email_normalized'
+    ]
   },
   occasions: {
     table: 'occasions',
     pk: 'id',
     indexes: ['slug'],
-    filters: ['is_active', 'display_order']
+    filters: ['is_active', 'display_order'],
+    columns: [
+      'id',
+      'name',
+      'description',
+      'is_active',
+      'display_order',
+      'created_at',
+      'updated_at',
+      'slug'
+    ]
   },
   products: {
     table: 'products',
@@ -78,13 +102,31 @@ export const DB_SCHEMA = {
     ],
     filters: ['active', 'featured'],
     sorts: ['created_at', 'carousel_order'],
-    search: ['name_normalized', 'description_normalized']
+    search: ['name_normalized', 'description_normalized'],
+    columns: [
+      'id',
+      'name',
+      'summary',
+      'description',
+      'price_usd',
+      'price_ves',
+      'stock',
+      'sku',
+      'active',
+      'featured',
+      'carousel_order',
+      'created_at',
+      'updated_at',
+      'name_normalized',
+      'description_normalized'
+    ]
   },
   product_occasions: {
     table: 'product_occasions',
     pk: 'id',
     indexes: ['product_id', 'occasion_id'],
-    unique: ['product_id', 'occasion_id']
+    unique: ['product_id', 'occasion_id'],
+    columns: ['id', 'product_id', 'occasion_id', 'created_at']
   },
   product_images: {
     table: 'product_images',
@@ -93,7 +135,19 @@ export const DB_SCHEMA = {
     unique: ['product_id', 'image_index', 'size'],
     enums: {
       size: ['thumb', 'small', 'medium', 'large']
-    }
+    },
+    columns: [
+      'id',
+      'product_id',
+      'url',
+      'image_index',
+      'size',
+      'is_primary',
+      'file_hash',
+      'mime_type',
+      'created_at',
+      'updated_at'
+    ]
   },
   orders: {
     table: 'orders',
@@ -172,7 +226,18 @@ export const DB_SCHEMA = {
     sorts: ['display_order'],
     enums: {
       type: ['bank_transfer', 'mobile_payment', 'cash', 'crypto', 'international']
-    }
+    },
+    columns: [
+      'id',
+      'name',
+      'type',
+      'description',
+      'account_info',
+      'is_active',
+      'display_order',
+      'created_at',
+      'updated_at'
+    ]
   },
   payments: {
     table: 'payments',
@@ -208,21 +273,25 @@ export const DB_SCHEMA = {
     table: 'settings',
     pk: 'id',
     indexes: ['key'],
-    filters: ['is_public']
+    filters: ['is_public'],
+    columns: ['id', 'key', 'value', 'description', 'type', 'is_public', 'created_at', 'updated_at']
   }
 }
 
 /**
  * Database stored functions
+ * Note: Most stored functions are not yet created in Supabase
+ * Services use standard queries instead of RPC calls
  */
 export const DB_FUNCTIONS = {
-  createOrderWithItems: 'create_order_with_items',
-  createProductWithOccasions: 'create_product_with_occasions',
-  createProductImagesAtomic: 'create_product_images_atomic',
-  updateOrderStatusWithHistory: 'update_order_status_with_history',
-  updateCarouselOrderAtomic: 'update_carousel_order_atomic',
-  deleteProductImagesSafe: 'delete_product_images_safe',
-  getProductOccasions: 'get_product_occasions',
-  getProductsByOccasion: 'get_products_by_occasion',
-  getProductsWithOccasions: 'get_products_with_occasions'
+  // Future stored functions (not implemented yet)
+  // createOrderWithItems: 'create_order_with_items',
+  // createProductWithOccasions: 'create_product_with_occasions',
+  // createProductImagesAtomic: 'create_product_images_atomic',
+  // updateOrderStatusWithHistory: 'update_order_status_with_history',
+  // updateCarouselOrderAtomic: 'update_carousel_order_atomic',
+  // deleteProductImagesSafe: 'delete_product_images_safe',
+  // getProductOccasions: 'get_product_occasions',
+  // getProductsByOccasion: 'get_products_by_occasion',
+  // getProductsWithOccasions: 'get_products_with_occasions'
 }

@@ -3,56 +3,91 @@
  * Manages navigation and views for the admin panel
  */
 
+/* global Chart */
+
+import { initAdminCommon } from '../../js/admin-common.js'
+import { toast } from '../../js/components/toast.js'
+
+// Chart.js will be loaded via script tag in HTML
 // Global state
 let _currentView = 'dashboard'
-const mockProducts = [
-  {
-    id: 67,
-    name: 'Ramo Tropical Vibrante',
-    description:
-      'Explosión de colores tropicales con aves del paraíso, heliconias y flores exóticas',
-    price_usd: 45.99,
-    price_ves: 1837.96,
-    stock: 15,
-    sku: 'FY-001',
-    active: true,
-    featured: true,
-    carousel_order: 1,
-    created_at: '2025-09-30T02:22:35.04999+00',
-    updated_at: '2025-09-30T02:22:35.04999+00',
-    image_url: '/products/vibrant-tropical-flower-bouquet-with-birds-of-para.jpg'
-  },
-  {
-    id: 68,
-    name: 'Bouquet Arcoíris de Rosas',
-    description: 'Rosas multicolores que forman un hermoso arcoíris de emociones',
-    price_usd: 52.99,
-    price_ves: 2119.6,
-    stock: 20,
-    sku: 'FY-002',
-    active: true,
-    featured: true,
-    carousel_order: 2,
-    created_at: '2025-09-30T02:22:35.04999+00',
-    updated_at: '2025-09-30T02:22:35.04999+00',
-    image_url: '/products/rainbow-rose-bouquet.jpg'
-  },
-  {
-    id: 69,
-    name: 'Girasoles Gigantes Alegres',
-    description: 'Girasoles enormes que irradian alegría y energía positiva',
-    price_usd: 38.99,
-    price_ves: 1559.6,
-    stock: 25,
-    sku: 'FY-003',
-    active: true,
-    featured: false,
-    carousel_order: null,
-    created_at: '2025-09-30T02:22:35.04999+00',
-    updated_at: '2025-09-30T02:22:35.04999+00',
-    image_url: '/products/happy-giant-sunflowers.jpg'
+let products = [] // Will be populated from API
+
+/**
+ * Load products from API
+ * @param {boolean} includeInactive - Include inactive products (admin only)
+ * @returns {Promise<Array>} Products array
+ */
+async function loadProducts(includeInactive = true) {
+  try {
+    const url = `/api/products?includeInactive=${includeInactive}`
+    const response = await fetch(url, {
+      headers: {
+        Authorization: 'Bearer admin:1:admin' // Admin token for includeInactive
+      }
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const result = await response.json()
+
+    if (!result.success || !result.data) {
+      throw new Error(result.message || 'Failed to load products')
+    }
+
+    products = result.data
+
+    // Load primary images (thumb size) for each product
+    await loadProductImages(products)
+
+    console.log(`✓ Loaded ${products.length} products from API`)
+    return products
+  } catch (error) {
+    console.error('Error loading products:', error)
+    toast.error('Error al cargar productos: ' + error.message)
+    products = [] // Fail-fast: empty array on error
+    return products
   }
-]
+}
+
+/**
+ * Load primary images for products
+ * @param {Array} products - Products array
+ */
+async function loadProductImages(products) {
+  try {
+    // Load images for all products in parallel
+    const imagePromises = products.map(async product => {
+      try {
+        // Get all images for product, filter by size=thumb
+        const response = await fetch(`/api/products/${product.id}/images?size=thumb`, {
+          headers: {
+            Authorization: 'Bearer admin:1:admin'
+          }
+        })
+
+        if (response.ok) {
+          const result = await response.json()
+          if (result.success && result.data && result.data.length > 0) {
+            // Get primary thumb image (or first thumb image if none is primary)
+            const primaryThumb = result.data.find(img => img.is_primary) || result.data[0]
+            if (primaryThumb) {
+              product.thumbnail_url = primaryThumb.url
+            }
+          }
+        }
+      } catch (error) {
+        console.warn(`Failed to load image for product ${product.id}`)
+      }
+    })
+
+    await Promise.all(imagePromises)
+  } catch (error) {
+    console.error('Error loading product images:', error)
+  }
+}
 
 /**
  * Initialize admin panel
@@ -66,14 +101,562 @@ function init() {
   // Setup navigation
   setupNavigation()
 
-  // Setup sidebar toggle
-  setupSidebarToggle()
-
   // Setup event listeners
   setupEventListeners()
 
   // Load initial view
   showView('dashboard')
+}
+
+// ==================== DASHBOARD STATS ====================
+
+let dashboardYearFilter = new Date().getFullYear().toString() // Default: año actual
+let dashboardDateFilter = '' // Default: todos los períodos
+let chartStatusFilter = 'all-non-cancelled' // Default: todos los pedidos no cancelados
+let salesChartInstance = null // Chart.js instance
+let isLoadingDashboardStats = false // Flag to prevent concurrent API calls
+let cachedOrders = [] // Cache orders to avoid redundant API calls
+
+/**
+ * Load dashboard data
+ */
+async function loadDashboardData() {
+  setupDashboardFilters()
+  setupChartFilter()
+  await updateDashboardStats()
+}
+
+/**
+ * Setup dashboard filter listeners
+ */
+function setupDashboardFilters() {
+  const yearFilter = document.getElementById('dashboard-year-filter')
+  const dateFilter = document.getElementById('dashboard-date-filter')
+
+  if (yearFilter) {
+    yearFilter.value = dashboardYearFilter
+    yearFilter.addEventListener('change', e => {
+      dashboardYearFilter = e.target.value
+      if (!isLoadingDashboardStats) {
+        updateDashboardStats()
+      }
+    })
+  }
+
+  if (dateFilter) {
+    dateFilter.addEventListener('change', e => {
+      dashboardDateFilter = e.target.value
+      if (!isLoadingDashboardStats) {
+        updateDashboardStats()
+      }
+    })
+  }
+}
+
+/**
+ * Apply dashboard filters to orders
+ */
+function applyDashboardFilters(orders) {
+  let filtered = [...orders]
+
+  // Filter by year
+  if (dashboardYearFilter) {
+    const year = parseInt(dashboardYearFilter)
+    filtered = filtered.filter(order => {
+      const orderYear = new Date(order.created_at).getFullYear()
+      return orderYear === year
+    })
+  }
+
+  // Filter by period
+  if (dashboardDateFilter === 'today') {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    filtered = filtered.filter(order => new Date(order.created_at) >= today)
+  } else if (dashboardDateFilter === 'current-month') {
+    const now = new Date()
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1)
+    filtered = filtered.filter(order => new Date(order.created_at) >= firstDay)
+  } else if (dashboardDateFilter === 'last-month') {
+    const now = new Date()
+    const firstDayLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+    const lastDayLastMonth = new Date(now.getFullYear(), now.getMonth(), 0)
+    lastDayLastMonth.setHours(23, 59, 59, 999)
+    filtered = filtered.filter(order => {
+      const orderDate = new Date(order.created_at)
+      return orderDate >= firstDayLastMonth && orderDate <= lastDayLastMonth
+    })
+  } else if (dashboardDateFilter && !isNaN(parseInt(dashboardDateFilter))) {
+    const days = parseInt(dashboardDateFilter)
+    const cutoffDate = new Date()
+    cutoffDate.setDate(cutoffDate.getDate() - days)
+    filtered = filtered.filter(order => new Date(order.created_at) >= cutoffDate)
+  }
+
+  return filtered
+}
+
+/**
+ * Update filter indicator text
+ */
+function updateFilterIndicator() {
+  const indicator = document.getElementById('dashboard-filter-indicator')
+  if (!indicator) {
+    return
+  }
+
+  const yearText = `Año ${dashboardYearFilter}`
+  let periodText = 'Todos los pedidos'
+
+  if (dashboardDateFilter === 'today') {
+    periodText = 'Día de hoy'
+  } else if (dashboardDateFilter === 'current-month') {
+    periodText = 'Este mes'
+  } else if (dashboardDateFilter === 'last-month') {
+    periodText = 'Mes pasado'
+  } else if (dashboardDateFilter === '30') {
+    periodText = 'Últimos 30 días'
+  } else if (dashboardDateFilter === '60') {
+    periodText = 'Últimos 60 días'
+  } else if (dashboardDateFilter === '90') {
+    periodText = 'Últimos 90 días'
+  }
+
+  indicator.textContent = `Mostrando: ${yearText} | ${periodText}`
+}
+
+/**
+ * Render monthly sales chart with Chart.js
+ * @param {Array} orders - All orders from API
+ */
+function renderMonthlySalesChart(orders) {
+  const canvas = document.getElementById('monthly-sales-chart')
+  if (!canvas) {
+    return
+  }
+
+  // Filter orders based on chart status filter
+  let filteredOrders = [...orders]
+
+  if (chartStatusFilter === 'all-non-cancelled') {
+    filteredOrders = filteredOrders.filter(o => o.status !== 'cancelled')
+  } else if (chartStatusFilter !== 'all') {
+    filteredOrders = filteredOrders.filter(o => o.status === chartStatusFilter)
+  }
+
+  // Generate last 12 months from current month backwards
+  const months = []
+  const now = new Date()
+
+  for (let i = 11; i >= 0; i--) {
+    const date = new Date(now.getFullYear(), now.getMonth() - i, 1)
+    const monthName = date.toLocaleDateString('es-ES', { month: 'short', year: 'numeric' })
+    months.push({
+      label: monthName.charAt(0).toUpperCase() + monthName.slice(1), // Capitalize
+      year: date.getFullYear(),
+      month: date.getMonth()
+    })
+  }
+
+  // Calculate sales and order count per month
+  const salesData = months.map(m => {
+    const monthOrders = filteredOrders.filter(order => {
+      const orderDate = new Date(order.created_at)
+      return orderDate.getFullYear() === m.year && orderDate.getMonth() === m.month
+    })
+
+    const totalSales = monthOrders.reduce(
+      (sum, order) => sum + parseFloat(order.total_amount_usd || 0),
+      0
+    )
+    const orderCount = monthOrders.length
+
+    return { totalSales, orderCount }
+  })
+
+  // Destroy existing chart if it exists
+  if (salesChartInstance) {
+    salesChartInstance.destroy()
+  }
+
+  // Create new chart
+  const ctx = canvas.getContext('2d')
+  salesChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: months.map(m => m.label),
+      datasets: [
+        {
+          label: 'Monto USD',
+          data: salesData.map(d => d.totalSales),
+          backgroundColor: 'rgba(236, 72, 153, 0.5)', // Pink
+          borderColor: 'rgba(236, 72, 153, 1)',
+          borderWidth: 2,
+          yAxisID: 'y-usd',
+          order: 2
+        },
+        {
+          label: 'Cantidad de Pedidos',
+          data: salesData.map(d => d.orderCount),
+          type: 'line',
+          backgroundColor: 'rgba(168, 85, 247, 0.2)', // Purple
+          borderColor: 'rgba(168, 85, 247, 1)',
+          borderWidth: 2,
+          pointBackgroundColor: 'rgba(168, 85, 247, 1)',
+          pointRadius: 4,
+          yAxisID: 'y-count',
+          order: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top'
+        },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              let label = context.dataset.label || ''
+              if (label) {
+                label += ': '
+              }
+              if (context.datasetIndex === 0) {
+                label += `$${context.parsed.y.toFixed(2)}`
+              } else {
+                label += context.parsed.y
+              }
+              return label
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            display: false
+          }
+        },
+        'y-usd': {
+          type: 'linear',
+          position: 'left',
+          title: {
+            display: true,
+            text: 'Monto USD'
+          },
+          ticks: {
+            callback: function (value) {
+              return '$' + value.toFixed(0)
+            }
+          }
+        },
+        'y-count': {
+          type: 'linear',
+          position: 'right',
+          title: {
+            display: true,
+            text: 'Cantidad'
+          },
+          grid: {
+            drawOnChartArea: false
+          },
+          ticks: {
+            stepSize: 1
+          }
+        }
+      }
+    }
+  })
+
+  // Update subtitle based on filter
+  updateChartSubtitle()
+}
+
+/**
+ * Update chart subtitle based on active filter
+ */
+function updateChartSubtitle() {
+  const subtitle = document.getElementById('chart-subtitle')
+  if (!subtitle) {
+    return
+  }
+
+  let text = 'Últimos 12 meses'
+
+  if (chartStatusFilter === 'all-non-cancelled') {
+    text += ' (pedidos no cancelados)'
+  } else if (chartStatusFilter === 'all') {
+    text += ' (todos los pedidos)'
+  } else {
+    const statusNames = {
+      pending: 'Pendientes',
+      verified: 'Verificados',
+      preparing: 'Preparando',
+      shipped: 'Enviados',
+      delivered: 'Entregados',
+      cancelled: 'Cancelados'
+    }
+    text += ` (solo ${statusNames[chartStatusFilter] || chartStatusFilter})`
+  }
+
+  subtitle.textContent = text
+}
+
+/**
+ * Setup chart filter listener
+ */
+function setupChartFilter() {
+  const chartFilter = document.getElementById('chart-status-filter')
+  if (!chartFilter) {
+    return
+  }
+
+  chartFilter.addEventListener('change', e => {
+    chartStatusFilter = e.target.value
+
+    // Reuse cached orders instead of fetching again
+    if (cachedOrders.length > 0) {
+      renderMonthlySalesChart(cachedOrders)
+      console.log(`✓ Chart re-rendered with filter: ${chartStatusFilter}`)
+    } else {
+      console.warn('No cached orders available for chart re-render')
+    }
+  })
+}
+
+/**
+ * Get top products by quantity sold
+ * @param {Array} orders - All orders from API
+ * @param {Number} limit - Number of top products to return (default: 3)
+ * @returns {Array} - Top products with sales count
+ */
+function getTopProducts(orders, limit = 3) {
+  // Filter: exclude cancelled orders + apply global filters
+  const filteredOrders = applyDashboardFilters(orders).filter(o => o.status !== 'cancelled')
+
+  // Group by product_id and sum quantities
+  const productSales = {}
+
+  filteredOrders.forEach(order => {
+    if (!order.order_items || !Array.isArray(order.order_items)) {
+      return
+    }
+
+    order.order_items.forEach(item => {
+      const productId = item.product_id
+      const productName = item.product_name
+      const quantity = parseInt(item.quantity) || 0
+
+      if (!productSales[productId]) {
+        productSales[productId] = {
+          product_id: productId,
+          product_name: productName,
+          total_quantity: 0
+        }
+      }
+
+      productSales[productId].total_quantity += quantity
+    })
+  })
+
+  // Convert to array and sort by quantity DESC
+  const sortedProducts = Object.values(productSales).sort(
+    (a, b) => b.total_quantity - a.total_quantity
+  )
+
+  // Return top N
+  return sortedProducts.slice(0, limit)
+}
+
+/**
+ * Render top products section
+ * @param {Array} topProducts - Top products from getTopProducts()
+ */
+function renderTopProducts(topProducts) {
+  const container = document.getElementById('top-products-list')
+  if (!container) {
+    return
+  }
+
+  if (!topProducts || topProducts.length === 0) {
+    container.innerHTML = `
+      <div class="text-center text-gray-500 py-8">
+        <i data-lucide="package-x" class="h-8 w-8 mx-auto"></i>
+        <p class="mt-2">No hay datos de productos vendidos</p>
+      </div>
+    `
+    // Reinitialize icons
+    if (window.lucide && window.lucide.createIcons) {
+      window.lucide.createIcons()
+    }
+    return
+  }
+
+  container.innerHTML = topProducts
+    .map(
+      (product, index) => `
+    <div class="flex items-center justify-between border-b pb-3">
+      <div class="flex items-center gap-3">
+        <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+          ${index + 1}
+        </div>
+        <div>
+          <p class="font-medium text-gray-900">${product.product_name}</p>
+          <p class="text-sm text-gray-500">ID: ${product.product_id}</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <p class="font-bold text-gray-900 text-lg">${product.total_quantity}</p>
+        <p class="text-xs text-gray-500">unidades</p>
+      </div>
+    </div>
+  `
+    )
+    .join('')
+
+  // Update subtitle
+  updateTopProductsSubtitle()
+}
+
+/**
+ * Update top products subtitle based on active filters
+ */
+function updateTopProductsSubtitle() {
+  const subtitle = document.getElementById('top-products-subtitle')
+  if (!subtitle) {
+    return
+  }
+
+  const yearText = `Año ${dashboardYearFilter}`
+  let periodText = 'Todos los pedidos'
+
+  if (dashboardDateFilter === 'today') {
+    periodText = 'Día de hoy'
+  } else if (dashboardDateFilter === 'current-month') {
+    periodText = 'Este mes'
+  } else if (dashboardDateFilter === 'last-month') {
+    periodText = 'Mes pasado'
+  } else if (dashboardDateFilter === '30') {
+    periodText = 'Últimos 30 días'
+  } else if (dashboardDateFilter === '60') {
+    periodText = 'Últimos 60 días'
+  } else if (dashboardDateFilter === '90') {
+    periodText = 'Últimos 90 días'
+  }
+
+  subtitle.textContent = `Filtros: ${yearText} | ${periodText} (excluye cancelados)`
+}
+
+/**
+ * Update dashboard statistics with real API data
+ */
+async function updateDashboardStats() {
+  // Prevent concurrent calls
+  if (isLoadingDashboardStats) {
+    console.log('⏳ Dashboard stats already loading, skipping duplicate call')
+    return
+  }
+
+  try {
+    isLoadingDashboardStats = true
+
+    // Fetch orders from API
+    const ordersResponse = await fetch('/api/orders', {
+      headers: { Authorization: 'Bearer admin:1:admin' }
+    })
+
+    if (!ordersResponse.ok) {
+      throw new Error('Failed to fetch orders from API')
+    }
+
+    const ordersData = await ordersResponse.json()
+    const allOrders = ordersData.success ? ordersData.data : []
+
+    // Cache orders for chart filter reuse
+    cachedOrders = allOrders
+
+    // Apply filters
+    const filteredOrders = applyDashboardFilters(allOrders)
+
+    // Calculate stats by status
+    const stats = {
+      pending: filteredOrders.filter(o => o.status === 'pending').length,
+      verified: filteredOrders.filter(o => o.status === 'verified').length,
+      preparing: filteredOrders.filter(o => o.status === 'preparing').length,
+      shipped: filteredOrders.filter(o => o.status === 'shipped').length,
+      delivered: filteredOrders.filter(o => o.status === 'delivered').length,
+      cancelled: filteredOrders.filter(o => o.status === 'cancelled').length
+    }
+
+    // Total orders (includes cancelled)
+    const totalOrders = filteredOrders.length
+
+    // Total sales (excludes cancelled)
+    const totalSales = filteredOrders
+      .filter(o => o.status !== 'cancelled')
+      .reduce((sum, order) => sum + parseFloat(order.total_amount_usd || 0), 0)
+
+    // Update DOM
+    const updateElement = (id, value) => {
+      const el = document.getElementById(id)
+      if (el) {
+        el.textContent = value
+      }
+    }
+
+    updateElement('dash-total-orders', totalOrders)
+    updateElement('dash-total-sales', `$${totalSales.toFixed(2)}`)
+    updateElement('dash-status-pending', stats.pending)
+    updateElement('dash-status-verified', stats.verified)
+    updateElement('dash-status-preparing', stats.preparing)
+    updateElement('dash-status-shipped', stats.shipped)
+    updateElement('dash-status-delivered', stats.delivered)
+    updateElement('dash-status-cancelled', stats.cancelled)
+
+    // Update filter indicator
+    updateFilterIndicator()
+
+    // Render monthly sales chart
+    renderMonthlySalesChart(allOrders)
+
+    // Render top products
+    const topProducts = getTopProducts(allOrders, 3)
+    renderTopProducts(topProducts)
+
+    console.log('✓ Dashboard stats updated:', { totalOrders, totalSales, stats, topProducts })
+  } catch (error) {
+    console.error('Error loading dashboard stats:', error)
+    showDashboardError()
+  } finally {
+    isLoadingDashboardStats = false
+  }
+}
+
+/**
+ * Show error state in dashboard stats
+ */
+function showDashboardError() {
+  const elements = [
+    'dash-total-products',
+    'dash-total-orders',
+    'dash-total-sales',
+    'dash-pending-orders'
+  ]
+
+  elements.forEach(id => {
+    const el = document.getElementById(id)
+    if (el) {
+      el.textContent = 'Error'
+      el.classList.add('text-red-600')
+    }
+  })
 }
 
 /**
@@ -101,35 +684,47 @@ function setupNavigation() {
 }
 
 /**
- * Setup sidebar toggle functionality
- */
-function setupSidebarToggle() {
-  const sidebarToggle = document.getElementById('sidebar-toggle')
-  const sidebar = document.getElementById('sidebar')
-
-  if (sidebarToggle && sidebar) {
-    sidebarToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed')
-    })
-  }
-}
-
-/**
  * Setup event listeners
  */
 function setupEventListeners() {
-  // New product button
-  const newProductBtn = document.getElementById('new-product-btn')
-  if (newProductBtn) {
-    newProductBtn.addEventListener('click', () => {
-      alert('Funcionalidad de nuevo producto en desarrollo')
+  // Apply filters button
+  const applyFiltersBtn = document.getElementById('apply-filters-btn')
+  if (applyFiltersBtn) {
+    applyFiltersBtn.addEventListener('click', () => {
+      filterProducts()
     })
   }
 
-  // Search button
-  const searchBtn = document.getElementById('search-btn')
-  if (searchBtn) {
-    searchBtn.addEventListener('click', () => {
+  // Clear filters button
+  const clearFiltersBtn = document.getElementById('clear-filters-btn')
+  if (clearFiltersBtn) {
+    clearFiltersBtn.addEventListener('click', () => {
+      clearFilters()
+    })
+  }
+
+  // Auto-filter on search input (Enter key)
+  const searchInput = document.getElementById('search-input')
+  if (searchInput) {
+    searchInput.addEventListener('keyup', e => {
+      if (e.key === 'Enter') {
+        filterProducts()
+      }
+    })
+  }
+
+  // Auto-filter on occasion change
+  const occasionFilter = document.getElementById('occasion-filter')
+  if (occasionFilter) {
+    occasionFilter.addEventListener('change', () => {
+      filterProducts()
+    })
+  }
+
+  // Auto-filter on status change
+  const statusFilter = document.getElementById('status-filter')
+  if (statusFilter) {
+    statusFilter.addEventListener('change', () => {
       filterProducts()
     })
   }
@@ -159,7 +754,7 @@ function setupEventListeners() {
 /**
  * Show specified view and hide others
  */
-function showView(view) {
+async function showView(view) {
   _currentView = view
 
   // Hide all views
@@ -174,9 +769,16 @@ function showView(view) {
     requestedView.classList.remove('hidden')
   }
 
+  // Special handling for dashboard view
+  if (view === 'dashboard') {
+    loadDashboardData()
+  }
+
   // Special handling for products view
   if (view === 'products') {
-    renderProducts(mockProducts)
+    await loadProducts() // Fetch from API
+    await loadOccasionsFilter() // Load occasions for filter
+    renderProducts(products)
   }
 
   // Special handling for occasions view
@@ -189,52 +791,135 @@ function showView(view) {
 }
 
 /**
- * Filter products based on search criteria
+ * Clear all filters and show all products
  */
-function filterProducts() {
+function clearFilters() {
+  // Reset all filter inputs
   const searchInput = document.getElementById('search-input')
-  const categoryFilter = document.getElementById('category-filter')
+  const occasionFilter = document.getElementById('occasion-filter')
   const statusFilter = document.getElementById('status-filter')
 
-  if (!searchInput || !categoryFilter || !statusFilter) {
+  if (searchInput) {
+    searchInput.value = ''
+  }
+  if (occasionFilter) {
+    occasionFilter.value = ''
+  }
+  if (statusFilter) {
+    statusFilter.value = ''
+  }
+
+  // Show all products
+  renderProducts(products)
+}
+
+/**
+ * Load occasions for filter dropdown
+ */
+async function loadOccasionsFilter() {
+  try {
+    const response = await fetch('/api/occasions', {
+      headers: {
+        Authorization: 'Bearer admin:1:admin'
+      }
+    })
+
+    if (!response.ok) {
+      console.warn('Failed to load occasions for filter')
+      return
+    }
+
+    const result = await response.json()
+    if (!result.success || !result.data) {
+      console.warn('No occasions data received')
+      return
+    }
+
+    const occasions = result.data.filter(occ => occ.is_active)
+    const select = document.getElementById('occasion-filter')
+
+    if (!select) {
+      console.error('Occasion filter select not found')
+      return
+    }
+
+    // Clear existing options (except "Todas")
+    select.innerHTML = '<option value="">Todas las ocasiones</option>'
+
+    // Add occasion options
+    occasions.forEach(occasion => {
+      const option = document.createElement('option')
+      option.value = occasion.id
+      option.textContent = occasion.name
+      select.appendChild(option)
+    })
+
+    console.log(`✓ Loaded ${occasions.length} occasions for filter`)
+  } catch (error) {
+    console.error('Error loading occasions filter:', error)
+  }
+}
+
+/**
+ * Filter products based on search criteria
+ */
+async function filterProducts() {
+  const searchInput = document.getElementById('search-input')
+  const occasionFilter = document.getElementById('occasion-filter')
+  const statusFilter = document.getElementById('status-filter')
+
+  if (!searchInput || !occasionFilter || !statusFilter) {
     console.error('Filter elements not found')
     return
   }
 
   const searchTerm = searchInput.value.toLowerCase()
-  const category = categoryFilter.value
+  const occasionId = occasionFilter.value
   const status = statusFilter.value
 
-  let filtered = [...mockProducts]
+  let filtered = [...products]
 
+  // Text search
   if (searchTerm) {
     filtered = filtered.filter(
       product =>
         product.name.toLowerCase().includes(searchTerm) ||
-        product.description.toLowerCase().includes(searchTerm) ||
-        product.sku.toLowerCase().includes(searchTerm)
+        (product.description && product.description.toLowerCase().includes(searchTerm)) ||
+        (product.sku && product.sku.toLowerCase().includes(searchTerm))
     )
   }
 
-  if (category) {
-    filtered = filtered.filter(product => {
-      if (category === 'flores') {
-        return (
-          product.name.includes('Rosa') ||
-          product.name.includes('Girasol') ||
-          product.name.includes('Orquídea')
-        )
+  // Filter by occasion (requires checking product_occasions relationship)
+  if (occasionId) {
+    try {
+      console.log(`Filtering by occasion ID: ${occasionId}`)
+      // Fetch products for this occasion from API
+      const response = await fetch(`/api/products/occasion/${occasionId}`, {
+        headers: {
+          Authorization: 'Bearer admin:1:admin'
+        }
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        console.log(`Products for occasion ${occasionId}:`, result.data.length)
+        const occasionProductIds = result.data.map(p => p.id)
+
+        // Filter local products to only those in this occasion
+        const beforeCount = filtered.length
+        filtered = filtered.filter(product => occasionProductIds.includes(product.id))
+        console.log(`Filtered: ${beforeCount} → ${filtered.length} products`)
+      } else {
+        console.warn('Failed to fetch products for occasion:', occasionId, response.status)
+        toast.warning('No se pudieron cargar productos para esta ocasión')
       }
-      if (category === 'ramos') {
-        return product.name.includes('Ramo') || product.name.includes('Bouquet')
-      }
-      if (category === 'plantas') {
-        return product.name.includes('Planta')
-      }
-      return true
-    })
+    } catch (error) {
+      console.error('Error filtering by occasion:', error)
+      toast.error('Error al filtrar por ocasión')
+    }
   }
 
+  // Filter by status
   if (status) {
     filtered = filtered.filter(product => (status === 'active' ? product.active : !product.active))
   }
@@ -253,6 +938,10 @@ function renderProducts(products) {
 
   productsList.innerHTML = ''
 
+  // Placeholder images for cycling (relative to /public/pages/admin/)
+  const placeholders = ['../../images/placeholder-flower.svg', '../../images/placeholder-hero.svg']
+  let placeholderIndex = 0
+
   products.forEach(product => {
     const row = document.createElement('tr')
 
@@ -260,15 +949,22 @@ function renderProducts(products) {
     let statusClass = 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full '
     statusClass += product.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
 
+    // Get image URL - cycle through placeholders if no thumbnail
+    let imageUrl = product.thumbnail_url
+    if (!imageUrl) {
+      imageUrl = placeholders[placeholderIndex % placeholders.length]
+      placeholderIndex++
+    }
+
     row.innerHTML = `
-      <td class="px-6 py-4 whitespace-nowrap">
-        <div class="flex items-center">
-          <div class="flex-shrink-0 h-10 w-10">
-            <img class="h-10 w-10 rounded-md object-cover" src="${product.image_url || '../images/placeholder-flower.svg'}" alt="${product.name}">
+      <td class="px-6 py-4">
+        <div class="flex items-center gap-3">
+          <div class="flex-shrink-0 h-12 w-12">
+            <img class="h-12 w-12 rounded-md object-cover" src="${imageUrl}" alt="${product.name}">
           </div>
-          <div class="ml-4">
-            <div class="text-sm font-medium text-gray-900">${product.name}</div>
-            <div class="text-sm text-gray-500">${product.sku || 'No SKU'}</div>
+          <div class="min-w-0 flex-1">
+            <div class="text-sm font-semibold text-gray-900 truncate">${product.name}</div>
+            <div class="text-xs text-gray-500 mt-0.5">${product.sku || 'Sin SKU'}</div>
           </div>
         </div>
       </td>
@@ -284,10 +980,9 @@ function renderProducts(products) {
         </span>
       </td>
       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-        <a 
-          href="#" 
-          class="text-indigo-600 hover:text-indigo-900 edit-product-link"
-          data-product-id="${product.id}"
+        <a
+          href="./edit-product.html?id=${product.id}"
+          class="text-indigo-600 hover:text-indigo-900"
         >
           Editar
         </a>
@@ -302,19 +997,6 @@ function renderProducts(products) {
     `
 
     productsList.appendChild(row)
-  })
-
-  // Add event listeners to edit links
-  document.querySelectorAll('.edit-product-link').forEach(link => {
-    link.addEventListener('click', e => {
-      e.preventDefault()
-      const productId = parseInt(e.target.getAttribute('data-product-id'), 10)
-      if (!productId || isNaN(productId)) {
-        console.error('Invalid product ID')
-        return
-      }
-      editProduct(productId)
-    })
   })
 
   // Add event listeners to delete links
@@ -332,15 +1014,6 @@ function renderProducts(products) {
 }
 
 /**
- * Edit product (navigation to product detail)
- */
-function editProduct(productId) {
-  // In a real implementation, you would navigate to a product detail page
-  // For this mock, just show an alert
-  alert(`Editar producto con ID: ${productId}`)
-}
-
-/**
  * Delete product (soft delete - mark as inactive)
  */
 function deleteProduct(productId) {
@@ -348,17 +1021,20 @@ function deleteProduct(productId) {
     return
   }
 
-  const product = mockProducts.find(p => p.id === productId)
+  const product = products.find(p => p.id === productId)
   if (!product) {
     console.error('Product not found:', productId)
+    toast.error('Producto no encontrado')
     return
   }
 
   product.active = false
   product.updated_at = new Date().toISOString()
-  renderProducts(mockProducts)
-  alert('Producto desactivado exitosamente')
+  renderProducts(products)
+  toast.success('Producto desactivado exitosamente')
 }
+
+// ==================== INITIALIZATION ====================
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
@@ -369,6 +1045,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Then initialize admin functionality
   init()
+  initAdminCommon()
 
   // Initialize occasions module
   if (window.occasionsModule && window.occasionsModule.initOccasionsManagement) {

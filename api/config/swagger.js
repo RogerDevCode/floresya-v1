@@ -117,14 +117,15 @@ const options = {
           properties: {
             id: { type: 'integer', example: 1 },
             name: { type: 'string', example: 'Red Roses Bouquet' },
-            description: { type: 'string', example: 'Beautiful red roses' },
+            summary: { type: 'string', example: 'Dozen red roses', nullable: true },
+            description: { type: 'string', example: 'Beautiful red roses', nullable: true },
             price_usd: { type: 'number', format: 'decimal', example: 29.99 },
-            price_ves: { type: 'number', format: 'decimal', example: 1200.0 },
+            price_ves: { type: 'number', format: 'decimal', example: 1200.0, nullable: true },
             stock: { type: 'integer', example: 50 },
-            sku: { type: 'string', example: 'ROSE-RED-001' },
+            sku: { type: 'string', example: 'ROSE-RED-001', nullable: true },
             featured: { type: 'boolean', example: true },
-            carousel_order: { type: 'integer', example: 1 },
-            is_active: { type: 'boolean', example: true },
+            carousel_order: { type: 'integer', example: 1, nullable: true },
+            active: { type: 'boolean', example: true },
             created_at: { type: 'string', format: 'date-time' },
             updated_at: { type: 'string', format: 'date-time' }
           }
@@ -145,7 +146,8 @@ const options = {
             file_hash: { type: 'string', example: 'abc123def456...' },
             mime_type: { type: 'string', example: 'image/webp' },
             is_primary: { type: 'boolean', example: false },
-            created_at: { type: 'string', format: 'date-time' }
+            created_at: { type: 'string', format: 'date-time' },
+            updated_at: { type: 'string', format: 'date-time' }
           }
         },
         Order: {

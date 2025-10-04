@@ -5,6 +5,7 @@
  */
 
 import * as productService from '../services/productService.js'
+import * as carouselService from '../services/carouselService.js'
 import { asyncHandler } from '../middleware/errorHandler.js'
 
 /**
@@ -23,7 +24,10 @@ export const getAllProducts = asyncHandler(async (req, res) => {
     offset: req.query.offset ? parseInt(req.query.offset, 10) : undefined
   }
 
-  const products = await productService.getAllProducts(filters)
+  // includeInactive: admin can see inactive products
+  const includeInactive = req.query.includeInactive === 'true'
+
+  const products = await productService.getAllProducts(filters, includeInactive)
 
   res.json({
     success: true,
@@ -124,6 +128,11 @@ export const getProductsByOccasion = asyncHandler(async (req, res) => {
  * Create new product
  */
 export const createProduct = asyncHandler(async (req, res) => {
+  // Resolve carousel conflicts before creating
+  if (req.body.featured && req.body.carousel_order) {
+    await carouselService.resolveCarouselOrderConflict(req.body.carousel_order, null)
+  }
+
   const product = await productService.createProduct(req.body)
 
   res.status(201).json({
@@ -154,7 +163,14 @@ export const createProductWithOccasions = asyncHandler(async (req, res) => {
  * Update product
  */
 export const updateProduct = asyncHandler(async (req, res) => {
-  const product = await productService.updateProduct(req.params.id, req.body)
+  const productId = parseInt(req.params.id, 10)
+
+  // Resolve carousel conflicts before updating
+  if (req.body.featured && req.body.carousel_order) {
+    await carouselService.resolveCarouselOrderConflict(req.body.carousel_order, productId)
+  }
+
+  const product = await productService.updateProduct(productId, req.body)
 
   res.json({
     success: true,

@@ -5,7 +5,7 @@
  * NO soft-delete (orders are permanent records)
  */
 
-import { supabase, DB_SCHEMA, DB_FUNCTIONS } from './supabaseClient.js'
+import { supabase, DB_SCHEMA } from './supabaseClient.js'
 import { buildSearchCondition } from '../utils/normalize.js'
 
 const TABLE = DB_SCHEMA.orders.table
@@ -47,10 +47,21 @@ function validateOrderData(data, isUpdate = false) {
 /**
  * Get all orders with filters
  * Supports accent-insensitive search via normalized columns
+ * Includes order_items with product details
  */
 export async function getAllOrders(filters = {}) {
   try {
-    let query = supabase.from(TABLE).select('*')
+    let query = supabase.from(TABLE).select(`
+      *,
+      order_items (
+        id,
+        product_id,
+        product_name,
+        quantity,
+        unit_price_usd,
+        subtotal_usd
+      )
+    `)
 
     // Search filter (uses indexed normalized columns)
     const searchCondition = buildSearchCondition(SEARCH_COLUMNS, filters.search)
@@ -182,7 +193,7 @@ export async function getOrdersByUser(userId, filters = {}) {
 }
 
 /**
- * Create order with items (atomic stored function)
+ * Create order with items (manual transaction)
  */
 export async function createOrderWithItems(orderData, orderItems) {
   try {
@@ -232,7 +243,23 @@ export async function createOrderWithItems(orderData, orderItems) {
       admin_notes: orderData.admin_notes || null
     }
 
+    // Step 1: Create order
+    const { data: order, error: orderError } = await supabase
+      .from(TABLE)
+      .insert(orderPayload)
+      .select()
+      .single()
+
+    if (orderError) {
+      throw new Error(`Database error creating order: ${orderError.message}`)
+    }
+    if (!order) {
+      throw new Error('Failed to create order')
+    }
+
+    // Step 2: Create order items
     const itemsPayload = orderItems.map(item => ({
+      order_id: order.id,
       product_id: item.product_id,
       product_name: item.product_name,
       product_summary: item.product_summary || null,
@@ -243,19 +270,16 @@ export async function createOrderWithItems(orderData, orderItems) {
       subtotal_ves: item.unit_price_ves ? item.unit_price_ves * item.quantity : null
     }))
 
-    const { data, error } = await supabase.rpc(DB_FUNCTIONS.createOrderWithItems, {
-      order_data: orderPayload,
-      order_items: itemsPayload
-    })
+    const { error: itemsError } = await supabase.from('order_items').insert(itemsPayload)
 
-    if (error) {
-      throw new Error(`Database error: ${error.message}`)
-    }
-    if (!data) {
-      throw new Error('Failed to create order')
+    if (itemsError) {
+      // Rollback: delete order
+      await supabase.from(TABLE).delete().eq('id', order.id)
+      throw new Error(`Database error creating order items: ${itemsError.message}`)
     }
 
-    return data
+    // Return order with items
+    return await getOrderById(order.id)
   } catch (error) {
     console.error('createOrderWithItems failed:', error)
     throw error
@@ -263,7 +287,7 @@ export async function createOrderWithItems(orderData, orderItems) {
 }
 
 /**
- * Update order status with history (atomic stored function)
+ * Update order status with history (manual transaction)
  */
 export async function updateOrderStatus(orderId, newStatus, notes = null, changedBy = null) {
   try {
@@ -275,21 +299,53 @@ export async function updateOrderStatus(orderId, newStatus, notes = null, change
       throw new Error(`Invalid status: must be one of ${VALID_STATUSES.join(', ')}`)
     }
 
-    const { data, error } = await supabase.rpc(DB_FUNCTIONS.updateOrderStatusWithHistory, {
+    // Step 1: Get current order
+    const { data: currentOrder, error: getError } = await supabase
+      .from(TABLE)
+      .select('id, status')
+      .eq('id', orderId)
+      .single()
+
+    if (getError || !currentOrder) {
+      throw new Error(`Order ${orderId} not found`)
+    }
+
+    const oldStatus = currentOrder.status
+
+    // Step 2: Update order status
+    const { data: updatedOrder, error: updateError } = await supabase
+      .from(TABLE)
+      .update({ status: newStatus })
+      .eq('id', orderId)
+      .select()
+      .single()
+
+    if (updateError) {
+      throw new Error(`Database error updating order: ${updateError.message}`)
+    }
+
+    // Step 3: Insert status history
+    const historyData = {
       order_id: orderId,
+      old_status: oldStatus,
       new_status: newStatus,
-      notes: notes,
-      changed_by: changedBy
-    })
-
-    if (error) {
-      throw new Error(`Database error: ${error.message}`)
-    }
-    if (!data) {
-      throw new Error(`Failed to update order ${orderId} status`)
+      notes: notes || null
     }
 
-    return data
+    // Only add changed_by if it's a valid integer (not UUID)
+    if (changedBy && typeof changedBy === 'number') {
+      historyData.changed_by = changedBy
+    }
+
+    const { error: historyError } = await supabase.from('order_status_history').insert(historyData)
+
+    if (historyError) {
+      // Rollback: revert order status
+      await supabase.from(TABLE).update({ status: oldStatus }).eq('id', orderId)
+      throw new Error(`Database error creating status history: ${historyError.message}`)
+    }
+
+    return updatedOrder
   } catch (error) {
     console.error(`updateOrderStatus(${orderId}) failed:`, error)
     throw error
