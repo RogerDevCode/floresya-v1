@@ -7,6 +7,12 @@
 
 import { supabase, DB_SCHEMA } from './supabaseClient.js'
 import { buildSearchCondition } from '../utils/normalize.js'
+import {
+  ValidationError,
+  NotFoundError,
+  DatabaseError,
+  BadRequestError
+} from '../errors/AppError.js'
 
 const TABLE = DB_SCHEMA.orders.table
 const VALID_STATUSES = DB_SCHEMA.orders.enums.status
@@ -22,25 +28,35 @@ function validateOrderData(data, isUpdate = false) {
       typeof data.customer_email !== 'string' ||
       !data.customer_email.includes('@')
     ) {
-      throw new Error('Invalid customer_email: must be valid email')
+      throw new ValidationError('Order validation failed', {
+        customer_email: 'must be valid email'
+      })
     }
     if (!data.customer_name || typeof data.customer_name !== 'string') {
-      throw new Error('Invalid customer_name: must be a non-empty string')
+      throw new ValidationError('Order validation failed', {
+        customer_name: 'must be a non-empty string'
+      })
     }
     if (!data.delivery_address || typeof data.delivery_address !== 'string') {
-      throw new Error('Invalid delivery_address: must be a non-empty string')
+      throw new ValidationError('Order validation failed', {
+        delivery_address: 'must be a non-empty string'
+      })
     }
     if (
       !data.total_amount_usd ||
       typeof data.total_amount_usd !== 'number' ||
       data.total_amount_usd <= 0
     ) {
-      throw new Error('Invalid total_amount_usd: must be a positive number')
+      throw new ValidationError('Order validation failed', {
+        total_amount_usd: 'must be a positive number'
+      })
     }
   }
 
   if (data.status !== undefined && !VALID_STATUSES.includes(data.status)) {
-    throw new Error(`Invalid status: must be one of ${VALID_STATUSES.join(', ')}`)
+    throw new ValidationError('Order validation failed', {
+      status: `must be one of ${VALID_STATUSES.join(', ')}`
+    })
   }
 }
 
@@ -100,10 +116,10 @@ export async function getAllOrders(filters = {}) {
     const { data, error } = await query
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('SELECT', TABLE, error)
     }
     if (!data) {
-      throw new Error('No orders found')
+      throw new NotFoundError('Orders')
     }
 
     return data
@@ -119,7 +135,7 @@ export async function getAllOrders(filters = {}) {
 export async function getOrderById(id) {
   try {
     if (!id || typeof id !== 'number') {
-      throw new Error('Invalid order ID: must be a number')
+      throw new BadRequestError('Invalid order ID: must be a number', { orderId: id })
     }
 
     const { data, error } = await supabase
@@ -134,10 +150,10 @@ export async function getOrderById(id) {
       .single()
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('SELECT', TABLE, error, { orderId: id })
     }
     if (!data) {
-      throw new Error(`Order ${id} not found`)
+      throw new NotFoundError('Order', id)
     }
 
     return data
@@ -153,7 +169,7 @@ export async function getOrderById(id) {
 export async function getOrdersByUser(userId, filters = {}) {
   try {
     if (!userId || typeof userId !== 'number') {
-      throw new Error('Invalid user ID: must be a number')
+      throw new BadRequestError('Invalid user ID: must be a number', { userId })
     }
 
     let query = supabase
@@ -179,10 +195,10 @@ export async function getOrdersByUser(userId, filters = {}) {
     const { data, error } = await query
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('SELECT', TABLE, error, { userId })
     }
     if (!data) {
-      throw new Error('No orders found for this user')
+      throw new NotFoundError('Orders for user', userId, { userId })
     }
 
     return data
@@ -200,26 +216,36 @@ export async function createOrderWithItems(orderData, orderItems) {
     validateOrderData(orderData, false)
 
     if (!Array.isArray(orderItems) || orderItems.length === 0) {
-      throw new Error('Invalid orderItems: must be a non-empty array')
+      throw new ValidationError('Order validation failed', {
+        orderItems: 'must be a non-empty array'
+      })
     }
 
     // Validate each item
     for (const item of orderItems) {
       if (!item.product_id || typeof item.product_id !== 'number') {
-        throw new Error('Invalid product_id in order item')
+        throw new ValidationError('Order validation failed', {
+          'orderItems.product_id': 'must be a number'
+        })
       }
       if (!item.product_name || typeof item.product_name !== 'string') {
-        throw new Error('Invalid product_name in order item')
+        throw new ValidationError('Order validation failed', {
+          'orderItems.product_name': 'must be a string'
+        })
       }
       if (!item.quantity || typeof item.quantity !== 'number' || item.quantity <= 0) {
-        throw new Error('Invalid quantity in order item: must be positive')
+        throw new ValidationError('Order validation failed', {
+          'orderItems.quantity': 'must be positive'
+        })
       }
       if (
         !item.unit_price_usd ||
         typeof item.unit_price_usd !== 'number' ||
         item.unit_price_usd <= 0
       ) {
-        throw new Error('Invalid unit_price_usd in order item')
+        throw new ValidationError('Order validation failed', {
+          'orderItems.unit_price_usd': 'must be positive'
+        })
       }
     }
 
@@ -251,10 +277,12 @@ export async function createOrderWithItems(orderData, orderItems) {
       .single()
 
     if (orderError) {
-      throw new Error(`Database error creating order: ${orderError.message}`)
+      throw new DatabaseError('INSERT', TABLE, orderError, { orderData })
     }
     if (!order) {
-      throw new Error('Failed to create order')
+      throw new DatabaseError('INSERT', TABLE, new Error('No data returned after insert'), {
+        orderData
+      })
     }
 
     // Step 2: Create order items
@@ -275,7 +303,10 @@ export async function createOrderWithItems(orderData, orderItems) {
     if (itemsError) {
       // Rollback: delete order
       await supabase.from(TABLE).delete().eq('id', order.id)
-      throw new Error(`Database error creating order items: ${itemsError.message}`)
+      throw new DatabaseError('INSERT', 'order_items', itemsError, {
+        orderId: order.id,
+        orderItems
+      })
     }
 
     // Return order with items
@@ -292,11 +323,13 @@ export async function createOrderWithItems(orderData, orderItems) {
 export async function updateOrderStatus(orderId, newStatus, notes = null, changedBy = null) {
   try {
     if (!orderId || typeof orderId !== 'number') {
-      throw new Error('Invalid order ID: must be a number')
+      throw new BadRequestError('Invalid order ID: must be a number', { orderId })
     }
 
     if (!newStatus || !VALID_STATUSES.includes(newStatus)) {
-      throw new Error(`Invalid status: must be one of ${VALID_STATUSES.join(', ')}`)
+      throw new BadRequestError(`Invalid status: must be one of ${VALID_STATUSES.join(', ')}`, {
+        newStatus
+      })
     }
 
     // Step 1: Get current order
@@ -307,7 +340,7 @@ export async function updateOrderStatus(orderId, newStatus, notes = null, change
       .single()
 
     if (getError || !currentOrder) {
-      throw new Error(`Order ${orderId} not found`)
+      throw new NotFoundError('Order', orderId)
     }
 
     const oldStatus = currentOrder.status
@@ -321,7 +354,7 @@ export async function updateOrderStatus(orderId, newStatus, notes = null, change
       .single()
 
     if (updateError) {
-      throw new Error(`Database error updating order: ${updateError.message}`)
+      throw new DatabaseError('UPDATE', TABLE, updateError, { orderId })
     }
 
     // Step 3: Insert status history
@@ -342,7 +375,7 @@ export async function updateOrderStatus(orderId, newStatus, notes = null, change
     if (historyError) {
       // Rollback: revert order status
       await supabase.from(TABLE).update({ status: oldStatus }).eq('id', orderId)
-      throw new Error(`Database error creating status history: ${historyError.message}`)
+      throw new DatabaseError('INSERT', 'order_status_history', historyError, { orderId })
     }
 
     return updatedOrder
@@ -358,11 +391,11 @@ export async function updateOrderStatus(orderId, newStatus, notes = null, change
 export async function updateOrder(id, updates) {
   try {
     if (!id || typeof id !== 'number') {
-      throw new Error('Invalid order ID: must be a number')
+      throw new BadRequestError('Invalid order ID: must be a number', { orderId: id })
     }
 
     if (!updates || Object.keys(updates).length === 0) {
-      throw new Error('No updates provided')
+      throw new BadRequestError('No updates provided', { orderId: id })
     }
 
     validateOrderData(updates, true)
@@ -387,7 +420,7 @@ export async function updateOrder(id, updates) {
     }
 
     if (Object.keys(sanitized).length === 0) {
-      throw new Error('No valid fields to update')
+      throw new BadRequestError('No valid fields to update', { orderId: id })
     }
 
     const { data, error } = await supabase
@@ -398,10 +431,10 @@ export async function updateOrder(id, updates) {
       .single()
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('UPDATE', TABLE, error, { orderId: id })
     }
     if (!data) {
-      throw new Error(`Order ${id} not found`)
+      throw new NotFoundError('Order', id)
     }
 
     return data
@@ -429,7 +462,7 @@ export async function cancelOrder(orderId, notes = 'Order cancelled', changedBy 
 export async function getOrderStatusHistory(orderId) {
   try {
     if (!orderId || typeof orderId !== 'number') {
-      throw new Error('Invalid order ID: must be a number')
+      throw new BadRequestError('Invalid order ID: must be a number', { orderId })
     }
 
     const { data, error } = await supabase
@@ -439,10 +472,10 @@ export async function getOrderStatusHistory(orderId) {
       .order('created_at', { ascending: true })
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('SELECT', 'order_status_history', error, { orderId })
     }
     if (!data) {
-      throw new Error('No status history found')
+      throw new NotFoundError('Order status history', orderId, { orderId })
     }
 
     return data

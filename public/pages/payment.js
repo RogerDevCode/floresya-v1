@@ -93,24 +93,33 @@ function renderCartSummary() {
   cartSummaryContainer.innerHTML = cartItems
     .map(
       item => `
-    <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-      <img
-        src="${item.image_thumb || '../images/placeholder-flower.svg'}"
-        alt="${item.name}"
-        class="h-12 w-12 object-cover rounded-lg"
-        onerror="this.src='../images/placeholder-flower.svg'"
-      />
-      <div class="flex-1 min-w-0">
-        <h4 class="text-sm font-semibold text-gray-900 truncate">${item.name}</h4>
-        <p class="text-xs text-gray-500">Cantidad: ${item.quantity}</p>
-      </div>
-      <div class="text-right">
-        <p class="text-sm font-bold text-gray-900">$${(item.price_usd * item.quantity).toFixed(2)}</p>
-      </div>
-    </div>
-  `
+   <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+     <img
+       src="${item.image_thumb || '../images/placeholder-flower.svg'}"
+       alt="${item.name}"
+       class="h-12 w-12 object-cover rounded-lg"
+       loading="lazy"
+     />
+     <div class="flex-1 min-w-0">
+       <h4 class="text-sm font-semibold text-gray-900 truncate">${item.name}</h4>
+       <p class="text-xs text-gray-500">Cantidad: ${item.quantity}</p>
+     </div>
+     <div class="text-right">
+       <p class="text-sm font-bold text-gray-900">$${(item.price_usd * item.quantity).toFixed(2)}</p>
+     </div>
+   </div>
+ `
     )
     .join('')
+
+  // Add error handling for cart images
+  const cartImages = cartSummaryContainer.querySelectorAll('img')
+  cartImages.forEach(img => {
+    img.addEventListener('error', () => {
+      img.src = '../images/placeholder-flower.svg'
+      console.warn('Failed to load cart image:', img.src)
+    })
+  })
 
   updateOrderSummary()
 }

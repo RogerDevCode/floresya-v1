@@ -71,7 +71,7 @@ runTest('All required modules load correctly', () => {
     () => import('../api/controllers/productImageController.js'),
     () => import('../api/services/productImageService.js'),
     () => import('../api/utils/imageProcessor.js'),
-    () => import('../api/utils/supabaseStorage.js'),
+    () => import('../api/services/supabaseStorageService.js'),
     () => import('../api/middleware/uploadImage.js')
   ];
   
@@ -109,7 +109,7 @@ runTest('Image processing pipeline functions correctly', async () => {
 // Test 3: Validate the storage pipeline
 runTest('Storage pipeline functions correctly', async () => {
   try {
-    const { uploadToStorage, uploadImageSizes } = await import('../api/utils/supabaseStorage.js');
+    const { uploadToStorage, uploadImageSizes } = await import('../api/services/supabaseStorageService.js');
     
     // Check that functions exist
     if (typeof uploadToStorage !== 'function') {

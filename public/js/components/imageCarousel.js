@@ -47,7 +47,6 @@ export async function createImageCarousel(container, productId) {
           alt="Product image"
           class="product-carousel-image bg-gray-100"
           loading="lazy"
-          onerror="this.src='/images/placeholder-flower.svg'; this.classList.add('bg-gray-100'); console.warn('Failed to load product image:', '${defaultImage.url}')"
         />
         ${images.length > 1 ? `<div class="image-count-badge">${images.length} fotos</div>` : ''}
       </div>
@@ -64,6 +63,14 @@ export async function createImageCarousel(container, productId) {
 
     const imageContainer = container.querySelector('.product-image-container')
     const imgElement = imageContainer.querySelector('img')
+
+    // Add error handling for image loading
+    const handleImageError = () => {
+      imgElement.src = '/images/placeholder-flower.svg'
+      imgElement.classList.add('bg-gray-100')
+      console.warn('Failed to load product image:', defaultImage.url)
+    }
+    imgElement.addEventListener('error', handleImageError)
 
     /**
      * Cycle to next image
@@ -114,6 +121,7 @@ export async function createImageCarousel(container, productId) {
         stopCycling()
         imageContainer.removeEventListener('mouseenter', startCycling)
         imageContainer.removeEventListener('mouseleave', stopCycling)
+        imgElement.removeEventListener('error', handleImageError)
       }
     }
   } catch (error) {

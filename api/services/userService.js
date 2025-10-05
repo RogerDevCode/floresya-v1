@@ -5,6 +5,13 @@
  */
 
 import { supabase, DB_SCHEMA } from './supabaseClient.js'
+import {
+  ValidationError,
+  NotFoundError,
+  DatabaseError,
+  DatabaseConstraintError,
+  BadRequestError
+} from '../errors/AppError.js'
 import { buildSearchCondition } from '../utils/normalize.js'
 
 const TABLE = DB_SCHEMA.users.table
@@ -19,20 +26,36 @@ const SEARCH_COLUMNS = DB_SCHEMA.users.search
 function validateUserData(data, isUpdate = false) {
   if (!isUpdate) {
     if (!data.email || typeof data.email !== 'string' || !data.email.includes('@')) {
-      throw new Error('Invalid email: must be valid email string')
+      throw new ValidationError('Invalid email: must be valid email string', {
+        field: 'email',
+        value: data.email,
+        rule: 'valid email format required'
+      })
     }
   }
 
   if (data.email !== undefined && (typeof data.email !== 'string' || !data.email.includes('@'))) {
-    throw new Error('Invalid email format')
+    throw new ValidationError('Invalid email format', {
+      field: 'email',
+      value: data.email,
+      rule: 'valid email format required'
+    })
   }
 
   if (data.role !== undefined && !VALID_ROLES.includes(data.role)) {
-    throw new Error(`Invalid role: must be one of ${VALID_ROLES.join(', ')}`)
+    throw new ValidationError(`Invalid role: must be one of ${VALID_ROLES.join(', ')}`, {
+      field: 'role',
+      value: data.role,
+      validValues: VALID_ROLES
+    })
   }
 
   if (data.phone !== undefined && data.phone !== null && typeof data.phone !== 'string') {
-    throw new Error('Invalid phone: must be a string')
+    throw new ValidationError('Invalid phone: must be a string', {
+      field: 'phone',
+      value: data.phone,
+      rule: 'string type required'
+    })
   }
 }
 
@@ -74,10 +97,10 @@ export async function getAllUsers(filters = {}, includeInactive = false) {
     const { data, error } = await query
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('SELECT', TABLE, error)
     }
     if (!data) {
-      throw new Error('No users found')
+      throw new NotFoundError('Users', null)
     }
 
     return data
@@ -95,7 +118,7 @@ export async function getAllUsers(filters = {}, includeInactive = false) {
 export async function getUserById(id, includeInactive = false) {
   try {
     if (!id || typeof id !== 'number') {
-      throw new Error('Invalid user ID: must be a number')
+      throw new BadRequestError('Invalid user ID: must be a number', { userId: id })
     }
 
     let query = supabase.from(TABLE).select('*').eq('id', id)
@@ -108,10 +131,10 @@ export async function getUserById(id, includeInactive = false) {
     const { data, error } = await query.single()
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('SELECT', TABLE, error, { userId: id })
     }
     if (!data) {
-      throw new Error(`User ${id} not found`)
+      throw new NotFoundError('User', id, { includeInactive })
     }
 
     return data
@@ -129,7 +152,7 @@ export async function getUserById(id, includeInactive = false) {
 export async function getUserByEmail(email, includeInactive = false) {
   try {
     if (!email || typeof email !== 'string') {
-      throw new Error('Invalid email: must be a string')
+      throw new BadRequestError('Invalid email: must be a string', { email })
     }
 
     let query = supabase.from(TABLE).select('*').eq('email', email)
@@ -142,9 +165,9 @@ export async function getUserByEmail(email, includeInactive = false) {
 
     if (error) {
       if (error.code === 'PGRST116') {
-        throw new Error(`User with email ${email} not found`)
+        throw new NotFoundError('User', email, { email })
       }
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('SELECT', TABLE, error, { email })
     }
 
     return data
@@ -175,13 +198,16 @@ export async function createUser(userData) {
 
     if (error) {
       if (error.code === '23505') {
-        throw new Error(`User with email ${userData.email} already exists`)
+        throw new DatabaseConstraintError('unique_email', TABLE, {
+          email: userData.email,
+          message: `User with email ${userData.email} already exists`
+        })
       }
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('INSERT', TABLE, error, { userData: newUser })
     }
 
     if (!data) {
-      throw new Error('Failed to create user')
+      throw new DatabaseError('INSERT', TABLE, new Error('No data returned'), { userData: newUser })
     }
 
     return data
@@ -197,11 +223,11 @@ export async function createUser(userData) {
 export async function updateUser(id, updates) {
   try {
     if (!id || typeof id !== 'number') {
-      throw new Error('Invalid user ID: must be a number')
+      throw new BadRequestError('Invalid user ID: must be a number', { userId: id })
     }
 
     if (!updates || Object.keys(updates).length === 0) {
-      throw new Error('No updates provided')
+      throw new BadRequestError('No updates provided', { userId: id })
     }
 
     validateUserData(updates, true)
@@ -216,7 +242,7 @@ export async function updateUser(id, updates) {
     }
 
     if (Object.keys(sanitized).length === 0) {
-      throw new Error('No valid fields to update')
+      throw new BadRequestError('No valid fields to update', { userId: id })
     }
 
     const { data, error } = await supabase
@@ -228,10 +254,10 @@ export async function updateUser(id, updates) {
       .single()
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('UPDATE', TABLE, error, { userId: id })
     }
     if (!data) {
-      throw new Error(`User ${id} not found or inactive`)
+      throw new NotFoundError('User', id, { active: true })
     }
 
     return data
@@ -247,7 +273,7 @@ export async function updateUser(id, updates) {
 export async function deleteUser(id) {
   try {
     if (!id || typeof id !== 'number') {
-      throw new Error('Invalid user ID: must be a number')
+      throw new BadRequestError('Invalid user ID: must be a number', { userId: id })
     }
 
     const { data, error } = await supabase
@@ -259,10 +285,10 @@ export async function deleteUser(id) {
       .single()
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('UPDATE', TABLE, error, { userId: id })
     }
     if (!data) {
-      throw new Error(`User ${id} not found or already inactive`)
+      throw new NotFoundError('User', id, { active: true })
     }
 
     return data
@@ -278,7 +304,7 @@ export async function deleteUser(id) {
 export async function reactivateUser(id) {
   try {
     if (!id || typeof id !== 'number') {
-      throw new Error('Invalid user ID: must be a number')
+      throw new BadRequestError('Invalid user ID: must be a number', { userId: id })
     }
 
     const { data, error } = await supabase
@@ -290,10 +316,10 @@ export async function reactivateUser(id) {
       .single()
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('UPDATE', TABLE, error, { userId: id })
     }
     if (!data) {
-      throw new Error(`User ${id} not found or already active`)
+      throw new NotFoundError('User', id, { active: false })
     }
 
     return data
@@ -309,7 +335,7 @@ export async function reactivateUser(id) {
 export async function verifyUserEmail(id) {
   try {
     if (!id || typeof id !== 'number') {
-      throw new Error('Invalid user ID: must be a number')
+      throw new BadRequestError('Invalid user ID: must be a number', { userId: id })
     }
 
     const { data, error } = await supabase
@@ -321,10 +347,10 @@ export async function verifyUserEmail(id) {
       .single()
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('UPDATE', TABLE, error, { userId: id })
     }
     if (!data) {
-      throw new Error(`User ${id} not found or inactive`)
+      throw new NotFoundError('User', id, { active: true })
     }
 
     return data

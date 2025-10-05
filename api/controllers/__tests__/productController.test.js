@@ -6,6 +6,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import request from 'supertest'
 import app from '../../app.js'
+import { NotFoundError } from '../../errors/AppError.js'
 
 // Mock productService
 vi.mock('../../services/productService.js', () => ({
@@ -29,7 +30,7 @@ vi.mock('../../services/productService.js', () => ({
       })
     }
     if (productId === 999) {
-      throw new Error('Product 999 not found')
+      throw new NotFoundError('Product', 999)
     }
     throw new Error('Invalid product ID')
   }),
@@ -71,17 +72,17 @@ describe('Product Controller - getProductById', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Invalid id: must be a positive integer',
-        message: 'Invalid id: must be a positive integer'
+        error: 'BadRequestError',
+        message: 'Invalid request. Please check your input.'
       })
     })
 
-    it('should return 500 for non-existent product ID', async () => {
-      const response = await request(app).get('/api/products/999').expect(500)
+    it('should return 404 for non-existent product ID', async () => {
+      const response = await request(app).get('/api/products/999').expect(404)
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Product 999 not found'
+        error: 'NotFoundError'
       })
     })
 
@@ -90,7 +91,7 @@ describe('Product Controller - getProductById', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Invalid id: must be a positive integer'
+        error: 'BadRequestError'
       })
     })
 
@@ -99,7 +100,7 @@ describe('Product Controller - getProductById', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Invalid id: must be a positive integer'
+        error: 'BadRequestError'
       })
     })
 

@@ -110,7 +110,7 @@ describe('imageCarousel', () => {
       expect(container.querySelector('.image-count-badge')).toBeFalsy()
     })
 
-    it('should throw error when no images found', async () => {
+    it('should show placeholder when no images found', async () => {
       // Mock API response with no images
       global.fetch.mockResolvedValueOnce({
         ok: true,
@@ -121,7 +121,16 @@ describe('imageCarousel', () => {
           })
       })
 
-      await expect(createImageCarousel(container, 67)).rejects.toThrow('No images found')
+      const carousel = await createImageCarousel(container, 67)
+
+      // Should show placeholder image
+      const img = container.querySelector('.product-carousel-image')
+      expect(img).toBeTruthy()
+      expect(img.src).toMatch(/placeholder-(flower|hero)\.svg$/)
+
+      // Should return destroy function
+      expect(carousel).toHaveProperty('destroy')
+      expect(typeof carousel.destroy).toBe('function')
     })
 
     it('should throw error on API failure', async () => {

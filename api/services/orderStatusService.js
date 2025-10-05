@@ -4,6 +4,7 @@
  */
 
 import { supabase } from './supabaseClient.js'
+import { BadRequestError, DatabaseError } from '../errors/AppError.js'
 
 /**
  * Get status history for an order
@@ -23,7 +24,7 @@ export async function getOrderStatusHistory(orderId) {
       .order('created_at', { ascending: true })
 
     if (error) {
-      throw new Error(`Error en BD: ${error.message}`)
+      throw new DatabaseError('SELECT', 'order_status_history', error, { orderId })
     }
 
     return data || []
@@ -42,10 +43,10 @@ export async function getOrderStatusHistory(orderId) {
 export async function addStatusUpdate(orderId, statusData) {
   try {
     if (!orderId) {
-      throw new Error('ID de orden requerido')
+      throw new BadRequestError('Order ID required', { orderId })
     }
     if (!statusData.status) {
-      throw new Error('Status requerido')
+      throw new BadRequestError('Status required', { statusData })
     }
 
     const { data, error } = await supabase
@@ -60,7 +61,7 @@ export async function addStatusUpdate(orderId, statusData) {
       .single()
 
     if (error) {
-      throw new Error(`Error al agregar status: ${error.message}`)
+      throw new DatabaseError('INSERT', 'order_status_history', error, { orderId, statusData })
     }
 
     return data
@@ -78,7 +79,7 @@ export async function addStatusUpdate(orderId, statusData) {
 export async function getLatestStatus(orderId) {
   try {
     if (!orderId) {
-      throw new Error('ID de orden requerido')
+      throw new BadRequestError('Order ID required', { orderId })
     }
 
     const { data, error } = await supabase
@@ -90,7 +91,7 @@ export async function getLatestStatus(orderId) {
       .single()
 
     if (error && error.code !== 'PGRST116') {
-      throw new Error(`Error en BD: ${error.message}`)
+      throw new DatabaseError('SELECT', 'order_status_history', error, { orderId })
     }
 
     return data || null

@@ -4,10 +4,10 @@
  * SOLID: Extracted from productService to avoid bloat
  */
 
-import { supabase } from './supabaseClient.js'
+import { supabase, DB_SCHEMA } from './supabaseClient.js'
 import { DatabaseError, ValidationError } from '../errors/AppError.js'
 
-const TABLE = 'products'
+const TABLE = DB_SCHEMA.products.table
 const MAX_CAROUSEL_SIZE = 7
 
 /**
@@ -16,9 +16,9 @@ const MAX_CAROUSEL_SIZE = 7
  */
 export async function getCarouselProducts() {
   try {
-    const { data, error } = await supabase
+    const { data: products, error } = await supabase
       .from(TABLE)
-      .select('id, name, carousel_order, image_url_small')
+      .select('*')
       .eq('featured', true)
       .eq('active', true)
       .order('carousel_order', { ascending: true })
@@ -27,7 +27,35 @@ export async function getCarouselProducts() {
     if (error) {
       throw new DatabaseError('SELECT', TABLE, error)
     }
-    return data || []
+    if (!products || products.length === 0) {
+      return []
+    }
+
+    // Fetch small image for each product (first image, image_index=1)
+    const IMAGES_TABLE = DB_SCHEMA.product_images.table
+    const productsWithImages = await Promise.all(
+      products.map(async product => {
+        const { data: images, error: imgError } = await supabase
+          .from(IMAGES_TABLE)
+          .select('url')
+          .eq('product_id', product.id)
+          .eq('size', 'small')
+          .order('image_index', { ascending: true })
+          .limit(1)
+          .maybeSingle()
+
+        if (imgError) {
+          console.warn(`Failed to fetch image for product ${product.id}:`, imgError.message)
+        }
+
+        return {
+          ...product,
+          image_url_small: images?.url || null
+        }
+      })
+    )
+
+    return productsWithImages
   } catch (error) {
     console.error('getCarouselProducts failed:', error)
     throw error

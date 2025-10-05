@@ -93,7 +93,11 @@ function validateProductData(data, isUpdate = false) {
  * @param {Object} filters - Filter options
  * @param {boolean} includeInactive - Include inactive products (default: false, admin only)
  */
-export async function getAllProducts(filters = {}, includeInactive = false) {
+export async function getAllProducts(
+  filters = {},
+  includeInactive = false,
+  includeImageSize = null
+) {
   try {
     // If filtering by occasion slug, first resolve it to occasion_id
     let occasionId = null
@@ -169,12 +173,12 @@ export async function getAllProducts(filters = {}, includeInactive = false) {
       query = query.range(filters.offset, filters.offset + (filters.limit || 50) - 1)
     }
 
-    console.log(`🔍 Query filters:`, { ...filters, occasionId, includeInactive })
+    console.log(`🔍 Query filters:`, { ...filters, occasionId, includeInactive, includeImageSize })
 
     const { data: products, error } = await query
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('SELECT', TABLE, error)
     }
     if (!products || products.length === 0) {
       console.log('No products found for filters:', filters)
@@ -183,31 +187,17 @@ export async function getAllProducts(filters = {}, includeInactive = false) {
 
     console.log(`📦 getAllProducts: Found ${products.length} products before fetching images`)
 
-    // Fetch small image for each product (first image, image_index=1)
-    const IMAGES_TABLE = DB_SCHEMA.product_images.table
-    const productsWithImages = await Promise.all(
-      products.map(async product => {
-        const { data: images, error: imgError } = await supabase
-          .from(IMAGES_TABLE)
-          .select('url')
-          .eq('product_id', product.id)
-          .eq('size', 'small')
-          .order('image_index', { ascending: true })
-          .limit(1)
-          .maybeSingle()
+    // If no image size requested, return products without images (to maintain current behavior)
+    if (!includeImageSize) {
+      return products
+    }
 
-        if (imgError) {
-          console.warn(`Failed to fetch image for product ${product.id}:`, imgError.message)
-        }
+    // Extract product IDs for batch processing to avoid N+1 problem
+    const productIds = products.map(p => p.id)
 
-        return {
-          ...product,
-          image_url_small: images?.url || null
-        }
-      })
-    )
-
-    return productsWithImages
+    // Use the new specialized service function to get products with requested image size
+    const { getProductsBatchWithImageSize } = await import('./productImageService.js')
+    return await getProductsBatchWithImageSize(productIds, includeImageSize)
   } catch (error) {
     console.error('getAllProducts failed:', error)
     throw error
@@ -219,10 +209,10 @@ export async function getAllProducts(filters = {}, includeInactive = false) {
  * @param {number} id - Product ID
  * @param {boolean} includeInactive - Include inactive products (default: false, admin only)
  */
-export async function getProductById(id, includeInactive = false) {
+export async function getProductById(id, includeInactive = false, includeImageSize = null) {
   try {
     if (!id || typeof id !== 'number') {
-      throw new Error('Invalid product ID: must be a number')
+      throw new BadRequestError('Invalid product ID: must be a number', { productId: id })
     }
 
     let query = supabase.from(TABLE).select('*').eq('id', id)
@@ -245,7 +235,14 @@ export async function getProductById(id, includeInactive = false) {
       throw new NotFoundError('Product', id, { includeInactive })
     }
 
-    return data
+    // If no image size requested, return product without additional image
+    if (!includeImageSize) {
+      return data
+    }
+
+    // Use the new specialized service function to get product with specific image size
+    const { getProductWithImageSize } = await import('./productImageService.js')
+    return await getProductWithImageSize(id, includeImageSize)
   } catch (error) {
     // Re-throw AppError instances as-is (fail-fast)
     if (error.name && error.name.includes('Error')) {
@@ -263,7 +260,7 @@ export async function getProductById(id, includeInactive = false) {
 export async function getProductBySku(sku) {
   try {
     if (!sku || typeof sku !== 'string') {
-      throw new Error('Invalid SKU: must be a string')
+      throw new BadRequestError('Invalid SKU: must be a string', { sku })
     }
 
     const { data, error } = await supabase
@@ -275,9 +272,9 @@ export async function getProductBySku(sku) {
 
     if (error) {
       if (error.code === 'PGRST116') {
-        throw new Error(`Product with SKU ${sku} not found`)
+        throw new NotFoundError('Product', sku, { sku })
       }
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('SELECT', TABLE, error, { sku })
     }
 
     return data
@@ -313,10 +310,10 @@ export async function getProductsWithOccasions(limit = 50, offset = 0) {
       .range(offset, offset + limit - 1)
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('SELECT', TABLE, error)
     }
     if (!data) {
-      throw new Error('No products found')
+      throw new NotFoundError('Products')
     }
 
     return data
@@ -332,7 +329,7 @@ export async function getProductsWithOccasions(limit = 50, offset = 0) {
 export async function getProductsByOccasion(occasionId, limit = 50) {
   try {
     if (!occasionId || typeof occasionId !== 'number') {
-      throw new Error('Invalid occasion ID: must be a number')
+      throw new BadRequestError('Invalid occasion ID: must be a number', { occasionId })
     }
 
     const { data, error } = await supabase
@@ -344,10 +341,10 @@ export async function getProductsByOccasion(occasionId, limit = 50) {
       .limit(limit)
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('SELECT', TABLE, error, { occasionId })
     }
     if (!data) {
-      throw new Error('No products found for this occasion')
+      throw new NotFoundError('Products for occasion', occasionId, { occasionId })
     }
 
     return data
@@ -372,37 +369,18 @@ export async function getCarouselProducts() {
       .limit(7)
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('SELECT', TABLE, error)
     }
     if (!products || products.length === 0) {
-      throw new Error('No carousel products found')
+      throw new NotFoundError('Carousel products')
     }
 
-    // Fetch small image for each product (first image, image_index=1)
-    const IMAGES_TABLE = DB_SCHEMA.product_images.table
-    const productsWithImages = await Promise.all(
-      products.map(async product => {
-        const { data: images, error: imgError } = await supabase
-          .from(IMAGES_TABLE)
-          .select('url')
-          .eq('product_id', product.id)
-          .eq('size', 'small')
-          .order('image_index', { ascending: true })
-          .limit(1)
-          .maybeSingle()
+    // Extract product IDs for batch processing to avoid N+1 problem
+    const productIds = products.map(p => p.id)
 
-        if (imgError) {
-          console.warn(`Failed to fetch image for product ${product.id}:`, imgError.message)
-        }
-
-        return {
-          ...product,
-          image_url_small: images?.url || null
-        }
-      })
-    )
-
-    return productsWithImages
+    // Use the new specialized service function to get products with small images
+    const { getProductsBatchWithImageSize } = await import('./productImageService.js')
+    return await getProductsBatchWithImageSize(productIds, 'small')
   } catch (error) {
     console.error('getCarouselProducts failed:', error)
     throw error
@@ -467,7 +445,7 @@ export async function createProductWithOccasions(productData, occasionIds = []) 
     validateProductData(productData, false)
 
     if (!Array.isArray(occasionIds)) {
-      throw new Error('Invalid occasionIds: must be an array')
+      throw new BadRequestError('Invalid occasionIds: must be an array', { occasionIds })
     }
 
     // Step 1: Create product
@@ -507,11 +485,11 @@ export async function createProductWithOccasions(productData, occasionIds = []) 
 export async function updateProduct(id, updates) {
   try {
     if (!id || typeof id !== 'number') {
-      throw new Error('Invalid product ID: must be a number')
+      throw new BadRequestError('Invalid product ID: must be a number', { productId: id })
     }
 
     if (!updates || Object.keys(updates).length === 0) {
-      throw new Error('No updates provided')
+      throw new BadRequestError('No updates provided', { productId: id })
     }
 
     validateProductData(updates, true)
@@ -536,7 +514,7 @@ export async function updateProduct(id, updates) {
     }
 
     if (Object.keys(sanitized).length === 0) {
-      throw new Error('No valid fields to update')
+      throw new BadRequestError('No valid fields to update', { productId: id })
     }
 
     const { data, error } = await supabase
@@ -549,13 +527,16 @@ export async function updateProduct(id, updates) {
 
     if (error) {
       if (error.code === '23505') {
-        throw new Error(`Product with SKU ${updates.sku} already exists`)
+        throw new DatabaseConstraintError('unique_sku', TABLE, {
+          sku: updates.sku,
+          message: `Product with SKU ${updates.sku} already exists`
+        })
       }
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('UPDATE', TABLE, error, { productId: id })
     }
 
     if (!data) {
-      throw new Error(`Product ${id} not found or inactive`)
+      throw new NotFoundError('Product', id, { includeInactive: false })
     }
 
     return data
@@ -571,11 +552,11 @@ export async function updateProduct(id, updates) {
 export async function updateCarouselOrder(productId, newOrder) {
   try {
     if (!productId || typeof productId !== 'number') {
-      throw new Error('Invalid product ID: must be a number')
+      throw new BadRequestError('Invalid product ID: must be a number', { productId })
     }
 
     if (newOrder !== null && (typeof newOrder !== 'number' || newOrder < 0 || newOrder > 7)) {
-      throw new Error('Invalid carousel_order: must be between 0-7 or null')
+      throw new BadRequestError('Invalid carousel_order: must be between 0-7 or null', { newOrder })
     }
 
     const { data, error } = await supabase
@@ -587,10 +568,10 @@ export async function updateCarouselOrder(productId, newOrder) {
       .single()
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('UPDATE', TABLE, error, { productId })
     }
     if (!data) {
-      throw new Error(`Failed to update carousel order for product ${productId}`)
+      throw new DatabaseError('UPDATE', TABLE, new Error('No data returned'), { productId })
     }
 
     return data
@@ -606,7 +587,7 @@ export async function updateCarouselOrder(productId, newOrder) {
 export async function deleteProduct(id) {
   try {
     if (!id || typeof id !== 'number') {
-      throw new Error('Invalid product ID: must be a number')
+      throw new BadRequestError('Invalid product ID: must be a number', { productId: id })
     }
 
     const { data, error } = await supabase
@@ -618,10 +599,10 @@ export async function deleteProduct(id) {
       .single()
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('UPDATE', TABLE, error, { productId: id })
     }
     if (!data) {
-      throw new Error(`Product ${id} not found or already inactive`)
+      throw new NotFoundError('Product', id, { active: true })
     }
 
     return data
@@ -649,10 +630,10 @@ export async function reactivateProduct(id) {
       .single()
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('UPDATE', TABLE, error, { productId: id })
     }
     if (!data) {
-      throw new Error(`Product ${id} not found or already active`)
+      throw new NotFoundError('Product', id, { active: false })
     }
 
     return data
@@ -668,11 +649,11 @@ export async function reactivateProduct(id) {
 export async function updateStock(id, quantity) {
   try {
     if (!id || typeof id !== 'number') {
-      throw new Error('Invalid product ID: must be a number')
+      throw new BadRequestError('Invalid product ID: must be a number', { productId: id })
     }
 
     if (typeof quantity !== 'number' || quantity < 0) {
-      throw new Error('Invalid quantity: must be a non-negative number')
+      throw new BadRequestError('Invalid quantity: must be a non-negative number', { quantity })
     }
 
     const { data, error } = await supabase
@@ -684,10 +665,10 @@ export async function updateStock(id, quantity) {
       .single()
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('UPDATE', TABLE, error, { productId: id })
     }
     if (!data) {
-      throw new Error(`Product ${id} not found or inactive`)
+      throw new NotFoundError('Product', id, { active: true })
     }
 
     return data

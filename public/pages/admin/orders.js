@@ -140,7 +140,7 @@ function showErrorState(errorMessage) {
           <div class="text-red-600 mb-2">Error al cargar pedidos</div>
           <div class="text-sm text-gray-500 mb-4">${errorMessage}</div>
           <button
-            onclick="location.reload()"
+            id="retry-button"
             class="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700"
           >
             Reintentar
@@ -148,6 +148,14 @@ function showErrorState(errorMessage) {
         </td>
       </tr>
     `
+
+    // Add event listener for retry button
+    const retryButton = document.getElementById('retry-button')
+    if (retryButton) {
+      retryButton.addEventListener('click', () => {
+        location.reload()
+      })
+    }
   }
 }
 
@@ -821,7 +829,7 @@ function showOrderDetails(orderId) {
       <!-- Actions -->
       <div class="flex space-x-3 pt-4">
         <button
-          onclick="window.print()"
+          id="print-order-button"
           class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors"
         >
           <i data-lucide="printer" class="h-4 w-4 inline mr-2"></i>
@@ -839,6 +847,14 @@ function showOrderDetails(orderId) {
 
   modal.classList.remove('hidden')
   updateScrollIndicator('modal')
+
+  // Add event listener for print button
+  const printButton = document.getElementById('print-order-button')
+  if (printButton) {
+    printButton.addEventListener('click', () => {
+      window.print()
+    })
+  }
 
   // Reinitialize icons
   if (window.lucide && window.lucide.createIcons) {

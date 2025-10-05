@@ -7,7 +7,7 @@
 import * as productImageService from '../services/productImageService.js'
 import { asyncHandler } from '../middleware/errorHandler.js'
 import { processImage, generateFilename } from '../utils/imageProcessor.js'
-import { uploadImageSizes } from '../utils/supabaseStorage.js'
+import { uploadImageSizes } from '../services/supabaseStorageService.js'
 import { BadRequestError } from '../errors/AppError.js'
 
 /**

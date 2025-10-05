@@ -30,6 +30,10 @@
  *         in: query
  *         schema: { type: string, enum: [name, price_usd, created_at, carousel_order] }
  *         description: Sort field
+ *       - name: imageSize
+ *         in: query
+ *         schema: { type: string, enum: [thumb, small, medium, large] }
+ *         description: Include product with specific image size
  *     responses:
  *       200:
  *         description: Products retrieved successfully
@@ -53,6 +57,10 @@
  *     summary: Get product by ID
  *     parameters:
  *       - $ref: '#/components/parameters/IdParam'
+ *       - name: imageSize
+ *         in: query
+ *         schema: { type: string, enum: [thumb, small, medium, large] }
+ *         description: Include product with specific image size
  *     responses:
  *       200:
  *         description: Product retrieved successfully

@@ -83,7 +83,7 @@ runTest('Image processing utilities exist', () => {
 
 // Test 4: Validate storage utilities
 runTest('Storage utilities exist', () => {
-  import('../api/utils/supabaseStorage.js')
+  import('../api/services/supabaseStorageService.js')
     .then((module) => {
       if (typeof module.uploadToStorage !== 'function') {
         throw new Error('uploadToStorage function not found');

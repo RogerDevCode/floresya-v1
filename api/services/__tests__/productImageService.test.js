@@ -49,7 +49,9 @@ describe('productImageService - Validation', () => {
         file_hash: 'abc123'
       }
 
-      await expect(productImageService.createImage(invalidData)).rejects.toThrow(/Invalid size/)
+      await expect(productImageService.createImage(invalidData)).rejects.toThrow(
+        'Image validation failed'
+      )
     })
   })
 })

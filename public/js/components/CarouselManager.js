@@ -72,7 +72,7 @@ export class CarouselManager {
           this.state.carouselSlots[index] = {
             productId: product.id,
             name: product.name,
-            imageUrl: product.image_url_small,
+            imageUrl: product.image_url_thumb || '/images/placeholder-flower.svg',
             order: product.carousel_order
           }
         }
@@ -187,11 +187,11 @@ export class CarouselManager {
         data-product-id="${slot.productId}"
         draggable="true"
       >
-        <img 
-          src="${slot.imageUrl}" 
-          alt="${slot.name}" 
-          class="w-full h-full object-cover bg-gray-100" 
-          onerror="this.src='/images/placeholder-flower.svg'; this.classList.add('bg-gray-100'); console.warn('Failed to load carousel image:', '${slot.imageUrl}')" />
+        <img
+          src="${slot.imageUrl}"
+          alt="${slot.name}"
+          class="w-full h-full object-cover bg-gray-100"
+          loading="lazy" />
 
         <!-- Overlay -->
         <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center">
@@ -305,6 +305,15 @@ export class CarouselManager {
         document.getElementById('carousel-position-select').value = position
         this.render()
         this.notifyChange()
+      })
+    })
+
+    // Add error handling for carousel images
+    this.container.querySelectorAll('.carousel-slot-filled img').forEach(img => {
+      img.addEventListener('error', () => {
+        img.src = '/images/placeholder-flower.svg'
+        img.classList.add('bg-gray-100')
+        console.warn('Failed to load carousel image:', img.src)
       })
     })
 

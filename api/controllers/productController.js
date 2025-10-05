@@ -27,7 +27,10 @@ export const getAllProducts = asyncHandler(async (req, res) => {
   // includeInactive: admin can see inactive products
   const includeInactive = req.query.includeInactive === 'true'
 
-  const products = await productService.getAllProducts(filters, includeInactive)
+  // includeImageSize: optional image size to attach to products
+  const includeImageSize = req.query.imageSize || null
+
+  const products = await productService.getAllProducts(filters, includeInactive, includeImageSize)
 
   res.json({
     success: true,
@@ -52,7 +55,10 @@ export const getProductById = asyncHandler(async (req, res) => {
     })
   }
 
-  const product = await productService.getProductById(productId)
+  // includeImageSize: optional image size to attach to product
+  const includeImageSize = req.query.imageSize || null
+
+  const product = await productService.getProductById(productId, false, includeImageSize)
 
   res.json({
     success: true,
