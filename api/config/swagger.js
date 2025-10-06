@@ -255,6 +255,47 @@ const options = {
             offset: { type: 'integer', minimum: 0, default: 0 },
             page: { type: 'integer', minimum: 1 }
           }
+        },
+        OrderStatusUpdate: {
+          type: 'object',
+          required: ['status'],
+          properties: {
+            status: {
+              type: 'string',
+              enum: ['pending', 'verified', 'preparing', 'shipped', 'delivered', 'cancelled'],
+              example: 'verified'
+            },
+            notes: {
+              type: 'string',
+              example: 'Payment confirmed'
+            }
+          }
+        },
+        PaymentConfirm: {
+          type: 'object',
+          required: ['payment_method', 'reference_number'],
+          properties: {
+            payment_method: {
+              type: 'string',
+              enum: ['cash', 'mobile_payment', 'bank_transfer', 'zelle', 'crypto'],
+              example: 'bank_transfer'
+            },
+            reference_number: {
+              type: 'string',
+              minLength: 3,
+              maxLength: 100,
+              example: 'TF-20231101-001'
+            },
+            payment_details: {
+              type: 'object',
+              example: { bank: 'Banco Mercantil', payer: 'José Pérez' }
+            },
+            receipt_image_url: {
+              type: 'string',
+              format: 'uri',
+              example: 'https://example.com/receipt.jpg'
+            }
+          }
         }
       },
       responses: {

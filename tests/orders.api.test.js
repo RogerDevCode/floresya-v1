@@ -4,7 +4,7 @@
  */
 
 // Import required modules for server testing
-import { jest } from '@jest/globals'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import request from 'supertest'
 import express from 'express'
 
@@ -13,29 +13,29 @@ import express from 'express'
 // based on the API endpoints that the orders page connects to
 
 // Mock the Supabase client and services
-const mockSupabase = {
-  from: jest.fn().mockReturnThis(),
-  select: jest.fn().mockReturnThis(),
-  eq: jest.fn().mockReturnThis(),
-  neq: jest.fn().mockReturnThis(),
-  order: jest.fn().mockReturnThis(),
-  limit: jest.fn().mockReturnThis(),
-  range: jest.fn().mockReturnThis(),
-  single: jest.fn().mockReturnThis(),
-  insert: jest.fn().mockReturnThis(),
-  update: jest.fn().mockReturnThis(),
+const _mockSupabase = {
+  from: vi.fn().mockReturnThis(),
+  select: vi.fn().mockReturnThis(),
+  eq: vi.fn().mockReturnThis(),
+  neq: vi.fn().mockReturnThis(),
+  order: vi.fn().mockReturnThis(),
+  limit: vi.fn().mockReturnThis(),
+  range: vi.fn().mockReturnThis(),
+  single: vi.fn().mockReturnThis(),
+  insert: vi.fn().mockReturnThis(),
+  update: vi.fn().mockReturnThis(),
   data: null,
   error: null
 }
 
 // Mock Supabase response for successful queries
-const mockSuccessfulResponse = (data = null) => ({
+const _mockSuccessfulResponse = (data = null) => ({
   data,
   error: null
 })
 
 // Mock Supabase response for error queries
-const mockErrorResponse = (error = 'Database error') => ({
+const _mockErrorResponse = (error = 'Database error') => ({
   data: null,
   error: { message: error }
 })
@@ -47,7 +47,7 @@ describe('Orders API Endpoint Tests', () => {
   let app
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     app = express()
     app.use(express.json())
 
@@ -59,7 +59,7 @@ describe('Orders API Endpoint Tests', () => {
     })
   })
 
-  test('GET /api/orders should return list of orders', async () => {
+  it('GET /api/orders should return list of orders', async () => {
     // Mock the order service to return sample data
     const mockOrders = [
       {
@@ -76,12 +76,12 @@ describe('Orders API Endpoint Tests', () => {
     ]
 
     // Mock the getAllOrders service function
-    jest.doMock('../../api/services/orderService.js', () => ({
-      getAllOrders: jest.fn().mockResolvedValue(mockOrders)
+    vi.doMock('../../api/services/orderService.js', () => ({
+      getAllOrders: vi.fn().mockResolvedValue(mockOrders)
     }))
 
     // Add route to app
-    app.get('/api/orders', async (req, res) => {
+    app.get('/api/orders', (_req, res) => {
       try {
         // In a real implementation, this would call:
         // const orders = await orderService.getAllOrders(filters);
@@ -112,14 +112,14 @@ describe('Orders API Endpoint Tests', () => {
     expect(response.body.message).toBe('Orders retrieved successfully')
   })
 
-  test('GET /api/orders should return empty array when no orders exist', async () => {
+  it('GET /api/orders should return empty array when no orders exist', async () => {
     // Mock the order service to return empty array
-    jest.doMock('../../api/services/orderService.js', () => ({
-      getAllOrders: jest.fn().mockResolvedValue([])
+    vi.doMock('../../api/services/orderService.js', () => ({
+      getAllOrders: vi.fn().mockResolvedValue([])
     }))
 
     // Add route to app
-    app.get('/api/orders', async (req, res) => {
+    app.get('/api/orders', (_req, res) => {
       try {
         // For testing purposes, return mock data
         res.status(200).json({
@@ -144,7 +144,7 @@ describe('Orders API Endpoint Tests', () => {
     expect(response.body.message).toBe('Orders retrieved successfully')
   })
 
-  test('GET /api/orders/:id should return specific order', async () => {
+  it('GET /api/orders/:id should return specific order', async () => {
     const orderId = 1
     const mockOrder = {
       id: orderId,
@@ -158,13 +158,13 @@ describe('Orders API Endpoint Tests', () => {
     }
 
     // Mock the getOrderById service function
-    jest.doMock('../../api/services/orderService.js', () => ({
-      getOrderById: jest.fn().mockResolvedValue(mockOrder)
+    vi.doMock('../../api/services/orderService.js', () => ({
+      getOrderById: vi.fn().mockResolvedValue(mockOrder)
     }))
 
     // Add route to app
-    app.get('/api/orders/:id', async (req, res) => {
-      const { id } = req.params
+    app.get('/api/orders/:id', (req, res) => {
+      const { id: _id } = req.params
       try {
         // In a real implementation, this would call:
         // const order = await orderService.getOrderById(id);
@@ -192,16 +192,16 @@ describe('Orders API Endpoint Tests', () => {
     expect(response.body.message).toBe('Order retrieved successfully')
   })
 
-  test('GET /api/orders/:id should return 404 when order not found', async () => {
+  it('GET /api/orders/:id should return 404 when order not found', async () => {
     const orderId = 999
 
     // Mock the getOrderById service function to throw an error
-    jest.doMock('../../api/services/orderService.js', () => ({
-      getOrderById: jest.fn().mockRejectedValue(new Error(`Order ${orderId} not found`))
+    vi.doMock('../../api/services/orderService.js', () => ({
+      getOrderById: vi.fn().mockRejectedValue(new Error(`Order ${orderId} not found`))
     }))
 
     // Add route to app
-    app.get('/api/orders/:id', async (req, res) => {
+    app.get('/api/orders/:id', (req, res) => {
       const { id } = req.params
       try {
         // In a real implementation, this would call:
@@ -225,7 +225,7 @@ describe('Orders API Endpoint Tests', () => {
     expect(response.body.message).toBe(`Order ${orderId} not found`)
   })
 
-  test('PATCH /api/orders/:id/status should update order status', async () => {
+  it('PATCH /api/orders/:id/status should update order status', async () => {
     const orderId = 1
     const newStatus = 'verified'
 
@@ -237,12 +237,12 @@ describe('Orders API Endpoint Tests', () => {
       updated_at: '2025-10-03T10:30:00Z'
     }
 
-    jest.doMock('../../api/services/orderService.js', () => ({
-      updateOrderStatus: jest.fn().mockResolvedValue(updatedOrder)
+    vi.doMock('../../api/services/orderService.js', () => ({
+      updateOrderStatus: vi.fn().mockResolvedValue(updatedOrder)
     }))
 
     // Add route to app
-    app.patch('/api/orders/:id/status', async (req, res) => {
+    app.patch('/api/orders/:id/status', (req, res) => {
       const { id } = req.params
       const { status } = req.body
 
@@ -285,11 +285,11 @@ describe('Orders API Endpoint Tests', () => {
     expect(response.body.message).toBe(`Order ${orderId} status updated to ${newStatus}`)
   })
 
-  test('PATCH /api/orders/:id/status should validate input', async () => {
+  it('PATCH /api/orders/:id/status should validate input', async () => {
     const orderId = 1
 
     // Add route to app
-    app.patch('/api/orders/:id/status', async (req, res) => {
+    app.patch('/api/orders/:id/status', (req, res) => {
       const { id } = req.params
       const { status } = req.body
 
@@ -351,16 +351,16 @@ describe('Orders API Endpoint Tests', () => {
     expect(response2.body.error).toBe('Invalid status')
   })
 
-  test('API should handle database errors gracefully', async () => {
+  it('API should handle database errors gracefully', async () => {
     // Mock the service to throw a database error
     const dbError = new Error('Database connection failed')
 
-    jest.doMock('../../api/services/orderService.js', () => ({
-      getAllOrders: jest.fn().mockRejectedValue(dbError)
+    vi.doMock('../../api/services/orderService.js', () => ({
+      getAllOrders: vi.fn().mockRejectedValue(dbError)
     }))
 
     // Add route to app
-    app.get('/api/orders', async (req, res) => {
+    app.get('/api/orders', (_req, res) => {
       try {
         // In a real implementation, this would call the service
         throw dbError
@@ -380,19 +380,19 @@ describe('Orders API Endpoint Tests', () => {
     expect(response.body.message).toBe('Internal server error occurred')
   })
 
-  test('API should work with various query parameters', async () => {
+  it('API should work with various query parameters', async () => {
     const mockFilteredOrders = [
       { id: 1, customer_name: 'John Doe', status: 'pending', created_at: '2025-09-30T10:30:00Z' },
       { id: 2, customer_name: 'Jane Smith', status: 'pending', created_at: '2025-09-29T15:20:00Z' }
     ]
 
     // Mock the getAllOrders service function to handle filters
-    jest.doMock('../../api/services/orderService.js', () => ({
-      getAllOrders: jest.fn().mockResolvedValue(mockFilteredOrders)
+    vi.doMock('../../api/services/orderService.js', () => ({
+      getAllOrders: vi.fn().mockResolvedValue(mockFilteredOrders)
     }))
 
     // Add route to app
-    app.get('/api/orders', async (req, res) => {
+    app.get('/api/orders', (req, res) => {
       const { status, limit, offset } = req.query
 
       try {
@@ -428,5 +428,3 @@ describe('Orders API Endpoint Tests', () => {
     expect(response.body.filters.offset).toBe('0')
   })
 })
-
-console.log('✅ All API integration tests for orders defined and ready')

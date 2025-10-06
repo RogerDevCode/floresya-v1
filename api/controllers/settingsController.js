@@ -5,6 +5,8 @@
 
 import * as settingsService from '../services/settingsService.js'
 import { asyncHandler } from '../middleware/errorHandler.js'
+import express from 'express'
+const router = express.Router()
 
 /**
  * GET /api/settings
@@ -42,7 +44,6 @@ export const getPublicSettings = asyncHandler(async (req, res) => {
  */
 export const getSettingsMap = asyncHandler(async (req, res) => {
   const publicOnly = req.query.public === 'true'
-
   const map = await settingsService.getSettingsMap(publicOnly)
 
   res.json({
@@ -63,20 +64,6 @@ export const getSettingByKey = asyncHandler(async (req, res) => {
     success: true,
     data: setting,
     message: 'Setting retrieved successfully'
-  })
-})
-
-/**
- * GET /api/settings/:key/value
- * Get setting value (typed)
- */
-export const getSettingValue = asyncHandler(async (req, res) => {
-  const value = await settingsService.getSettingValue(req.params.key)
-
-  res.json({
-    success: true,
-    data: { key: req.params.key, value },
-    message: 'Setting value retrieved successfully'
   })
 })
 
@@ -110,11 +97,10 @@ export const updateSetting = asyncHandler(async (req, res) => {
 
 /**
  * PATCH /api/settings/:key/value
- * Update setting value only
+ * Set setting value
  */
 export const setSettingValue = asyncHandler(async (req, res) => {
   const { value } = req.body
-
   const setting = await settingsService.setSettingValue(req.params.key, value)
 
   res.json({
@@ -137,3 +123,42 @@ export const deleteSetting = asyncHandler(async (req, res) => {
     message: 'Setting deleted successfully'
   })
 })
+
+/**
+ * GET /api/settings/:key/value
+ * Get setting value by key
+ */
+export const getSettingValue = asyncHandler(async (req, res) => {
+  const { key } = req.params
+
+  if (!key || typeof key !== 'string' || key.trim() === '') {
+    return res.status(400).json({
+      success: false,
+      error: 'Invalid key',
+      message: 'Key must be a non-empty string'
+    })
+  }
+
+  try {
+    const value = await settingsService.getSettingValue(key)
+
+    res.json({
+      success: true,
+      data: value,
+      message: 'Setting value retrieved successfully'
+    })
+  } catch (error) {
+    // If setting not found, return null value instead of error
+    if (error.message && error.message.includes('not found')) {
+      res.json({
+        success: true,
+        data: null,
+        message: 'Setting not found'
+      })
+    } else {
+      throw error
+    }
+  }
+})
+
+export default router

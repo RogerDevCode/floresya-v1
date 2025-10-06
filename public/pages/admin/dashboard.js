@@ -78,7 +78,7 @@ async function loadProductImages(products) {
             }
           }
         }
-      } catch (error) {
+      } catch {
         console.warn(`Failed to load image for product ${product.id}`)
       }
     })
@@ -788,6 +788,11 @@ async function showView(view) {
       window.occasionsModule.loadOccasionsData()
     }
   }
+
+  // Special handling for settings view
+  if (view === 'settings') {
+    handleSettingsView()
+  }
 }
 
 /**
@@ -1051,4 +1056,391 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.occasionsModule && window.occasionsModule.initOccasionsManagement) {
     window.occasionsModule.initOccasionsManagement()
   }
+
+  // Setup event listeners for settings view
+  setupSettingsEventListeners()
 })
+
+// Settings state
+let heroImageFile = null
+let logoFile = null
+let bcvPriceValue = ''
+
+/**
+ * Setup event listeners for settings view
+ */
+function setupSettingsEventListeners() {
+  // Hero image upload
+  const heroImageUpload = document.getElementById('hero-image-upload')
+  if (heroImageUpload) {
+    heroImageUpload.addEventListener('change', handleHeroImageUpload)
+  }
+
+  // Save hero image button
+  const saveHeroImageButton = document.getElementById('save-hero-image-btn')
+  if (saveHeroImageButton) {
+    saveHeroImageButton.addEventListener('click', saveHeroImage)
+  }
+
+  // Logo upload
+  const logoUpload = document.getElementById('logo-upload')
+  if (logoUpload) {
+    logoUpload.addEventListener('change', handleLogoUpload)
+  }
+
+  // Save logo button
+  const saveLogoButton = document.getElementById('save-logo-btn')
+  if (saveLogoButton) {
+    saveLogoButton.addEventListener('click', saveLogo)
+  }
+
+  // BCV price input
+  const bcvPriceInput = document.getElementById('bcv-price-input')
+  if (bcvPriceInput) {
+    bcvPriceInput.addEventListener('input', handleBcvPriceInput)
+  }
+
+  // Save BCV price button
+  const saveBcvPriceButton = document.getElementById('save-bcv-price-btn')
+  if (saveBcvPriceButton) {
+    saveBcvPriceButton.addEventListener('click', saveBcvPrice)
+  }
+}
+/**
+ * Setup event listeners for settings view
+ */
+function handleHeroImageUpload(event) {
+  const file = event.target.files[0]
+  if (!file) {
+    return
+  }
+
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    alert('Por favor selecciona un archivo de imagen válido.')
+    event.target.value = ''
+    return
+  }
+
+  // Validate file size (4MB max)
+  if (file.size > 4 * 1024 * 1024) {
+    alert('La imagen no debe superar 4MB.')
+    event.target.value = ''
+    return
+  }
+
+  heroImageFile = file
+
+  // Enable save button
+  const saveButton = document.getElementById('save-hero-image-btn')
+  if (saveButton) {
+    saveButton.disabled = false
+  }
+}
+
+/**
+ * Handle logo upload
+ */
+function handleLogoUpload(event) {
+  const file = event.target.files[0]
+  if (!file) {
+    return
+  }
+
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    alert('Por favor selecciona un archivo de imagen válido.')
+    event.target.value = ''
+    return
+  }
+
+  // Validate file size (4MB max)
+  if (file.size > 4 * 1024 * 1024) {
+    alert('La imagen no debe superar 4MB.')
+    event.target.value = ''
+    return
+  }
+
+  logoFile = file
+
+  // Enable save button
+  const saveButton = document.getElementById('save-logo-btn')
+  if (saveButton) {
+    saveButton.disabled = false
+  }
+}
+
+/**
+ * Handle BCV price input
+ */
+function handleBcvPriceInput(event) {
+  const value = event.target.value
+  if (value && !isNaN(value) && parseFloat(value) > 0) {
+    bcvPriceValue = value
+
+    // Enable save button
+    const saveButton = document.getElementById('save-bcv-price-btn')
+    if (saveButton) {
+      saveButton.disabled = false
+    }
+  } else {
+    bcvPriceValue = ''
+
+    // Disable save button
+    const saveButton = document.getElementById('save-bcv-price-btn')
+    if (saveButton) {
+      saveButton.disabled = true
+    }
+  }
+}
+
+/**
+ * Save hero image
+ */
+async function saveHeroImage() {
+  if (!heroImageFile) {
+    return
+  }
+
+  try {
+    // Show loading state
+    const saveButton = document.getElementById('save-hero-image-btn')
+    saveButton.innerHTML = '<i data-lucide="loader" class="h-4 w-4 animate-spin"></i> Guardando...'
+    saveButton.disabled = true
+
+    // Create form data
+    const formData = new FormData()
+    formData.append('image', heroImageFile)
+    formData.append('setting_key', 'hero_image')
+
+    // Send request to save image
+    const response = await fetch('/api/admin/settings/image', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer admin:1:admin'
+      },
+      body: formData
+    })
+
+    if (!response.ok) {
+      throw new Error('Error al guardar la imagen hero')
+    }
+
+    const result = await response.json()
+
+    if (result.success) {
+      // Reload hero image preview
+      loadHeroImagePreview()
+      // Reset file input
+      heroImageFile = null
+      document.getElementById('hero-image-upload').value = ''
+      saveButton.disabled = true
+      alert('Imagen hero guardada exitosamente')
+    } else {
+      throw new Error(result.message || 'Error al guardar la imagen hero')
+    }
+  } catch (error) {
+    console.error('Error saving hero image:', error)
+    alert('Error al guardar la imagen hero: ' + error.message)
+  } finally {
+    // Restore button
+    const saveButton = document.getElementById('save-hero-image-btn')
+    saveButton.innerHTML = 'Guardar Imagen Hero'
+    saveButton.disabled = false
+  }
+}
+
+/**
+ * Save logo
+ */
+async function saveLogo() {
+  if (!logoFile) {
+    return
+  }
+
+  try {
+    // Show loading state
+    const saveButton = document.getElementById('save-logo-btn')
+    saveButton.innerHTML = '<i data-lucide="loader" class="h-4 w-4 animate-spin"></i> Guardando...'
+    saveButton.disabled = true
+
+    // Create form data
+    const formData = new FormData()
+    formData.append('image', logoFile)
+    formData.append('setting_key', 'site_logo')
+
+    // Send request to save logo
+    const response = await fetch('/api/admin/settings/image', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer admin:1:admin'
+      },
+      body: formData
+    })
+
+    if (!response.ok) {
+      throw new Error('Error al guardar el logo')
+    }
+
+    const result = await response.json()
+
+    if (result.success) {
+      // Reload logo preview
+      loadLogoPreview()
+      // Reset file input
+      logoFile = null
+      document.getElementById('logo-upload').value = ''
+      saveButton.disabled = true
+      alert('Logo guardado exitosamente')
+    } else {
+      throw new Error(result.message || 'Error al guardar el logo')
+    }
+  } catch (error) {
+    console.error('Error saving logo:', error)
+    alert('Error al guardar el logo: ' + error.message)
+  } finally {
+    // Restore button
+    const saveButton = document.getElementById('save-logo-btn')
+    saveButton.innerHTML = 'Guardar Logo'
+    saveButton.disabled = false
+  }
+}
+
+/**
+ * Save BCV price
+ */
+async function saveBcvPrice() {
+  if (!bcvPriceValue) {
+    return
+  }
+
+  try {
+    // Show loading state
+    const saveButton = document.getElementById('save-bcv-price-btn')
+    saveButton.innerHTML = '<i data-lucide="loader" class="h-4 w-4 animate-spin"></i> Guardando...'
+    saveButton.disabled = true
+
+    // Send request to save BCV price
+    const response = await fetch('/api/admin/settings/bcv-price', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer admin:1:admin',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ bcv_price: bcvPriceValue })
+    })
+
+    if (!response.ok) {
+      throw new Error('Error al guardar el precio BCV')
+    }
+
+    const result = await response.json()
+
+    if (result.success) {
+      // Reload BCV price
+      loadBcvPrice()
+      // Reset input
+      bcvPriceValue = ''
+      document.getElementById('bcv-price-input').value = ''
+      saveButton.disabled = true
+      alert('Precio BCV guardado exitosamente')
+    } else {
+      throw new Error(result.message || 'Error al guardar el precio BCV')
+    }
+  } catch (error) {
+    console.error('Error saving BCV price:', error)
+    alert('Error al guardar el precio BCV: ' + error.message)
+  } finally {
+    // Restore button
+    const saveButton = document.getElementById('save-bcv-price-btn')
+    saveButton.innerHTML = 'Guardar Precio BCV'
+    saveButton.disabled = false
+  }
+}
+
+/**
+ * Load hero image preview
+ */
+async function loadHeroImagePreview() {
+  try {
+    const response = await fetch('/api/settings/hero_image/value')
+    if (response.ok) {
+      const result = await response.json()
+      const heroImageUrl = result.data
+
+      const heroImage = document.getElementById('current-hero-image')
+      const noHeroImageText = document.getElementById('no-hero-image-text')
+
+      if (heroImageUrl) {
+        heroImage.src = heroImageUrl
+        heroImage.classList.remove('hidden')
+        noHeroImageText.classList.add('hidden')
+      } else {
+        heroImage.classList.add('hidden')
+        noHeroImageText.classList.remove('hidden')
+      }
+    }
+  } catch (error) {
+    console.error('Error loading hero image preview:', error)
+  }
+}
+
+/**
+ * Load logo preview
+ */
+async function loadLogoPreview() {
+  try {
+    const response = await fetch('/api/settings/site_logo/value')
+    if (response.ok) {
+      const result = await response.json()
+      const logoUrl = result.data
+
+      const logo = document.getElementById('current-logo')
+      const noLogoText = document.getElementById('no-logo-text')
+
+      if (logoUrl) {
+        logo.src = logoUrl
+        logo.classList.remove('hidden')
+        noLogoText.classList.add('hidden')
+      } else {
+        logo.classList.add('hidden')
+        noLogoText.classList.remove('hidden')
+      }
+    }
+  } catch (error) {
+    console.error('Error loading logo preview:', error)
+  }
+}
+
+/**
+ * Load BCV price
+ */
+async function loadBcvPrice() {
+  try {
+    const response = await fetch('/api/settings/bcv_usd_rate/value')
+    if (response.ok) {
+      const result = await response.json()
+      const bcvPrice = result.data
+
+      const bcvPriceElement = document.getElementById('current-bcv-price')
+      if (bcvPrice) {
+        bcvPriceElement.textContent = `Bs. ${parseFloat(bcvPrice).toFixed(2)}`
+      } else {
+        bcvPriceElement.textContent = 'No establecido'
+      }
+    }
+  } catch (error) {
+    console.error('Error loading BCV price:', error)
+    document.getElementById('current-bcv-price').textContent = 'Error al cargar'
+  }
+}
+
+/**
+ * Special handling for settings view
+ */
+async function handleSettingsView() {
+  // Load previews for all settings
+  await loadHeroImagePreview()
+  await loadLogoPreview()
+  await loadBcvPrice()
+}

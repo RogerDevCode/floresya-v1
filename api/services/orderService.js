@@ -209,7 +209,7 @@ export async function getOrdersByUser(userId, filters = {}) {
 }
 
 /**
- * Create order with items (manual transaction)
+ * Create order with items (uses atomic stored function)
  */
 export async function createOrderWithItems(orderData, orderItems) {
   try {
@@ -221,7 +221,7 @@ export async function createOrderWithItems(orderData, orderItems) {
       })
     }
 
-    // Validate each item
+    // Validate each item and check stock
     for (const item of orderItems) {
       if (!item.product_id || typeof item.product_id !== 'number') {
         throw new ValidationError('Order validation failed', {
@@ -247,6 +247,33 @@ export async function createOrderWithItems(orderData, orderItems) {
           'orderItems.unit_price_usd': 'must be positive'
         })
       }
+
+      // Validate stock availability
+      const { data: product, error: productError } = await supabase
+        .from('products')
+        .select('id, name, stock, active')
+        .eq('id', item.product_id)
+        .single()
+
+      if (productError || !product) {
+        throw new NotFoundError('Product', item.product_id, { productId: item.product_id })
+      }
+
+      if (!product.active) {
+        throw new ValidationError('Product is not active', {
+          productId: item.product_id,
+          productName: product.name
+        })
+      }
+
+      if (product.stock < item.quantity) {
+        throw new ValidationError('Insufficient stock', {
+          productId: item.product_id,
+          productName: product.name,
+          requested: item.quantity,
+          available: product.stock
+        })
+      }
     }
 
     const orderPayload = {
@@ -269,25 +296,7 @@ export async function createOrderWithItems(orderData, orderItems) {
       admin_notes: orderData.admin_notes || null
     }
 
-    // Step 1: Create order
-    const { data: order, error: orderError } = await supabase
-      .from(TABLE)
-      .insert(orderPayload)
-      .select()
-      .single()
-
-    if (orderError) {
-      throw new DatabaseError('INSERT', TABLE, orderError, { orderData })
-    }
-    if (!order) {
-      throw new DatabaseError('INSERT', TABLE, new Error('No data returned after insert'), {
-        orderData
-      })
-    }
-
-    // Step 2: Create order items
     const itemsPayload = orderItems.map(item => ({
-      order_id: order.id,
       product_id: item.product_id,
       product_name: item.product_name,
       product_summary: item.product_summary || null,
@@ -298,19 +307,27 @@ export async function createOrderWithItems(orderData, orderItems) {
       subtotal_ves: item.unit_price_ves ? item.unit_price_ves * item.quantity : null
     }))
 
-    const { error: itemsError } = await supabase.from('order_items').insert(itemsPayload)
+    // Use atomic stored function (SSOT: DB_FUNCTIONS.createOrderWithItems)
+    const { data, error } = await supabase.rpc('create_order_with_items', {
+      order_data: orderPayload,
+      order_items: itemsPayload
+    })
 
-    if (itemsError) {
-      // Rollback: delete order
-      await supabase.from(TABLE).delete().eq('id', order.id)
-      throw new DatabaseError('INSERT', 'order_items', itemsError, {
-        orderId: order.id,
-        orderItems
+    if (error) {
+      throw new DatabaseError('RPC', 'create_order_with_items', error, {
+        orderData,
+        itemCount: orderItems.length
       })
     }
 
-    // Return order with items
-    return await getOrderById(order.id)
+    if (!data) {
+      throw new DatabaseError('RPC', 'create_order_with_items', new Error('No data returned'), {
+        orderData,
+        itemCount: orderItems.length
+      })
+    }
+
+    return data
   } catch (error) {
     console.error('createOrderWithItems failed:', error)
     throw error
@@ -318,7 +335,7 @@ export async function createOrderWithItems(orderData, orderItems) {
 }
 
 /**
- * Update order status with history (manual transaction)
+ * Update order status with history (uses atomic stored function)
  */
 export async function updateOrderStatus(orderId, newStatus, notes = null, changedBy = null) {
   try {
@@ -332,53 +349,37 @@ export async function updateOrderStatus(orderId, newStatus, notes = null, change
       })
     }
 
-    // Step 1: Get current order
-    const { data: currentOrder, error: getError } = await supabase
-      .from(TABLE)
-      .select('id, status')
-      .eq('id', orderId)
-      .single()
-
-    if (getError || !currentOrder) {
-      throw new NotFoundError('Order', orderId)
-    }
-
-    const oldStatus = currentOrder.status
-
-    // Step 2: Update order status
-    const { data: updatedOrder, error: updateError } = await supabase
-      .from(TABLE)
-      .update({ status: newStatus })
-      .eq('id', orderId)
-      .select()
-      .single()
-
-    if (updateError) {
-      throw new DatabaseError('UPDATE', TABLE, updateError, { orderId })
-    }
-
-    // Step 3: Insert status history
-    const historyData = {
+    // Use atomic stored function (SSOT: DB_FUNCTIONS.updateOrderStatusWithHistory)
+    const { data, error } = await supabase.rpc('update_order_status_with_history', {
       order_id: orderId,
-      old_status: oldStatus,
       new_status: newStatus,
-      notes: notes || null
+      notes: notes,
+      changed_by: changedBy
+    })
+
+    if (error) {
+      if (error.message?.includes('not found')) {
+        throw new NotFoundError('Order', orderId)
+      }
+      throw new DatabaseError('RPC', 'update_order_status_with_history', error, {
+        orderId,
+        newStatus
+      })
     }
 
-    // Only add changed_by if it's a valid integer (not UUID)
-    if (changedBy && typeof changedBy === 'number') {
-      historyData.changed_by = changedBy
+    if (!data) {
+      throw new DatabaseError(
+        'RPC',
+        'update_order_status_with_history',
+        new Error('No data returned'),
+        {
+          orderId,
+          newStatus
+        }
+      )
     }
 
-    const { error: historyError } = await supabase.from('order_status_history').insert(historyData)
-
-    if (historyError) {
-      // Rollback: revert order status
-      await supabase.from(TABLE).update({ status: oldStatus }).eq('id', orderId)
-      throw new DatabaseError('INSERT', 'order_status_history', historyError, { orderId })
-    }
-
-    return updatedOrder
+    return data
   } catch (error) {
     console.error(`updateOrderStatus(${orderId}) failed:`, error)
     throw error

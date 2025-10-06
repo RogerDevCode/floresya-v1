@@ -165,7 +165,7 @@ export const orderCreateSchema = {
     required: true,
     pattern: /^\+?[\d\s-()]+$/
   },
-  // Delivery information
+  // Delivery information (Gran Caracas only)
   delivery_address: {
     type: 'string',
     required: true,
@@ -177,12 +177,12 @@ export const orderCreateSchema = {
     required: true,
     minLength: 2,
     maxLength: 100
+    // Note: This now stores Municipio (Libertador, Baruta, Chacao, etc.)
   },
   delivery_state: {
     type: 'string',
-    required: true,
-    minLength: 2,
-    maxLength: 100
+    required: false
+    // Note: Defaults to 'Gran Caracas' in service layer
   },
   delivery_zip: {
     type: 'string',
@@ -374,7 +374,7 @@ export const settingCreateSchema = {
     required: true,
     minLength: 1,
     maxLength: 100,
-    pattern: /^[A-Z_]+$/ // UPPERCASE_SNAKE_CASE
+    pattern: /^[a-z0-9_]+$/ // lowercase_snake_case (matches DB and OpenAPI)
   },
   value: {
     type: 'string',

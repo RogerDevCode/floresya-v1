@@ -28,6 +28,11 @@ if (!IS_VERCEL && NODE_ENV !== 'test') {
     logger.info(`🚀 FloresYa API running in ${NODE_ENV} mode`)
     logger.info(`🌐 Server listening on port ${PORT}`)
     logger.info(`📊 Health check: http://localhost:${PORT}/health`)
+
+    // Final confirmation message
+    setTimeout(() => {
+      console.log(`✅ Servidor iniciado sin problemas en http://localhost:${PORT}`)
+    }, 100)
   })
 
   // Graceful shutdown

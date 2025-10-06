@@ -28,7 +28,7 @@ export async function uploadToStorage(
 ) {
   try {
     // Upload file
-    const { data, error } = await supabase.storage.from(bucket).upload(path, buffer, {
+    const { data: _data, error } = await supabase.storage.from(bucket).upload(path, buffer, {
       contentType,
       cacheControl: '31536000', // 1 year cache
       upsert: true // Overwrite if exists

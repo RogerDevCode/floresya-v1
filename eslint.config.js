@@ -38,7 +38,7 @@ export default [
   },
   {
     // Configuration for test files
-    files: ['tests/**/*.js', '**/*.test.js', '**/*.spec.js'],
+    files: ['tests/**/*.js', 'tests/**/*.mjs', '**/*.test.js', '**/*.test.mjs', '**/*.spec.js'],
     languageOptions: {
       globals: {
         ...globals.node,

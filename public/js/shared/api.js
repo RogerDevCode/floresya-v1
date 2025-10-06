@@ -83,9 +83,9 @@ export const api = {
 
   // Payments
   getPaymentMethods: () => fetchJSON('/payments/methods'),
-  confirmPayment: (orderId, paymentData) =>
-    fetchJSON(`/payments/${orderId}/confirm`, {
-      method: 'PATCH',
+  confirmPayment: (paymentId, paymentData) =>
+    fetchJSON(`/payments/${paymentId}/confirm`, {
+      method: 'POST',
       body: JSON.stringify(paymentData)
     }),
 

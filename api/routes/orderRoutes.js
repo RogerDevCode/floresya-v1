@@ -34,10 +34,9 @@ router.get(
 // Get order status history
 router.get('/:id/status-history', authenticate, validateId(), orderController.getOrderStatusHistory)
 
-// Create order (authenticated users)
+// Create order (public - for checkout process)
 router.post(
   '/',
-  authenticate,
   validate({
     order: {
       type: 'object',

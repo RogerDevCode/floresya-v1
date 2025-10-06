@@ -80,7 +80,7 @@ async function verifySchema() {
     console.log('  Orders table:')
     for (const column of commonOrderColumns) {
       try {
-        const { data, error } = await supabase.from('orders').select(column).limit(1)
+        const { data: _data, error } = await supabase.from('orders').select(column).limit(1)
 
         if (error) {
           console.log(`    ❌ ${column}: Error - ${error.message}`)
@@ -109,7 +109,7 @@ async function verifySchema() {
     console.log('  Products table:')
     for (const column of commonProductColumns) {
       try {
-        const { data, error } = await supabase.from('products').select(column).limit(1)
+        const { data: _data, error } = await supabase.from('products').select(column).limit(1)
 
         if (error) {
           console.log(`    ❌ ${column}: Error - ${error.message}`)

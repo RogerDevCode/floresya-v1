@@ -3,18 +3,28 @@
  * Handles customer information form and payment processing
  */
 
+import { getCartItems, clearCart } from '../js/shared/cart.js'
+
 // Global state
 let cartItems = []
 let deliveryMethod = 'pickup'
 let paymentMethod = 'cash'
 let orderReference = ''
+let deliveryCost = 7.0 // Default, will be loaded from settings
+let bcvRate = 40.0 // Default, will be loaded from settings
 
 /**
  * Initialize payment page
  */
-function init() {
+async function init() {
+  // Load settings first
+  await loadSettings()
+
   // Load cart data from localStorage or redirect if empty
   loadCartData()
+
+  // Load saved customer data if exists
+  loadSavedCustomerData()
 
   // Back button
   const backButton = document.getElementById('back-button')
@@ -58,24 +68,57 @@ function init() {
 }
 
 /**
- * Load cart data from localStorage
+ * Load settings from API
+ */
+async function loadSettings() {
+  try {
+    const response = await fetch('/api/settings/public')
+    if (response.ok) {
+      const result = await response.json()
+      const settings = result.data || []
+
+      // Find delivery cost
+      const deliverySetting = settings.find(s => s.key === 'DELIVERY_COST_USD')
+      if (deliverySetting) {
+        deliveryCost = parseFloat(deliverySetting.value) || 7.0
+      }
+
+      // Find BCV rate
+      const bcvSetting = settings.find(s => s.key === 'bcv_usd_rate')
+      if (bcvSetting) {
+        bcvRate = parseFloat(bcvSetting.value) || 40.0
+      }
+
+      console.log(`Settings loaded: Delivery=$${deliveryCost}, BCV Rate=${bcvRate}`)
+    }
+  } catch (error) {
+    console.error('Error loading settings:', error)
+    // Use defaults
+  }
+}
+
+/**
+ * Load cart data from shared cart module
  */
 function loadCartData() {
-  const cartData = localStorage.getItem('cartItems')
-  if (!cartData) {
+  // Load cart items from shared cart module
+  cartItems = getCartItems()
+
+  if (cartItems.length === 0) {
     // Redirect to cart if no items
     window.location.href = '/pages/cart.html'
     return
   }
 
-  try {
-    cartItems = JSON.parse(cartData)
-    if (cartItems.length === 0) {
-      window.location.href = '/pages/cart.html'
+  // Load delivery method from localStorage if previously selected
+  const savedDeliveryMethod = localStorage.getItem('deliveryMethod')
+  if (savedDeliveryMethod) {
+    deliveryMethod = savedDeliveryMethod
+    // Update radio button
+    const radio = document.querySelector(`input[name="delivery"][value="${deliveryMethod}"]`)
+    if (radio) {
+      radio.checked = true
     }
-  } catch (error) {
-    console.error('Error loading cart data:', error)
-    window.location.href = '/pages/cart.html'
   }
 }
 
@@ -129,7 +172,7 @@ function renderCartSummary() {
  */
 function updateOrderSummary() {
   const subtotal = cartItems.reduce((sum, item) => sum + item.price_usd * item.quantity, 0)
-  const shippingCost = deliveryMethod === 'delivery' ? 5.0 : 0
+  const shippingCost = deliveryMethod === 'delivery' ? deliveryCost : 0
   const total = subtotal + shippingCost
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
@@ -197,6 +240,43 @@ function initFormValidation() {
   // Real-time validation
   customerForm.addEventListener('blur', validateField, true)
   customerForm.addEventListener('input', clearFieldError, true)
+
+  // Phone auto-formatting
+  const phoneInput = document.getElementById('customer-phone')
+  phoneInput.addEventListener('input', formatPhoneNumber)
+}
+
+/**
+ * Format phone number as user types
+ * Format: (+58)-XXX-XXXXXXX
+ */
+function formatPhoneNumber(e) {
+  const input = e.target
+  let value = input.value.replace(/\D/g, '') // Remove non-digits
+
+  // Remove leading 0 if present (will add +58 instead)
+  if (value.startsWith('0')) {
+    value = '58' + value.substring(1)
+  }
+
+  // Ensure it starts with 58
+  if (!value.startsWith('58') && value.length > 0) {
+    value = '58' + value
+  }
+
+  // Format as (+58)-XXX-XXXXXXX
+  let formatted = ''
+  if (value.length > 0) {
+    formatted = '(+' + value.substring(0, 2) + ')'
+  }
+  if (value.length > 2) {
+    formatted += '-' + value.substring(2, 5)
+  }
+  if (value.length > 5) {
+    formatted += '-' + value.substring(5, 12)
+  }
+
+  input.value = formatted
 }
 
 /**
@@ -240,7 +320,7 @@ function validateField(e) {
         errorMessage = 'El teléfono es requerido'
       } else if (!isValidVenezuelanPhone(field.value)) {
         isValid = false
-        errorMessage = 'Ingrese un teléfono válido (ej: 0414 123 4567)'
+        errorMessage = 'Teléfono inválido. Debe ser un número venezolano'
       }
       break
 
@@ -254,17 +334,10 @@ function validateField(e) {
       }
       break
 
-    case 'delivery-city':
+    case 'delivery-municipio':
       if (!field.value.trim()) {
         isValid = false
-        errorMessage = 'La ciudad es requerida'
-      }
-      break
-
-    case 'delivery-state':
-      if (!field.value.trim()) {
-        isValid = false
-        errorMessage = 'El estado es requerido'
+        errorMessage = 'El municipio es requerido'
       }
       break
   }
@@ -303,8 +376,7 @@ function validateForm() {
     'customer-email',
     'customer-phone',
     'delivery-address',
-    'delivery-city',
-    'delivery-state'
+    'delivery-municipio'
   ]
   let isValid = true
 
@@ -333,6 +405,9 @@ async function handlePayment() {
     return
   }
 
+  // Save customer data if "remember me" is checked
+  saveCustomerData()
+
   // Show loading state
   const processButton = document.getElementById('process-payment-button')
   const originalText = processButton.innerHTML
@@ -347,23 +422,28 @@ async function handlePayment() {
       customerEmail: document.getElementById('customer-email').value,
       customerPhone: document.getElementById('customer-phone').value,
       deliveryAddress: document.getElementById('delivery-address').value,
-      deliveryCity: document.getElementById('delivery-city').value,
-      deliveryState: document.getElementById('delivery-state').value,
+      deliveryMunicipio: document.getElementById('delivery-municipio').value,
       deliveryZip: document.getElementById('delivery-zip').value || '',
       deliveryReferences: document.getElementById('delivery-references').value || '',
       additionalNotes: document.getElementById('additional-notes').value || ''
     }
+
+    // Calculate totals
+    const subtotal = cartItems.reduce((sum, item) => sum + item.price_usd * item.quantity, 0)
+    const shippingCost = deliveryMethod === 'delivery' ? deliveryCost : 0
+    const totalUSD = subtotal + shippingCost
+    const totalVES = totalUSD * bcvRate
 
     // Collect payment data
     const paymentData = {
       paymentMethod,
       orderReference,
       deliveryMethod,
-      subtotal: cartItems.reduce((sum, item) => sum + item.price_usd * item.quantity, 0),
-      shippingCost: deliveryMethod === 'delivery' ? 5.0 : 0,
-      total:
-        cartItems.reduce((sum, item) => sum + item.price_usd * item.quantity, 0) +
-        (deliveryMethod === 'delivery' ? 5.0 : 0)
+      subtotal,
+      shippingCost,
+      totalUSD,
+      totalVES,
+      bcvRate
     }
 
     // Add payment method specific data
@@ -478,14 +558,14 @@ async function createOrder(customerData, paymentData) {
       customer_name: customerData.customerName,
       customer_phone: customerData.customerPhone,
       delivery_address: customerData.deliveryAddress,
-      delivery_city: customerData.deliveryCity,
-      delivery_state: customerData.deliveryState,
+      delivery_city: customerData.deliveryMunicipio, // Municipio stored in city field
+      delivery_state: 'Gran Caracas', // Fixed region
       delivery_zip: customerData.deliveryZip || '',
       delivery_notes: customerData.deliveryReferences || '',
       notes: customerData.additionalNotes || '',
-      total_amount_usd: paymentData.total,
-      total_amount_ves: paymentData.total * 40,
-      currency_rate: 40,
+      total_amount_usd: paymentData.totalUSD,
+      total_amount_ves: paymentData.totalVES,
+      currency_rate: paymentData.bcvRate,
       status: 'pending'
     },
     items: cartItems.map(item => ({
@@ -493,10 +573,10 @@ async function createOrder(customerData, paymentData) {
       product_name: item.name,
       product_summary: item.name,
       unit_price_usd: item.price_usd,
-      unit_price_ves: item.price_usd * 40,
+      unit_price_ves: item.price_usd * paymentData.bcvRate,
       quantity: item.quantity,
       subtotal_usd: item.price_usd * item.quantity,
-      subtotal_ves: item.price_usd * item.quantity * 40
+      subtotal_ves: item.price_usd * item.quantity * paymentData.bcvRate
     }))
   }
 
@@ -531,7 +611,7 @@ function showSuccessMessage(orderData) {
 
 Número de orden: ${orderData.id}
 Referencia de pago: ${orderReference}
-Total: $${orderData.total_amount_usd}
+Total: ${orderData.total_amount_usd}
 
 Método de pago: ${getPaymentMethodName(paymentMethod)}
 
@@ -545,10 +625,19 @@ Próximos pasos:
 
   if (confirm(message)) {
     // Clear cart and redirect to home
-    localStorage.removeItem('cartItems')
+    clearCart()
+    // Also clear customer data if they did not select "remember me"
+    if (!document.getElementById('remember-me')?.checked) {
+      localStorage.removeItem('customerData')
+    }
     window.location.href = '/'
   } else {
     // Redirect to order tracking or home
+    clearCart()
+    // Also clear customer data if they did not select "remember me"
+    if (!document.getElementById('remember-me')?.checked) {
+      localStorage.removeItem('customerData')
+    }
     window.location.href = '/'
   }
 }
@@ -577,27 +666,103 @@ function isValidEmail(email) {
 
 /**
  * Validate Venezuelan phone number
+ * Accepts: (+58)-414-1234567, 0414-1234567, 04141234567, +584141234567
  */
 function isValidVenezuelanPhone(phone) {
+  if (!phone) {
+    return false
+  }
+
   // Remove all non-digits
   const digits = phone.replace(/\D/g, '')
 
-  // Check if it starts with 0 and has 10 digits, or starts with 58 and has 12 digits
-  return (
-    (digits.startsWith('0') && digits.length === 10) ||
-    (digits.startsWith('58') && digits.length === 12) ||
-    (digits.length === 10 &&
-      ['0412', '0414', '0416', '0424', '0426'].some(prefix => digits.startsWith(prefix)))
-  )
+  // Must start with 58 (international) or 0 (local)
+  const validPrefixes = ['0412', '0414', '0416', '0424', '0426']
+
+  // Check formats:
+  // 1. (+58)-XXX-XXXXXXX = 12 digits starting with 58
+  // 2. 0XXX-XXXXXXX = 10 digits starting with 0
+  if (digits.startsWith('58') && digits.length === 12) {
+    const localPart = '0' + digits.substring(2)
+    return validPrefixes.some(prefix => localPart.startsWith(prefix))
+  }
+
+  if (digits.startsWith('0') && digits.length === 10) {
+    return validPrefixes.some(prefix => digits.startsWith(prefix))
+  }
+
+  return false
+}
+
+/**
+ * Load saved customer data from localStorage if exists
+ */
+function loadSavedCustomerData() {
+  try {
+    const savedData = localStorage.getItem('customerData')
+    if (savedData) {
+      const customerData = JSON.parse(savedData)
+
+      // Populate form fields with saved data
+      document.getElementById('customer-name').value = customerData.name || ''
+      document.getElementById('customer-email').value = customerData.email || ''
+      document.getElementById('customer-phone').value = customerData.phone || ''
+      document.getElementById('delivery-address').value = customerData.address || ''
+      document.getElementById('delivery-zip').value = customerData.zip || ''
+      document.getElementById('delivery-references').value = customerData.references || ''
+      document.getElementById('additional-notes').value = customerData.notes || ''
+
+      // Set the delivery municipality if it exists
+      if (customerData.municipio) {
+        document.getElementById('delivery-municipio').value = customerData.municipio
+      }
+
+      // Check the remember me checkbox if user previously opted in
+      if (customerData.rememberMe) {
+        document.getElementById('remember-me').checked = true
+      }
+    }
+  } catch (error) {
+    console.error('Error loading saved customer data:', error)
+  }
+}
+
+/**
+ * Save customer data to localStorage if "remember me" is checked
+ */
+function saveCustomerData() {
+  try {
+    const rememberMeCheckbox = document.getElementById('remember-me')
+    if (rememberMeCheckbox && rememberMeCheckbox.checked) {
+      const customerData = {
+        name: document.getElementById('customer-name').value,
+        email: document.getElementById('customer-email').value,
+        phone: document.getElementById('customer-phone').value,
+        address: document.getElementById('delivery-address').value,
+        municipio: document.getElementById('delivery-municipio').value,
+        zip: document.getElementById('delivery-zip').value,
+        references: document.getElementById('delivery-references').value,
+        notes: document.getElementById('additional-notes').value,
+        rememberMe: true
+      }
+
+      localStorage.setItem('customerData', JSON.stringify(customerData))
+    } else {
+      // If checkbox is not checked, remove any saved data
+      localStorage.removeItem('customerData')
+    }
+  } catch (error) {
+    console.error('Error saving customer data:', error)
+  }
 }
 
 // Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // Initialize icons first
   if (window.lucide && window.lucide.createIcons) {
     window.lucide.createIcons()
   }
 
   // Then initialize payment functionality
-  init()
+  await init()
 })

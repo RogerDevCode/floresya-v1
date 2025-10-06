@@ -30,6 +30,36 @@ let productImages = []
 let productId = null
 let carouselManager = null
 
+// BCV rate (loaded from settings)
+let bcvRate = 0
+
+/**
+ * Ensure only one image is marked as primary
+ */
+function ensureSinglePrimaryImage() {
+  // Count how many images are marked as primary
+  const primaryImages = productImages.filter(img => img.isPrimary)
+
+  // If no primary images, set the first one as primary
+  if (primaryImages.length === 0 && productImages.length > 0) {
+    productImages[0].isPrimary = true
+  }
+  // If more than one primary image, keep only the first one
+  else if (primaryImages.length > 1) {
+    // Mark all as non-primary except the first
+    let firstPrimarySet = false
+    for (let i = 0; i < productImages.length; i++) {
+      if (productImages[i].isPrimary) {
+        if (!firstPrimarySet) {
+          firstPrimarySet = true // Keep first primary image
+        } else {
+          productImages[i].isPrimary = false // Remove primary flag from others
+        }
+      }
+    }
+  }
+}
+
 // Initialize page
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('✓ Edit Product page loaded')
@@ -49,13 +79,54 @@ document.addEventListener('DOMContentLoaded', async () => {
     return
   }
 
+  // Load BCV rate from settings
+  await loadBcvRate()
+
   // Load product data
   await loadProduct()
+
+  // Setup auto-calculation of price_ves when price_usd changes
+  const priceUsdInput = document.getElementById('product-price-usd')
+  priceUsdInput.addEventListener('input', calculatePriceVes)
 
   // Form submit handler
   const form = document.getElementById('edit-product-form')
   form.addEventListener('submit', handleUpdateProduct)
 })
+
+/**
+ * Load BCV rate from settings
+ */
+async function loadBcvRate() {
+  try {
+    const response = await fetch('/api/settings/bcv_usd_rate/value', {
+      headers: { Authorization: 'Bearer admin:1:admin' }
+    })
+
+    if (!response.ok) {
+      console.warn('BCV rate not found, using default 36.5')
+      bcvRate = 36.5
+      return
+    }
+
+    const result = await response.json()
+    bcvRate = parseFloat(result.data) || 36.5
+    console.log(`✓ BCV rate loaded: ${bcvRate}`)
+  } catch (error) {
+    console.error('Error loading BCV rate:', error)
+    bcvRate = 36.5
+  }
+}
+
+/**
+ * Calculate price_ves based on price_usd and BCV rate
+ */
+function calculatePriceVes() {
+  const priceUsd = parseFloat(document.getElementById('product-price-usd').value) || 0
+  const priceVes = priceUsd * bcvRate
+
+  document.getElementById('product-price-ves').value = priceVes > 0 ? priceVes.toFixed(2) : ''
+}
 
 /**
  * Load product data
@@ -80,8 +151,10 @@ async function loadProduct() {
     document.getElementById('product-description').value = product.description || ''
     document.getElementById('product-sku').value = product.sku || ''
     document.getElementById('product-price-usd').value = product.price_usd || ''
-    document.getElementById('product-price-ves').value = product.price_ves || ''
     document.getElementById('product-stock').value = product.stock || 0
+
+    // Calculate price_ves from price_usd
+    calculatePriceVes()
 
     // Initialize Carousel Manager with product data
     carouselManager = new CarouselManager('carousel-manager-container', {
@@ -150,20 +223,39 @@ async function loadExistingImages() {
     productImages = []
     Object.keys(imagesByIndex).forEach(index => {
       const imageGroup = imagesByIndex[index]
-      const mediumImage = imageGroup.find(img => img.size === 'medium')
 
-      if (mediumImage) {
+      // Try to find small first (better detail for preview), then medium, then thumb
+      let displayImage = imageGroup.find(img => img.size === 'small')
+      if (!displayImage) {
+        displayImage = imageGroup.find(img => img.size === 'medium')
+      }
+      if (!displayImage) {
+        displayImage = imageGroup.find(img => img.size === 'thumb')
+      }
+
+      if (displayImage) {
         productImages.push({
           index: parseInt(index),
-          preview: mediumImage.url,
-          isPrimary: mediumImage.is_primary,
+          preview: displayImage.url,
+          isPrimary: displayImage.is_primary,
           existingImageIndex: parseInt(index), // Track existing index for deletion
           file: null // No file for existing images
         })
+      } else {
+        console.warn(`⚠️ No small, medium, or thumb image found for index ${index}`)
       }
     })
 
+    // Ensure there's a primary image if there are any images
+    if (productImages.length > 0) {
+      ensureSinglePrimaryImage()
+    }
+
     console.log(`✓ Loaded ${productImages.length} existing images`)
+
+    // Ensure only one image is primary after loading existing images
+    ensureSinglePrimaryImage()
+
     renderImageGrid()
   } catch (error) {
     console.error('Error loading images:', error)
@@ -215,10 +307,9 @@ function createImageSlot(image, index) {
 
   // Handle image loading errors
   imgElement.onerror = () => {
-    // Replace with placeholder if image fails to load
+    console.error(`Failed to load product image at index ${index}:`, image.preview)
     imgElement.src = '../../images/placeholder-flower.svg'
-    imgElement.classList.add('bg-gray-100')
-    console.warn(`Failed to load image: ${image.preview}`)
+    imgElement.classList.add('bg-gray-100', 'p-4')
   }
 
   slot.appendChild(imgElement)
@@ -226,23 +317,34 @@ function createImageSlot(image, index) {
   // Add overlay and controls
   const overlay = document.createElement('div')
   overlay.className =
-    'absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center space-x-2'
+    'absolute inset-0 bg-black opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-2'
+  overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.4)' // Set semi-transparent black only on hover
 
   const removeBtn = document.createElement('button')
   removeBtn.type = 'button'
   removeBtn.className =
-    'remove-image-btn opacity-0 group-hover:opacity-100 transition-opacity bg-red-500 hover:bg-red-600 text-white p-2 rounded-full'
+    'remove-image-btn transition-all bg-red-500 hover:bg-red-600 text-white p-2 rounded-full z-10'
   removeBtn.dataset.index = index
   removeBtn.innerHTML = '<i data-lucide="trash-2" class="h-4 w-4"></i>'
 
   const primaryBtn = document.createElement('button')
   primaryBtn.type = 'button'
-  primaryBtn.className = `set-primary-btn opacity-0 group-hover:opacity-100 transition-opacity bg-pink-500 hover:bg-pink-600 text-white p-2 rounded-full ${image.isPrimary ? 'ring-2 ring-white' : ''}`
+  primaryBtn.className = `set-primary-btn transition-all bg-pink-500 hover:bg-pink-600 text-white p-2 rounded-full z-10 ${image.isPrimary ? 'ring-2 ring-white' : ''}`
   primaryBtn.dataset.index = index
   primaryBtn.innerHTML = `<i data-lucide="star" class="h-4 w-4 ${image.isPrimary ? 'fill-current' : ''}"></i>`
 
   overlay.appendChild(removeBtn)
   overlay.appendChild(primaryBtn)
+
+  // Make overlay transparent by default, visible on hover
+  overlay.style.opacity = '0'
+  overlay.addEventListener('mouseenter', () => {
+    overlay.style.opacity = '1'
+  })
+  overlay.addEventListener('mouseleave', () => {
+    overlay.style.opacity = '0'
+  })
+
   slot.appendChild(overlay)
 
   // Add primary badge if needed
@@ -291,7 +393,7 @@ function createImageSlot(image, index) {
 /**
  * Create empty slot (upload trigger)
  */
-function createEmptySlot(currentCount) {
+function createEmptySlot(_currentCount) {
   const slot = document.createElement('div')
   slot.className =
     'border-2 border-dashed border-gray-300 rounded-lg aspect-square flex items-center justify-center cursor-pointer hover:border-pink-500 hover:bg-pink-50 transition-all'
@@ -347,9 +449,13 @@ document.addEventListener('change', e => {
         index: imageIndex,
         file: file,
         preview: event.target.result,
-        isPrimary: productImages.length === 0, // First image is primary
+        isPrimary: false, // Initially not primary, will be set by ensureSinglePrimaryImage
         existingImageIndex: null // New image
       })
+
+      // Ensure only one image is primary
+      ensureSinglePrimaryImage()
+
       renderImageGrid()
       toast.success('Imagen agregada')
     }
@@ -401,10 +507,8 @@ async function removeImage(index) {
     img.index = idx + 1
   })
 
-  // If removed primary, set first image as primary
-  if (productImages.length > 0 && !productImages.some(img => img.isPrimary)) {
-    productImages[0].isPrimary = true
-  }
+  // Ensure only one image is primary after removal
+  ensureSinglePrimaryImage()
 
   renderImageGrid()
 }
@@ -413,9 +517,11 @@ async function removeImage(index) {
  * Set primary image
  */
 function setPrimaryImage(index) {
+  // Set the selected image as primary and all others as non-primary
   productImages.forEach((img, idx) => {
     img.isPrimary = idx === index
   })
+
   renderImageGrid()
   toast.success('Imagen principal actualizada')
 }
@@ -435,6 +541,9 @@ function reorderImages(fromIndex, toIndex) {
   productImages.forEach((img, idx) => {
     img.index = idx + 1
   })
+
+  // After reordering, make sure we still have only one primary image
+  ensureSinglePrimaryImage()
 
   renderImageGrid()
 }
@@ -456,6 +565,15 @@ async function handleUpdateProduct(event) {
   if (!carouselValidation.valid) {
     toast.error(carouselValidation.error)
     return
+  }
+
+  // Validate: if there are images, ensure one is marked as primary
+  if (productImages.length > 0) {
+    const hasPrimary = productImages.some(img => img.isPrimary)
+    if (!hasPrimary) {
+      toast.error('Debes seleccionar una imagen como principal')
+      return
+    }
   }
 
   try {
@@ -510,17 +628,17 @@ async function handleUpdateProduct(event) {
       await uploadProductImages(productId, newImages)
     }
 
-    // Success - restore button
+    // Success - restore button and stay on page
     submitBtn.disabled = false
     submitBtn.innerHTML = '<i data-lucide="save" class="h-5 w-5"></i> <span>Guardar Cambios</span>'
     createIcons()
 
-    toast.success('Producto actualizado exitosamente')
+    toast.success(
+      'Producto actualizado exitosamente. Puedes hacer más cambios o cancelar para salir.'
+    )
 
-    // Redirect to dashboard after 1 second
-    setTimeout(() => {
-      window.location.href = './dashboard.html'
-    }, 1000)
+    // Reload product data to get fresh state (including new images)
+    await loadProduct()
   } catch (error) {
     console.error('Error updating product:', error)
     toast.error('Error al actualizar producto: ' + error.message)

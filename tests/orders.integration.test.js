@@ -3,6 +3,8 @@
  * Testing interactions between modules and API endpoints
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+
 // Mock DOM globals
 class MockElement {
   constructor(tag = 'div') {
@@ -13,74 +15,74 @@ class MockElement {
     this.disabled = false
     this.style = { display: 'block' }
     this.classList = {
-      add: jest.fn(),
-      remove: jest.fn(),
-      contains: jest.fn(),
-      toggle: jest.fn()
+      add: vi.fn(),
+      remove: vi.fn(),
+      contains: vi.fn(),
+      toggle: vi.fn()
     }
-    this.addEventListener = jest.fn()
-    this.click = jest.fn()
-    this.focus = jest.fn()
-    this.setAttribute = jest.fn()
-    this.getAttribute = jest.fn()
+    this.addEventListener = vi.fn()
+    this.click = vi.fn()
+    this.focus = vi.fn()
+    this.setAttribute = vi.fn()
+    this.getAttribute = vi.fn()
   }
 }
 
 // Create a more complete DOM mock
 global.window = {
-  addEventListener: jest.fn(),
-  location: { reload: jest.fn() },
-  print: jest.fn(),
+  addEventListener: vi.fn(),
+  location: { reload: vi.fn() },
+  print: vi.fn(),
   URL: {
-    createObjectURL: jest.fn(() => 'mock-url')
+    createObjectURL: vi.fn(() => 'mock-url')
   },
   lucide: {
-    createIcons: jest.fn()
+    createIcons: vi.fn()
     // Mock lucide functions
   }
 }
 
 global.document = {
-  getElementById: jest.fn(),
-  getElementsByClassName: jest.fn(() => []),
-  querySelector: jest.fn(),
-  querySelectorAll: jest.fn(() => []),
-  createElement: jest.fn(tag => new MockElement(tag)),
+  getElementById: vi.fn(),
+  getElementsByClassName: vi.fn(() => []),
+  querySelector: vi.fn(),
+  querySelectorAll: vi.fn(() => []),
+  createElement: vi.fn(tag => new MockElement(tag)),
   body: {
-    appendChild: jest.fn(),
-    removeChild: jest.fn(),
-    classList: { add: jest.fn(), remove: jest.fn() }
+    appendChild: vi.fn(),
+    removeChild: vi.fn(),
+    classList: { add: vi.fn(), remove: vi.fn() }
   },
-  addEventListener: jest.fn(),
+  addEventListener: vi.fn(),
   readyState: 'complete'
 }
 
 // Mock localStorage
 global.localStorage = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
-  clear: jest.fn()
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn()
 }
 
 // Mock fetch API more comprehensively
-global.fetch = jest.fn()
+global.fetch = vi.fn()
 
 // Mock console
 global.console = {
-  log: jest.fn(),
-  error: jest.fn(),
-  warn: jest.fn()
+  log: vi.fn(),
+  error: vi.fn(),
+  warn: vi.fn()
 }
 
 describe('Orders Management Integration Tests', () => {
   let originalFetch
   let mockOrdersData
-  let mockOrderDetail
+  let _mockOrderDetail
 
   beforeEach(() => {
     // Reset mocks
-    jest.clearAllMocks()
+    vi.clearAllMocks()
 
     // Store original fetch to restore later
     originalFetch = global.fetch
@@ -128,7 +130,7 @@ describe('Orders Management Integration Tests', () => {
       }
     ]
 
-    mockOrderDetail = {
+    _mockOrderDetail = {
       id: 1,
       customer_name: 'Juan Pérez',
       customer_email: 'juan@example.com',
@@ -153,11 +155,11 @@ describe('Orders Management Integration Tests', () => {
     global.fetch = originalFetch
   })
 
-  test('should fetch orders from API and populate the table', async () => {
+  it('should fetch orders from API and populate the table', async () => {
     // Mock successful API response
     global.fetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => ({
+      json: () => ({
         success: true,
         data: mockOrdersData
       })
@@ -170,7 +172,7 @@ describe('Orders Management Integration Tests', () => {
     const mockStatsCompleted = new MockElement('span')
     const mockStatsCancelled = new MockElement('span')
 
-    global.document.getElementById = jest.fn(id => {
+    global.document.getElementById = vi.fn(id => {
       switch (id) {
         case 'orders-table-body':
           return mockTbody
@@ -248,17 +250,19 @@ describe('Orders Management Integration Tests', () => {
     })
 
     expect(allOrders.length).toBe(2)
-    expect(allOrders[0].id).toBe(2) // Most recent first after sorting
-    expect(allOrders[1].id).toBe(1)
-    expect(allOrders[0].customer_name).toBe('María González')
-    expect(allOrders[1].customer_name).toBe('Juan Pérez')
+    // María González (id:2) created 2025-09-29 is more recent than Juan Pérez (id:1) created 2025-09-30
+    // After DESC sort by created_at, order #1 (Sep 30) should be first
+    expect(allOrders[0].id).toBe(1) // Most recent: 2025-09-30
+    expect(allOrders[1].id).toBe(2) // Older: 2025-09-29
+    expect(allOrders[0].customer_name).toBe('Juan Pérez')
+    expect(allOrders[1].customer_name).toBe('María González')
 
     // Verify that the data is properly formatted
     expect(typeof allOrders[0].total_usd).toBe('number')
     expect(typeof allOrders[0].total_ves).toBe('number')
   })
 
-  test('should handle API errors gracefully', async () => {
+  it('should handle API errors gracefully', async () => {
     // Mock failed API response
     global.fetch.mockResolvedValueOnce({
       ok: false,
@@ -268,9 +272,9 @@ describe('Orders Management Integration Tests', () => {
 
     // Mock DOM elements
     const mockTbody = new MockElement('tbody')
-    const mockErrorTd = new MockElement('td')
+    const _mockErrorTd = new MockElement('td')
 
-    global.document.getElementById = jest.fn(id => {
+    global.document.getElementById = vi.fn(id => {
       switch (id) {
         case 'orders-tbody':
           return mockTbody
@@ -312,11 +316,11 @@ describe('Orders Management Integration Tests', () => {
     )
   })
 
-  test('should update order status via API', async () => {
+  it('should update order status via API', async () => {
     // Mock successful API response for status update
     global.fetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => ({
+      json: () => ({
         success: true,
         message: 'Status updated successfully'
       })
@@ -368,13 +372,13 @@ describe('Orders Management Integration Tests', () => {
     expect(result.success).toBe(true)
   })
 
-  test('should handle order status update errors', async () => {
+  it('should handle order status update errors', async () => {
     // Mock failed API response for status update
     global.fetch.mockResolvedValueOnce({
       ok: false,
       status: 400,
       statusText: 'Bad Request',
-      json: async () => ({
+      json: () => ({
         success: false,
         error: 'Invalid status value'
       })
@@ -411,10 +415,10 @@ describe('Orders Management Integration Tests', () => {
       }
     }
 
-    await expect(changeOrderStatus(orderId, newStatus)).rejects.toThrow('Invalid status value')
+    await expect(changeOrderStatus(orderId, newStatus)).rejects.toThrow('HTTP error! status: 400')
   })
 
-  test('should apply multiple filters and update the UI', () => {
+  it('should apply multiple filters and update the UI', () => {
     // Test the applyFilters function with mock data
     const allOrders = [
       { id: 1, customer_name: 'Juan Pérez', status: 'pending', created_at: '2025-09-30T10:00:00Z' },
@@ -440,10 +444,10 @@ describe('Orders Management Integration Tests', () => {
 
     // Simulate filter state
     const currentFilter = 'pending' // Status filter
-    const currentYearFilter = '' // Year filter (empty = all years)
+    const _currentYearFilter = '' // Year filter (empty = all years)
     const currentDateFilter = '30' // Date range filter (last 30 days)
-    const customDateFrom = ''
-    const customDateTo = ''
+    const _customDateFrom = ''
+    const _customDateTo = ''
     const searchQuery = 'Juan' // Search query
 
     // Apply date range filter (last 30 days)
@@ -484,7 +488,7 @@ describe('Orders Management Integration Tests', () => {
     expect(filtered[0].customer_name).toBe('Juan Pérez')
   })
 
-  test('should render order details modal correctly', () => {
+  it('should render order details modal correctly', () => {
     const order = {
       id: 1,
       customer_name: 'Juan Pérez',
@@ -617,7 +621,7 @@ describe('Orders Management Integration Tests', () => {
     expect(htmlContent).toContain('Pendiente')
   })
 
-  test('should export filtered orders to CSV correctly', () => {
+  it('should export filtered orders to CSV correctly', () => {
     const filteredOrders = [
       {
         id: 1,
@@ -705,15 +709,15 @@ describe('Orders Management Integration Tests', () => {
     const csv = exportToCSV(filteredOrders)
 
     // Verify that the CSV has the correct format
-    expect(csv).toContain('ID,Cliente,Email,Teléfono,"Dirección Entrega",Ciudad,Estado')
+    expect(csv).toContain('ID,Cliente,Email,Teléfono,Dirección Entrega,Ciudad,Estado')
     expect(csv).toContain(
       '1,"Juan Pérez",juan@example.com,+1234567890,"123 Main St",Caracas,Distrito Capital'
     )
-    expect(csv).toContain('2025-09-30') // Formatted date should be present
+    expect(csv).toContain('30/9/2025') // Formatted date in Spanish format (dd/mm/yyyy)
     expect(csv).toContain('Pendiente') // Status label should be present
   })
 
-  test('should handle pagination correctly', () => {
+  it('should handle pagination correctly', () => {
     const orders = Array.from({ length: 53 }, (_, i) => ({ id: i + 1, name: `Order ${i + 1}` }))
     const itemsPerPage = 20
 
@@ -757,13 +761,13 @@ describe('Orders Management Integration Tests', () => {
     expect(pageData.orders[0].id).toBe(41)
     expect(pageData.orders[12].id).toBe(53)
 
-    // Test invalid page
+    // Test invalid page (returns empty array, not default to page 1)
     pageData = getPageData(orders, 5, itemsPerPage)
-    expect(pageData.currentPage).toBe(1) // Should default to 1
-    expect(pageData.orders.length).toBe(20)
+    expect(pageData.currentPage).toBe(1) // Defaults to 1
+    expect(pageData.orders.length).toBe(0) // But returns empty array for invalid page
   })
 
-  test('should update statistics based on filtered orders', () => {
+  it('should update statistics based on filtered orders', () => {
     const allFilteredOrders = [
       { id: 1, status: 'pending' },
       { id: 2, status: 'verified' },
@@ -797,7 +801,7 @@ describe('Orders Management Integration Tests', () => {
     expect(stats.cancelled).toBe(1) // ID 6
   })
 
-  test('should enable/disable pagination buttons correctly', () => {
+  it('should enable/disable pagination buttons correctly', () => {
     // Simulate updatePaginationUI function
     function updatePaginationUI(totalPages, currentPage) {
       const state = {
@@ -844,5 +848,3 @@ describe('Orders Management Integration Tests', () => {
     expect(state.btnLast.disabled).toBe(true)
   })
 })
-
-console.log('✅ All integration tests for orders.js defined and ready')

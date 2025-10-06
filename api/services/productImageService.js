@@ -101,13 +101,15 @@ export async function getProductImages(productId, filters = {}) {
 /**
  * Get primary image for a product (indexed query)
  */
+/**\n * Get primary image for a product (indexed query)\n * Falls back to first available image if no primary image exists\n */
 export async function getPrimaryImage(productId) {
   try {
     if (!productId || typeof productId !== 'number' || productId <= 0) {
       throw new BadRequestError('Invalid product ID: must be a number', { productId })
     }
 
-    const { data, error } = await supabase
+    // First, try to get the actual primary image
+    const { data: primaryImage, error: primaryError } = await supabase
       .from(TABLE)
       .select('*')
       .eq('product_id', productId)
@@ -115,14 +117,34 @@ export async function getPrimaryImage(productId) {
       .eq('size', 'medium')
       .single()
 
-    if (error) {
-      if (error.code === 'PGRST116') {
-        throw new NotFoundError('Primary image', productId, { productId })
+    if (primaryError) {
+      if (primaryError.code === 'PGRST116') {
+        // No primary image found, try to get the first available image as fallback
+        const { data: fallbackImage, error: fallbackError } = await supabase
+          .from(TABLE)
+          .select('*')
+          .eq('product_id', productId)
+          .order('image_index', { ascending: true })
+          .limit(1)
+          .maybeSingle()
+
+        if (fallbackError) {
+          throw new DatabaseError('SELECT', TABLE, fallbackError, { productId })
+        }
+
+        if (fallbackImage) {
+          // Return the fallback image (first available)
+          return fallbackImage
+        } else {
+          // No images at all for this product
+          throw new NotFoundError('Primary image', productId, { productId })
+        }
+      } else {
+        throw new DatabaseError('SELECT', TABLE, primaryError, { productId })
       }
-      throw new DatabaseError('SELECT', TABLE, error, { productId })
     }
 
-    return data
+    return primaryImage
   } catch (error) {
     console.error(`getPrimaryImage(${productId}) failed:`, error)
     throw error
@@ -575,12 +597,20 @@ export async function getProductWithImageSize(productId, size) {
     }
 
     // Get the specific image
-    const image = await getProductImageBySize(productId, size)
+    // Try to get the image but don't fail if it doesn't exist
+    const { data: image, error: _imageError } = await supabase
+      .from(DB_SCHEMA.product_images.table)
+      .select('url')
+      .eq('product_id', productId)
+      .eq('size', size)
+      .order('image_index', { ascending: true })
+      .limit(1)
+      .maybeSingle()
 
-    // Return product with attached image
+    // Return product with image URL (null if not found)
     return {
       ...product,
-      [`image_url_${size}`]: image.url
+      [`image_url_${size}`]: image?.url || null
     }
   } catch (error) {
     console.error(`getProductWithImageSize(${productId}, ${size}) failed:`, error)
@@ -658,16 +688,9 @@ export async function getProductsBatchWithImageSize(productIds, size) {
     // Attach the appropriate image to each product
     return products.map(product => {
       const image = imageMap.get(product.id)
-      if (!image) {
-        throw new NotFoundError(`No ${size} image found for product`, product.id, {
-          productId: product.id,
-          size,
-          availableSizes: VALID_SIZES
-        })
-      }
       return {
         ...product,
-        [`image_url_${size}`]: image.url
+        [`image_url_${size}`]: image?.url || null
       }
     })
   } catch (error) {

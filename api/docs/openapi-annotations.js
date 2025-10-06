@@ -176,6 +176,7 @@
  *             required: [name, price_usd]
  *             properties:
  *               name: { type: string, minLength: 2, maxLength: 255 }
+ *               summary: { type: string }
  *               description: { type: string }
  *               price_usd: { type: number, minimum: 0 }
  *               price_ves: { type: number, minimum: 0 }
@@ -249,14 +250,25 @@
  *             type: object
  *             properties:
  *               name: { type: string }
+ *               summary: { type: string }
  *               description: { type: string }
  *               price_usd: { type: number }
  *               price_ves: { type: number }
  *               stock: { type: integer }
+ *               sku: { type: string }
  *               featured: { type: boolean }
+ *               carousel_order: { type: integer }
  *     responses:
  *       200:
  *         description: Product updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/Product' }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
@@ -773,31 +785,49 @@
  *             properties:
  *               order:
  *                 type: object
- *                 required: [customer_email, customer_name, delivery_address, total_amount_usd]
+ *                 required: [customer_email, customer_name, customer_phone, delivery_address, delivery_city, delivery_state, total_amount_usd]
  *                 properties:
  *                   customer_email: { type: string, format: email }
- *                   customer_name: { type: string }
- *                   customer_phone: { type: string }
- *                   delivery_address: { type: string }
+ *                   customer_name: { type: string, minLength: 2, maxLength: 255 }
+ *                   customer_phone: { type: string, pattern: '^\\+?[\\d\\s-()]+$' }
+ *                   delivery_address: { type: string, minLength: 10, maxLength: 500 }
+ *                   delivery_city: { type: string, minLength: 2, maxLength: 100 }
+ *                   delivery_state: { type: string, minLength: 2, maxLength: 100 }
+ *                   delivery_zip: { type: string, maxLength: 20 }
  *                   delivery_date: { type: string, format: date }
- *                   delivery_notes: { type: string }
+ *                   delivery_time_slot: { type: string, maxLength: 100 }
+ *                   delivery_notes: { type: string, maxLength: 500 }
  *                   total_amount_usd: { type: number, minimum: 0 }
- *                   total_amount_ves: { type: number }
+ *                   total_amount_ves: { type: number, minimum: 0 }
+ *                   currency_rate: { type: number, minimum: 0 }
+ *                   status: { type: string, enum: [pending, verified, preparing, shipped, delivered, cancelled], default: pending }
+ *                   notes: { type: string, maxLength: 1000 }
  *               items:
  *                 type: array
  *                 minItems: 1
  *                 items:
  *                   type: object
- *                   required: [product_id, product_name, quantity, unit_price_usd]
+ *                   required: [product_id, product_name, unit_price_usd, quantity]
  *                   properties:
  *                     product_id: { type: integer }
  *                     product_name: { type: string }
- *                     quantity: { type: integer, minimum: 1 }
+ *                     product_summary: { type: string }
  *                     unit_price_usd: { type: number }
  *                     unit_price_ves: { type: number }
+ *                     quantity: { type: integer, minimum: 1 }
+ *                     subtotal_usd: { type: number }
+ *                     subtotal_ves: { type: number }
  *     responses:
  *       201:
  *         description: Order created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/Order' }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       400:
@@ -820,13 +850,7 @@
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required: [status]
- *             properties:
- *               status:
- *                 type: string
- *                 enum: [pending, verified, preparing, shipped, delivered, cancelled]
- *               notes: { type: string }
+ *             $ref: '#/components/schemas/OrderStatusUpdate'
  *     responses:
  *       200:
  *         description: Order status updated successfully
@@ -1110,24 +1134,31 @@
 /**
  * @swagger
  * /api/payments/{id}/confirm:
- *   patch:
+ *   post:
  *     tags: [Payments]
  *     summary: Confirm payment
- *     description: Admin only - Marks payment as completed
+ *     description: Authenticated - Confirms payment for an order
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdParam'
  *     requestBody:
+ *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               adminNotes: { type: string }
+ *             $ref: '#/components/schemas/PaymentConfirm'
  *     responses:
  *       200:
  *         description: Payment confirmed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/Payment' }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:

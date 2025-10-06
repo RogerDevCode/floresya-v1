@@ -26,7 +26,7 @@ const IMAGE_SIZES = {
  * @param {string} mimeType - Original mime type
  * @returns {Promise<Object>} Object with all sizes as buffers
  */
-export async function generateImageSizes(imageBuffer, mimeType = 'image/jpeg') {
+export async function generateImageSizes(imageBuffer, _mimeType = 'image/jpeg') {
   try {
     const results = {}
 
@@ -165,7 +165,7 @@ export async function processImage(buffer, options = {}) {
  * @param {string} originalFormat - Original image format
  * @returns {string} Optimal format (webp)
  */
-export function getOptimalFormat(originalFormat) {
+export function getOptimalFormat(_originalFormat) {
   // Always use WebP for best compression and quality
   return 'webp'
 }

@@ -3,9 +3,17 @@
  * Key-value store operations
  * Uses indexed key column (unique)
  * NO soft-delete (settings are permanent configuration)
+ * ENTERPRISE FAIL-FAST: Uses custom error classes with metadata
  */
 
 import { supabase, DB_SCHEMA } from './supabaseClient.js'
+import {
+  ValidationError,
+  NotFoundError,
+  DatabaseError,
+  DatabaseConstraintError,
+  BadRequestError
+} from '../errors/AppError.js'
 
 const TABLE = DB_SCHEMA.settings.table
 
@@ -13,21 +21,27 @@ const TABLE = DB_SCHEMA.settings.table
  * Validate setting data
  */
 function validateSettingData(data, isUpdate = false) {
+  const errors = {}
+
   if (!isUpdate) {
     if (!data.key || typeof data.key !== 'string') {
-      throw new Error('Invalid key: must be a non-empty string')
+      errors.key = 'Key is required and must be a non-empty string'
     }
   }
 
   if (data.key !== undefined && (typeof data.key !== 'string' || data.key.trim() === '')) {
-    throw new Error('Invalid key: must be a non-empty string')
+    errors.key = 'Key must be a non-empty string'
   }
 
   if (data.type !== undefined) {
     const validTypes = ['string', 'number', 'boolean', 'json']
     if (!validTypes.includes(data.type)) {
-      throw new Error(`Invalid type: must be one of ${validTypes.join(', ')}`)
+      errors.type = `Type must be one of ${validTypes.join(', ')}`
     }
+  }
+
+  if (Object.keys(errors).length > 0) {
+    throw new ValidationError('Setting validation failed', errors)
   }
 }
 
@@ -47,10 +61,10 @@ export async function getAllSettings(publicOnly = false) {
     const { data, error } = await query
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('SELECT', TABLE, error)
     }
     if (!data) {
-      throw new Error('No settings found')
+      throw new NotFoundError('Settings')
     }
 
     return data
@@ -78,22 +92,28 @@ export async function getPublicSettings() {
 export async function getSettingByKey(key) {
   try {
     if (!key || typeof key !== 'string') {
-      throw new Error('Invalid key: must be a string')
+      throw new BadRequestError('Invalid key: must be a string', { key })
     }
 
     const { data, error } = await supabase.from(TABLE).select('*').eq('key', key).single()
 
     if (error) {
       if (error.code === 'PGRST116') {
-        throw new Error(`Setting with key "${key}" not found`)
+        throw new NotFoundError('Setting', key, { key })
       }
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('SELECT', TABLE, error, { key })
+    }
+    if (!data) {
+      throw new NotFoundError('Setting', key, { key })
     }
 
     return data
   } catch (error) {
+    if (error.name && error.name.includes('Error')) {
+      throw error
+    }
     console.error(`getSettingByKey(${key}) failed:`, error)
-    throw error
+    throw new DatabaseError('SELECT', TABLE, error, { key })
   }
 }
 
@@ -140,19 +160,27 @@ export async function createSetting(settingData) {
 
     if (error) {
       if (error.code === '23505') {
-        throw new Error(`Setting with key "${settingData.key}" already exists`)
+        throw new DatabaseConstraintError('unique_key', TABLE, {
+          key: settingData.key,
+          message: `Setting with key "${settingData.key}" already exists`
+        })
       }
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('INSERT', TABLE, error, { settingData: newSetting })
     }
 
     if (!data) {
-      throw new Error('Failed to create setting')
+      throw new DatabaseError('INSERT', TABLE, new Error('No data returned after insert'), {
+        settingData: newSetting
+      })
     }
 
     return data
   } catch (error) {
+    if (error.name && error.name.includes('Error')) {
+      throw error
+    }
     console.error('createSetting failed:', error)
-    throw error
+    throw new DatabaseError('INSERT', TABLE, error, { settingData })
   }
 }
 
@@ -162,11 +190,11 @@ export async function createSetting(settingData) {
 export async function updateSetting(key, updates) {
   try {
     if (!key || typeof key !== 'string') {
-      throw new Error('Invalid key: must be a string')
+      throw new BadRequestError('Invalid key: must be a string', { key })
     }
 
     if (!updates || Object.keys(updates).length === 0) {
-      throw new Error('No updates provided')
+      throw new BadRequestError('No updates provided', { key })
     }
 
     validateSettingData(updates, true)
@@ -181,7 +209,7 @@ export async function updateSetting(key, updates) {
     }
 
     if (Object.keys(sanitized).length === 0) {
-      throw new Error('No valid fields to update')
+      throw new BadRequestError('No valid fields to update', { key })
     }
 
     const { data, error } = await supabase
@@ -192,10 +220,10 @@ export async function updateSetting(key, updates) {
       .single()
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('UPDATE', TABLE, error, { key })
     }
     if (!data) {
-      throw new Error(`Setting with key "${key}" not found`)
+      throw new NotFoundError('Setting', key, { key })
     }
 
     return data
@@ -223,16 +251,16 @@ export async function setSettingValue(key, value) {
 export async function deleteSetting(key) {
   try {
     if (!key || typeof key !== 'string') {
-      throw new Error('Invalid key: must be a string')
+      throw new BadRequestError('Invalid key: must be a string', { key })
     }
 
     const { data, error } = await supabase.from(TABLE).delete().eq('key', key).select().single()
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('DELETE', TABLE, error, { key })
     }
     if (!data) {
-      throw new Error(`Setting with key "${key}" not found`)
+      throw new NotFoundError('Setting', key, { key })
     }
 
     return data
@@ -248,16 +276,16 @@ export async function deleteSetting(key) {
 export async function getSettingsByKeys(keys) {
   try {
     if (!Array.isArray(keys) || keys.length === 0) {
-      throw new Error('Invalid keys: must be a non-empty array')
+      throw new BadRequestError('Invalid keys: must be a non-empty array', { keys })
     }
 
     const { data, error } = await supabase.from(TABLE).select('*').in('key', keys)
 
     if (error) {
-      throw new Error(`Database error: ${error.message}`)
+      throw new DatabaseError('SELECT', TABLE, error, { keys })
     }
     if (!data) {
-      throw new Error('No settings found')
+      throw new NotFoundError('Settings', keys, { keys })
     }
 
     return data

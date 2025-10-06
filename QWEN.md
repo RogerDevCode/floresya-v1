@@ -1,182 +1,117 @@
-# FloresYa - MVC Backend Architecture
+# FloresYa - MVC E-Commerce Architecture
 
-## Objetivo
+## Stack
 
-Desarrollar una plataforma de e-commerce backend con arquitectura MVC profesional para entrega de flores, siguiendo principios SOLID y Spring Boot-inspired patterns.
+Express 5 + Node.js + Supabase (PostgreSQL) + Tailwind v4 + ES6 Modules
 
-**Características principales:**
+## Core Principles
 
-- Arquitectura MVC (Model-View-Controller)
-- Capa de servicios estricta (Service Layer)
-- Express 5 + Node.js
-- Supabase (PostgreSQL)
-- OpenAPI 3.1 (Swagger) para contratos de API
-- Soft-delete pattern (active/is_active flags)
-- Fail-fast philosophy
-- Code formatting automático (Prettier + Husky)
-
----
-
-## Principios Fundamentales
-
-1. **KISS First**: Prefiere código simple y directo sobre abstracciones complejas
-2. **MVC Strict**: Controllers (HTTP) → Services (Business Logic) → Database
-3. **Service Layer Exclusivo**: Solo los servicios pueden acceder a Supabase
-4. **SOLID Principles**: Single Responsibility, Dependency Inversion
-5. **Fail Fast**: Si algo falla, lanza error y termina. Nada de valores por defecto silenciosos
-6. **OpenAPI Contract**: API contract explícito para frontend
-7. **Soft-Delete**: Usar flags `active`/`is_active` en lugar de eliminación física
+1. **KISS First**: Simple > Complex
+2. **MVC Strict**: Controllers → Services → Database
+3. **Service Layer Exclusivo**: Solo servicios acceden a Supabase
+4. **Fail Fast**: Lanza errores específicos, nunca valores por defecto silenciosos
+5. **Soft-Delete**: Flags `active`/`is_active`, nunca eliminación física
+6. **OpenAPI Contract**: Documentación explícita para frontend
+7. **SOLID**: Single Responsibility, Dependency Inversion
 
 ---
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 floresya-v1/
-├── api/                              # Backend MVC Architecture
-│   ├── index.js                      # Express app configuration & middleware setup
-│   ├── server.js                     # Server entry point (PORT 3000)
-│   │
-│   ├── config/                       # Configuration files
-│   │   └── swagger.js                # OpenAPI 3.1 specification (swagger-jsdoc)
-│   │
-│   ├── controllers/                  # HTTP Controllers (HTTP Layer)
-│   │   ├── occasionController.js     # Occasions CRUD endpoints
-│   │   ├── orderController.js        # Orders CRUD + status management
-│   │   ├── paymentController.js      # Payments CRUD
-│   │   ├── productController.js      # Products CRUD + carousel
-│   │   ├── settingsController.js     # Settings CRUD (key-value store)
-│   │   └── userController.js         # Users CRUD + auth
-│   │
-│   ├── services/                     # Business Logic (ONLY layer with DB access)
-│   │   ├── supabaseClient.js         # Supabase client + DB_SCHEMA + DB_FUNCTIONS (SSOT)
-│   │   ├── authService.js            # Authentication logic (simulated JWT)
-│   │   ├── occasionService.js        # Occasions business logic
-│   │   ├── orderService.js           # Orders business logic
-│   │   ├── orderStatusService.js     # Order status transitions
-│   │   ├── paymentService.js         # Payments business logic
-│   │   ├── productService.js         # Products business logic
-│   │   ├── productImageService.js    # Product images relationship
-│   │   ├── settingsService.js        # Settings business logic
-│   │   └── userService.js            # Users business logic
-│   │
-│   ├── routes/                       # Express route definitions
-│   │   ├── occasionRoutes.js         # /api/occasions
-│   │   ├── orderRoutes.js            # /api/orders
-│   │   ├── paymentRoutes.js          # /api/payments
-│   │   ├── productRoutes.js          # /api/products
-│   │   ├── settingsRoutes.js         # /api/settings
-│   │   └── userRoutes.js             # /api/users
-│   │
-│   ├── middleware/                   # Express middleware
-│   │   ├── auth.js                   # Authentication & authorization (simulated JWT)
-│   │   ├── errorHandler.js           # Global error handler
-│   │   ├── logger.js                 # Winston logger (info, warn, error)
-│   │   ├── security.js               # Helmet, CORS, Rate Limiting, XSS, Sanitization
-│   │   └── validate.js               # Request validation helpers
-│   │
-│   ├── errors/                       # Custom error classes
-│   │   └── AppError.js               # BadRequestError, NotFoundError, UnauthorizedError, etc.
-│   │
-│   └── docs/                         # API Documentation
-│       └── openapi-annotations.js    # 60+ Swagger JSDoc annotations for all endpoints
+├── api/                              # Backend MVC
+│   ├── app.js                        # Express app config
+│   ├── server.js                     # Entry point (PORT 3000)
+│   ├── config/swagger.js             # OpenAPI 3.1 spec
+│   ├── controllers/                  # HTTP Layer
+│   ├── services/                     # Business Logic - ONLY DB ACCESS
+│   │   ├── supabaseClient.js         # SSOT: DB_SCHEMA + DB_FUNCTIONS
+│   │   └── ...Service.js
+│   ├── routes/                       # Route definitions
+│   ├── middleware/                   # Auth, validation, security, logging
+│   │   ├── schemas.js                # Validation schemas (SSOT)
+│   │   └── validate.js               # Validators
+│   ├── utils/normalize.js            # Text normalization (accent-insensitive)
+│   ├── errors/AppError.js            # Custom error classes
+│   └── docs/openapi-annotations.js   # Endpoint annotations
 │
-├── public/                           # Static files served by express.static()
-│   ├── index.html                    # Landing page
-│   ├── css/
-│   │   └── styles.css                # Frontend styles
-│   ├── images/                       # Static images
-│   │   ├── favicon.ico
-│   │   ├── hero-flowers.webp
-│   │   ├── logoFloresYa.jpeg
-│   │   └── placeholder-flower.svg
-│   └── products/                     # Product images (10+ sample images)
-│       └── *.jpg
+├── public/                           # Frontend (Static Files)
+│   ├── index.html + index.js         # Landing page
+│   ├── pages/                        # HTML + paired JS modules
+│   ├── js/
+│   │   ├── shared/                   # SSOT (api.js, validators.js, dom.js)
+│   │   ├── components/               # Reusable UI
+│   │   └── lucide-icons.js           # CSP-compatible icons
+│   └── css/
+│       ├── input.css                 # Tailwind source (@import 'tailwindcss')
+│       ├── tailwind.css              # Compiled (DO NOT EDIT)
+│       └── styles.css                # Custom CSS
 │
-├── styles/                           # Legacy CSS (kept for compatibility)
-│   └── main.css
-│
-├── database/                         # Database scripts (optional)
-│
-├── .env.local                        # Local environment variables (not committed)
-├── .prettierrc                       # Prettier configuration
-├── .husky/                           # Git hooks (pre-commit formatting)
+├── .env.local                        # Environment variables
+├── vercel.json                       # Deployment config
 ├── eslint.config.js                  # ESLint 9 flat config
-├── package.json                      # Dependencies & scripts
-├── vercel.json                       # Vercel deployment config (dual-mode)
-├── server.js                         # Legacy server entry (not used)
-├── QWEN.md                         # This file (architecture documentation)
-└── test-*.js                         # Test scripts (CRUD, API, DB)
+└── package.json                      # Scripts: dev, build:css, format, test
 ```
 
-### Descripción de Directorios
+## MVC Data Flow
 
-#### `api/` - Backend MVC
+```
+Frontend (fetch)
+  ↓ HTTP Request
+Router (routes/)
+  ↓ Middleware (validate, auth)
+Controller (controllers/)
+  ↓ Extract params, call service
+Service (services/)
+  ↓ Business logic, Supabase query
+Database (PostgreSQL)
+  ↓ Return data
+Service → Controller → JSON Response
+```
 
-**Purpose:** Toda la lógica del backend usando arquitectura MVC.
-
-**Subdirectorios clave:**
-
-- `controllers/`: Manejan HTTP requests/responses, validan inputs, llaman servicios
-- `services/`: Contienen toda la lógica de negocio, **única capa con acceso a Supabase**
-- `routes/`: Definen endpoints REST y aplican middleware
-- `middleware/`: Autenticación, logging, seguridad, validación
-- `errors/`: Custom error classes (extends Error)
-- `docs/`: OpenAPI 3.1 annotations (JSDoc)
-- `config/`: Configuraciones (Swagger, DB)
-
-#### `public/` - Frontend Estático
-
-**Purpose:** Archivos servidos por `express.static('public')`.
-
-**Contenido:**
-
-- `index.html`: Landing page principal
-- `css/`: Estilos CSS
-- `images/`: Imágenes estáticas (logo, favicon, hero)
-- `products/`: Imágenes de productos (10 samples)
-
-**URL Mapping:**
-
-- `http://localhost:3000/` → `public/index.html`
-- `http://localhost:3000/images/logo.jpeg` → `public/images/logoFloresYa.jpeg`
-- `http://localhost:3000/css/styles.css` → `public/css/styles.css`
-
-#### `database/` - Scripts de BD
-
-**Purpose:** Scripts SQL, dumps, migraciones (opcional).
-
-#### Root Files
-
-- `.env.local`: Variables de entorno (SUPABASE_URL, SUPABASE_KEY)
-- `vercel.json`: Configuración para Vercel (dual-mode: local Node + serverless)
-- `eslint.config.js`: ESLint 9 flat config
-- `.prettierrc`: Prettier code formatting
-- `package.json`: Dependencies, scripts (dev, format, start)
+**CRITICAL**: Only `api/services/` can import `supabaseClient.js`
 
 ---
 
-## Flujo de Datos (MVC)
+## Accent-Insensitive Search
 
-```
-Frontend (HTML + fetch)
-  ↓ HTTP Request
-Express Router (routes/)
-  ↓ Route to controller
-Controller (controllers/)
-  ↓ Call service method
-Service (services/)
-  ↓ Supabase query
-Database (PostgreSQL)
-  ↓ Return data
-Service → Controller → Response (JSON)
+All text search uses **indexed normalized columns** for performance.
+
+**Database**: PostgreSQL GENERATED columns with B-tree indexes
+
+- `products`: `name_normalized`, `description_normalized`
+- `orders`: `customer_name_normalized`, `customer_email_normalized`
+- `users`: `full_name_normalized`, `email_normalized`
+
+**Backend**:
+
+```javascript
+import { buildSearchCondition } from '../utils/normalize.js'
+
+const SEARCH_COLUMNS = DB_SCHEMA.products.search
+const searchCondition = buildSearchCondition(SEARCH_COLUMNS, filters.search)
+if (searchCondition) query = query.or(searchCondition)
 ```
 
-**Regla crítica:** Solo los archivos en `api/services/` pueden importar `supabaseClient.js`
+**Frontend**:
+
+```javascript
+import { normalizeSearch } from './shared/api.js'
+const searchTerm = normalizeSearch(inputValue) // "jose" === "josé"
+```
 
 ---
 
 ## Reglas Obligatorias
+
+"All generated JavaScript code must fully comply with eslint rules."
+
+"Every try-catch block must have a catch with an error parameter (e.g., 'catch(error)')."
+
+"Every catch block must contain a 'console.log(error)' (or optionally 'console.error(error)') displaying the original caught error. No catch block can be empty or fail to show the caught error."
+
+"It is strictly forbidden to generate code with a catch block without an error parameter, or a catch block that does not log the received error variable."
 
 ### 1. Arquitectura MVC
 
@@ -192,8 +127,11 @@ Service → Controller → Response (JSON)
 
 - Contienen toda la lógica de negocio
 - **Única capa con acceso a Supabase**
-- Lanzan errores en caso de fallo (fail-fast)
-- Retornan datos o lanzan excepciones
+- Implementan parámetro `includeInactive` para soft-delete
+- Fail-fast: lanzan errores específicos, nunca retornan valores por defecto
+- Siempre usan try-catch
+- Usan clases de error personalizadas (`BadRequestError`, `NotFoundError`, `DatabaseError`, etc.)
+- Incluyen metadata en errores como `code`, `userMessage`, `statusCode`, `context`, `timestamp`
 
 **Routes**
 
@@ -254,40 +192,79 @@ export const getAllProducts = asyncHandler(async (req, res) => {
 })
 ```
 
-### 3. Fail-Fast en Servicios
+### 3. Enterprise Error Handling
 
-Toda función de servicio debe usar try-catch y lanzar errores:
+**Custom Error Classes** (`api/errors/AppError.js`):
+
+- **HTTP 4xx**: `BadRequestError`, `UnauthorizedError`, `ForbiddenError`, `NotFoundError`, `ConflictError`, `ValidationError`
+- **HTTP 5xx**: `InternalServerError`, `ServiceUnavailableError`
+- **Database**: `DatabaseError`, `DatabaseConnectionError`, `DatabaseConstraintError`
+- **Business Logic**: `InsufficientStockError`, `PaymentFailedError`, `OrderNotProcessableError`, `InvalidStateTransitionError`
+- **External**: `ExternalServiceError`, `RateLimitExceededError`
+
+**Error Metadata**:
 
 ```javascript
+{
+  name: 'DatabaseError',
+  code: 'DATABASE_ERROR',              // UPPER_SNAKE_CASE
+  message: 'Technical message',        // For logs
+  userMessage: 'User-friendly msg',    // Safe for frontend
+  statusCode: 500,
+  severity: 'critical',                // low | medium | high | critical
+  context: { operation: 'SELECT', table: 'products', productId: 123 },
+  timestamp: '2025-10-02T...',
+  isOperational: false                 // true = expected, false = bug
+}
+```
+
+**Service Pattern**:
+
+```javascript
+import { BadRequestError, NotFoundError, DatabaseError } from '../errors/AppError.js'
+
 export async function getProductById(id, includeInactive = false) {
   try {
     if (!id || typeof id !== 'number') {
-      throw new Error('Invalid product ID: must be a number')
+      throw new BadRequestError('Invalid product ID', { productId: id })
     }
 
     let query = supabase.from(TABLE).select('*').eq('id', id)
-
-    if (!includeInactive) {
-      query = query.eq('active', true)
-    }
+    if (!includeInactive) query = query.eq('active', true)
 
     const { data, error } = await query.single()
 
-    if (error) throw new Error(`Database error: ${error.message}`)
-    if (!data) throw new Error(`Product ${id} not found`)
+    if (error) {
+      if (error.code === 'PGRST116') throw new NotFoundError('Product', id)
+      throw new DatabaseError('SELECT', TABLE, error, { productId: id })
+    }
+    if (!data) throw new NotFoundError('Product', id)
 
     return data
   } catch (error) {
+    if (error.name?.includes('Error')) throw error
     console.error(`getProductById(${id}) failed:`, error)
-    throw error // Fail-fast: always throw
+    throw new DatabaseError('SELECT', TABLE, error, { productId: id })
   }
 }
 ```
 
-**Ejemplo incorrecto:**
+**ANTI-PATTERNS** (Prohibido):
 
 ```javascript
-const products = (await getProducts()) || [] // ❌ NUNCA usar fallbacks silenciosos
+// ❌ NUNCA
+throw new Error('Something went wrong')
+const products = (await getProducts()) || []
+try {
+  await op()
+} catch (e) {
+  console.log(e)
+  return []
+}
+
+// ✅ CORRECTO
+throw new DatabaseError('INSERT', 'products', error, { sku })
+throw new InsufficientStockError(productId, requested, available)
 ```
 
 ### 4. Respuestas API Estandarizadas
@@ -342,26 +319,28 @@ Todos los endpoints están documentados en `api/docs/openapi-annotations.js` usa
 
 Acceder a documentación interactiva: `http://localhost:3000/api-docs/`
 
-### 6. Validación Manual Simple
+### 6. Manual Validation (No Zod)
 
-Sin Zod. Usa validaciones directas en JS:
+**Schemas** in `api/middleware/schemas.js`:
 
 ```javascript
-function validateProductData(data, isUpdate = false) {
-  if (!isUpdate) {
-    if (!data.name || typeof data.name !== 'string') {
-      throw new Error('Invalid name: must be a non-empty string')
-    }
-    if (!data.price_usd || typeof data.price_usd !== 'number' || data.price_usd <= 0) {
-      throw new Error('Invalid price_usd: must be a positive number')
-    }
-  }
-
-  if (data.price_usd !== undefined && (typeof data.price_usd !== 'number' || data.price_usd <= 0)) {
-    throw new Error('Invalid price_usd: must be a positive number')
-  }
+export const productCreateSchema = {
+  name: { type: 'string', required: true, minLength: 2, maxLength: 255 },
+  price_usd: { type: 'number', required: true, min: 0 },
+  featured: { type: 'boolean', required: false }
 }
 ```
+
+**Usage**:
+
+```javascript
+import { validate, validateId } from '../middleware/validate.js'
+import { productCreateSchema } from '../middleware/schemas.js'
+
+router.post('/', authenticate, authorize('admin'), validate(productCreateSchema), controller.create)
+```
+
+**Features**: Type checking, string length/pattern, number min/max, enum, fail-fast
 
 ### 7. Code Formatting Automático
 
@@ -376,16 +355,73 @@ npm run format:check  # Check formatting
 
 ---
 
+## Frontend Rules (ES6 Modules)
+
+### HTML/JS Strict Rules
+
+1. **NO inline JS/CSS**
+   - ❌ `<script>...</script>` inline, `style="..."`, `onclick="..."`
+   - ✅ `<script type="module" src="./index.js"></script>`
+   - ✅ `<link rel="stylesheet" href="./css/styles.css">`
+
+2. **ES6 Module Architecture**
+   - Each `.html` has paired `.js`
+   - Shared code in `js/shared/` (SSOT)
+   - Reusable components in `js/components/`
+
+3. **SSOT Frontend**
+   - `js/shared/api.js`: API client (fetchJSON, HTTP methods)
+   - `js/shared/validators.js`: Reusable validations
+   - `js/shared/dom.js`: DOM helpers
+
+4. **CSP Strict**
+   - `script-src: 'self'` only
+   - No `'unsafe-inline'`, no `'unsafe-eval'`
+
+5. **Tailwind v4 + Custom CSS**
+   - Source: `public/css/input.css` (`@import 'tailwindcss'`)
+   - Output: `public/css/tailwind.css` (DO NOT EDIT)
+   - Build: `npm run build:css`
+   - **NEVER use `@apply` in v4**
+   - Custom CSS: `public/css/styles.css`
+
+### Example
+
+```javascript
+// pages/productos.js
+import { api } from '../js/shared/api.js'
+import { showError, showLoading } from '../js/shared/dom.js'
+
+async function loadProducts() {
+  try {
+    showLoading('container')
+    const products = await api.getProducts()
+    renderProducts(products)
+  } catch (error) {
+    showError(error.message, 'container')
+    throw error // Fail-fast
+  }
+}
+```
+
+---
+
 ## Prohibido
 
-- ❌ Usar TypeScript, tRPC, Zod, o herramientas de compilación complejas
-- ❌ Importar `supabaseClient.js` fuera de `api/services/`
-- ❌ Usar `||`, `??`, o valores por defecto en operaciones críticas
-- ❌ Manejar errores en silencio (siempre log y throw)
-- ❌ Duplicar lógica (extrae a funciones o servicios)
-- ❌ Olvidar try-catch en funciones de servicios
-- ❌ Acceder a la base de datos desde controllers
-- ❌ Usar `module.exports` (usar ES6 `export` en su lugar)
+**Backend**:
+
+- ❌ TypeScript, tRPC, Zod, complex build tools
+- ❌ Import `supabaseClient.js` outside `api/services/`
+- ❌ Use `||`, `??` in critical operations
+- ❌ Silent error handling
+- ❌ DB access from controllers
+
+**Frontend**:
+
+- ❌ Inline JS/CSS (violates CSP)
+- ❌ Scripts without `type="module"`
+- ❌ Duplicate logic (use SSOT)
+- ❌ External CDNs without CSP check
 
 ---
 
@@ -527,166 +563,95 @@ export const DB_FUNCTIONS = {
 
 ---
 
-## Despliegue
+## Deployment
 
-### Desarrollo Local
+### Local Dev
 
 ```bash
-npm run dev  # Inicia servidor en http://localhost:3000
+npm run dev  # http://localhost:3000
 ```
 
-**Endpoints disponibles:**
+### Production (Vercel)
 
-- `http://localhost:3000/` → Landing page (index.html)
-- `http://localhost:3000/health` → Health check
-- `http://localhost:3000/api-docs/` → Swagger UI
-- `http://localhost:3000/api/*` → REST API
+**Config**: `vercel.json` (dual-mode: serverless API + static files)
 
-### Producción (Vercel)
-
-El proyecto está configurado para dual-mode:
-
-- **Local**: Node.js server (`npm run dev`)
-- **Vercel**: Serverless functions (automático)
-
-**vercel.json:**
-
-```json
-{
-  "version": 2,
-  "builds": [
-    { "src": "api/server.js", "use": "@vercel/node" },
-    { "src": "public/**", "use": "@vercel/static" }
-  ],
-  "routes": [
-    { "src": "/health", "dest": "api/server.js" },
-    { "src": "/api-docs(.*)", "dest": "api/server.js" },
-    { "src": "/api/(.*)", "dest": "api/server.js" },
-    { "src": "/(.*\\.(css|js|png|jpg|jpeg|svg|webp|ico|json))", "dest": "/public/$1" },
-    { "src": "/(.*)", "dest": "/public/$1" }
-  ]
-}
-```
-
-**Variables de entorno en Vercel:**
-
-- `SUPABASE_URL`
-- `SUPABASE_KEY`
-- `NODE_ENV=production`
+**Env Vars**: `SUPABASE_URL`, `SUPABASE_KEY`, `NODE_ENV=production`
 
 ---
 
-## Dependencias
+## Testing (Vitest + Happy DOM)
 
-```json
-{
-  "dependencies": {
-    "@supabase/supabase-js": "^2.47.10",
-    "express": "^5.0.1",
-    "express-rate-limit": "^7.4.0",
-    "helmet": "^8.0.0",
-    "cors": "^2.8.5",
-    "winston": "^3.17.0",
-    "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1",
-    "dotenv": "^16.4.5"
-  },
-  "devDependencies": {
-    "prettier": "^3.3.3",
-    "husky": "^9.1.7",
-    "lint-staged": "^15.2.11",
-    "eslint": "^9.18.0"
-  }
-}
+```bash
+npm test              # Run all tests
+npm run test:watch    # Watch mode
+npm run test:ui       # Interactive UI
+npm run test:coverage # Coverage report
 ```
 
-Sin frameworks complejos, sin bundlers, sin TypeScript.
+**Example**:
+
+```javascript
+import { describe, it, expect, vi } from 'vitest'
+import request from 'supertest'
+
+vi.mock('../../services/productService.js', () => ({
+  getProductById: vi.fn(id => {
+    if (id === 67) return Promise.resolve({ id: 67, name: 'Test' })
+    throw new NotFoundError('Product', id)
+  })
+}))
+
+describe('Product Controller', () => {
+  it('should return product for valid ID', async () => {
+    const res = await request(app).get('/api/products/67').expect(200)
+    expect(res.body.success).toBe(true)
+  })
+})
+```
 
 ---
 
-## Filosofía Final
+## Philosophy
 
-**"Go all out!"**
-**"Don't hold back, just do it."**
-**"Go hard or go home."**
-**"No warnings, no tears."**
+**"Go all out! Don't hold back, just do it."**
 
-- **KISS > Complejidad**: Una solución simple que funciona es mejor que una compleja que podría fallar
-- **Fail fast**: Mejor que se rompa temprano que corromper datos en silencio
-- **Service Layer es ley**: Nunca lo saltes. Es tu única fuente de lógica de negocio
-- **MVC estricto**: Controllers (HTTP) → Services (Logic) → Database
-- **OpenAPI first**: El contrato de API es la verdad
-- **Soft-delete**: Nunca elimines datos, solo desactívalos
+- **KISS > Complexity**: Simple solution > complex potential failure
+- **Fail Fast**: Break early > silent data corruption
+- **Service Layer is Law**: Only source of business logic
+- **MVC Strict**: Controllers → Services → Database
+- **OpenAPI First**: API contract is truth
+- **Soft-Delete**: Never delete data, deactivate
+
+### Maximum Proactivity
+
+- **Anticipate needs** without explicit instructions
+- Missing validation → **add it**
+- Duplicate code → **refactor**
+- Service Layer violation → **fix immediately**
+
+### Aggressive Auto-Fix
+
+- Linting errors → fix silently
+- Type inconsistencies → adjust
+- Missing try-catch → add
+- Fallback operators (`||`, `??`) → replace with fail-fast
+- Dead code → delete
+
+### Golden Rule
+
+**"If it's in QWEN.md, it's law. If it violates law, execute immediately."**
+
+### AFI (Awaiting Further Instruction)
+
+When user says "AFI":
+
+```
+✅ Entendido. Tarea actual completada.
+🎯 Esperando instrucciones para próximo paso.
+```
 
 ---
 
-## MODO YOLO - Instrucciones para QWEN Code
+## Business Rules
 
-### 1. EJECUTAR SIN PREGUNTAR
-
-- **NUNCA pidas confirmación** para hacer cambios en código
-- Si identificas un error, **corrígelo inmediatamente**
-- Si necesitas crear/modificar archivos para cumplir el objetivo, **hazlo directamente**
-- Las únicas excepciones son: eliminar archivos, operaciones destructivas en git (force push, hard reset), o cambios en configuración de producción
-
-### 2. PROACTIVIDAD MÁXIMA
-
-- **Anticipa necesidades** sin esperar instrucciones explícitas
-- Si detectas código inconsistente con las reglas de QWEN.md, **corrígelo automáticamente**
-- Si falta validación, **agrégala**
-- Si hay código duplicado, **refactorízalo**
-- Si un import viola la Service Layer, **elimínalo y reestructura**
-- **No preguntes "¿quieres que...?"** → simplemente hazlo y reporta qué hiciste
-
-### 3. AUTO-FIX AGRESIVO
-
-- **Linting errors**: corrígelos sin avisar
-- **Type inconsistencies**: ajústalos directamente
-- **Missing try-catch**: agrégalos automáticamente
-- **Fallback operators (||, ??)**: reemplázalos por fail-fast
-- **Console.logs innecesarios**: elimínalos
-- **Imports desordenados**: organízalos
-- **Código muerto**: elimínalo
-- **Service layer violations**: corrige inmediatamente
-
-### Formato de Respuesta YOLO
-
-Cuando hagas cambios automáticos, usa este formato ultra-conciso:
-
-```
-✓ Fixed: [descripción breve]
-✓ Refactored: [archivo:línea]
-✓ Added: [funcionalidad]
-⚠ Blocked: [razón] (solo si realmente no puedes continuar)
-```
-
-**Ejemplo:**
-
-```
-✓ Fixed: Service layer violation in productController.js:45
-✓ Added: includeInactive parameter to userService.getAllUsers()
-✓ Refactored: Removed || fallback from orderService.js:78
-✓ Cleaned: Removed 3 unused imports
-```
-
-### Prohibido en Modo YOLO
-
-- ❌ Frases como "¿Quieres que...?", "¿Debería...?", "¿Te parece bien...?"
-- ❌ Explicaciones largas antes de actuar
-- ❌ Esperar aprobación para fixes obvios
-- ❌ Crear documentación sin que se solicite
-- ❌ Añadir TODOs o comentarios "// Fix later"
-
-### Permitido en Modo YOLO
-
-- ✅ Modificar cualquier archivo .js/.css/.html
-- ✅ Crear archivos necesarios para cumplir el objetivo
-- ✅ Ejecutar npm install, linting, testing
-- ✅ Refactorizar código que viole QWEN.md
-- ✅ Eliminar código muerto o duplicado
-- ✅ Paralelizar operaciones independientes
-- ✅ Agregar `includeInactive` a servicios con soft-delete
-
-### Regla de Oro YOLO
-
-**"Si está en QWEN.md, es ley. Si viola la ley, se ejecuta inmediatamente. Sin preguntas, sin warnings."**
+**"Una venta cancelada no es una venta"** - Cancelled orders excluded from sales calculations

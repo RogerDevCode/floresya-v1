@@ -27,7 +27,7 @@ const logFormat = printf(({ level, message, timestamp, stack, ...meta }) => {
 
 // Create logger instance
 const logger = winston.createLogger({
-  level: process.env.LOG_LEVEL || 'info',
+  level: process.env.LOG_LEVEL || 'warn', // Changed from 'info' to 'warn' for less verbosity
   format: combine(errors({ stack: true }), timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), logFormat),
   transports: [
     // Console transport (always enabled)
@@ -65,6 +65,7 @@ if (process.env.NODE_ENV === 'production' && !IS_SERVERLESS) {
 
 /**
  * Express middleware for logging HTTP requests
+ * Only logs errors and critical requests for less verbosity
  */
 export function requestLogger(req, res, next) {
   const start = Date.now()
@@ -77,15 +78,17 @@ export function requestLogger(req, res, next) {
       url: req.originalUrl || req.url,
       status: res.statusCode,
       duration: `${duration}ms`,
-      ip: req.ip || req.connection.remoteAddress,
-      userAgent: req.get('user-agent')
+      ip: req.ip || req.connection.remoteAddress
     }
 
+    // Only log errors (4xx/5xx) and critical requests
     if (res.statusCode >= 400) {
       logger.warn('HTTP Request', logData)
-    } else {
-      logger.info('HTTP Request', logData)
+    } else if (res.statusCode >= 500) {
+      // Log server errors as error level
+      logger.error('HTTP Request', logData)
     }
+    // Successful requests (2xx/3xx) are not logged to reduce verbosity
   })
 
   next()

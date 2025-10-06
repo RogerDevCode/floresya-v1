@@ -2413,7 +2413,9 @@ INSERT INTO public.settings VALUES (77, 'social_facebook_handle', '@floresya', '
 INSERT INTO public.settings VALUES (78, 'social_instagram_url', 'https://instagram.com/floresya_ve', 'URL de Instagram', 'string', true, '2025-10-02 17:13:55.334223+00', '2025-10-02 17:13:55.334223+00');
 INSERT INTO public.settings VALUES (79, 'social_instagram_handle', '@floresya_ve', 'Handle de Instagram', 'string', true, '2025-10-02 17:13:55.460812+00', '2025-10-02 17:13:55.460812+00');
 INSERT INTO public.settings VALUES (80, 'social_tiktok_url', 'https://tiktok.com/@floresya', 'URL de TikTok', 'string', true, '2025-10-02 17:13:55.611523+00', '2025-10-02 17:13:55.611523+00');
-INSERT INTO public.settings VALUES (81, 'social_tiktok_handle', '@floresya', 'Handle de TikTok', 'string', true, '2025-10-02 17:13:55.732401+00', '2025-10-02 17:13:55.732401+00');
+INSERT INTO public.settings VALUES (82, 'hero_image', NULL, 'URL de la imagen hero de la página principal', 'string', true, '2025-10-05 12:00:00.000+00', '2025-10-05 12:00:00.000+00');
+INSERT INTO public.settings VALUES (83, 'site_logo', NULL, 'URL del logo del sitio', 'string', true, '2025-10-05 12:00:00.000+00', '2025-10-05 12:00:00.000+00');
+INSERT INTO public.settings VALUES (84, 'bcv_usd_rate', NULL, 'Tipo de cambio USD según BCV (Banco Central de Venezuela)', 'string', true, '2025-10-05 12:00:00.000+00', '2025-10-05 12:00:00.000+00');
 
 
 --
@@ -2516,7 +2518,7 @@ SELECT pg_catalog.setval('public.products_id_seq', 95, true);
 -- Name: settings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.settings_id_seq', 81, true);
+SELECT pg_catalog.setval('public.settings_id_seq', 84, true);
 
 
 --

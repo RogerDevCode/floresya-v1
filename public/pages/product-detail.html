@@ -38,7 +38,12 @@
           <!-- Actions (Desktop) -->
           <div class="nav-actions">
             <!-- Cart -->
-            <a href="#carrito" class="nav-icon" aria-label="Carrito de compras" id="cart-icon">
+            <a
+              href="/pages/cart.html"
+              class="nav-icon"
+              aria-label="Carrito de compras"
+              id="cart-icon"
+            >
               <i data-lucide="shopping-cart" class="icon"></i>
               <span class="cart-badge" id="cart-count" aria-label="0 productos">0</span>
             </a>
@@ -300,6 +305,9 @@
         </div>
       </div>
     </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
 
     <!-- Scripts al final (ES6 Modules) -->
     <script type="module" src="/pages/product-detail.js"></script>

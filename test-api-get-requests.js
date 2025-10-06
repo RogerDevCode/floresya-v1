@@ -43,7 +43,7 @@ async function testAPIEndpoint(endpoint, description) {
     try {
       jsonData = JSON.parse(response)
       isValidJson = true
-    } catch (_e) {
+    } catch {
       // Response might not be JSON (for HTML pages or errors)
     }
 

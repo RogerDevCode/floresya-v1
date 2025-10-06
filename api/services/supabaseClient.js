@@ -279,19 +279,27 @@ export const DB_SCHEMA = {
 }
 
 /**
- * Database stored functions
- * Note: Most stored functions are not yet created in Supabase
- * Services use standard queries instead of RPC calls
+ * Database stored functions (SSOT)
+ * All functions verified to exist in floresya.sql
+ * Services SHOULD use these via supabase.rpc() for atomic operations
  */
 export const DB_FUNCTIONS = {
-  // Future stored functions (not implemented yet)
-  // createOrderWithItems: 'create_order_with_items',
-  // createProductWithOccasions: 'create_product_with_occasions',
-  // createProductImagesAtomic: 'create_product_images_atomic',
-  // updateOrderStatusWithHistory: 'update_order_status_with_history',
-  // updateCarouselOrderAtomic: 'update_carousel_order_atomic',
-  // deleteProductImagesSafe: 'delete_product_images_safe',
-  // getProductOccasions: 'get_product_occasions',
-  // getProductsByOccasion: 'get_products_by_occasion',
-  // getProductsWithOccasions: 'get_products_with_occasions'
+  // Order operations (lines 122-268 in floresya.sql)
+  createOrderWithItems: 'create_order_with_items',
+  updateOrderStatusWithHistory: 'update_order_status_with_history',
+
+  // Product operations (lines 352-677 in floresya.sql)
+  createProductWithOccasions: 'create_product_with_occasions',
+  createProductImagesAtomic: 'create_product_images_atomic',
+  updateCarouselOrderAtomic: 'update_carousel_order_atomic',
+  deleteProductImagesSafe: 'delete_product_images_safe',
+
+  // Query functions (lines 468-568 in floresya.sql)
+  getProductOccasions: 'get_product_occasions',
+  getProductsByOccasion: 'get_products_by_occasion',
+  getProductsWithOccasions: 'get_products_with_occasions',
+  getExistingImageByHash: 'get_existing_image_by_hash',
+
+  // Utility (lines 575-584 in floresya.sql)
+  resetSequence: 'reset_sequence'
 }

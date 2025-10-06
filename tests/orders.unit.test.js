@@ -3,6 +3,8 @@
  * Testing core functions without external dependencies
  */
 
+import { describe, it, expect, vi } from 'vitest'
+
 // Mock DOM elements for testing
 class MockElement {
   constructor() {
@@ -11,44 +13,43 @@ class MockElement {
     this.value = ''
     this.disabled = false
     this.classList = {
-      add: jest.fn(),
-      remove: jest.fn(),
-      contains: jest.fn()
+      add: vi.fn(),
+      remove: vi.fn(),
+      contains: vi.fn()
     }
-    this.addEventListener = jest.fn()
+    this.addEventListener = vi.fn()
   }
 }
 
 // Mock global objects
 global.window = {
-  addEventListener: jest.fn(),
-  location: { reload: jest.fn() },
-  print: jest.fn(),
+  addEventListener: vi.fn(),
+  location: { reload: vi.fn() },
+  print: vi.fn(),
   URL: {
-    createObjectURL: jest.fn(() => 'mock-url')
+    createObjectURL: vi.fn(() => 'mock-url')
   }
 }
 
 global.document = {
-  getElementById: jest.fn(),
-  addEventListener: jest.fn(),
-  createElement: jest.fn(() => new MockElement()),
-  body: { appendChild: jest.fn(), removeChild: jest.fn() }
+  getElementById: vi.fn(),
+  addEventListener: vi.fn(),
+  createElement: vi.fn(() => new MockElement()),
+  body: { appendChild: vi.fn(), removeChild: vi.fn() }
 }
 
 // Mock fetch API
-global.fetch = jest.fn()
+global.fetch = vi.fn()
 
 // Mock console
 global.console = {
-  log: jest.fn(),
-  error: jest.fn(),
-  warn: jest.fn()
+  log: vi.fn(),
+  error: vi.fn(),
+  warn: vi.fn()
 }
 
 // Import the orders module for testing
 // Since it's a module with side effects, we'll extract functions for testing
-import { jest } from '@jest/globals'
 
 // We'll create a mock orders module to test individual functions
 const ORDER_STATUSES = {
@@ -100,19 +101,19 @@ describe('normalizeText function', () => {
       .trim()
   }
 
-  test('should normalize text by removing accents and converting to lowercase', () => {
+  it('should normalize text by removing accents and converting to lowercase', () => {
     expect(normalizeText('Áéíóú')).toBe('aeiou')
     expect(normalizeText('Ñoño')).toBe('nono')
     expect(normalizeText('Báñez')).toBe('banez')
   })
 
-  test('should handle empty strings', () => {
+  it('should handle empty strings', () => {
     expect(normalizeText('')).toBe('')
     expect(normalizeText(null)).toBe('')
     expect(normalizeText(undefined)).toBe('')
   })
 
-  test('should handle regular text', () => {
+  it('should handle regular text', () => {
     expect(normalizeText('Hello World')).toBe('hello world')
     expect(normalizeText('  Test  ')).toBe('test')
   })
@@ -122,7 +123,7 @@ describe('normalizeText function', () => {
  * Test date filtering functions
  */
 describe('Date filtering functionality', () => {
-  test('should filter orders by date range', () => {
+  it('should filter orders by date range', () => {
     const orders = [
       { id: 1, created_at: '2025-09-30T10:00:00Z' },
       { id: 2, created_at: '2025-09-25T10:00:00Z' },
@@ -143,7 +144,7 @@ describe('Date filtering functionality', () => {
     // The order from 2 months ago might not be in the last 30 days
   })
 
-  test('should filter orders by custom date range', () => {
+  it('should filter orders by custom date range', () => {
     const orders = [
       { id: 1, created_at: '2025-09-30T10:00:00Z' },
       { id: 2, created_at: '2025-09-25T10:00:00Z' },
@@ -169,7 +170,7 @@ describe('Date filtering functionality', () => {
  * Test search functionality
  */
 describe('Search functionality', () => {
-  test('should filter orders by customer name', () => {
+  it('should filter orders by customer name', () => {
     const orders = [
       { id: 1, customer_name: 'Juan Pérez', customer_email: 'juan@example.com' },
       { id: 2, customer_name: 'María González', customer_email: 'maria@example.com' },
@@ -206,7 +207,7 @@ describe('Search functionality', () => {
     expect(filtered[0].customer_name).toBe('María González')
   })
 
-  test('should filter orders by customer email', () => {
+  it('should filter orders by customer email', () => {
     const orders = [
       { id: 1, customer_name: 'Juan Pérez', customer_email: 'juan@example.com' },
       { id: 2, customer_name: 'María González', customer_email: 'maria.gonzalez@test.com' },
@@ -248,7 +249,7 @@ describe('Search functionality', () => {
  * Test status filtering
  */
 describe('Status filtering', () => {
-  test('should filter orders by status', () => {
+  it('should filter orders by status', () => {
     const orders = [
       { id: 1, status: 'pending', customer_name: 'Juan' },
       { id: 2, status: 'delivered', customer_name: 'Maria' },
@@ -266,14 +267,14 @@ describe('Status filtering', () => {
     expect(deliveredOrders[0].customer_name).toBe('Maria')
   })
 
-  test('should not filter when status is "all"', () => {
+  it('should not filter when status is "all"', () => {
     const orders = [
       { id: 1, status: 'pending', customer_name: 'Juan' },
       { id: 2, status: 'delivered', customer_name: 'Maria' },
       { id: 3, status: 'cancelled', customer_name: 'Carlos' }
     ]
 
-    const filtered = orders.filter(order => true) // "all" means no filter
+    const filtered = orders.filter(_order => true) // "all" means no filter
     expect(filtered.length).toBe(3)
   })
 })
@@ -282,7 +283,7 @@ describe('Status filtering', () => {
  * Test pagination
  */
 describe('Pagination functionality', () => {
-  test('should calculate correct page boundaries', () => {
+  it('should calculate correct page boundaries', () => {
     const orders = Array.from({ length: 100 }, (_, i) => ({ id: i + 1 }))
     const itemsPerPage = 20
     const page = 3
@@ -298,7 +299,7 @@ describe('Pagination functionality', () => {
     expect(pageOrders[19].id).toBe(60) // Last item of page 3
   })
 
-  test('should calculate total pages correctly', () => {
+  it('should calculate total pages correctly', () => {
     const orders = Array.from({ length: 53 }, (_, i) => ({ id: i + 1 }))
     const itemsPerPage = 20
 
@@ -306,7 +307,7 @@ describe('Pagination functionality', () => {
     expect(totalPages).toBe(3) // 53 / 20 = 2.65, rounded up = 3
   })
 
-  test('should handle edge cases in pagination', () => {
+  it('should handle edge cases in pagination', () => {
     // Empty orders list
     expect(Math.ceil(0 / 20)).toBe(0)
 
@@ -322,7 +323,7 @@ describe('Pagination functionality', () => {
  * Test order status constants
  */
 describe('Order status constants', () => {
-  test('should have correct status definitions', () => {
+  it('should have correct status definitions', () => {
     expect(ORDER_STATUSES.pending).toEqual({
       label: 'Pendiente',
       color: 'blue',
@@ -366,7 +367,7 @@ describe('Order status constants', () => {
     })
   })
 
-  test('should have all 6 status types', () => {
+  it('should have all 6 status types', () => {
     const statusKeys = Object.keys(ORDER_STATUSES)
     expect(statusKeys.length).toBe(6)
     expect(statusKeys).toContain('pending')
@@ -382,7 +383,7 @@ describe('Order status constants', () => {
  * Test utility functions
  */
 describe('Utility functions', () => {
-  test('should format currency correctly', () => {
+  it('should format currency correctly', () => {
     // This function is implicitly tested in the renderOrdersTable function
     const order = { total_usd: 123.456 }
     expect(order.total_usd.toFixed(2)).toBe('123.46')
@@ -394,7 +395,7 @@ describe('Utility functions', () => {
     expect(order3.total_usd.toFixed(2)).toBe('0.10')
   })
 
-  test('should format dates correctly', () => {
+  it('should format dates correctly', () => {
     const date = new Date('2025-09-30T10:30:00Z')
     const formatted = date.toLocaleDateString('es-ES', {
       day: '2-digit',
@@ -413,7 +414,7 @@ describe('Utility functions', () => {
  * Test CSV export functionality
  */
 describe('CSV export functionality', () => {
-  test('should generate correct CSV header', () => {
+  it('should generate correct CSV header', () => {
     const headers = [
       'ID',
       'Cliente',
@@ -438,7 +439,7 @@ describe('CSV export functionality', () => {
     expect(headers[14]).toBe('Notas Entrega')
   })
 
-  test('should format order data for CSV', () => {
+  it('should format order data for CSV', () => {
     const order = {
       id: 123,
       customer_name: 'John Doe',
@@ -480,5 +481,3 @@ describe('CSV export functionality', () => {
     expect(row).toContain('"John Doe"')
   })
 })
-
-console.log('✅ All unit tests for orders.js defined and ready')

@@ -31,12 +31,45 @@ const productImages = []
 // Carousel Manager instance
 let carouselManager = null
 
+// BCV rate (loaded from settings)
+let bcvRate = 0
+
+/**
+ * Ensure only one image is marked as primary
+ */
+function ensureSinglePrimaryImage() {
+  // Count how many images are marked as primary
+  const primaryImages = productImages.filter(img => img.isPrimary)
+
+  // If no primary images, set the first one as primary
+  if (primaryImages.length === 0 && productImages.length > 0) {
+    productImages[0].isPrimary = true
+  }
+  // If more than one primary image, keep only the first one
+  else if (primaryImages.length > 1) {
+    // Mark all as non-primary except the first
+    let firstPrimarySet = false
+    for (let i = 0; i < productImages.length; i++) {
+      if (productImages[i].isPrimary) {
+        if (!firstPrimarySet) {
+          firstPrimarySet = true // Keep first primary image
+        } else {
+          productImages[i].isPrimary = false // Remove primary flag from others
+        }
+      }
+    }
+  }
+}
+
 // Initialize page
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   console.log('✓ Create Product page loaded')
 
   // Initialize icons
   createIcons()
+
+  // Load BCV rate from settings
+  await loadBcvRate()
 
   // Initialize Carousel Manager
   carouselManager = new CarouselManager('carousel-manager-container', {
@@ -49,10 +82,48 @@ document.addEventListener('DOMContentLoaded', () => {
   // Render initial empty image grid
   renderImageGrid()
 
+  // Setup auto-calculation of price_ves when price_usd changes
+  const priceUsdInput = document.getElementById('product-price-usd')
+  priceUsdInput.addEventListener('input', calculatePriceVes)
+
   // Form submit handler
   const form = document.getElementById('create-product-form')
   form.addEventListener('submit', handleCreateProduct)
 })
+
+/**
+ * Load BCV rate from settings
+ */
+async function loadBcvRate() {
+  try {
+    const response = await fetch('/api/settings/bcv_usd_rate/value', {
+      headers: { Authorization: 'Bearer admin:1:admin' }
+    })
+
+    if (!response.ok) {
+      console.warn('BCV rate not found, using default 36.5')
+      bcvRate = 36.5
+      return
+    }
+
+    const result = await response.json()
+    bcvRate = parseFloat(result.data) || 36.5
+    console.log(`✓ BCV rate loaded: ${bcvRate}`)
+  } catch (error) {
+    console.error('Error loading BCV rate:', error)
+    bcvRate = 36.5
+  }
+}
+
+/**
+ * Calculate price_ves based on price_usd and BCV rate
+ */
+function calculatePriceVes() {
+  const priceUsd = parseFloat(document.getElementById('product-price-usd').value) || 0
+  const priceVes = priceUsd * bcvRate
+
+  document.getElementById('product-price-ves').value = priceVes > 0 ? priceVes.toFixed(2) : ''
+}
 
 /**
  * Render image grid (5 slots)
@@ -95,10 +166,9 @@ function createImageSlot(image, index) {
 
   // Handle image loading errors
   imgElement.onerror = () => {
-    // Replace with placeholder if image fails to load
+    console.error(`Failed to load product image at index ${index}:`, image.preview)
     imgElement.src = '../../images/placeholder-flower.svg'
-    imgElement.classList.add('bg-gray-100')
-    console.warn(`Failed to load image: ${image.preview}`)
+    imgElement.classList.add('bg-gray-100', 'p-4')
   }
 
   slot.appendChild(imgElement)
@@ -106,23 +176,34 @@ function createImageSlot(image, index) {
   // Add overlay and controls
   const overlay = document.createElement('div')
   overlay.className =
-    'absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center space-x-2'
+    'absolute inset-0 flex items-center justify-center space-x-2 transition-opacity'
+  overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.4)' // Set semi-transparent black only on hover
+  overlay.style.opacity = '0'
 
   const removeBtn = document.createElement('button')
   removeBtn.type = 'button'
   removeBtn.className =
-    'remove-image-btn opacity-0 group-hover:opacity-100 transition-opacity bg-red-500 hover:bg-red-600 text-white p-2 rounded-full'
+    'remove-image-btn transition-all bg-red-500 hover:bg-red-600 text-white p-2 rounded-full z-10'
   removeBtn.dataset.index = index
   removeBtn.innerHTML = '<i data-lucide="trash-2" class="h-4 w-4"></i>'
 
   const primaryBtn = document.createElement('button')
   primaryBtn.type = 'button'
-  primaryBtn.className = `set-primary-btn opacity-0 group-hover:opacity-100 transition-opacity bg-pink-500 hover:bg-pink-600 text-white p-2 rounded-full ${image.isPrimary ? 'ring-2 ring-white' : ''}`
+  primaryBtn.className = `set-primary-btn transition-all bg-pink-500 hover:bg-pink-600 text-white p-2 rounded-full z-10 ${image.isPrimary ? 'ring-2 ring-white' : ''}`
   primaryBtn.dataset.index = index
   primaryBtn.innerHTML = `<i data-lucide="star" class="h-4 w-4 ${image.isPrimary ? 'fill-current' : ''}"></i>`
 
   overlay.appendChild(removeBtn)
   overlay.appendChild(primaryBtn)
+
+  // Make overlay transparent by default, visible on hover
+  slot.addEventListener('mouseenter', () => {
+    overlay.style.opacity = '1'
+  })
+  slot.addEventListener('mouseleave', () => {
+    overlay.style.opacity = '0'
+  })
+
   slot.appendChild(overlay)
 
   // Add primary badge if needed
@@ -162,7 +243,7 @@ function createImageSlot(image, index) {
 /**
  * Create empty slot (upload trigger)
  */
-function createEmptySlot(currentCount) {
+function createEmptySlot(_currentCount) {
   const slot = document.createElement('div')
   slot.className =
     'border-2 border-dashed border-gray-300 rounded-lg aspect-square flex items-center justify-center cursor-pointer hover:border-pink-500 hover:bg-pink-50 transition-all'
@@ -218,8 +299,12 @@ document.addEventListener('change', e => {
         index: imageIndex,
         file: file,
         preview: event.target.result,
-        isPrimary: productImages.length === 0 // First image is primary
+        isPrimary: false // Initially not primary, will be set by ensureSinglePrimaryImage
       })
+
+      // Ensure only one image is primary
+      ensureSinglePrimaryImage()
+
       renderImageGrid()
       toast.success('Imagen agregada')
     }
@@ -258,9 +343,11 @@ function removeImage(index) {
  * Set primary image
  */
 function setPrimaryImage(index) {
+  // Set the selected image as primary and all others as non-primary
   productImages.forEach((img, idx) => {
     img.isPrimary = idx === index
   })
+
   renderImageGrid()
   toast.success('Imagen principal actualizada')
 }
@@ -280,6 +367,9 @@ function reorderImages(fromIndex, toIndex) {
   productImages.forEach((img, idx) => {
     img.index = idx + 1
   })
+
+  // After reordering, make sure we still have only one primary image
+  ensureSinglePrimaryImage()
 
   renderImageGrid()
 }
@@ -307,6 +397,15 @@ async function handleCreateProduct(event) {
   if (!carouselValidation.valid) {
     toast.error(carouselValidation.error)
     return
+  }
+
+  // Validate: if there are images, ensure one is marked as primary
+  if (productImages.length > 0) {
+    const hasPrimary = productImages.some(img => img.isPrimary)
+    if (!hasPrimary) {
+      toast.error('Debes seleccionar una imagen como principal')
+      return
+    }
   }
 
   try {
@@ -361,13 +460,15 @@ async function handleCreateProduct(event) {
     // 2. Upload images
     await uploadProductImages(productId)
 
-    // Success
+    // Success - restore button
+    submitBtn.disabled = false
+    submitBtn.innerHTML = '<i data-lucide="save" class="h-5 w-5"></i> <span>Crear Producto</span>'
+    createIcons()
+
     toast.success('Producto creado exitosamente')
 
-    // Redirect to dashboard after 1 second
-    setTimeout(() => {
-      window.location.href = './dashboard.html'
-    }, 1000)
+    // Reset form and stay on page
+    resetForm()
   } catch (error) {
     console.error('Error creating product:', error)
     toast.error('Error al crear el producto: ' + error.message)
@@ -413,4 +514,33 @@ async function uploadProductImages(productId) {
     console.error('Error uploading images:', error)
     throw error
   }
+}
+
+/**
+ * Reset form after successful product creation
+ */
+function resetForm() {
+  // Clear form fields
+  document.getElementById('product-name').value = ''
+  document.getElementById('product-description').value = ''
+  document.getElementById('product-sku').value = ''
+  document.getElementById('product-price-usd').value = ''
+  document.getElementById('product-price-ves').value = ''
+  document.getElementById('product-stock').value = '3'
+
+  // Clear images
+  productImages.length = 0
+  renderImageGrid()
+
+  // Reset carousel manager
+  carouselManager.destroy()
+  carouselManager = new CarouselManager('carousel-manager-container', {
+    currentProductId: null,
+    onCarouselChange: data => {
+      console.log('Carousel changed:', data)
+    }
+  })
+
+  createIcons()
+  console.log('✓ Form reset, ready for new product')
 }

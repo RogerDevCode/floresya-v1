@@ -4,13 +4,14 @@
  */
 
 import { createIcons } from '/js/lucide-icons.js'
+import { addToCart, updateCartBadge, isInCart } from '/js/shared/cart.js'
+import { showToast } from '/js/components/toast.js'
 
 /**
  * State
  */
 let currentProduct = null
 let productImages = []
-const cart = JSON.parse(localStorage.getItem('cart') || '[]')
 
 /**
  * Get product ID from URL params
@@ -277,18 +278,6 @@ function initQuantityControls() {
 }
 
 /**
- * Update cart badge count
- */
-function updateCartBadge() {
-  const cartCount = document.getElementById('cart-count')
-  if (cartCount) {
-    const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0)
-    cartCount.textContent = totalItems
-    cartCount.style.display = totalItems > 0 ? 'flex' : 'none'
-  }
-}
-
-/**
  * Add to cart handler
  */
 function initCartActions() {
@@ -297,8 +286,9 @@ function initCartActions() {
   const qtyInput = document.getElementById('quantity-input')
 
   if (addToCartBtn) {
-    addToCartBtn.addEventListener('click', () => {
+    addToCartBtn.addEventListener('click', async () => {
       if (!currentProduct) {
+        showToast('Error: Producto no cargado correctamente', 'error')
         return
       }
 
@@ -306,41 +296,50 @@ function initCartActions() {
 
       // Check stock
       if (quantity > currentProduct.stock) {
-        alert(`Solo hay ${currentProduct.stock} unidades disponibles`)
+        showToast(`Solo hay ${currentProduct.stock} unidades disponibles`, 'warning')
         return
       }
 
-      // Add to cart
-      const existingItem = cart.find(item => item.id === currentProduct.id)
+      try {
+        // Check if product is already in cart
+        if (isInCart(currentProduct.id)) {
+          showToast(`El producto "${currentProduct.name}" ya está en el carrito`, 'info')
+          return
+        }
 
-      if (existingItem) {
-        existingItem.quantity = (existingItem.quantity || 1) + quantity
-      } else {
-        cart.push({
+        // Create product object for shared cart module
+        const product = {
           id: currentProduct.id,
           name: currentProduct.name,
           price_usd: currentProduct.price_usd,
-          quantity: quantity,
-          image_url_small: productImages.find(img => img.size === 'small')?.url || null
-        })
+          image_url_small:
+            productImages.find(img => img.size === 'small')?.url || '/images/placeholder-flower.svg'
+        }
+
+        // Add to cart using shared module
+        await addToCart(product, quantity)
+
+        // Update badge
+        updateCartBadge()
+
+        // Success feedback
+        showToast(
+          `✓ ${currentProduct.name} agregado al carrito (${quantity} unidad${quantity > 1 ? 'es' : ''})`,
+          'success'
+        )
+
+        // Stay on the same page - no redirection
+      } catch (error) {
+        console.error('Error adding to cart:', error)
+        showToast('Error al agregar el producto al carrito', 'error')
       }
-
-      // Save to localStorage
-      localStorage.setItem('cart', JSON.stringify(cart))
-
-      // Update badge
-      updateCartBadge()
-
-      // Feedback
-      alert(
-        `✓ ${currentProduct.name} agregado al carrito (${quantity} unidad${quantity > 1 ? 'es' : ''})`
-      )
     })
   }
 
   if (buyNowBtn) {
-    buyNowBtn.addEventListener('click', () => {
+    buyNowBtn.addEventListener('click', async () => {
       if (!currentProduct) {
+        showToast('Error: Producto no cargado correctamente', 'error')
         return
       }
 
@@ -348,31 +347,53 @@ function initCartActions() {
 
       // Check stock
       if (quantity > currentProduct.stock) {
-        alert(`Solo hay ${currentProduct.stock} unidades disponibles`)
+        showToast(`Solo hay ${currentProduct.stock} unidades disponibles`, 'warning')
         return
       }
 
-      // Add to cart first
-      const existingItem = cart.find(item => item.id === currentProduct.id)
+      try {
+        // Check if product is already in cart
+        if (isInCart(currentProduct.id)) {
+          showToast(
+            `El producto "${currentProduct.name}" ya está en el carrito. Redirigiendo al pago...`,
+            'info'
+          )
+          // Redirect to payment page after a short delay
+          setTimeout(() => {
+            window.location.href = '/pages/payment.html'
+          }, 1500)
+          return
+        }
 
-      if (existingItem) {
-        existingItem.quantity = (existingItem.quantity || 1) + quantity
-      } else {
-        cart.push({
+        // Create product object for shared cart module
+        const product = {
           id: currentProduct.id,
           name: currentProduct.name,
           price_usd: currentProduct.price_usd,
-          quantity: quantity,
-          image_url_small: productImages.find(img => img.size === 'small')?.url || null
-        })
+          image_url_small:
+            productImages.find(img => img.size === 'small')?.url || '/images/placeholder-flower.svg'
+        }
+
+        // Add to cart using shared module
+        await addToCart(product, quantity)
+
+        // Update badge
+        updateCartBadge()
+
+        // Success feedback
+        showToast(
+          `✓ ${currentProduct.name} agregado al carrito. Redirigiendo al pago...`,
+          'success'
+        )
+
+        // Redirect to payment page after a short delay to show the toast
+        setTimeout(() => {
+          window.location.href = '/pages/payment.html'
+        }, 1500)
+      } catch (error) {
+        console.error('Error adding to cart:', error)
+        showToast('Error al procesar la compra', 'error')
       }
-
-      // Save to localStorage
-      localStorage.setItem('cart', JSON.stringify(cart))
-
-      // Redirect to checkout (placeholder)
-      alert('Redirigiendo al checkout... (función en desarrollo)')
-      // window.location.href = '/pages/checkout.html'
     })
   }
 }

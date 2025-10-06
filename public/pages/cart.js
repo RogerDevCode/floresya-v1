@@ -1,48 +1,63 @@
 /**
  * Shopping Cart Page
  * Displays cart items with quantity controls and order summary
- * Uses mock data for now - will be replaced with real cart data from localStorage/API
+ * Uses shared cart utility for data persistence
  */
 
-// Mock cart data (will be replaced with real data)
-const MOCK_CART_ITEMS = [
-  {
-    id: 67,
-    name: 'Ramo Tropical Vibrante',
-    price_usd: 45.99,
-    quantity: 2,
-    stock: 15,
-    image_thumb: '../images/placeholder-flower.svg' // Using placeholder until real images available
-  },
-  {
-    id: 68,
-    name: 'Rosas Rojas Clásicas',
-    price_usd: 35.5,
-    quantity: 1,
-    stock: 20,
-    image_thumb: '../images/placeholder-flower.svg'
-  },
-  {
-    id: 69,
-    name: 'Orquídeas Elegantes',
-    price_usd: 65.0,
-    quantity: 1,
-    stock: 8,
-    image_thumb: '../images/placeholder-flower.svg'
-  }
-]
+import {
+  getCartItems,
+  updateCartItemQuantity,
+  removeFromCart,
+  getCartItemCount,
+  updateCartBadge,
+  initCartBadge,
+  initCartEventListeners
+} from '../js/shared/cart.js'
 
-// Mock delivery cost (will be fetched from /api/settings/public)
-const DELIVERY_COST = 5.0
+// Delivery cost loaded from database
+let DELIVERY_COST = 5.0 // Default fallback
 
-// Cart state
-const cartItems = [...MOCK_CART_ITEMS]
+// Get cart items from shared utility
+const getCurrentCartItems = () => getCartItems()
 let deliveryMethod = 'pickup' // 'pickup' or 'delivery'
+
+/**
+ * Load delivery cost from settings API
+ */
+async function loadDeliveryCost() {
+  try {
+    const response = await fetch('/api/settings/DELIVERY_COST_USD/value')
+
+    if (!response.ok) {
+      console.warn('Failed to load delivery cost from API, using default:', response.status)
+      return
+    }
+
+    const result = await response.json()
+
+    if (result.success && result.data !== null) {
+      DELIVERY_COST = parseFloat(result.data)
+      console.log('Delivery cost loaded from database:', DELIVERY_COST)
+    } else {
+      console.warn('Delivery cost not found in database, using default:', DELIVERY_COST)
+    }
+  } catch (error) {
+    console.error('Error loading delivery cost:', error)
+    // Keep default value
+  }
+}
 
 /**
  * Initialize cart page
  */
-function init() {
+async function init() {
+  // Load delivery cost from database first
+  await loadDeliveryCost()
+
+  // Initialize cart badge and event listeners
+  initCartBadge()
+  initCartEventListeners()
+
   // Back button
   const backButton = document.getElementById('back-button')
   backButton.addEventListener('click', () => {
@@ -81,12 +96,12 @@ function renderCart() {
   const cartItemsContainer = document.getElementById('cart-items')
   const emptyCart = document.getElementById('empty-cart')
   const checkoutButton = document.getElementById('checkout-button')
+  const currentCartItems = getCurrentCartItems()
 
-  if (cartItems.length === 0) {
+  if (currentCartItems.length === 0) {
     cartItemsContainer.innerHTML = ''
     emptyCart.classList.remove('hidden')
     checkoutButton.disabled = true
-    updateCartBadge(0)
     updateSummary()
     return
   }
@@ -94,7 +109,7 @@ function renderCart() {
   emptyCart.classList.add('hidden')
   checkoutButton.disabled = false
 
-  cartItemsContainer.innerHTML = cartItems
+  cartItemsContainer.innerHTML = currentCartItems
     .map(
       (item, index) => `
     <div class="cart-item flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors" data-index="${index}">
@@ -201,7 +216,8 @@ function attachCartItemListeners() {
  * Update order summary
  */
 function updateSummary() {
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price_usd * item.quantity, 0)
+  const currentCartItems = getCurrentCartItems()
+  const subtotal = currentCartItems.reduce((sum, item) => sum + item.price_usd * item.quantity, 0)
   const shippingCost = deliveryMethod === 'delivery' ? DELIVERY_COST : 0
   const total = subtotal + shippingCost
   const totalItems = getTotalItems()
@@ -217,27 +233,17 @@ function updateSummary() {
  * Get total number of items in cart
  */
 function getTotalItems() {
-  return cartItems.reduce((sum, item) => sum + item.quantity, 0)
-}
-
-/**
- * Update cart badge in navbar
- */
-function updateCartBadge(count) {
-  const badge = document.getElementById('cart-count-badge')
-  if (badge) {
-    badge.textContent = count
-    badge.classList.toggle('hidden', count === 0)
-  }
+  return getCartItemCount()
 }
 
 /**
  * Increase quantity
  */
 function increaseQuantity(index) {
-  const item = cartItems[index]
-  if (item.quantity < item.stock) {
-    item.quantity++
+  const currentCartItems = getCurrentCartItems()
+  const item = currentCartItems[index]
+  if (item && item.quantity < item.stock) {
+    updateCartItemQuantity(item.id, item.quantity + 1)
     renderCart()
   }
 }
@@ -246,9 +252,10 @@ function increaseQuantity(index) {
  * Decrease quantity
  */
 function decreaseQuantity(index) {
-  const item = cartItems[index]
-  if (item.quantity > 1) {
-    item.quantity--
+  const currentCartItems = getCurrentCartItems()
+  const item = currentCartItems[index]
+  if (item && item.quantity > 1) {
+    updateCartItemQuantity(item.id, item.quantity - 1)
     renderCart()
   }
 }
@@ -259,8 +266,12 @@ function decreaseQuantity(index) {
 function removeItem(index) {
   // Confirm removal
   if (confirm('¿Deseas eliminar este producto del carrito?')) {
-    cartItems.splice(index, 1)
-    renderCart()
+    const currentCartItems = getCurrentCartItems()
+    const item = currentCartItems[index]
+    if (item) {
+      removeFromCart(item.id)
+      renderCart()
+    }
   }
 }
 
@@ -268,24 +279,20 @@ function removeItem(index) {
  * Handle checkout
  */
 function handleCheckout() {
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price_usd * item.quantity, 0)
+  const currentCartItems = getCurrentCartItems()
+  const subtotal = currentCartItems.reduce((sum, item) => sum + item.price_usd * item.quantity, 0)
   const shippingCost = deliveryMethod === 'delivery' ? DELIVERY_COST : 0
   const total = subtotal + shippingCost
 
   console.log('Checkout:', {
-    items: cartItems,
+    items: currentCartItems,
     deliveryMethod,
     subtotal,
     shippingCost,
     total
   })
 
-  alert(
-    `Procesando compra:\n\nSubtotal: $${subtotal.toFixed(2)}\nEnvío: $${shippingCost.toFixed(2)}\nTotal: $${total.toFixed(2)}\n\nMétodo: ${deliveryMethod === 'pickup' ? 'Recoger en tienda' : 'Envío a domicilio'}`
-  )
-
-  // Store cart items in localStorage before navigating to payment page
-  localStorage.setItem('cartItems', JSON.stringify(cartItems))
+  // Store cart data in localStorage before navigating to payment page
   localStorage.setItem('deliveryMethod', deliveryMethod)
   localStorage.setItem('orderSummary', JSON.stringify({ subtotal, shippingCost, total }))
 
@@ -294,12 +301,12 @@ function handleCheckout() {
 }
 
 // Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // Initialize icons first (from global window.lucide)
   if (window.lucide && window.lucide.createIcons) {
     window.lucide.createIcons()
   }
 
   // Then initialize cart functionality
-  init()
+  await init()
 })

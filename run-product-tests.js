@@ -5,10 +5,10 @@
  * Executes all product-related tests (unit and integration)
  */
 
-import { exec, spawn } from 'child_process'
+import { exec, _spawn } from 'child_process'
 import { promisify } from 'util'
 import fs from 'fs/promises'
-import path from 'path'
+import _path from 'path'
 
 const execAsync = promisify(exec)
 
@@ -26,7 +26,7 @@ async function checkTestFiles() {
     try {
       await fs.access(file)
       console.log(`✅ Found: ${file}`)
-    } catch (error) {
+    } catch {
       console.log(`❌ Missing: ${file}`)
       throw new Error(`Test file not found: ${file}`)
     }

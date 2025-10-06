@@ -356,7 +356,7 @@ export async function getProductsByOccasion(occasionId, limit = 50) {
 
 /**
  * Get products in carousel (carousel_order IS NOT NULL)
- * Includes primary image in 'small' size (300x300px)
+ * Includes primary image in 'thumb' size (150x150px) for carousel display
  */
 export async function getCarouselProducts() {
   try {
@@ -378,7 +378,7 @@ export async function getCarouselProducts() {
     // Extract product IDs for batch processing to avoid N+1 problem
     const productIds = products.map(p => p.id)
 
-    // Use the new specialized service function to get products with small images
+    // Use the new specialized service function to get products with small images (300x300px)
     const { getProductsBatchWithImageSize } = await import('./productImageService.js')
     return await getProductsBatchWithImageSize(productIds, 'small')
   } catch (error) {
@@ -618,7 +618,7 @@ export async function deleteProduct(id) {
 export async function reactivateProduct(id) {
   try {
     if (!id || typeof id !== 'number') {
-      throw new Error('Invalid product ID: must be a number')
+      throw new BadRequestError('Invalid product ID: must be a number', { productId: id })
     }
 
     const { data, error } = await supabase

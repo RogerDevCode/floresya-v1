@@ -24,6 +24,7 @@ import userRoutes from './routes/userRoutes.js'
 import paymentRoutes from './routes/paymentRoutes.js'
 import occasionRoutes from './routes/occasionRoutes.js'
 import settingsRoutes from './routes/settingsRoutes.js'
+import adminSettingsRoutes from './routes/admin/settingsRoutes.js'
 
 const app = express()
 
@@ -90,6 +91,7 @@ app.use('/api/users', userRoutes)
 app.use('/api/payments', paymentRoutes)
 app.use('/api/occasions', occasionRoutes)
 app.use('/api/settings', settingsRoutes)
+app.use('/api/admin/settings', adminSettingsRoutes)
 
 // 404 handler (MUST be after all routes)
 app.use((req, res, next) => {

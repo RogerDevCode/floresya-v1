@@ -13,6 +13,7 @@ const router = express.Router()
 // Public routes
 router.get('/public', settingsController.getPublicSettings)
 router.get('/map', settingsController.getSettingsMap)
+router.get('/:key/value', settingsController.getSettingValue)
 
 // Admin-only routes
 router.get('/', authenticate, authorize('admin'), settingsController.getAllSettings)

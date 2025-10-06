@@ -68,6 +68,7 @@ export class CarouselManager {
 
       products.forEach(product => {
         const index = product.carousel_order - 1
+
         if (index >= 0 && index < MAX_CAROUSEL_SIZE) {
           this.state.carouselSlots[index] = {
             productId: product.id,
@@ -84,7 +85,7 @@ export class CarouselManager {
         'products'
       )
     } catch (error) {
-      console.error('Error loading carousel data:', error)
+      console.error('Failed to load carousel data:', error)
       this.showError('Error al cargar carousel')
     }
   }
@@ -190,12 +191,13 @@ export class CarouselManager {
         <img
           src="${slot.imageUrl}"
           alt="${slot.name}"
-          class="w-full h-full object-cover bg-gray-100"
+          class="carousel-slot-image w-full h-full object-cover"
+          data-original-src="${slot.imageUrl}"
           loading="lazy" />
 
-        <!-- Overlay -->
-        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center">
-          <div class="opacity-0 group-hover:opacity-100 transition-opacity text-white text-center px-2">
+        <!-- Overlay (transparent by default, visible on hover) -->
+        <div class="absolute inset-0 flex items-center justify-center transition-opacity" style="background-color: rgba(0, 0, 0, 0.4); opacity: 0;">
+          <div class="text-white text-center px-2">
             <p class="text-xs font-semibold truncate">${this.truncate(slot.name, 20)}</p>
           </div>
         </div>
@@ -308,13 +310,29 @@ export class CarouselManager {
       })
     })
 
-    // Add error handling for carousel images
-    this.container.querySelectorAll('.carousel-slot-filled img').forEach(img => {
-      img.addEventListener('error', () => {
-        img.src = '/images/placeholder-flower.svg'
-        img.classList.add('bg-gray-100')
-        console.warn('Failed to load carousel image:', img.src)
-      })
+    // Add hover effect for overlays and error handling for carousel images
+    this.container.querySelectorAll('.carousel-slot-filled').forEach(slot => {
+      const overlay = slot.querySelector('.absolute.inset-0')
+      if (overlay) {
+        slot.addEventListener('mouseenter', () => {
+          overlay.style.opacity = '1'
+        })
+        slot.addEventListener('mouseleave', () => {
+          overlay.style.opacity = '0'
+        })
+      }
+
+      // Add error handling for carousel images (CSP-compliant)
+      const img = slot.querySelector('.carousel-slot-image')
+      if (img) {
+        const originalSrc = img.dataset.originalSrc
+
+        img.addEventListener('error', () => {
+          console.error(`Failed to load carousel image: ${originalSrc}`)
+          img.src = '/images/placeholder-flower.svg'
+          img.classList.add('bg-gray-100', 'p-4')
+        })
+      }
     })
 
     // Drag and drop on filled slots
@@ -336,7 +354,7 @@ export class CarouselManager {
         slot.classList.add('opacity-50')
       })
 
-      slot.addEventListener('dragend', e => {
+      slot.addEventListener('dragend', _e => {
         this.state.isDragging = false
         slot.classList.remove('opacity-50')
       })

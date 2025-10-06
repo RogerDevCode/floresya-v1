@@ -23,10 +23,10 @@ runTest('should validate order status updates', () => {
   const validStatuses = ['pending', 'verified', 'preparing', 'shipped', 'delivered', 'cancelled'];
   
   // Check if all valid statuses are defined
-  if (validStatuses.length !== 6) throw new Error(`Expected 6 valid statuses, got ${validStatuses.length}`);
-  if (!validStatuses.includes('pending')) throw new Error('Missing pending status');
-  if (!validStatuses.includes('delivered')) throw new Error('Missing delivered status');
-  if (!validStatuses.includes('cancelled')) throw new Error('Missing cancelled status');
+  if (validStatuses.length !== 6) {throw new Error(`Expected 6 valid statuses, got ${validStatuses.length}`);}
+  if (!validStatuses.includes('pending')) {throw new Error('Missing pending status');}
+  if (!validStatuses.includes('delivered')) {throw new Error('Missing delivered status');}
+  if (!validStatuses.includes('cancelled')) {throw new Error('Missing cancelled status');}
 });
 
 runTest('should properly format order data for API requests', () => {
@@ -113,9 +113,9 @@ runTest('should properly format status update requests', () => {
     body: requestBody
   };
 
-  if (options.method !== 'PATCH') throw new Error('Method should be PATCH');
-  if (options.headers['Content-Type'] !== 'application/json') throw new Error('Content-Type should be application/json');
-  if (!options.headers['Authorization'].includes('Bearer')) throw new Error('Authorization header should contain Bearer token');
+  if (options.method !== 'PATCH') {throw new Error('Method should be PATCH');}
+  if (options.headers['Content-Type'] !== 'application/json') {throw new Error('Content-Type should be application/json');}
+  if (!options.headers['Authorization'].includes('Bearer')) {throw new Error('Authorization header should contain Bearer token');}
 });
 
 runTest('should handle API response validation', () => {
@@ -127,9 +127,9 @@ runTest('should handle API response validation', () => {
   };
 
   // Validate successful response
-  if (!successfulResponse.success) throw new Error('Success response should have success: true');
-  if (!Array.isArray(successfulResponse.data)) throw new Error('Success response should have data array');
-  if (typeof successfulResponse.message !== 'string') throw new Error('Success response should have message string');
+  if (!successfulResponse.success) {throw new Error('Success response should have success: true');}
+  if (!Array.isArray(successfulResponse.data)) {throw new Error('Success response should have data array');}
+  if (typeof successfulResponse.message !== 'string') {throw new Error('Success response should have message string');}
 
   // Mock error API response
   const errorResponse = {
@@ -139,9 +139,9 @@ runTest('should handle API response validation', () => {
   };
 
   // Validate error response
-  if (errorResponse.success) throw new Error('Error response should have success: false');
-  if (!errorResponse.error) throw new Error('Error response should have error field');
-  if (!errorResponse.message) throw new Error('Error response should have message field');
+  if (errorResponse.success) {throw new Error('Error response should have success: false');}
+  if (!errorResponse.error) {throw new Error('Error response should have error field');}
+  if (!errorResponse.message) {throw new Error('Error response should have message field');}
 });
 
 runTest('should validate query parameters', () => {
@@ -200,10 +200,10 @@ runTest('should format API endpoints correctly', () => {
     delete: `${baseUrl}/123`
   };
 
-  if (!endpoints.getAll.includes('/api/orders')) throw new Error('Get all endpoint should contain /api/orders');
-  if (!endpoints.getById.includes('/api/orders/123')) throw new Error('Get by ID endpoint should contain order ID');
-  if (!endpoints.updateStatus.includes('/status')) throw new Error('Update status endpoint should contain /status');
-  if (!endpoints.getStatusHistory.includes('/status-history')) throw new Error('Status history endpoint should contain /status-history');
+  if (!endpoints.getAll.includes('/api/orders')) {throw new Error('Get all endpoint should contain /api/orders');}
+  if (!endpoints.getById.includes('/api/orders/123')) {throw new Error('Get by ID endpoint should contain order ID');}
+  if (!endpoints.updateStatus.includes('/status')) {throw new Error('Update status endpoint should contain /status');}
+  if (!endpoints.getStatusHistory.includes('/status-history')) {throw new Error('Status history endpoint should contain /status-history');}
 });
 
 runTest('should verify authentication headers', () => {
@@ -212,9 +212,9 @@ runTest('should verify authentication headers', () => {
     'Content-Type': 'application/json'
   };
 
-  if (!authHeaders['Authorization']) throw new Error('Authorization header is required');
-  if (!authHeaders['Authorization'].startsWith('Bearer ')) throw new Error('Authorization should start with Bearer');
-  if (authHeaders['Content-Type'] !== 'application/json') throw new Error('Content-Type should be application/json');
+  if (!authHeaders['Authorization']) {throw new Error('Authorization header is required');}
+  if (!authHeaders['Authorization'].startsWith('Bearer ')) {throw new Error('Authorization should start with Bearer');}
+  if (authHeaders['Content-Type'] !== 'application/json') {throw new Error('Content-Type should be application/json');}
 });
 
 runTest('should validate order status transition rules', () => {
@@ -229,12 +229,12 @@ runTest('should validate order status transition rules', () => {
   };
 
   // Test some transitions
-  if (!validTransitions.pending.includes('verified')) throw new Error('Pending should be able to transition to verified');
-  if (!validTransitions.pending.includes('cancelled')) throw new Error('Pending should be able to transition to cancelled');
-  if (!validTransitions.verified.includes('preparing')) throw new Error('Verified should be able to transition to preparing');
-  if (!validTransitions.preparing.includes('shipped')) throw new Error('Preparing should be able to transition to shipped');
-  if (validTransitions.delivered.length > 0) throw new Error('Delivered should not have any further transitions');
-  if (validTransitions.cancelled.length > 0) throw new Error('Cancelled should not have any further transitions');
+  if (!validTransitions.pending.includes('verified')) {throw new Error('Pending should be able to transition to verified');}
+  if (!validTransitions.pending.includes('cancelled')) {throw new Error('Pending should be able to transition to cancelled');}
+  if (!validTransitions.verified.includes('preparing')) {throw new Error('Verified should be able to transition to preparing');}
+  if (!validTransitions.preparing.includes('shipped')) {throw new Error('Preparing should be able to transition to shipped');}
+  if (validTransitions.delivered.length > 0) {throw new Error('Delivered should not have any further transitions');}
+  if (validTransitions.cancelled.length > 0) {throw new Error('Cancelled should not have any further transitions');}
 });
 
 console.log(`\n📊 API Test Results: ${passedCount}/${testCount} tests passed`);

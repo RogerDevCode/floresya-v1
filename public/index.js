@@ -5,6 +5,7 @@
 
 import { createIcons } from './js/lucide-icons.js'
 import { createImageCarousel } from './js/components/imageCarousel.js'
+import { addToCart, initCartBadge, initCartEventListeners } from './js/shared/cart.js'
 
 /**
  * Initialize mobile menu toggle
@@ -434,6 +435,15 @@ async function loadProducts(page = 1) {
     // Add click handlers for quick-view buttons (eye icon)
     addQuickViewHandlers()
 
+    // Add click handlers for cart buttons
+    addCartButtonHandlers()
+
+    // Add click handlers for product images (navigate to detail)
+    addProductImageHandlers()
+
+    // Add click handlers for buy now buttons
+    addBuyNowHandlers()
+
     // Render pagination
     if (paginationContainer) {
       const hasMore = result.data.length === PRODUCTS_PER_PAGE
@@ -543,11 +553,175 @@ function addQuickViewHandlers() {
 }
 
 /**
+ * Add click handlers for cart buttons (shopping cart icon)
+ */
+function addCartButtonHandlers() {
+  const cartBtns = document.querySelectorAll('.add-to-cart-btn[data-action="add-to-cart"]')
+
+  cartBtns.forEach(btn => {
+    btn.addEventListener('click', async e => {
+      e.preventDefault()
+      const productId = parseInt(btn.getAttribute('data-product-id'), 10)
+
+      if (!productId) {
+        console.error('Add to cart: missing or invalid product ID')
+        return
+      }
+
+      try {
+        // Get product data from the button's parent card
+        const productCard = btn.closest('.product-card')
+        if (!productCard) {
+          console.error('Add to cart: could not find product card')
+          return
+        }
+
+        // Extract product data from the card
+        const productName = productCard.querySelector('h3')?.textContent?.trim()
+        const priceText = productCard.querySelector('.text-pink-600')?.textContent?.trim()
+        const priceMatch = priceText?.match(/\$(\d+\.?\d*)/)
+        const price = priceMatch ? parseFloat(priceMatch[1]) : 0
+
+        if (!productName || !price) {
+          console.error('Add to cart: could not extract product data', { productName, priceText })
+          return
+        }
+
+        // Create product object
+        const product = {
+          id: productId,
+          name: productName,
+          price_usd: price,
+          image_url_small: '/images/placeholder-flower.svg' // Default placeholder
+        }
+
+        // Add to cart
+        await addToCart(product, 1)
+
+        // Visual feedback
+        btn.style.transform = 'scale(0.95)'
+        setTimeout(() => {
+          btn.style.transform = 'scale(1)'
+        }, 150)
+      } catch (error) {
+        console.error('Failed to add product to cart:', error)
+        // Could show error toast here
+      }
+    })
+  })
+}
+
+/**
+ * Add click handlers for product images (navigate to detail page)
+ */
+function addProductImageHandlers() {
+  const productCards = document.querySelectorAll('.product-card')
+
+  productCards.forEach(card => {
+    // Find the carousel container which contains the images
+    const carouselContainer = card.querySelector('[data-carousel-container]')
+    if (!carouselContainer) {
+      return
+    }
+
+    const productId = carouselContainer.getAttribute('data-product-id')
+    if (!productId) {
+      return
+    }
+
+    // Add click handler to the entire carousel container (which contains the images)
+    carouselContainer.addEventListener('click', e => {
+      // Only handle clicks on images, not on other elements
+      if (e.target.tagName.toLowerCase() === 'img') {
+        e.preventDefault()
+        // Navigate to product detail page
+        window.location.href = `/pages/product-detail.html?id=${productId}`
+      }
+    })
+
+    // Make images look clickable
+    const images = carouselContainer.querySelectorAll('img')
+    images.forEach(img => {
+      img.style.cursor = 'pointer'
+      img.title = 'Ver detalles del producto'
+    })
+  })
+}
+
+/**
+ * Add click handlers for buy now buttons (zap icon)
+ */
+function addBuyNowHandlers() {
+  const buyNowBtns = document.querySelectorAll('.buy-now-btn[data-action="buy-now"]')
+
+  buyNowBtns.forEach(btn => {
+    btn.addEventListener('click', async e => {
+      e.preventDefault()
+      const productId = parseInt(btn.getAttribute('data-product-id'), 10)
+
+      if (!productId) {
+        console.error('Buy now: missing or invalid product ID')
+        return
+      }
+
+      try {
+        // Get product data from the button's parent card
+        const productCard = btn.closest('.product-card')
+        if (!productCard) {
+          console.error('Buy now: could not find product card')
+          return
+        }
+
+        // Extract product data from the card
+        const productName = productCard.querySelector('h3')?.textContent?.trim()
+        const priceText = productCard.querySelector('.text-pink-600')?.textContent?.trim()
+        const priceMatch = priceText?.match(/\$(\d+\.?\d*)/)
+        const price = priceMatch ? parseFloat(priceMatch[1]) : 0
+
+        if (!productName || !price) {
+          console.error('Buy now: could not extract product data', { productName, priceText })
+          return
+        }
+
+        // Create product object
+        const product = {
+          id: productId,
+          name: productName,
+          price_usd: price,
+          image_url_small: '/images/placeholder-flower.svg' // Default placeholder
+        }
+
+        // Add to cart
+        await addToCart(product, 1)
+
+        // Visual feedback
+        btn.style.transform = 'scale(0.95)'
+        setTimeout(() => {
+          btn.style.transform = 'scale(1)'
+        }, 150)
+
+        // Redirect to payment page immediately
+        setTimeout(() => {
+          window.location.href = '/pages/payment.html'
+        }, 200)
+      } catch (error) {
+        console.error('Failed to buy now:', error)
+        // Could show error toast here
+      }
+    })
+  })
+}
+
+/**
  * Initialize page
  */
 function init() {
   // Initialize Lucide icons
   createIcons()
+
+  // Initialize cart functionality
+  initCartBadge()
+  initCartEventListeners()
 
   // Initialize features
   initMobileMenu()

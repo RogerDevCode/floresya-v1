@@ -107,6 +107,14 @@ const searchTerm = normalizeSearch(inputValue) // "jose" === "josé"
 
 ## Reglas Obligatorias
 
+"All generated JavaScript code must fully comply with eslint rules."
+
+"Every try-catch block must have a catch with an error parameter (e.g., 'catch(error)')."
+
+"Every catch block must contain a 'console.log(error)' (or optionally 'console.error(error)') displaying the original caught error. No catch block can be empty or fail to show the caught error."
+
+"It is strictly forbidden to generate code with a catch block without an error parameter, or a catch block that does not log the received error variable."
+
 ### 1. MVC Architecture
 
 **Controllers**
@@ -414,17 +422,6 @@ describe('Product Controller', () => {
 - **OpenAPI First**: API contract is truth
 - **Soft-Delete**: Never delete data, deactivate
 
----
-
-## YOLO MODE (Claude Code)
-
-### Execute Without Asking
-
-- **NEVER ask for confirmation** on code changes
-- Identify error → **fix immediately**
-- Code violates CLAUDE.md → **auto-fix**
-- **Exceptions**: delete files, git force push, production config
-
 ### Maximum Proactivity
 
 - **Anticipate needs** without explicit instructions
@@ -442,7 +439,7 @@ describe('Product Controller', () => {
 
 ### Golden Rule
 
-**"If it's in CLAUDE.md, it's law. If it violates law, execute immediately."**
+**"If it's in IA.md, it's law. If it violates law, execute immediately."**
 
 ### AFI (Awaiting Further Instruction)
 

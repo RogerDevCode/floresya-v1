@@ -646,11 +646,148 @@
       <!-- Settings View -->
       <div id="settings-view" class="hidden">
         <h1 class="text-3xl font-bold text-gray-900 mb-6">Configuración General</h1>
+
+        <!-- Hero Image Settings -->
+        <div class="bg-white rounded-xl shadow-md p-6 admin-card mb-6">
+          <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+            <i data-lucide="image" class="h-5 w-5 mr-2 text-pink-600"></i>
+            Imagen Hero
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Imagen Hero Actual
+              </label>
+              <div
+                id="current-hero-image-container"
+                class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center"
+              >
+                <img
+                  id="current-hero-image"
+                  src=""
+                  alt="Hero Image"
+                  class="max-h-48 mx-auto rounded-lg hidden"
+                />
+                <p id="no-hero-image-text" class="text-gray-500">No hay imagen hero cargada</p>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Nueva Imagen Hero
+              </label>
+              <div class="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                <input type="file" id="hero-image-upload" accept="image/*" class="hidden" />
+                <label
+                  for="hero-image-upload"
+                  class="cursor-pointer flex flex-col items-center justify-center"
+                >
+                  <i data-lucide="upload" class="h-8 w-8 text-gray-400 mb-2"></i>
+                  <span class="text-sm text-gray-600">Haz clic para seleccionar una imagen</span>
+                  <span class="text-xs text-gray-500 mt-1">(JPG, PNG, WebP)</span>
+                </label>
+              </div>
+              <div class="mt-4 flex justify-end">
+                <button
+                  id="save-hero-image-btn"
+                  class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg disabled:opacity-50"
+                  disabled
+                >
+                  Guardar Imagen Hero
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Logo Settings -->
+        <div class="bg-white rounded-xl shadow-md p-6 admin-card mb-6">
+          <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+            <i data-lucide="camera" class="h-5 w-5 mr-2 text-pink-600"></i>
+            Logo del Sitio
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"> Logo Actual </label>
+              <div
+                id="current-logo-container"
+                class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center"
+              >
+                <img
+                  id="current-logo"
+                  src=""
+                  alt="Site Logo"
+                  class="max-h-32 mx-auto rounded-lg hidden"
+                />
+                <p id="no-logo-text" class="text-gray-500">No hay logo cargado</p>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"> Nuevo Logo </label>
+              <div class="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                <input type="file" id="logo-upload" accept="image/*" class="hidden" />
+                <label
+                  for="logo-upload"
+                  class="cursor-pointer flex flex-col items-center justify-center"
+                >
+                  <i data-lucide="upload" class="h-8 w-8 text-gray-400 mb-2"></i>
+                  <span class="text-sm text-gray-600">Haz clic para seleccionar un logo</span>
+                  <span class="text-xs text-gray-500 mt-1">(JPG, PNG, WebP)</span>
+                </label>
+              </div>
+              <div class="mt-4 flex justify-end">
+                <button
+                  id="save-logo-btn"
+                  class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg disabled:opacity-50"
+                  disabled
+                >
+                  Guardar Logo
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BCV Price Settings -->
         <div class="bg-white rounded-xl shadow-md p-6 admin-card">
-          <p class="text-gray-600">Sección de configuración en desarrollo</p>
-          <p class="text-gray-500 mt-2">
-            Aquí podrás administrar la configuración general del sitio
-          </p>
+          <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+            <i data-lucide="dollar-sign" class="h-5 w-5 mr-2 text-pink-600"></i>
+            Precio del Dólar BCV
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Valor Actual del Dólar BCV
+              </label>
+              <div id="current-bcv-price" class="text-2xl font-bold text-pink-600 py-4">
+                Cargando...
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Nuevo Valor del Dólar BCV
+              </label>
+              <div class="flex items-center">
+                <span class="text-gray-500 mr-2">Bs.</span>
+                <input
+                  type="number"
+                  id="bcv-price-input"
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                  class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-pink-500 focus:border-pink-500"
+                />
+              </div>
+              <div class="mt-4 flex justify-end">
+                <button
+                  id="save-bcv-price-btn"
+                  class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg disabled:opacity-50"
+                  disabled
+                >
+                  Guardar Precio BCV
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>
