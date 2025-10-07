@@ -16,6 +16,7 @@ import {
   BadRequestError
 } from '../errors/AppError.js'
 import { buildSearchCondition } from '../utils/normalize.js'
+import { sanitizeProductData } from '../utils/sanitize.js'
 
 const TABLE = DB_SCHEMA.products.table
 const SEARCH_COLUMNS = DB_SCHEMA.products.search
@@ -394,17 +395,20 @@ export async function createProduct(productData) {
   try {
     validateProductData(productData, false)
 
+    // Sanitize data before database operations
+    const sanitizedData = sanitizeProductData(productData, false)
+
     const newProduct = {
-      name: productData.name,
-      summary: productData.summary || null,
-      description: productData.description || null,
-      price_usd: productData.price_usd,
-      price_ves: productData.price_ves || null,
-      stock: productData.stock || 0,
-      sku: productData.sku || null,
+      name: sanitizedData.name,
+      summary: sanitizedData.summary || null,
+      description: sanitizedData.description || null,
+      price_usd: sanitizedData.price_usd,
+      price_ves: sanitizedData.price_ves || null,
+      stock: sanitizedData.stock || 0,
+      sku: sanitizedData.sku || null,
       active: true,
-      featured: productData.featured || false,
-      carousel_order: productData.carousel_order || null
+      featured: sanitizedData.featured || false,
+      carousel_order: sanitizedData.carousel_order || null
     }
 
     const { data, error } = await supabase.from(TABLE).insert(newProduct).select().single()
@@ -494,6 +498,9 @@ export async function updateProduct(id, updates) {
 
     validateProductData(updates, true)
 
+    // Sanitize data before database operations
+    const sanitizedData = sanitizeProductData(updates, true)
+
     const allowedFields = [
       'name',
       'summary',
@@ -508,8 +515,8 @@ export async function updateProduct(id, updates) {
     const sanitized = {}
 
     for (const key of allowedFields) {
-      if (updates[key] !== undefined) {
-        sanitized[key] = updates[key]
+      if (sanitizedData[key] !== undefined) {
+        sanitized[key] = sanitizedData[key]
       }
     }
 

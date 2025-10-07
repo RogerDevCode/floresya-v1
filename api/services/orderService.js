@@ -13,6 +13,7 @@ import {
   DatabaseError,
   BadRequestError
 } from '../errors/AppError.js'
+import { sanitizeOrderData, sanitizeOrderItemData } from '../utils/sanitize.js'
 
 const TABLE = DB_SCHEMA.orders.table
 const VALID_STATUSES = DB_SCHEMA.orders.enums.status
@@ -306,55 +307,65 @@ export async function createOrderWithItems(orderData, orderItems) {
       }
     }
 
+    // Sanitize order data before database operations
+    const sanitizedOrderData = sanitizeOrderData(orderData, false)
+
     // Convert string amounts to numbers if needed for the order payload
-    let totalAmountVes = orderData.total_amount_ves
+    let totalAmountVes = sanitizedOrderData.total_amount_ves
     if (typeof totalAmountVes === 'string') {
       totalAmountVes = parseFloat(totalAmountVes)
     }
 
-    let currencyRate = orderData.currency_rate
+    let currencyRate = sanitizedOrderData.currency_rate
     if (typeof currencyRate === 'string') {
       currencyRate = parseFloat(currencyRate)
     }
 
     const orderPayload = {
-      user_id: orderData.user_id || null,
-      customer_email: orderData.customer_email,
-      customer_name: orderData.customer_name,
-      customer_phone: orderData.customer_phone || null,
-      delivery_address: orderData.delivery_address,
-      delivery_city: orderData.delivery_city || null,
-      delivery_state: orderData.delivery_state || null,
-      delivery_zip: orderData.delivery_zip || null,
-      delivery_date: orderData.delivery_date || null,
-      delivery_time_slot: orderData.delivery_time_slot || null,
-      delivery_notes: orderData.delivery_notes || null,
-      status: orderData.status || 'pending',
+      user_id: sanitizedOrderData.user_id || null,
+      customer_email: sanitizedOrderData.customer_email,
+      customer_name: sanitizedOrderData.customer_name,
+      customer_phone: sanitizedOrderData.customer_phone || null,
+      delivery_address: sanitizedOrderData.delivery_address,
+      delivery_city: sanitizedOrderData.delivery_city || null,
+      delivery_state: sanitizedOrderData.delivery_state || null,
+      delivery_zip: sanitizedOrderData.delivery_zip || null,
+      delivery_date: sanitizedOrderData.delivery_date || null,
+      delivery_time_slot: sanitizedOrderData.delivery_time_slot || null,
+      delivery_notes: sanitizedOrderData.delivery_notes || null,
+      status: sanitizedOrderData.status || 'pending',
       total_amount_usd:
-        typeof orderData.total_amount_usd === 'string'
-          ? parseFloat(orderData.total_amount_usd)
-          : orderData.total_amount_usd,
+        typeof sanitizedOrderData.total_amount_usd === 'string'
+          ? parseFloat(sanitizedOrderData.total_amount_usd)
+          : sanitizedOrderData.total_amount_usd,
       total_amount_ves:
         totalAmountVes !== null && totalAmountVes !== undefined ? Math.round(totalAmountVes) : null,
       currency_rate: currencyRate || null,
-      notes: orderData.notes || null,
-      admin_notes: orderData.admin_notes || null
+      notes: sanitizedOrderData.notes || null,
+      admin_notes: sanitizedOrderData.admin_notes || null
     }
 
     const itemsPayload = orderItems.map(item => {
+      // Sanitize item data before database operations
+      const sanitizedItem = sanitizeOrderItemData(item)
+
       // Ensure numeric values are properly converted
       const productId =
-        typeof item.product_id === 'string' ? parseInt(item.product_id, 10) : item.product_id
+        typeof sanitizedItem.product_id === 'string'
+          ? parseInt(sanitizedItem.product_id, 10)
+          : sanitizedItem.product_id
       const unitPriceUsd =
-        typeof item.unit_price_usd === 'string'
-          ? parseFloat(item.unit_price_usd)
-          : item.unit_price_usd
+        typeof sanitizedItem.unit_price_usd === 'string'
+          ? parseFloat(sanitizedItem.unit_price_usd)
+          : sanitizedItem.unit_price_usd
       const unitPriceVes =
-        typeof item.unit_price_ves === 'string'
-          ? parseFloat(item.unit_price_ves)
-          : item.unit_price_ves
+        typeof sanitizedItem.unit_price_ves === 'string'
+          ? parseFloat(sanitizedItem.unit_price_ves)
+          : sanitizedItem.unit_price_ves
       const quantity =
-        typeof item.quantity === 'string' ? parseInt(item.quantity, 10) : item.quantity
+        typeof sanitizedItem.quantity === 'string'
+          ? parseInt(sanitizedItem.quantity, 10)
+          : sanitizedItem.quantity
 
       // Apply intelligent rounding to VES values (round to nearest integer)
       const roundedUnitPriceVes =
@@ -366,8 +377,8 @@ export async function createOrderWithItems(orderData, orderItems) {
 
       return {
         product_id: productId,
-        product_name: item.product_name,
-        product_summary: item.product_summary || null,
+        product_name: sanitizedItem.product_name,
+        product_summary: sanitizedItem.product_summary || null,
         unit_price_usd: unitPriceUsd,
         unit_price_ves: roundedUnitPriceVes,
         quantity: quantity,
