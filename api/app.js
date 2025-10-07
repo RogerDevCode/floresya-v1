@@ -31,6 +31,7 @@ import {
   forceRecovery,
   updateRecoveryConfig
 } from './recovery/autoRecovery.js'
+import { standardResponse } from './middleware/responseStandard.js'
 import { NotFoundError } from './errors/AppError.js'
 
 // Import routes
@@ -117,6 +118,9 @@ app.use(withDatabaseCircuitBreaker())
 
 // Metrics collection middleware
 app.use(metricsMiddleware)
+
+// Standard response format middleware (antes de rutas API)
+app.use(standardResponse)
 
 // Serve static files from public directory
 app.use(express.static('public'))
