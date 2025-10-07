@@ -52,7 +52,8 @@ export const productCreateSchema = {
     type: 'number',
     required: false,
     integer: true,
-    min: 0
+    min: 0,
+    max: 7
   }
 }
 
@@ -188,6 +189,16 @@ export const orderCreateSchema = {
     type: 'string',
     required: false,
     maxLength: 20
+  },
+  delivery_date: {
+    type: 'string',
+    required: false,
+    pattern: /^\d{4}-\d{2}-\d{2}$/
+  },
+  delivery_time_slot: {
+    type: 'string',
+    required: false,
+    maxLength: 100
   },
   delivery_notes: {
     type: 'string',
