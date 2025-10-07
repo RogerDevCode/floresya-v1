@@ -3,7 +3,12 @@
  * Handles customer information form and payment processing
  */
 
-import { getCartItems, clearCart } from '../js/shared/cart.js'
+import {
+  getCartItems,
+  clearCart,
+  initCartBadge,
+  initCartEventListeners
+} from '../js/shared/cart.js'
 
 // Global state
 let cartItems = []
@@ -19,6 +24,10 @@ let bcvRate = 40.0 // Default, will be loaded from settings
 async function init() {
   // Load settings first
   await loadSettings()
+
+  // Initialize cart badge and event listeners
+  initCartBadge()
+  initCartEventListeners()
 
   // Load cart data from localStorage or redirect if empty
   loadCartData()
@@ -762,7 +771,8 @@ function isValidEmail(email) {
 }
 
 /**
- * Validate cart items exist in backend
+ * Validate cart items exist in backend (Future use - currently not called)
+ * TODO: Integrate this validation in handlePayment() before creating order
  */
 async function validateCartItems(items) {
   try {

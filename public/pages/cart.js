@@ -8,6 +8,7 @@ import {
   getCartItems,
   updateCartItemQuantity,
   removeFromCart,
+  clearCart,
   getCartItemCount,
   updateCartBadge,
   initCartBadge,
@@ -82,6 +83,10 @@ async function init() {
   const checkoutButton = document.getElementById('checkout-button')
   checkoutButton.addEventListener('click', handleCheckout)
 
+  // Clear cart button
+  const clearCartButton = document.getElementById('clear-cart-button')
+  clearCartButton.addEventListener('click', handleClearCart)
+
   // Update delivery cost display
   document.getElementById('delivery-cost-display').textContent = `$${DELIVERY_COST.toFixed(2)}`
 
@@ -102,12 +107,14 @@ function renderCart() {
     cartItemsContainer.innerHTML = ''
     emptyCart.classList.remove('hidden')
     checkoutButton.disabled = true
+    document.getElementById('clear-cart-section').classList.add('hidden')
     updateSummary()
     return
   }
 
   emptyCart.classList.add('hidden')
   checkoutButton.disabled = false
+  document.getElementById('clear-cart-section').classList.remove('hidden')
 
   cartItemsContainer.innerHTML = currentCartItems
     .map(
@@ -298,6 +305,49 @@ function handleCheckout() {
 
   // Navigate to payment page
   window.location.href = '/pages/payment.html'
+}
+
+/**
+ * Handle clear cart button click
+ */
+function handleClearCart() {
+  const currentCartItems = getCurrentCartItems()
+
+  if (currentCartItems.length === 0) {
+    console.info('Cart is already empty')
+    return
+  }
+
+  // Show confirmation dialog
+  const itemCount = currentCartItems.length
+  const itemText = itemCount === 1 ? 'producto' : 'productos'
+
+  if (
+    confirm(
+      `¿Estás seguro de que deseas vaciar el carrito? Se eliminarán ${itemCount} ${itemText}.`
+    )
+  ) {
+    try {
+      // Clear the cart using shared function
+      clearCart()
+
+      // Update UI
+      renderCart()
+
+      // Show success feedback
+      console.info(`Cart cleared successfully: ${itemCount} items removed`)
+
+      // Optional: Show toast notification if available
+      if (window.showToast) {
+        window.showToast(`Carrito vaciado (${itemCount} ${itemText} eliminados)`, 'success')
+      }
+    } catch (error) {
+      console.error('Failed to clear cart:', error)
+      if (window.showToast) {
+        window.showToast('Error al vaciar el carrito', 'error')
+      }
+    }
+  }
 }
 
 // Initialize when DOM is ready

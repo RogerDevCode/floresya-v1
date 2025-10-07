@@ -1,0 +1,103 @@
+# Artillery Stress Test Configuration
+# Pushes system to breaking point to identify failure modes
+config:
+  target: 'http://localhost:3000'
+  phases:
+    # Phase 1: Gradual ramp up to identify breaking point
+    - duration: 60
+      arrivalRate: 50
+      rampTo: 500
+      name: 'Ramp to breaking point'
+
+    # Phase 2: Sustained extreme load
+    - duration: 30
+      arrivalRate: 1000
+      name: 'Extreme load test'
+
+    # Phase 3: Recovery test - back to normal
+    - duration: 30
+      arrivalRate: 10
+      name: 'Recovery test'
+
+  defaults:
+    headers:
+      Content-Type: 'application/json'
+    timeout: 10000 # 10 second timeout for slow operations
+
+# Stress test scenarios
+scenarios:
+  # Scenario 1: High-frequency order creation
+  - name: 'Stress order creation'
+    weight: 70
+    flow:
+      - post:
+          url: '/api/orders'
+          json:
+            order:
+              customer_email: 'stress_{{$processEnvironment.STRESS_USER_ID}}_{{$randomInt(1, 100000)}}@test.com'
+              customer_name: 'Stress Test User {{$randomInt(1, 10000)}}'
+              customer_phone: '0414{{$randomInt(1000000, 9999999)}}'
+              delivery_address: 'Caracas, Venezuela, Calle {{$randomInt(1, 100)}}'
+              delivery_city: 'Caracas'
+              total_amount_usd: '{{$randomInt(10, 1000)}}'
+              total_amount_ves: '{{$randomInt(360, 36000)}}'
+              currency_rate: 36.00
+            items:
+              - product_id: '{{$randomInt(1, 50)}}'
+                product_name: 'Stress Product {{$randomInt(1, 100)}}'
+                quantity: '{{$randomInt(1, 10)}}'
+                unit_price_usd: '{{$randomInt(5, 100)}}'
+                subtotal_usd: '{{$randomInt(5, 1000)}}'
+          expect:
+            - statusCode: [201, 400, 422, 429, 503] # All responses valid under stress
+          capture:
+            json: '$.timestamp'
+            as: 'responseTime'
+
+  # Scenario 2: Concurrent health checks
+  - name: 'Stress health checks'
+    weight: 20
+    flow:
+      - get:
+          url: '/health'
+          expect:
+            - statusCode: [200, 503] # Should remain healthy or show circuit breaker
+          capture:
+            json: '$.data.uptime'
+            as: 'uptime'
+
+      - get:
+          url: '/health/circuit-breaker'
+          expect:
+            - statusCode: [200, 503]
+          capture:
+            json: '$.data.database.state'
+            as: 'cbState'
+
+  # Scenario 3: Mixed operations
+  - name: 'Stress mixed operations'
+    weight: 10
+    flow:
+      - get:
+          url: '/api/orders'
+          expect:
+            - statusCode: [200, 401, 429, 503]
+
+      - post:
+          url: '/api/orders'
+          json:
+            order:
+              customer_email: 'mixed_{{$randomInt(1, 10000)}}@test.com'
+              customer_name: 'Mixed Test User'
+              customer_phone: '04141234567'
+              delivery_address: 'Caracas, Venezuela'
+              delivery_city: 'Caracas'
+              total_amount_usd: 25
+            items:
+              - product_id: 1
+                product_name: 'Mixed Product'
+                quantity: 1
+                unit_price_usd: 25
+                subtotal_usd: 25
+          expect:
+            - statusCode: [201, 400, 422, 429, 503]

@@ -112,6 +112,17 @@
             <div id="cart-items" class="space-y-4">
               <!-- Items will be loaded here by JavaScript -->
             </div>
+
+            <!-- Clear Cart Button (only show if cart has items) -->
+            <div id="clear-cart-section" class="hidden mt-6 pt-6 border-t border-gray-200">
+              <button
+                id="clear-cart-button"
+                class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
+              >
+                <i data-lucide="trash-2" class="h-5 w-5"></i>
+                <span>Vaciar Carrito</span>
+              </button>
+            </div>
           </div>
         </div>
 

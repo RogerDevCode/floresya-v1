@@ -7,6 +7,7 @@ import express from 'express'
 import * as adminSettingsController from '../../controllers/admin/settingsController.js'
 import { authenticate, authorize } from '../../middleware/auth.js'
 import { uploadSingle } from '../../middleware/uploadImage.js'
+import { getBusinessRulesStatus } from '../../services/businessRules.js'
 
 const router = express.Router()
 
@@ -29,5 +30,11 @@ router.post(
  * Save BCV USD rate
  */
 router.post('/bcv-price', adminSettingsController.saveBcvPrice)
+
+/**
+ * GET /api/admin/settings/business-rules
+ * Get business rules engine status and configuration
+ */
+router.get('/business-rules', getBusinessRulesStatus)
 
 export default router

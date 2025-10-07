@@ -158,8 +158,28 @@ export function getCartTotal() {
  * Clear all items from cart
  */
 export function clearCart() {
-  saveCartItems([])
-  window.dispatchEvent(new CustomEvent(CART_EVENTS.CLEARED))
+  try {
+    const items = getCartItems()
+    if (items.length === 0) {
+      console.info('Cart is already empty')
+      return false
+    }
+
+    saveCartItems([])
+
+    // Dispatch cleared event with item count for notifications
+    window.dispatchEvent(
+      new CustomEvent(CART_EVENTS.CLEARED, {
+        detail: { previousItemCount: items.length }
+      })
+    )
+
+    console.info(`Cart cleared: ${items.length} items removed`)
+    return true
+  } catch (error) {
+    console.error('Failed to clear cart:', error)
+    return false
+  }
 }
 
 /**
@@ -187,7 +207,14 @@ export function getCartItem(productId) {
  * @param {number} count - Item count to display
  */
 export function updateCartBadge(count) {
-  const badge = document.querySelector('.cart-badge')
+  // Try to find badge by class first (index.html, contacto.html)
+  let badge = document.querySelector('.cart-badge')
+
+  // If not found, try by ID (cart.html, payment.html, product-detail.html)
+  if (!badge) {
+    badge = document.querySelector('#cart-count-badge') || document.querySelector('#cart-count')
+  }
+
   if (badge) {
     badge.textContent = count
     badge.setAttribute('aria-label', `${count} productos`)
@@ -202,6 +229,15 @@ export function updateCartBadge(count) {
 export function initCartBadge() {
   const count = getCartItemCount()
   updateCartBadge(count)
+}
+
+/**
+ * Force update cart badge (useful for cross-page synchronization)
+ */
+export function forceUpdateCartBadge() {
+  const count = getCartItemCount()
+  updateCartBadge(count)
+  return count
 }
 
 /**
@@ -224,6 +260,16 @@ export function initCartEventListeners() {
   window.addEventListener(CART_EVENTS.ITEM_REMOVED, () => {
     showCartNotification('Producto eliminado del carrito')
   })
+
+  // Show notification when cart is cleared
+  window.addEventListener(CART_EVENTS.CLEARED, event => {
+    const { previousItemCount } = event.detail || {}
+    if (previousItemCount && previousItemCount > 0) {
+      showCartNotification(`Carrito vaciado (${previousItemCount} productos eliminados)`)
+    } else {
+      showCartNotification('Carrito vaciado')
+    }
+  })
 }
 
 /**
@@ -238,4 +284,56 @@ function showCartNotification(message) {
   if (window.showToast) {
     window.showToast(message, 'success')
   }
+}
+
+/**
+ * Test function to verify cart functionality (for development)
+ * Can be called from browser console: window.testCart()
+ */
+export function testCart() {
+  console.log('🧪 Testing cart functionality...')
+
+  // Test 1: Check if cart is empty
+  const initialCount = getCartItemCount()
+  console.log(`Initial cart count: ${initialCount}`)
+
+  // Test 2: Add a test product
+  const testProduct = {
+    id: 999,
+    name: 'Producto de Prueba',
+    price_usd: 10.5,
+    image_url_small: '/images/placeholder-flower.svg'
+  }
+
+  console.log('Adding test product...')
+  addToCart(testProduct, 2)
+
+  // Test 3: Check if product was added
+  const newCount = getCartItemCount()
+  console.log(`Cart count after adding: ${newCount}`)
+
+  // Test 4: Check cart items
+  const items = getCartItems()
+  console.log('Cart items:', items)
+
+  // Test 5: Clear cart
+  console.log('Clearing cart...')
+  clearCart()
+
+  // Test 6: Verify cart is empty
+  const finalCount = getCartItemCount()
+  console.log(`Final cart count: ${finalCount}`)
+
+  console.log('✅ Cart test completed!')
+  return {
+    initialCount,
+    newCount,
+    finalCount,
+    success: finalCount === 0
+  }
+}
+
+// Make test function available globally for debugging
+if (typeof window !== 'undefined') {
+  window.testCart = testCart
 }

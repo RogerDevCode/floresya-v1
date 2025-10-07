@@ -13,8 +13,24 @@ import {
   xssProtection,
   rateLimiter
 } from './middleware/security.js'
-import { requestLogger } from './middleware/logger.js'
+import { requestLoggingMiddleware } from './utils/logger.js'
 import { errorHandler } from './middleware/errorHandler.js'
+import {
+  withDatabaseCircuitBreaker,
+  circuitBreakerHealthCheck
+} from './middleware/circuitBreaker.js'
+import {
+  metricsMiddleware,
+  orderMetricsMiddleware,
+  getMetricsReport,
+  getRealtimeMetrics
+} from './monitoring/metricsCollector.js'
+import {
+  comprehensiveHealthCheck,
+  getRecoveryStatus,
+  forceRecovery,
+  updateRecoveryConfig
+} from './recovery/autoRecovery.js'
 import { NotFoundError } from './errors/AppError.js'
 
 // Import routes
@@ -63,6 +79,21 @@ app.get('/health', (req, res) => {
   })
 })
 
+// Circuit breaker health check
+app.get('/health/circuit-breaker', circuitBreakerHealthCheck)
+
+// Metrics endpoints
+app.get('/health/metrics', getRealtimeMetrics)
+app.get('/health/metrics/report', getMetricsReport)
+
+// Recovery endpoints
+app.get('/health/recovery', getRecoveryStatus)
+app.post('/health/recovery/trigger', forceRecovery)
+app.put('/health/recovery/config', updateRecoveryConfig)
+
+// Comprehensive health check (replaces basic one)
+app.get('/health/comprehensive', comprehensiveHealthCheck)
+
 // Security middleware
 app.use(configureCors())
 app.use(configureHelmet())
@@ -79,7 +110,13 @@ app.use(
 )
 
 // Logging middleware
-app.use(requestLogger)
+app.use(requestLoggingMiddleware)
+
+// Circuit breaker for database operations
+app.use(withDatabaseCircuitBreaker())
+
+// Metrics collection middleware
+app.use(metricsMiddleware)
 
 // Serve static files from public directory
 app.use(express.static('public'))
