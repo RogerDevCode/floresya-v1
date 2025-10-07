@@ -178,7 +178,7 @@ export async function getAllProducts(
     const { data: products, error } = await query
 
     if (error) {
-      throw new DatabaseError('SELECT', TABLE, error)
+      throw new DatabaseError('SELECT', TABLE, error, { filters, includeInactive })
     }
     if (!products || products.length === 0) {
       console.log('No products found for filters:', filters)

@@ -32,7 +32,7 @@ export const getAllProducts = asyncHandler(async (req, res) => {
 
   const products = await productService.getAllProducts(filters, includeInactive, includeImageSize)
 
-  res.json({
+  res.status(200).json({
     success: true,
     data: products,
     message:
@@ -60,7 +60,7 @@ export const getProductById = asyncHandler(async (req, res) => {
 
   const product = await productService.getProductById(productId, false, includeImageSize)
 
-  res.json({
+  res.status(200).json({
     success: true,
     data: product,
     message: 'Product retrieved successfully'
