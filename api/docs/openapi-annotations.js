@@ -10,30 +10,34 @@
  *   get:
  *     tags: [Products]
  *     summary: Get all products with filters
- *     description: Returns paginated list of active products with optional filters
+ *     description: Returns paginated list of active products with optional filters (uses indexed columns for performance)
  *     parameters:
  *       - $ref: '#/components/parameters/LimitParam'
  *       - $ref: '#/components/parameters/OffsetParam'
  *       - name: featured
  *         in: query
  *         schema: { type: boolean }
- *         description: Filter by featured products
+ *         description: Filter by featured products (uses idx_products_featured)
  *       - name: sku
  *         in: query
  *         schema: { type: string }
- *         description: Filter by SKU
+ *         description: Filter by SKU (uses idx_products_sku)
  *       - name: search
  *         in: query
  *         schema: { type: string }
  *         description: Search in name and description (accent-insensitive, uses indexed normalized columns)
  *       - name: sortBy
  *         in: query
- *         schema: { type: string, enum: [name, price_usd, created_at, carousel_order] }
- *         description: Sort field
+ *         schema: { type: string, enum: [name_asc, name_desc, price_asc, price_desc, created_at, carousel_order] }
+ *         description: Sort field with direction
  *       - name: imageSize
  *         in: query
  *         schema: { type: string, enum: [thumb, small, medium, large] }
  *         description: Include product with specific image size
+ *       - name: occasion
+ *         in: query
+ *         schema: { type: string }
+ *         description: Filter by occasion slug (joins with product_occasions table)
  *     responses:
  *       200:
  *         description: Products retrieved successfully
@@ -45,6 +49,8 @@
  *                 - type: object
  *                   properties:
  *                     data: { type: array, items: { $ref: '#/components/schemas/Product' } }
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
