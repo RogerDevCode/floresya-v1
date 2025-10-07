@@ -405,6 +405,12 @@ async function handlePayment() {
     return
   }
 
+  // Validate cart items exist
+  if (!cartItems || cartItems.length === 0) {
+    alert('No hay productos en el carrito.')
+    return
+  }
+
   // Save customer data if "remember me" is checked
   saveCustomerData()
 
@@ -434,10 +440,15 @@ async function handlePayment() {
     const totalUSD = subtotal + shippingCost
     const totalVES = totalUSD * bcvRate
 
+    // Additional validation for required variables
+    if (isNaN(totalUSD) || isNaN(totalVES) || isNaN(bcvRate)) {
+      throw new Error('Error calculating totals - invalid values detected')
+    }
+
     // Collect payment data
     const paymentData = {
       paymentMethod,
-      orderReference,
+      orderReference: orderReference || `FY-${Date.now()}`, // Fallback if not defined
       deliveryMethod,
       subtotal,
       shippingCost,
@@ -459,6 +470,28 @@ async function handlePayment() {
     } else if (paymentMethod === 'crypto') {
       paymentData.cryptoAddress = document.getElementById('crypto-address').value
     }
+
+    // Log data being sent to backend for debugging
+    console.log('=== DEBUG: Data being sent to backend ===')
+    console.log('Customer Data:', customerData)
+    console.log('Payment Data:', paymentData)
+    console.log('Cart Items:', cartItems)
+    console.log('Delivery Method:', deliveryMethod)
+    console.log('Payment Method:', paymentMethod)
+    console.log('Order Reference:', orderReference)
+    console.log(
+      'Totals - Subtotal:',
+      subtotal,
+      'Shipping:',
+      shippingCost,
+      'Total USD:',
+      totalUSD,
+      'Total VES:',
+      totalVES,
+      'BCV Rate:',
+      bcvRate
+    )
+    console.log('=====================================')
 
     // Create order via API
     const orderResponse = await createOrder(customerData, paymentData)
@@ -551,52 +584,116 @@ function validatePaymentMethod() {
  * Create order via API
  */
 async function createOrder(customerData, paymentData) {
-  // OpenAPI contract: POST /api/orders expects { order: {...}, items: [...] }
+  // Validate customer data before sending
+  if (!customerData || !paymentData) {
+    throw new Error('Customer data and payment data are required')
+  }
+
+  // Validate cart items exist
+  if (!cartItems || cartItems.length === 0) {
+    throw new Error('Cannot create order without items in cart')
+  }
+
+  // Validate required fields for customer data
+  const requiredCustomerFields = [
+    'customerEmail',
+    'customerName',
+    'customerPhone',
+    'deliveryAddress',
+    'deliveryMunicipio'
+  ]
+  for (const field of requiredCustomerFields) {
+    if (!customerData[field]) {
+      throw new Error(`Customer field ${field} is required`)
+    }
+  }
+
+  // Validate cart items
+  for (const item of cartItems) {
+    if (!item.id || !item.name || !item.price_usd || !item.quantity) {
+      throw new Error(`Cart item missing required fields: id, name, price_usd, or quantity`)
+    }
+    if (typeof item.quantity !== 'number' || item.quantity <= 0) {
+      throw new Error(`Item quantity must be a positive number: ${item.name}`)
+    }
+    if (typeof item.price_usd !== 'number' || item.price_usd < 0) {
+      throw new Error(`Item price must be a non-negative number: ${item.name}`)
+    }
+  }
+
+  // Sanitize string values to ensure they don't contain problematic characters
+  const sanitizeString = str => {
+    if (typeof str !== 'string') {
+      return str
+    }
+    // Remove any non-printable or special characters that might cause issues
+    return str.trim().replace(/[^\x20-\x7E\xA0-\xFF\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF]/g, '')
+  }
+
+  // Prepare order payload with NaN checks and string sanitization
   const orderPayload = {
     order: {
-      customer_email: customerData.customerEmail,
-      customer_name: customerData.customerName,
-      customer_phone: customerData.customerPhone,
-      delivery_address: customerData.deliveryAddress,
-      delivery_city: customerData.deliveryMunicipio, // Municipio stored in city field
+      customer_email: sanitizeString(customerData.customerEmail),
+      customer_name: sanitizeString(customerData.customerName),
+      customer_phone: sanitizeString(customerData.customerPhone),
+      delivery_address: sanitizeString(customerData.deliveryAddress),
+      delivery_city: sanitizeString(customerData.deliveryMunicipio), // Municipio stored in city field
       delivery_state: 'Gran Caracas', // Fixed region
-      delivery_zip: customerData.deliveryZip || '',
-      delivery_notes: customerData.deliveryReferences || '',
-      notes: customerData.additionalNotes || '',
-      total_amount_usd: paymentData.totalUSD,
-      total_amount_ves: paymentData.totalVES,
-      currency_rate: paymentData.bcvRate,
+      delivery_zip: sanitizeString(customerData.deliveryZip) || '',
+      delivery_notes: sanitizeString(customerData.deliveryReferences) || '',
+      notes: sanitizeString(customerData.additionalNotes) || '',
+      total_amount_usd: isNaN(parseFloat(paymentData.totalUSD))
+        ? 0
+        : parseFloat(paymentData.totalUSD),
+      total_amount_ves: isNaN(parseFloat(paymentData.totalVES))
+        ? 0
+        : Math.round(parseFloat(paymentData.totalVES)), // Round to nearest integer
+      currency_rate: isNaN(parseFloat(paymentData.bcvRate)) ? 0 : parseFloat(paymentData.bcvRate),
       status: 'pending'
     },
     items: cartItems.map(item => ({
-      product_id: item.id,
-      product_name: item.name,
-      product_summary: item.name,
-      unit_price_usd: item.price_usd,
-      unit_price_ves: item.price_usd * paymentData.bcvRate,
-      quantity: item.quantity,
-      subtotal_usd: item.price_usd * item.quantity,
-      subtotal_ves: item.price_usd * item.quantity * paymentData.bcvRate
+      product_id: isNaN(parseInt(item.id, 10)) ? 0 : parseInt(item.id, 10),
+      product_name: sanitizeString(item.name),
+      product_summary: sanitizeString(item.name),
+      unit_price_usd: isNaN(parseFloat(item.price_usd)) ? 0 : parseFloat(item.price_usd),
+      unit_price_ves: isNaN(parseFloat(item.price_usd * paymentData.bcvRate))
+        ? 0
+        : Math.round(parseFloat(item.price_usd * paymentData.bcvRate)), // Round to nearest integer
+      quantity: isNaN(parseInt(item.quantity, 10)) ? 1 : parseInt(item.quantity, 10),
+      subtotal_usd: isNaN(parseFloat(item.price_usd * item.quantity))
+        ? 0
+        : parseFloat(item.price_usd * item.quantity),
+      subtotal_ves: isNaN(parseFloat(item.price_usd * item.quantity * paymentData.bcvRate))
+        ? 0
+        : Math.round(parseFloat(item.price_usd * item.quantity * paymentData.bcvRate)) // Round to nearest integer
     }))
   }
+
+  // Log the payload for debugging (remove in production)
+  console.log('Order payload being sent:', JSON.stringify(orderPayload, null, 2))
 
   const response = await fetch('/api/orders', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
     },
     body: JSON.stringify(orderPayload)
   })
 
   if (!response.ok) {
-    const errorData = await response.json()
-    throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`)
+    const errorData = await response.json().catch(() => ({}))
+    const errorMessage =
+      errorData.message || errorData.error || `HTTP ${response.status}: ${response.statusText}`
+    console.error('Order creation error details:', errorData)
+    console.error('Payload that failed:', orderPayload) // Log the payload that failed
+    throw new Error(errorMessage)
   }
 
   const result = await response.json()
 
   if (!result.success) {
-    throw new Error(result.message || 'Error creando orden')
+    throw new Error(result.message || result.error || 'Error creando orden')
   }
 
   return result.data
@@ -662,6 +759,53 @@ function getPaymentMethodName(method) {
 function isValidEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   return emailRegex.test(email)
+}
+
+/**
+ * Validate cart items exist in backend
+ */
+async function validateCartItems(items) {
+  try {
+    console.log(
+      'Validating cart items:',
+      items.map(item => ({ id: item.id, name: item.name }))
+    )
+
+    // Check if all items have valid IDs
+    const invalidItems = []
+    for (const item of items) {
+      if (!item.id || isNaN(parseInt(item.id, 10))) {
+        invalidItems.push(`"${item.name}" (ID inválido)`)
+        continue
+      }
+
+      // Try to fetch the product from backend to verify it exists
+      try {
+        const response = await fetch(`/api/products/${item.id}`)
+        if (!response.ok) {
+          if (response.status === 404) {
+            invalidItems.push(`"${item.name}" (producto no encontrado)`)
+          } else {
+            console.warn(`Error checking product ${item.id}:`, response.status)
+            // For other errors, we'll assume the product exists and let the order creation fail
+          }
+        }
+      } catch (error) {
+        console.warn(`Network error checking product ${item.id}:`, error)
+        // For network errors, we'll assume the product exists and let the order creation fail
+      }
+    }
+
+    const isValid = invalidItems.length === 0
+    return {
+      valid: isValid,
+      invalidItems: invalidItems
+    }
+  } catch (error) {
+    console.error('Error validating cart items:', error)
+    // If validation fails, assume items are valid to not block the order
+    return { valid: true, invalidItems: [] }
+  }
 }
 
 /**

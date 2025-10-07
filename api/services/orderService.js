@@ -42,10 +42,19 @@ function validateOrderData(data, isUpdate = false) {
         delivery_address: 'must be a non-empty string'
       })
     }
+  }
+
+  // For non-update or when total_amount_usd is provided during update
+  if (!isUpdate || data.total_amount_usd !== undefined) {
+    // Convert string amounts to numbers if needed
+    let totalAmountUsd = data.total_amount_usd
+    if (typeof totalAmountUsd === 'string') {
+      totalAmountUsd = parseFloat(totalAmountUsd)
+    }
+
     if (
-      !data.total_amount_usd ||
-      typeof data.total_amount_usd !== 'number' ||
-      data.total_amount_usd <= 0
+      totalAmountUsd !== undefined &&
+      (!totalAmountUsd || typeof totalAmountUsd !== 'number' || totalAmountUsd <= 0)
     ) {
       throw new ValidationError('Order validation failed', {
         total_amount_usd: 'must be a positive number'
@@ -223,7 +232,13 @@ export async function createOrderWithItems(orderData, orderItems) {
 
     // Validate each item and check stock
     for (const item of orderItems) {
-      if (!item.product_id || typeof item.product_id !== 'number') {
+      // Convert string IDs to numbers if needed
+      let productId = item.product_id
+      if (typeof productId === 'string') {
+        productId = parseInt(productId, 10)
+      }
+
+      if (!productId || typeof productId !== 'number' || isNaN(productId)) {
         throw new ValidationError('Order validation failed', {
           'orderItems.product_id': 'must be a number'
         })
@@ -233,15 +248,30 @@ export async function createOrderWithItems(orderData, orderItems) {
           'orderItems.product_name': 'must be a string'
         })
       }
-      if (!item.quantity || typeof item.quantity !== 'number' || item.quantity <= 0) {
+
+      // Convert string quantities to numbers if needed
+      let quantity = item.quantity
+      if (typeof quantity === 'string') {
+        quantity = parseInt(quantity, 10)
+      }
+
+      if (!quantity || typeof quantity !== 'number' || isNaN(quantity) || quantity <= 0) {
         throw new ValidationError('Order validation failed', {
           'orderItems.quantity': 'must be positive'
         })
       }
+
+      // Convert string prices to numbers if needed
+      let unitPriceUsd = item.unit_price_usd
+      if (typeof unitPriceUsd === 'string') {
+        unitPriceUsd = parseFloat(unitPriceUsd)
+      }
+
       if (
-        !item.unit_price_usd ||
-        typeof item.unit_price_usd !== 'number' ||
-        item.unit_price_usd <= 0
+        !unitPriceUsd ||
+        typeof unitPriceUsd !== 'number' ||
+        isNaN(unitPriceUsd) ||
+        unitPriceUsd <= 0
       ) {
         throw new ValidationError('Order validation failed', {
           'orderItems.unit_price_usd': 'must be positive'
@@ -276,6 +306,17 @@ export async function createOrderWithItems(orderData, orderItems) {
       }
     }
 
+    // Convert string amounts to numbers if needed for the order payload
+    let totalAmountVes = orderData.total_amount_ves
+    if (typeof totalAmountVes === 'string') {
+      totalAmountVes = parseFloat(totalAmountVes)
+    }
+
+    let currencyRate = orderData.currency_rate
+    if (typeof currencyRate === 'string') {
+      currencyRate = parseFloat(currencyRate)
+    }
+
     const orderPayload = {
       user_id: orderData.user_id || null,
       customer_email: orderData.customer_email,
@@ -289,23 +330,51 @@ export async function createOrderWithItems(orderData, orderItems) {
       delivery_time_slot: orderData.delivery_time_slot || null,
       delivery_notes: orderData.delivery_notes || null,
       status: orderData.status || 'pending',
-      total_amount_usd: orderData.total_amount_usd,
-      total_amount_ves: orderData.total_amount_ves || null,
-      currency_rate: orderData.currency_rate || null,
+      total_amount_usd:
+        typeof orderData.total_amount_usd === 'string'
+          ? parseFloat(orderData.total_amount_usd)
+          : orderData.total_amount_usd,
+      total_amount_ves:
+        totalAmountVes !== null && totalAmountVes !== undefined ? Math.round(totalAmountVes) : null,
+      currency_rate: currencyRate || null,
       notes: orderData.notes || null,
       admin_notes: orderData.admin_notes || null
     }
 
-    const itemsPayload = orderItems.map(item => ({
-      product_id: item.product_id,
-      product_name: item.product_name,
-      product_summary: item.product_summary || null,
-      unit_price_usd: item.unit_price_usd,
-      unit_price_ves: item.unit_price_ves || null,
-      quantity: item.quantity,
-      subtotal_usd: item.unit_price_usd * item.quantity,
-      subtotal_ves: item.unit_price_ves ? item.unit_price_ves * item.quantity : null
-    }))
+    const itemsPayload = orderItems.map(item => {
+      // Ensure numeric values are properly converted
+      const productId =
+        typeof item.product_id === 'string' ? parseInt(item.product_id, 10) : item.product_id
+      const unitPriceUsd =
+        typeof item.unit_price_usd === 'string'
+          ? parseFloat(item.unit_price_usd)
+          : item.unit_price_usd
+      const unitPriceVes =
+        typeof item.unit_price_ves === 'string'
+          ? parseFloat(item.unit_price_ves)
+          : item.unit_price_ves
+      const quantity =
+        typeof item.quantity === 'string' ? parseInt(item.quantity, 10) : item.quantity
+
+      // Apply intelligent rounding to VES values (round to nearest integer)
+      const roundedUnitPriceVes =
+        unitPriceVes !== null && unitPriceVes !== undefined ? Math.round(unitPriceVes) : null
+      const roundedSubtotalVes =
+        unitPriceVes !== null && unitPriceVes !== undefined
+          ? Math.round(unitPriceVes * quantity)
+          : null
+
+      return {
+        product_id: productId,
+        product_name: item.product_name,
+        product_summary: item.product_summary || null,
+        unit_price_usd: unitPriceUsd,
+        unit_price_ves: roundedUnitPriceVes,
+        quantity: quantity,
+        subtotal_usd: unitPriceUsd * quantity,
+        subtotal_ves: roundedSubtotalVes
+      }
+    })
 
     // Use atomic stored function (SSOT: DB_FUNCTIONS.createOrderWithItems)
     const { data, error } = await supabase.rpc('create_order_with_items', {
