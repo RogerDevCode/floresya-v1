@@ -71,15 +71,37 @@ class BusinessRulesEngine {
 
     this.addRule('order', 'valid_delivery_address', {
       type: RULE_TYPES.VALIDATION,
-      severity: SEVERITY.HIGH,
-      description: 'Delivery address must be in Caracas area',
+      severity: SEVERITY.MEDIUM, // Changed from HIGH to MEDIUM
+      description: 'Delivery address should be in Caracas metropolitan area',
       condition: order => {
-        const caracasKeywords = /\b(caracas|catia|chacao|sucre|baruta|hatillo|petare)\b/i
-        return caracasKeywords.test(order.delivery_address)
+        // More flexible pattern for Caracas metropolitan area
+        const caracasKeywords =
+          /\b(caracas|catia|chacao|sucre|baruta|hatillo|petare|montalban|caricuao|antimano|san martin|la vega|san agustin|el valle|ciudad universitaria)\b/i
+        return (
+          caracasKeywords.test(order.delivery_address) ||
+          order.delivery_city?.toLowerCase().includes('caracas')
+        )
       },
-      message: 'Actualmente solo entregamos en el área metropolitana de Caracas',
+      message:
+        'Entrega disponible en área metropolitana de Caracas. Confirme cobertura para su zona.',
       context: {
-        allowedAreas: ['caracas', 'catia', 'chacao', 'sucre', 'baruta', 'hatillo', 'petare']
+        allowedAreas: [
+          'caracas',
+          'catia',
+          'chacao',
+          'sucre',
+          'baruta',
+          'hatillo',
+          'petare',
+          'montalban',
+          'caricuao',
+          'antimano',
+          'san martin',
+          'la vega',
+          'san agustin',
+          'el valle',
+          'ciudad universitaria'
+        ]
       }
     })
 
@@ -119,15 +141,17 @@ class BusinessRulesEngine {
 
     this.addRule('product', 'stock_availability', {
       type: RULE_TYPES.BUSINESS,
-      severity: SEVERITY.CRITICAL,
-      description: 'Product must have sufficient stock',
+      severity: SEVERITY.HIGH, // Changed from CRITICAL to HIGH to allow processing
+      description: 'Product should have sufficient stock (verified in service layer)',
       condition: (product, context) => {
+        // Stock validation is handled in orderService.createOrderWithItems
+        // This rule serves as a secondary check but won't block orders
         const requestedQuantity = context?.quantity || 1
         return product.stock >= requestedQuantity
       },
       message: (product, context) => {
         const requestedQuantity = context?.quantity || 1
-        return `Solo hay ${product.stock} unidades disponibles. Solicitaste ${requestedQuantity}.`
+        return `Stock verification: ${product.stock} disponibles, ${requestedQuantity} solicitados.`
       },
       context: { requiresContext: true }
     })
