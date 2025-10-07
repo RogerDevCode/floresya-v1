@@ -65,7 +65,7 @@ class MetricsCollector {
       this.collectSystemMetrics()
     }, 10000)
 
-    logger.info('Metrics collector started')
+    logger.info('📊 Metrics collector iniciado')
   }
 
   /**

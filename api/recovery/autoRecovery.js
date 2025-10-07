@@ -38,7 +38,7 @@ class AutoRecoverySystem {
    * Start the auto recovery system
    */
   start() {
-    logger.info('Starting automatic recovery system')
+    logger.info('🔧 Sistema de recuperación automática iniciado')
 
     // Health monitoring every 30 seconds
     this.healthCheckInterval = setInterval(() => {

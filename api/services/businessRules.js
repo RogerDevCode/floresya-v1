@@ -169,7 +169,7 @@ class BusinessRulesEngine {
       context: { verificationThreshold: 100 }
     })
 
-    logger.info('Business rules engine initialized with default rules')
+    logger.info('⚙️ Motor de reglas de negocio inicializado')
   }
 
   /**
