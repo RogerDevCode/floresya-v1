@@ -378,7 +378,27 @@ class BusinessRulesEngine {
           unitPrice: item.unit_price_usd
         }
 
-        const itemResults = await this.evaluateRules('product', item, itemContext)
+        // For stock validation, we need the full product data from database
+        let productForValidation = item
+        if (item.product_id) {
+          try {
+            // Import supabaseClient to get fresh product data for stock validation
+            const { supabase } = await import('../services/supabaseClient.js')
+            const { data: freshProduct } = await supabase
+              .from('products')
+              .select('id, name, stock, active, price_usd')
+              .eq('id', item.product_id)
+              .single()
+
+            if (freshProduct) {
+              productForValidation = { ...item, ...freshProduct }
+            }
+          } catch (error) {
+            console.warn('Could not fetch fresh product data for stock validation:', error.message)
+          }
+        }
+
+        const itemResults = await this.evaluateRules('product', productForValidation, itemContext)
         allResults.passed.push(...itemResults.passed)
         allResults.failed.push(...itemResults.failed)
         allResults.warnings.push(...itemResults.warnings)
