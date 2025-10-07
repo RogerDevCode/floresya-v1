@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Editor de Productos - FloresYa Admin" />
+    <title>Editor de Productos - FloresYa Admin</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../css/styles.css" />
+    <link rel="stylesheet" href="../../css/tailwind.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../../images/favicon.ico" />
+  </head>
+  <body class="font-sans antialiased admin-page">
+    <!-- Navigation -->
+    <nav class="navbar bg-white/95 backdrop-blur-sm shadow-md" role="navigation">
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+          <!-- Back Button -->
+          <a
+            href="./dashboard.html"
+            class="text-gray-600 hover:text-pink-600 transition-colors"
+            title="Volver al Dashboard"
+          >
+            <i data-lucide="arrow-left" class="h-6 w-6"></i>
+          </a>
+
+          <!-- Logo & Title (Clickable) -->
+          <a
+            href="../../index.html"
+            class="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+          >
+            <img
+              src="../../images/logoFloresYa.jpeg"
+              alt="Logo FloresYa Admin"
+              class="h-10 w-10 rounded-full"
+            />
+            <span class="text-xl font-bold text-pink-600 hidden md:block">FloresYa Admin</span>
+            <span class="text-sm text-gray-500 hidden md:block">/ Editor de Productos</span>
+          </a>
+
+          <!-- User Info -->
+          <div class="flex items-center space-x-4">
+            <span class="text-sm text-gray-600 hidden md:block" id="admin-user-display">Admin</span>
+            <button
+              id="logout-btn"
+              class="text-gray-600 hover:text-pink-600 transition-colors"
+              title="Cerrar sesión"
+            >
+              <i data-lucide="log-out" class="h-6 w-6"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Spacer for fixed navbar -->
+    <div class="h-16"></div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Editor de Producto</h1>
+        <p class="text-gray-600">
+          ID: <span id="product-id-display">#000</span> |
+          <span
+            id="product-status"
+            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+            >Activo</span
+          >
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Product Information Form -->
+        <div class="bg-white rounded-xl shadow-md p-6 admin-card">
+          <h2 class="text-xl font-bold text-gray-900 mb-6">Información del Producto</h2>
+
+          <div class="space-y-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Nombre *</label>
+              <input
+                type="text"
+                id="product-name"
+                required
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500 admin-input"
+                placeholder="Nombre del producto"
+                value="Ramo Tropical Vibrante"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
+              <textarea
+                id="product-description"
+                rows="4"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500 admin-input"
+                placeholder="Descripción detallada del producto"
+              >
+Explosión de colores tropicales con aves del paraíso, heliconias y flores exóticas</textarea
+              >
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Precio USD *</label>
+                <input
+                  type="number"
+                  id="product-price-usd"
+                  step="0.01"
+                  required
+                  min="0"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500 admin-input"
+                  placeholder="0.00"
+                  value="45.99"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Precio VES</label>
+                <input
+                  type="number"
+                  id="product-price-ves"
+                  step="0.01"
+                  min="0"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500 admin-input"
+                  placeholder="0.00"
+                  value="1837.96"
+                  readonly
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Stock *</label>
+                <input
+                  type="number"
+                  id="product-stock"
+                  required
+                  min="0"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500 admin-input"
+                  placeholder="Cantidad en stock"
+                  value="15"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">SKU</label>
+                <input
+                  type="text"
+                  id="product-sku"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500 admin-input"
+                  placeholder="Código de producto"
+                  value="FY-001"
+                />
+              </div>
+            </div>
+
+            <div class="flex items-center">
+              <input
+                type="checkbox"
+                id="product-active"
+                class="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
+                checked
+              />
+              <label for="product-active" class="ml-2 block text-sm text-gray-900">
+                Producto Activo
+              </label>
+            </div>
+
+            <div class="flex items-center">
+              <input
+                type="checkbox"
+                id="product-featured"
+                class="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
+                checked
+              />
+              <label for="product-featured" class="ml-2 block text-sm text-gray-900">
+                Producto Destacado
+              </label>
+            </div>
+          </div>
+
+          <div class="mt-8 flex space-x-4">
+            <button
+              id="save-product-btn"
+              class="admin-btn bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded-lg"
+            >
+              Guardar Producto
+            </button>
+            <button
+              id="cancel-product-btn"
+              class="admin-btn bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+
+        <!-- Product Images Management -->
+        <div class="bg-white rounded-xl shadow-md p-6 admin-card">
+          <h2 class="text-xl font-bold text-gray-900 mb-6">Imágenes del Producto</h2>
+
+          <div id="images-preview" class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+            <div class="relative group">
+              <img
+                src="../../images/placeholder-flower.svg"
+                alt="Product Image"
+                class="w-full h-32 object-cover rounded-lg"
+              />
+              <div
+                class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center"
+              >
+                <button class="text-white p-2">
+                  <i data-lucide="x" class="h-5 w-5"></i>
+                </button>
+              </div>
+              <div class="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded">
+                Principal
+              </div>
+            </div>
+            <div class="relative group">
+              <img
+                src="../../images/placeholder-flower.svg"
+                alt="Product Image"
+                class="w-full h-32 object-cover rounded-lg"
+              />
+              <div
+                class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center"
+              >
+                <button class="text-white p-2">
+                  <i data-lucide="x" class="h-5 w-5"></i>
+                </button>
+              </div>
+            </div>
+            <div class="relative group">
+              <img
+                src="../../images/placeholder-flower.svg"
+                alt="Product Image"
+                class="w-full h-32 object-cover rounded-lg"
+              />
+              <div
+                class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center"
+              >
+                <button class="text-white p-2">
+                  <i data-lucide="x" class="h-5 w-5"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center upload-area"
+          >
+            <i data-lucide="upload" class="h-12 w-12 text-gray-400 mx-auto mb-4"></i>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">Agregar imágenes</h3>
+            <p class="text-sm text-gray-500 mb-4">
+              Arrastra y suelta imágenes aquí o haz clic para seleccionar
+            </p>
+            <input type="file" id="image-upload" multiple accept="image/*" class="hidden" />
+            <button
+              id="upload-trigger"
+              class="admin-btn bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg"
+            >
+              Seleccionar Imágenes
+            </button>
+          </div>
+
+          <div class="mt-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-3">Ocasiones</h3>
+            <div id="occasions-container" class="space-y-2">
+              <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                <div class="flex items-center">
+                  <div
+                    class="w-8 h-8 rounded-full flex items-center justify-center"
+                    style="background-color: #db277720; color: #db2777"
+                  >
+                    <i data-lucide="gift" class="h-4 w-4"></i>
+                  </div>
+                  <span class="ml-3">Cumpleaños</span>
+                </div>
+                <button class="text-red-600 hover:text-red-800">
+                  <i data-lucide="x" class="h-4 w-4"></i>
+                </button>
+              </div>
+              <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                <div class="flex items-center">
+                  <div
+                    class="w-8 h-8 rounded-full flex items-center justify-center"
+                    style="background-color: #10b98120; color: #10b981"
+                  >
+                    <i data-lucide="heart" class="h-4 w-4"></i>
+                  </div>
+                  <span class="ml-3">Aniversario</span>
+                </div>
+                <button class="text-red-600 hover:text-red-800">
+                  <i data-lucide="x" class="h-4 w-4"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="../../js/lucide-icons.js"></script>
+    <script type="module" src="./image-manager.js"></script>
+    <script type="module" src="./product-editor-page.js"></script>
+  </body>
+</html>

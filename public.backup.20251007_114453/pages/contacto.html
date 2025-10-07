@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Contacto - FloresYa. Información de contacto, métodos de pago y ubicación. Comunícate con nosotros para pedidos personalizados."
+    />
+    <meta
+      name="keywords"
+      content="contacto floresya, información de contacto, métodos de pago, ubicación, teléfono, whatsapp, email"
+    />
+    <title>Contacto - FloresYa</title>
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Contacto - FloresYa" />
+    <meta
+      property="og:description"
+      content="Información de contacto, métodos de pago y ubicación de FloresYa."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://floresya.com/contacto" />
+    <meta property="og:image" content="../images/og-image.jpg" />
+
+    <!-- CSS tradicional -->
+    <link rel="stylesheet" href="../css/styles.css" />
+
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="../css/tailwind.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+      <div class="container">
+        <div class="navbar-content">
+          <!-- Logo -->
+          <a class="navbar-brand" href="/" aria-label="Ir a la página principal de FloresYa">
+            <img src="../images/logoFloresYa.jpeg" alt="Logo de FloresYa" class="brand-logo" />
+            <span class="brand-text">FloresYa</span>
+          </a>
+
+          <!-- Desktop Navigation -->
+          <div class="desktop-nav">
+            <ul class="nav-links" role="menubar">
+              <li><a href="../index.html#inicio" class="nav-link">Inicio</a></li>
+              <li><a href="../index.html#productos" class="nav-link">Productos</a></li>
+              <li><a href="#" class="nav-link active">Contacto</a></li>
+            </ul>
+          </div>
+
+          <!-- Actions (Desktop) -->
+          <div class="nav-actions">
+            <!-- Cart -->
+            <a
+              href="/pages/cart.html"
+              class="nav-icon"
+              aria-label="Carrito de compras (0 productos)"
+            >
+              <i data-lucide="shopping-cart" class="icon"></i>
+              <span class="cart-badge" aria-label="0 productos">0</span>
+            </a>
+            <!-- Login -->
+            <a href="#login" class="btn btn-login">Iniciar Sesión</a>
+            <!-- Mobile menu toggle -->
+            <button
+              class="mobile-menu-toggle"
+              aria-label="Abrir menú móvil"
+              aria-expanded="false"
+              id="mobile-menu-btn"
+            >
+              <i data-lucide="menu" class="icon"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Menu (oculto por defecto) -->
+      <div
+        class="mobile-menu hidden"
+        id="mobile-menu"
+        role="navigation"
+        aria-label="Menú de navegación móvil"
+      >
+        <div class="container">
+          <ul class="mobile-nav-links">
+            <li><a href="../index.html#inicio" class="mobile-nav-link">Inicio</a></li>
+            <li><a href="../index.html#productos" class="mobile-nav-link">Productos</a></li>
+            <li><a href="#" class="mobile-nav-link active">Contacto</a></li>
+            <li><a href="#" class="mobile-nav-link">Iniciar Sesión</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Spacer for fixed navbar -->
+    <div class="navbar-spacer"></div>
+
+    <!-- Hero Section with Floral Design -->
+    <section
+      class="relative overflow-hidden bg-gradient-to-br from-pink-100 via-purple-50 to-yellow-100"
+    >
+      <!-- Decorative floral elements -->
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-10 left-10 text-pink-300 text-6xl">🌸</div>
+        <div class="absolute top-32 right-20 text-purple-300 text-4xl">🌺</div>
+        <div class="absolute bottom-20 left-20 text-yellow-300 text-5xl">🌻</div>
+        <div class="absolute bottom-32 right-10 text-green-300 text-3xl">🌿</div>
+        <div class="absolute top-1/2 left-1/4 text-red-300 text-4xl">🌹</div>
+        <div class="absolute top-1/4 right-1/3 text-blue-300 text-3xl">🪻</div>
+      </div>
+
+      <div class="container mx-auto px-4 py-16 relative z-10">
+        <div class="text-center max-w-4xl mx-auto">
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+            <span
+              class="bg-gradient-to-r from-pink-600 via-purple-600 to-yellow-600 bg-clip-text text-transparent"
+            >
+              ¡Conectemos contigo! 🌸
+            </span>
+          </h1>
+          <p class="text-xl text-gray-700 mb-8 leading-relaxed">
+            Estamos aquí para hacer realidad tus ideas florales más hermosas. Contáctanos para
+            pedidos personalizados, consultas especiales o cualquier duda que tengas.
+          </p>
+          <div class="flex flex-wrap justify-center gap-4 text-sm">
+            <div class="bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg">
+              <i data-lucide="phone" class="inline h-4 w-4 text-green-600 mr-2"></i>
+              <span class="text-gray-700">Atención inmediata</span>
+            </div>
+            <div class="bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg">
+              <i data-lucide="heart" class="inline h-4 w-4 text-pink-600 mr-2"></i>
+              <span class="text-gray-700">Servicio personalizado</span>
+            </div>
+            <div class="bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg">
+              <i data-lucide="shield-check" class="inline h-4 w-4 text-purple-600 mr-2"></i>
+              <span class="text-gray-700">100% garantizado</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Information Cards -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <!-- Información del Dueño -->
+          <div class="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-8 shadow-lg">
+            <div class="flex items-center mb-6">
+              <div class="bg-gradient-to-r from-pink-500 to-purple-500 rounded-full p-3 mr-4">
+                <i data-lucide="user" class="h-8 w-8 text-white"></i>
+              </div>
+              <h2 class="text-3xl font-bold text-gray-900">Información del Dueño</h2>
+            </div>
+
+            <div class="space-y-6">
+              <div class="bg-white rounded-xl p-6 shadow-sm">
+                <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                  <i data-lucide="crown" class="h-6 w-6 text-yellow-500 mr-3"></i>
+                  <span data-contact="shop_name">FloresYa - Tu Floristería de Confianza</span>
+                </h3>
+
+                <!-- Imagen del local -->
+                <div class="mb-6 flex justify-center">
+                  <div class="relative">
+                    <svg width="200" height="120" viewBox="0 0 200 120" class="drop-shadow-lg">
+                      <!-- Fondo del local -->
+                      <rect
+                        x="20"
+                        y="40"
+                        width="160"
+                        height="70"
+                        rx="8"
+                        fill="#f8f9fa"
+                        stroke="#e9ecef"
+                        stroke-width="2"
+                      />
+
+                      <!-- Puerta -->
+                      <rect x="85" y="70" width="30" height="40" rx="4" fill="#6c757d" />
+                      <circle cx="100" cy="85" r="2" fill="#ffd700" />
+
+                      <!-- Ventanas -->
+                      <rect
+                        x="35"
+                        y="50"
+                        width="25"
+                        height="25"
+                        rx="4"
+                        fill="#e3f2fd"
+                        stroke="#2196f3"
+                        stroke-width="2"
+                      />
+                      <rect
+                        x="140"
+                        y="50"
+                        width="25"
+                        height="25"
+                        rx="4"
+                        fill="#e3f2fd"
+                        stroke="#2196f3"
+                        stroke-width="2"
+                      />
+
+                      <!-- Cruz de ventana izquierda -->
+                      <line x1="47.5" y1="50" x2="47.5" y2="75" stroke="#2196f3" stroke-width="1" />
+                      <line x1="35" y1="62.5" x2="60" y2="62.5" stroke="#2196f3" stroke-width="1" />
+
+                      <!-- Cruz de ventana derecha -->
+                      <line
+                        x1="152.5"
+                        y1="50"
+                        x2="152.5"
+                        y2="75"
+                        stroke="#2196f3"
+                        stroke-width="1"
+                      />
+                      <line
+                        x1="140"
+                        y1="62.5"
+                        x2="165"
+                        y2="62.5"
+                        stroke="#2196f3"
+                        stroke-width="1"
+                      />
+
+                      <!-- Letrero -->
+                      <rect x="60" y="25" width="80" height="15" rx="2" fill="#28a745" />
+                      <text
+                        x="100"
+                        y="36"
+                        text-anchor="middle"
+                        fill="white"
+                        font-family="Arial, sans-serif"
+                        font-size="10"
+                        font-weight="bold"
+                      >
+                        FLORESYA
+                      </text>
+
+                      <!-- Macetas con flores -->
+                      <!-- Maceta 1 -->
+                      <ellipse cx="40" cy="115" rx="8" ry="3" fill="#8b4513" />
+                      <rect x="35" y="105" width="10" height="10" rx="2" fill="#654321" />
+
+                      <!-- Flores maceta 1 -->
+                      <circle cx="40" cy="100" r="4" fill="#ff69b4" />
+                      <circle cx="36" cy="96" r="3" fill="#ff1493" />
+                      <circle cx="44" cy="96" r="3" fill="#ff1493" />
+                      <circle cx="38" cy="94" r="2" fill="#ffc0cb" />
+                      <circle cx="42" cy="94" r="2" fill="#ffc0cb" />
+
+                      <!-- Maceta 2 -->
+                      <ellipse cx="160" cy="115" rx="8" ry="3" fill="#8b4513" />
+                      <rect x="155" y="105" width="10" height="10" rx="2" fill="#654321" />
+
+                      <!-- Flores maceta 2 -->
+                      <circle cx="160" cy="100" r="4" fill="#dda0dd" />
+                      <circle cx="156" cy="96" r="3" fill="#9370db" />
+                      <circle cx="164" cy="96" r="3" fill="#9370db" />
+                      <circle cx="158" cy="94" r="2" fill="#e6e6fa" />
+                      <circle cx="162" cy="94" r="2" fill="#e6e6fa" />
+
+                      <!-- Hojas decorativas -->
+                      <path d="M 30 90 Q 25 85 30 80 Q 35 85 30 90" fill="#228b22" />
+                      <path d="M 170 90 Q 175 85 170 80 Q 165 85 170 90" fill="#228b22" />
+                      <path d="M 100 20 Q 95 15 100 10 Q 105 15 100 20" fill="#32cd32" />
+                    </svg>
+
+                    <!-- Texto debajo de la imagen -->
+                    <p
+                      class="text-center text-sm text-gray-600 mt-2 italic"
+                      data-contact="shop_location_text"
+                    >
+                      Nuestro local en Chacao - ¡Te esperamos!
+                    </p>
+                  </div>
+                </div>
+
+                <div class="space-y-3 text-gray-700">
+                  <p class="flex items-start">
+                    <i data-lucide="user-check" class="h-5 w-5 text-green-600 mr-3 mt-0.5"></i>
+                    <strong>Propietario:</strong>
+                    <span data-contact="owner_name">María González</span>
+                  </p>
+                  <p class="flex items-start">
+                    <i data-lucide="award" class="h-5 w-5 text-blue-600 mr-3 mt-0.5"></i>
+                    <strong>Experiencia:</strong>
+                    <span data-contact="owner_experience"
+                      >Más de 15 años creando momentos inolvidables con flores</span
+                    >
+                  </p>
+                  <p class="flex items-start">
+                    <i data-lucide="heart" class="h-5 w-5 text-pink-600 mr-3 mt-0.5"></i>
+                    <strong>Especialidad:</strong>
+                    <span data-contact="owner_specialty"
+                      >Arreglos personalizados y flores frescas de temporada</span
+                    >
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Información de Contacto -->
+          <div class="bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl p-8 shadow-lg">
+            <div class="flex items-center mb-6">
+              <div class="bg-gradient-to-r from-green-500 to-blue-500 rounded-full p-3 mr-4">
+                <i data-lucide="phone" class="h-8 w-8 text-white"></i>
+              </div>
+              <h2 class="text-3xl font-bold text-gray-900">Información de Contacto</h2>
+            </div>
+
+            <div class="space-y-4">
+              <!-- Teléfonos -->
+              <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                  <i data-lucide="phone" class="h-5 w-5 text-green-600 mr-2"></i>
+                  Teléfonos de Contacto
+                </h4>
+                <div class="space-y-2">
+                  <p class="text-gray-700">
+                    <strong>Principal:</strong>
+                    <a
+                      href="tel:+584121234567"
+                      data-contact-href="phone_primary"
+                      class="text-green-600 hover:text-green-700 ml-2"
+                    >
+                      <span data-contact="phone_primary">+58 412-1234567</span>
+                    </a>
+                  </p>
+                  <p class="text-gray-700">
+                    <strong>Secundario:</strong>
+                    <a
+                      href="tel:+582121234567"
+                      data-contact-href="phone_secondary"
+                      class="text-green-600 hover:text-green-700 ml-2"
+                    >
+                      <span data-contact="phone_secondary">+58 212-1234567</span>
+                    </a>
+                  </p>
+                </div>
+              </div>
+
+              <!-- WhatsApp -->
+              <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                  <i data-lucide="message-circle" class="h-5 w-5 text-green-600 mr-2"></i>
+                  WhatsApp
+                </h4>
+                <div class="space-y-2">
+                  <p class="text-gray-700">
+                    <strong>Atención inmediata:</strong>
+                    <a
+                      href="https://wa.me/584121234567"
+                      data-contact-href="whatsapp_main"
+                      class="text-green-600 hover:text-green-700 ml-2"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <span data-contact="whatsapp_main">+58 412-1234567</span> 🌸
+                    </a>
+                  </p>
+                  <p class="text-gray-700">
+                    <strong>Pedidos especiales:</strong>
+                    <a
+                      href="https://wa.me/584121234568"
+                      data-contact-href="whatsapp_special"
+                      class="text-green-600 hover:text-green-700 ml-2"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <span data-contact="whatsapp_special">+58 412-1234568</span> 💐
+                    </a>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                  <i data-lucide="mail" class="h-5 w-5 text-blue-600 mr-2"></i>
+                  Correo Electrónico
+                </h4>
+                <p class="text-gray-700">
+                  <a
+                    href="mailto:contacto@floresya.com"
+                    data-contact-href="email_main"
+                    class="text-blue-600 hover:text-blue-700"
+                  >
+                    <span data-contact="email_main">contacto@floresya.com</span> 📧
+                  </a>
+                </p>
+                <p class="text-sm text-gray-500 mt-1" data-contact="email_response_time">
+                  Respondemos en menos de 2 horas durante horario laboral
+                </p>
+              </div>
+
+              <!-- Ubicación -->
+              <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                  <i data-lucide="map-pin" class="h-5 w-5 text-red-600 mr-2"></i>
+                  Ubicación
+                </h4>
+                <p class="text-gray-700">
+                  <strong data-contact="location_main">Gran Caracas, Venezuela</strong>
+                </p>
+                <p class="text-gray-700" data-contact="location_delivery_area">
+                  Entregamos en toda el área metropolitana de Caracas
+                </p>
+                <p class="text-gray-700">
+                  <strong>Cobertura:</strong>
+                  <span data-contact="location_coverage"
+                    >Caracas, Chacao, Baruta, Sucre, El Hatillo</span
+                  >
+                </p>
+              </div>
+
+              <!-- Horario -->
+              <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                  <i data-lucide="clock" class="h-5 w-5 text-purple-600 mr-2"></i>
+                  Horario de Atención
+                </h4>
+                <div class="space-y-1 text-gray-700">
+                  <p>
+                    <strong>Lunes - Viernes:</strong>
+                    <span data-contact="hours_weekday">8:00 AM - 6:00 PM</span>
+                  </p>
+                  <p>
+                    <strong>Sábados:</strong>
+                    <span data-contact="hours_saturday">9:00 AM - 4:00 PM</span>
+                  </p>
+                  <p>
+                    <strong>Domingos:</strong>
+                    <span data-contact="hours_sunday">10:00 AM - 2:00 PM (Solo WhatsApp)</span>
+                  </p>
+                  <p class="text-sm text-gray-500 mt-2" data-contact="delivery_same_day">
+                    ¡Entregas el mismo día hasta las 4:00 PM!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Métodos de Pago -->
+    <section class="py-16 bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">
+            <span
+              class="bg-gradient-to-r from-yellow-600 via-orange-600 to-red-600 bg-clip-text text-transparent"
+            >
+              Métodos de Pago 💳
+            </span>
+          </h2>
+          <p class="text-xl text-gray-700">
+            Múltiples opciones seguras y convenientes para tu comodidad
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Pago Móvil -->
+          <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
+            <div class="text-center mb-6">
+              <div
+                class="bg-gradient-to-r from-green-500 to-green-600 rounded-full p-4 inline-block mb-4"
+              >
+                <i data-lucide="smartphone" class="h-12 w-12 text-white"></i>
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-2">Pago Móvil</h3>
+              <p class="text-gray-600">Rápido y seguro desde tu teléfono</p>
+            </div>
+
+            <div class="space-y-4">
+              <div class="bg-green-50 rounded-lg p-4">
+                <h4 class="font-semibold text-green-800 mb-2">Banco de Venezuela</h4>
+                <p class="text-gray-700">
+                  <strong>Teléfono:</strong>
+                  <span data-contact="payment_movil_venezuela_phone">0412-1234567</span>
+                </p>
+                <p class="text-gray-700">
+                  <strong>Cédula:</strong>
+                  <span data-contact="payment_movil_venezuela_cedula">V-12345678</span>
+                </p>
+              </div>
+
+              <div class="bg-green-50 rounded-lg p-4">
+                <h4 class="font-semibold text-green-800 mb-2">Banesco</h4>
+                <p class="text-gray-700">
+                  <strong>Teléfono:</strong>
+                  <span data-contact="payment_movil_banesco_phone">0414-8765432</span>
+                </p>
+                <p class="text-gray-700">
+                  <strong>Cédula:</strong>
+                  <span data-contact="payment_movil_banesco_cedula">V-12345678</span>
+                </p>
+              </div>
+
+              <div class="bg-green-50 rounded-lg p-4">
+                <h4 class="font-semibold text-green-800 mb-2">Mercantil</h4>
+                <p class="text-gray-700">
+                  <strong>Teléfono:</strong>
+                  <span data-contact="payment_movil_mercantil_phone">0424-1122334</span>
+                </p>
+                <p class="text-gray-700">
+                  <strong>Cédula:</strong>
+                  <span data-contact="payment_movil_mercantil_cedula">V-12345678</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transferencia Bancaria -->
+          <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
+            <div class="text-center mb-6">
+              <div
+                class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-full p-4 inline-block mb-4"
+              >
+                <i data-lucide="building-2" class="h-12 w-12 text-white"></i>
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-2">Transferencia Bancaria</h3>
+              <p class="text-gray-600">Transferencia tradicional desde tu banco</p>
+            </div>
+
+            <div class="space-y-4">
+              <div class="bg-blue-50 rounded-lg p-4">
+                <h4 class="font-semibold text-blue-800 mb-2">Banco de Venezuela</h4>
+                <p class="text-gray-700"><strong>Cuenta Corriente:</strong></p>
+                <p
+                  class="text-gray-700 font-mono text-sm"
+                  data-contact="payment_transfer_venezuela_account"
+                >
+                  0102-1234-5678-90123456
+                </p>
+                <p class="text-gray-700">
+                  <strong>Titular:</strong>
+                  <span data-contact="payment_transfer_venezuela_holder">FloresYa C.A.</span>
+                </p>
+                <p class="text-gray-700">
+                  <strong>RIF:</strong>
+                  <span data-contact="payment_transfer_venezuela_rif">J-123456789</span>
+                </p>
+              </div>
+
+              <div class="bg-blue-50 rounded-lg p-4">
+                <h4 class="font-semibold text-blue-800 mb-2">Banesco</h4>
+                <p class="text-gray-700"><strong>Cuenta Corriente:</strong></p>
+                <p
+                  class="text-gray-700 font-mono text-sm"
+                  data-contact="payment_transfer_banesco_account"
+                >
+                  0134-5678-9012-34567890
+                </p>
+                <p class="text-gray-700">
+                  <strong>Titular:</strong>
+                  <span data-contact="payment_transfer_banesco_holder">María González</span>
+                </p>
+                <p class="text-gray-700">
+                  <strong>Cédula:</strong>
+                  <span data-contact="payment_transfer_banesco_cedula">V-12345678</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Zelle y Otros -->
+          <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
+            <div class="text-center mb-6">
+              <div
+                class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-full p-4 inline-block mb-4"
+              >
+                <i data-lucide="globe" class="h-12 w-12 text-white"></i>
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-2">Zelle y Otros</h3>
+              <p class="text-gray-600">Opciones internacionales disponibles</p>
+            </div>
+
+            <div class="space-y-4">
+              <div class="bg-purple-50 rounded-lg p-4">
+                <h4 class="font-semibold text-purple-800 mb-2">Zelle</h4>
+                <p class="text-gray-700">
+                  <strong>Email:</strong>
+                  <span data-contact="payment_zelle_email">pagos@floresya.com</span>
+                </p>
+                <p class="text-gray-700">
+                  <strong>Nombre:</strong>
+                  <span data-contact="payment_zelle_name">María González</span>
+                </p>
+                <p class="text-gray-700 text-sm">* Disponible para clientes internacionales</p>
+              </div>
+
+              <div class="bg-purple-50 rounded-lg p-4">
+                <h4 class="font-semibold text-purple-800 mb-2">PayPal</h4>
+                <p class="text-gray-700">
+                  <strong>Email:</strong>
+                  <span data-contact="payment_paypal_email">paypal@floresya.com</span>
+                </p>
+                <p class="text-gray-700 text-sm">* Para pedidos internacionales</p>
+              </div>
+
+              <div class="bg-purple-50 rounded-lg p-4">
+                <h4 class="font-semibold text-purple-800 mb-2">Efectivo</h4>
+                <p class="text-gray-700">Pago contra entrega disponible</p>
+                <p class="text-gray-700 text-sm">* Solo en área metropolitana</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Información adicional de pagos -->
+        <div class="mt-12 bg-white rounded-2xl p-8 shadow-lg">
+          <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">
+            <i data-lucide="info" class="h-6 w-6 text-blue-600 mr-2 inline"></i>
+            Información Importante sobre Pagos
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h4 class="font-semibold text-gray-900 mb-3">💳 Confirmación de Pago</h4>
+              <ul class="space-y-2 text-gray-700">
+                <li class="flex items-start">
+                  <i data-lucide="check-circle" class="h-4 w-4 text-green-600 mr-2 mt-0.5"></i>
+                  Envía comprobante por WhatsApp o email
+                </li>
+                <li class="flex items-start">
+                  <i data-lucide="check-circle" class="h-4 w-4 text-green-600 mr-2 mt-0.5"></i>
+                  Procesamos pagos inmediatamente
+                </li>
+                <li class="flex items-start">
+                  <i data-lucide="check-circle" class="h-4 w-4 text-green-600 mr-2 mt-0.5"></i>
+                  Confirmamos recepción en menos de 5 minutos
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 class="font-semibold text-gray-900 mb-3">🛡️ Seguridad</h4>
+              <ul class="space-y-2 text-gray-700">
+                <li class="flex items-start">
+                  <i data-lucide="shield-check" class="h-4 w-4 text-blue-600 mr-2 mt-0.5"></i>
+                  Todos los métodos son 100% seguros
+                </li>
+                <li class="flex items-start">
+                  <i data-lucide="shield-check" class="h-4 w-4 text-blue-600 mr-2 mt-0.5"></i>
+                  Protección de datos garantizada
+                </li>
+                <li class="flex items-start">
+                  <i data-lucide="shield-check" class="h-4 w-4 text-blue-600 mr-2 mt-0.5"></i>
+                  Transacciones encriptadas
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Redes Sociales -->
+    <section class="py-16 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">
+            <span
+              class="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent"
+            >
+              Síguenos en Redes Sociales 📱
+            </span>
+          </h2>
+          <p class="text-xl text-gray-700">
+            Inspírate con nuestras creaciones diarias y mantente al día con las últimas tendencias
+            florales
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+          <!-- Facebook -->
+          <a
+            href="https://facebook.com/floresya"
+            data-contact-href="social_facebook"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center group"
+          >
+            <div
+              class="bg-blue-600 rounded-full p-6 inline-block mb-4 group-hover:bg-blue-700 transition-colors"
+            >
+              <i data-lucide="facebook" class="h-12 w-12 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Facebook</h3>
+            <p class="text-gray-600" data-contact="social_facebook_handle">@floresya</p>
+            <p class="text-sm text-gray-500 mt-2">Arreglos del día</p>
+          </a>
+
+          <!-- Instagram -->
+          <a
+            href="https://instagram.com/floresya_ve"
+            data-contact-href="social_instagram"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center group"
+          >
+            <div
+              class="bg-gradient-to-r from-pink-500 to-purple-600 rounded-full p-6 inline-block mb-4 group-hover:from-pink-600 group-hover:to-purple-700 transition-all"
+            >
+              <i data-lucide="instagram" class="h-12 w-12 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Instagram</h3>
+            <p class="text-gray-600" data-contact="social_instagram_handle">@floresya_ve</p>
+            <p class="text-sm text-gray-500 mt-2">Stories diarios</p>
+          </a>
+
+          <!-- WhatsApp Business -->
+          <a
+            href="https://wa.me/584121234567"
+            data-contact-href="whatsapp_main"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center group"
+          >
+            <div
+              class="bg-green-600 rounded-full p-6 inline-block mb-4 group-hover:bg-green-700 transition-colors"
+            >
+              <i data-lucide="message-circle" class="h-12 w-12 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">WhatsApp</h3>
+            <p class="text-gray-600" data-contact="whatsapp_main">+58 412-1234567</p>
+            <p class="text-sm text-gray-500 mt-2">Consulta inmediata</p>
+          </a>
+
+          <!-- TikTok -->
+          <a
+            href="https://tiktok.com/@floresya"
+            data-contact-href="social_tiktok"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center group"
+          >
+            <div
+              class="bg-black rounded-full p-6 inline-block mb-4 group-hover:bg-gray-800 transition-colors"
+            >
+              <i data-lucide="play" class="h-12 w-12 text-white"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">TikTok</h3>
+            <p class="text-gray-600" data-contact="social_tiktok_handle">@floresya</p>
+            <p class="text-sm text-gray-500 mt-2">Tips florales</p>
+          </a>
+        </div>
+
+        <!-- Newsletter signup -->
+        <div class="mt-16 max-w-2xl mx-auto">
+          <div class="bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl p-8 text-center">
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">
+              🌸 ¡Suscríbete a nuestro Newsletter!
+            </h3>
+            <p class="text-gray-700 mb-6">
+              Recibe ofertas exclusivas, tips de cuidado de flores y las últimas tendencias
+              directamente en tu email.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+              <input
+                type="email"
+                placeholder="Tu email aquí..."
+                class="flex-1 px-4 py-3 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                id="newsletter-email"
+              />
+              <button
+                class="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-8 py-3 rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all duration-300 font-semibold"
+              >
+                Suscribirme 💌
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Map Section (Placeholder) -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">
+            <i data-lucide="map" class="h-8 w-8 text-green-600 mr-2 inline"></i>
+            Encuentra Nuestra Ubicación 🗺️
+          </h2>
+          <p class="text-xl text-gray-700">
+            Visítanos en nuestra ubicación física para ver nuestras flores personalmente
+          </p>
+        </div>
+
+        <div class="bg-gray-100 rounded-2xl p-8 text-center">
+          <div class="bg-gray-200 rounded-lg p-12">
+            <i data-lucide="map-pin" class="h-16 w-16 text-gray-400 mx-auto mb-4"></i>
+            <h3 class="text-2xl font-bold text-gray-600 mb-2">Mapa Interactivo</h3>
+            <p class="text-gray-500 mb-4">
+              Próximamente: Mapa interactivo con ubicación exacta y rutas de entrega
+            </p>
+            <p class="text-gray-600">
+              <strong>Dirección:</strong>
+              <span data-contact="location_address"
+                >Av. Principal de Chacao, Centro Comercial Flores, Local 15-B, Caracas,
+                Venezuela</span
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-section bg-gray-900 text-white py-12">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          <!-- Brand -->
+          <div class="space-y-6">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="flower" class="h-6 w-6 text-primary-400"></i>
+              <span class="text-xl font-bold">FloresYa</span>
+            </div>
+            <p class="text-gray-300">
+              Tu floristería en línea de confianza. Llevamos la belleza de las flores directamente a
+              tu hogar.
+            </p>
+            <div class="flex space-x-4">
+              <a
+                href="https://facebook.com/floresya"
+                class="text-gray-300 hover:text-white transition-colors"
+                aria-label="Facebook"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i data-lucide="facebook" class="h-5 w-5"></i>
+              </a>
+              <a
+                href="https://instagram.com/floresya"
+                class="text-gray-300 hover:text-white transition-colors"
+                aria-label="Instagram"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i data-lucide="instagram" class="h-5 w-5"></i>
+              </a>
+              <a
+                href="https://wa.me/584121234567"
+                class="text-gray-300 hover:text-white transition-colors"
+                aria-label="WhatsApp"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i data-lucide="message-circle" class="h-5 w-5"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Contacto Rápido -->
+          <div class="space-y-6">
+            <h6 class="font-bold text-lg">Contacto Rápido</h6>
+            <div class="space-y-3 text-gray-300">
+              <p class="flex items-center">
+                <i data-lucide="phone" class="h-4 w-4 mr-2"></i>
+                <a href="tel:+584121234567" class="hover:text-white">+58 412-1234567</a>
+              </p>
+              <p class="flex items-center">
+                <i data-lucide="message-circle" class="h-4 w-4 mr-2"></i>
+                <a
+                  href="https://wa.me/584121234567"
+                  class="hover:text-white"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >WhatsApp</a
+                >
+              </p>
+              <p class="flex items-center">
+                <i data-lucide="mail" class="h-4 w-4 mr-2"></i>
+                <a href="mailto:contacto@floresya.com" class="hover:text-white"
+                  >contacto@floresya.com</a
+                >
+              </p>
+            </div>
+          </div>
+
+          <!-- Pagos -->
+          <div class="space-y-6">
+            <h6 class="font-bold text-lg">Métodos de Pago</h6>
+            <div class="space-y-3 text-gray-300">
+              <p class="flex items-center">
+                <i data-lucide="smartphone" class="h-4 w-4 mr-2"></i> Pago Móvil
+              </p>
+              <p class="flex items-center">
+                <i data-lucide="building-2" class="h-4 w-4 mr-2"></i> Transferencia
+              </p>
+              <p class="flex items-center">
+                <i data-lucide="globe" class="h-4 w-4 mr-2"></i> Zelle
+              </p>
+              <p class="flex items-center">
+                <i data-lucide="dollar-sign" class="h-4 w-4 mr-2"></i> Efectivo
+              </p>
+            </div>
+          </div>
+
+          <!-- Horario -->
+          <div class="space-y-6">
+            <h6 class="font-bold text-lg">Horario</h6>
+            <div class="space-y-3 text-gray-300">
+              <p><strong>Lun-Vie:</strong> 8:00-18:00</p>
+              <p><strong>Sáb:</strong> 9:00-16:00</p>
+              <p><strong>Dom:</strong> 10:00-14:00</p>
+              <p class="text-sm text-gray-400 mt-4">¡Entregas el mismo día hasta las 4:00 PM!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-800 mt-10 pt-8 text-center md:text-left">
+          <div class="flex flex-col md:flex-row justify-between items-center">
+            <p class="text-gray-400 mb-4 md:mb-0">
+              &copy; 2025 FloresYa. Todos los derechos reservados.
+            </p>
+            <div class="flex space-x-6">
+              <a href="#" class="text-gray-400 hover:text-white transition-colors">Términos</a>
+              <a href="#" class="text-gray-400 hover:text-white transition-colors">Privacidad</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts al final (ES6 Modules) -->
+    <script type="module" src="../js/lucide-icons.js"></script>
+    <script type="module" src="./contacto.js"></script>
+    <script type="module" src="./contacto-page.js"></script>
+  </body>
+</html>
