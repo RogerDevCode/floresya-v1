@@ -738,14 +738,17 @@
                 class="border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
                 style="height: 140px"
               >
-                <input type="file" id="logo-upload" accept="image/webp,image/png" class="hidden" />
+                <input type="file" id="logo-upload" accept="image/*" class="hidden" />
                 <label
                   for="logo-upload"
                   class="cursor-pointer flex flex-col items-center justify-center h-full"
                 >
                   <i data-lucide="upload-cloud" class="h-8 w-8 text-gray-400 mb-2"></i>
                   <span class="text-sm text-gray-600">Haz clic para seleccionar un logo</span>
-                  <span class="text-xs text-gray-500 mt-1">(WebP o PNG - 128x128px - Máx 1MB)</span>
+                  <span class="text-xs text-gray-500 mt-1">(Cualquier imagen - Máx 2MB)</span>
+                  <span class="text-xs text-gray-400 mt-1"
+                    >Se redimensionará automáticamente a 128x128px WebP</span
+                  >
                 </label>
               </div>
               <div id="logo-preview-area" class="mt-2 hidden">

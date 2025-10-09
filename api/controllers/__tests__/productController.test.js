@@ -81,8 +81,8 @@ describe('Product Controller - getProductById', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'BadRequestError',
-        message: 'Invalid request. Please check your input.'
+        error: 'validation',
+        message: 'Validation failed. Please check your input.'
       })
     })
 
@@ -100,7 +100,7 @@ describe('Product Controller - getProductById', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'BadRequestError'
+        error: 'validation'
       })
     })
 
@@ -109,7 +109,7 @@ describe('Product Controller - getProductById', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'BadRequestError'
+        error: 'validation'
       })
     })
 

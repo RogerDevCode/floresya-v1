@@ -87,21 +87,21 @@ describe('Product Image Controller', () => {
 
       expect(response.body).toHaveProperty('success', false)
       expect(response.body).toHaveProperty('error')
-      expect(response.body.error).toBe('BadRequestError')
+      expect(response.body.error).toBe('validation')
     })
 
     it('should return 400 for invalid product ID (zero)', async () => {
       const response = await request(app).get('/api/products/0/images').expect(400)
 
       expect(response.body).toHaveProperty('success', false)
-      expect(response.body.error).toBe('BadRequestError')
+      expect(response.body.error).toBe('validation')
     })
 
     it('should return 400 for invalid product ID (negative)', async () => {
       const response = await request(app).get('/api/products/-1/images').expect(400)
 
       expect(response.body).toHaveProperty('success', false)
-      expect(response.body.error).toBe('BadRequestError')
+      expect(response.body.error).toBe('validation')
     })
 
     it('should return 500 when service throws error', async () => {

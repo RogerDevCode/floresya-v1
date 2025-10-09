@@ -3,13 +3,19 @@
  * Handles HTTP logic for admin settings operations
  */
 
+import sharp from 'sharp'
 import * as settingsService from '../../services/settingsService.js'
+import { uploadToStorage } from '../../services/supabaseStorageService.js'
 import { asyncHandler } from '../../middleware/errorHandler.js'
 import { BadRequestError } from '../../errors/AppError.js'
+
+// Settings images bucket name
+const SETTINGS_BUCKET = 'settings-images'
 
 /**
  * POST /api/admin/settings/image
  * Upload and save image for a specific setting (hero_image, site_logo, etc.)
+ * Automatically processes images with sharp (resize + WebP conversion)
  */
 export const uploadSettingImage = asyncHandler(async (req, res) => {
   // Validate file upload
@@ -29,14 +35,52 @@ export const uploadSettingImage = asyncHandler(async (req, res) => {
     throw new BadRequestError(`setting_key debe ser uno de: ${allowedKeys.join(', ')}`)
   }
 
+  // Process image with sharp based on setting key
+  let processedBuffer
+  let filename
+  let storagePath
+
+  if (settingKey === 'site_logo') {
+    // Logo: Resize to 128x128px and convert to WebP
+    processedBuffer = await sharp(req.file.buffer)
+      .resize(128, 128, {
+        fit: 'cover',
+        position: 'center'
+      })
+      .webp({ quality: 90 })
+      .toBuffer()
+
+    filename = `logo-${Date.now()}.webp`
+    storagePath = `logos/${filename}`
+  } else if (settingKey === 'hero_image') {
+    // Hero image: Optimize and convert to WebP (maintain aspect ratio, max width 1920px)
+    processedBuffer = await sharp(req.file.buffer)
+      .resize(1920, null, {
+        fit: 'inside',
+        withoutEnlargement: true
+      })
+      .webp({ quality: 85 })
+      .toBuffer()
+
+    filename = `hero-${Date.now()}.webp`
+    storagePath = `hero/${filename}`
+  }
+
+  // Upload processed image to Supabase Storage
+  const imageUrl = await uploadToStorage(
+    processedBuffer,
+    storagePath,
+    SETTINGS_BUCKET,
+    'image/webp'
+  )
+
   // Save image URL to settings
-  const imageUrl = req.file.path // From multer upload
   const setting = await settingsService.setSettingValue(settingKey, imageUrl)
 
   res.json({
     success: true,
     data: setting,
-    message: 'Imagen guardada exitosamente'
+    message: `Imagen procesada y guardada exitosamente (${(processedBuffer.length / 1024).toFixed(2)} KB)`
   })
 })
 

@@ -7,30 +7,34 @@ import multer from 'multer'
 import { BadRequestError } from '../errors/AppError.js'
 
 /**
- * File filter - only allow images
+ * File filter - accept all image types
  */
 const fileFilter = (req, file, cb) => {
-  const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
-
-  if (allowedMimeTypes.includes(file.mimetype)) {
+  // Accept any file with mimetype starting with 'image/'
+  if (file.mimetype.startsWith('image/')) {
     cb(null, true)
   } else {
-    cb(new BadRequestError(`Invalid file type: ${file.mimetype}. Allowed: JPEG, PNG, WebP`), false)
+    cb(
+      new BadRequestError(`Invalid file type: ${file.mimetype}. Only image files are allowed.`),
+      false
+    )
   }
 }
 
 /**
  * Multer configuration
- * Storage: memory (we'll process and upload to Supabase)
- * Limits: 4MB max file size (Vercel serverless function payload limit)
+ * Storage: memory (we'll process with sharp and upload to Supabase)
+ * Limits: 2MB max file size (flexible - will be processed and optimized)
  *
- * IMPORTANT: Vercel serverless functions have a 4MB request body limit.
- * Files larger than 4MB will be rejected to prevent deployment errors.
+ * Images are automatically processed with sharp to:
+ * - Resize to appropriate dimensions (128x128px for logos, optimized for hero)
+ * - Convert to WebP format for optimal web performance
+ * - Compress for faster loading
  */
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 4 * 1024 * 1024, // 4MB (Vercel limit)
+    fileSize: 2 * 1024 * 1024, // 2MB max for original upload
     files: 5 // Max 5 files per request
   },
   fileFilter
@@ -57,7 +61,7 @@ export function handleMulterError(error, req, res, next) {
       return res.status(413).json({
         success: false,
         error: 'PayloadTooLarge',
-        message: 'File size exceeds 4MB limit (Vercel serverless function restriction)'
+        message: 'File size exceeds 2MB limit'
       })
     }
 

@@ -162,6 +162,9 @@ export async function getUserById(id, includeInactive = false) {
     const { data, error } = await query.single()
 
     if (error) {
+      if (error.code === 'PGRST116') {
+        throw new NotFoundError('User', id, { includeInactive })
+      }
       throw new DatabaseError('SELECT', TABLE, error, { userId: id })
     }
     if (!data) {

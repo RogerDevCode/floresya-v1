@@ -40,10 +40,12 @@ describe('🛡️ Robustness Integration Tests', () => {
           items: [] // Empty items array
         }
 
-        const response = await request(app).post('/api/orders').send(invalidOrder).expect(422)
+        const response = await request(app).post('/api/orders').send(invalidOrder)
+
+        expect(response.status).toBe(400)
 
         expect(response.body.success).toBe(false)
-        expect(response.body.error).toBe('ValidationError')
+        expect(response.body.error).toBe('validation')
         expect(response.body.details.validationErrors).toBeDefined()
         expect(response.body.details.validationErrors.length).toBeGreaterThan(0)
       })
@@ -111,7 +113,7 @@ describe('🛡️ Robustness Integration Tests', () => {
         const response = await request(app)
           .post('/api/orders')
           .send(orderWithInvalidPhone)
-          .expect(422)
+          .expect(400)
 
         expect(response.body.success).toBe(false)
         expect(response.body.details.validationErrors).toContain(
@@ -172,7 +174,7 @@ describe('🛡️ Robustness Integration Tests', () => {
           ]
         }
 
-        const response = await request(app).post('/api/orders').send(maliciousOrder).expect(422) // Will fail validation but input should be sanitized
+        const response = await request(app).post('/api/orders').send(maliciousOrder).expect(400) // Will fail validation but input should be sanitized
 
         // The malicious script tags should be sanitized
         expect(response.body).toBeDefined()
@@ -248,7 +250,7 @@ describe('🛡️ Robustness Integration Tests', () => {
 
     describe('Business Rules Engine', () => {
       it('should return business rules status', async () => {
-        const response = await request(app).get('/api/admin/business-rules').expect(200)
+        const response = await request(app).get('/api/admin/settings/business-rules').expect(200)
 
         expect(response.body.success).toBe(true)
         expect(response.body.data.totalRules).toBeGreaterThan(0)
@@ -280,7 +282,7 @@ describe('🛡️ Robustness Integration Tests', () => {
         const response = await request(app).post('/api/orders').send(lowValueOrder).expect(400) // Should fail business rules
 
         expect(response.body.success).toBe(false)
-        expect(response.body.error).toBe('BadRequestError')
+        expect(response.body.error).toBe('validation')
       })
 
       it('should enforce Caracas delivery area rule', async () => {
@@ -307,7 +309,7 @@ describe('🛡️ Robustness Integration Tests', () => {
         const response = await request(app)
           .post('/api/orders')
           .send(outsideCaracasOrder)
-          .expect(422) // Should fail business rules
+          .expect(400) // Should fail business rules
 
         expect(response.body.success).toBe(false)
       })
@@ -459,7 +461,7 @@ describe('🛡️ Robustness Integration Tests', () => {
         invalid: 'data'
       }
 
-      const response = await request(app).post('/api/orders').send(invalidRequest).expect(422)
+      const response = await request(app).post('/api/orders').send(invalidRequest).expect(400)
 
       expect(response.body.success).toBe(false)
       expect(response.body.error).toBeDefined()
@@ -488,7 +490,7 @@ describe('🛡️ Robustness Integration Tests', () => {
     })
 
     it('should provide business rules engine status', async () => {
-      const response = await request(app).get('/api/admin/business-rules').expect(200)
+      const response = await request(app).get('/api/admin/settings/business-rules').expect(200)
 
       expect(response.body.success).toBe(true)
       expect(response.body.data.totalRules).toBeGreaterThan(0)

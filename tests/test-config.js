@@ -70,8 +70,10 @@ export const testConfig = {
 }
 
 // Utility functions for tests
+import { vi } from 'vitest'
+
 export function createMockFetch(responseData, status = 200, ok = true) {
-  return jest.fn(() =>
+  return vi.fn(() =>
     Promise.resolve({
       ok,
       status,
@@ -89,16 +91,16 @@ export function createMockElement(tag = 'div') {
     disabled: false,
     style: { display: 'block' },
     classList: {
-      add: jest.fn(),
-      remove: jest.fn(),
-      contains: jest.fn(() => false),
-      toggle: jest.fn()
+      add: vi.fn(),
+      remove: vi.fn(),
+      contains: vi.fn(() => false),
+      toggle: vi.fn()
     },
-    addEventListener: jest.fn(),
-    click: jest.fn(),
-    focus: jest.fn(),
-    setAttribute: jest.fn(),
-    getAttribute: jest.fn()
+    addEventListener: vi.fn(),
+    click: vi.fn(),
+    focus: vi.fn(),
+    setAttribute: vi.fn(),
+    getAttribute: vi.fn()
   }
 
   return element

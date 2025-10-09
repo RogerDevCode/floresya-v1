@@ -12,9 +12,27 @@ import { BadRequestError } from '../errors/AppError.js'
  * Restrict origins based on environment
  */
 export function configureCors() {
-  const allowedOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(',')
-    : ['http://localhost:3000', 'http://localhost:5173']
+  // Get allowed origins from environment variable or use defaults
+  let allowedOrigins = ['http://localhost:3000', 'http://localhost:5173']
+
+  if (process.env.ALLOWED_ORIGINS) {
+    allowedOrigins = allowedOrigins.concat(process.env.ALLOWED_ORIGINS.split(','))
+  }
+
+  // Always add Vercel deployment domains to support deployment scenarios
+  allowedOrigins = allowedOrigins.concat(
+    [
+      'https://floresya-v1.vercel.app',
+      'https://www.floresya-v1.vercel.app',
+      // Add your custom domain if you have one
+      process.env.CUSTOM_DOMAIN || ''
+    ].filter(domain => domain !== '')
+  )
+
+  // Add additional production domains if in production
+  if (process.env.NODE_ENV === 'production') {
+    // Add any additional production-specific domains here
+  }
 
   return cors({
     origin: (origin, callback) => {

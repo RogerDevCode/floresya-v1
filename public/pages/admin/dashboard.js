@@ -1071,23 +1071,23 @@ function handleHeroImageUpload(event) {
     return
   }
 
-  // Validate file type
+  // Validate file type (any image format)
   if (!file.type.startsWith('image/')) {
     alert('Por favor selecciona un archivo de imagen válido.')
     event.target.value = ''
     return
   }
 
-  // Validate file size (4MB max)
-  if (file.size > 4 * 1024 * 1024) {
-    alert('La imagen no debe superar 4MB.')
+  // Validate file size (2MB max)
+  if (file.size > 2 * 1024 * 1024) {
+    alert('La imagen no debe superar 2MB.')
     event.target.value = ''
     return
   }
 
   heroImageFile = file
 
-  // Show preview of selected image
+  // Show preview of selected image (backend will process)
   const reader = new FileReader()
   reader.onload = e => {
     const uploadArea = document.querySelector('#hero-image-upload + label')
@@ -1095,7 +1095,7 @@ function handleHeroImageUpload(event) {
       uploadArea.innerHTML = `
         <img src="${e.target.result}" alt="Preview" class="max-h-32 rounded-lg mx-auto mb-2" style="max-height: 150px;">
         <p class="text-sm text-green-600 font-medium">✓ Imagen seleccionada</p>
-        <p class="text-xs text-gray-500 mt-1">${file.name}</p>
+        <p class="text-xs text-gray-500 mt-1">${file.name} (${(file.size / 1024).toFixed(2)} KB - se procesará a WebP optimizado)</p>
       `
     }
   }
@@ -1117,43 +1117,35 @@ function handleLogoUpload(event) {
     return
   }
 
-  // Validate file type (WebP or PNG only)
-  if (!['image/webp', 'image/png'].includes(file.type)) {
-    alert('Por favor selecciona un archivo WebP o PNG.')
+  // Validate file type (any image format)
+  if (!file.type.startsWith('image/')) {
+    alert('Por favor selecciona un archivo de imagen válido.')
     event.target.value = ''
     return
   }
 
-  // Validate file size (1MB max for logo)
-  if (file.size > 1 * 1024 * 1024) {
-    alert('El logo no debe superar 1MB.')
+  // Validate file size (2MB max)
+  if (file.size > 2 * 1024 * 1024) {
+    alert('La imagen no debe superar 2MB.')
     event.target.value = ''
     return
   }
 
-  // Load image to validate dimensions
+  // Store file and show preview (backend will process)
+  logoFile = file
+
+  // Show preview of original image
   const reader = new FileReader()
   reader.onload = e => {
     const img = new Image()
     img.onload = () => {
-      // Check if dimensions are 128x128px
-      if (img.width !== 128 || img.height !== 128) {
-        alert(`El logo debe ser de 128x128px.\nTamaño seleccionado: ${img.width}x${img.height}px`)
-        event.target.value = ''
-        return
-      }
-
-      // Valid image - store and show preview
-      logoFile = file
-
-      // Show preview
       const previewArea = document.getElementById('logo-preview-area')
       const previewImg = document.getElementById('logo-preview')
       const dimensionsText = document.getElementById('logo-dimensions')
 
       if (previewArea && previewImg && dimensionsText) {
         previewImg.src = e.target.result
-        dimensionsText.textContent = `${img.width}x${img.height}px - ${(file.size / 1024).toFixed(2)} KB`
+        dimensionsText.textContent = `Original: ${img.width}x${img.height}px - ${(file.size / 1024).toFixed(2)} KB (se procesará a 128x128px WebP)`
         previewArea.classList.remove('hidden')
       }
 
