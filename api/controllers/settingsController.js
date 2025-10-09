@@ -12,6 +12,7 @@ const router = express.Router()
  * GET /api/settings
  * Get all settings
  */
+
 export const getAllSettings = asyncHandler(async (req, res) => {
   const publicOnly = req.query.public === 'true'
 
@@ -28,6 +29,7 @@ export const getAllSettings = asyncHandler(async (req, res) => {
  * GET /api/settings/public
  * Get public settings only
  */
+
 export const getPublicSettings = asyncHandler(async (req, res) => {
   const settings = await settingsService.getPublicSettings()
 
@@ -42,6 +44,7 @@ export const getPublicSettings = asyncHandler(async (req, res) => {
  * GET /api/settings/map
  * Get settings as key-value map
  */
+
 export const getSettingsMap = asyncHandler(async (req, res) => {
   const publicOnly = req.query.public === 'true'
   const map = await settingsService.getSettingsMap(publicOnly)
@@ -57,6 +60,7 @@ export const getSettingsMap = asyncHandler(async (req, res) => {
  * GET /api/settings/:key
  * Get setting by key
  */
+
 export const getSettingByKey = asyncHandler(async (req, res) => {
   const setting = await settingsService.getSettingByKey(req.params.key)
 
@@ -71,6 +75,7 @@ export const getSettingByKey = asyncHandler(async (req, res) => {
  * POST /api/settings
  * Create new setting
  */
+
 export const createSetting = asyncHandler(async (req, res) => {
   const setting = await settingsService.createSetting(req.body)
 
@@ -85,6 +90,7 @@ export const createSetting = asyncHandler(async (req, res) => {
  * PUT /api/settings/:key
  * Update setting
  */
+
 export const updateSetting = asyncHandler(async (req, res) => {
   const setting = await settingsService.updateSetting(req.params.key, req.body)
 
@@ -99,6 +105,7 @@ export const updateSetting = asyncHandler(async (req, res) => {
  * PATCH /api/settings/:key/value
  * Set setting value
  */
+
 export const setSettingValue = asyncHandler(async (req, res) => {
   const { value } = req.body
   const setting = await settingsService.setSettingValue(req.params.key, value)
@@ -114,6 +121,7 @@ export const setSettingValue = asyncHandler(async (req, res) => {
  * DELETE /api/settings/:key
  * Delete setting
  */
+
 export const deleteSetting = asyncHandler(async (req, res) => {
   const setting = await settingsService.deleteSetting(req.params.key)
 
@@ -128,6 +136,7 @@ export const deleteSetting = asyncHandler(async (req, res) => {
  * GET /api/settings/:key/value
  * Get setting value by key
  */
+
 export const getSettingValue = asyncHandler(async (req, res) => {
   const { key } = req.params
 

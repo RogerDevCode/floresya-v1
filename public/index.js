@@ -6,6 +6,7 @@
 import { createIcons } from './js/lucide-icons.js'
 import { createImageCarousel } from './js/components/imageCarousel.js'
 import { addToCart, initCartBadge, initCartEventListeners } from './js/shared/cart.js'
+import { api } from './js/shared/api-client.js'
 
 /**
  * Initialize mobile menu toggle
@@ -69,8 +70,7 @@ async function initCarousel() {
   // Fetch featured products from API
   let featuredProducts = []
   try {
-    const response = await fetch('/api/products/carousel')
-    const result = await response.json()
+    const result = await api.getAllCarouselProducts()
 
     console.info('🎠 Carousel API Response:', {
       success: result.success,
@@ -283,8 +283,7 @@ async function loadOccasionsFilter() {
   }
 
   try {
-    const response = await fetch('/api/occasions')
-    const result = await response.json()
+    const result = await api.getAllOccasions()
 
     if (!result.success || !result.data) {
       console.error('Failed to load occasions:', result)
@@ -331,22 +330,24 @@ async function loadProducts(page = 1) {
     const occasionFilter = document.getElementById('occasionFilter')
     const sortFilter = document.getElementById('sortFilter')
 
-    let url = `/api/products?limit=${PRODUCTS_PER_PAGE}&offset=${offset}`
+    const params = {
+      limit: PRODUCTS_PER_PAGE,
+      offset: offset
+    }
 
     if (searchInput?.value) {
-      url += `&search=${encodeURIComponent(searchInput.value)}`
+      params.search = searchInput.value
     }
 
     if (occasionFilter?.value) {
-      url += `&occasion=${encodeURIComponent(occasionFilter.value)}`
+      params.occasion = occasionFilter.value
     }
 
     if (sortFilter?.value) {
-      url += `&sortBy=${sortFilter.value}`
+      params.sortBy = sortFilter.value
     }
 
-    const response = await fetch(url)
-    const result = await response.json()
+    const result = await api.getAllProducts(params)
 
     console.info('📦 Products API Response:', {
       success: result.success,

@@ -1,0 +1,65 @@
+{
+  "timestamp": "2025-10-09T00:01:48.303Z",
+  "success": true,
+  "checks": [
+    {
+      "name": "openapi_generation",
+      "status": "PASS",
+      "details": {
+        "timestamp": "2025-10-09T00:01:48.466Z",
+        "version": "1.0.0",
+        "endpoints": 43,
+        "schemas": 15,
+        "tags": 6,
+        "generation": {
+          "success": true,
+          "files": {
+            "json": "/home/manager/Sync/floresya-v1/api/docs/openapi-spec.json",
+            "yaml": "/home/manager/Sync/floresya-v1/api/docs/openapi-spec.yaml"
+          }
+        }
+      }
+    },
+    {
+      "name": "contract_compliance",
+      "status": "PASS",
+      "details": {
+        "valid": true,
+        "issues": []
+      }
+    },
+    {
+      "name": "specification_structure",
+      "status": "PASS",
+      "details": {
+        "endpoints": 43,
+        "schemas": 15,
+        "version": "1.0.0"
+      }
+    },
+    {
+      "name": "annotations_quality",
+      "status": "PASS",
+      "details": {
+        "hasSwaggerAnnotations": true,
+        "hasEndpointAnnotations": true,
+        "hasResponseDefinitions": true,
+        "annotationLines": 2130
+      }
+    }
+  ],
+  "summary": {
+    "timestamp": "2025-10-09T00:01:48.466Z",
+    "version": "1.0.0",
+    "endpoints": 43,
+    "schemas": 15,
+    "tags": 6,
+    "generation": {
+      "success": true,
+      "files": {
+        "json": "/home/manager/Sync/floresya-v1/api/docs/openapi-spec.json",
+        "yaml": "/home/manager/Sync/floresya-v1/api/docs/openapi-spec.yaml"
+      }
+    }
+  }
+}

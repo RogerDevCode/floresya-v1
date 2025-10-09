@@ -3,7 +3,7 @@
  * Loads all contact information from settings API
  */
 
-import { api } from '../js/shared/api.js'
+import { api } from '../js/shared/api-client.js'
 
 // Settings cache
 let contactSettings = {}
@@ -12,7 +12,7 @@ let contactSettings = {}
  * Load contact settings from API
  */
 async function loadContactSettings() {
-  const response = await api.getPublicSettings()
+  const response = await api.getAllPublic()
 
   if (!response.success || !response.data) {
     throw new Error('Failed to load contact settings')

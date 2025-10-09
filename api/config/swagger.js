@@ -4,406 +4,177 @@
  */
 
 import swaggerJsdoc from 'swagger-jsdoc'
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
-const options = {
-  definition: {
-    openapi: '3.1.0',
-    info: {
-      title: 'FloresYa API',
-      version: '1.0.0',
-      description: 'E-commerce API for flower delivery - Built with KISS principles',
-      contact: {
-        name: 'FloresYa Team',
-        email: 'support@floresya.com'
-      },
-      license: {
-        name: 'MIT',
-        url: 'https://opensource.org/licenses/MIT'
-      }
-    },
-    servers: [
-      {
-        url: 'http://localhost:3000',
-        description: 'Development server'
-      },
-      {
-        url: 'https://floresya.vercel.app',
-        description: 'Production server'
-      }
-    ],
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-          description:
-            'Simulated JWT token (format: Bearer user:ID:ROLE) - TODO: Implement real JWT'
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+// Function to load OpenAPI spec from generated file
+function loadSwaggerSpec() {
+  try {
+    const specPath = path.join(__dirname, '../docs/openapi-spec.json')
+    console.log('Loading OpenAPI spec from:', specPath)
+    if (fs.existsSync(specPath)) {
+      const specContent = fs.readFileSync(specPath, 'utf8')
+      const spec = JSON.parse(specContent)
+      console.log(
+        'Successfully loaded OpenAPI spec with',
+        Object.keys(spec.components?.schemas || {}).length,
+        'schemas'
+      )
+      console.log('Available schemas:', Object.keys(spec.components?.schemas || {}))
+      // Force reload by adding timestamp
+      spec._loadedAt = new Date().toISOString()
+      return spec
+    } else {
+      console.warn('Generated OpenAPI spec file not found at:', specPath)
+    }
+  } catch (error) {
+    console.warn(
+      'Failed to load generated OpenAPI spec, falling back to basic config:',
+      error.message
+    )
+  }
+
+  // Fallback to basic configuration if generated spec is not available
+  const options = {
+    definition: {
+      openapi: '3.1.0',
+      info: {
+        title: 'FloresYa API',
+        version: '1.0.0',
+        description: 'E-commerce API for flower delivery - Built with KISS principles',
+        contact: {
+          name: 'FloresYa Team',
+          email: 'support@floresya.com'
+        },
+        license: {
+          name: 'MIT',
+          url: 'https://opensource.org/licenses/MIT'
         }
       },
-      schemas: {
-        // Standard response wrapper
-        SuccessResponse: {
-          type: 'object',
-          properties: {
-            success: {
-              type: 'boolean',
-              example: true
-            },
-            data: {
-              type: 'object',
-              description: 'Response data'
-            },
-            message: {
-              type: 'string',
-              example: 'Operation completed successfully'
-            }
+      servers: [
+        {
+          url: 'http://localhost:3000',
+          description: 'Development server'
+        },
+        {
+          url: 'https://floresya.vercel.app',
+          description: 'Production server'
+        }
+      ],
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+            description: 'JWT token authentication'
           }
         },
-        ErrorResponse: {
-          type: 'object',
-          properties: {
-            success: {
-              type: 'boolean',
-              example: false
-            },
-            error: {
-              type: 'string',
-              example: 'Error message'
-            },
-            message: {
-              type: 'string',
-              example: 'Operation failed'
-            },
-            details: {
-              type: 'array',
-              items: {
-                type: 'string'
+        schemas: {
+          // Standard response wrapper
+          SuccessResponse: {
+            type: 'object',
+            properties: {
+              success: {
+                type: 'boolean',
+                example: true
               },
-              description: 'Validation errors (if applicable)'
+              data: {
+                type: 'object',
+                description: 'Response data'
+              },
+              message: {
+                type: 'string',
+                example: 'Operation completed successfully'
+              }
             }
-          }
-        },
-        // Domain models
-        User: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer', example: 1 },
-            email: { type: 'string', format: 'email', example: 'user@example.com' },
-            full_name: { type: 'string', example: 'John Doe' },
-            phone: { type: 'string', example: '+1234567890' },
-            role: { type: 'string', enum: ['user', 'admin'], example: 'user' },
-            email_verified: { type: 'boolean', example: false },
-            is_active: { type: 'boolean', example: true },
-            created_at: { type: 'string', format: 'date-time' },
-            updated_at: { type: 'string', format: 'date-time' }
-          }
-        },
-        Occasion: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer', example: 1 },
-            name: { type: 'string', example: 'Birthday' },
-            description: { type: 'string', example: 'Flowers for birthdays' },
-            slug: { type: 'string', example: 'birthday' },
-            display_order: { type: 'integer', example: 1 },
-            is_active: { type: 'boolean', example: true },
-            created_at: { type: 'string', format: 'date-time' },
-            updated_at: { type: 'string', format: 'date-time' }
-          }
-        },
-        Product: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer', example: 1 },
-            name: { type: 'string', example: 'Red Roses Bouquet' },
-            summary: { type: 'string', example: 'Dozen red roses', nullable: true },
-            description: { type: 'string', example: 'Beautiful red roses', nullable: true },
-            price_usd: { type: 'number', format: 'decimal', example: 29.99 },
-            price_ves: { type: 'number', format: 'decimal', example: 1200.0, nullable: true },
-            stock: { type: 'integer', example: 50 },
-            sku: { type: 'string', example: 'ROSE-RED-001', nullable: true },
-            featured: { type: 'boolean', example: true },
-            carousel_order: { type: 'integer', example: 1, nullable: true },
-            active: { type: 'boolean', example: true },
-            created_at: { type: 'string', format: 'date-time' },
-            updated_at: { type: 'string', format: 'date-time' }
-          }
-        },
-        ProductImage: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer', example: 1 },
-            product_id: { type: 'integer', example: 67 },
-            image_index: { type: 'integer', example: 1 },
-            size: { type: 'string', enum: ['thumb', 'small', 'medium', 'large'], example: 'small' },
-            url: {
-              type: 'string',
-              format: 'uri',
-              example:
-                'https://abc123.supabase.co/storage/v1/object/public/product-images/67_1_small.webp'
-            },
-            file_hash: { type: 'string', example: 'abc123def456...' },
-            mime_type: { type: 'string', example: 'image/webp' },
-            is_primary: { type: 'boolean', example: false },
-            created_at: { type: 'string', format: 'date-time' },
-            updated_at: { type: 'string', format: 'date-time' }
-          }
-        },
-        Order: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer', example: 1001 },
-            user_id: { type: 'integer', example: 5 },
-            customer_email: { type: 'string', format: 'email', example: 'maria@example.com' },
-            customer_name: { type: 'string', example: 'María González' },
-            customer_phone: { type: 'string', example: '+58 412-1234567' },
-            delivery_address: { type: 'string', example: 'Av. Principal, Caracas' },
-            delivery_city: { type: 'string', example: 'Caracas' },
-            delivery_state: { type: 'string', example: 'Miranda' },
-            delivery_zip: { type: 'string', example: '1060' },
-            delivery_date: { type: 'string', format: 'date', example: '2025-10-05' },
-            delivery_time_slot: { type: 'string', example: '10:00-12:00' },
-            delivery_notes: { type: 'string', example: 'Llamar al llegar' },
-            status: {
-              type: 'string',
-              enum: ['pending', 'verified', 'preparing', 'shipped', 'delivered', 'cancelled'],
-              example: 'pending'
-            },
-            total_amount_usd: { type: 'number', format: 'decimal', example: 89.99 },
-            total_amount_ves: { type: 'number', format: 'decimal', example: 3599.6 },
-            currency_rate: { type: 'number', format: 'decimal', example: 40.0 },
-            notes: { type: 'string', example: 'Ocasión especial' },
-            admin_notes: { type: 'string', example: 'Cliente frecuente' },
-            created_at: { type: 'string', format: 'date-time' },
-            updated_at: { type: 'string', format: 'date-time' }
-          }
-        },
-        OrderItem: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer', example: 1 },
-            order_id: { type: 'integer', example: 1001 },
-            product_id: { type: 'integer', example: 67 },
-            product_name: { type: 'string', example: 'Ramo Tropical Vibrante' },
-            product_summary: { type: 'string', example: 'Flores tropicales vibrantes' },
-            unit_price_usd: { type: 'number', format: 'decimal', example: 45.99 },
-            unit_price_ves: { type: 'number', format: 'decimal', example: 1839.6 },
-            quantity: { type: 'integer', example: 2 },
-            subtotal_usd: { type: 'number', format: 'decimal', example: 91.98 },
-            subtotal_ves: { type: 'number', format: 'decimal', example: 3679.2 },
-            created_at: { type: 'string', format: 'date-time' },
-            updated_at: { type: 'string', format: 'date-time' }
-          }
-        },
-        OrderStatusHistory: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer', example: 1 },
-            order_id: { type: 'integer', example: 1001 },
-            old_status: {
-              type: 'string',
-              enum: ['pending', 'verified', 'preparing', 'shipped', 'delivered', 'cancelled'],
-              example: 'pending'
-            },
-            new_status: {
-              type: 'string',
-              enum: ['pending', 'verified', 'preparing', 'shipped', 'delivered', 'cancelled'],
-              example: 'verified'
-            },
-            notes: { type: 'string', example: 'Pago verificado' },
-            changed_by: { type: 'integer', example: 1 },
-            created_at: { type: 'string', format: 'date-time' }
-          }
-        },
-        Payment: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer', example: 1 },
-            order_id: { type: 'integer', example: 1 },
-            user_id: { type: 'integer', example: 1 },
-            amount_usd: { type: 'number', format: 'decimal', example: 59.99 },
-            amount_ves: { type: 'number', format: 'decimal', example: 2400.0 },
-            payment_method_name: { type: 'string', example: 'Bank Transfer' },
-            transaction_id: { type: 'string', example: 'TXN123456' },
-            reference_number: { type: 'string', example: 'REF789' },
-            status: {
-              type: 'string',
-              enum: ['pending', 'completed', 'failed', 'refunded', 'partially_refunded'],
-              example: 'pending'
-            },
-            created_at: { type: 'string', format: 'date-time' },
-            updated_at: { type: 'string', format: 'date-time' }
-          }
-        },
-        Setting: {
-          type: 'object',
-          properties: {
-            key: { type: 'string', example: 'site_name' },
-            value: { type: 'string', example: 'FloresYa' },
-            description: { type: 'string', example: 'Site name for branding' },
-            is_public: { type: 'boolean', example: true },
-            created_at: { type: 'string', format: 'date-time' },
-            updated_at: { type: 'string', format: 'date-time' }
-          }
-        },
-        // Common query parameters
-        PaginationParams: {
-          type: 'object',
-          properties: {
-            limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-            offset: { type: 'integer', minimum: 0, default: 0 },
-            page: { type: 'integer', minimum: 1 }
-          }
-        },
-        OrderStatusUpdate: {
-          type: 'object',
-          required: ['status'],
-          properties: {
-            status: {
-              type: 'string',
-              enum: ['pending', 'verified', 'preparing', 'shipped', 'delivered', 'cancelled'],
-              example: 'verified'
-            },
-            notes: {
-              type: 'string',
-              example: 'Payment confirmed'
-            }
-          }
-        },
-        PaymentConfirm: {
-          type: 'object',
-          required: ['payment_method', 'reference_number'],
-          properties: {
-            payment_method: {
-              type: 'string',
-              enum: ['cash', 'mobile_payment', 'bank_transfer', 'zelle', 'crypto'],
-              example: 'bank_transfer'
-            },
-            reference_number: {
-              type: 'string',
-              minLength: 3,
-              maxLength: 100,
-              example: 'TF-20231101-001'
-            },
-            payment_details: {
-              type: 'object',
-              example: { bank: 'Banco Mercantil', payer: 'José Pérez' }
-            },
-            receipt_image_url: {
-              type: 'string',
-              format: 'uri',
-              example: 'https://example.com/receipt.jpg'
-            }
-          }
-        }
-      },
-      responses: {
-        UnauthorizedError: {
-          description: 'Authentication required',
-          content: {
-            'application/json': {
-              schema: { $ref: '#/components/schemas/ErrorResponse' },
-              example: {
-                success: false,
-                error: 'No authorization token provided',
-                message: 'No authorization token provided'
+          },
+          ErrorResponse: {
+            type: 'object',
+            properties: {
+              success: {
+                type: 'boolean',
+                example: false
+              },
+              error: {
+                type: 'string',
+                example: 'Error message'
+              },
+              message: {
+                type: 'string',
+                example: 'Operation failed'
+              },
+              details: {
+                type: 'array',
+                items: {
+                  type: 'string'
+                },
+                description: 'Validation errors (if applicable)'
               }
             }
           }
         },
-        ForbiddenError: {
-          description: 'Insufficient permissions',
-          content: {
-            'application/json': {
-              schema: { $ref: '#/components/schemas/ErrorResponse' },
-              example: {
-                success: false,
-                error: 'Insufficient permissions',
-                message: 'Insufficient permissions'
+        responses: {
+          UnauthorizedError: {
+            description: 'Authentication required',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' }
               }
             }
-          }
-        },
-        NotFoundError: {
-          description: 'Resource not found',
-          content: {
-            'application/json': {
-              schema: { $ref: '#/components/schemas/ErrorResponse' },
-              example: {
-                success: false,
-                error: 'Resource not found',
-                message: 'Resource not found'
+          },
+          ForbiddenError: {
+            description: 'Insufficient permissions',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' }
               }
             }
-          }
-        },
-        ValidationError: {
-          description: 'Validation failed',
-          content: {
-            'application/json': {
-              schema: { $ref: '#/components/schemas/ErrorResponse' },
-              example: {
-                success: false,
-                error: 'Validation failed',
-                message: 'Validation failed',
-                details: ['name is required', 'email must be valid']
+          },
+          NotFoundError: {
+            description: 'Resource not found',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' }
               }
             }
-          }
-        },
-        InternalServerError: {
-          description: 'Internal server error',
-          content: {
-            'application/json': {
-              schema: { $ref: '#/components/schemas/ErrorResponse' },
-              example: {
-                success: false,
-                error: 'Internal server error',
-                message: 'Internal server error'
+          },
+          ValidationError: {
+            description: 'Validation failed',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' }
+              }
+            }
+          },
+          InternalServerError: {
+            description: 'Internal server error',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' }
               }
             }
           }
         }
       },
-      parameters: {
-        IdParam: {
-          name: 'id',
-          in: 'path',
-          required: true,
-          schema: { type: 'integer', minimum: 1 },
-          description: 'Resource ID'
-        },
-        LimitParam: {
-          name: 'limit',
-          in: 'query',
-          schema: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-          description: 'Number of items to return'
-        },
-        OffsetParam: {
-          name: 'offset',
-          in: 'query',
-          schema: { type: 'integer', minimum: 0, default: 0 },
-          description: 'Number of items to skip'
-        },
-        PageParam: {
-          name: 'page',
-          in: 'query',
-          schema: { type: 'integer', minimum: 1 },
-          description: 'Page number (alternative to offset)'
-        }
-      }
+      tags: [
+        { name: 'Products', description: 'Product management endpoints' },
+        { name: 'Orders', description: 'Order management endpoints' },
+        { name: 'Users', description: 'User management endpoints' },
+        { name: 'Payments', description: 'Payment management endpoints' },
+        { name: 'Occasions', description: 'Occasion management endpoints' },
+        { name: 'Settings', description: 'Settings management endpoints' }
+      ]
     },
-    tags: [
-      { name: 'Products', description: 'Product management endpoints' },
-      { name: 'Orders', description: 'Order management endpoints' },
-      { name: 'Users', description: 'User management endpoints' },
-      { name: 'Payments', description: 'Payment management endpoints' },
-      { name: 'Occasions', description: 'Occasion management endpoints' },
-      { name: 'Settings', description: 'Settings management endpoints' }
-    ]
-  },
-  apis: ['./api/docs/openapi-annotations.js']
+    apis: ['./api/docs/openapi-annotations.js']
+  }
+
+  return swaggerJsdoc(options)
 }
 
-export const swaggerSpec = swaggerJsdoc(options)
+// Export the spec - this will be loaded dynamically
+export const swaggerSpec = loadSwaggerSpec()

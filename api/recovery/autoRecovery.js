@@ -284,7 +284,7 @@ class AutoRecoverySystem {
   /**
    * Perform routine maintenance recovery
    */
-  async performMaintenanceRecovery() {
+  performMaintenanceRecovery() {
     try {
       logger.debug('Performing routine maintenance recovery')
 

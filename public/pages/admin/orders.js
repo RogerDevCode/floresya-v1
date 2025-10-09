@@ -5,6 +5,7 @@
 
 import '../../js/lucide-icons.js'
 import { initAdminCommon } from '../../js/admin-common.js'
+import { api } from '../../js/shared/api-client.js'
 
 // Global state
 let currentFilter = 'all'
@@ -83,17 +84,9 @@ async function init() {
  */
 async function fetchOrdersFromAPI() {
   try {
-    const response = await fetch('/api/orders', {
-      headers: {
-        Authorization: 'Bearer admin:1:admin' // TODO: Use real auth token
-      }
-    })
+    // Set auth token for admin access
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-
-    const result = await response.json()
+    const result = await api.getAllOrders()
     if (!result.success || !Array.isArray(result.data)) {
       throw new Error('Invalid API response format')
     }
@@ -104,8 +97,6 @@ async function fetchOrdersFromAPI() {
       customer_email: order.customer_email || '',
       customer_phone: order.customer_phone || '',
       delivery_address: order.delivery_address || '',
-      delivery_city: order.delivery_city || '',
-      delivery_state: order.delivery_state || '',
       delivery_date: order.delivery_date || '',
       delivery_time_slot: order.delivery_time_slot || '',
       items: order.order_items || [],
@@ -673,21 +664,12 @@ async function changeOrderStatus(orderId, newStatus) {
   }
 
   try {
-    // Update via API
-    const response = await fetch(`/api/orders/${orderId}/status`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer admin:1:admin'
-      },
-      body: JSON.stringify({ status: newStatus })
+    // Update via API - backend expects { status, notes }
+    const result = await api.updateOrdersStatus(orderId, {
+      status: newStatus,
+      notes: `Estado actualizado a ${ORDER_STATUSES[newStatus].label}`
     })
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-
-    const result = await response.json()
     if (!result.success) {
       throw new Error(result.error || 'Failed to update status')
     }
@@ -768,7 +750,7 @@ function showOrderDetails(orderId) {
           </div>
           <div class="flex items-start">
             <i data-lucide="map-pin" class="h-4 w-4 text-gray-400 mr-2 mt-0.5"></i>
-            <span class="text-sm text-gray-700">${order.delivery_address}, ${order.delivery_city}, ${order.delivery_state}</span>
+            <span class="text-sm text-gray-700">${order.delivery_address}</span>
           </div>
         </div>
       </div>
@@ -926,8 +908,6 @@ function exportToCSV() {
       order.customer_email,
       order.customer_phone,
       `"${order.delivery_address}"`,
-      order.delivery_city,
-      order.delivery_state,
       order.delivery_date || '',
       order.delivery_time_slot || '',
       order.total_usd.toFixed(2),
@@ -964,17 +944,9 @@ function exportToCSV() {
  */
 async function showOrderHistory(orderId) {
   try {
-    const response = await fetch(`/api/orders/${orderId}/status-history`, {
-      headers: {
-        Authorization: 'Bearer admin:1:admin'
-      }
-    })
+    // Set auth token for admin access
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-
-    const result = await response.json()
+    const result = await api.getOrdersStatusHistory(orderId)
     if (!result.success) {
       throw new Error(result.error || 'Failed to load history')
     }

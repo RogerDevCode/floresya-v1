@@ -469,7 +469,6 @@ class MetricsCollector {
    */
   calculateRequestsPerSecond() {
     const now = Date.now()
-    const oneSecondAgo = now - 1000
 
     // Count requests in the last second
     const recentRequests = this.metrics.requests.responseTimes.filter(time => now - time <= 1000)
@@ -582,7 +581,7 @@ export function orderMetricsMiddleware(req, res, next) {
           metricsCollector.recordOrder(orderData.data)
         }
       } catch (error) {
-        // Ignore JSON parsing errors
+        console.error('Error parsing order data for metrics', error)
       }
     }
 

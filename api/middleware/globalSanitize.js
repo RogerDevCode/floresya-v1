@@ -6,7 +6,7 @@
 
 import { ValidationError } from '../errors/AppError.js'
 
-import { sanitizeData, sanitizeNumber, sanitizeString, FIELD_TYPES } from '../utils/sanitize.js'
+import { sanitizeData, sanitizeString, FIELD_TYPES } from '../utils/sanitize.js'
 import { logger } from '../utils/logger.js'
 
 /**

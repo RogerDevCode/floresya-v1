@@ -4,7 +4,7 @@
  * No dependencies, CSP-compliant
  */
 
-import { api } from '../shared/api.js'
+import { api } from '../shared/api-client.js'
 
 /**
  * Create hover-activated image carousel for product card
@@ -15,7 +15,7 @@ import { api } from '../shared/api.js'
 export async function createImageCarousel(container, productId) {
   try {
     // Fetch product images (small size)
-    const response = await api.getProductImages(productId, 'small')
+    const response = await api.getProductImages(productId, { size: 'small' })
 
     // Fallback: Use placeholder if no images found
     if (!response.success || !response.data || response.data.length === 0) {

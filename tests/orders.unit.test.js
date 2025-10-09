@@ -462,8 +462,6 @@ describe('CSV export functionality', () => {
       order.customer_email,
       order.customer_phone || '',
       `"${order.delivery_address || ''}"`,
-      order.delivery_city || '',
-      order.delivery_state || '',
       order.delivery_date || '',
       order.delivery_time_slot || '',
       order.total_usd.toFixed(2),

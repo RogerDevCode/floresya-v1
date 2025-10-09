@@ -20,6 +20,52 @@ import { asyncHandler } from '../middleware/errorHandler.js'
  *             schema:
  *               $ref: '#/components/schemas/SuccessResponse'
  */
+/**
+ * @swagger
+ * /api/payment/{id}:
+ *   get:
+ *     tags: [payment]
+ *     summary: Get payment methods
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Get payment methods operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/payment' }
+ *       400: { $ref: '#/components/responses/ValidationError' }
+ *       404: { $ref: '#/components/responses/NotFoundError' }
+ *       500: { $ref: '#/components/responses/InternalServerError' }
+ */
+/**
+ * @swagger
+ * /api/payment/{id}:
+ *   get:
+ *     tags: [payment]
+ *     summary: Get payment methods
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Get payment methods operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/payment' }
+ *       400: { $ref: '#/components/responses/ValidationError' }
+ *       404: { $ref: '#/components/responses/NotFoundError' }
+ *       500: { $ref: '#/components/responses/InternalServerError' }
+ */
 export const getPaymentMethods = asyncHandler(async (req, res) => {
   const paymentMethods = await paymentService.getPaymentMethods()
 
@@ -47,8 +93,6 @@ export const getPaymentMethods = asyncHandler(async (req, res) => {
  *               - customer_name
  *               - customer_phone
  *               - delivery_address
- *               - delivery_city
- *               - delivery_state
  *               - total_amount_usd
  *               - items
  *             properties:
@@ -63,12 +107,6 @@ export const getPaymentMethods = asyncHandler(async (req, res) => {
  *               delivery_address:
  *                 type: string
  *                 minLength: 10
- *               delivery_city:
- *                 type: string
- *               delivery_state:
- *                 type: string
- *               delivery_zip:
- *                 type: string
  *               delivery_notes:
  *                 type: string
  *               notes:
@@ -123,6 +161,52 @@ export const getPaymentMethods = asyncHandler(async (req, res) => {
 /**
  * POST /api/payments/:id/confirm
  * Confirm payment for an order
+ */
+/**
+ * @swagger
+ * /api/payment/{id}:
+ *   get:
+ *     tags: [payment]
+ *     summary: Confirm payment
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Confirm payment operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/payment' }
+ *       400: { $ref: '#/components/responses/ValidationError' }
+ *       404: { $ref: '#/components/responses/NotFoundError' }
+ *       500: { $ref: '#/components/responses/InternalServerError' }
+ */
+/**
+ * @swagger
+ * /api/payment/{id}:
+ *   get:
+ *     tags: [payment]
+ *     summary: Confirm payment
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Confirm payment operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/payment' }
+ *       400: { $ref: '#/components/responses/ValidationError' }
+ *       404: { $ref: '#/components/responses/NotFoundError' }
+ *       500: { $ref: '#/components/responses/InternalServerError' }
  */
 export const confirmPayment = asyncHandler(async (req, res) => {
   const { id } = req.params

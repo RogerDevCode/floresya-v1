@@ -83,9 +83,6 @@ export const FIELD_TYPES = {
     customer_name: 'string',
     customer_phone: 'string',
     delivery_address: 'string',
-    delivery_city: 'string',
-    delivery_state: 'string',
-    delivery_zip: 'string',
     delivery_date: 'string',
     delivery_time_slot: 'string',
     delivery_notes: 'string',
@@ -171,30 +168,27 @@ export const FIELD_TYPES = {
 /**
  * Sanitize product data before database operations
  * @param {Object} productData - Product data to sanitize
- * @param {boolean} isUpdate - Whether this is an update operation
  * @returns {Object} Sanitized product data
  */
-export function sanitizeProductData(productData, isUpdate = false) {
+export function sanitizeProductData(productData) {
   return sanitizeData(productData, FIELD_TYPES.products)
 }
 
 /**
  * Sanitize user data before database operations
  * @param {Object} userData - User data to sanitize
- * @param {boolean} isUpdate - Whether this is an update operation
  * @returns {Object} Sanitized user data
  */
-export function sanitizeUserData(userData, isUpdate = false) {
+export function sanitizeUserData(userData) {
   return sanitizeData(userData, FIELD_TYPES.users)
 }
 
 /**
  * Sanitize order data before database operations
  * @param {Object} orderData - Order data to sanitize
- * @param {boolean} isUpdate - Whether this is an update operation
  * @returns {Object} Sanitized order data
  */
-export function sanitizeOrderData(orderData, isUpdate = false) {
+export function sanitizeOrderData(orderData) {
   return sanitizeData(orderData, FIELD_TYPES.orders)
 }
 

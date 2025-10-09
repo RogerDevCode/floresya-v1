@@ -50,7 +50,11 @@ export async function getPaymentMethods() {
 }
 
 /**
- * Get payment method display name
+ * Get payment method display name (private utility function)
+ * @param {string} method - Payment method code
+ * @returns {string} - Localized display name
+ * @example
+ * _getPaymentMethodDisplayName('cash') // Returns: 'Efectivo'
  */
 function _getPaymentMethodDisplayName(method) {
   const names = {
@@ -64,7 +68,13 @@ function _getPaymentMethodDisplayName(method) {
 }
 
 /**
- * Validate Venezuelan phone number
+ * Validate Venezuelan phone number format
+ * @param {string} phone - Phone number to validate
+ * @returns {boolean} - True if phone number is valid Venezuelan format
+ * @example
+ * isValidVenezuelanPhone('04141234567') // Returns: true
+ * isValidVenezuelanPhone('584141234567') // Returns: true
+ * isValidVenezuelanPhone('123456789') // Returns: false
  */
 export function isValidVenezuelanPhone(phone) {
   if (!phone) {
@@ -84,7 +94,12 @@ export function isValidVenezuelanPhone(phone) {
 }
 
 /**
- * Validate email format
+ * Validate email format using regex pattern
+ * @param {string} email - Email address to validate
+ * @returns {boolean} - True if email format is valid
+ * @example
+ * isValidEmail('user@example.com') // Returns: true
+ * isValidEmail('invalid-email') // Returns: false
  */
 export function isValidEmail(email) {
   if (!email) {
@@ -96,7 +111,10 @@ export function isValidEmail(email) {
 }
 
 /**
- * Generate unique order reference
+ * Generate unique order reference with timestamp and random component
+ * @returns {string} - Unique order reference in format FY-{timestamp}{random}
+ * @example
+ * generateOrderReference() // Returns: 'FY-123456789'
  */
 export function generateOrderReference() {
   const timestamp = Date.now().toString().slice(-6)
@@ -107,9 +125,11 @@ export function generateOrderReference() {
 }
 
 /**
- * Get delivery cost from settings
- * @returns {number} Delivery cost in USD
+ * Get delivery cost from settings with fallback to default value
+ * @returns {number} Delivery cost in USD (default: 7.0 if setting not found)
  * @throws {DatabaseError} If settings query fails
+ * @example
+ * const cost = await getDeliveryCost() // Returns: 7.0 or configured value
  */
 export async function getDeliveryCost() {
   try {
@@ -144,8 +164,10 @@ export async function getDeliveryCost() {
 }
 
 /**
- * Get BCV exchange rate from settings
- * @returns {number} BCV rate (USD to VES)
+ * Get BCV exchange rate from settings with fallback to default value
+ * @returns {number} BCV rate (USD to VES) (default: 40.0 if setting not found)
+ * @example
+ * const rate = await getBCVRate() // Returns: 40.0 or configured value
  */
 export async function getBCVRate() {
   try {
@@ -180,8 +202,26 @@ export async function getBCVRate() {
 }
 
 /**
- * Confirm payment for an order
- * Creates a payment record with the provided details
+ * Confirm payment for an order - creates a payment record with the provided details
+ * @param {number} orderId - Order ID to confirm payment for
+ * @param {Object} paymentData - Payment confirmation data
+ * @param {string} paymentData.payment_method - Payment method code (e.g., 'cash', 'mobile_payment')
+ * @param {string} paymentData.reference_number - Payment reference number
+ * @param {string} [paymentData.payment_details] - Additional payment details
+ * @param {string} [paymentData.receipt_image_url] - Receipt image URL
+ * @param {number} [paymentData.confirmed_by] - User ID who confirmed the payment
+ * @returns {Object} - Created payment record
+ * @throws {BadRequestError} When orderId or payment data is invalid
+ * @throws {ValidationError} When payment method or reference is missing
+ * @throws {NotFoundError} When order or payment method is not found
+ * @throws {DatabaseError} When payment record creation fails
+ * @example
+ * const payment = await confirmPayment(123, {
+ *   payment_method: 'mobile_payment',
+ *   reference_number: 'REF123456',
+ *   payment_details: 'Pago móvil desde Banco XYZ',
+ *   confirmed_by: 456
+ * })
  */
 export async function confirmPayment(orderId, paymentData) {
   try {
@@ -259,7 +299,15 @@ export async function confirmPayment(orderId, paymentData) {
 }
 
 /**
- * Get payments for an order
+ * Get payments for an order - retrieves all payment records for a specific order
+ * @param {number} orderId - Order ID to get payments for
+ * @returns {Object[]} - Array of payment records ordered by creation date (newest first)
+ * @throws {BadRequestError} When orderId is invalid
+ * @throws {NotFoundError} When order or payments are not found
+ * @throws {DatabaseError} When database query fails
+ * @example
+ * const payments = await getOrderPayments(123)
+ * // Returns: [{ id: 1, order_id: 123, payment_method_name: 'Pago Móvil', amount_usd: 45.99, ... }]
  */
 export async function getOrderPayments(orderId) {
   try {

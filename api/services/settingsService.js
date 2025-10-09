@@ -18,7 +18,28 @@ import {
 const TABLE = DB_SCHEMA.settings.table
 
 /**
- * Validate setting data
+ * Validate setting data (ENTERPRISE FAIL-FAST)
+ * @param {Object} data - Setting data to validate
+ * @param {string} [data.key] - Setting key (required for creation, must be non-empty string)
+ * @param {string} [data.value] - Setting value
+ * @param {string} [data.description] - Setting description
+ * @param {string} [data.type] - Setting type (string, number, boolean, json)
+ * @param {boolean} [data.is_public] - Whether setting is publicly accessible
+ * @param {boolean} isUpdate - Whether this is for an update operation (default: false)
+ * @throws {ValidationError} With detailed field-level validation errors
+ * @example
+ * // For creation
+ * validateSettingData({
+ *   key: 'DELIVERY_COST_USD',
+ *   value: '7.00',
+ *   type: 'number',
+ *   description: 'Default delivery cost in USD'
+ * }, false)
+ *
+ * // For update
+ * validateSettingData({
+ *   value: '8.00'
+ * }, true)
  */
 function validateSettingData(data, isUpdate = false) {
   const errors = {}
@@ -46,7 +67,11 @@ function validateSettingData(data, isUpdate = false) {
 }
 
 /**
- * Get all settings
+ * Get all settings - optionally filter for public settings only
+ * @param {boolean} [publicOnly=false] - Whether to return only public settings
+ * @returns {Object[]} - Array of settings ordered by key
+ * @throws {NotFoundError} When no settings are found
+ * @throws {DatabaseError} When database query fails
  */
 export async function getAllSettings(publicOnly = false) {
   try {
@@ -75,7 +100,10 @@ export async function getAllSettings(publicOnly = false) {
 }
 
 /**
- * Get public settings only
+ * Get public settings only - wrapper for getAllSettings with publicOnly=true
+ * @returns {Object[]} - Array of public settings ordered by key
+ * @throws {NotFoundError} When no public settings are found
+ * @throws {DatabaseError} When database query fails
  */
 export async function getPublicSettings() {
   try {
@@ -88,6 +116,11 @@ export async function getPublicSettings() {
 
 /**
  * Get setting by key (indexed column)
+ * @param {string} key - Setting key to search for
+ * @returns {Object} - Setting object
+ * @throws {BadRequestError} When key is invalid
+ * @throws {NotFoundError} When setting with key is not found
+ * @throws {DatabaseError} When database query fails
  */
 export async function getSettingByKey(key) {
   try {
@@ -118,7 +151,15 @@ export async function getSettingByKey(key) {
 }
 
 /**
- * Get setting value (typed)
+ * Get setting value (typed) - automatically parses value based on setting type
+ * @param {string} key - Setting key to retrieve value for
+ * @returns {*} - Parsed setting value (number, boolean, object, or string)
+ * @throws {BadRequestError} When key is invalid
+ * @throws {NotFoundError} When setting with key is not found
+ * @throws {DatabaseError} When database query fails
+ * @example
+ * const deliveryCost = await getSettingValue('DELIVERY_COST_USD') // Returns: 7.0 (number)
+ * const isMaintenance = await getSettingValue('MAINTENANCE_MODE') // Returns: false (boolean)
  */
 export async function getSettingValue(key) {
   try {
@@ -142,7 +183,17 @@ export async function getSettingValue(key) {
 }
 
 /**
- * Create setting
+ * Create setting - key-value configuration entry
+ * @param {Object} settingData - Setting data to create
+ * @param {string} settingData.key - Setting key (required, must be unique)
+ * @param {string} settingData.value - Setting value
+ * @param {string} [settingData.description] - Setting description
+ * @param {string} [settingData.type='string'] - Setting type (string, number, boolean, json)
+ * @param {boolean} [settingData.is_public=false] - Whether setting is publicly accessible
+ * @returns {Object} - Created setting
+ * @throws {ValidationError} When setting data is invalid
+ * @throws {DatabaseConstraintError} When setting violates database constraints (e.g., duplicate key)
+ * @throws {DatabaseError} When database insert fails
  */
 export async function createSetting(settingData) {
   try {
@@ -185,7 +236,18 @@ export async function createSetting(settingData) {
 }
 
 /**
- * Update setting
+ * Update setting (limited fields) - only allows updating specific setting fields
+ * @param {string} key - Setting key to update
+ * @param {Object} updates - Updated setting data
+ * @param {string} [updates.value] - Setting value
+ * @param {string} [updates.description] - Setting description
+ * @param {string} [updates.type] - Setting type
+ * @param {boolean} [updates.is_public] - Whether setting is publicly accessible
+ * @returns {Object} - Updated setting
+ * @throws {BadRequestError} When key is invalid or no valid updates are provided
+ * @throws {ValidationError} When setting data is invalid
+ * @throws {NotFoundError} When setting is not found
+ * @throws {DatabaseError} When database update fails
  */
 export async function updateSetting(key, updates) {
   try {
@@ -234,7 +296,15 @@ export async function updateSetting(key, updates) {
 }
 
 /**
- * Update setting value (convenience method)
+ * Update setting value (convenience method) - automatically converts value to string
+ * @param {string} key - Setting key to update
+ * @param {*} value - New value (will be converted to string)
+ * @returns {Object} - Updated setting
+ * @throws {BadRequestError} When key is invalid
+ * @throws {NotFoundError} When setting is not found
+ * @throws {DatabaseError} When database update fails
+ * @example
+ * const setting = await setSettingValue('DELIVERY_COST_USD', 8.50)
  */
 export async function setSettingValue(key, value) {
   try {
@@ -246,7 +316,12 @@ export async function setSettingValue(key, value) {
 }
 
 /**
- * Delete setting
+ * Delete setting - permanently removes a configuration entry
+ * @param {string} key - Setting key to delete
+ * @returns {Object} - Deleted setting
+ * @throws {BadRequestError} When key is invalid
+ * @throws {NotFoundError} When setting is not found
+ * @throws {DatabaseError} When database delete fails
  */
 export async function deleteSetting(key) {
   try {
@@ -271,7 +346,14 @@ export async function deleteSetting(key) {
 }
 
 /**
- * Bulk get settings by keys
+ * Bulk get settings by keys - retrieves multiple settings in a single query
+ * @param {string[]} keys - Array of setting keys to retrieve
+ * @returns {Object[]} - Array of setting objects for the requested keys
+ * @throws {BadRequestError} When keys array is invalid
+ * @throws {NotFoundError} When no settings are found for the requested keys
+ * @throws {DatabaseError} When database query fails
+ * @example
+ * const settings = await getSettingsByKeys(['DELIVERY_COST_USD', 'bcv_usd_rate'])
  */
 export async function getSettingsByKeys(keys) {
   try {
@@ -296,7 +378,14 @@ export async function getSettingsByKeys(keys) {
 }
 
 /**
- * Get settings as key-value map
+ * Get settings as key-value map - returns typed values based on setting type
+ * @param {boolean} [publicOnly=false] - Whether to return only public settings
+ * @returns {Object} - Map of setting keys to parsed values
+ * @throws {NotFoundError} When no settings are found
+ * @throws {DatabaseError} When database query fails
+ * @example
+ * const settings = await getSettingsMap()
+ * // Returns: { DELIVERY_COST_USD: 7.0, bcv_usd_rate: 40.0, MAINTENANCE_MODE: false }
  */
 export async function getSettingsMap(publicOnly = false) {
   try {

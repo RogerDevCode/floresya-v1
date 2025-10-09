@@ -6,6 +6,7 @@
 
 import { createIcons } from '../../js/lucide-icons.js'
 import { CarouselManager } from '../../js/components/CarouselManager.js'
+import { api } from '../../js/shared/api-client.js'
 
 // Toast notification utility
 const toast = {
@@ -99,21 +100,12 @@ document.addEventListener('DOMContentLoaded', async () => {
  */
 async function loadBcvRate() {
   try {
-    const response = await fetch('/api/settings/bcv_usd_rate/value', {
-      headers: { Authorization: 'Bearer admin:1:admin' }
-    })
-
-    if (!response.ok) {
-      console.warn('BCV rate not found, using default 36.5')
-      bcvRate = 36.5
-      return
-    }
-
-    const result = await response.json()
+    const result = await api.getValue('bcv_usd_rate')
     bcvRate = parseFloat(result.data) || 36.5
     console.log(`✓ BCV rate loaded: ${bcvRate}`)
   } catch (error) {
     console.error('Error loading BCV rate:', error)
+    console.warn('BCV rate not found, using default 36.5')
     bcvRate = 36.5
   }
 }
@@ -133,15 +125,9 @@ function calculatePriceVes() {
  */
 async function loadProduct() {
   try {
-    const response = await fetch(`/api/products/${productId}`, {
-      headers: { Authorization: 'Bearer admin:1:admin' }
-    })
+    // Set auth token for admin access
 
-    if (!response.ok) {
-      throw new Error('Producto no encontrado')
-    }
-
-    const result = await response.json()
+    const result = await api.getProductsById(productId)
     const product = result.data
 
     console.log('✓ Product loaded:', product)
@@ -189,17 +175,7 @@ async function loadProduct() {
  */
 async function loadExistingImages() {
   try {
-    const response = await fetch(`/api/products/${productId}/images`, {
-      headers: { Authorization: 'Bearer admin:1:admin' }
-    })
-
-    if (!response.ok) {
-      console.warn('No images found for product')
-      renderImageGrid()
-      return
-    }
-
-    const result = await response.json()
+    const result = await api.getProductImages(productId)
     const images = result.data
 
     // Handle empty images array
@@ -479,15 +455,9 @@ async function removeImage(index) {
   // If existing image, delete from server
   if (image.existingImageIndex !== null && image.existingImageIndex !== undefined) {
     try {
-      const response = await fetch(
-        `/api/products/${productId}/images/${image.existingImageIndex}`,
-        {
-          method: 'DELETE',
-          headers: { Authorization: 'Bearer admin:1:admin' }
-        }
-      )
+      const result = await api.deleteProductImage(productId, image.existingImageIndex)
 
-      if (!response.ok) {
+      if (!result.success) {
         throw new Error('Error al eliminar imagen del servidor')
       }
 
@@ -605,21 +575,7 @@ async function handleUpdateProduct(event) {
     createIcons()
 
     // 1. Update product
-    const response = await fetch(`/api/products/${productId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer admin:1:admin'
-      },
-      body: JSON.stringify(productData)
-    })
-
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || 'Error al actualizar producto')
-    }
-
-    const result = await response.json()
+    const result = await api.updateProduct(productId, productData)
     console.log('✓ Product updated:', result)
 
     // 2. Upload NEW images only (images with file !== null)
@@ -662,17 +618,10 @@ async function uploadProductImages(productId, newImages) {
       formData.append('image_index', image.index)
       formData.append('is_primary', image.isPrimary)
 
-      const response = await fetch(`/api/products/${productId}/images`, {
-        method: 'POST',
-        headers: {
-          Authorization: 'Bearer admin:1:admin'
-        },
-        body: formData
-      })
+      const result = await api.uploadProductImages(productId, formData)
 
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(`Error uploading image ${index + 1}: ${error.message}`)
+      if (!result.success) {
+        throw new Error(`Error uploading image ${index + 1}: ${result.message}`)
       }
 
       console.log(`✓ Image ${index + 1} uploaded`)

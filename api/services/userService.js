@@ -19,9 +19,28 @@ const VALID_ROLES = DB_SCHEMA.users.enums.role
 const SEARCH_COLUMNS = DB_SCHEMA.users.search
 
 /**
- * Validate user data
- * @param {Object} data - User data
- * @param {boolean} isUpdate - Whether this is an update
+ * Validate user data (ENTERPRISE FAIL-FAST)
+ * @param {Object} data - User data to validate
+ * @param {string} [data.email] - User email address (required for creation)
+ * @param {string} [data.full_name] - User's full name
+ * @param {string} [data.phone] - User phone number
+ * @param {string} [data.role] - User role (must be valid enum value)
+ * @param {string} [data.password_hash] - Password hash
+ * @param {boolean} [data.email_verified] - Email verification status
+ * @param {boolean} isUpdate - Whether this is for an update operation (default: false)
+ * @throws {ValidationError} With detailed field-level validation errors
+ * @example
+ * // For creation
+ * validateUserData({
+ *   email: 'user@example.com',
+ *   full_name: 'Juan Pérez',
+ *   role: 'user'
+ * }, false)
+ *
+ * // For update
+ * validateUserData({
+ *   role: 'admin'
+ * }, true)
  */
 function validateUserData(data, isUpdate = false) {
   if (!isUpdate) {
@@ -62,8 +81,16 @@ function validateUserData(data, isUpdate = false) {
 /**
  * Get all users with filters
  * Supports accent-insensitive search via normalized columns
- * @param {Object} filters - Filter options
+ * @param {Object} [filters={}] - Filter options
+ * @param {string} [filters.search] - Search in full_name and email (accent-insensitive)
+ * @param {string} [filters.role] - Filter by user role
+ * @param {boolean} [filters.email_verified] - Filter by email verification status
+ * @param {number} [filters.limit] - Maximum number of users to return
+ * @param {number} [filters.offset] - Number of users to skip
  * @param {boolean} includeInactive - Include inactive users (default: false, admin only)
+ * @returns {Object[]} - Array of users
+ * @throws {NotFoundError} When no users are found
+ * @throws {DatabaseError} When database query fails
  */
 export async function getAllUsers(filters = {}, includeInactive = false) {
   try {
@@ -112,8 +139,12 @@ export async function getAllUsers(filters = {}, includeInactive = false) {
 
 /**
  * Get user by ID
- * @param {number} id - User ID
+ * @param {number} id - User ID to retrieve
  * @param {boolean} includeInactive - Include inactive users (default: false, admin only)
+ * @returns {Object} - User object
+ * @throws {BadRequestError} When ID is invalid
+ * @throws {NotFoundError} When user is not found
+ * @throws {DatabaseError} When database query fails
  */
 export async function getUserById(id, includeInactive = false) {
   try {
@@ -146,8 +177,12 @@ export async function getUserById(id, includeInactive = false) {
 
 /**
  * Get user by email (indexed column)
- * @param {string} email - User email
+ * @param {string} email - User email to search for
  * @param {boolean} includeInactive - Include inactive users (default: false, admin only)
+ * @returns {Object} - User object
+ * @throws {BadRequestError} When email is invalid
+ * @throws {NotFoundError} When user with email is not found
+ * @throws {DatabaseError} When database query fails
  */
 export async function getUserByEmail(email, includeInactive = false) {
   try {
@@ -179,6 +214,17 @@ export async function getUserByEmail(email, includeInactive = false) {
 
 /**
  * Create new user
+ * @param {Object} userData - User data to create
+ * @param {string} userData.email - User email (required)
+ * @param {string} [userData.full_name] - User's full name
+ * @param {string} [userData.phone] - User phone number
+ * @param {string} [userData.role='user'] - User role
+ * @param {string} [userData.password_hash] - Password hash
+ * @param {boolean} [userData.email_verified=false] - Email verification status
+ * @returns {Object} - Created user
+ * @throws {ValidationError} When user data is invalid
+ * @throws {DatabaseConstraintError} When user violates database constraints (e.g., duplicate email)
+ * @throws {DatabaseError} When database insert fails
  */
 export async function createUser(userData) {
   try {
@@ -218,7 +264,19 @@ export async function createUser(userData) {
 }
 
 /**
- * Update user
+ * Update user (limited fields) - only allows updating specific user fields
+ * @param {number} id - User ID to update
+ * @param {Object} updates - Updated user data
+ * @param {string} [updates.full_name] - User's full name
+ * @param {string} [updates.phone] - User phone number
+ * @param {string} [updates.role] - User role
+ * @param {boolean} [updates.email_verified] - Email verification status
+ * @param {string} [updates.password_hash] - Password hash
+ * @returns {Object} - Updated user
+ * @throws {BadRequestError} When ID is invalid or no valid updates are provided
+ * @throws {ValidationError} When user data is invalid
+ * @throws {NotFoundError} When user is not found
+ * @throws {DatabaseError} When database update fails
  */
 export async function updateUser(id, updates) {
   try {
@@ -268,7 +326,12 @@ export async function updateUser(id, updates) {
 }
 
 /**
- * Soft-delete user
+ * Soft-delete user (reverse soft-delete)
+ * @param {number} id - User ID to delete
+ * @returns {Object} - Deactivated user
+ * @throws {BadRequestError} When ID is invalid
+ * @throws {NotFoundError} When user is not found or already inactive
+ * @throws {DatabaseError} When database update fails
  */
 export async function deleteUser(id) {
   try {
@@ -299,7 +362,12 @@ export async function deleteUser(id) {
 }
 
 /**
- * Reactivate user
+ * Reactivate user (reverse soft-delete)
+ * @param {number} id - User ID to reactivate
+ * @returns {Object} - Reactivated user
+ * @throws {BadRequestError} When ID is invalid
+ * @throws {NotFoundError} When user is not found or already active
+ * @throws {DatabaseError} When database update fails
  */
 export async function reactivateUser(id) {
   try {
@@ -330,7 +398,12 @@ export async function reactivateUser(id) {
 }
 
 /**
- * Verify user email
+ * Verify user email - sets email_verified to true
+ * @param {number} id - User ID to verify email for
+ * @returns {Object} - Updated user with verified email
+ * @throws {BadRequestError} When ID is invalid
+ * @throws {NotFoundError} When user is not found or inactive
+ * @throws {DatabaseError} When database update fails
  */
 export async function verifyUserEmail(id) {
   try {

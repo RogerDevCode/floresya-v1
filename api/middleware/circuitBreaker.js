@@ -179,10 +179,10 @@ const dbCircuitBreaker = new DatabaseCircuitBreaker()
  * Middleware to wrap database operations with circuit breaker
  */
 export function withDatabaseCircuitBreaker(operationName = 'db_operation') {
-  return async (req, res, next) => {
+  return (req, res, next) => {
     // Store original supabase methods
     const originalFrom = req.supabase?.from
-    const originalQuery = req.supabase?.query
+    const _originalQuery = req.supabase?.query
 
     if (originalFrom) {
       req.supabase.from = table => {
@@ -213,7 +213,7 @@ export function circuitBreaker(name, config = {}) {
 
   return async (req, res, next) => {
     try {
-      await breaker.execute(async () => next())
+      await breaker.execute(() => next())
     } catch (error) {
       if (error.name === 'ServiceUnavailableError') {
         return res.status(503).json({

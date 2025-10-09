@@ -4,7 +4,11 @@
  * No external libraries - pure JavaScript validation
  */
 
-import { ValidationError, BadRequestError } from '../errors/AppError.js'
+import {
+  ValidationError,
+  BadRequestError as _BadRequestError,
+  ValidationError as ValidationErrorClass
+} from '../errors/AppError.js'
 
 /**
  * Generic validator builder
@@ -113,7 +117,11 @@ export function validateId(paramName = 'id') {
     const id = parseInt(req.params[paramName], 10)
 
     if (isNaN(id) || id <= 0) {
-      return next(new BadRequestError(`Invalid ${paramName}: must be a positive integer`))
+      return next(
+        new ValidationErrorClass(`Invalid ${paramName}: must be a positive integer`, {
+          [paramName]: `Invalid ${paramName}: must be a positive integer`
+        })
+      )
     }
 
     // Convert to number for consistency
@@ -128,33 +136,41 @@ export function validateId(paramName = 'id') {
  */
 export function validatePagination(req, res, next) {
   const { limit, offset, page } = req.query
+  const validationErrors = {}
 
   if (limit) {
     const parsedLimit = parseInt(limit, 10)
     if (isNaN(parsedLimit) || parsedLimit < 1 || parsedLimit > 100) {
-      return next(new BadRequestError('limit must be between 1 and 100'))
+      validationErrors.limit = 'limit must be between 1 and 100'
+    } else {
+      req.query.limit = parsedLimit
     }
-    req.query.limit = parsedLimit
   }
 
   if (offset) {
     const parsedOffset = parseInt(offset, 10)
     if (isNaN(parsedOffset) || parsedOffset < 0) {
-      return next(new BadRequestError('offset must be a non-negative integer'))
+      validationErrors.offset = 'offset must be a non-negative integer'
+    } else {
+      req.query.offset = parsedOffset
     }
-    req.query.offset = parsedOffset
   }
 
   if (page) {
     const parsedPage = parseInt(page, 10)
     if (isNaN(parsedPage) || parsedPage < 1) {
-      return next(new BadRequestError('page must be a positive integer'))
+      validationErrors.page = 'page must be a positive integer'
+    } else {
+      req.query.page = parsedPage
+      // Convert page to offset if limit is provided
+      if (req.query.limit) {
+        req.query.offset = (parsedPage - 1) * req.query.limit
+      }
     }
-    req.query.page = parsedPage
-    // Convert page to offset if limit is provided
-    if (req.query.limit) {
-      req.query.offset = (parsedPage - 1) * req.query.limit
-    }
+  }
+
+  if (Object.keys(validationErrors).length > 0) {
+    return next(new ValidationErrorClass('Pagination validation failed', validationErrors))
   }
 
   next()

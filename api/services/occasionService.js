@@ -17,7 +17,26 @@ import {
 const TABLE = DB_SCHEMA.occasions.table
 
 /**
- * Validate occasion data
+ * Validate occasion data (ENTERPRISE FAIL-FAST)
+ * @param {Object} data - Occasion data to validate
+ * @param {string} [data.name] - Occasion name (required for creation)
+ * @param {string} [data.slug] - Occasion slug (required for creation, must be lowercase alphanumeric with hyphens)
+ * @param {string} [data.description] - Occasion description
+ * @param {number} [data.display_order] - Display order for sorting
+ * @param {boolean} isUpdate - Whether this is for an update operation (default: false)
+ * @throws {ValidationError} With detailed field-level validation errors
+ * @example
+ * // For creation
+ * validateOccasionData({
+ *   name: 'Día de la Madre',
+ *   slug: 'dia-de-la-madre',
+ *   display_order: 1
+ * }, false)
+ *
+ * // For update
+ * validateOccasionData({
+ *   display_order: 2
+ * }, true)
  */
 function validateOccasionData(data, isUpdate = false) {
   const errors = {}
@@ -55,9 +74,13 @@ function validateOccasionData(data, isUpdate = false) {
 }
 
 /**
- * Get all occasions with filters
- * @param {Object} filters - Filter options
+ * Get all occasions with filters - returns active occasions ordered by display_order
+ * @param {Object} [filters={}] - Filter options
+ * @param {number} [filters.limit] - Maximum number of occasions to return
  * @param {boolean} includeInactive - Include inactive occasions (default: false, admin only)
+ * @returns {Object[]} - Array of occasions ordered by display_order
+ * @throws {NotFoundError} When no occasions are found
+ * @throws {DatabaseError} When database query fails
  */
 export async function getAllOccasions(filters = {}, includeInactive = false) {
   try {
@@ -92,8 +115,12 @@ export async function getAllOccasions(filters = {}, includeInactive = false) {
 
 /**
  * Get occasion by ID
- * @param {number} id - Occasion ID
+ * @param {number} id - Occasion ID to retrieve
  * @param {boolean} includeInactive - Include inactive occasions (default: false, admin only)
+ * @returns {Object} - Occasion object
+ * @throws {BadRequestError} When ID is invalid
+ * @throws {NotFoundError} When occasion is not found
+ * @throws {DatabaseError} When database query fails
  */
 export async function getOccasionById(id, includeInactive = false) {
   try {
@@ -132,8 +159,12 @@ export async function getOccasionById(id, includeInactive = false) {
 
 /**
  * Get occasion by slug (indexed column for SEO)
- * @param {string} slug - Occasion slug
+ * @param {string} slug - Occasion slug to search for
  * @param {boolean} includeInactive - Include inactive occasions (default: false, admin only)
+ * @returns {Object} - Occasion object
+ * @throws {BadRequestError} When slug is invalid
+ * @throws {NotFoundError} When occasion with slug is not found
+ * @throws {DatabaseError} When database query fails
  */
 export async function getOccasionBySlug(slug, includeInactive = false) {
   try {
@@ -172,6 +203,15 @@ export async function getOccasionBySlug(slug, includeInactive = false) {
 
 /**
  * Create new occasion
+ * @param {Object} occasionData - Occasion data to create
+ * @param {string} occasionData.name - Occasion name (required)
+ * @param {string} occasionData.slug - Occasion slug (required, must be lowercase alphanumeric with hyphens)
+ * @param {string} [occasionData.description] - Occasion description
+ * @param {number} [occasionData.display_order=0] - Display order for sorting
+ * @returns {Object} - Created occasion
+ * @throws {ValidationError} When occasion data is invalid
+ * @throws {DatabaseConstraintError} When occasion violates database constraints (e.g., duplicate slug)
+ * @throws {DatabaseError} When database insert fails
  */
 export async function createOccasion(occasionData) {
   try {
@@ -214,7 +254,19 @@ export async function createOccasion(occasionData) {
 }
 
 /**
- * Update occasion
+ * Update occasion (limited fields) - only allows updating specific occasion fields
+ * @param {number} id - Occasion ID to update
+ * @param {Object} updates - Updated occasion data
+ * @param {string} [updates.name] - Occasion name
+ * @param {string} [updates.description] - Occasion description
+ * @param {string} [updates.slug] - Occasion slug
+ * @param {number} [updates.display_order] - Display order for sorting
+ * @returns {Object} - Updated occasion
+ * @throws {BadRequestError} When ID is invalid or no valid updates are provided
+ * @throws {ValidationError} When occasion data is invalid
+ * @throws {NotFoundError} When occasion is not found
+ * @throws {DatabaseConstraintError} When occasion violates database constraints (e.g., duplicate slug)
+ * @throws {DatabaseError} When database update fails
  */
 export async function updateOccasion(id, updates) {
   try {
@@ -271,7 +323,12 @@ export async function updateOccasion(id, updates) {
 }
 
 /**
- * Soft-delete occasion
+ * Soft-delete occasion (reverse soft-delete)
+ * @param {number} id - Occasion ID to delete
+ * @returns {Object} - Deactivated occasion
+ * @throws {BadRequestError} When ID is invalid
+ * @throws {NotFoundError} When occasion is not found or already inactive
+ * @throws {DatabaseError} When database update fails
  */
 export async function deleteOccasion(id) {
   try {
@@ -302,7 +359,12 @@ export async function deleteOccasion(id) {
 }
 
 /**
- * Reactivate occasion
+ * Reactivate occasion (reverse soft-delete)
+ * @param {number} id - Occasion ID to reactivate
+ * @returns {Object} - Reactivated occasion
+ * @throws {BadRequestError} When ID is invalid
+ * @throws {NotFoundError} When occasion is not found or already active
+ * @throws {DatabaseError} When database update fails
  */
 export async function reactivateOccasion(id) {
   try {
@@ -333,7 +395,13 @@ export async function reactivateOccasion(id) {
 }
 
 /**
- * Update display order
+ * Update display order for occasion sorting
+ * @param {number} id - Occasion ID to update
+ * @param {number} newOrder - New display order (must be non-negative)
+ * @returns {Object} - Updated occasion
+ * @throws {BadRequestError} When ID is invalid or newOrder is negative
+ * @throws {NotFoundError} When occasion is not found or inactive
+ * @throws {DatabaseError} When database update fails
  */
 export async function updateDisplayOrder(id, newOrder) {
   try {

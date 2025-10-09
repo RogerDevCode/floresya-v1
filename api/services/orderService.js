@@ -20,7 +20,28 @@ const VALID_STATUSES = DB_SCHEMA.orders.enums.status
 const SEARCH_COLUMNS = DB_SCHEMA.orders.search
 
 /**
- * Validate order data
+ * Validate order data (ENTERPRISE FAIL-FAST)
+ * @param {Object} data - Order data to validate
+ * @param {string} [data.customer_email] - Customer email address (required for creation)
+ * @param {string} [data.customer_name] - Customer name (required for creation)
+ * @param {string} [data.delivery_address] - Delivery address (required for creation)
+ * @param {number} [data.total_amount_usd] - Total amount in USD
+ * @param {string} [data.status] - Order status (must be valid enum value)
+ * @param {boolean} isUpdate - Whether this is for an update operation (default: false)
+ * @throws {ValidationError} With detailed field-level validation errors
+ * @example
+ * // For creation
+ * validateOrderData({
+ *   customer_email: 'customer@example.com',
+ *   customer_name: 'Juan Pérez',
+ *   delivery_address: 'Calle 123',
+ *   total_amount_usd: 45.99
+ * }, false)
+ *
+ * // For update
+ * validateOrderData({
+ *   total_amount_usd: 50.99
+ * }, true)
  */
 function validateOrderData(data, isUpdate = false) {
   if (!isUpdate) {
@@ -74,6 +95,17 @@ function validateOrderData(data, isUpdate = false) {
  * Get all orders with filters
  * Supports accent-insensitive search via normalized columns
  * Includes order_items with product details
+ * @param {Object} filters - Filter options
+ * @param {number} [filters.user_id] - Filter by user ID
+ * @param {string} [filters.status] - Filter by order status (pending, verified, preparing, shipped, delivered, cancelled)
+ * @param {string} [filters.date_from] - Filter orders from date
+ * @param {string} [filters.date_to] - Filter orders to date
+ * @param {string} [filters.search] - Search in customer_name and customer_email (accent-insensitive)
+ * @param {number} [filters.limit] - Number of items to return
+ * @param {number} [filters.offset] - Number of items to skip
+ * @returns {Object[]} - Array of orders with items
+ * @throws {NotFoundError} When no orders are found
+ * @throws {DatabaseError} When database query fails
  */
 export async function getAllOrders(filters = {}) {
   try {
@@ -140,7 +172,14 @@ export async function getAllOrders(filters = {}) {
 }
 
 /**
- * Get order by ID with items
+ * Get order by ID with items and product details
+ * @param {number} id - Order ID to retrieve
+ * @returns {Object} - Order object with order_items array
+ * @throws {BadRequestError} When ID is invalid
+ * @throws {NotFoundError} When order is not found
+ * @throws {DatabaseError} When database query fails
+ * @example
+ * const order = await getOrderById(123)
  */
 export async function getOrderById(id) {
   try {
@@ -174,7 +213,17 @@ export async function getOrderById(id) {
 }
 
 /**
- * Get orders by user (indexed query)
+ * Get orders by user (indexed query) with optional status filtering
+ * @param {number} userId - User ID to filter orders by
+ * @param {Object} [filters={}] - Filter options
+ * @param {string} [filters.status] - Filter by order status
+ * @param {number} [filters.limit] - Maximum number of orders to return
+ * @returns {Object[]} - Array of orders for the user
+ * @throws {BadRequestError} When userId is invalid
+ * @throws {NotFoundError} When no orders are found for the user
+ * @throws {DatabaseError} When database query fails
+ * @example
+ * const orders = await getOrdersByUser(123, { status: 'delivered', limit: 10 })
  */
 export async function getOrdersByUser(userId, filters = {}) {
   try {
@@ -327,9 +376,6 @@ export async function createOrderWithItems(orderData, orderItems) {
       customer_name: sanitizedOrderData.customer_name,
       customer_phone: sanitizedOrderData.customer_phone || null,
       delivery_address: sanitizedOrderData.delivery_address,
-      delivery_city: sanitizedOrderData.delivery_city || null,
-      delivery_state: sanitizedOrderData.delivery_state || null,
-      delivery_zip: sanitizedOrderData.delivery_zip || null,
       delivery_date: sanitizedOrderData.delivery_date || null,
       delivery_time_slot: sanitizedOrderData.delivery_time_slot || null,
       delivery_notes: sanitizedOrderData.delivery_notes || null,
@@ -467,7 +513,25 @@ export async function updateOrderStatus(orderId, newStatus, notes = null, change
 }
 
 /**
- * Update order (limited fields)
+ * Update order (limited fields) - only allows updating delivery and note fields
+ * @param {number} id - Order ID to update
+ * @param {Object} updates - Updated order data
+ * @param {string} [updates.delivery_address] - Delivery address
+ * @param {string} [updates.delivery_date] - Delivery date
+ * @param {string} [updates.delivery_time_slot] - Delivery time slot
+ * @param {string} [updates.delivery_notes] - Delivery notes
+ * @param {string} [updates.notes] - Customer notes
+ * @param {string} [updates.admin_notes] - Admin notes
+ * @returns {Object} - Updated order
+ * @throws {BadRequestError} When ID is invalid or no valid updates are provided
+ * @throws {ValidationError} When order data is invalid
+ * @throws {NotFoundError} When order is not found
+ * @throws {DatabaseError} When database update fails
+ * @example
+ * const order = await updateOrder(123, {
+ *   delivery_address: 'Nueva dirección 456',
+ *   delivery_notes: 'Llamar al timbre'
+ * })
  */
 export async function updateOrder(id, updates) {
   try {
@@ -483,9 +547,6 @@ export async function updateOrder(id, updates) {
 
     const allowedFields = [
       'delivery_address',
-      'delivery_city',
-      'delivery_state',
-      'delivery_zip',
       'delivery_date',
       'delivery_time_slot',
       'delivery_notes',
@@ -526,7 +587,16 @@ export async function updateOrder(id, updates) {
 }
 
 /**
- * Cancel order
+ * Cancel order - wrapper for updateOrderStatus that sets status to 'cancelled'
+ * @param {number} orderId - Order ID to cancel
+ * @param {string} [notes='Order cancelled'] - Cancellation notes
+ * @param {number|null} [changedBy=null] - User ID who cancelled the order
+ * @returns {Object} - Updated order with cancelled status
+ * @throws {BadRequestError} When orderId is invalid
+ * @throws {NotFoundError} When order is not found
+ * @throws {DatabaseError} When database operation fails
+ * @example
+ * const order = await cancelOrder(123, 'Cliente solicitó cancelación', 456)
  */
 export async function cancelOrder(orderId, notes = 'Order cancelled', changedBy = null) {
   try {
@@ -538,7 +608,15 @@ export async function cancelOrder(orderId, notes = 'Order cancelled', changedBy 
 }
 
 /**
- * Get order status history
+ * Get order status history - chronological record of all status changes
+ * @param {number} orderId - Order ID to get history for
+ * @returns {Object[]} - Array of status history records ordered by creation date
+ * @throws {BadRequestError} When orderId is invalid
+ * @throws {NotFoundError} When order or history is not found
+ * @throws {DatabaseError} When database query fails
+ * @example
+ * const history = await getOrderStatusHistory(123)
+ * // Returns: [{ id: 1, order_id: 123, old_status: 'pending', new_status: 'verified', created_at: '...' }]
  */
 export async function getOrderStatusHistory(orderId) {
   try {

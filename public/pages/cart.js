@@ -14,6 +14,7 @@ import {
   initCartBadge,
   initCartEventListeners
 } from '../js/shared/cart.js'
+import { api } from '../js/shared/api-client.js'
 
 // Delivery cost loaded from database
 let DELIVERY_COST = 5.0 // Default fallback
@@ -27,14 +28,7 @@ let deliveryMethod = 'pickup' // 'pickup' or 'delivery'
  */
 async function loadDeliveryCost() {
   try {
-    const response = await fetch('/api/settings/DELIVERY_COST_USD/value')
-
-    if (!response.ok) {
-      console.warn('Failed to load delivery cost from API, using default:', response.status)
-      return
-    }
-
-    const result = await response.json()
+    const result = await api.getValue('DELIVERY_COST_USD')
 
     if (result.success && result.data !== null) {
       DELIVERY_COST = parseFloat(result.data)

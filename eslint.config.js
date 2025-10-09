@@ -19,7 +19,6 @@ export default [
     },
     rules: {
       // Code Quality & Best Practices
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       'no-console': 'off', // Allowed for backend logging
       'prefer-const': 'error',
       'no-var': 'error',
@@ -33,12 +32,31 @@ export default [
       'no-throw-literal': 'error',
       'no-useless-return': 'warn',
       'require-await': 'warn',
-      'no-implicit-globals': 'error'
+      'no-implicit-globals': 'error',
+      'no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_'
+        }
+      ]
     }
   },
   {
-    // Configuration for test files
-    files: ['tests/**/*.js', 'tests/**/*.mjs', '**/*.test.js', '**/*.test.mjs', '**/*.spec.js'],
+    // Configuration for test files and backend files with underscore pattern
+    files: [
+      'tests/**/*.js',
+      'tests/**/*.mjs',
+      '**/*.test.js',
+      '**/*.test.mjs',
+      '**/*.spec.js',
+      'test-*.js',
+      'seed-*.js',
+      'api/**/*.js',
+      'scripts/**/*.js',
+      'run-*.js'
+    ],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -56,7 +74,7 @@ export default [
     },
     rules: {
       'no-undef': 'off', // Disable no-undef for test globals
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }]
+      'no-restricted-globals': 'off' // Allow fetch in tests and backend
     }
   },
   {
@@ -75,17 +93,65 @@ export default [
     }
   },
   {
+    // Frontend contract enforcement
+    files: ['public/**/*.js', '!public/js/shared/api-client.js', '!public/js/shared/api-types.js'],
+    rules: {
+      'no-restricted-globals': [
+        'error',
+        {
+          name: 'fetch',
+          message:
+            'Direct fetch() calls are prohibited in frontend. Use api.getProducts(), api.createOrder(), etc. from the generated client.'
+        },
+        {
+          name: 'XMLHttpRequest',
+          message: 'XMLHttpRequest is prohibited. Use the generated API client instead.'
+        }
+      ],
+      // 'no-restricted-syntax': [
+      //   'error',
+      //   {
+      //     selector: 'Literal[value=/^https?:\\/\\//]',
+      //     message:
+      //       'Hardcoded API URLs are prohibited. Use the generated API client methods instead.'
+      //   }
+      // ],
+      'no-restricted-imports': [
+        'error',
+        {
+          name: 'axios',
+          message: 'External HTTP libraries are prohibited. Use the generated API client instead.'
+        }
+      ]
+    }
+  },
+  {
+    // API client exception - allow fetch and HTTP patterns
+    files: ['public/js/shared/api-client.js'],
+    rules: {
+      'no-restricted-globals': 'off',
+      'no-restricted-syntax': 'off',
+      'no-restricted-imports': 'off'
+    }
+  },
+  {
     ignores: [
       'dist/',
       'node_modules/',
       'public/css/tailwind.css', // Generated file
+      'public/js/shared/api-types.js', // TypeScript types file
       '*.config.js',
       'cleanup-test-products.js',
       'check-products.js',
       'insert-test-image.js',
       'populate-product-images.js',
       'test-product-images.js',
-      'public/js/chart.min.js' // Minified chart.js file
+      'public/js/chart.min.js', // Minified chart.js file
+      'public.backup.20251007_114453/', // Backup files
+      'test-*.js', // Test files at root
+      'seed-product-occasions-api.js', // Seed scripts
+      'tests/**/*.mjs', // Test files using fetch (integration tests)
+      'tests/orders.integration.test.js' // Integration test with fetch
     ]
   }
 ]

@@ -1,0 +1,15 @@
+{
+  "timestamp": "2025-10-09T00:01:48.619Z",
+  "valid": true,
+  "issues": [],
+  "warnings": [],
+  "summary": {
+    "specEndpoints": 62,
+    "clientMethods": 62,
+    "coverage": 100,
+    "orphanedEndpoints": [],
+    "missingMethods": [],
+    "extraMethods": [],
+    "orphanedMethods": []
+  }
+}

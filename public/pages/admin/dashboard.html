@@ -660,30 +660,37 @@
               </label>
               <div
                 id="current-hero-image-container"
-                class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center"
+                class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center bg-gray-50"
               >
-                <img
-                  id="current-hero-image"
-                  src=""
-                  alt="Hero Image"
-                  class="max-h-48 mx-auto rounded-lg hidden"
-                />
-                <p id="no-hero-image-text" class="text-gray-500">No hay imagen hero cargada</p>
+                <div class="flex items-center justify-center h-40">
+                  <img
+                    id="current-hero-image"
+                    src=""
+                    alt="Hero Image"
+                    class="w-40 h-40 object-cover rounded-lg shadow-md hidden"
+                    style="width: 150px; height: 150px"
+                  />
+                  <p id="no-hero-image-text" class="text-gray-500">No hay imagen hero cargada</p>
+                </div>
               </div>
+              <p class="text-xs text-gray-500 mt-2">Tamaño de vista previa: 150x150px</p>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
                 Nueva Imagen Hero
               </label>
-              <div class="border-2 border-dashed border-gray-300 rounded-lg p-4">
+              <div
+                class="border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+                style="height: 200px"
+              >
                 <input type="file" id="hero-image-upload" accept="image/*" class="hidden" />
                 <label
                   for="hero-image-upload"
-                  class="cursor-pointer flex flex-col items-center justify-center"
+                  class="cursor-pointer flex flex-col items-center justify-center h-full"
                 >
-                  <i data-lucide="upload" class="h-8 w-8 text-gray-400 mb-2"></i>
+                  <i data-lucide="upload-cloud" class="h-8 w-8 text-gray-400 mb-2"></i>
                   <span class="text-sm text-gray-600">Haz clic para seleccionar una imagen</span>
-                  <span class="text-xs text-gray-500 mt-1">(JPG, PNG, WebP)</span>
+                  <span class="text-xs text-gray-500 mt-1">(JPG, PNG, WebP - Máx 4MB)</span>
                 </label>
               </div>
               <div class="mt-4 flex justify-end">
@@ -710,28 +717,35 @@
               <label class="block text-sm font-medium text-gray-700 mb-2"> Logo Actual </label>
               <div
                 id="current-logo-container"
-                class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center"
+                class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center bg-gray-50"
               >
-                <img
-                  id="current-logo"
-                  src=""
-                  alt="Site Logo"
-                  class="max-h-32 mx-auto rounded-lg hidden"
-                />
-                <p id="no-logo-text" class="text-gray-500">No hay logo cargado</p>
+                <div class="flex items-center justify-center h-24">
+                  <img
+                    id="current-logo"
+                    src=""
+                    alt="Site Logo"
+                    class="rounded-lg shadow-md hidden"
+                    style="width: 64px; height: 64px; object-fit: contain"
+                  />
+                  <p id="no-logo-text" class="text-gray-500">No hay logo cargado</p>
+                </div>
               </div>
+              <p class="text-xs text-gray-500 mt-2">Tamaño: 64x64px</p>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2"> Nuevo Logo </label>
-              <div class="border-2 border-dashed border-gray-300 rounded-lg p-4">
+              <div
+                class="border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+                style="height: 140px"
+              >
                 <input type="file" id="logo-upload" accept="image/*" class="hidden" />
                 <label
                   for="logo-upload"
-                  class="cursor-pointer flex flex-col items-center justify-center"
+                  class="cursor-pointer flex flex-col items-center justify-center h-full"
                 >
-                  <i data-lucide="upload" class="h-8 w-8 text-gray-400 mb-2"></i>
+                  <i data-lucide="upload-cloud" class="h-8 w-8 text-gray-400 mb-2"></i>
                   <span class="text-sm text-gray-600">Haz clic para seleccionar un logo</span>
-                  <span class="text-xs text-gray-500 mt-1">(JPG, PNG, WebP)</span>
+                  <span class="text-xs text-gray-500 mt-1">(PNG recomendado - Máx 4MB)</span>
                 </label>
               </div>
               <div class="mt-4 flex justify-end">

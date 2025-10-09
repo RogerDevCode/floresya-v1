@@ -6,6 +6,7 @@
 import { createIcons } from '/js/lucide-icons.js'
 import { addToCart, updateCartBadge, isInCart } from '/js/shared/cart.js'
 import { showToast } from '/js/components/toast.js'
+import { api } from '/js/shared/api-client.js'
 
 /**
  * State
@@ -37,16 +38,7 @@ function getProductIdFromURL() {
  */
 async function fetchProduct(productId) {
   try {
-    const response = await fetch(`/api/products/${productId}`)
-
-    if (!response.ok) {
-      if (response.status === 404) {
-        throw new Error('Producto no encontrado')
-      }
-      throw new Error(`HTTP error ${response.status}`)
-    }
-
-    const result = await response.json()
+    const result = await api.getProductsById(productId)
 
     if (!result.success || !result.data) {
       throw new Error(result.error || 'Failed to load product')
@@ -54,6 +46,9 @@ async function fetchProduct(productId) {
 
     return result.data
   } catch (error) {
+    if (error.message.includes('404') || error.message.includes('not found')) {
+      throw new Error('Producto no encontrado')
+    }
     console.error(`fetchProduct(${productId}) failed:`, error)
     throw error
   }
@@ -64,15 +59,7 @@ async function fetchProduct(productId) {
  */
 async function fetchProductImages(productId) {
   try {
-    const response = await fetch(`/api/products/${productId}/images`)
-
-    if (!response.ok) {
-      // If no images endpoint or 404, return empty array (not critical)
-      console.warn(`No images found for product ${productId}`)
-      return []
-    }
-
-    const result = await response.json()
+    const result = await api.getProductImages(productId)
 
     if (!result.success || !result.data) {
       console.warn('No product images available')

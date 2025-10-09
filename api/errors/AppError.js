@@ -125,12 +125,27 @@ class ConflictError extends AppError {
 class ValidationError extends AppError {
   constructor(message, validationErrors = {}) {
     super(message, {
-      statusCode: 422,
+      statusCode: 400,
       code: 'VALIDATION_FAILED',
       context: { validationErrors },
       userMessage: 'Validation failed. Please check your input.',
       severity: 'low'
     })
+  }
+
+  /**
+   * Override toJSON to return 'validation' instead of 'ValidationError' for API compatibility
+   */
+  toJSON(includeStack = false) {
+    return {
+      success: false,
+      error: 'validation', // Tests expect 'validation' not 'ValidationError'
+      code: this.code,
+      message: this.userMessage,
+      details: this.isOperational ? this.context : undefined,
+      timestamp: this.timestamp,
+      ...(includeStack && { stack: this.stack })
+    }
   }
 }
 

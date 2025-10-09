@@ -18,7 +18,31 @@ const TABLE = DB_SCHEMA.product_images.table
 const VALID_SIZES = DB_SCHEMA.product_images.enums.size
 
 /**
- * Validate image data
+ * Validate image data (ENTERPRISE FAIL-FAST)
+ * @param {Object} data - Image data to validate
+ * @param {number} [data.product_id] - Product ID (required for creation)
+ * @param {number} [data.image_index] - Image index (required for creation, must be positive)
+ * @param {string} [data.size] - Image size (required for creation, must be valid enum)
+ * @param {string} [data.url] - Image URL (required for creation)
+ * @param {string} [data.file_hash] - File hash for deduplication (required for creation)
+ * @param {string} [data.mime_type] - MIME type
+ * @param {boolean} [data.is_primary] - Whether this is the primary image
+ * @param {boolean} isUpdate - Whether this is for an update operation (default: false)
+ * @throws {ValidationError} With detailed field-level validation errors
+ * @example
+ * // For creation
+ * validateImageData({
+ *   product_id: 123,
+ *   image_index: 1,
+ *   size: 'medium',
+ *   url: 'https://.../product_123_1.webp',
+ *   file_hash: 'abc123'
+ * }, false)
+ *
+ * // For update
+ * validateImageData({
+ *   url: 'https://.../new-url.webp'
+ * }, true)
  */
 function validateImageData(data, isUpdate = false) {
   if (!isUpdate) {
@@ -62,7 +86,15 @@ function validateImageData(data, isUpdate = false) {
 }
 
 /**
- * Get all images for a product
+ * Get all images for a product with optional filtering by size and primary status
+ * @param {number} productId - Product ID to get images for
+ * @param {Object} [filters={}] - Filter options
+ * @param {string} [filters.size] - Filter by image size
+ * @param {boolean} [filters.is_primary] - Filter by primary image status
+ * @returns {Object[]} - Array of product images ordered by image_index
+ * @throws {BadRequestError} When productId is invalid
+ * @throws {NotFoundError} When no images are found for the product
+ * @throws {DatabaseError} When database query fails
  */
 export async function getProductImages(productId, filters = {}) {
   try {

@@ -437,7 +437,7 @@ async function seedOrders() {
 
       // Generate order (complete schema from supabase_schema.sql)
       const address = randomItem(addresses)
-      const addressParts = address.split(', ')
+      const _addressParts = address.split(', ')
       const deliveryDateOffset = randomInt(1, 7) // 1-7 days from order date
       const deliveryDate = new Date(orderDate)
       deliveryDate.setDate(deliveryDate.getDate() + deliveryDateOffset)
@@ -448,11 +448,6 @@ async function seedOrders() {
         customer_name: `${firstName} ${lastName}`,
         customer_phone: generatePhone(),
         delivery_address: address,
-        delivery_city: addressParts[addressParts.length - 1] || 'Caracas',
-        delivery_state: addressParts[addressParts.length - 1].includes('Miranda')
-          ? 'Miranda'
-          : 'Distrito Capital',
-        delivery_zip: randomItem(['1060', '1050', '1070', '1080', '1040', '']),
         delivery_date: deliveryDate.toISOString().split('T')[0],
         delivery_time_slot: randomItem(['09:00-12:00', '12:00-15:00', '15:00-18:00', '']),
         delivery_notes: randomItem([

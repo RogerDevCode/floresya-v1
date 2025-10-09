@@ -5,9 +5,9 @@
  */
 
 import { createIcons } from '../lucide-icons.js'
+import { api } from '../shared/api-client.js'
 
 const MAX_CAROUSEL_SIZE = 7
-const API_BASE = '/api'
 
 /**
  * CarouselManager class
@@ -52,15 +52,9 @@ export class CarouselManager {
    */
   async loadCarouselData() {
     try {
-      const response = await fetch(`${API_BASE}/products/carousel`, {
-        headers: { Authorization: 'Bearer admin:1:admin' }
-      })
+      // Set auth token for admin access
 
-      if (!response.ok) {
-        throw new Error('Failed to load carousel products')
-      }
-
-      const result = await response.json()
+      const result = await api.getAllCarouselProducts()
       const products = result.data
 
       // Fill slots array

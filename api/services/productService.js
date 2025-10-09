@@ -23,7 +23,27 @@ const SEARCH_COLUMNS = DB_SCHEMA.products.search
 
 /**
  * Validate product data (ENTERPRISE FAIL-FAST)
+ * @param {Object} data - Product data to validate
+ * @param {string} [data.name] - Product name
+ * @param {number} [data.price_usd] - Price in USD
+ * @param {number} [data.price_ves] - Price in VES
+ * @param {number} [data.stock] - Available stock
+ * @param {string} [data.sku] - Product SKU
+ * @param {number} [data.carousel_order] - Carousel display order
+ * @param {boolean} isUpdate - Whether this is for an update operation (default: false)
  * @throws {ValidationError} With detailed field-level validation errors
+ * @example
+ * // For creation
+ * validateProductData({
+ *   name: 'Rosas Rojas',
+ *   price_usd: 25.99,
+ *   stock: 10
+ * }, false)
+ *
+ * // For update
+ * validateProductData({
+ *   price_usd: 29.99
+ * }, true)
  */
 function validateProductData(data, isUpdate = false) {
   const errors = {}
@@ -92,7 +112,17 @@ function validateProductData(data, isUpdate = false) {
 /**
  * Get all products with filters
  * @param {Object} filters - Filter options
+ * @param {number} [filters.limit] - Number of items to return
+ * @param {number} [filters.offset] - Number of items to skip
+ * @param {boolean} [filters.featured] - Filter by featured products
+ * @param {string} [filters.sku] - Filter by SKU
+ * @param {string} [filters.search] - Search in name and description (accent-insensitive)
+ * @param {string} [filters.sortBy] - Sort field with direction
+ * @param {string} [filters.occasion] - Filter by occasion slug
  * @param {boolean} includeInactive - Include inactive products (default: false, admin only)
+ * @param {string} [includeImageSize] - Include specific image size (thumb, small, medium, large)
+ * @returns {Object[]} - Array of products
+ * @throws {DatabaseError} When database query fails
  */
 export async function getAllProducts(
   filters = {},
@@ -209,6 +239,11 @@ export async function getAllProducts(
  * Get product by ID
  * @param {number} id - Product ID
  * @param {boolean} includeInactive - Include inactive products (default: false, admin only)
+ * @param {string} [includeImageSize] - Include specific image size (thumb, small, medium, large)
+ * @returns {Object} - Product object
+ * @throws {BadRequestError} When ID is invalid
+ * @throws {NotFoundError} When product is not found
+ * @throws {DatabaseError} When database query fails
  */
 export async function getProductById(id, includeInactive = false, includeImageSize = null) {
   try {
@@ -257,6 +292,13 @@ export async function getProductById(id, includeInactive = false, includeImageSi
 
 /**
  * Get product by SKU (indexed column)
+ * @param {string} sku - Product SKU to search for
+ * @returns {Object} - Product object
+ * @throws {BadRequestError} When SKU is invalid
+ * @throws {NotFoundError} When product with SKU is not found
+ * @throws {DatabaseError} When database query fails
+ * @example
+ * const product = await getProductBySku('ROS-001')
  */
 export async function getProductBySku(sku) {
   try {
@@ -287,6 +329,13 @@ export async function getProductBySku(sku) {
 
 /**
  * Get products with occasions (using join query instead of stored function)
+ * @param {number} [limit=50] - Maximum number of products to return
+ * @param {number} [offset=0] - Number of products to skip
+ * @returns {Object[]} - Array of products with their associated occasions
+ * @throws {DatabaseError} When database query fails
+ * @throws {NotFoundError} When no products are found
+ * @example
+ * const products = await getProductsWithOccasions(20, 0)
  */
 export async function getProductsWithOccasions(limit = 50, offset = 0) {
   try {
@@ -326,6 +375,14 @@ export async function getProductsWithOccasions(limit = 50, offset = 0) {
 
 /**
  * Get products by occasion ID (using join query instead of stored function)
+ * @param {number} occasionId - Occasion ID to filter products by
+ * @param {number} [limit=50] - Maximum number of products to return
+ * @returns {Object[]} - Array of products for the specified occasion
+ * @throws {BadRequestError} When occasion ID is invalid
+ * @throws {DatabaseError} When database query fails
+ * @throws {NotFoundError} When no products are found for the occasion
+ * @example
+ * const products = await getProductsByOccasion(1, 25)
  */
 export async function getProductsByOccasion(occasionId, limit = 50) {
   try {
@@ -357,7 +414,12 @@ export async function getProductsByOccasion(occasionId, limit = 50) {
 
 /**
  * Get products in carousel (carousel_order IS NOT NULL)
- * Includes primary image in 'thumb' size (150x150px) for carousel display
+ * Includes primary image in 'small' size (300x300px) for carousel display
+ * @returns {Object[]} - Array of carousel products with images
+ * @throws {DatabaseError} When database query fails
+ * @throws {NotFoundError} When no carousel products are found
+ * @example
+ * const carouselProducts = await getCarouselProducts()
  */
 export async function getCarouselProducts() {
   try {
@@ -390,6 +452,20 @@ export async function getCarouselProducts() {
 
 /**
  * Create product (simple)
+ * @param {Object} productData - Product data to create
+ * @param {string} productData.name - Product name (required)
+ * @param {number} productData.price_usd - Price in USD (required)
+ * @param {string} [productData.summary] - Product summary
+ * @param {string} [productData.description] - Product description
+ * @param {number} [productData.price_ves] - Price in VES
+ * @param {number} [productData.stock] - Available stock
+ * @param {string} [productData.sku] - Product SKU
+ * @param {boolean} [productData.featured] - Whether product is featured
+ * @param {number} [productData.carousel_order] - Order in carousel display
+ * @returns {Object} - Created product
+ * @throws {ValidationError} When product data is invalid
+ * @throws {DatabaseConstraintError} When product violates database constraints (e.g., duplicate SKU)
+ * @throws {DatabaseError} When database insert fails
  */
 export async function createProduct(productData) {
   try {
@@ -443,6 +519,27 @@ export async function createProduct(productData) {
 
 /**
  * Create product with occasions (manual transaction)
+ * @param {Object} productData - Product data to create
+ * @param {string} productData.name - Product name (required)
+ * @param {number} productData.price_usd - Price in USD (required)
+ * @param {string} [productData.summary] - Product summary
+ * @param {string} [productData.description] - Product description
+ * @param {number} [productData.price_ves] - Price in VES
+ * @param {number} [productData.stock] - Available stock
+ * @param {string} [productData.sku] - Product SKU
+ * @param {boolean} [productData.featured] - Whether product is featured
+ * @param {number} [productData.carousel_order] - Order in carousel display
+ * @param {number[]} [occasionIds=[]] - Array of occasion IDs to associate with the product
+ * @returns {Object} - Created product
+ * @throws {ValidationError} When product data is invalid
+ * @throws {BadRequestError} When occasionIds is not an array
+ * @throws {DatabaseError} When database operations fail
+ * @example
+ * const product = await createProductWithOccasions({
+ *   name: 'Rosas para Aniversario',
+ *   price_usd: 45.99,
+ *   stock: 5
+ * }, [1, 3]) // Associate with occasions 1 and 3
  */
 export async function createProductWithOccasions(productData, occasionIds = []) {
   try {
@@ -485,6 +582,23 @@ export async function createProductWithOccasions(productData, occasionIds = []) 
 
 /**
  * Update product
+ * @param {number} id - Product ID
+ * @param {Object} updates - Updated product data
+ * @param {string} [updates.name] - Product name
+ * @param {string} [updates.summary] - Product summary
+ * @param {string} [updates.description] - Product description
+ * @param {number} [updates.price_usd] - Price in USD
+ * @param {number} [updates.price_ves] - Price in VES
+ * @param {number} [updates.stock] - Available stock
+ * @param {string} [updates.sku] - Product SKU
+ * @param {boolean} [updates.featured] - Whether product is featured
+ * @param {number} [updates.carousel_order] - Order in carousel display
+ * @returns {Object} - Updated product
+ * @throws {BadRequestError} When ID is invalid or no updates are provided
+ * @throws {ValidationError} When product data is invalid
+ * @throws {NotFoundError} When product is not found
+ * @throws {DatabaseConstraintError} When product violates database constraints (e.g., duplicate SKU)
+ * @throws {DatabaseError} When database update fails
  */
 export async function updateProduct(id, updates) {
   try {
@@ -555,6 +669,17 @@ export async function updateProduct(id, updates) {
 
 /**
  * Update carousel order (direct update)
+ * @param {number} productId - Product ID to update
+ * @param {number|null} newOrder - New carousel order (0-7) or null to remove from carousel
+ * @returns {Object} - Updated product
+ * @throws {BadRequestError} When productId is invalid or newOrder is out of range
+ * @throws {DatabaseError} When database update fails
+ * @example
+ * // Set product to position 1 in carousel
+ * await updateCarouselOrder(123, 1)
+ *
+ * // Remove product from carousel
+ * await updateCarouselOrder(123, null)
  */
 export async function updateCarouselOrder(productId, newOrder) {
   try {
@@ -590,6 +715,11 @@ export async function updateCarouselOrder(productId, newOrder) {
 
 /**
  * Soft-delete product
+ * @param {number} id - Product ID to delete
+ * @returns {Object} - Deactivated product
+ * @throws {BadRequestError} When ID is invalid
+ * @throws {NotFoundError} When product is not found or already inactive
+ * @throws {DatabaseError} When database update fails
  */
 export async function deleteProduct(id) {
   try {
@@ -620,7 +750,14 @@ export async function deleteProduct(id) {
 }
 
 /**
- * Reactivate product
+ * Reactivate product (reverse soft-delete)
+ * @param {number} id - Product ID to reactivate
+ * @returns {Object} - Reactivated product
+ * @throws {BadRequestError} When ID is invalid
+ * @throws {NotFoundError} When product is not found or already active
+ * @throws {DatabaseError} When database update fails
+ * @example
+ * const product = await reactivateProduct(123)
  */
 export async function reactivateProduct(id) {
   try {
@@ -651,7 +788,15 @@ export async function reactivateProduct(id) {
 }
 
 /**
- * Update stock
+ * Update stock (direct update)
+ * @param {number} id - Product ID to update
+ * @param {number} quantity - New stock quantity (must be non-negative)
+ * @returns {Object} - Updated product
+ * @throws {BadRequestError} When ID is invalid or quantity is negative
+ * @throws {NotFoundError} When product is not found or inactive
+ * @throws {DatabaseError} When database update fails
+ * @example
+ * const product = await updateStock(123, 50)
  */
 export async function updateStock(id, quantity) {
   try {
@@ -686,7 +831,17 @@ export async function updateStock(id, quantity) {
 }
 
 /**
- * Decrement stock (for orders)
+ * Decrement stock (for orders) - ENTERPRISE FAIL-FAST with insufficient stock check
+ * @param {number} id - Product ID to decrement stock for
+ * @param {number} quantity - Quantity to decrement (must be positive)
+ * @returns {Object} - Updated product
+ * @throws {BadRequestError} When ID is invalid or quantity is not positive
+ * @throws {NotFoundError} When product is not found or inactive
+ * @throws {InsufficientStockError} When current stock is less than requested decrement
+ * @throws {DatabaseError} When database operations fail
+ * @example
+ * // Decrement stock by 2 for order processing
+ * const product = await decrementStock(123, 2)
  */
 export async function decrementStock(id, quantity) {
   try {

@@ -4,7 +4,7 @@
  * Applied before validation to ensure data consistency
  */
 
-import { DB_SCHEMA } from '../services/supabaseClient.js'
+// import { DB_SCHEMA } from '../services/supabaseClient.js' // Not used, using hardcoded types
 
 // Database column type mappings for orders and order_items
 const ORDERS_COLUMN_TYPES = {
@@ -13,9 +13,6 @@ const ORDERS_COLUMN_TYPES = {
   customer_name: 'string',
   customer_phone: 'string',
   delivery_address: 'string',
-  delivery_city: 'string',
-  delivery_state: 'string',
-  delivery_zip: 'string',
   delivery_time_slot: 'string',
   delivery_notes: 'string',
   notes: 'string',
@@ -121,25 +118,6 @@ function sanitizeValue(value, columnType) {
   }
 
   return value
-}
-
-/**
- * Deep clone and sanitize an object based on column types
- */
-function sanitizeObject(data, columnTypes) {
-  if (!data || typeof data !== 'object') {
-    return data
-  }
-
-  const sanitized = { ...data }
-
-  for (const [key, columnType] of Object.entries(columnTypes)) {
-    if (key in sanitized) {
-      sanitized[key] = sanitizeValue(sanitized[key], columnType)
-    }
-  }
-
-  return sanitized
 }
 
 /**

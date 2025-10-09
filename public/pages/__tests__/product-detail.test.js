@@ -4,9 +4,15 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { api } from '../../js/shared/api-client.js'
 
-// Mock fetch globally
-global.fetch = vi.fn()
+// Mock the api client
+vi.mock('../../js/shared/api-client.js', () => ({
+  api: {
+    getProduct: vi.fn(),
+    getProductImages: vi.fn()
+  }
+}))
 
 // Mock localStorage
 const localStorageMock = {
@@ -48,10 +54,9 @@ describe('Product Detail Page - URL Parsing', () => {
 describe('Product Detail Page - API Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    global.fetch.mockClear()
   })
 
-  it('should fetch product data from /api/products/:id', async () => {
+  it('should fetch product data from api.getProduct', async () => {
     const mockProduct = {
       id: 67,
       name: 'Ramo Tropical Vibrante',
@@ -63,27 +68,20 @@ describe('Product Detail Page - API Integration', () => {
       active: true
     }
 
-    global.fetch.mockResolvedValueOnce({
-      ok: true,
-      status: 200,
-      json: () =>
-        Promise.resolve({
-          success: true,
-          data: mockProduct,
-          message: 'Product retrieved successfully'
-        })
+    api.getProduct.mockResolvedValueOnce({
+      success: true,
+      data: mockProduct,
+      message: 'Product retrieved successfully'
     })
 
-    const response = await fetch('/api/products/67')
-    const result = await response.json()
+    const result = await api.getProduct(67)
 
-    expect(response.ok).toBe(true)
     expect(result.success).toBe(true)
     expect(result.data.id).toBe(67)
     expect(result.data.name).toBe('Ramo Tropical Vibrante')
   })
 
-  it('should fetch product images from /api/products/:id/images', async () => {
+  it('should fetch product images from api.getProductImages', async () => {
     const mockImages = [
       {
         id: 237,
@@ -111,21 +109,14 @@ describe('Product Detail Page - API Integration', () => {
       }
     ]
 
-    global.fetch.mockResolvedValueOnce({
-      ok: true,
-      status: 200,
-      json: () =>
-        Promise.resolve({
-          success: true,
-          data: mockImages,
-          message: 'Images retrieved successfully'
-        })
+    api.getProductImages.mockResolvedValueOnce({
+      success: true,
+      data: mockImages,
+      message: 'Images retrieved successfully'
     })
 
-    const response = await fetch('/api/products/67/images')
-    const result = await response.json()
+    const result = await api.getProductImages(67)
 
-    expect(response.ok).toBe(true)
     expect(result.success).toBe(true)
     expect(result.data).toHaveLength(3)
     expect(result.data[0].size).toBe('thumb')
@@ -134,31 +125,21 @@ describe('Product Detail Page - API Integration', () => {
   })
 
   it('should handle 404 product not found', async () => {
-    global.fetch.mockResolvedValueOnce({
-      ok: false,
-      status: 404,
-      json: () =>
-        Promise.resolve({
-          success: false,
-          error: 'Product not found',
-          message: 'Product 999 not found'
-        })
-    })
+    api.getProduct.mockRejectedValueOnce(new Error('Product not found'))
 
-    const response = await fetch('/api/products/999')
-    const result = await response.json()
-
-    expect(response.ok).toBe(false)
-    expect(response.status).toBe(404)
-    expect(result.success).toBe(false)
-    expect(result.error).toBe('Product not found')
+    try {
+      await api.getProduct(999)
+      expect.fail('Should have thrown error')
+    } catch (error) {
+      expect(error.message).toBe('Product not found')
+    }
   })
 
   it('should handle network errors gracefully', async () => {
-    global.fetch.mockRejectedValueOnce(new Error('Network error'))
+    api.getProduct.mockRejectedValueOnce(new Error('Network error'))
 
     try {
-      await fetch('/api/products/67')
+      await api.getProduct(67)
       expect.fail('Should have thrown error')
     } catch (error) {
       expect(error.message).toBe('Network error')
@@ -320,21 +301,12 @@ describe('Product Detail Page - Error Handling', () => {
   })
 
   it('should fail fast on API errors', async () => {
-    global.fetch.mockResolvedValueOnce({
-      ok: false,
-      status: 500,
-      json: () =>
-        Promise.resolve({
-          success: false,
-          error: 'Internal server error'
-        })
-    })
+    api.getProduct.mockRejectedValueOnce(new Error('Internal server error'))
 
-    const response = await fetch('/api/products/67')
-    const result = await response.json()
-
-    if (!response.ok || !result.success) {
-      const error = new Error(result.error || 'Failed to load product')
+    try {
+      await api.getProduct(67)
+      expect.fail('Should have thrown error')
+    } catch (error) {
       expect(error.message).toContain('error')
     }
   })

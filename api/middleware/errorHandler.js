@@ -19,6 +19,7 @@ import { AppError, InternalServerError } from '../errors/AppError.js'
  * @param {Function} _next - Express next (unused but required by Express)
  */
 export function errorHandler(err, req, res, _next) {
+  // _next parameter is required by Express middleware signature but not used in error handlers
   let error = err
 
   // Convert non-AppError errors to AppError (fail-fast wrapper)

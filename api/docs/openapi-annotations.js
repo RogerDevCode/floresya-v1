@@ -2,7 +2,219 @@
  * OpenAPI JSDoc Annotations
  * Centralized documentation for all API endpoints
  * This file is scanned by swagger-jsdoc to generate OpenAPI spec
+ *
+ * Generated using template system for consistency and maintainability
  */
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *       description: JWT token authentication
+ *   schemas:
+ *     SuccessResponse:
+ *       type: object
+ *       properties:
+ *         success: { type: boolean, example: true }
+ *         data: { type: object, description: Response data }
+ *         message: { type: string, example: "Operation completed successfully" }
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         success: { type: boolean, example: false }
+ *         error: { type: string, example: "Error message" }
+ *         message: { type: string, example: "Operation failed" }
+ *         details: { type: array, items: { type: string }, description: "Validation errors (if applicable)" }
+ *     user:
+ *       type: object
+ *       properties:
+ *         id: { type: integer, example: 1 }
+ *         email: { type: string, format: email, example: "user@example.com" }
+ *         full_name: { type: string, example: "John Doe" }
+ *         phone: { type: string, example: "+1234567890" }
+ *         role: { type: string, enum: [user, admin], example: "user" }
+ *         email_verified: { type: boolean, example: false }
+ *         is_active: { type: boolean, example: true }
+ *         created_at: { type: string, format: date-time }
+ *         updated_at: { type: string, format: date-time }
+ *     product:
+ *       type: object
+ *       properties:
+ *         id: { type: integer, example: 1 }
+ *         name: { type: string, example: "Red Roses Bouquet" }
+ *         summary: { type: string, example: "Dozen red roses", nullable: true }
+ *         description: { type: string, example: "Beautiful red roses", nullable: true }
+ *         price_usd: { type: number, format: decimal, example: 29.99 }
+ *         price_ves: { type: number, format: decimal, example: 1200, nullable: true }
+ *         stock: { type: integer, example: 50 }
+ *         sku: { type: string, example: "ROSE-RED-001", nullable: true }
+ *         featured: { type: boolean, example: true }
+ *         carousel_order: { type: integer, example: 1, nullable: true }
+ *         active: { type: boolean, example: true }
+ *         created_at: { type: string, format: date-time }
+ *         updated_at: { type: string, format: date-time }
+ *     occasion:
+ *       type: object
+ *       properties:
+ *         id: { type: integer, example: 1 }
+ *         name: { type: string, example: "Birthday" }
+ *         description: { type: string, example: "Flowers for birthdays" }
+ *         slug: { type: string, example: "birthday" }
+ *         display_order: { type: integer, example: 1 }
+ *         is_active: { type: boolean, example: true }
+ *         created_at: { type: string, format: date-time }
+ *         updated_at: { type: string, format: date-time }
+ *     productimage:
+ *       type: object
+ *       properties:
+ *         id: { type: integer, example: 1 }
+ *         product_id: { type: integer, example: 67 }
+ *         image_index: { type: integer, example: 1 }
+ *         size: { type: string, enum: [thumb, small, medium, large], example: "small" }
+ *         url: { type: string, format: uri, example: "https://abc123.supabase.co/storage/v1/object/public/product-images/67_1_small.webp" }
+ *         file_hash: { type: string, example: "abc123def456..." }
+ *         mime_type: { type: string, example: "image/webp" }
+ *         is_primary: { type: boolean, example: false }
+ *         created_at: { type: string, format: date-time }
+ *         updated_at: { type: string, format: date-time }
+ *     order:
+ *       type: object
+ *       properties:
+ *         id: { type: integer, example: 1001 }
+ *         user_id: { type: integer, example: 5 }
+ *         customer_email: { type: string, format: email, example: "maria@example.com" }
+ *         customer_name: { type: string, example: "María González" }
+ *         customer_phone: { type: string, example: "+58 412-1234567" }
+ *         delivery_address: { type: string, example: "Av. Principal, Caracas" }
+ *         delivery_date: { type: string, format: date, example: "2025-10-05" }
+ *         delivery_time_slot: { type: string, example: "10:00-12:00" }
+ *         delivery_notes: { type: string, example: "Llamar al llegar" }
+ *         status: { type: string, enum: [pending, verified, preparing, shipped, delivered, cancelled], example: "pending" }
+ *         total_amount_usd: { type: number, format: decimal, example: 89.99 }
+ *         total_amount_ves: { type: number, format: decimal, example: 3599.6 }
+ *         currency_rate: { type: number, format: decimal, example: 40 }
+ *         notes: { type: string, example: "Ocasión especial" }
+ *         admin_notes: { type: string, example: "Cliente frecuente" }
+ *         created_at: { type: string, format: date-time }
+ *         updated_at: { type: string, format: date-time }
+ *     OrderItem:
+ *       type: object
+ *       properties:
+ *         id: { type: integer, example: 1 }
+ *         order_id: { type: integer, example: 1001 }
+ *         product_id: { type: integer, example: 67 }
+ *         product_name: { type: string, example: "Ramo Tropical Vibrante" }
+ *         product_summary: { type: string, example: "Flores tropicales vibrantes" }
+ *         unit_price_usd: { type: number, format: decimal, example: 45.99 }
+ *         unit_price_ves: { type: number, format: decimal, example: 1839.6 }
+ *         quantity: { type: integer, example: 2 }
+ *         subtotal_usd: { type: number, format: decimal, example: 91.98 }
+ *         subtotal_ves: { type: number, format: decimal, example: 3679.2 }
+ *         created_at: { type: string, format: date-time }
+ *         updated_at: { type: string, format: date-time }
+ *     OrderStatusHistory:
+ *       type: object
+ *       properties:
+ *         id: { type: integer, example: 1 }
+ *         order_id: { type: integer, example: 1001 }
+ *         old_status: { type: string, enum: [pending, verified, preparing, shipped, delivered, cancelled], example: "pending" }
+ *         new_status: { type: string, enum: [pending, verified, preparing, shipped, delivered, cancelled], example: "verified" }
+ *         notes: { type: string, example: "Pago verificado" }
+ *         changed_by: { type: integer, example: 1 }
+ *         created_at: { type: string, format: date-time }
+ *     payment:
+ *       type: object
+ *       properties:
+ *         id: { type: integer, example: 1 }
+ *         order_id: { type: integer, example: 1 }
+ *         user_id: { type: integer, example: 1 }
+ *         amount_usd: { type: number, format: decimal, example: 59.99 }
+ *         amount_ves: { type: number, format: decimal, example: 2400 }
+ *         payment_method_name: { type: string, example: "Bank Transfer" }
+ *         transaction_id: { type: string, example: "TXN123456" }
+ *         reference_number: { type: string, example: "REF789" }
+ *         status: { type: string, enum: [pending, completed, failed, refunded, partially_refunded], example: "pending" }
+ *         created_at: { type: string, format: date-time }
+ *         updated_at: { type: string, format: date-time }
+ *     settings:
+ *       type: object
+ *       properties:
+ *         key: { type: string, example: "site_name" }
+ *         value: { type: string, example: "FloresYa" }
+ *         description: { type: string, example: "Site name for branding" }
+ *         is_public: { type: boolean, example: true }
+ *         created_at: { type: string, format: date-time }
+ *         updated_at: { type: string, format: date-time }
+ *     PaginationParams:
+ *       type: object
+ *       properties:
+ *         limit: { type: integer, minimum: 1, maximum: 100, default: 10 }
+ *         offset: { type: integer, minimum: 0, default: 0 }
+ *         page: { type: integer, minimum: 1 }
+ *     OrderStatusUpdate:
+ *       type: object
+ *       required: [status]
+ *       properties:
+ *         status: { type: string, enum: [pending, verified, preparing, shipped, delivered, cancelled], example: "verified" }
+ *         notes: { type: string, example: "Payment confirmed" }
+ *     PaymentConfirm:
+ *       type: object
+ *       required: [payment_method, reference_number]
+ *       properties:
+ *         payment_method: { type: string, enum: [cash, mobile_payment, bank_transfer, zelle, crypto], example: "bank_transfer" }
+ *         reference_number: { type: string, minLength: 3, maxLength: 100, example: "TF-20231101-001" }
+ *         payment_details: { type: object, example: { bank: "Banco Mercantil", payer: "José Pérez" } }
+ *         receipt_image_url: { type: string, format: uri, example: "https://example.com/receipt.jpg" }
+ *   responses:
+ *     UnauthorizedError:
+ *       description: Authentication required
+ *       content:
+ *         application/json:
+ *           schema: { $ref: '#/components/schemas/ErrorResponse' }
+ *     ForbiddenError:
+ *       description: Insufficient permissions
+ *       content:
+ *         application/json:
+ *           schema: { $ref: '#/components/schemas/ErrorResponse' }
+ *     NotFoundError:
+ *       description: Resource not found
+ *       content:
+ *         application/json:
+ *           schema: { $ref: '#/components/schemas/ErrorResponse' }
+ *     ValidationError:
+ *       description: Validation failed
+ *       content:
+ *         application/json:
+ *           schema: { $ref: '#/components/schemas/ErrorResponse' }
+ *     InternalServerError:
+ *       description: Internal server error
+ *       content:
+ *         application/json:
+ *           schema: { $ref: '#/components/schemas/ErrorResponse' }
+ *   parameters:
+ *     IdParam:
+ *       name: id
+ *       in: path
+ *       required: true
+ *       schema: { type: integer, minimum: 1 }
+ *       description: Resource ID
+ *     LimitParam:
+ *       name: limit
+ *       in: query
+ *       schema: { type: integer, minimum: 1, maximum: 100, default: 10 }
+ *       description: Number of items to return
+ *     OffsetParam:
+ *       name: offset
+ *       in: query
+ *       schema: { type: integer, minimum: 0, default: 0 }
+ *       description: Number of items to skip
+ */
+
+// ==================== PRODUCTS ====================
 
 /**
  * @swagger
@@ -48,7 +260,7 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { type: array, items: { $ref: '#/components/schemas/Product' } }
+ *                     data: { type: array, items: { $ref: '#/components/schemas/product' } }
  *       400:
  *         $ref: '#/components/responses/ValidationError'
  *       500:
@@ -77,11 +289,87 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { $ref: '#/components/schemas/Product' }
+ *                     data: { $ref: '#/components/schemas/product' }
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
+ */
+
+/**
+ * @swagger
+ * /api/products/carousel:
+ *   get:
+ *     tags: [Products]
+ *     summary: Get carousel products
+ *     description: Returns featured products for carousel display (ordered by carousel_order)
+ *     responses:
+ *       200:
+ *         description: Carousel products retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { type: array, items: { $ref: '#/components/schemas/product' } }
+ */
+
+/**
+ * @swagger
+ * /api/products/with-occasions:
+ *   get:
+ *     tags: [Products]
+ *     summary: Get products with occasions
+ *     description: Returns products with their associated occasions
+ *     parameters:
+ *       - $ref: '#/components/parameters/LimitParam'
+ *       - $ref: '#/components/parameters/OffsetParam'
+ *       - name: featured
+ *         in: query
+ *         schema: { type: boolean }
+ *         description: Filter by featured products
+ *     responses:
+ *       200:
+ *         description: Products with occasions retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { type: array, items: { $ref: '#/components/schemas/product' } }
+ */
+
+/**
+ * @swagger
+ * /api/products/occasion/{occasionId}:
+ *   get:
+ *     tags: [Products]
+ *     summary: Get products by occasion
+ *     parameters:
+ *       - name: occasionId
+ *         in: path
+ *         required: true
+ *         schema: { type: integer, minimum: 1 }
+ *         description: Occasion ID
+ *       - $ref: '#/components/parameters/LimitParam'
+ *       - $ref: '#/components/parameters/OffsetParam'
+ *     responses:
+ *       200:
+ *         description: Products for occasion retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { type: array, items: { $ref: '#/components/schemas/product' } }
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
  */
 
 /**
@@ -106,21 +394,22 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { $ref: '#/components/schemas/Product' }
+ *                     data: { $ref: '#/components/schemas/product' }
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
  */
 
 /**
  * @swagger
- * /api/products/carousel:
+ * /api/products/{id}/images/primary:
  *   get:
  *     tags: [Products]
- *     summary: Get carousel products
- *     description: Returns featured products sorted by carousel_order
+ *     summary: Get primary image for product
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
  *     responses:
  *       200:
- *         description: Carousel products retrieved successfully
+ *         description: Primary image retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -128,49 +417,45 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { type: array, items: { $ref: '#/components/schemas/Product' } }
+ *                     data: { $ref: '#/components/schemas/productimage' }
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+
+/**
+ * @swagger
+ * /api/products/{id}/images:
+ *   get:
+ *     tags: [Products]
+ *     summary: Get all images for product
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *       - name: size
+ *         in: query
+ *         schema: { type: string, enum: [thumb, small, medium, large] }
+ *         description: Filter by image size
+ *     responses:
+ *       200:
+ *         description: Product images retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { type: array, items: { $ref: '#/components/schemas/productimage' } }
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
  */
 
 /**
  * @swagger
  * /api/products/with-occasions:
- *   get:
- *     tags: [Products]
- *     summary: Get products with occasions
- *     description: Returns products with their associated occasions (uses stored function)
- *     parameters:
- *       - $ref: '#/components/parameters/LimitParam'
- *       - $ref: '#/components/parameters/OffsetParam'
- *     responses:
- *       200:
- *         description: Products with occasions retrieved successfully
- */
-
-/**
- * @swagger
- * /api/products/occasion/{occasionId}:
- *   get:
- *     tags: [Products]
- *     summary: Get products by occasion
- *     parameters:
- *       - name: occasionId
- *         in: path
- *         required: true
- *         schema: { type: integer }
- *         description: Occasion ID
- *       - $ref: '#/components/parameters/LimitParam'
- *     responses:
- *       200:
- *         description: Products retrieved successfully
- */
-
-/**
- * @swagger
- * /api/products:
  *   post:
  *     tags: [Products]
- *     summary: Create new product
- *     description: Admin only - Creates a new product
+ *     summary: Create product with occasions
+ *     description: Admin only - Creates a new product with associated occasions
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -179,20 +464,25 @@
  *         application/json:
  *           schema:
  *             type: object
- *             required: [name, price_usd]
+ *             required: [product, occasionIds]
  *             properties:
- *               name: { type: string, minLength: 2, maxLength: 255 }
- *               summary: { type: string }
- *               description: { type: string }
- *               price_usd: { type: number, minimum: 0 }
- *               price_ves: { type: number, minimum: 0 }
- *               stock: { type: integer, minimum: 0 }
- *               sku: { type: string, maxLength: 50 }
- *               featured: { type: boolean }
- *               carousel_order: { type: integer, minimum: 0 }
+ *               product:
+ *                 type: object
+ *                 required: [name, price_usd]
+ *                 properties:
+ *                   name: { type: string, minLength: 2, maxLength: 255 }
+ *                   summary: { type: string }
+ *                   description: { type: string }
+ *                   price_usd: { type: number, minimum: 0 }
+ *                   price_ves: { type: number, minimum: 0 }
+ *                   stock: { type: integer, minimum: 0 }
+ *                   sku: { type: string, maxLength: 50 }
+ *                   featured: { type: boolean }
+ *                   carousel_order: { type: integer, minimum: 0, maximum: 7 }
+ *               occasionIds: { type: array, items: { type: integer } }
  *     responses:
  *       201:
- *         description: Product created successfully
+ *         description: Product with occasions created successfully
  *         content:
  *           application/json:
  *             schema:
@@ -200,7 +490,7 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { $ref: '#/components/schemas/Product' }
+ *                     data: { $ref: '#/components/schemas/product' }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
@@ -211,39 +501,11 @@
 
 /**
  * @swagger
- * /api/products/with-occasions:
- *   post:
- *     tags: [Products]
- *     summary: Create product with occasions (atomic)
- *     description: Admin only - Creates product and associates it with occasions in a single transaction
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required: [product]
- *             properties:
- *               product: { type: object }
- *               occasionIds: { type: array, items: { type: integer } }
- *     responses:
- *       201:
- *         description: Product with occasions created successfully
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       403:
- *         $ref: '#/components/responses/ForbiddenError'
- */
-
-/**
- * @swagger
  * /api/products/{id}:
  *   put:
  *     tags: [Products]
  *     summary: Update product
- *     description: Admin only - Updates product fields
+ *     description: Admin only - Updates an existing product
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -255,15 +517,16 @@
  *           schema:
  *             type: object
  *             properties:
- *               name: { type: string }
+ *               name: { type: string, minLength: 2, maxLength: 255 }
  *               summary: { type: string }
  *               description: { type: string }
- *               price_usd: { type: number }
- *               price_ves: { type: number }
- *               stock: { type: integer }
- *               sku: { type: string }
+ *               price_usd: { type: number, minimum: 0 }
+ *               price_ves: { type: number, minimum: 0 }
+ *               stock: { type: integer, minimum: 0 }
+ *               sku: { type: string, maxLength: 50 }
+ *               active: { type: boolean }
  *               featured: { type: boolean }
- *               carousel_order: { type: integer }
+ *               carousel_order: { type: integer, minimum: 0, maximum: 7 }
  *     responses:
  *       200:
  *         description: Product updated successfully
@@ -274,13 +537,17 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { $ref: '#/components/schemas/Product' }
+ *                     data: { $ref: '#/components/schemas/product' }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
  */
 
 /**
@@ -288,8 +555,8 @@
  * /api/products/{id}/carousel-order:
  *   patch:
  *     tags: [Products]
- *     summary: Update carousel order (atomic)
- *     description: Admin only - Updates carousel order using atomic stored function
+ *     summary: Update product carousel order
+ *     description: Admin only - Updates the carousel display order for a product
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -306,10 +573,20 @@
  *     responses:
  *       200:
  *         description: Carousel order updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/product' }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
  */
 
 /**
@@ -317,8 +594,8 @@
  * /api/products/{id}/stock:
  *   patch:
  *     tags: [Products]
- *     summary: Update stock
- *     description: Admin only - Updates product stock quantity
+ *     summary: Update product stock
+ *     description: Admin only - Updates the stock quantity for a product
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -335,50 +612,6 @@
  *     responses:
  *       200:
  *         description: Stock updated successfully
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       403:
- *         $ref: '#/components/responses/ForbiddenError'
- */
-
-/**
- * @swagger
- * /api/products/{id}:
- *   delete:
- *     tags: [Products]
- *     summary: Soft-delete product
- *     description: Admin only - Deactivates product (soft-delete)
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - $ref: '#/components/parameters/IdParam'
- *     responses:
- *       200:
- *         description: Product deactivated successfully
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       403:
- *         $ref: '#/components/responses/ForbiddenError'
- */
-
-/**
- * @swagger
- * /api/products/{id}/images:
- *   get:
- *     tags: [Products]
- *     summary: Get product images
- *     description: Public - Returns all images for a product, filtered by size if specified
- *     parameters:
- *       - $ref: '#/components/parameters/IdParam'
- *       - name: size
- *         in: query
- *         schema:
- *           type: string
- *           enum: [thumb, small, medium, large]
- *         description: Filter images by size
- *     responses:
- *       200:
- *         description: Product images retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -386,39 +619,11 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data:
- *                       type: array
- *                       items:
- *                         $ref: '#/components/schemas/ProductImage'
- *       400:
- *         $ref: '#/components/responses/ValidationError'
- *       404:
- *         $ref: '#/components/responses/NotFoundError'
- */
-
-/**
- * @swagger
- * /api/products/{id}/images/primary:
- *   get:
- *     tags: [Products]
- *     summary: Get primary product image
- *     description: Public - Returns the primary (featured) image for a product (medium size)
- *     parameters:
- *       - $ref: '#/components/parameters/IdParam'
- *     responses:
- *       200:
- *         description: Primary image retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/SuccessResponse'
- *                 - type: object
- *                   properties:
- *                     data:
- *                       $ref: '#/components/schemas/ProductImage'
- *       400:
- *         $ref: '#/components/responses/ValidationError'
+ *                     data: { $ref: '#/components/schemas/product' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
  */
@@ -428,8 +633,8 @@
  * /api/products/{id}/images:
  *   post:
  *     tags: [Products]
- *     summary: Create product images
- *     description: Admin only - Batch insert all sizes for a single image_index (1-5)
+ *     summary: Upload product images
+ *     description: Admin only - Uploads new images for a product (creates all sizes)
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -437,43 +642,19 @@
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
- *             required: [image_index, images]
+ *             required: [image]
  *             properties:
- *               image_index:
- *                 type: integer
- *                 minimum: 1
- *                 maximum: 5
- *                 description: Image index (1-5) for ordering in carousel
- *               images:
- *                 type: array
- *                 description: All sizes for this image (thumb, small, medium, large)
- *                 items:
- *                   type: object
- *                   required: [size, url, file_hash, mime_type]
- *                   properties:
- *                     size:
- *                       type: string
- *                       enum: [thumb, small, medium, large]
- *                     url:
- *                       type: string
- *                       format: uri
- *                       description: Image URL (CDN or storage path)
- *                     file_hash:
- *                       type: string
- *                       description: Hash for deduplication
- *                     mime_type:
- *                       type: string
- *                       example: image/webp
- *               is_primary:
- *                 type: boolean
- *                 default: false
- *                 description: Mark this image as primary/featured
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file to upload
+ *               is_primary: { type: boolean, description: Set as primary image }
  *     responses:
  *       201:
- *         description: Images created successfully
+ *         description: Images uploaded successfully
  *         content:
  *           application/json:
  *             schema:
@@ -481,16 +662,13 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data:
- *                       type: array
- *                       items:
- *                         $ref: '#/components/schemas/ProductImage'
- *       400:
- *         $ref: '#/components/responses/ValidationError'
+ *                     data: { type: array, items: { $ref: '#/components/schemas/productimage' } }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
  */
 
 /**
@@ -498,8 +676,8 @@
  * /api/products/{id}/images/{imageIndex}:
  *   delete:
  *     tags: [Products]
- *     summary: Delete images by image_index
- *     description: Admin only - Deletes all sizes for a specific image_index (1-5)
+ *     summary: Delete product images by index
+ *     description: Admin only - Deletes all sizes of a specific image index
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -507,28 +685,14 @@
  *       - name: imageIndex
  *         in: path
  *         required: true
- *         schema:
- *           type: integer
- *           minimum: 1
- *           maximum: 5
+ *         schema: { type: integer, minimum: 1 }
  *         description: Image index to delete
  *     responses:
  *       200:
  *         description: Images deleted successfully
  *         content:
  *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/SuccessResponse'
- *                 - type: object
- *                   properties:
- *                     data:
- *                       type: object
- *                       properties:
- *                         deleted_count:
- *                           type: integer
- *       400:
- *         $ref: '#/components/responses/ValidationError'
+ *             schema: { $ref: '#/components/schemas/SuccessResponse' }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
@@ -542,8 +706,8 @@
  * /api/products/{id}/images/primary/{imageIndex}:
  *   patch:
  *     tags: [Products]
- *     summary: Set primary image by image_index
- *     description: Admin only - Marks a specific image_index as primary/featured
+ *     summary: Set primary image
+ *     description: Admin only - Sets a specific image index as the primary image
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -551,14 +715,11 @@
  *       - name: imageIndex
  *         in: path
  *         required: true
- *         schema:
- *           type: integer
- *           minimum: 1
- *           maximum: 5
+ *         schema: { type: integer, minimum: 1 }
  *         description: Image index to set as primary
  *     responses:
  *       200:
- *         description: Primary image set successfully
+ *         description: Primary image updated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -566,10 +727,32 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data:
- *                       $ref: '#/components/schemas/ProductImage'
- *       400:
- *         $ref: '#/components/responses/ValidationError'
+ *                     data: { $ref: '#/components/schemas/productimage' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+
+/**
+ * @swagger
+ * /api/products/{id}:
+ *   delete:
+ *     tags: [Products]
+ *     summary: Delete product (soft delete)
+ *     description: Admin only - Soft deletes a product (sets active to false)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Product deleted successfully
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/SuccessResponse' }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
@@ -592,10 +775,69 @@
  *     responses:
  *       200:
  *         description: Product reactivated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/product' }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+
+/**
+ * @swagger
+ * /api/products:
+ *   post:
+ *     tags: [Products]
+ *     summary: Create new product
+ *     description: Admin only - Creates a new product
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [product]
+ *             properties:
+ *               product:
+ *                 type: object
+ *                 required: [name, price_usd]
+ *                 properties:
+ *                   name: { type: string, minLength: 2, maxLength: 255 }
+ *                   summary: { type: string }
+ *                   description: { type: string }
+ *                   price_usd: { type: number, minimum: 0 }
+ *                   price_ves: { type: number, minimum: 0 }
+ *                   stock: { type: integer, minimum: 0 }
+ *                   sku: { type: string, maxLength: 50 }
+ *                   featured: { type: boolean }
+ *                   carousel_order: { type: integer, minimum: 0, maximum: 7 }
+ *     responses:
+ *       201:
+ *         description: Product created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/product' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
  */
 
 // ==================== ORDERS ====================
@@ -644,7 +886,7 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { type: array, items: { $ref: '#/components/schemas/Order' } }
+ *                     data: { type: array, items: { $ref: '#/components/schemas/order' } }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
@@ -656,8 +898,8 @@
  * /api/orders/{id}:
  *   get:
  *     tags: [Orders]
- *     summary: Get order by ID with items
- *     description: Owner or admin - Returns order details with order_items (uses idx_order_items_order_id for JOIN performance)
+ *     summary: Get order by ID
+ *     description: Get order details by ID (owner or admin only)
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -672,15 +914,7 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data:
- *                       allOf:
- *                         - $ref: '#/components/schemas/Order'
- *                         - type: object
- *                           properties:
- *                             order_items:
- *                               type: array
- *                               items:
- *                                 $ref: '#/components/schemas/OrderItem'
+ *                     data: { $ref: '#/components/schemas/order' }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
@@ -694,29 +928,21 @@
  * /api/orders/user/{userId}:
  *   get:
  *     tags: [Orders]
- *     summary: Get orders by user with items
- *     description: Owner or admin - Returns user's orders with items (uses idx_orders_user_id)
+ *     summary: Get orders by user
+ *     description: Get all orders for a specific user (owner or admin only)
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - name: userId
  *         in: path
  *         required: true
- *         schema: { type: integer }
+ *         schema: { type: integer, minimum: 1 }
  *         description: User ID
- *       - name: status
- *         in: query
- *         schema:
- *           type: string
- *           enum: [pending, verified, preparing, shipped, delivered, cancelled]
- *         description: Filter by status
- *       - name: limit
- *         in: query
- *         schema: { type: integer, minimum: 1, maximum: 100 }
- *         description: Limit results
+ *       - $ref: '#/components/parameters/LimitParam'
+ *       - $ref: '#/components/parameters/OffsetParam'
  *     responses:
  *       200:
- *         description: Orders retrieved successfully
+ *         description: User orders retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -724,17 +950,7 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data:
- *                       type: array
- *                       items:
- *                         allOf:
- *                           - $ref: '#/components/schemas/Order'
- *                           - type: object
- *                             properties:
- *                               order_items:
- *                                 type: array
- *                                 items:
- *                                   $ref: '#/components/schemas/OrderItem'
+ *                     data: { type: array, items: { $ref: '#/components/schemas/order' } }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
@@ -747,14 +963,14 @@
  *   get:
  *     tags: [Orders]
  *     summary: Get order status history
- *     description: Authenticated - Returns complete status change history ordered by created_at DESC (uses idx_order_status_history_created_at)
+ *     description: Get the complete status change history for an order
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdParam'
  *     responses:
  *       200:
- *         description: Status history retrieved successfully
+ *         description: Order status history retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -762,12 +978,11 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data:
- *                       type: array
- *                       items:
- *                         $ref: '#/components/schemas/OrderStatusHistory'
+ *                     data: { type: array, items: { $ref: '#/components/schemas/OrderStatusHistory' } }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
  */
@@ -777,10 +992,8 @@
  * /api/orders:
  *   post:
  *     tags: [Orders]
- *     summary: Create order (atomic)
- *     description: Authenticated - Creates order with items in single transaction
- *     security:
- *       - bearerAuth: []
+ *     summary: Create new order
+ *     description: Create a new order (public endpoint for checkout process)
  *     requestBody:
  *       required: true
  *       content:
@@ -791,38 +1004,34 @@
  *             properties:
  *               order:
  *                 type: object
- *                 required: [customer_email, customer_name, customer_phone, delivery_address, delivery_city, delivery_state, total_amount_usd]
+ *                 required: [customer_email, customer_name, delivery_address, total_amount_usd]
  *                 properties:
  *                   customer_email: { type: string, format: email }
  *                   customer_name: { type: string, minLength: 2, maxLength: 255 }
  *                   customer_phone: { type: string, pattern: '^\\+?[\\d\\s-()]+$' }
  *                   delivery_address: { type: string, minLength: 10, maxLength: 500 }
- *                   delivery_city: { type: string, minLength: 2, maxLength: 100 }
- *                   delivery_state: { type: string, minLength: 2, maxLength: 100 }
- *                   delivery_zip: { type: string, maxLength: 20 }
  *                   delivery_date: { type: string, format: date }
- *                   delivery_time_slot: { type: string, maxLength: 100 }
- *                   delivery_notes: { type: string, maxLength: 500 }
+ *                   delivery_time_slot: { type: string, pattern: '^\\d{2}:\\d{2}-\\d{2}:\\d{2}$' }
+ *                   delivery_notes: { type: string, maxLength: 1000 }
  *                   total_amount_usd: { type: number, minimum: 0 }
  *                   total_amount_ves: { type: number, minimum: 0 }
  *                   currency_rate: { type: number, minimum: 0 }
- *                   status: { type: string, enum: [pending, verified, preparing, shipped, delivered, cancelled], default: pending }
+ *                   status: { type: string, enum: [pending, verified, preparing, shipped, delivered, cancelled] }
  *                   notes: { type: string, maxLength: 1000 }
  *               items:
  *                 type: array
- *                 minItems: 1
  *                 items:
  *                   type: object
  *                   required: [product_id, product_name, unit_price_usd, quantity]
  *                   properties:
- *                     product_id: { type: integer }
- *                     product_name: { type: string }
+ *                     product_id: { type: integer, minimum: 1 }
+ *                     product_name: { type: string, minLength: 1 }
  *                     product_summary: { type: string }
- *                     unit_price_usd: { type: number }
- *                     unit_price_ves: { type: number }
+ *                     unit_price_usd: { type: number, minimum: 0 }
+ *                     unit_price_ves: { type: number, minimum: 0 }
  *                     quantity: { type: integer, minimum: 1 }
- *                     subtotal_usd: { type: number }
- *                     subtotal_ves: { type: number }
+ *                     subtotal_usd: { type: number, minimum: 0 }
+ *                     subtotal_ves: { type: number, minimum: 0 }
  *     responses:
  *       201:
  *         description: Order created successfully
@@ -833,20 +1042,20 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { $ref: '#/components/schemas/Order' }
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
+ *                     data: { $ref: '#/components/schemas/order' }
  *       400:
  *         $ref: '#/components/responses/ValidationError'
+ *       429:
+ *         description: Too many requests
  */
 
 /**
  * @swagger
- * /api/orders/{id}/status:
- *   patch:
+ * /api/orders/{id}:
+ *   put:
  *     tags: [Orders]
- *     summary: Update order status
- *     description: Admin only - Updates order status and creates history record
+ *     summary: Update order
+ *     description: Update order details (owner or admin, limited fields)
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -856,14 +1065,62 @@
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/OrderStatusUpdate'
+ *             type: object
+ *             properties:
+ *               delivery_notes: { type: string, maxLength: 1000 }
+ *               notes: { type: string, maxLength: 1000 }
  *     responses:
  *       200:
- *         description: Order status updated successfully
+ *         description: Order updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/order' }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+
+/**
+ * @swagger
+ * /api/orders/{id}/status:
+ *   patch:
+ *     tags: [Orders]
+ *     summary: Update order status
+ *     description: Admin only - Update order status with optional notes
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema: { $ref: '#/components/schemas/OrderStatusUpdate' }
+ *     responses:
+ *       200:
+ *         description: Order status updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/order' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
  */
 
 /**
@@ -872,25 +1129,36 @@
  *   patch:
  *     tags: [Orders]
  *     summary: Cancel order
- *     description: Owner or admin - Cancels order
+ *     description: Cancel an order (owner or admin) with optional cancellation notes
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdParam'
  *     requestBody:
+ *       required: false
  *       content:
  *         application/json:
  *           schema:
  *             type: object
  *             properties:
- *               notes: { type: string }
+ *               notes: { type: string, maxLength: 1000 }
  *     responses:
  *       200:
  *         description: Order cancelled successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/order' }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
  */
 
 // ==================== USERS ====================
@@ -931,7 +1199,7 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { type: array, items: { $ref: '#/components/schemas/User' } }
+ *                     data: { type: array, items: { $ref: '#/components/schemas/user' } }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
@@ -944,7 +1212,7 @@
  *   get:
  *     tags: [Users]
  *     summary: Get user by ID
- *     description: Owner or admin - Returns user details
+ *     description: Get user details by ID (owner or admin only)
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -959,7 +1227,41 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { $ref: '#/components/schemas/User' }
+ *                     data: { $ref: '#/components/schemas/user' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+
+/**
+ * @swagger
+ * /api/users/email/{email}:
+ *   get:
+ *     tags: [Users]
+ *     summary: Get user by email
+ *     description: Admin only - Get user details by email address
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: email
+ *         in: path
+ *         required: true
+ *         schema: { type: string, format: email }
+ *         description: User email address
+ *     responses:
+ *       200:
+ *         description: User retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/user' }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
@@ -973,25 +1275,36 @@
  * /api/users:
  *   post:
  *     tags: [Users]
- *     summary: Create user (public registration)
- *     description: Public endpoint for user registration
+ *     summary: Create new user
+ *     description: Create a new user account (public registration)
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required: [email]
+ *             required: [email, full_name]
  *             properties:
  *               email: { type: string, format: email }
  *               full_name: { type: string, minLength: 2, maxLength: 255 }
  *               phone: { type: string, pattern: '^\\+?[\\d\\s-()]+$' }
- *               password_hash: { type: string }
+ *               role: { type: string, enum: [user, admin], default: user }
+ *               password_hash: { type: string, minLength: 8 }
  *     responses:
  *       201:
  *         description: User created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/user' }
  *       400:
  *         $ref: '#/components/responses/ValidationError'
+ *       409:
+ *         description: User already exists
  */
 
 /**
@@ -1000,27 +1313,38 @@
  *   put:
  *     tags: [Users]
  *     summary: Update user
- *     description: Owner or admin - Updates user profile
+ *     description: Update user details (owner or admin only)
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdParam'
  *     requestBody:
+ *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
  *             properties:
- *               full_name: { type: string }
- *               phone: { type: string }
+ *               full_name: { type: string, minLength: 2, maxLength: 255 }
+ *               phone: { type: string, pattern: '^\\+?[\\d\\s-()]+$' }
  *               role: { type: string, enum: [user, admin] }
  *     responses:
  *       200:
  *         description: User updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/user' }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
  */
 
 /**
@@ -1028,22 +1352,142 @@
  * /api/users/{id}:
  *   delete:
  *     tags: [Users]
- *     summary: Soft-delete user
- *     description: Admin only - Deactivates user account
+ *     summary: Delete user (soft delete)
+ *     description: Admin only - Soft deletes a user (sets is_active to false)
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdParam'
  *     responses:
  *       200:
- *         description: User deactivated successfully
+ *         description: User deleted successfully
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/SuccessResponse' }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+
+/**
+ * @swagger
+ * /api/users/{id}/reactivate:
+ *   patch:
+ *     tags: [Users]
+ *     summary: Reactivate user
+ *     description: Admin only - Reactivates a soft-deleted user
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: User reactivated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/user' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+
+/**
+ * @swagger
+ * /api/users/{id}/verify-email:
+ *   patch:
+ *     tags: [Users]
+ *     summary: Verify user email
+ *     description: Verify user email address (owner or admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Email verified successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/user' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
  */
 
 // ==================== PAYMENTS ====================
+
+/**
+ * @swagger
+ * /api/payments/methods:
+ *   get:
+ *     tags: [Payments]
+ *     summary: Get available payment methods
+ *     description: Public - Returns available payment methods for Venezuela
+ *     responses:
+ *       200:
+ *         description: Payment methods retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { type: array, items: { type: string } }
+ */
+
+/**
+ * @swagger
+ * /api/payments/{id}/confirm:
+ *   post:
+ *     tags: [Payments]
+ *     summary: Confirm payment for order
+ *     description: Confirm payment for an existing order (authenticated users)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema: { $ref: '#/components/schemas/PaymentConfirm' }
+ *     responses:
+ *       200:
+ *         description: Payment confirmed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/payment' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ */
 
 /**
  * @swagger
@@ -1085,86 +1529,7 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { type: array, items: { $ref: '#/components/schemas/Payment' } }
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       403:
- *         $ref: '#/components/responses/ForbiddenError'
- */
-
-/**
- * @swagger
- * /api/payments/methods:
- *   get:
- *     tags: [Payments]
- *     summary: Get payment methods
- *     description: Public - Returns active payment methods
- *     responses:
- *       200:
- *         description: Payment methods retrieved successfully
- */
-
-/**
- * @swagger
- * /api/payments:
- *   post:
- *     tags: [Payments]
- *     summary: Create payment
- *     description: Authenticated - Creates payment record
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required: [order_id, amount_usd, payment_method_name]
- *             properties:
- *               order_id: { type: integer }
- *               amount_usd: { type: number, minimum: 0 }
- *               amount_ves: { type: number }
- *               payment_method_name: { type: string }
- *               transaction_id: { type: string }
- *               reference_number: { type: string }
- *               status:
- *                 type: string
- *                 enum: [pending, completed, failed, refunded, partially_refunded]
- *     responses:
- *       201:
- *         description: Payment created successfully
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- */
-
-/**
- * @swagger
- * /api/payments/{id}/confirm:
- *   post:
- *     tags: [Payments]
- *     summary: Confirm payment
- *     description: Authenticated - Confirms payment for an order
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - $ref: '#/components/parameters/IdParam'
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/PaymentConfirm'
- *     responses:
- *       200:
- *         description: Payment confirmed successfully
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/SuccessResponse'
- *                 - type: object
- *                   properties:
- *                     data: { $ref: '#/components/schemas/Payment' }
+ *                     data: { type: array, items: { $ref: '#/components/schemas/payment' } }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
@@ -1190,7 +1555,7 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { type: array, items: { $ref: '#/components/schemas/Occasion' } }
+ *                     data: { type: array, items: { $ref: '#/components/schemas/occasion' } }
  */
 
 /**
@@ -1199,15 +1564,48 @@
  *   get:
  *     tags: [Occasions]
  *     summary: Get occasion by slug
- *     description: Public - Returns occasion by slug (SEO-friendly)
+ *     description: Get occasion details by slug
  *     parameters:
  *       - name: slug
  *         in: path
  *         required: true
  *         schema: { type: string }
+ *         description: Occasion slug
  *     responses:
  *       200:
  *         description: Occasion retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/occasion' }
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+
+/**
+ * @swagger
+ * /api/occasions/{id}:
+ *   get:
+ *     tags: [Occasions]
+ *     summary: Get occasion by ID
+ *     description: Get occasion details by ID
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Occasion retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/occasion' }
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
  */
@@ -1217,8 +1615,8 @@
  * /api/occasions:
  *   post:
  *     tags: [Occasions]
- *     summary: Create occasion
- *     description: Admin only - Creates new occasion
+ *     summary: Create new occasion
+ *     description: Admin only - Creates a new occasion
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -1236,10 +1634,157 @@
  *     responses:
  *       201:
  *         description: Occasion created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/occasion' }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ */
+
+/**
+ * @swagger
+ * /api/occasions/{id}:
+ *   put:
+ *     tags: [Occasions]
+ *     summary: Update occasion
+ *     description: Admin only - Updates an existing occasion
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name: { type: string, minLength: 2, maxLength: 100 }
+ *               description: { type: string }
+ *               slug: { type: string, pattern: '^[a-z0-9-]+$' }
+ *               display_order: { type: integer, minimum: 0 }
+ *     responses:
+ *       200:
+ *         description: Occasion updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/occasion' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ */
+
+/**
+ * @swagger
+ * /api/occasions/{id}/display-order:
+ *   patch:
+ *     tags: [Occasions]
+ *     summary: Update occasion display order
+ *     description: Admin only - Updates the display order for an occasion
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [order]
+ *             properties:
+ *               order: { type: integer, minimum: 0 }
+ *     responses:
+ *       200:
+ *         description: Display order updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/occasion' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+
+/**
+ * @swagger
+ * /api/occasions/{id}:
+ *   delete:
+ *     tags: [Occasions]
+ *     summary: Delete occasion (soft delete)
+ *     description: Admin only - Soft deletes an occasion (sets is_active to false)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Occasion deleted successfully
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/SuccessResponse' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+
+/**
+ * @swagger
+ * /api/occasions/{id}/reactivate:
+ *   patch:
+ *     tags: [Occasions]
+ *     summary: Reactivate occasion
+ *     description: Admin only - Reactivates a soft-deleted occasion
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Occasion reactivated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/occasion' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
  */
 
 // ==================== SETTINGS ====================
@@ -1254,6 +1799,74 @@
  *     responses:
  *       200:
  *         description: Public settings retrieved successfully
+ */
+
+/**
+ * @swagger
+ * /api/settings/public:
+ *   get:
+ *     tags: [Settings]
+ *     summary: Get public settings
+ *     description: Public - Returns public settings only
+ *     responses:
+ *       200:
+ *         description: Public settings retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { type: array, items: { $ref: '#/components/schemas/settings' } }
+ */
+
+/**
+ * @swagger
+ * /api/settings/map:
+ *   get:
+ *     tags: [Settings]
+ *     summary: Get settings map
+ *     description: Returns settings as a key-value map
+ *     responses:
+ *       200:
+ *         description: Settings map retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { type: object, additionalProperties: { type: string } }
+ */
+
+/**
+ * @swagger
+ * /api/settings/{key}/value:
+ *   get:
+ *     tags: [Settings]
+ *     summary: Get setting value by key
+ *     description: Get a specific setting value by its key
+ *     parameters:
+ *       - name: key
+ *         in: path
+ *         required: true
+ *         schema: { type: string }
+ *         description: Setting key
+ *     responses:
+ *       200:
+ *         description: Setting value retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { type: string }
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
  */
 
 /**
@@ -1275,7 +1888,7 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { type: array, items: { $ref: '#/components/schemas/Setting' } }
+ *                     data: { type: array, items: { $ref: '#/components/schemas/settings' } }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
@@ -1284,11 +1897,45 @@
 
 /**
  * @swagger
+ * /api/settings/{key}:
+ *   get:
+ *     tags: [Settings]
+ *     summary: Get setting by key
+ *     description: Admin only - Get setting details by key
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: key
+ *         in: path
+ *         required: true
+ *         schema: { type: string }
+ *         description: Setting key
+ *     responses:
+ *       200:
+ *         description: Setting retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/settings' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+
+/**
+ * @swagger
  * /api/settings:
  *   post:
  *     tags: [Settings]
- *     summary: Create setting
- *     description: Admin only - Creates new setting
+ *     summary: Create new setting
+ *     description: Admin only - Creates a new setting
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -1306,6 +1953,175 @@
  *     responses:
  *       201:
  *         description: Setting created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/settings' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ */
+
+/**
+ * @swagger
+ * /api/settings/{key}:
+ *   put:
+ *     tags: [Settings]
+ *     summary: Update setting
+ *     description: Admin only - Updates an existing setting
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: key
+ *         in: path
+ *         required: true
+ *         schema: { type: string }
+ *         description: Setting key
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               value: { type: string }
+ *               description: { type: string }
+ *               is_public: { type: boolean }
+ *     responses:
+ *       200:
+ *         description: Setting updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/settings' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+
+/**
+ * @swagger
+ * /api/settings/{key}:
+ *   delete:
+ *     tags: [Settings]
+ *     summary: Delete setting
+ *     description: Admin only - Deletes a setting
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: key
+ *         in: path
+ *         required: true
+ *         schema: { type: string }
+ *         description: Setting key
+ *     responses:
+ *       200:
+ *         description: Setting deleted successfully
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/SuccessResponse' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+
+// ==================== ADMIN SETTINGS ====================
+
+/**
+ * @swagger
+ * /api/admin/settings/image:
+ *   post:
+ *     tags: [Admin]
+ *     summary: Upload setting image
+ *     description: Admin only - Upload and save image for a specific setting
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required: [image]
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file to upload
+ *     responses:
+ *       200:
+ *         description: Image uploaded successfully
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/SuccessResponse' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ */
+
+/**
+ * @swagger
+ * /api/admin/settings/bcv-price:
+ *   post:
+ *     tags: [Admin]
+ *     summary: Save BCV USD rate
+ *     description: Admin only - Save BCV USD exchange rate
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [rate]
+ *             properties:
+ *               rate: { type: number, minimum: 0 }
+ *     responses:
+ *       200:
+ *         description: BCV rate saved successfully
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/SuccessResponse' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ */
+
+/**
+ * @swagger
+ * /api/admin/settings/business-rules:
+ *   get:
+ *     tags: [Admin]
+ *     summary: Get business rules status
+ *     description: Admin only - Get business rules engine status and configuration
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Business rules status retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/SuccessResponse' }
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:

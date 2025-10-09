@@ -9,6 +9,7 @@ import {
   initCartBadge,
   initCartEventListeners
 } from '../js/shared/cart.js'
+import { api } from '../js/shared/api-client.js'
 
 // Global state
 let cartItems = []
@@ -81,25 +82,22 @@ async function init() {
  */
 async function loadSettings() {
   try {
-    const response = await fetch('/api/settings/public')
-    if (response.ok) {
-      const result = await response.json()
-      const settings = result.data || []
+    const result = await api.getAllPublic()
+    const settings = result.data || []
 
-      // Find delivery cost
-      const deliverySetting = settings.find(s => s.key === 'DELIVERY_COST_USD')
-      if (deliverySetting) {
-        deliveryCost = parseFloat(deliverySetting.value) || 7.0
-      }
-
-      // Find BCV rate
-      const bcvSetting = settings.find(s => s.key === 'bcv_usd_rate')
-      if (bcvSetting) {
-        bcvRate = parseFloat(bcvSetting.value) || 40.0
-      }
-
-      console.log(`Settings loaded: Delivery=$${deliveryCost}, BCV Rate=${bcvRate}`)
+    // Find delivery cost
+    const deliverySetting = settings.find(s => s.key === 'DELIVERY_COST_USD')
+    if (deliverySetting) {
+      deliveryCost = parseFloat(deliverySetting.value) || 7.0
     }
+
+    // Find BCV rate
+    const bcvSetting = settings.find(s => s.key === 'bcv_usd_rate')
+    if (bcvSetting) {
+      bcvRate = parseFloat(bcvSetting.value) || 40.0
+    }
+
+    console.log(`Settings loaded: Delivery=$${deliveryCost}, BCV Rate=${bcvRate}`)
   } catch (error) {
     console.error('Error loading settings:', error)
     // Use defaults
@@ -342,13 +340,6 @@ function validateField(e) {
         errorMessage = 'Ingrese una dirección completa'
       }
       break
-
-    case 'delivery-municipio':
-      if (!field.value.trim()) {
-        isValid = false
-        errorMessage = 'El municipio es requerido'
-      }
-      break
   }
 
   if (!isValid) {
@@ -380,13 +371,7 @@ function clearFieldError(e) {
  * Validate entire form
  */
 function validateForm() {
-  const requiredFields = [
-    'customer-name',
-    'customer-email',
-    'customer-phone',
-    'delivery-address',
-    'delivery-municipio'
-  ]
+  const requiredFields = ['customer-name', 'customer-email', 'customer-phone', 'delivery-address']
   let isValid = true
 
   requiredFields.forEach(fieldName => {
@@ -437,8 +422,6 @@ async function handlePayment() {
       customerEmail: document.getElementById('customer-email').value,
       customerPhone: document.getElementById('customer-phone').value,
       deliveryAddress: document.getElementById('delivery-address').value,
-      deliveryMunicipio: document.getElementById('delivery-municipio').value,
-      deliveryZip: document.getElementById('delivery-zip').value || '',
       deliveryReferences: document.getElementById('delivery-references').value || '',
       additionalNotes: document.getElementById('additional-notes').value || ''
     }
@@ -608,8 +591,7 @@ async function createOrder(customerData, paymentData) {
     'customerEmail',
     'customerName',
     'customerPhone',
-    'deliveryAddress',
-    'deliveryMunicipio'
+    'deliveryAddress'
   ]
   for (const field of requiredCustomerFields) {
     if (!customerData[field]) {
@@ -646,9 +628,7 @@ async function createOrder(customerData, paymentData) {
       customer_name: sanitizeString(customerData.customerName),
       customer_phone: sanitizeString(customerData.customerPhone),
       delivery_address: sanitizeString(customerData.deliveryAddress),
-      delivery_city: sanitizeString(customerData.deliveryMunicipio), // Municipio stored in city field
-      delivery_state: 'Gran Caracas', // Fixed region
-      delivery_zip: sanitizeString(customerData.deliveryZip) || '',
+
       delivery_notes: sanitizeString(customerData.deliveryReferences) || '',
       notes: sanitizeString(customerData.additionalNotes) || '',
       total_amount_usd: isNaN(parseFloat(paymentData.totalUSD))
@@ -681,25 +661,7 @@ async function createOrder(customerData, paymentData) {
   // Log the payload for debugging (remove in production)
   console.log('Order payload being sent:', JSON.stringify(orderPayload, null, 2))
 
-  const response = await fetch('/api/orders', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    },
-    body: JSON.stringify(orderPayload)
-  })
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}))
-    const errorMessage =
-      errorData.message || errorData.error || `HTTP ${response.status}: ${response.statusText}`
-    console.error('Order creation error details:', errorData)
-    console.error('Payload that failed:', orderPayload) // Log the payload that failed
-    throw new Error(errorMessage)
-  }
-
-  const result = await response.json()
+  const result = await api.createOrders(orderPayload)
 
   if (!result.success) {
     throw new Error(result.message || result.error || 'Error creando orden')
@@ -774,7 +736,7 @@ function isValidEmail(email) {
  * Validate cart items exist in backend (Future use - currently not called)
  * TODO: Integrate this validation in handlePayment() before creating order
  */
-async function validateCartItems(items) {
+async function _validateCartItems(items) {
   try {
     console.log(
       'Validating cart items:',
@@ -791,18 +753,15 @@ async function validateCartItems(items) {
 
       // Try to fetch the product from backend to verify it exists
       try {
-        const response = await fetch(`/api/products/${item.id}`)
-        if (!response.ok) {
-          if (response.status === 404) {
-            invalidItems.push(`"${item.name}" (producto no encontrado)`)
-          } else {
-            console.warn(`Error checking product ${item.id}:`, response.status)
-            // For other errors, we'll assume the product exists and let the order creation fail
-          }
-        }
+        const _result = await api.getProductsById(item.id)
+        // If we get here, the product exists
       } catch (error) {
-        console.warn(`Network error checking product ${item.id}:`, error)
-        // For network errors, we'll assume the product exists and let the order creation fail
+        if (error.message && error.message.includes('404')) {
+          invalidItems.push(`"${item.name}" (producto no encontrado)`)
+        } else {
+          console.warn(`Error checking product ${item.id}:`, error.message)
+          // For other errors, we'll assume the product exists and let the order creation fail
+        }
       }
     }
 
@@ -862,14 +821,8 @@ function loadSavedCustomerData() {
       document.getElementById('customer-email').value = customerData.email || ''
       document.getElementById('customer-phone').value = customerData.phone || ''
       document.getElementById('delivery-address').value = customerData.address || ''
-      document.getElementById('delivery-zip').value = customerData.zip || ''
       document.getElementById('delivery-references').value = customerData.references || ''
       document.getElementById('additional-notes').value = customerData.notes || ''
-
-      // Set the delivery municipality if it exists
-      if (customerData.municipio) {
-        document.getElementById('delivery-municipio').value = customerData.municipio
-      }
 
       // Check the remember me checkbox if user previously opted in
       if (customerData.rememberMe) {
@@ -893,8 +846,6 @@ function saveCustomerData() {
         email: document.getElementById('customer-email').value,
         phone: document.getElementById('customer-phone').value,
         address: document.getElementById('delivery-address').value,
-        municipio: document.getElementById('delivery-municipio').value,
-        zip: document.getElementById('delivery-zip').value,
         references: document.getElementById('delivery-references').value,
         notes: document.getElementById('additional-notes').value,
         rememberMe: true

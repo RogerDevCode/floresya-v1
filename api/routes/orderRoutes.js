@@ -10,9 +10,9 @@ import { validate, validateId, validatePagination } from '../middleware/validate
 import { sanitizeRequestData } from '../middleware/sanitize.js'
 import { advancedValidate } from '../middleware/advancedValidation.js'
 import { protectOrderCreation, protectAdminOperations } from '../middleware/rateLimit.js'
-import { errorLoggingMiddleware } from '../utils/logger.js'
 import { validateBusinessRules } from '../services/businessRules.js'
 import { orderMetricsMiddleware } from '../monitoring/metricsCollector.js'
+import { orderStatusUpdateSchema, orderCreateSchema } from '../middleware/schemas.js'
 
 const router = express.Router()
 
@@ -52,6 +52,7 @@ router.post(
   '/',
   protectOrderCreation, // Rate limiting, size limits, and metrics
   sanitizeRequestData, // Apply sanitization first
+  validate(orderCreateSchema), // Primary validation using centralized schema
   advancedValidate('order'), // Advanced validation with detailed error messages
   validateBusinessRules('order'), // Business rules validation
   orderMetricsMiddleware, // Record business metrics for orders
@@ -67,14 +68,7 @@ router.patch(
   authenticate,
   authorize('admin'),
   validateId(),
-  validate({
-    status: {
-      type: 'string',
-      required: true,
-      enum: ['pending', 'verified', 'preparing', 'shipped', 'delivered', 'cancelled']
-    },
-    notes: { type: 'string' }
-  }),
+  validate(orderStatusUpdateSchema),
   orderController.updateOrderStatus
 )
 

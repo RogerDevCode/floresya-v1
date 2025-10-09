@@ -15,6 +15,52 @@ import { BadRequestError } from '../errors/AppError.js'
  * Get all images for a product (filtered by size if needed)
  * Query params: size (optional) - filter by image size
  */
+/**
+ * @swagger
+ * /api/productimage/{id}:
+ *   get:
+ *     tags: [productimage]
+ *     summary: Get product images
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Get product images operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/productimage' }
+ *       400: { $ref: '#/components/responses/ValidationError' }
+ *       404: { $ref: '#/components/responses/NotFoundError' }
+ *       500: { $ref: '#/components/responses/InternalServerError' }
+ */
+/**
+ * @swagger
+ * /api/productimage/{id}:
+ *   get:
+ *     tags: [productimage]
+ *     summary: Get product images
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Get product images operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/productimage' }
+ *       400: { $ref: '#/components/responses/ValidationError' }
+ *       404: { $ref: '#/components/responses/NotFoundError' }
+ *       500: { $ref: '#/components/responses/InternalServerError' }
+ */
 export const getProductImages = asyncHandler(async (req, res) => {
   const productId = parseInt(req.params.id, 10)
 
@@ -45,6 +91,52 @@ export const getProductImages = asyncHandler(async (req, res) => {
 /**
  * GET /api/products/:id/images/primary
  * Get primary image for a product
+ */
+/**
+ * @swagger
+ * /api/productimage/{id}:
+ *   get:
+ *     tags: [productimage]
+ *     summary: Get primary image
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Get primary image operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/productimage' }
+ *       400: { $ref: '#/components/responses/ValidationError' }
+ *       404: { $ref: '#/components/responses/NotFoundError' }
+ *       500: { $ref: '#/components/responses/InternalServerError' }
+ */
+/**
+ * @swagger
+ * /api/productimage/{id}:
+ *   get:
+ *     tags: [productimage]
+ *     summary: Get primary image
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Get primary image operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/productimage' }
+ *       400: { $ref: '#/components/responses/ValidationError' }
+ *       404: { $ref: '#/components/responses/NotFoundError' }
+ *       500: { $ref: '#/components/responses/InternalServerError' }
  */
 export const getPrimaryImage = asyncHandler(async (req, res) => {
   const productId = parseInt(req.params.id, 10)
@@ -83,6 +175,52 @@ export const getPrimaryImage = asyncHandler(async (req, res) => {
  *   images: [{ size, url, file_hash, mime_type }, ...],
  *   is_primary: boolean (optional)
  * }
+ */
+/**
+ * @swagger
+ * /api/productimage/{id}:
+ *   post:
+ *     tags: [productimage]
+ *     summary: Create product images
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Create product images operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/productimage' }
+ *       400: { $ref: '#/components/responses/ValidationError' }
+ *       404: { $ref: '#/components/responses/NotFoundError' }
+ *       500: { $ref: '#/components/responses/InternalServerError' }
+ */
+/**
+ * @swagger
+ * /api/productimage/{id}:
+ *   post:
+ *     tags: [productimage]
+ *     summary: Create product images
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Create product images operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/productimage' }
+ *       400: { $ref: '#/components/responses/ValidationError' }
+ *       404: { $ref: '#/components/responses/NotFoundError' }
+ *       500: { $ref: '#/components/responses/InternalServerError' }
  */
 export const createProductImages = asyncHandler(async (req, res) => {
   const productId = parseInt(req.params.id, 10)
@@ -206,6 +344,52 @@ export const createProductImages = asyncHandler(async (req, res) => {
  * Delete images by image_index (all sizes)
  * Admin only
  */
+/**
+ * @swagger
+ * /api/productimage/{id}:
+ *   delete:
+ *     tags: [productimage]
+ *     summary: Delete images by index
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Delete images by index operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/productimage' }
+ *       400: { $ref: '#/components/responses/ValidationError' }
+ *       404: { $ref: '#/components/responses/NotFoundError' }
+ *       500: { $ref: '#/components/responses/InternalServerError' }
+ */
+/**
+ * @swagger
+ * /api/productimage/{id}:
+ *   delete:
+ *     tags: [productimage]
+ *     summary: Delete images by index
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Delete images by index operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/productimage' }
+ *       400: { $ref: '#/components/responses/ValidationError' }
+ *       404: { $ref: '#/components/responses/NotFoundError' }
+ *       500: { $ref: '#/components/responses/InternalServerError' }
+ */
 export const deleteImagesByIndex = asyncHandler(async (req, res) => {
   const productId = parseInt(req.params.id, 10)
   const imageIndex = parseInt(req.params.imageIndex, 10)
@@ -239,6 +423,52 @@ export const deleteImagesByIndex = asyncHandler(async (req, res) => {
  * PATCH /api/products/:id/images/primary/:imageIndex
  * Set primary image by image_index
  * Admin only
+ */
+/**
+ * @swagger
+ * /api/productimage/{id}:
+ *   get:
+ *     tags: [productimage]
+ *     summary: Set primary image
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Set primary image operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/productimage' }
+ *       400: { $ref: '#/components/responses/ValidationError' }
+ *       404: { $ref: '#/components/responses/NotFoundError' }
+ *       500: { $ref: '#/components/responses/InternalServerError' }
+ */
+/**
+ * @swagger
+ * /api/productimage/{id}:
+ *   get:
+ *     tags: [productimage]
+ *     summary: Set primary image
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Set primary image operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/productimage' }
+ *       400: { $ref: '#/components/responses/ValidationError' }
+ *       404: { $ref: '#/components/responses/NotFoundError' }
+ *       500: { $ref: '#/components/responses/InternalServerError' }
  */
 export const setPrimaryImage = asyncHandler(async (req, res) => {
   const productId = parseInt(req.params.id, 10)

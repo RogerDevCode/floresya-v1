@@ -6,7 +6,7 @@
 
 import { performance } from 'perf_hooks'
 import { createRequire } from 'module'
-const require = createRequire(import.meta.url)
+const _require = createRequire(import.meta.url)
 import http from 'http'
 
 const STRESS_CONFIG = {
@@ -68,7 +68,7 @@ class SystemStressTester {
         customer_name: `Stress User ${orderId}`,
         customer_phone: `0414${Math.floor(Math.random() * 9000000) + 1000000}`,
         delivery_address: `Caracas, Avenida ${Math.floor(Math.random() * 20) + 1}`,
-        delivery_city: 'Caracas',
+
         total_amount_usd: Math.floor(Math.random() * 500) + 25,
         total_amount_ves: (Math.floor(Math.random() * 500) + 25) * 36,
         currency_rate: 36.0

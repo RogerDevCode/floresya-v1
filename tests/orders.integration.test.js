@@ -113,8 +113,6 @@ describe('Orders Management Integration Tests', () => {
         customer_email: 'maria@example.com',
         customer_phone: '+0987654321',
         delivery_address: '456 Oak Ave',
-        delivery_city: 'Valencia',
-        delivery_state: 'Carabobo',
         delivery_date: '2025-10-16',
         delivery_time_slot: '14:00-16:00',
         order_items: [
@@ -136,8 +134,7 @@ describe('Orders Management Integration Tests', () => {
       customer_email: 'juan@example.com',
       customer_phone: '+1234567890',
       delivery_address: '123 Main St',
-      delivery_city: 'Caracas',
-      delivery_state: 'Distrito Capital',
+
       delivery_date: '2025-10-15',
       delivery_time_slot: '10:00-12:00',
       order_items: [{ product_name: 'Ramos de Rosas Rojas', quantity: 2, price_usd: 50.0 }],

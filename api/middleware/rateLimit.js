@@ -7,7 +7,6 @@
 import { RateLimitExceededError } from '../errors/AppError.js'
 
 // In-memory store for rate limiting (in production, use Redis)
-const rateLimitStore = new Map()
 
 /**
  * Simple in-memory rate limiter
@@ -267,7 +266,6 @@ export function requestMetrics(req, res, next) {
   // Track request
   res.on('finish', () => {
     const duration = Date.now() - startTime
-    const statusCode = res.statusCode
 
     // Log slow requests (> 2 seconds)
     if (duration > 2000) {

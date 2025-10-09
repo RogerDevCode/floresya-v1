@@ -4,7 +4,7 @@
  */
 
 import '../../js/lucide-icons.js'
-import { api } from '../../js/shared/api.js'
+import { api } from '../../js/shared/api-client.js'
 
 // State
 let settings = {}
@@ -31,7 +31,7 @@ async function init() {
  */
 async function loadSettings() {
   try {
-    const response = await api.getPublicSettings()
+    const response = await api.getAllPublic()
 
     if (!response || !response.success || !response.data) {
       throw new Error('Failed to load settings')
@@ -187,7 +187,7 @@ async function saveAllSettings() {
 
     for (const update of updates) {
       try {
-        const response = await api.updateSetting(update.key, { value: update.value })
+        const response = await api.updateSettings(update.key, { value: update.value })
 
         if (response && response.success) {
           successCount++

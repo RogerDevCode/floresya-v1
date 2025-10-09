@@ -21,7 +21,6 @@ import {
 } from './middleware/circuitBreaker.js'
 import {
   metricsMiddleware,
-  orderMetricsMiddleware,
   getMetricsReport,
   getRealtimeMetrics
 } from './monitoring/metricsCollector.js'
@@ -32,6 +31,9 @@ import {
   updateRecoveryConfig
 } from './recovery/autoRecovery.js'
 import { standardResponse } from './middleware/responseStandard.js'
+import { initializeOpenApiValidator } from './middleware/openapiValidator.js'
+import { createDivergenceDetectionMiddleware } from './contract/divergenceDetector.js'
+import { createDocumentationComplianceMiddleware } from './contract/documentationSync.js'
 import { NotFoundError } from './errors/AppError.js'
 
 // Import routes
@@ -121,6 +123,18 @@ app.use(metricsMiddleware)
 
 // Standard response format middleware (antes de rutas API)
 app.use(standardResponse)
+
+// Initialize OpenAPI validator (antes de rutas API)
+// Valida requests contra esquemas OpenAPI - contrato enforceable
+try {
+  await initializeOpenApiValidator(app)
+  // Add divergence detector middleware
+  app.use(createDivergenceDetectionMiddleware())
+  // Add documentation compliance middleware
+  app.use(createDocumentationComplianceMiddleware())
+} catch (error) {
+  console.error('❌ Failed to initialize OpenAPI validator:', error)
+}
 
 // Serve static files from public directory
 app.use(express.static('public'))

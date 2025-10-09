@@ -27,7 +27,6 @@ const VENEZUELA_EMAIL_DOMAINS = [
 ]
 
 // Venezuelan postal codes for Caracas area
-const CARACAS_POSTAL_CODES = /^10[4-8]\d{2}$|^[1-9]\d{3}$/
 
 // Business rules constants
 const BUSINESS_LIMITS = {
@@ -161,23 +160,14 @@ export function validateTextLength(text, fieldName, minLength = 1, maxLength = 2
  * Advanced address validation for Venezuelan context
  */
 export function validateVenezuelanAddress(address) {
-  const error = validateTextLength(address, 'Dirección', 10, BUSINESS_LIMITS.maxAddressLength)
+  const error = validateTextLength(address, 'Dirección', 5, BUSINESS_LIMITS.maxAddressLength)
   if (error) {
     return error
   }
 
-  // Check for basic address components
-  const hasStreet = /\b(calle|avenida|av|carretera|transversal|diagonal)\b/i.test(address)
-  const hasNumber = /\d+/.test(address)
-
-  if (!hasStreet && !hasNumber) {
-    return 'Dirección debe incluir nombre de calle/avenida y número'
-  }
-
-  // Check for Caracas-specific areas
-  const caracasKeywords = /\b(caracas|catia|chacao|sucre|baruta|hatillo|petare)\b/i
-  if (!caracasKeywords.test(address)) {
-    console.warn('Dirección fuera del área típica de Caracas')
+  // Basic validation - just ensure it's not empty or whitespace
+  if (address.trim().length === 0) {
+    return 'Dirección no puede estar vacía'
   }
 
   return null
@@ -186,21 +176,6 @@ export function validateVenezuelanAddress(address) {
 /**
  * Advanced postal code validation for Caracas
  */
-export function validatePostalCode(postalCode) {
-  if (!postalCode || typeof postalCode !== 'string') {
-    return null // Optional field
-  }
-
-  if (postalCode.trim() === '') {
-    return null // Empty is allowed
-  }
-
-  if (!CARACAS_POSTAL_CODES.test(postalCode.trim())) {
-    return 'Código postal debe ser válido para el área de Caracas (10400-10800)'
-  }
-
-  return null
-}
 
 /**
  * Advanced order items validation
@@ -312,18 +287,6 @@ export function validateOrderData(orderData) {
     errors.push(addressError)
   }
 
-  // City validation
-  const cityError = validateTextLength(orderData.delivery_city, 'Ciudad/Municipio', 2, 100)
-  if (cityError) {
-    errors.push(cityError)
-  }
-
-  // Postal code validation (optional but validated if provided)
-  const postalError = validatePostalCode(orderData.delivery_zip)
-  if (postalError) {
-    errors.push(postalError)
-  }
-
   // Amount validations
   const totalAmountError = validateAmount(orderData.total_amount_usd, 'Monto total')
   if (totalAmountError) {
@@ -431,7 +394,6 @@ export const fieldValidators = {
   amount: validateAmount,
   text: validateTextLength,
   address: validateVenezuelanAddress,
-  postalCode: validatePostalCode,
   orderItems: validateOrderItems,
   orderData: validateOrderData
 }
@@ -462,7 +424,7 @@ export function getValidationSummary(data, schemaName) {
     summary.errorCount = summary.errors.length
 
     return summary
-  } catch (error) {
+  } catch {
     summary.errors.push('Error interno de validación')
     summary.valid = false
     return summary

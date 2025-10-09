@@ -7,6 +7,9 @@ build/
 .vercel/
 public/css/tailwind.css
 
+# Generated files
+public/js/shared/api-types.js
+
 # Logs
 *.log
 

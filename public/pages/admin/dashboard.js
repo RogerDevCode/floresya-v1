@@ -7,6 +7,7 @@
 
 import { initAdminCommon } from '../../js/admin-common.js'
 import { toast } from '../../js/components/toast.js'
+import { api } from '../../js/shared/api-client.js'
 
 // Chart.js will be loaded via script tag in HTML
 // Global state
@@ -20,18 +21,9 @@ let products = [] // Will be populated from API
  */
 async function loadProducts(includeInactive = true) {
   try {
-    const url = `/api/products?includeInactive=${includeInactive}`
-    const response = await fetch(url, {
-      headers: {
-        Authorization: 'Bearer admin:1:admin' // Admin token for includeInactive
-      }
-    })
+    // Set auth token for admin access
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-    }
-
-    const result = await response.json()
+    const result = await api.getAllProducts({ includeInactive })
 
     if (!result.success || !result.data) {
       throw new Error(result.message || 'Failed to load products')
@@ -62,20 +54,12 @@ async function loadProductImages(products) {
     const imagePromises = products.map(async product => {
       try {
         // Get all images for product, filter by size=thumb
-        const response = await fetch(`/api/products/${product.id}/images?size=thumb`, {
-          headers: {
-            Authorization: 'Bearer admin:1:admin'
-          }
-        })
-
-        if (response.ok) {
-          const result = await response.json()
-          if (result.success && result.data && result.data.length > 0) {
-            // Get primary thumb image (or first thumb image if none is primary)
-            const primaryThumb = result.data.find(img => img.is_primary) || result.data[0]
-            if (primaryThumb) {
-              product.thumbnail_url = primaryThumb.url
-            }
+        const result = await api.getProductImages(product.id, { size: 'thumb' })
+        if (result.success && result.data && result.data.length > 0) {
+          // Get primary thumb image (or first thumb image if none is primary)
+          const primaryThumb = result.data.find(img => img.is_primary) || result.data[0]
+          if (primaryThumb) {
+            product.thumbnail_url = primaryThumb.url
           }
         }
       } catch {
@@ -568,16 +552,8 @@ async function updateDashboardStats() {
     isLoadingDashboardStats = true
 
     // Fetch orders from API
-    const ordersResponse = await fetch('/api/orders', {
-      headers: { Authorization: 'Bearer admin:1:admin' }
-    })
-
-    if (!ordersResponse.ok) {
-      throw new Error('Failed to fetch orders from API')
-    }
-
-    const ordersData = await ordersResponse.json()
-    const allOrders = ordersData.success ? ordersData.data : []
+    const ordersResult = await api.getAllOrders()
+    const allOrders = ordersResult.success ? ordersResult.data : []
 
     // Cache orders for chart filter reuse
     cachedOrders = allOrders
@@ -823,18 +799,9 @@ function clearFilters() {
  */
 async function loadOccasionsFilter() {
   try {
-    const response = await fetch('/api/occasions', {
-      headers: {
-        Authorization: 'Bearer admin:1:admin'
-      }
-    })
+    // Set auth token for admin access
 
-    if (!response.ok) {
-      console.warn('Failed to load occasions for filter')
-      return
-    }
-
-    const result = await response.json()
+    const result = await api.getAllOccasions()
     if (!result.success || !result.data) {
       console.warn('No occasions data received')
       return
@@ -899,25 +866,14 @@ async function filterProducts() {
     try {
       console.log(`Filtering by occasion ID: ${occasionId}`)
       // Fetch products for this occasion from API
-      const response = await fetch(`/api/products/occasion/${occasionId}`, {
-        headers: {
-          Authorization: 'Bearer admin:1:admin'
-        }
-      })
+      const result = await api.getProductsByOccasion(occasionId)
+      console.log(`Products for occasion ${occasionId}:`, result.data.length)
+      const occasionProductIds = result.data.map(p => p.id)
 
-      if (response.ok) {
-        const result = await response.json()
-        console.log(`Products for occasion ${occasionId}:`, result.data.length)
-        const occasionProductIds = result.data.map(p => p.id)
-
-        // Filter local products to only those in this occasion
-        const beforeCount = filtered.length
-        filtered = filtered.filter(product => occasionProductIds.includes(product.id))
-        console.log(`Filtered: ${beforeCount} → ${filtered.length} products`)
-      } else {
-        console.warn('Failed to fetch products for occasion:', occasionId, response.status)
-        toast.warning('No se pudieron cargar productos para esta ocasión')
-      }
+      // Filter local products to only those in this occasion
+      const beforeCount = filtered.length
+      filtered = filtered.filter(product => occasionProductIds.includes(product.id))
+      console.log(`Filtered: ${beforeCount} → ${filtered.length} products`)
     } catch (error) {
       console.error('Error filtering by occasion:', error)
       toast.error('Error al filtrar por ocasión')
@@ -1131,6 +1087,20 @@ function handleHeroImageUpload(event) {
 
   heroImageFile = file
 
+  // Show preview of selected image
+  const reader = new FileReader()
+  reader.onload = e => {
+    const uploadArea = document.querySelector('#hero-image-upload + label')
+    if (uploadArea) {
+      uploadArea.innerHTML = `
+        <img src="${e.target.result}" alt="Preview" class="max-h-32 rounded-lg mx-auto mb-2" style="max-height: 150px;">
+        <p class="text-sm text-green-600 font-medium">✓ Imagen seleccionada</p>
+        <p class="text-xs text-gray-500 mt-1">${file.name}</p>
+      `
+    }
+  }
+  reader.readAsDataURL(file)
+
   // Enable save button
   const saveButton = document.getElementById('save-hero-image-btn')
   if (saveButton) {
@@ -1214,19 +1184,7 @@ async function saveHeroImage() {
     formData.append('setting_key', 'hero_image')
 
     // Send request to save image
-    const response = await fetch('/api/admin/settings/image', {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer admin:1:admin'
-      },
-      body: formData
-    })
-
-    if (!response.ok) {
-      throw new Error('Error al guardar la imagen hero')
-    }
-
-    const result = await response.json()
+    const result = await api.uploadSettingImage('hero_image', heroImageFile)
 
     if (result.success) {
       // Reload hero image preview
@@ -1270,19 +1228,7 @@ async function saveLogo() {
     formData.append('setting_key', 'site_logo')
 
     // Send request to save logo
-    const response = await fetch('/api/admin/settings/image', {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer admin:1:admin'
-      },
-      body: formData
-    })
-
-    if (!response.ok) {
-      throw new Error('Error al guardar el logo')
-    }
-
-    const result = await response.json()
+    const result = await api.uploadSettingImage('site_logo', logoFile)
 
     if (result.success) {
       // Reload logo preview
@@ -1321,20 +1267,7 @@ async function saveBcvPrice() {
     saveButton.disabled = true
 
     // Send request to save BCV price
-    const response = await fetch('/api/admin/settings/bcv-price', {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer admin:1:admin',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ bcv_price: bcvPriceValue })
-    })
-
-    if (!response.ok) {
-      throw new Error('Error al guardar el precio BCV')
-    }
-
-    const result = await response.json()
+    const result = await api.createBcvprice(bcvPriceValue)
 
     if (result.success) {
       // Reload BCV price
@@ -1363,22 +1296,19 @@ async function saveBcvPrice() {
  */
 async function loadHeroImagePreview() {
   try {
-    const response = await fetch('/api/settings/hero_image/value')
-    if (response.ok) {
-      const result = await response.json()
-      const heroImageUrl = result.data
+    const result = await api.getValue('hero_image')
+    const heroImageUrl = result.data
 
-      const heroImage = document.getElementById('current-hero-image')
-      const noHeroImageText = document.getElementById('no-hero-image-text')
+    const heroImage = document.getElementById('current-hero-image')
+    const noHeroImageText = document.getElementById('no-hero-image-text')
 
-      if (heroImageUrl) {
-        heroImage.src = heroImageUrl
-        heroImage.classList.remove('hidden')
-        noHeroImageText.classList.add('hidden')
-      } else {
-        heroImage.classList.add('hidden')
-        noHeroImageText.classList.remove('hidden')
-      }
+    if (heroImageUrl) {
+      heroImage.src = heroImageUrl
+      heroImage.classList.remove('hidden')
+      noHeroImageText.classList.add('hidden')
+    } else {
+      heroImage.classList.add('hidden')
+      noHeroImageText.classList.remove('hidden')
     }
   } catch (error) {
     console.error('Error loading hero image preview:', error)
@@ -1390,22 +1320,19 @@ async function loadHeroImagePreview() {
  */
 async function loadLogoPreview() {
   try {
-    const response = await fetch('/api/settings/site_logo/value')
-    if (response.ok) {
-      const result = await response.json()
-      const logoUrl = result.data
+    const result = await api.getValue('site_logo')
+    const logoUrl = result.data
 
-      const logo = document.getElementById('current-logo')
-      const noLogoText = document.getElementById('no-logo-text')
+    const logo = document.getElementById('current-logo')
+    const noLogoText = document.getElementById('no-logo-text')
 
-      if (logoUrl) {
-        logo.src = logoUrl
-        logo.classList.remove('hidden')
-        noLogoText.classList.add('hidden')
-      } else {
-        logo.classList.add('hidden')
-        noLogoText.classList.remove('hidden')
-      }
+    if (logoUrl) {
+      logo.src = logoUrl
+      logo.classList.remove('hidden')
+      noLogoText.classList.add('hidden')
+    } else {
+      logo.classList.add('hidden')
+      noLogoText.classList.remove('hidden')
     }
   } catch (error) {
     console.error('Error loading logo preview:', error)
@@ -1417,17 +1344,14 @@ async function loadLogoPreview() {
  */
 async function loadBcvPrice() {
   try {
-    const response = await fetch('/api/settings/bcv_usd_rate/value')
-    if (response.ok) {
-      const result = await response.json()
-      const bcvPrice = result.data
+    const result = await api.getValue('bcv_usd_rate')
+    const bcvPrice = result.data
 
-      const bcvPriceElement = document.getElementById('current-bcv-price')
-      if (bcvPrice) {
-        bcvPriceElement.textContent = `Bs. ${parseFloat(bcvPrice).toFixed(2)}`
-      } else {
-        bcvPriceElement.textContent = 'No establecido'
-      }
+    const bcvPriceElement = document.getElementById('current-bcv-price')
+    if (bcvPrice) {
+      bcvPriceElement.textContent = `Bs. ${parseFloat(bcvPrice).toFixed(2)}`
+    } else {
+      bcvPriceElement.textContent = 'No establecido'
     }
   } catch (error) {
     console.error('Error loading BCV price:', error)

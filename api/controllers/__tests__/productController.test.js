@@ -10,8 +10,9 @@ import { NotFoundError } from '../../errors/AppError.js'
 
 // Mock productService
 vi.mock('../../services/productService.js', () => ({
-  getProductById: vi.fn((productId, _includeInactive) => {
-    if (productId === 67) {
+  getProductById: vi.fn((productId, includeInactive) => {
+    // Use includeInactive parameter to determine if inactive products should be included
+    if (productId === 67 || (includeInactive && productId === 999)) {
       return Promise.resolve({
         id: 67,
         name: 'Ramo Tropical Vibrante',
@@ -34,8 +35,9 @@ vi.mock('../../services/productService.js', () => ({
     }
     throw new Error('Invalid product ID')
   }),
-  getAllProducts: vi.fn((_filters, _includeInactive) => {
-    return Promise.resolve([
+  getAllProducts: vi.fn((filters, _includeInactive) => {
+    // Use parameters to filter results based on criteria
+    const products = [
       {
         id: 67,
         name: 'Ramo Tropical Vibrante',
@@ -43,7 +45,14 @@ vi.mock('../../services/productService.js', () => ({
         active: true,
         featured: true
       }
-    ])
+    ]
+
+    // Apply filters if provided
+    if (filters && filters.featured === true) {
+      return products.filter(p => p.featured)
+    }
+
+    return products
   })
 }))
 

@@ -4,12 +4,19 @@
  * End-to-end scenarios with real-world conditions
  */
 
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest'
+import {
+  describe,
+  it,
+  expect,
+  beforeAll as _beforeAll,
+  afterAll as _afterAll,
+  beforeEach
+} from 'vitest'
 import request from 'supertest'
 import app from '../api/app.js'
-import { businessRulesEngine } from '../api/services/businessRules.js'
+import { businessRulesEngine as _businessRulesEngine } from '../api/services/businessRules.js'
 import {
-  getCircuitBreakerStatus,
+  getCircuitBreakerStatus as _getCircuitBreakerStatus,
   forceCircuitBreakerOpen,
   resetCircuitBreaker
 } from '../api/middleware/circuitBreaker.js'
@@ -117,7 +124,7 @@ describe('🛡️ Robustness Integration Tests', () => {
       it('should allow requests within limits', async () => {
         // Make multiple requests within limit
         for (let i = 0; i < 5; i++) {
-          const response = await request(app)
+          const _response = await request(app)
             .get('/api/orders')
             .expect(res => {
               // Should not be rate limited
@@ -139,7 +146,7 @@ describe('🛡️ Robustness Integration Tests', () => {
       it('should handle rate limit exceeded gracefully', async () => {
         // Force rate limit to be exceeded for testing
         // This would require mocking the rate limiter
-        const response = await request(app).get('/api/orders').expect(200) // Should work normally
+        const _response = await request(app).get('/api/orders').expect(200) // Should work normally
       })
     })
 

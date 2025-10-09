@@ -4,9 +4,7 @@
  */
 
 import '../../js/lucide-icons.js'
-
-// API base URL
-const API_URL = '/api/occasions'
+import { api } from '../../js/shared/api-client.js'
 
 // Global state
 let currentFilter = 'all' // 'all', 'active', 'inactive'
@@ -18,12 +16,8 @@ let occasions = []
  */
 async function fetchOccasions() {
   try {
-    const response = await fetch(API_URL)
-    if (!response.ok) {
-      throw new Error('Error fetching occasions')
-    }
-    const data = await response.json()
-    occasions = data.data || []
+    const result = await api.getAllOccasions()
+    occasions = result.data || []
     return occasions
   } catch (error) {
     console.error('fetchOccasions failed:', error)
@@ -316,26 +310,17 @@ async function saveOccasion() {
       is_active: isActive
     }
 
-    let response
+    let result
     if (id) {
       // Update existing occasion
-      response = await fetch(`${API_URL}/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(occasionData)
-      })
+      result = await api.updateOccasions(id, occasionData)
     } else {
       // Create new occasion
-      response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(occasionData)
-      })
+      result = await api.createOccasions(occasionData)
     }
 
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || 'Error al guardar ocasión')
+    if (!result.success) {
+      throw new Error(result.message || 'Error al guardar ocasión')
     }
 
     // Reset form and reload table
@@ -366,13 +351,10 @@ async function deleteOccasion() {
   }
 
   try {
-    const response = await fetch(`${API_URL}/${selectedOccasion.id}`, {
-      method: 'DELETE'
-    })
+    const result = await api.deleteOccasions(selectedOccasion.id)
 
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || 'Error al eliminar ocasión')
+    if (!result.success) {
+      throw new Error(result.message || 'Error al eliminar ocasión')
     }
 
     // Reset form and reload table
