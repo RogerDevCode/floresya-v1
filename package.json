@@ -21,7 +21,6 @@
     "test:coverage": "vitest run --coverage",
     "get-schema": "node get-schema.js",
     "seed": "node seed-products.js",
-    "vercel-dev": "vercel dev --yes --listen 3000",
     "serve": "serve public -p 3000",
     "generate:openapi": "node scripts/generate-openapi-spec.js",
     "generate:client": "node scripts/generate-api-client.js",
@@ -31,7 +30,6 @@
     "validate:frontend": "node scripts/validate-frontend-contract.js",
     "validate:frontend:usage": "node scripts/validate-frontend-usage.js",
     "validate:full": "npm run validate:contract:ci && npm run validate:client:sync && npm run validate:frontend && npm run validate:frontend:usage",
-    "qs": "kver.sh",
     "prepare": "husky"
   },
   "dependencies": {

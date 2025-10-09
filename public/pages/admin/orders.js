@@ -885,8 +885,6 @@ function exportToCSV() {
     'Email',
     'Teléfono',
     'Dirección Entrega',
-    'Ciudad',
-    'Estado',
     'Fecha Entrega',
     'Hora Entrega',
     'Total USD',

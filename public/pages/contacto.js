@@ -4,6 +4,7 @@
  */
 
 import { api } from '../js/shared/api-client.js'
+import { initCartBadge, initCartEventListeners } from '../js/shared/cart.js'
 
 // Settings cache
 let contactSettings = {}
@@ -186,6 +187,10 @@ function updateHref(selector, value) {
  */
 async function init() {
   try {
+    // Initialize cart badge and event listeners
+    initCartBadge()
+    initCartEventListeners()
+
     await loadContactSettings()
     updateContactPage()
   } catch (error) {

@@ -72,6 +72,7 @@ export function validateEmail(email) {
 
 /**
  * Advanced Venezuelan phone validation
+ * Accepts multiple formats: 04141234567, (+58)-414-7166388, +584141234567, etc.
  */
 export function validateVenezuelanPhone(phone) {
   if (!phone || typeof phone !== 'string') {
@@ -81,22 +82,41 @@ export function validateVenezuelanPhone(phone) {
   // Remove all non-digits for validation
   const digitsOnly = phone.replace(/\D/g, '')
 
-  if (digitsOnly.length === 10) {
-    // Local format: 04141234567
-    if (!VENEZUELA_PHONE_PATTERNS.mobile.test(digitsOnly)) {
-      return 'Número de teléfono venezolano inválido. Debe comenzar con 0412, 0414, 0416, 0424, o 0426'
-    }
-  } else if (digitsOnly.length === 12) {
-    // International format: 584141234567
-    if (!digitsOnly.startsWith('58')) {
-      return 'Formato internacional debe comenzar con +58'
-    }
-    const localNumber = '0' + digitsOnly.substring(2)
-    if (!VENEZUELA_PHONE_PATTERNS.mobile.test(localNumber)) {
-      return 'Número de teléfono venezolano inválido'
-    }
-  } else {
-    return 'Teléfono debe tener 10 dígitos (04141234567) o formato internacional (+584141234567)'
+  // Check for minimum length (at least 10 digits)
+  if (digitsOnly.length < 10) {
+    return 'Teléfono debe tener al menos 10 dígitos'
+  }
+
+  // Check for maximum reasonable length
+  if (digitsOnly.length > 13) {
+    return 'Teléfono tiene demasiados dígitos'
+  }
+
+  // Normalize to local format for validation
+  let normalizedPhone = digitsOnly
+
+  // If starts with 58 (Venezuela country code), remove it and add 0
+  if (normalizedPhone.startsWith('58') && normalizedPhone.length >= 12) {
+    normalizedPhone = '0' + normalizedPhone.substring(2)
+  }
+
+  // Ensure it starts with 0 for local format
+  if (!normalizedPhone.startsWith('0') && normalizedPhone.length === 10) {
+    // Already 10 digits, might be missing leading 0
+    normalizedPhone = '0' + normalizedPhone
+  }
+
+  // Take only first 11 digits if longer (Venezuelan numbers are 11 digits with 0)
+  if (normalizedPhone.length > 11) {
+    normalizedPhone = normalizedPhone.substring(0, 11)
+  }
+
+  // Validate against Venezuelan patterns (0412, 0414, 0416, 0424, 0426, or 0212 landlines)
+  if (
+    !VENEZUELA_PHONE_PATTERNS.mobile.test(normalizedPhone) &&
+    !VENEZUELA_PHONE_PATTERNS.landline.test(normalizedPhone)
+  ) {
+    return 'Número de teléfono venezolano inválido. Debe comenzar con 0412, 0414, 0416, 0424, 0426 o 0212'
   }
 
   return null
@@ -256,15 +276,21 @@ export function validateOrderItems(items) {
  * Comprehensive order validation
  */
 export function validateOrderData(orderData) {
+  console.log('🔍 VALIDATING ORDER DATA:', JSON.stringify(orderData, null, 2))
   const errors = []
 
   // Email validation
+  console.log('📧 Validating email:', orderData.customer_email)
   const emailError = validateEmail(orderData.customer_email)
   if (emailError) {
+    console.log('❌ Email validation failed:', emailError)
     errors.push(emailError)
+  } else {
+    console.log('✅ Email validation passed')
   }
 
   // Name validation
+  console.log('👤 Validating name:', orderData.customer_name)
   const nameError = validateTextLength(
     orderData.customer_name,
     'Nombre del cliente',
@@ -272,43 +298,76 @@ export function validateOrderData(orderData) {
     BUSINESS_LIMITS.maxNameLength
   )
   if (nameError) {
+    console.log('❌ Name validation failed:', nameError)
     errors.push(nameError)
+  } else {
+    console.log('✅ Name validation passed')
   }
 
   // Phone validation
+  console.log('📱 Validating phone:', orderData.customer_phone)
   const phoneError = validateVenezuelanPhone(orderData.customer_phone)
   if (phoneError) {
+    console.log('❌ Phone validation failed:', phoneError)
     errors.push(phoneError)
+  } else {
+    console.log('✅ Phone validation passed')
   }
 
   // Address validation
+  console.log('🏠 Validating address:', orderData.delivery_address)
   const addressError = validateVenezuelanAddress(orderData.delivery_address)
   if (addressError) {
+    console.log('❌ Address validation failed:', addressError)
     errors.push(addressError)
+  } else {
+    console.log('✅ Address validation passed')
   }
 
   // Amount validations
+  console.log('💵 Validating USD amount:', orderData.total_amount_usd)
   const totalAmountError = validateAmount(orderData.total_amount_usd, 'Monto total')
   if (totalAmountError) {
+    console.log('❌ USD amount validation failed:', totalAmountError)
     errors.push(totalAmountError)
+  } else {
+    console.log('✅ USD amount validation passed')
   }
 
-  if (orderData.total_amount_ves) {
-    const vesAmountError = validateAmount(orderData.total_amount_ves, 'Monto total en bolívares')
-    if (vesAmountError) {
-      errors.push(vesAmountError)
+  // Validate VES amount separately (no max limit since exchange rate varies)
+  if (orderData.total_amount_ves !== undefined && orderData.total_amount_ves !== null) {
+    console.log('💰 Validating VES amount:', orderData.total_amount_ves)
+    const vesValue =
+      typeof orderData.total_amount_ves === 'string'
+        ? parseFloat(orderData.total_amount_ves)
+        : orderData.total_amount_ves
+
+    if (isNaN(vesValue)) {
+      console.log('❌ VES amount validation failed: not a number')
+      errors.push('Monto total en bolívares debe ser un número válido')
+    } else if (vesValue < 0) {
+      console.log('❌ VES amount validation failed: negative')
+      errors.push('Monto total en bolívares debe ser un número positivo')
+    } else {
+      console.log('✅ VES amount validation passed')
     }
+    // No maximum limit for VES due to varying exchange rates
   }
 
   // Currency rate validation
   if (orderData.currency_rate) {
+    console.log('💱 Validating currency rate:', orderData.currency_rate)
     if (typeof orderData.currency_rate !== 'number' || orderData.currency_rate <= 0) {
+      console.log('❌ Currency rate validation failed')
       errors.push('Tasa de cambio debe ser un número positivo')
+    } else {
+      console.log('✅ Currency rate validation passed')
     }
   }
 
   // Notes validation (optional)
   if (orderData.notes) {
+    console.log('📝 Validating notes:', orderData.notes)
     const notesError = validateTextLength(
       orderData.notes,
       'Notas del pedido',
@@ -316,12 +375,16 @@ export function validateOrderData(orderData) {
       BUSINESS_LIMITS.maxNotesLength
     )
     if (notesError) {
+      console.log('❌ Notes validation failed:', notesError)
       errors.push(notesError)
+    } else {
+      console.log('✅ Notes validation passed')
     }
   }
 
   // Delivery notes validation (optional)
   if (orderData.delivery_notes) {
+    console.log('📦 Validating delivery notes:', orderData.delivery_notes)
     const deliveryNotesError = validateTextLength(
       orderData.delivery_notes,
       'Notas de entrega',
@@ -329,10 +392,14 @@ export function validateOrderData(orderData) {
       BUSINESS_LIMITS.maxNotesLength
     )
     if (deliveryNotesError) {
+      console.log('❌ Delivery notes validation failed:', deliveryNotesError)
       errors.push(deliveryNotesError)
+    } else {
+      console.log('✅ Delivery notes validation passed')
     }
   }
 
+  console.log('🏁 ORDER VALIDATION COMPLETE. Errors:', errors)
   return errors
 }
 

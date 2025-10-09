@@ -4,7 +4,7 @@
  */
 
 import { createIcons } from '/js/lucide-icons.js'
-import { addToCart, updateCartBadge, isInCart } from '/js/shared/cart.js'
+import { addToCart, isInCart, initCartBadge, initCartEventListeners } from '/js/shared/cart.js'
 import { showToast } from '/js/components/toast.js'
 import { api } from '/js/shared/api-client.js'
 
@@ -303,11 +303,8 @@ function initCartActions() {
             productImages.find(img => img.size === 'small')?.url || '/images/placeholder-flower.svg'
         }
 
-        // Add to cart using shared module
+        // Add to cart using shared module (automatically updates badge via event)
         await addToCart(product, quantity)
-
-        // Update badge
-        updateCartBadge()
 
         // Success feedback
         showToast(
@@ -361,11 +358,8 @@ function initCartActions() {
             productImages.find(img => img.size === 'small')?.url || '/images/placeholder-flower.svg'
         }
 
-        // Add to cart using shared module
+        // Add to cart using shared module (automatically updates badge via event)
         await addToCart(product, quantity)
-
-        // Update badge
-        updateCartBadge()
 
         // Success feedback
         showToast(
@@ -409,10 +403,13 @@ async function init() {
     // Render product
     renderProduct(product, images)
 
+    // Initialize cart badge and event listeners
+    initCartBadge()
+    initCartEventListeners()
+
     // Initialize interactions
     initQuantityControls()
     initCartActions()
-    updateCartBadge()
 
     // Mark page as loaded
     document.documentElement.classList.add('loaded')

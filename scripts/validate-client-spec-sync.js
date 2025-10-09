@@ -201,19 +201,39 @@ function extractEndpointsFromSpec(spec) {
 function extractMethodsFromClient(clientContent) {
   const methods = []
 
-  // Split content into method blocks
-  const methodBlocks = clientContent.split(/async\s+(\w+)\s*\(/g)
+  // Match methods with or without async keyword
+  // Pattern: async methodName( or just methodName(
+  const methodRegex = /(?:async\s+)?(\w+)\s*\(([^)]*)\)\s*\{/g
+  let match
 
-  for (let i = 1; i < methodBlocks.length; i += 2) {
-    const methodName = methodBlocks[i]
-    const methodBody = methodBlocks[i + 1]
+  while ((match = methodRegex.exec(clientContent)) !== null) {
+    const methodName = match[1]
+    const fullMethodString = match[0]
 
-    if (!methodBody) {
-      continue
+    // Get the rest of the method body after the opening {
+    const startIndex = match.index + fullMethodString.length
+    const remainingContent = clientContent.substring(startIndex)
+
+    // Find the matching closing brace (simple approach - works for our generated code)
+    let braceCount = 1
+    let endIndex = 0
+    for (let i = 0; i < remainingContent.length; i++) {
+      if (remainingContent[i] === '{') {
+        braceCount++
+      }
+      if (remainingContent[i] === '}') {
+        braceCount--
+        if (braceCount === 0) {
+          endIndex = i
+          break
+        }
+      }
     }
 
-    // Skip utility methods
-    if (methodName === 'request' || methodName === 'handleError') {
+    const methodBody = remainingContent.substring(0, endIndex)
+
+    // Skip utility methods and constructor
+    if (methodName === 'request' || methodName === 'handleError' || methodName === 'constructor') {
       continue
     }
 
@@ -227,6 +247,10 @@ function extractMethodsFromClient(clientContent) {
 
     // Remove template literal variables ${...} and replace with {param}
     endpoint = endpoint.replace(/\$\{(\w+)\}/g, '{$1}')
+
+    // Remove query string portion ({queryPart}, {query}, etc.)
+    endpoint = endpoint.replace(/\{[^}]*[Pp]art\}/g, '')
+    endpoint = endpoint.replace(/\{query\}/g, '')
 
     // Extract HTTP method from: method: 'POST'
     const httpMethodMatch = methodBody.match(/method:\s*'(\w+)'/i)

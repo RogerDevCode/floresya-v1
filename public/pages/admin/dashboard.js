@@ -1117,27 +1117,59 @@ function handleLogoUpload(event) {
     return
   }
 
-  // Validate file type
-  if (!file.type.startsWith('image/')) {
-    alert('Por favor selecciona un archivo de imagen válido.')
+  // Validate file type (WebP or PNG only)
+  if (!['image/webp', 'image/png'].includes(file.type)) {
+    alert('Por favor selecciona un archivo WebP o PNG.')
     event.target.value = ''
     return
   }
 
-  // Validate file size (4MB max)
-  if (file.size > 4 * 1024 * 1024) {
-    alert('La imagen no debe superar 4MB.')
+  // Validate file size (1MB max for logo)
+  if (file.size > 1 * 1024 * 1024) {
+    alert('El logo no debe superar 1MB.')
     event.target.value = ''
     return
   }
 
-  logoFile = file
+  // Load image to validate dimensions
+  const reader = new FileReader()
+  reader.onload = e => {
+    const img = new Image()
+    img.onload = () => {
+      // Check if dimensions are 128x128px
+      if (img.width !== 128 || img.height !== 128) {
+        alert(`El logo debe ser de 128x128px.\nTamaño seleccionado: ${img.width}x${img.height}px`)
+        event.target.value = ''
+        return
+      }
 
-  // Enable save button
-  const saveButton = document.getElementById('save-logo-btn')
-  if (saveButton) {
-    saveButton.disabled = false
+      // Valid image - store and show preview
+      logoFile = file
+
+      // Show preview
+      const previewArea = document.getElementById('logo-preview-area')
+      const previewImg = document.getElementById('logo-preview')
+      const dimensionsText = document.getElementById('logo-dimensions')
+
+      if (previewArea && previewImg && dimensionsText) {
+        previewImg.src = e.target.result
+        dimensionsText.textContent = `${img.width}x${img.height}px - ${(file.size / 1024).toFixed(2)} KB`
+        previewArea.classList.remove('hidden')
+      }
+
+      // Enable save button
+      const saveButton = document.getElementById('save-logo-btn')
+      if (saveButton) {
+        saveButton.disabled = false
+      }
+    }
+    img.onerror = () => {
+      alert('Error al cargar la imagen. Por favor intenta con otra imagen.')
+      event.target.value = ''
+    }
+    img.src = e.target.result
   }
+  reader.readAsDataURL(file)
 }
 
 /**
