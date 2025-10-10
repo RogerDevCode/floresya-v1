@@ -301,6 +301,7 @@ function validateField(e) {
   let errorMessage = ''
 
   switch (field.name) {
+    case 'customer_name':
     case 'customer-name':
       if (!field.value.trim()) {
         isValid = false
@@ -311,6 +312,7 @@ function validateField(e) {
       }
       break
 
+    case 'customer_email':
     case 'customer-email':
       if (!field.value.trim()) {
         isValid = false
@@ -331,6 +333,7 @@ function validateField(e) {
       }
       break
 
+    case 'delivery_address':
     case 'delivery-address':
       if (!field.value.trim()) {
         isValid = false
@@ -674,54 +677,16 @@ async function createOrder(customerData, paymentData) {
  * Show success message
  */
 function showSuccessMessage(orderData) {
-  const message = `
-¡Orden creada exitosamente!
+  // Clear cart
+  clearCart()
 
-Número de orden: ${orderData.id}
-Referencia de pago: ${orderReference}
-Total: ${orderData.total_amount_usd}
-
-Método de pago: ${getPaymentMethodName(paymentMethod)}
-
-Próximos pasos:
-1. Complete el pago usando la referencia proporcionada
-2. Recibirá un email de confirmación
-3. Procesaremos su orden una vez confirmado el pago
-
-¿Desea realizar otra compra?
-  `
-
-  if (confirm(message)) {
-    // Clear cart and redirect to home
-    clearCart()
-    // Also clear customer data if they did not select "remember me"
-    if (!document.getElementById('remember-me')?.checked) {
-      localStorage.removeItem('customerData')
-    }
-    window.location.href = '/'
-  } else {
-    // Redirect to order tracking or home
-    clearCart()
-    // Also clear customer data if they did not select "remember me"
-    if (!document.getElementById('remember-me')?.checked) {
-      localStorage.removeItem('customerData')
-    }
-    window.location.href = '/'
+  // Also clear customer data if they did not select "remember me"
+  if (!document.getElementById('remember-me')?.checked) {
+    localStorage.removeItem('customerData')
   }
-}
 
-/**
- * Get payment method display name
- */
-function getPaymentMethodName(method) {
-  const names = {
-    cash: 'Efectivo',
-    mobile_payment: 'Pago Móvil',
-    bank_transfer: 'Transferencia Bancaria',
-    zelle: 'Zelle',
-    crypto: 'Criptomonedas'
-  }
-  return names[method] || method
+  // Redirect to order confirmation page with order ID
+  window.location.href = `/pages/order-confirmation.html?orderId=${orderData.id}`
 }
 
 /**
