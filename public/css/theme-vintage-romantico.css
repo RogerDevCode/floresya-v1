@@ -1,0 +1,641 @@
+/**
+ * Tema: Vintage Romántico
+ * Inspiración: Papel antiguo, ornamentos florales, cursiva elegante
+ * Paleta: Rosa pálido, crema, dorado suave, marrón claro
+ */
+
+/* === FUENTES === */
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@400;600&display=swap');
+
+/* === VARIABLES GLOBALES === */
+:root {
+  --color-primary: #e3b5a4; /* Rosa pálido */
+  --color-primary-dark: #d4a59a;
+  --color-primary-light: #f5e1d8;
+  --color-secondary: #c9a89a; /* Marrón rosado */
+  --color-accent: #d4af37; /* Dorado suave */
+  --color-background: #fef5f7;
+  --color-surface: #fff;
+  --font-heading: 'Crimson Text', serif;
+  --font-body: 'Montserrat', sans-serif;
+}
+
+/* === FONDOS Y TEXTURAS === */
+body {
+  /* JARDÍN DE ROSAS VINTAGE - Flores sobre flores, romántico y abundante */
+  background:
+    /* Rosas grandes primer plano */
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><defs><radialGradient id="rose1"><stop offset="0%" stop-color="%23e3b5a4" stop-opacity="0.7"/><stop offset="50%" stop-color="%23d4a59a" stop-opacity="0.5"/><stop offset="100%" stop-color="%23c9a89a" stop-opacity="0.2"/></radialGradient><radialGradient id="rose2"><stop offset="0%" stop-color="%23f5d4cf" stop-opacity="0.6"/><stop offset="60%" stop-color="%23e3b5a4" stop-opacity="0.4"/><stop offset="100%" stop-color="%23d4a59a" stop-opacity="0.1"/></radialGradient></defs><g opacity="0.85"><g transform="translate(120,150) rotate(-15)"><circle cx="0" cy="0" r="45" fill="url(%23rose1)"/><path d="M0,-30 Q15,-35 25,-20 Q30,-5 20,5 Q5,15 -10,10 Q-25,5 -30,-10 Q-30,-25 -15,-32 Q0,-35 0,-30 Z" fill="%23e3b5a4" opacity="0.8"/><circle cx="0" cy="0" r="18" fill="%23d4a59a" opacity="0.7"/><ellipse cx="-8" cy="-5" rx="8" ry="12" fill="%23e3b5a4" opacity="0.6"/><ellipse cx="8" cy="-5" rx="8" ry="12" fill="%23e3b5a4" opacity="0.6"/><ellipse cx="-8" cy="5" rx="8" ry="12" fill="%23d4a59a" opacity="0.5"/><ellipse cx="8" cy="5" rx="8" ry="12" fill="%23d4a59a" opacity="0.5"/></g><g transform="translate(480,380) rotate(25)"><circle cx="0" cy="0" r="50" fill="url(%23rose2)"/><path d="M0,-32 Q18,-38 28,-22 Q33,-6 22,6 Q6,18 -12,12 Q-28,6 -33,-12 Q-32,-28 -18,-35 Q0,-38 0,-32 Z" fill="%23f5d4cf" opacity="0.75"/><circle cx="0" cy="0" r="20" fill="%23e3b5a4" opacity="0.65"/><ellipse cx="-10" cy="-6" rx="10" ry="14" fill="%23f5d4cf" opacity="0.55"/><ellipse cx="10" cy="-6" rx="10" ry="14" fill="%23f5d4cf" opacity="0.55"/><ellipse cx="-10" cy="6" rx="10" ry="14" fill="%23e3b5a4" opacity="0.5"/><ellipse cx="10" cy="6" rx="10" ry="14" fill="%23e3b5a4" opacity="0.5"/></g></g></svg>'),
+    /* Rosas medianas segundo plano */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500"><g opacity="0.7"><g transform="translate(80,280) rotate(10)"><circle cx="0" cy="0" r="35" fill="%23e3b5a4" opacity="0.6"/><path d="M0,-25 Q12,-28 20,-15 Q23,-4 15,4 Q4,12 -8,8 Q-20,4 -23,-8 Q-22,-20 -12,-26 Q0,-28 0,-25 Z" fill="%23f5d4cf" opacity="0.7"/><circle cx="0" cy="0" r="14" fill="%23d4a59a" opacity="0.6"/></g><g transform="translate(350,100) rotate(-20)"><circle cx="0" cy="0" r="38" fill="%23d4a59a" opacity="0.55"/><path d="M0,-26 Q13,-30 22,-16 Q25,-5 16,5 Q5,13 -9,9 Q-22,5 -25,-9 Q-24,-22 -13,-28 Q0,-31 0,-26 Z" fill="%23e3b5a4" opacity="0.65"/><circle cx="0" cy="0" r="15" fill="%23c9a89a" opacity="0.55"/></g><g transform="translate(420,450) rotate(35)"><circle cx="0" cy="0" r="32" fill="%23f5d4cf" opacity="0.5"/><circle cx="0" cy="0" r="13" fill="%23e3b5a4" opacity="0.5"/></g></g></svg>'),
+    /* Rosas pequeñas fondo */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><g opacity="0.5"><circle cx="60" cy="60" r="25" fill="%23e3b5a4"/><circle cx="60" cy="60" r="10" fill="%23d4a59a"/><circle cx="320" cy="180" r="22" fill="%23f5d4cf"/><circle cx="320" cy="180" r="9" fill="%23e3b5a4"/><circle cx="180" cy="340" r="28" fill="%23d4a59a"/><circle cx="180" cy="340" r="11" fill="%23c9a89a"/><circle cx="350" cy="80" r="20" fill="%23e3b5a4"/><circle cx="80" cy="320" r="24" fill="%23f5d4cf"/><circle cx="240" cy="120" r="26" fill="%23e3b5a4"/><circle cx="140" cy="240" r="23" fill="%23d4a59a"/></g></svg>'),
+    /* Pétalos dispersos */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><g opacity="0.35"><ellipse cx="40" cy="50" rx="12" ry="18" fill="%23f5d4cf" transform="rotate(30 40 50)"/><ellipse cx="180" cy="90" rx="10" ry="16" fill="%23e3b5a4" transform="rotate(-45 180 90)"/><ellipse cx="260" cy="180" rx="14" ry="20" fill="%23d4a59a" transform="rotate(60 260 180)"/><ellipse cx="100" cy="220" rx="11" ry="17" fill="%23f5d4cf" transform="rotate(-20 100 220)"/><ellipse cx="230" cy="50" rx="13" ry="19" fill="%23e3b5a4" transform="rotate(15 230 50)"/><ellipse cx="70" cy="160" rx="9" ry="15" fill="%23d4a59a" transform="rotate(-60 70 160)"/><ellipse cx="280" cy="260" rx="10" ry="16" fill="%23f5d4cf" transform="rotate(40 280 260)"/></g></svg>'),
+    /* Manchas de té vintage */
+      radial-gradient(ellipse at 15% 25%, rgba(212, 165, 154, 0.18) 0%, transparent 35%),
+    radial-gradient(ellipse at 85% 75%, rgba(227, 181, 164, 0.15) 0%, transparent 30%),
+    /* Base papel envejecido rosado */
+      linear-gradient(
+        135deg,
+        #fef5f7 0%,
+        #fce8ec 20%,
+        #f9ecef 40%,
+        #fce8ec 60%,
+        #fef5f7 80%,
+        #f9ecef 100%
+      );
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    300px 300px,
+    200px 200px,
+    100% 100%;
+  background-position:
+    0 0,
+    0 0,
+    0 0,
+    0 0,
+    0 0,
+    0 0,
+    0 0,
+    0 0;
+  font-family: var(--font-body);
+  color: #6b5b52;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  /* Overlay vintage con bordes quemados */
+  background:
+    /* Bordes quemados */
+    radial-gradient(
+        ellipse at top,
+        transparent 60%,
+        rgba(139, 105, 75, 0.15) 90%,
+        rgba(107, 91, 82, 0.2) 100%
+      )
+      no-repeat,
+    radial-gradient(
+        ellipse at bottom,
+        transparent 60%,
+        rgba(139, 105, 75, 0.15) 90%,
+        rgba(107, 91, 82, 0.2) 100%
+      )
+      no-repeat,
+    radial-gradient(
+        ellipse at left,
+        transparent 80%,
+        rgba(139, 105, 75, 0.1) 95%,
+        rgba(107, 91, 82, 0.15) 100%
+      )
+      no-repeat,
+    radial-gradient(
+        ellipse at right,
+        transparent 80%,
+        rgba(139, 105, 75, 0.1) 95%,
+        rgba(107, 91, 82, 0.15) 100%
+      )
+      no-repeat;
+  background-size:
+    100% 200px,
+    100% 200px,
+    200px 100%,
+    200px 100%;
+  background-position: top, bottom, left, right;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  /* Manchas de agua MÁS VISIBLES */
+  background:
+    radial-gradient(
+      circle at 15% 25%,
+      rgba(212, 165, 154, 0.15) 0%,
+      rgba(227, 181, 164, 0.08) 8%,
+      transparent 15%
+    ),
+    radial-gradient(
+      circle at 85% 60%,
+      rgba(201, 168, 154, 0.12) 0%,
+      rgba(212, 165, 154, 0.06) 7%,
+      transparent 12%
+    ),
+    radial-gradient(
+      circle at 40% 85%,
+      rgba(212, 165, 154, 0.14) 0%,
+      rgba(201, 168, 154, 0.08) 10%,
+      transparent 18%
+    ),
+    radial-gradient(circle at 70% 15%, rgba(227, 181, 164, 0.1) 0%, transparent 10%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* === NAVBAR === */
+.navbar {
+  /* Papel vintage con textura sutil de fibras */
+  background:
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><filter id="paper"><feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="4"/><feColorMatrix type="saturate" values="0.15"/></filter><rect width="120" height="120" filter="url(%23paper)" opacity="0.06" fill="%23d4a59a"/></svg>'),
+    linear-gradient(135deg, #fff9f9 0%, #fef5f7 100%);
+  background-size:
+    120px 120px,
+    100% 100%;
+  border-bottom: 2px solid #f5d4cf;
+  box-shadow: 0 4px 12px rgba(212, 165, 154, 0.1);
+  position: relative;
+}
+
+.navbar::after {
+  content: '✿ ❀ ✿';
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #e3b5a4;
+  font-size: 0.75rem;
+  opacity: 0.5;
+  letter-spacing: 1rem;
+}
+
+.navbar-brand {
+  font-family: var(--font-heading);
+  color: var(--color-primary-dark);
+  font-weight: 600;
+  font-style: italic;
+  font-size: 1.75rem;
+}
+
+.nav-link {
+  color: #8b7267;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+  transition: all 0.3s;
+  transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.nav-link:hover {
+  color: var(--color-accent);
+}
+
+/* === BOTONES === */
+.btn-primary {
+  background: linear-gradient(135deg, #e3b5a4 0%, #d4a59a 100%);
+  color: white;
+  border: 2px solid #f5d4cf;
+  border-radius: 25px;
+  padding: 0.875rem 2.5rem;
+  font-weight: 600;
+  font-family: var(--font-heading);
+  font-size: 1.0625rem;
+  box-shadow: 0 4px 15px rgba(227, 181, 164, 0.4);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '❀';
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: all 0.4s;
+  font-size: 1.25rem;
+}
+
+.btn-primary:hover::before {
+  left: 1rem;
+  opacity: 0.7;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(227, 181, 164, 0.5);
+  padding-left: 3rem;
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--color-primary-dark);
+  border: 2px solid #f5d4cf;
+  border-radius: 25px;
+  padding: 0.875rem 2rem;
+  font-weight: 600;
+  font-family: var(--font-heading);
+}
+
+.btn-secondary:hover {
+  background: #fef5f7;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* === HERO SECTION === */
+.hero-section {
+  /* Fondo de álbum vintage con detalles florales y papel antiguo */
+  background:
+    /* Rosas vintage decorativas en esquinas */
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800"><defs><radialGradient id="vrose1"><stop offset="0%" stop-color="%23e3b5a4" stop-opacity="0.25"/><stop offset="60%" stop-color="%23d4a59a" stop-opacity="0.15"/><stop offset="100%" stop-color="%23c9a89a" stop-opacity="0.05"/></radialGradient></defs><g opacity="0.8"><g transform="translate(100,100) rotate(-15)"><circle cx="0" cy="0" r="50" fill="url(%23vrose1)"/><path d="M0,-35 Q18,-40 30,-25 Q35,-8 25,8 Q8,20 -12,15 Q-30,8 -35,-12 Q-35,-30 -18,-38 Q0,-40 0,-35 Z" fill="%23e3b5a4" opacity="0.3"/><circle cx="0" cy="0" r="20" fill="%23d4a59a" opacity="0.25"/></g><g transform="translate(1100,100) rotate(15)"><circle cx="0" cy="0" r="45" fill="%23f5d4cf" opacity="0.2"/><circle cx="0" cy="0" r="18" fill="%23e3b5a4" opacity="0.2"/></g><g transform="translate(100,700) rotate(25)"><circle cx="0" cy="0" r="42" fill="%23d4a59a" opacity="0.18"/><circle cx="0" cy="0" r="16" fill="%23c9a89a" opacity="0.18"/></g><g transform="translate(1100,700) rotate(-20)"><circle cx="0" cy="0" r="48" fill="%23e3b5a4" opacity="0.22"/><circle cx="0" cy="0" r="19" fill="%23d4a59a" opacity="0.2"/></g></g></svg>'),
+    /* Marco decorativo dorado más visible */
+      linear-gradient(
+        to right,
+        rgba(212, 175, 55, 0.25) 0%,
+        rgba(212, 175, 55, 0.15) 1%,
+        transparent 3%,
+        transparent 97%,
+        rgba(212, 175, 55, 0.15) 99%,
+        rgba(212, 175, 55, 0.25) 100%
+      )
+      no-repeat,
+    linear-gradient(
+        to bottom,
+        rgba(212, 175, 55, 0.25) 0%,
+        rgba(212, 175, 55, 0.15) 1%,
+        transparent 3%,
+        transparent 97%,
+        rgba(212, 175, 55, 0.15) 99%,
+        rgba(212, 175, 55, 0.25) 100%
+      )
+      no-repeat,
+    /* Patrón de encaje vintage más visible */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><defs><pattern id="lace" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse"><circle cx="40" cy="40" r="15" fill="none" stroke="%23f5d4cf" stroke-width="1.5" opacity="0.4"/><path d="M40,25 Q45,30 40,35 Q35,30 40,25 Z" fill="%23e3b5a4" opacity="0.3"/><path d="M40,45 Q45,50 40,55 Q35,50 40,45 Z" fill="%23e3b5a4" opacity="0.3"/><path d="M25,40 Q30,45 35,40 Q30,35 25,40 Z" fill="%23d4a59a" opacity="0.3"/><path d="M45,40 Q50,45 55,40 Q50,35 45,40 Z" fill="%23d4a59a" opacity="0.3"/></pattern></defs><rect width="80" height="80" fill="url(%23lace)"/></svg>'),
+    /* Textura de papel antiguo */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="vintage-hero"><feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="5"/><feColorMatrix type="saturate" values="0.12"/></filter><rect width="200" height="200" filter="url(%23vintage-hero)" fill="%23e3b5a4" opacity="0.15"/></svg>'),
+    /* Degradado base vintage */ linear-gradient(135deg, #fef5f7 0%, #fce8ec 50%, #fef5f7 100%);
+  background-size:
+    1200px 800px,
+    100% 100%,
+    100% 100%,
+    80px 80px,
+    200px 200px,
+    100% 100%;
+  background-position: center;
+  position: relative;
+  overflow: visible;
+  box-shadow:
+    inset 0 0 60px rgba(212, 165, 154, 0.12),
+    inset 0 0 0 2px rgba(212, 175, 55, 0.1);
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 5%;
+  right: 8%;
+  width: 350px;
+  height: 350px;
+  /* Rosa vintage acuarela MÁS VISIBLE */
+  background: radial-gradient(
+    ellipse at center,
+    rgba(227, 181, 164, 0.35) 0%,
+    rgba(212, 165, 154, 0.25) 20%,
+    rgba(227, 181, 164, 0.15) 40%,
+    rgba(201, 168, 154, 0.08) 55%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  animation: float 8s ease-in-out infinite;
+  filter: blur(1px);
+}
+
+.hero-section::after {
+  content: '❀';
+  position: absolute;
+  bottom: 10%;
+  left: 5%;
+  font-size: 22rem;
+  color: #d4af37;
+  opacity: 0.22;
+  transform: rotate(25deg);
+  text-shadow:
+    3px 3px 8px rgba(212, 175, 55, 0.3),
+    -3px -3px 8px rgba(227, 181, 164, 0.25),
+    0 0 30px rgba(212, 175, 55, 0.15);
+  animation: gentle-spin 20s ease-in-out infinite;
+}
+
+@keyframes gentle-spin {
+  0%,
+  100% {
+    transform: rotate(25deg) scale(1);
+  }
+  50% {
+    transform: rotate(30deg) scale(1.05);
+  }
+}
+
+.hero-title {
+  font-family: var(--font-heading);
+  color: var(--color-primary-dark);
+  font-weight: 600;
+  font-style: italic;
+  text-shadow: 2px 2px 4px rgba(212, 165, 154, 0.1);
+  line-height: 1.2;
+}
+
+/* === CAROUSEL SECTION === */
+.py-12.bg-white:has(#featuredCarousel) {
+  /* Papel vintage con rosas y encaje */
+  background:
+    /* Rosas vintage dispersas */
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400"><g opacity="0.6"><g transform="translate(150,150) rotate(-10)"><circle cx="0" cy="0" r="35" fill="%23e3b5a4" opacity="0.4"/><circle cx="0" cy="0" r="14" fill="%23d4a59a" opacity="0.35"/></g><g transform="translate(650,200) rotate(15)"><circle cx="0" cy="0" r="40" fill="%23f5d4cf" opacity="0.35"/><circle cx="0" cy="0" r="16" fill="%23e3b5a4" opacity="0.3"/></g><g transform="translate(400,100) rotate(-25)"><circle cx="0" cy="0" r="30" fill="%23d4a59a" opacity="0.35"/><circle cx="0" cy="0" r="12" fill="%23c9a89a" opacity="0.3"/></g></g></svg>'),
+    /* Patrón de encaje delicado */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="50" cy="50" r="20" fill="none" stroke="%23f5d4cf" stroke-width="1.2" opacity="0.35"/><path d="M50,30 Q55,35 50,40 Q45,35 50,30 Z" fill="%23e3b5a4" opacity="0.25"/><path d="M50,60 Q55,65 50,70 Q45,65 50,60 Z" fill="%23e3b5a4" opacity="0.25"/><path d="M30,50 Q35,55 40,50 Q35,45 30,50 Z" fill="%23d4a59a" opacity="0.25"/><path d="M60,50 Q65,55 70,50 Q65,45 60,50 Z" fill="%23d4a59a" opacity="0.25"/></svg>'),
+    /* Textura de papel antiguo */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="old-carousel"><feTurbulence type="fractalNoise" baseFrequency="0.055" numOctaves="5"/><feColorMatrix type="saturate" values="0.11"/></filter><rect width="180" height="180" filter="url(%23old-carousel)" fill="%23e3b5a4" opacity="0.12"/></svg>'),
+    /* Base papel envejecido */ linear-gradient(135deg, #fff9f9 0%, #fef5f7 50%, #fff9f9 100%);
+  background-size:
+    800px 400px,
+    100px 100px,
+    180px 180px,
+    100% 100%;
+  background-position: center;
+  box-shadow: inset 0 0 40px rgba(212, 165, 154, 0.08);
+}
+
+/* === CARDS DE PRODUCTO === */
+.product-card {
+  /* Efecto de postal vintage con texturas más visibles */
+  background:
+    /* Rosas decorativas en esquinas */
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500"><g opacity="0.5"><g transform="translate(60,60) rotate(-15)"><circle cx="0" cy="0" r="30" fill="%23e3b5a4" opacity="0.4"/><circle cx="0" cy="0" r="12" fill="%23d4a59a" opacity="0.35"/></g><g transform="translate(340,60) rotate(15)"><circle cx="0" cy="0" r="28" fill="%23f5d4cf" opacity="0.35"/><circle cx="0" cy="0" r="11" fill="%23e3b5a4" opacity="0.3"/></g><g transform="translate(60,440) rotate(20)"><circle cx="0" cy="0" r="26" fill="%23d4a59a" opacity="0.35"/><circle cx="0" cy="0" r="10" fill="%23c9a89a" opacity="0.3"/></g><g transform="translate(340,440) rotate(-18)"><circle cx="0" cy="0" r="29" fill="%23e3b5a4" opacity="0.38"/><circle cx="0" cy="0" r="11" fill="%23d4a59a" opacity="0.32"/></g></g></svg>'),
+    /* Sello postal decorativo */
+      radial-gradient(circle at top right, rgba(212, 175, 55, 0.18) 0%, transparent 35px) no-repeat
+      top right,
+    /* Patrón de encaje sutil */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><circle cx="40" cy="40" r="15" fill="none" stroke="%23f5d4cf" stroke-width="1" opacity="0.3"/><path d="M40,25 Q43,30 40,35 Q37,30 40,25 Z" fill="%23e3b5a4" opacity="0.25"/></svg>'),
+    /* Textura de papel antiguo más visible */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150"><filter id="old-paper"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="5"/><feColorMatrix type="saturate" values="0.1"/></filter><rect width="150" height="150" filter="url(%23old-paper)" opacity="0.15"/></svg>'),
+    /* Base crema */ linear-gradient(135deg, #fffbf8 0%, #fef5f7 100%);
+  background-size:
+    400px 500px,
+    70px 70px,
+    80px 80px,
+    150px 150px,
+    100% 100%;
+  border: 3px solid transparent;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow:
+    0 4px 12px rgba(227, 181, 164, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    /* Sombra interna de bordes gastados */ inset 0 0 0 1px rgba(212, 165, 154, 0.15);
+  position: relative;
+}
+
+.product-card::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 20px;
+  /* Borde dorado con efecto metálico */
+  background: repeating-linear-gradient(45deg, #d4af37 0px, #e8c878 2px, #d4af37 4px, #c9a02b 6px);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  padding: 3px;
+  transition: opacity 0.4s;
+}
+
+.product-card::after {
+  content: '✿';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 50px;
+  color: #d4af37;
+  opacity: 0.1;
+  text-shadow: 1px 1px 2px rgba(212, 175, 55, 0.2);
+  pointer-events: none;
+  transition: all 0.4s;
+}
+
+.product-card:hover::before {
+  opacity: 1;
+}
+
+.product-card:hover::after {
+  opacity: 0.15;
+  transform: rotate(15deg) scale(1.1);
+}
+
+.product-card:hover {
+  transform: translateY(-12px) rotate(-2deg);
+  box-shadow:
+    0 20px 40px rgba(227, 181, 164, 0.3),
+    0 10px 20px rgba(212, 175, 55, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 0 0 1px rgba(212, 165, 154, 0.2);
+}
+
+.product-card img {
+  border-bottom: 3px double #f5d4cf;
+  position: relative;
+  filter: sepia(0.05) contrast(1.05);
+  transition: filter 0.4s;
+}
+
+.product-card:hover img {
+  filter: sepia(0.08) contrast(1.08);
+}
+
+.product-card .btn {
+  background: linear-gradient(135deg, #c9a89a 0%, #b8988a 100%);
+  color: white;
+  font-weight: 600;
+  border-radius: 20px;
+  font-family: var(--font-heading);
+}
+
+.product-card h3 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-style: italic;
+  color: var(--color-primary-dark);
+}
+
+/* === BADGES === */
+.badge {
+  background: linear-gradient(135deg, #d4af37 0%, #c9a02b 100%);
+  color: white;
+  font-weight: 600;
+  padding: 0.375rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  box-shadow: 0 3px 10px rgba(212, 175, 55, 0.3);
+  font-family: var(--font-heading);
+  font-style: italic;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* === TESTIMONIOS === */
+.testimonial-card {
+  /* Página de álbum vintage con texturas más visibles */
+  background:
+    /* Flores vintage decorativas */
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><g opacity="0.45"><g transform="translate(80,80) rotate(-10)"><circle cx="0" cy="0" r="28" fill="%23e3b5a4" opacity="0.35"/><circle cx="0" cy="0" r="11" fill="%23d4a59a" opacity="0.3"/></g><g transform="translate(320,80) rotate(12)"><circle cx="0" cy="0" r="25" fill="%23f5d4cf" opacity="0.3"/><circle cx="0" cy="0" r="10" fill="%23e3b5a4" opacity="0.28"/></g></g></svg>'),
+    /* Patrón de encaje */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="90" height="90"><circle cx="45" cy="45" r="18" fill="none" stroke="%23f5d4cf" stroke-width="1.2" opacity="0.3"/><path d="M45,27 Q48,32 45,37 Q42,32 45,27 Z" fill="%23e3b5a4" opacity="0.25"/></svg>'),
+    /* Textura de papel antiguo más visible */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150"><filter id="vintage-paper"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="5"/><feColorMatrix type="saturate" values="0.1"/></filter><rect width="150" height="150" filter="url(%23vintage-paper)" opacity="0.15" fill="%23e3b5a4"/></svg>'),
+    /* Manchas de té */
+      radial-gradient(circle at 80% 20%, rgba(227, 181, 164, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 20% 80%, rgba(212, 165, 154, 0.1) 0%, transparent 35%),
+    /* Base papel envejecido */ linear-gradient(135deg, #fff9f9 0%, #fef5f7 100%);
+  background-size:
+    400px 300px,
+    90px 90px,
+    150px 150px,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+  border-left: 5px solid var(--color-accent);
+  border-right: 1px solid #f5d4cf;
+  border-top: 1px solid #f5d4cf;
+  border-bottom: 1px solid #f5d4cf;
+  padding: 2.5rem;
+  border-radius: 15px;
+  box-shadow:
+    0 4px 12px rgba(227, 181, 164, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  position: relative;
+}
+
+.testimonial-quote {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: #6b5b52;
+}
+
+.testimonial-quote::before {
+  content: '"';
+  font-size: 4rem;
+  color: #f5d4cf;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  line-height: 1;
+  font-family: Georgia, serif;
+}
+
+/* === SPECIAL CTA SECTION === */
+.special-cta-section {
+  /* Papel antiguo oscuro con rosas vintage */
+  background:
+    /* Grandes rosas vintage doradas */
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600"><defs><radialGradient id="goldenRose"><stop offset="0%" stop-color="%23d4af37" stop-opacity="0.3"/><stop offset="60%" stop-color="%23c9a02b" stop-opacity="0.2"/><stop offset="100%" stop-color="%23b8902b" stop-opacity="0.08"/></radialGradient></defs><g opacity="0.7"><g transform="translate(200,300) rotate(-12)"><circle cx="0" cy="0" r="70" fill="url(%23goldenRose)"/><path d="M0,-45 Q22,-50 38,-32 Q45,-12 32,12 Q12,28 -18,22 Q-38,12 -45,-15 Q-42,-38 -22,-48 Q0,-50 0,-45 Z" fill="%23d4af37" opacity="0.25"/><circle cx="0" cy="0" r="28" fill="%23c9a02b" opacity="0.22"/></g><g transform="translate(1000,300) rotate(18)"><circle cx="0" cy="0" r="65" fill="%23e3b5a4" opacity="0.2"/><circle cx="0" cy="0" r="25" fill="%23d4a59a" opacity="0.18"/></g></g></svg>'),
+    /* Textura de papel envejecido oscuro */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="250" height="250"><filter id="dark-paper"><feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="5"/><feColorMatrix type="saturate" values="0.15"/></filter><rect width="250" height="250" filter="url(%23dark-paper)" fill="%23654b3f" opacity="0.25"/></svg>'),
+    /* Manchas de tinta vintage */
+      radial-gradient(ellipse at 25% 40%, rgba(106, 91, 82, 0.15) 0%, transparent 30%),
+    radial-gradient(ellipse at 75% 60%, rgba(90, 74, 66, 0.12) 0%, transparent 25%),
+    /* Base oscura vintage */ linear-gradient(135deg, #4a3f39 0%, #3a2f2a 50%, #4a3f39 100%);
+  background-size:
+    1200px 600px,
+    250px 250px,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+  background-position: center;
+  box-shadow: inset 0 0 80px rgba(58, 47, 42, 0.4);
+}
+
+/* === FOOTER === */
+.footer-section {
+  /* Papel oscuro envejecido con flores doradas */
+  background:
+    /* Flores doradas decorativas en esquinas */
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400"><g opacity="0.5"><g transform="translate(100,80) rotate(-10)"><circle cx="0" cy="0" r="32" fill="%23d4af37" opacity="0.2"/><circle cx="0" cy="0" r="13" fill="%23c9a02b" opacity="0.18"/></g><g transform="translate(1100,80) rotate(12)"><circle cx="0" cy="0" r="30" fill="%23e3b5a4" opacity="0.18"/><circle cx="0" cy="0" r="12" fill="%23d4a59a" opacity="0.15"/></g><g transform="translate(100,320) rotate(15)"><circle cx="0" cy="0" r="28" fill="%23c9a02b" opacity="0.18"/><circle cx="0" cy="0" r="11" fill="%23b8902b" opacity="0.15"/></g><g transform="translate(1100,320) rotate(-12)"><circle cx="0" cy="0" r="31" fill="%23d4af37" opacity="0.19"/><circle cx="0" cy="0" r="12" fill="%23c9a02b" opacity="0.16"/></g></g></svg>'),
+    /* Textura de papel envejecido */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="footer-paper"><feTurbulence type="fractalNoise" baseFrequency="0.055" numOctaves="5"/><feColorMatrix type="saturate" values="0.12"/></filter><rect width="200" height="200" filter="url(%23footer-paper)" fill="%23654b3f" opacity="0.22"/></svg>'),
+    /* Manchas de envejecimiento */
+      radial-gradient(ellipse at 20% 30%, rgba(106, 91, 82, 0.12) 0%, transparent 28%),
+    radial-gradient(ellipse at 80% 70%, rgba(90, 74, 66, 0.1) 0%, transparent 25%),
+    /* Base oscura */ linear-gradient(135deg, #4a3f39 0%, #3a2f2a 100%);
+  background-size:
+    1200px 400px,
+    200px 200px,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+  background-position: center;
+  border-top: 3px solid var(--color-accent);
+  position: relative;
+  box-shadow: inset 0 4px 25px rgba(58, 47, 42, 0.3);
+}
+
+.footer-section::before {
+  content: '✿ ❀ ✿ ❁ ✿ ❀ ✿';
+  position: absolute;
+  top: -2px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: var(--color-accent);
+  font-size: 0.75rem;
+  opacity: 0.7;
+  letter-spacing: 2rem;
+  padding: 0 2rem;
+}
+
+/* === ANIMACIONES === */
+@keyframes float {
+  0%,
+  100% {
+    transform: rotate(-15deg) translateY(0);
+  }
+  50% {
+    transform: rotate(-15deg) translateY(-30px);
+  }
+}
+
+@keyframes petal-fall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}

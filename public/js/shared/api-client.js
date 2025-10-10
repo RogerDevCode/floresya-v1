@@ -1,7 +1,7 @@
 /**
  * FloresYa API Client
  * Auto-generated from OpenAPI specification
- * Generated: 2025-10-09T03:01:41.964Z
+ * Generated: 2025-10-10T14:24:48.318Z
  * Spec Version: 1.0.0
  * Total Endpoints: 43
  *
@@ -641,7 +641,7 @@ class ApiClient {
 
   /**
    * Get all occasions
-   * Public - Returns all active occasions
+   * Public - Returns all active occasions, sorted by display_order.
    * @returns {Promise<any>} API response
    */
   getAllOccasions() {
@@ -651,7 +651,7 @@ class ApiClient {
 
   /**
    * Create new occasion
-   * Admin only - Creates a new occasion
+   * Admin only - Creates a new occasion.
    * @param {any} data - Parameter
    * @returns {Promise<any>} API response
    */
@@ -661,23 +661,8 @@ class ApiClient {
   }
 
   /**
-   * Get occasion by slug
-   * Get occasion details by slug
-   * @param {any} slug - Parameter
-   * @returns {Promise<any>} API response
-   */
-  getAllSlug(slug) {
-    if (!slug) {
-      throw new Error('slug is required')
-    }
-
-    const endpoint = `/api/occasions/slug/${slug}`
-    return this.request(endpoint)
-  }
-
-  /**
    * Get occasion by ID
-   * Get occasion details by ID
+   * Get occasion details by its unique ID.
    * @param {any} id - Parameter
    * @returns {Promise<any>} API response
    */
@@ -692,7 +677,7 @@ class ApiClient {
 
   /**
    * Update occasion
-   * Admin only - Updates an existing occasion
+   * Admin only - Updates an existing occasion.
    * @param {any} id - Parameter
    * @param {any} data - Parameter
    * @returns {Promise<any>} API response
@@ -708,7 +693,7 @@ class ApiClient {
 
   /**
    * Delete occasion (soft delete)
-   * Admin only - Soft deletes an occasion (sets is_active to false)
+   * Admin only - Soft deletes an occasion by setting its `is_active` flag to false.
    * @param {any} id - Parameter
    * @returns {Promise<any>} API response
    */
@@ -722,8 +707,23 @@ class ApiClient {
   }
 
   /**
+   * Get occasion by slug
+   * Get occasion details by its unique slug.
+   * @param {any} slug - Parameter
+   * @returns {Promise<any>} API response
+   */
+  getAllSlug(slug) {
+    if (!slug) {
+      throw new Error('slug is required')
+    }
+
+    const endpoint = `/api/occasions/slug/${slug}`
+    return this.request(endpoint)
+  }
+
+  /**
    * Update occasion display order
-   * Admin only - Updates the display order for an occasion
+   * Admin only - Atomically updates the display order for an occasion.
    * @param {any} id - Parameter
    * @param {any} data - Parameter
    * @returns {Promise<any>} API response
@@ -739,7 +739,7 @@ class ApiClient {
 
   /**
    * Reactivate occasion
-   * Admin only - Reactivates a soft-deleted occasion
+   * Admin only - Reactivates a soft-deleted occasion by setting its `is_active` flag to true.
    * @param {any} id - Parameter
    * @param {any} data - Parameter
    * @returns {Promise<any>} API response
@@ -1052,10 +1052,10 @@ export const api = {
   getAllPayments: params => apiClient.getAllPayments(params),
   getAllOccasions: () => apiClient.getAllOccasions(),
   createOccasions: data => apiClient.createOccasions(data),
-  getAllSlug: slug => apiClient.getAllSlug(slug),
   getOccasionsById: id => apiClient.getOccasionsById(id),
   updateOccasions: (id, data) => apiClient.updateOccasions(id, data),
   deleteOccasions: id => apiClient.deleteOccasions(id),
+  getAllSlug: slug => apiClient.getAllSlug(slug),
   updateDisplayorder: (id, data) => apiClient.updateDisplayorder(id, data),
   reactivateOccasions: (id, data) => apiClient.reactivateOccasions(id, data),
   getAllPublic: () => apiClient.getAllPublic(),

@@ -1,0 +1,573 @@
+/**
+ * Tema: Tropical Vibrante
+ * Inspiración: Energía tropical, colores vivos, naturaleza exuberante
+ * Paleta: Verde esmeralda, turquesa, coral, amarillo sol
+ */
+
+/* === FUENTES === */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Quicksand:wght@400;600&display=swap');
+
+/* === VARIABLES GLOBALES === */
+:root {
+  --color-primary: #10b981; /* Verde esmeralda */
+  --color-primary-dark: #059669;
+  --color-primary-light: #6ee7b7;
+  --color-secondary: #14b8a6; /* Turquesa */
+  --color-accent: #f59e0b; /* Naranja vibrante */
+  --color-coral: #fb7185;
+  --color-background: #ecfdf5;
+  --color-surface: #fff;
+  --font-heading: 'Poppins', sans-serif;
+  --font-body: 'Quicksand', sans-serif;
+}
+
+/* === FONDOS Y GRADIENTES === */
+body {
+  /* SELVA TROPICAL ABUNDANTE - Flores hibiscus y orquídeas superpuestas */
+  background:
+    /* Flores hibiscus grandes primer plano */
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="700" height="700"><defs><radialGradient id="hibiscus1"><stop offset="0%" stop-color="%23fb7185" stop-opacity="0.75"/><stop offset="60%" stop-color="%23f43f5e" stop-opacity="0.5"/><stop offset="100%" stop-color="%23fb7185" stop-opacity="0.2"/></radialGradient><radialGradient id="hibiscus2"><stop offset="0%" stop-color="%23f59e0b" stop-opacity="0.8"/><stop offset="50%" stop-color="%23fb923c" stop-opacity="0.6"/><stop offset="100%" stop-color="%23f59e0b" stop-opacity="0.3"/></radialGradient></defs><g opacity="0.9"><g transform="translate(150,180) rotate(15)"><path d="M0,-40 Q20,-50 35,-35 Q48,-18 42,0 Q35,20 15,30 Q-5,35 -25,25 Q-42,12 -45,-10 Q-42,-30 -22,-42 Q0,-48 0,-40 Z" fill="url(%23hibiscus1)"/><path d="M0,-35 Q15,-42 28,-30 Q38,-15 33,0 Q28,18 12,25 Q-4,28 -20,20 Q-35,10 -37,-8 Q-35,-25 -18,-35 Q0,-40 0,-35 Z" fill="%23fb7185" opacity="0.8"/><circle cx="0" cy="0" r="12" fill="%23f59e0b" opacity="0.9"/><circle cx="0" cy="0" r="6" fill="%23fbbf24" opacity="0.8"/></g><g transform="translate(520,450) rotate(-25)"><path d="M0,-45 Q22,-55 38,-38 Q52,-20 45,2 Q38,24 16,32 Q-6,38 -28,28 Q-45,14 -48,-12 Q-45,-35 -25,-46 Q0,-52 0,-45 Z" fill="url(%23hibiscus2)"/><circle cx="0" cy="0" r="14" fill="%23fbbf24" opacity="0.85"/><circle cx="0" cy="0" r="7" fill="%23f59e0b" opacity="0.9"/></g></g></svg>'),
+    /* Orquídeas medianas segundo plano */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><g opacity="0.75"><g transform="translate(400,200) rotate(30)"><ellipse cx="0" cy="-20" rx="25" ry="30" fill="%23a78bfa" opacity="0.65"/><ellipse cx="-15" cy="0" rx="22" ry="28" fill="%23c4b5fd" opacity="0.6"/><ellipse cx="15" cy="0" rx="22" ry="28" fill="%23c4b5fd" opacity="0.6"/><ellipse cx="0" cy="15" rx="18" ry="22" fill="%23e9d5ff" opacity="0.55"/><circle cx="0" cy="0" r="10" fill="%23f59e0b" opacity="0.7"/></g><g transform="translate(120,480) rotate(-35)"><ellipse cx="0" cy="-18" rx="22" ry="26" fill="%2314b8a6" opacity="0.6"/><ellipse cx="-13" cy="0" rx="20" ry="25" fill="%235eead4" opacity="0.55"/><ellipse cx="13" cy="0" rx="20" ry="25" fill="%235eead4" opacity="0.55"/><circle cx="0" cy="0" r="9" fill="%23fbbf24" opacity="0.65"/></g></g></svg>'),
+    /* Flores pequeñas abundantes fondo */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500"><g opacity="0.6"><g transform="translate(80,100)"><path d="M0,-12 Q8,-15 12,-8 Q15,0 10,8 Q0,12 -10,8 Q-15,0 -12,-8 Q-8,-15 0,-12 Z" fill="%23fb7185"/><circle cx="0" cy="0" r="5" fill="%23fbbf24"/></g><g transform="translate(280,150)"><path d="M0,-10 Q6,-12 10,-6 Q12,0 8,6 Q0,10 -8,6 Q-12,0 -10,-6 Q-6,-12 0,-10 Z" fill="%23a78bfa"/><circle cx="0" cy="0" r="4" fill="%23f59e0b"/></g><g transform="translate(420,280)"><path d="M0,-11 Q7,-14 11,-7 Q14,0 9,7 Q0,11 -9,7 Q-14,0 -11,-7 Q-7,-14 0,-11 Z" fill="%2314b8a6"/><circle cx="0" cy="0" r="4.5" fill="%23fbbf24"/></g><g transform="translate(150,380)"><path d="M0,-10 Q6,-12 10,-6 Q12,0 8,6 Q0,10 -8,6 Q-12,0 -10,-6 Q-6,-12 0,-10 Z" fill="%23fb7185"/><circle cx="0" cy="0" r="4" fill="%23f59e0b"/></g><g transform="translate(360,80)"><circle cx="0" cy="0" r="8" fill="%23fbbf24" opacity="0.7"/></g><g transform="translate(200,250)"><circle cx="0" cy="0" r="9" fill="%2314b8a6" opacity="0.65"/></g><g transform="translate(450,420)"><circle cx="0" cy="0" r="7" fill="%23fb7185" opacity="0.7"/></g><g transform="translate(90,450)"><circle cx="0" cy="0" r="8" fill="%23a78bfa" opacity="0.6"/></g></g></svg>'),
+    /* Hojas monstera grandes fondo */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800"><g opacity="0.4"><g transform="translate(200,300)"><path d="M-40,-60 Q-20,-80 0,-70 Q20,-80 40,-60 L50,0 Q40,70 20,85 Q0,90 -20,85 Q-40,70 -50,0 Z" fill="%2310b981"/><ellipse cx="0" cy="-30" rx="15" ry="20" fill="%23ecfdf5" opacity="0.5"/><ellipse cx="-20" cy="0" rx="12" ry="18" fill="%23ecfdf5" opacity="0.5"/><ellipse cx="20" cy="0" rx="12" ry="18" fill="%23ecfdf5" opacity="0.5"/><ellipse cx="0" cy="30" rx="15" ry="22" fill="%23ecfdf5" opacity="0.5"/></g><g transform="translate(580,580) rotate(45)"><path d="M-35,-55 Q-18,-70 0,-65 Q18,-70 35,-55 L45,0 Q35,60 18,75 Q0,80 -18,75 Q-35,60 -45,0 Z" fill="%2314b8a6"/><ellipse cx="0" cy="-25" rx="12" ry="18" fill="%23ecfdf5" opacity="0.5"/><ellipse cx="0" cy="25" rx="13" ry="20" fill="%23ecfdf5" opacity="0.5"/></g></g></svg>'),
+    /* Base degradado tropical vibrante */
+      linear-gradient(
+        135deg,
+        #d1fae5 0%,
+        #a7f3d0 20%,
+        #6ee7b7 40%,
+        #34d399 60%,
+        #10b981 80%,
+        #059669 100%
+      );
+  background-size:
+    400px 400px,
+    300px 300px,
+    200px 200px,
+    100% 100%;
+  background-position:
+    0 0,
+    100px 50px,
+    50px 100px,
+    0 0;
+  font-family: var(--font-body);
+  color: #064e3b;
+  position: relative;
+  animation: tropical-breeze 40s linear infinite;
+}
+
+@keyframes tropical-breeze {
+  0% {
+    background-position:
+      0 0,
+      100px 50px,
+      50px 100px,
+      0 0;
+  }
+  100% {
+    background-position:
+      400px 400px,
+      500px 450px,
+      250px 300px,
+      0 0;
+  }
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  /* Pájaros tropicales siluetas MÁS VISIBLES */
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><g opacity="0.15" fill="%23065f46"><path d="M100,100 Q120,90 140,100 Q130,110 120,105 Q110,110 100,100 Z"/><path d="M100,100 Q115,92 130,100 Q120,108 115,104 Z" fill="%230d9488"/><path d="M600,200 Q620,190 640,200 Q630,210 620,205 Q610,210 600,200 Z"/><path d="M600,200 Q615,192 630,200 Q620,208 615,204 Z" fill="%230d9488"/><path d="M300,400 Q320,390 340,400 Q330,410 320,405 Q310,410 300,400 Z"/><path d="M300,400 Q315,392 330,400 Q320,408 315,404 Z" fill="%230d9488"/><path d="M450,150 Q470,140 490,150 Q480,160 470,155 Q460,160 450,150 Z"/><path d="M200,500 Q220,490 240,500 Q230,510 220,505 Q210,510 200,500 Z"/></g></svg>');
+  background-size: 800px 600px;
+  background-position: center;
+  pointer-events: none;
+  animation: birds-fly 60s linear infinite;
+}
+
+@keyframes birds-fly {
+  0% {
+    background-position: -800px center;
+  }
+  100% {
+    background-position: 1600px center;
+  }
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  /* Efecto de profundidad tropical */
+  background: linear-gradient(
+    to top,
+    rgba(16, 185, 129, 0.15) 0%,
+    rgba(16, 185, 129, 0.05) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+@keyframes drift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 200px 200px;
+  }
+}
+
+/* === NAVBAR === */
+.navbar {
+  /* Hojas tropicales decorativas sutiles */
+  background:
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150"><g opacity="0.05"><ellipse cx="40" cy="75" rx="35" ry="18" fill="%2310b981" transform="rotate(-25 40 75)"/><ellipse cx="110" cy="75" rx="35" ry="18" fill="%2314b8a6" transform="rotate(25 110 75)"/></g></svg>'),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(236, 253, 245, 0.98) 100%);
+  background-size:
+    150px 150px,
+    100% 100%;
+  backdrop-filter: blur(20px);
+  border-bottom: 3px solid var(--color-primary);
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15);
+}
+
+.navbar-brand {
+  font-family: var(--font-heading);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  font-size: 1.75rem;
+}
+
+.nav-link {
+  color: #065f46;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  transition: width 0.3s;
+  border-radius: 3px;
+}
+
+.nav-link:hover::before {
+  width: 100%;
+}
+
+.nav-link:hover {
+  color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+/* === BOTONES === */
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 1rem 2.5rem;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition:
+    width 0.6s,
+    height 0.6s;
+}
+
+.btn-primary:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.btn-primary:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 35px rgba(16, 185, 129, 0.5);
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--color-primary);
+  border: 3px solid var(--color-primary);
+  border-radius: 50px;
+  padding: 1rem 2.5rem;
+  font-weight: 700;
+  font-family: var(--font-heading);
+}
+
+.btn-secondary:hover {
+  background: var(--color-primary);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* === HERO SECTION === */
+.hero-section {
+  /* Selva tropical vibrante con texturas mejoradas */
+  background:
+    /* Hibiscus gigantes en esquinas */
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800"><defs><radialGradient id="hibis1"><stop offset="0%" stop-color="%23fb7185" stop-opacity="0.5"/><stop offset="60%" stop-color="%23f43f5e" stop-opacity="0.35"/><stop offset="100%" stop-color="%23fb7185" stop-opacity="0.15"/></radialGradient></defs><g opacity="0.85"><g transform="translate(150,150) rotate(-15)"><path d="M0,-50 Q25,-60 45,-42 Q60,-22 52,2 Q42,28 18,38 Q-8,42 -32,32 Q-52,18 -56,-14 Q-52,-40 -28,-54 Q0,-60 0,-50 Z" fill="url(%23hibis1)"/><circle cx="0" cy="0" r="18" fill="%23f59e0b" opacity="0.6"/><circle cx="0" cy="0" r="9" fill="%23fbbf24" opacity="0.5"/></g><g transform="translate(1050,150) rotate(18)"><path d="M0,-48 Q24,-58 43,-40 Q58,-20 50,3 Q40,27 17,36 Q-7,40 -30,30 Q-50,17 -54,-13 Q-50,-38 -27,-52 Q0,-58 0,-48 Z" fill="%23fb7185" opacity="0.45"/><circle cx="0" cy="0" r="17" fill="%23f59e0b" opacity="0.55"/></g><g transform="translate(150,650) rotate(22)"><path d="M0,-45 Q22,-54 40,-38 Q54,-19 47,2 Q38,25 16,33 Q-6,37 -28,28 Q-47,16 -51,-12 Q-47,-36 -25,-48 Q0,-54 0,-45 Z" fill="%23fb7185" opacity="0.42"/><circle cx="0" cy="0" r="16" fill="%23f59e0b" opacity="0.5"/></g><g transform="translate(1050,650) rotate(-20)"><path d="M0,-47 Q23,-56 42,-39 Q56,-21 49,1 Q39,26 17,35 Q-7,39 -29,29 Q-49,16 -53,-13 Q-49,-37 -26,-50 Q0,-57 0,-47 Z" fill="%23fb7185" opacity="0.48"/><circle cx="0" cy="0" r="17" fill="%23f59e0b" opacity="0.52"/></g></g></svg>'),
+    /* Hojas colgantes superiores MÁS VISIBLES */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="250"><g opacity="0.5"><path d="M100,0 Q115,-25 130,0 L130,110 Q115,140 100,110 Z" fill="%2310b981"/><ellipse cx="115" cy="55" rx="6" ry="12" fill="%23ecfdf5" opacity="0.7"/><path d="M300,0 Q315,-25 330,0 L330,130 Q315,160 300,130 Z" fill="%2314b8a6"/><ellipse cx="315" cy="65" rx="6" ry="14" fill="%23ecfdf5" opacity="0.7"/><path d="M700,0 Q715,-25 730,0 L730,120 Q715,150 700,120 Z" fill="%2310b981"/><ellipse cx="715" cy="60" rx="6" ry="13" fill="%23ecfdf5" opacity="0.7"/><path d="M1000,0 Q1015,-25 1030,0 L1030,100 Q1015,130 1000,100 Z" fill="%2314b8a6"/><ellipse cx="1015" cy="50" rx="6" ry="11" fill="%23ecfdf5" opacity="0.7"/></g></svg>')
+      no-repeat top center,
+    /* Flores exóticas flotantes MÁS VISIBLES */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="700"><g opacity="0.6"><g transform="translate(200,200)"><path d="M0,-25 Q12,-32 20,-20 Q28,-8 15,-2 Q0,4 -15,-2 Q-28,-8 -20,-20 Q-12,-32 0,-25 Z" fill="%23fb7185"/><circle cx="0" cy="-8" r="14" fill="%23f59e0b"/></g><g transform="translate(800,400)"><path d="M0,-28 Q14,-35 22,-22 Q30,-9 17,-3 Q0,5 -17,-3 Q-30,-9 -22,-22 Q-14,-35 0,-28 Z" fill="%23fb7185"/><circle cx="0" cy="-9" r="15" fill="%23f59e0b"/></g><g transform="translate(500,550)"><path d="M0,-22 Q10,-28 18,-18 Q24,-7 13,-2 Q0,3 -13,-2 Q-24,-7 -18,-18 Q-10,-28 0,-22 Z" fill="%23a78bfa"/><circle cx="0" cy="-7" r="12" fill="%23f59e0b"/></g><g transform="translate(400,300)"><path d="M0,-24 Q11,-30 19,-20 Q26,-8 14,-3 Q0,4 -14,-3 Q-26,-8 -19,-20 Q-11,-30 0,-24 Z" fill="%2314b8a6"/><circle cx="0" cy="-8" r="13" fill="%23fbbf24"/></g></g></svg>')
+      no-repeat center,
+    /* Degradado tropical */
+      linear-gradient(135deg, #ecfdf5 0%, #d1fae5 30%, #a7f3d0 70%, #6ee7b7 100%);
+  background-size:
+    1200px 800px,
+    1200px 250px,
+    1000px 700px,
+    100% 100%;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 80px rgba(16, 185, 129, 0.12);
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  bottom: -50px;
+  left: -50px;
+  width: 400px;
+  height: 400px;
+  /* Hoja de monstera gigante decorativa MÁS VISIBLE */
+  background: radial-gradient(
+    ellipse at center,
+    rgba(16, 185, 129, 0.4) 0%,
+    rgba(20, 184, 166, 0.3) 25%,
+    rgba(16, 185, 129, 0.2) 50%,
+    rgba(20, 184, 166, 0.1) 65%,
+    transparent 80%
+  );
+  border-radius: 50% 50% 0 50%;
+  transform: rotate(-45deg);
+  animation: sway-left 8s ease-in-out infinite;
+  filter: blur(2px);
+}
+
+.hero-section::after {
+  content: '🌺';
+  position: absolute;
+  top: 15%;
+  right: -3%;
+  font-size: 28rem;
+  opacity: 0.35;
+  transform: rotate(-20deg);
+  animation: pulse-tropical 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px rgba(251, 113, 133, 0.5))
+    drop-shadow(0 0 50px rgba(251, 113, 133, 0.3));
+}
+
+@keyframes pulse-tropical {
+  0%,
+  100% {
+    transform: rotate(-20deg) scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: rotate(-15deg) scale(1.08);
+    opacity: 0.5;
+  }
+}
+
+@keyframes sway-left {
+  0%,
+  100% {
+    transform: rotate(-45deg) translateX(0);
+  }
+  50% {
+    transform: rotate(-50deg) translateX(-20px);
+  }
+}
+
+.hero-title {
+  font-family: var(--font-heading);
+  background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+/* === CAROUSEL SECTION === */
+.py-12.bg-white:has(#featuredCarousel) {
+  /* Selva tropical con bambú y flores */
+  background:
+    /* Flores tropicales dispersas */
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500"><g opacity="0.55"><g transform="translate(180,150)"><path d="M0,-22 Q11,-28 18,-18 Q25,-7 14,-2 Q0,4 -14,-2 Q-25,-7 -18,-18 Q-11,-28 0,-22 Z" fill="%23fb7185"/><circle cx="0" cy="-7" r="12" fill="%23f59e0b"/></g><g transform="translate(720,200)"><path d="M0,-24 Q12,-30 20,-20 Q27,-8 15,-3 Q0,5 -15,-3 Q-27,-8 -20,-20 Q-12,-30 0,-24 Z" fill="%23a78bfa"/><circle cx="0" cy="-8" r="13" fill="%23fbbf24"/></g><g transform="translate(450,350)"><path d="M0,-20 Q10,-25 17,-16 Q23,-6 13,-2 Q0,3 -13,-2 Q-23,-6 -17,-16 Q-10,-25 0,-20 Z" fill="%2314b8a6"/><circle cx="0" cy="-6" r="11" fill="%23f59e0b"/></g></g></svg>'),
+    /* Cañas de bambú */
+      repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 180px,
+        rgba(16, 185, 129, 0.15) 185px,
+        rgba(20, 184, 166, 0.18) 190px,
+        rgba(16, 185, 129, 0.15) 195px,
+        transparent 200px,
+        transparent 380px
+      ),
+    /* Hojas de palma */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><g opacity="0.12"><path d="M100,50 L100,150 M100,70 Q85,75 75,82 M100,70 Q115,75 125,82 M100,90 Q82,97 68,108 M100,90 Q118,97 132,108 M100,110 Q80,120 62,135 M100,110 Q120,120 138,135" stroke="%2310b981" stroke-width="2.5" fill="none"/></g></svg>'),
+    /* Degradado suave */ linear-gradient(135deg, #ecfdf5 0%, #d1fae5 50%, #ecfdf5 100%);
+  background-size:
+    900px 500px,
+    100% 100%,
+    200px 200px,
+    100% 100%;
+  background-position: center;
+  box-shadow: inset 0 0 60px rgba(16, 185, 129, 0.1);
+}
+
+/* === CARDS DE PRODUCTO === */
+.product-card {
+  /* Texturas tropicales mejoradas */
+  background:
+    /* Flores pequeñas decorativas en esquinas */
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500"><g opacity="0.45"><g transform="translate(60,60)"><path d="M0,-16 Q8,-20 13,-13 Q18,-5 10,-1 Q0,3 -10,-1 Q-18,-5 -13,-13 Q-8,-20 0,-16 Z" fill="%23fb7185"/><circle cx="0" cy="-5" r="9" fill="%23f59e0b"/></g><g transform="translate(340,60)"><path d="M0,-15 Q7,-19 12,-12 Q17,-4 9,-1 Q0,2 -9,-1 Q-17,-4 -12,-12 Q-7,-19 0,-15 Z" fill="%2314b8a6"/><circle cx="0" cy="-4" r="8" fill="%23fbbf24"/></g><g transform="translate(60,440)"><path d="M0,-14 Q7,-18 11,-11 Q16,-4 9,0 Q0,3 -9,0 Q-16,-4 -11,-11 Q-7,-18 0,-14 Z" fill="%23a78bfa"/><circle cx="0" cy="-4" r="8" fill="%23f59e0b"/></g><g transform="translate(340,440)"><path d="M0,-16 Q8,-20 13,-13 Q18,-5 10,-1 Q0,3 -10,-1 Q-18,-5 -13,-13 Q-8,-20 0,-16 Z" fill="%23fb7185"/><circle cx="0" cy="-5" r="9" fill="%23fbbf24"/></g></g></svg>'),
+    /* Hojas de palma más visibles */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="250" height="250"><g opacity="0.15"><path d="M125,50 L125,200 M125,80 Q100,90 80,100 M125,80 Q150,90 170,100 M125,110 Q95,120 70,135 M125,110 Q155,120 180,135 M125,140 Q90,155 60,175 M125,140 Q160,155 190,175" stroke="%2310b981" stroke-width="3" fill="none"/></g></svg>'),
+    /* Manchas de color tropical */
+      radial-gradient(ellipse at 75% 25%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 25% 75%, rgba(20, 184, 166, 0.08) 0%, transparent 50%),
+    /* Base blanca */ white;
+  background-size:
+    400px 500px,
+    250px 250px,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+  border: 3px solid transparent;
+  border-radius: 24px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15);
+  position: relative;
+}
+
+.product-card::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-secondary),
+    var(--color-accent)
+  );
+  border-radius: 24px;
+  opacity: 0;
+  transition: opacity 0.4s;
+  z-index: -1;
+}
+
+.product-card:hover::before {
+  opacity: 1;
+}
+
+.product-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(16, 185, 129, 0.3);
+}
+
+.product-card img {
+  border-bottom: 3px solid #d1fae5;
+  transition: transform 0.4s;
+}
+
+.product-card:hover img {
+  transform: scale(1.05);
+}
+
+.product-card .btn {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%);
+  color: white;
+  font-weight: 700;
+  border-radius: 20px;
+  font-family: var(--font-heading);
+}
+
+.product-card h3 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+/* === BADGES === */
+.badge {
+  background: linear-gradient(135deg, var(--color-accent) 0%, #ea580c 100%);
+  color: white;
+  font-weight: 700;
+  padding: 0.5rem 1.25rem;
+  border-radius: 30px;
+  font-size: 0.875rem;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+  font-family: var(--font-heading);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* === TESTIMONIOS === */
+.testimonial-card {
+  /* Texturas tropicales mejoradas */
+  background:
+    /* Flores tropicales decorativas */
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="450" height="350"><g opacity="0.4"><g transform="translate(90,90)"><path d="M0,-18 Q9,-23 15,-15 Q20,-6 11,-2 Q0,3 -11,-2 Q-20,-6 -15,-15 Q-9,-23 0,-18 Z" fill="%23fb7185"/><circle cx="0" cy="-6" r="10" fill="%23f59e0b"/></g><g transform="translate(360,90)"><path d="M0,-16 Q8,-20 13,-13 Q18,-5 10,-1 Q0,3 -10,-1 Q-18,-5 -13,-13 Q-8,-20 0,-16 Z" fill="%2314b8a6"/><circle cx="0" cy="-5" r="9" fill="%23fbbf24"/></g></g></svg>'),
+    /* Hoja de monstera grande más visible */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><g opacity="0.15"><path d="M150,50 Q130,100 120,150 Q130,200 150,250 Q170,200 180,150 Q170,100 150,50 Z" fill="%2310b981"/><ellipse cx="140" cy="120" rx="18" ry="30" fill="%23ecfdf5" opacity="0.8"/><ellipse cx="160" cy="180" rx="18" ry="30" fill="%23ecfdf5" opacity="0.8"/><ellipse cx="150" cy="150" rx="15" ry="25" fill="%23ecfdf5" opacity="0.7"/></g></svg>'),
+    /* Hojas de palma */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150"><g opacity="0.1"><path d="M75,30 L75,120 M75,50 Q65,55 58,62 M75,50 Q85,55 92,62 M75,70 Q62,77 50,88 M75,70 Q88,77 100,88" stroke="%2314b8a6" stroke-width="2.5" fill="none"/></g></svg>'),
+    /* Manchas tropicales */
+      radial-gradient(ellipse at 10% 10%, rgba(16, 185, 129, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 90% 90%, rgba(20, 184, 166, 0.1) 0%, transparent 55%),
+    /* Degradado tropical */ linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+  background-size:
+    450px 350px,
+    300px 300px,
+    150px 150px,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+  border-left: 6px solid var(--color-primary);
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow:
+    0 6px 20px rgba(16, 185, 129, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  position: relative;
+}
+
+.testimonial-card::before {
+  content: '🌿';
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  font-size: 3rem;
+  opacity: 0.2;
+}
+
+.testimonial-quote {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: #064e3b;
+  font-weight: 500;
+}
+
+/* === INPUTS === */
+input[type='text'],
+input[type='email'],
+select {
+  border: 2px solid #a7f3d0;
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+  transform: translateY(-2px);
+}
+
+/* === SPECIAL CTA SECTION === */
+.special-cta-section {
+  /* Selva tropical nocturna vibrante */
+  background:
+    /* Hibiscus grandes luminosos */
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600"><defs><radialGradient id="nightHibiscus"><stop offset="0%" stop-color="%23fb7185" stop-opacity="0.4"/><stop offset="60%" stop-color="%23f43f5e" stop-opacity="0.3"/><stop offset="100%" stop-color="%23fb7185" stop-opacity="0.12"/></radialGradient></defs><g opacity="0.75"><g transform="translate(250,300) rotate(-18)"><path d="M0,-45 Q23,-54 40,-38 Q54,-19 47,2 Q38,25 16,33 Q-6,37 -28,28 Q-47,16 -51,-12 Q-47,-36 -25,-48 Q0,-54 0,-45 Z" fill="url(%23nightHibiscus)"/><circle cx="0" cy="0" r="16" fill="%23f59e0b" opacity="0.5"/></g><g transform="translate(950,300) rotate(22)"><path d="M0,-48 Q24,-56 42,-40 Q56,-20 49,3 Q40,27 17,35 Q-7,39 -29,29 Q-49,17 -53,-13 Q-49,-37 -26,-50 Q0,-57 0,-48 Z" fill="%23fbbf24" opacity="0.35"/><circle cx="0" cy="0" r="17" fill="%23fb7185" opacity="0.45"/></g></g></svg>'),
+    /* Hojas tropicales oscuras */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="350" height="350"><g opacity="0.25"><path d="M175,80 Q155,130 145,175 Q155,220 175,270 Q195,220 205,175 Q195,130 175,80 Z" fill="%2310b981"/><ellipse cx="165" cy="140" rx="20" ry="35" fill="%23064e3b" opacity="0.7"/><ellipse cx="185" cy="210" rx="20" ry="35" fill="%23064e3b" opacity="0.7"/></g></svg>'),
+    /* Cañas de bambú */
+      repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 220px,
+        rgba(16, 185, 129, 0.2) 225px,
+        rgba(20, 184, 166, 0.25) 230px,
+        rgba(16, 185, 129, 0.2) 235px,
+        transparent 240px,
+        transparent 460px
+      ),
+    /* Base oscura tropical */ linear-gradient(135deg, #064e3b 0%, #022c22 50%, #064e3b 100%);
+  background-size:
+    1200px 600px,
+    350px 350px,
+    100% 100%,
+    100% 100%;
+  background-position: center;
+  box-shadow: inset 0 0 100px rgba(6, 78, 59, 0.5);
+}
+
+/* === FOOTER === */
+.footer-section {
+  /* Selva tropical nocturna con texturas */
+  background:
+    /* Flores tropicales sutiles */
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="450"><g opacity="0.35"><g transform="translate(150,120)"><path d="M0,-20 Q10,-25 16,-16 Q22,-6 12,-2 Q0,3 -12,-2 Q-22,-6 -16,-16 Q-10,-25 0,-20 Z" fill="%23fb7185"/><circle cx="0" cy="-6" r="11" fill="%23f59e0b"/></g><g transform="translate(1050,120)"><path d="M0,-18 Q9,-23 15,-15 Q20,-5 11,-1 Q0,3 -11,-1 Q-20,-5 -15,-15 Q-9,-23 0,-18 Z" fill="%2314b8a6"/><circle cx="0" cy="-5" r="10" fill="%23fbbf24"/></g><g transform="translate(150,330)"><path d="M0,-19 Q9,-24 15,-16 Q21,-6 12,-2 Q0,3 -12,-2 Q-21,-6 -15,-16 Q-9,-24 0,-19 Z" fill="%23fb7185"/><circle cx="0" cy="-6" r="10" fill="%23f59e0b"/></g><g transform="translate(1050,330)"><path d="M0,-18 Q9,-23 15,-15 Q20,-5 11,-1 Q0,3 -11,-1 Q-20,-5 -15,-15 Q-9,-23 0,-18 Z" fill="%2314b8a6"/><circle cx="0" cy="-5" r="10" fill="%23fbbf24"/></g></g></svg>'),
+    /* Hojas de monstera */
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="280" height="280"><g opacity="0.2"><path d="M140,50 Q120,90 110,140 Q120,190 140,240 Q160,190 170,140 Q160,90 140,50 Z" fill="%2310b981"/><ellipse cx="130" cy="110" rx="16" ry="28" fill="%23064e3b" opacity="0.6"/><ellipse cx="150" cy="170" rx="16" ry="28" fill="%23064e3b" opacity="0.6"/></g></svg>'),
+    /* Degradado oscuro */ linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+  background-size:
+    1200px 450px,
+    280px 280px,
+    100% 100%;
+  background-position: center;
+  border-top: 4px solid var(--color-primary);
+  box-shadow: inset 0 4px 30px rgba(6, 78, 59, 0.4);
+}
+
+/* === EFECTOS ESPECIALES === */
+@keyframes rainbow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+  }
+  33% {
+    box-shadow: 0 0 20px rgba(20, 184, 166, 0.5);
+  }
+  66% {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+  }
+}
+
+.hero-cta .btn-primary {
+  animation: rainbow-pulse 3s ease-in-out infinite;
+}

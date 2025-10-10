@@ -300,15 +300,29 @@ describe('productService', () => {
         active: false
       }
 
-      // Mock the update chain
-      mockSupabaseQuery.eq.mockReturnValueOnce({
-        select: vi.fn().mockReturnValueOnce({
-          single: vi.fn().mockResolvedValueOnce({
-            data: deletedProduct,
-            error: null
-          })
-        })
+      // Mock the update chain - all methods return the same query builder object to allow chaining
+      const singleMock = vi.fn().mockResolvedValueOnce({
+        data: deletedProduct,
+        error: null
       })
+
+      const selectMock = vi.fn().mockReturnValueOnce({
+        single: singleMock
+      })
+
+      // Track calls to .eq method
+      const eqCalls = []
+
+      // Configure the original mockSupabaseQuery with chainable methods
+      mockSupabaseQuery.select = selectMock
+      mockSupabaseQuery.single = singleMock
+      mockSupabaseQuery.eq = vi.fn((...args) => {
+        eqCalls.push(args)
+        return mockSupabaseQuery // Return self for chaining
+      })
+
+      // Mock the update method to return the same query builder
+      mockSupabaseQuery.update = vi.fn().mockReturnValue(mockSupabaseQuery)
 
       const { supabase } = await import('../supabaseClient.js')
       supabase.from.mockReturnValueOnce(mockSupabaseQuery)

@@ -104,11 +104,12 @@ app.use(configureSanitize())
 app.use(xssProtection)
 
 // Rate limiting (for API routes only)
+// More generous limits to support multiple simultaneous requests (carousel, occasions, products, etc.)
 app.use(
   '/api',
   rateLimiter({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100 // 100 requests per window
+    max: process.env.NODE_ENV === 'production' ? 500 : 1000 // 500 prod, 1000 dev requests per window
   })
 )
 

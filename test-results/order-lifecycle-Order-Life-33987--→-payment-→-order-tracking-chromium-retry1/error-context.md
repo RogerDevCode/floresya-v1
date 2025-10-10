@@ -1,0 +1,96 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+    - navigation [ref=e2]:
+        - generic [ref=e4]:
+            - link "FloresYa" [ref=e5] [cursor=pointer]:
+                - /url: /
+                - img "Logo FloresYa" [ref=e6]
+                - generic [ref=e7]: FloresYa
+            - generic [ref=e8]:
+                - link "Inicio" [ref=e9] [cursor=pointer]:
+                    - /url: /#inicio
+                - link "Productos" [ref=e10] [cursor=pointer]:
+                    - /url: /#productos
+                - link "Contacto" [ref=e11] [cursor=pointer]:
+                    - /url: /#contacto
+            - link "Carrito de compras" [ref=e13] [cursor=pointer]:
+                - /url: /pages/cart.html
+                - img [ref=e14]
+                - generic "2 productos" [ref=e18]: '2'
+    - generic [ref=e20]:
+        - button "Regresar" [ref=e22]:
+            - img [ref=e23]
+            - generic [ref=e25]: Regresar
+        - generic [ref=e26]:
+            - generic [ref=e28]:
+                - heading "Mi Carrito" [level=1] [ref=e29]:
+                    - img [ref=e30]
+                    - text: Mi Carrito
+                - generic [ref=e33]:
+                    - generic [ref=e34]:
+                        - img "Roma de gatos" [ref=e36]
+                        - generic [ref=e37]:
+                            - heading "Roma de gatos" [level=3] [ref=e38]
+                            - paragraph [ref=e39]: 'Stock disponible: 999'
+                            - paragraph [ref=e40]: $97.98
+                        - generic [ref=e41]:
+                            - button [disabled] [ref=e42]:
+                                - img [ref=e43]
+                            - generic [ref=e44]: '1'
+                            - button [ref=e45]:
+                                - img [ref=e46]
+                        - paragraph [ref=e48]: $97.98
+                        - button "Eliminar producto" [ref=e49]:
+                            - img [ref=e50]
+                    - generic [ref=e53]:
+                        - img "Probando2" [ref=e55]
+                        - generic [ref=e56]:
+                            - heading "Probando2" [level=3] [ref=e57]
+                            - paragraph [ref=e58]: 'Stock disponible: 999'
+                            - paragraph [ref=e59]: $455.00
+                        - generic [ref=e60]:
+                            - button [disabled] [ref=e61]:
+                                - img [ref=e62]
+                            - generic [ref=e63]: '1'
+                            - button [ref=e64]:
+                                - img [ref=e65]
+                        - paragraph [ref=e67]: $455.00
+                        - button "Eliminar producto" [ref=e68]:
+                            - img [ref=e69]
+                - button "Vaciar Carrito" [ref=e73]:
+                    - img [ref=e74]
+                    - generic [ref=e77]: Vaciar Carrito
+            - generic [ref=e79]:
+                - heading "Resumen de Compra" [level=2] [ref=e80]
+                - generic [ref=e81]:
+                    - generic [ref=e82]: Método de Entrega
+                    - generic [ref=e83]:
+                        - generic [ref=e84] [cursor=pointer]:
+                            - radio "Recoger en tienda Gratis" [checked] [ref=e85]
+                            - generic [ref=e87]:
+                                - generic [ref=e88]: Recoger en tienda
+                                - generic [ref=e89]: Gratis
+                        - generic [ref=e90] [cursor=pointer]:
+                            - radio "Envío a domicilio $7.00" [ref=e91]
+                            - generic [ref=e93]:
+                                - generic [ref=e94]: Envío a domicilio
+                                - generic [ref=e95]: $7.00
+                - generic [ref=e96]:
+                    - generic [ref=e97]:
+                        - generic [ref=e98]: Subtotal (2 productos)
+                        - generic [ref=e99]: $552.98
+                    - generic [ref=e100]:
+                        - generic [ref=e101]: Envío
+                        - generic [ref=e102]: Gratis
+                    - generic [ref=e104]:
+                        - generic [ref=e105]: Total
+                        - generic [ref=e106]: $552.98
+                - button "Proceder al Pago" [ref=e107]:
+                    - img [ref=e108]
+                    - generic [ref=e110]: Proceder al Pago
+                - generic [ref=e111]:
+                    - img [ref=e112]
+                    - generic [ref=e115]: Pago 100% seguro
+```

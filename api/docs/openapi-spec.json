@@ -2189,6 +2189,7 @@
                   },
                   "items": {
                     "type": "array",
+                    "minItems": 1,
                     "items": {
                       "type": "object",
                       "required": ["product_id", "product_name", "unit_price_usd", "quantity"],
@@ -3388,10 +3389,15 @@
       "get": {
         "tags": ["Occasions"],
         "summary": "Get all occasions",
-        "description": "Public - Returns all active occasions",
+        "description": "Public - Returns all active occasions, sorted by display_order.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/LimitParam"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Occasions retrieved successfully",
+            "description": "Occasions retrieved successfully.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3414,13 +3420,19 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "post": {
         "tags": ["Occasions"],
         "summary": "Create new occasion",
-        "description": "Admin only - Creates a new occasion",
+        "description": "Admin only - Creates a new occasion.",
         "security": [
           {
             "bearerAuth": []
@@ -3457,7 +3469,7 @@
         },
         "responses": {
           "201": {
-            "description": "Occasion created successfully",
+            "description": "Occasion created successfully.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3486,51 +3498,9 @@
           },
           "403": {
             "$ref": "#/components/responses/ForbiddenError"
-          }
-        }
-      }
-    },
-    "/api/occasions/slug/{slug}": {
-      "get": {
-        "tags": ["Occasions"],
-        "summary": "Get occasion by slug",
-        "description": "Get occasion details by slug",
-        "parameters": [
-          {
-            "name": "slug",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Occasion slug"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Occasion retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/SuccessResponse"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "data": {
-                          "$ref": "#/components/schemas/occasion"
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
           },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -3539,7 +3509,7 @@
       "get": {
         "tags": ["Occasions"],
         "summary": "Get occasion by ID",
-        "description": "Get occasion details by ID",
+        "description": "Get occasion details by its unique ID.",
         "parameters": [
           {
             "$ref": "#/components/parameters/IdParam"
@@ -3547,7 +3517,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Occasion retrieved successfully",
+            "description": "Occasion retrieved successfully.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3568,15 +3538,21 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
           "404": {
             "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "put": {
         "tags": ["Occasions"],
         "summary": "Update occasion",
-        "description": "Admin only - Updates an existing occasion",
+        "description": "Admin only - Updates an existing occasion.",
         "security": [
           {
             "bearerAuth": []
@@ -3617,7 +3593,7 @@
         },
         "responses": {
           "200": {
-            "description": "Occasion updated successfully",
+            "description": "Occasion updated successfully.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3649,13 +3625,16 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "delete": {
         "tags": ["Occasions"],
         "summary": "Delete occasion (soft delete)",
-        "description": "Admin only - Soft deletes an occasion (sets is_active to false)",
+        "description": "Admin only - Soft deletes an occasion by setting its `is_active` flag to false.",
         "security": [
           {
             "bearerAuth": []
@@ -3668,7 +3647,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Occasion deleted successfully",
+            "description": "Occasion deactivated successfully.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3685,6 +3664,60 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/occasions/slug/{slug}": {
+      "get": {
+        "tags": ["Occasions"],
+        "summary": "Get occasion by slug",
+        "description": "Get occasion details by its unique slug.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Occasion slug"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Occasion retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/occasion"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -3693,7 +3726,7 @@
       "patch": {
         "tags": ["Occasions"],
         "summary": "Update occasion display order",
-        "description": "Admin only - Updates the display order for an occasion",
+        "description": "Admin only - Atomically updates the display order for an occasion.",
         "security": [
           {
             "bearerAuth": []
@@ -3723,7 +3756,7 @@
         },
         "responses": {
           "200": {
-            "description": "Display order updated successfully",
+            "description": "Display order updated successfully.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3752,6 +3785,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -3760,7 +3796,7 @@
       "patch": {
         "tags": ["Occasions"],
         "summary": "Reactivate occasion",
-        "description": "Admin only - Reactivates a soft-deleted occasion",
+        "description": "Admin only - Reactivates a soft-deleted occasion by setting its `is_active` flag to true.",
         "security": [
           {
             "bearerAuth": []
@@ -3773,7 +3809,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Occasion reactivated successfully",
+            "description": "Occasion reactivated successfully.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3802,6 +3838,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }

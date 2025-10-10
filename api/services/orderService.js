@@ -203,6 +203,9 @@ export async function getOrderById(id) {
       .single()
 
     if (error) {
+      if (error.code === 'PGRST116' || error.message?.includes('Row not found')) {
+        throw new NotFoundError('Order', id)
+      }
       throw new DatabaseError('SELECT', TABLE, error, { orderId: id })
     }
     if (!data) {
@@ -450,7 +453,8 @@ export async function createOrderWithItems(orderData, orderItems) {
       })
     }
 
-    if (!data) {
+    // RPC functions return single values, not arrays
+    if (data === null || (Array.isArray(data) && data.length === 0)) {
       throw new DatabaseError('RPC', 'create_order_with_items', new Error('No data returned'), {
         orderData,
         itemCount: orderItems.length

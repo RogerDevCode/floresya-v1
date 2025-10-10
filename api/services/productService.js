@@ -248,8 +248,8 @@ export async function getAllProducts(
  */
 export async function getProductById(id, includeInactive = false, includeImageSize = null) {
   try {
-    if (!id || typeof id !== 'number') {
-      throw new BadRequestError('Invalid product ID: must be a number', { productId: id })
+    if (!id || typeof id !== 'number' || id <= 0) {
+      throw new BadRequestError('Invalid product ID: must be a positive number', { productId: id })
     }
 
     let query = supabase.from(TABLE).select('*').eq('id', id)
@@ -262,7 +262,7 @@ export async function getProductById(id, includeInactive = false, includeImageSi
     const { data, error } = await query.single()
 
     if (error) {
-      if (error.code === 'PGRST116') {
+      if (error.code === 'PGRST116' || error.message?.includes('Row not found')) {
         throw new NotFoundError('Product', id, { includeInactive })
       }
       throw new DatabaseError('SELECT', TABLE, error, { productId: id })
@@ -603,8 +603,8 @@ export async function createProductWithOccasions(productData, occasionIds = []) 
  */
 export async function updateProduct(id, updates) {
   try {
-    if (!id || typeof id !== 'number') {
-      throw new BadRequestError('Invalid product ID: must be a number', { productId: id })
+    if (!id || typeof id !== 'number' || id <= 0) {
+      throw new BadRequestError('Invalid product ID: must be a positive number', { productId: id })
     }
 
     if (!updates || Object.keys(updates).length === 0) {
@@ -724,19 +724,22 @@ export async function updateCarouselOrder(productId, newOrder) {
  */
 export async function deleteProduct(id) {
   try {
-    if (!id || typeof id !== 'number') {
-      throw new BadRequestError('Invalid product ID: must be a number', { productId: id })
+    if (!id || typeof id !== 'number' || id <= 0) {
+      throw new BadRequestError('Invalid product ID: must be a positive number', { productId: id })
     }
 
     const { data, error } = await supabase
       .from(TABLE)
       .update({ active: false })
       .eq('id', id)
-      .eq('active', true)
+      .eq('active', true) // Use 'eq' instead of 'is' for boolean values in the filter
       .select()
       .single()
 
     if (error) {
+      if (error.code === 'PGRST116' || error.message?.includes('Row not found')) {
+        throw new NotFoundError('Product', id, { active: true })
+      }
       throw new DatabaseError('UPDATE', TABLE, error, { productId: id })
     }
     if (!data) {

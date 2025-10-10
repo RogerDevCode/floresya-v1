@@ -1,7 +1,7 @@
 /**
  * TypeScript Types for FloresYa API
  * Auto-generated from OpenAPI specification
- * Generated: 2025-10-09T03:01:41.968Z
+ * Generated: 2025-10-10T14:24:48.326Z
  * Spec Version: 1.0.0
  */
 
@@ -168,5 +168,10 @@ export interface PaymentConfirm {
   reference_number: string
   payment_details?: object
   receipt_image_url?: string
+}
+
+export interface OrderCreate {
+  order: object
+  items: Array<object>
 }
 

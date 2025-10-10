@@ -1004,14 +1004,14 @@
  *             properties:
  *               order:
  *                 type: object
- *                 required: [customer_email, customer_name, delivery_address, total_amount_usd]
+ *                 required: [customer_email, customer_name, customer_phone, delivery_address, total_amount_usd]
  *                 properties:
  *                   customer_email: { type: string, format: email }
  *                   customer_name: { type: string, minLength: 2, maxLength: 255 }
- *                   customer_phone: { type: string, pattern: '^\\+?[\\d\\s-()]+$' }
+ *                   customer_phone: { type: string, pattern: '^\+?[\d\s-()]+$' }
  *                   delivery_address: { type: string, minLength: 10, maxLength: 500 }
  *                   delivery_date: { type: string, format: date }
- *                   delivery_time_slot: { type: string, pattern: '^\\d{2}:\\d{2}-\\d{2}:\\d{2}$' }
+ *                   delivery_time_slot: { type: string, pattern: '^\d{2}:\d{2}-\d{2}:\d{2}$' }
  *                   delivery_notes: { type: string, maxLength: 1000 }
  *                   total_amount_usd: { type: number, minimum: 0 }
  *                   total_amount_ves: { type: number, minimum: 0 }
@@ -1020,6 +1020,7 @@
  *                   notes: { type: string, maxLength: 1000 }
  *               items:
  *                 type: array
+ *                 minItems: 1
  *                 items:
  *                   type: object
  *                   required: [product_id, product_name, unit_price_usd, quantity]
@@ -1287,7 +1288,7 @@
  *             properties:
  *               email: { type: string, format: email }
  *               full_name: { type: string, minLength: 2, maxLength: 255 }
- *               phone: { type: string, pattern: '^\\+?[\\d\\s-()]+$' }
+ *               phone: { type: string, pattern: '^\+?[\d\s-()]+$' }
  *               role: { type: string, enum: [user, admin], default: user }
  *               password_hash: { type: string, minLength: 8 }
  *     responses:
@@ -1326,7 +1327,7 @@
  *             type: object
  *             properties:
  *               full_name: { type: string, minLength: 2, maxLength: 255 }
- *               phone: { type: string, pattern: '^\\+?[\\d\\s-()]+$' }
+ *               phone: { type: string, pattern: '^\+?[\d\s-()]+$' }
  *               role: { type: string, enum: [user, admin] }
  *     responses:
  *       200:
@@ -1544,36 +1545,12 @@
  *   get:
  *     tags: [Occasions]
  *     summary: Get all occasions
- *     description: Public - Returns all active occasions
- *     responses:
- *       200:
- *         description: Occasions retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/SuccessResponse'
- *                 - type: object
- *                   properties:
- *                     data: { type: array, items: { $ref: '#/components/schemas/occasion' } }
- */
-
-/**
- * @swagger
- * /api/occasions/slug/{slug}:
- *   get:
- *     tags: [Occasions]
- *     summary: Get occasion by slug
- *     description: Get occasion details by slug
+ *     description: Public - Returns all active occasions, sorted by display_order.
  *     parameters:
- *       - name: slug
- *         in: path
- *         required: true
- *         schema: { type: string }
- *         description: Occasion slug
+ *       - $ref: '#/components/parameters/LimitParam'
  *     responses:
  *       200:
- *         description: Occasion retrieved successfully
+ *         description: Occasions retrieved successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -1581,9 +1558,14 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { $ref: '#/components/schemas/occasion' }
- *       404:
- *         $ref: '#/components/responses/NotFoundError'
+ *                     data:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/occasion'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
  */
 
 /**
@@ -1592,12 +1574,12 @@
  *   get:
  *     tags: [Occasions]
  *     summary: Get occasion by ID
- *     description: Get occasion details by ID
+ *     description: Get occasion details by its unique ID.
  *     parameters:
  *       - $ref: '#/components/parameters/IdParam'
  *     responses:
  *       200:
- *         description: Occasion retrieved successfully
+ *         description: Occasion retrieved successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -1605,9 +1587,48 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { $ref: '#/components/schemas/occasion' }
+ *                     data:
+ *                       $ref: '#/components/schemas/occasion'
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+
+/**
+ * @swagger
+ * /api/occasions/slug/{slug}:
+ *   get:
+ *     tags: [Occasions]
+ *     summary: Get occasion by slug
+ *     description: Get occasion details by its unique slug.
+ *     parameters:
+ *       - name: slug
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Occasion slug
+ *     responses:
+ *       200:
+ *         description: Occasion retrieved successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/occasion'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
  */
 
 /**
@@ -1616,7 +1637,7 @@
  *   post:
  *     tags: [Occasions]
  *     summary: Create new occasion
- *     description: Admin only - Creates a new occasion
+ *     description: Admin only - Creates a new occasion.
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -1627,13 +1648,21 @@
  *             type: object
  *             required: [name, slug]
  *             properties:
- *               name: { type: string, minLength: 2, maxLength: 100 }
- *               description: { type: string }
- *               slug: { type: string, pattern: '^[a-z0-9-]+$' }
- *               display_order: { type: integer, minimum: 0 }
+ *               name:
+ *                 type: string
+ *                 minLength: 2
+ *                 maxLength: 100
+ *               description:
+ *                 type: string
+ *               slug:
+ *                 type: string
+ *                 pattern: '^[a-z0-9-]+$'
+ *               display_order:
+ *                 type: integer
+ *                 minimum: 0
  *     responses:
  *       201:
- *         description: Occasion created successfully
+ *         description: Occasion created successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -1641,13 +1670,16 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { $ref: '#/components/schemas/occasion' }
+ *                     data:
+ *                       $ref: '#/components/schemas/occasion'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
- *       400:
- *         $ref: '#/components/responses/ValidationError'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
  */
 
 /**
@@ -1656,7 +1688,7 @@
  *   put:
  *     tags: [Occasions]
  *     summary: Update occasion
- *     description: Admin only - Updates an existing occasion
+ *     description: Admin only - Updates an existing occasion.
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -1668,13 +1700,21 @@
  *           schema:
  *             type: object
  *             properties:
- *               name: { type: string, minLength: 2, maxLength: 100 }
- *               description: { type: string }
- *               slug: { type: string, pattern: '^[a-z0-9-]+$' }
- *               display_order: { type: integer, minimum: 0 }
+ *               name:
+ *                 type: string
+ *                 minLength: 2
+ *                 maxLength: 100
+ *               description:
+ *                 type: string
+ *               slug:
+ *                 type: string
+ *                 pattern: '^[a-z0-9-]+$'
+ *               display_order:
+ *                 type: integer
+ *                 minimum: 0
  *     responses:
  *       200:
- *         description: Occasion updated successfully
+ *         description: Occasion updated successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -1682,15 +1722,18 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { $ref: '#/components/schemas/occasion' }
+ *                     data:
+ *                       $ref: '#/components/schemas/occasion'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
- *       400:
- *         $ref: '#/components/responses/ValidationError'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
  */
 
 /**
@@ -1699,7 +1742,7 @@
  *   patch:
  *     tags: [Occasions]
  *     summary: Update occasion display order
- *     description: Admin only - Updates the display order for an occasion
+ *     description: Admin only - Atomically updates the display order for an occasion.
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -1712,10 +1755,12 @@
  *             type: object
  *             required: [order]
  *             properties:
- *               order: { type: integer, minimum: 0 }
+ *               order:
+ *                 type: integer
+ *                 minimum: 0
  *     responses:
  *       200:
- *         description: Display order updated successfully
+ *         description: Display order updated successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -1723,13 +1768,16 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { $ref: '#/components/schemas/occasion' }
+ *                     data:
+ *                       $ref: '#/components/schemas/occasion'
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
  */
 
 /**
@@ -1738,23 +1786,26 @@
  *   delete:
  *     tags: [Occasions]
  *     summary: Delete occasion (soft delete)
- *     description: Admin only - Soft deletes an occasion (sets is_active to false)
+ *     description: Admin only - Soft deletes an occasion by setting its `is_active` flag to false.
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdParam'
  *     responses:
  *       200:
- *         description: Occasion deleted successfully
+ *         description: Occasion deactivated successfully.
  *         content:
  *           application/json:
- *             schema: { $ref: '#/components/schemas/SuccessResponse' }
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
  */
 
 /**
@@ -1763,14 +1814,14 @@
  *   patch:
  *     tags: [Occasions]
  *     summary: Reactivate occasion
- *     description: Admin only - Reactivates a soft-deleted occasion
+ *     description: Admin only - Reactivates a soft-deleted occasion by setting its `is_active` flag to true.
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - $ref: '#/components/parameters/IdParam'
  *     responses:
  *       200:
- *         description: Occasion reactivated successfully
+ *         description: Occasion reactivated successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -1778,28 +1829,18 @@
  *                 - $ref: '#/components/schemas/SuccessResponse'
  *                 - type: object
  *                   properties:
- *                     data: { $ref: '#/components/schemas/occasion' }
+ *                     data:
+ *                       $ref: '#/components/schemas/occasion'
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
  */
-
 // ==================== SETTINGS ====================
-
-/**
- * @swagger
- * /api/settings/public:
- *   get:
- *     tags: [Settings]
- *     summary: Get public settings
- *     description: Public - Returns public settings only
- *     responses:
- *       200:
- *         description: Public settings retrieved successfully
- */
 
 /**
  * @swagger
