@@ -13,6 +13,7 @@ import {
   BadRequestError
 } from '../errors/AppError.js'
 import { buildSearchCondition } from '../utils/normalize.js'
+import { PAGINATION } from '../config/constants.js'
 
 const TABLE = DB_SCHEMA.users.table
 const VALID_ROLES = DB_SCHEMA.users.enums.role
@@ -115,10 +116,15 @@ export async function getAllUsers(filters = {}, includeInactive = false) {
       query = query.eq('email_verified', filters.email_verified)
     }
 
-    query = query.order('created_at', { ascending: false }).limit(filters.limit || 50)
+    query = query
+      .order('created_at', { ascending: false })
+      .limit(filters.limit || PAGINATION.DEFAULT_LIMIT)
 
     if (filters.offset) {
-      query = query.range(filters.offset, filters.offset + (filters.limit || 50) - 1)
+      query = query.range(
+        filters.offset,
+        filters.offset + (filters.limit || PAGINATION.DEFAULT_LIMIT) - 1
+      )
     }
 
     const { data, error } = await query

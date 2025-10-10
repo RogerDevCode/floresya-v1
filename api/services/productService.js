@@ -17,6 +17,7 @@ import {
 } from '../errors/AppError.js'
 import { buildSearchCondition } from '../utils/normalize.js'
 import { sanitizeProductData } from '../utils/sanitize.js'
+import { PAGINATION, CAROUSEL } from '../config/constants.js'
 
 const TABLE = DB_SCHEMA.products.table
 const SEARCH_COLUMNS = DB_SCHEMA.products.search
@@ -356,7 +357,7 @@ export async function getProductsWithOccasions(limit = 50, offset = 0) {
       )
       .eq('active', true)
       .order('created_at', { ascending: false })
-      .limit(limit)
+      .limit(limit || PAGINATION.DEFAULT_LIMIT)
       .range(offset, offset + limit - 1)
 
     if (error) {
@@ -396,7 +397,7 @@ export async function getProductsByOccasion(occasionId, limit = 50) {
       .eq('product_occasions.occasion_id', occasionId)
       .eq('active', true)
       .order('created_at', { ascending: false })
-      .limit(limit)
+      .limit(limit || PAGINATION.DEFAULT_LIMIT)
 
     if (error) {
       throw new DatabaseError('SELECT', TABLE, error, { occasionId })
@@ -429,7 +430,7 @@ export async function getCarouselProducts() {
       .eq('active', true)
       .not('carousel_order', 'is', null)
       .order('carousel_order', { ascending: true })
-      .limit(7)
+      .limit(CAROUSEL.MAX_SIZE)
 
     if (error) {
       throw new DatabaseError('SELECT', TABLE, error)

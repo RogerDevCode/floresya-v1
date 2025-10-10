@@ -14,6 +14,7 @@ import {
   BadRequestError
 } from '../errors/AppError.js'
 import { sanitizeOrderData, sanitizeOrderItemData } from '../utils/sanitize.js'
+import { PAGINATION } from '../config/constants.js'
 
 const TABLE = DB_SCHEMA.orders.table
 const VALID_STATUSES = DB_SCHEMA.orders.enums.status
@@ -152,7 +153,10 @@ export async function getAllOrders(filters = {}) {
     }
 
     if (filters.offset) {
-      query = query.range(filters.offset, filters.offset + (filters.limit || 50) - 1)
+      query = query.range(
+        filters.offset,
+        filters.offset + (filters.limit || PAGINATION.DEFAULT_LIMIT) - 1
+      )
     }
 
     const { data, error } = await query

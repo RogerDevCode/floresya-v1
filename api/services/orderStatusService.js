@@ -5,6 +5,7 @@
 
 import { supabase } from './supabaseClient.js'
 import { BadRequestError, DatabaseError } from '../errors/AppError.js'
+import { QUERY_LIMITS } from '../config/constants.js'
 
 /**
  * Get status history for an order
@@ -87,7 +88,7 @@ export async function getLatestStatus(orderId) {
       .select('*')
       .eq('order_id', orderId)
       .order('created_at', { ascending: false })
-      .limit(1)
+      .limit(QUERY_LIMITS.SINGLE_RECORD)
       .single()
 
     if (error && error.code !== 'PGRST116') {

@@ -6,9 +6,9 @@
 
 import { supabase, DB_SCHEMA } from './supabaseClient.js'
 import { DatabaseError, ValidationError } from '../errors/AppError.js'
+import { CAROUSEL, QUERY_LIMITS } from '../config/constants.js'
 
 const TABLE = DB_SCHEMA.products.table
-const MAX_CAROUSEL_SIZE = 7
 
 /**
  * Get all featured products in carousel (ordered)
@@ -22,7 +22,7 @@ export async function getCarouselProducts() {
       .eq('featured', true)
       .eq('active', true)
       .order('carousel_order', { ascending: true })
-      .limit(MAX_CAROUSEL_SIZE)
+      .limit(CAROUSEL.MAX_SIZE)
 
     if (error) {
       throw new DatabaseError('SELECT', TABLE, error)
@@ -41,7 +41,7 @@ export async function getCarouselProducts() {
           .eq('product_id', product.id)
           .eq('size', 'small')
           .order('image_index', { ascending: true })
-          .limit(1)
+          .limit(QUERY_LIMITS.SINGLE_RECORD)
           .maybeSingle()
 
         if (imgError) {
@@ -72,10 +72,17 @@ export function validateCarouselOrder(carouselOrder) {
     return
   } // null/undefined is valid (not featured)
 
-  if (typeof carouselOrder !== 'number' || carouselOrder < 1 || carouselOrder > MAX_CAROUSEL_SIZE) {
-    throw new ValidationError(`carousel_order must be between 1-${MAX_CAROUSEL_SIZE}`, {
-      carouselOrder
-    })
+  if (
+    typeof carouselOrder !== 'number' ||
+    carouselOrder < CAROUSEL.MIN_POSITION ||
+    carouselOrder > CAROUSEL.MAX_POSITION
+  ) {
+    throw new ValidationError(
+      `carousel_order must be between ${CAROUSEL.MIN_POSITION}-${CAROUSEL.MAX_POSITION}`,
+      {
+        carouselOrder
+      }
+    )
   }
 }
 
@@ -101,7 +108,7 @@ export async function isCarouselFull(excludeProductId = null) {
     if (error) {
       throw new DatabaseError('COUNT', TABLE, error)
     }
-    return count >= MAX_CAROUSEL_SIZE
+    return count >= CAROUSEL.MAX_SIZE
   } catch (error) {
     console.error('isCarouselFull failed:', error)
     throw error
@@ -158,7 +165,7 @@ export async function resolveCarouselOrderConflict(newOrder, excludeProductId = 
     for (const product of conflicts) {
       const newCarouselOrder = product.carousel_order + 1
 
-      if (newCarouselOrder > MAX_CAROUSEL_SIZE) {
+      if (newCarouselOrder > CAROUSEL.MAX_SIZE) {
         // Remove from carousel (beyond limit)
         const { error: updateError } = await supabase
           .from(TABLE)
@@ -278,7 +285,7 @@ export async function getAvailablePositions(excludeProductId = null) {
       .filter(order => order !== null)
 
     // Generate available positions (1-7 minus occupied)
-    const allPositions = Array.from({ length: MAX_CAROUSEL_SIZE }, (_, i) => i + 1)
+    const allPositions = Array.from({ length: CAROUSEL.MAX_SIZE }, (_, i) => i + 1)
     const available = allPositions.filter(pos => !occupiedPositions.includes(pos))
 
     return available

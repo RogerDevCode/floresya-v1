@@ -13,6 +13,7 @@ import {
   DatabaseConstraintError,
   BadRequestError
 } from '../errors/AppError.js'
+import { QUERY_LIMITS } from '../config/constants.js'
 
 const TABLE = DB_SCHEMA.product_images.table
 const VALID_SIZES = DB_SCHEMA.product_images.enums.size
@@ -157,7 +158,7 @@ export async function getPrimaryImage(productId) {
           .select('*')
           .eq('product_id', productId)
           .order('image_index', { ascending: true })
-          .limit(1)
+          .limit(QUERY_LIMITS.SINGLE_RECORD)
           .maybeSingle()
 
         if (fallbackError) {
