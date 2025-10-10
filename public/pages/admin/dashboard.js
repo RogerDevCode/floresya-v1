@@ -1211,8 +1211,21 @@ async function saveHeroImage() {
     const result = await api.uploadSettingImage('hero_image', heroImageFile)
 
     if (result.success) {
-      // Reload hero image preview
-      loadHeroImagePreview()
+      // Reload hero image preview (with cache bust)
+      await loadHeroImagePreview()
+      // Reset upload UI
+      const uploadArea = document.querySelector('#hero-image-upload + label')
+      if (uploadArea) {
+        uploadArea.innerHTML = `
+          <i data-lucide="upload-cloud" class="h-8 w-8 text-gray-400 mb-2"></i>
+          <span class="text-sm text-gray-600">Haz clic para seleccionar una imagen</span>
+          <span class="text-xs text-gray-500 mt-1">(JPG, PNG, WebP - Máx 4MB)</span>
+        `
+      }
+      // Reinitialize icons
+      if (window.lucide && window.lucide.createIcons) {
+        window.lucide.createIcons()
+      }
       // Reset file input
       heroImageFile = null
       document.getElementById('hero-image-upload').value = ''
@@ -1255,8 +1268,13 @@ async function saveLogo() {
     const result = await api.uploadSettingImage('site_logo', logoFile)
 
     if (result.success) {
-      // Reload logo preview
-      loadLogoPreview()
+      // Reload logo preview (with cache bust)
+      await loadLogoPreview()
+      // Reset preview area
+      const previewArea = document.getElementById('logo-preview-area')
+      if (previewArea) {
+        previewArea.classList.add('hidden')
+      }
       // Reset file input
       logoFile = null
       document.getElementById('logo-upload').value = ''
@@ -1317,22 +1335,27 @@ async function saveBcvPrice() {
 
 /**
  * Load hero image preview
+ * ALWAYS use local path: public/images/hero-flowers.webp
+ * Hero images are stored locally in public/images/, NOT in Supabase
  */
 async function loadHeroImagePreview() {
   try {
-    const result = await api.getValue('hero_image')
-    const heroImageUrl = result.data
+    // Hero image siempre en public/images/hero-flowers.webp (relative to /public/pages/admin/)
+    const heroImageUrl = '../../images/hero-flowers.webp'
 
     const heroImage = document.getElementById('current-hero-image')
     const noHeroImageText = document.getElementById('no-hero-image-text')
 
-    if (heroImageUrl) {
-      heroImage.src = heroImageUrl
-      heroImage.classList.remove('hidden')
-      noHeroImageText.classList.add('hidden')
-    } else {
+    // Add timestamp to bypass cache
+    heroImage.src = `${heroImageUrl}?t=${Date.now()}`
+    heroImage.classList.remove('hidden')
+    noHeroImageText.classList.add('hidden')
+
+    // Handle error if image doesn't exist
+    heroImage.onerror = () => {
       heroImage.classList.add('hidden')
       noHeroImageText.classList.remove('hidden')
+      console.warn('Hero image not found at:', heroImageUrl)
     }
   } catch (error) {
     console.error('Error loading hero image preview:', error)
@@ -1341,22 +1364,27 @@ async function loadHeroImagePreview() {
 
 /**
  * Load logo preview
+ * ALWAYS use local path: public/images/logoFloresYa.jpeg
+ * Logo images are stored locally in public/images/, NOT in Supabase
  */
 async function loadLogoPreview() {
   try {
-    const result = await api.getValue('site_logo')
-    const logoUrl = result.data
+    // Logo siempre en public/images/logoFloresYa.jpeg (relative to /public/pages/admin/)
+    const logoUrl = '../../images/logoFloresYa.jpeg'
 
     const logo = document.getElementById('current-logo')
     const noLogoText = document.getElementById('no-logo-text')
 
-    if (logoUrl) {
-      logo.src = logoUrl
-      logo.classList.remove('hidden')
-      noLogoText.classList.add('hidden')
-    } else {
+    // Add timestamp to bypass cache
+    logo.src = `${logoUrl}?t=${Date.now()}`
+    logo.classList.remove('hidden')
+    noLogoText.classList.add('hidden')
+
+    // Handle error if image doesn't exist
+    logo.onerror = () => {
       logo.classList.add('hidden')
       noLogoText.classList.remove('hidden')
+      console.warn('Logo not found at:', logoUrl)
     }
   } catch (error) {
     console.error('Error loading logo preview:', error)

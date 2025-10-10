@@ -4,18 +4,30 @@
  */
 
 import sharp from 'sharp'
+import fs from 'fs/promises'
+import path from 'path'
+import { fileURLToPath } from 'url'
 import * as settingsService from '../../services/settingsService.js'
-import { uploadToStorage } from '../../services/supabaseStorageService.js'
 import { asyncHandler } from '../../middleware/errorHandler.js'
 import { BadRequestError } from '../../errors/AppError.js'
 
-// Settings images bucket name
-const SETTINGS_BUCKET = 'settings-images'
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+// Base path for public/images/ folder
+const PUBLIC_IMAGES_PATH = path.join(__dirname, '../../../public/images')
 
 /**
  * POST /api/admin/settings/image
- * Upload and save image for a specific setting (hero_image, site_logo, etc.)
- * Automatically processes images with sharp (resize + WebP conversion)
+ * Upload and save image for a specific setting (hero_image, site_logo)
+ *
+ * CRITICAL: Images are ALWAYS saved to public/images/ (local), NOT Supabase
+ *
+ * Workflow:
+ * 1. Delete existing .bak file (if exists)
+ * 2. Rename existing image to .bak
+ * 3. Process new image with Sharp and save with original name
  */
 export const uploadSettingImage = asyncHandler(async (req, res) => {
   // Validate file upload
@@ -37,8 +49,8 @@ export const uploadSettingImage = asyncHandler(async (req, res) => {
 
   // Process image with sharp based on setting key
   let processedBuffer
-  let filename
-  let storagePath
+  let targetFilename
+  let targetPath
 
   if (settingKey === 'site_logo') {
     // Logo: Resize to 128x128px and convert to WebP
@@ -50,8 +62,9 @@ export const uploadSettingImage = asyncHandler(async (req, res) => {
       .webp({ quality: 90 })
       .toBuffer()
 
-    filename = `logo-${Date.now()}.webp`
-    storagePath = `logos/${filename}`
+    // ALWAYS save as logoFloresYa.jpeg (NOT .webp, for backwards compatibility)
+    targetFilename = 'logoFloresYa.jpeg'
+    targetPath = path.join(PUBLIC_IMAGES_PATH, targetFilename)
   } else if (settingKey === 'hero_image') {
     // Hero image: Optimize and convert to WebP (maintain aspect ratio, max width 1920px)
     processedBuffer = await sharp(req.file.buffer)
@@ -62,26 +75,54 @@ export const uploadSettingImage = asyncHandler(async (req, res) => {
       .webp({ quality: 85 })
       .toBuffer()
 
-    filename = `hero-${Date.now()}.webp`
-    storagePath = `hero/${filename}`
+    // ALWAYS save as hero-flowers.webp
+    targetFilename = 'hero-flowers.webp'
+    targetPath = path.join(PUBLIC_IMAGES_PATH, targetFilename)
   }
 
-  // Upload processed image to Supabase Storage
-  const imageUrl = await uploadToStorage(
-    processedBuffer,
-    storagePath,
-    SETTINGS_BUCKET,
-    'image/webp'
-  )
+  // Backup workflow: delete .bak, rename existing, save new
+  const backupPath = `${targetPath}.bak`
 
-  // Save image URL to settings
-  const setting = await settingsService.setSettingValue(settingKey, imageUrl)
+  try {
+    // Step 1: Delete existing .bak file (if exists)
+    try {
+      await fs.unlink(backupPath)
+      console.log(`✓ Deleted existing backup: ${backupPath}`)
+    } catch (error) {
+      // Ignore if .bak doesn't exist
+      if (error.code !== 'ENOENT') {
+        console.warn('Warning deleting .bak:', error.message)
+      }
+    }
 
-  res.json({
-    success: true,
-    data: setting,
-    message: `Imagen procesada y guardada exitosamente (${(processedBuffer.length / 1024).toFixed(2)} KB)`
-  })
+    // Step 2: Rename existing image to .bak (if exists)
+    try {
+      await fs.rename(targetPath, backupPath)
+      console.log(`✓ Renamed existing image to: ${backupPath}`)
+    } catch (error) {
+      // Ignore if original doesn't exist (first upload)
+      if (error.code !== 'ENOENT') {
+        console.warn('Warning renaming existing image:', error.message)
+      }
+    }
+
+    // Step 3: Write new processed image
+    await fs.writeFile(targetPath, processedBuffer)
+    console.log(`✓ Saved new image: ${targetPath}`)
+
+    // Save local path to settings (for reference)
+    const localUrl = `/images/${targetFilename}`
+    await settingsService.setSettingValue(settingKey, localUrl)
+
+    res.json({
+      success: true,
+      data: { url: localUrl },
+      message: `Imagen procesada y guardada exitosamente en local (${(processedBuffer.length / 1024).toFixed(2)} KB)`
+    })
+  } catch (error) {
+    console.error('Error saving image to local filesystem:', error)
+    throw new Error(`Error al guardar imagen: ${error.message}`)
+  }
 })
 
 /**
