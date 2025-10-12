@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mobile Navigation Test</title>
+    <link rel="stylesheet" href="/css/mobile-nav.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+      }
+      .test-container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      .test-section {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+      }
+      .test-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .test-results {
+        background-color: #f5f5f5;
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+      }
+      .success {
+        color: green;
+      }
+      .error {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-container">
+      <h1>Mobile Navigation CSS Test</h1>
+
+      <div class="test-section">
+        <h2>CSS Variables Test</h2>
+        <div id="css-variables-test"></div>
+      </div>
+
+      <div class="test-section">
+        <h2>Component Structure Test</h2>
+        <div id="component-test"></div>
+      </div>
+
+      <div class="test-section">
+        <h2>Animation Test</h2>
+        <div id="animation-test"></div>
+      </div>
+
+      <div class="test-results" id="test-results">
+        <h3>Test Results:</h3>
+        <div id="results-content"></div>
+      </div>
+    </div>
+
+    <script>
+      // Test CSS Variables
+      function testCSSVariables() {
+        const root = document.documentElement
+        const computedStyle = getComputedStyle(root)
+
+        const variables = [
+          '--mobile-nav-duration',
+          '--mobile-nav-easing',
+          '--mobile-nav-z-overlay',
+          '--mobile-nav-z-drawer',
+          '--mobile-nav-z-hamburger',
+          '--mobile-nav-bg',
+          '--mobile-nav-overlay-bg',
+          '--mobile-nav-text',
+          '--mobile-nav-text-hover',
+          '--mobile-nav-border',
+          '--mobile-nav-shadow',
+          '--mobile-nav-width',
+          '--mobile-nav-max-width',
+          '--mobile-nav-touch-target'
+        ]
+
+        const results = []
+        variables.forEach(variable => {
+          const value = computedStyle.getPropertyValue(variable)
+          if (value && value.trim() !== '') {
+            results.push(`<div class="success">✓ ${variable}: ${value.trim()}</div>`)
+          } else {
+            results.push(`<div class="error">✗ ${variable}: Not defined</div>`)
+          }
+        })
+
+        document.getElementById('css-variables-test').innerHTML = results.join('')
+        return results.every(r => r.includes('✓'))
+      }
+
+      // Test Component Structure
+      function testComponentStructure() {
+        // Create test elements
+        const overlay = document.createElement('div')
+        overlay.className = 'mobile-nav-overlay'
+        overlay.setAttribute('data-mobile-nav-overlay', '')
+
+        const drawer = document.createElement('div')
+        drawer.className = 'mobile-nav-drawer'
+        drawer.setAttribute('data-mobile-nav-drawer', '')
+
+        const hamburger = document.createElement('button')
+        hamburger.className = 'hamburger-menu-button'
+        hamburger.setAttribute('data-hamburger-menu', '')
+
+        // Add elements to DOM for testing
+        document.body.appendChild(overlay)
+        document.body.appendChild(drawer)
+        document.body.appendChild(hamburger)
+
+        // Test computed styles
+        const overlayStyle = getComputedStyle(overlay)
+        const drawerStyle = getComputedStyle(drawer)
+        const hamburgerStyle = getComputedStyle(hamburger)
+
+        const results = []
+
+        // Test overlay
+        if (overlayStyle.position === 'fixed') {
+          results.push('<div class="success">✓ Overlay has fixed position</div>')
+        } else {
+          results.push('<div class="error">✗ Overlay position is not fixed</div>')
+        }
+
+        if (overlayStyle.zIndex === '60' || overlayStyle.zIndex === 'var(--mobile-nav-z-overlay)') {
+          results.push('<div class="success">✓ Overlay has correct z-index</div>')
+        } else {
+          results.push(`<div class="error">✗ Overlay z-index is: ${overlayStyle.zIndex}</div>`)
+        }
+
+        // Test drawer
+        if (drawerStyle.position === 'fixed') {
+          results.push('<div class="success">✓ Drawer has fixed position</div>')
+        } else {
+          results.push('<div class="error">✗ Drawer position is not fixed</div>')
+        }
+
+        if (drawerStyle.transform.includes('translateX(100%)')) {
+          results.push('<div class="success">✓ Drawer is positioned off-screen</div>')
+        } else {
+          results.push(`<div class="error">✗ Drawer transform is: ${drawerStyle.transform}</div>`)
+        }
+
+        // Test hamburger
+        if (hamburgerStyle.position === 'relative') {
+          results.push('<div class="success">✓ Hamburger has relative position</div>')
+        } else {
+          results.push('<div class="error">✗ Hamburger position is not relative</div>')
+        }
+
+        // Clean up
+        document.body.removeChild(overlay)
+        document.body.removeChild(drawer)
+        document.body.removeChild(hamburger)
+
+        document.getElementById('component-test').innerHTML = results.join('')
+        return results.every(r => r.includes('✓'))
+      }
+
+      // Test Animation
+      function testAnimation() {
+        const results = []
+
+        // Test if transitions are defined
+        const testElement = document.createElement('div')
+        testElement.className = 'mobile-nav-drawer'
+        document.body.appendChild(testElement)
+
+        const style = getComputedStyle(testElement)
+        if (style.transition && style.transition !== 'none') {
+          results.push('<div class="success">✓ Drawer transitions are defined</div>')
+        } else {
+          results.push('<div class="error">✗ Drawer transitions are not defined</div>')
+        }
+
+        // Test animation duration
+        const root = document.documentElement
+        const duration = getComputedStyle(root).getPropertyValue('--mobile-nav-duration')
+        if (duration && duration.trim() === '250ms') {
+          results.push('<div class="success">✓ Animation duration is 250ms</div>')
+        } else {
+          results.push(`<div class="error">✗ Animation duration is: ${duration}</div>`)
+        }
+
+        // Clean up
+        document.body.removeChild(testElement)
+
+        document.getElementById('animation-test').innerHTML = results.join('')
+        return results.every(r => r.includes('✓'))
+      }
+
+      // Run all tests
+      function runAllTests() {
+        const variablesTest = testCSSVariables()
+        const structureTest = testComponentStructure()
+        const animationTest = testAnimation()
+
+        const allPassed = variablesTest && structureTest && animationTest
+
+        const resultsContent = document.getElementById('results-content')
+        if (allPassed) {
+          resultsContent.innerHTML =
+            '<div class="success">🎉 All tests passed! The mobile navigation CSS is working correctly.</div>'
+        } else {
+          resultsContent.innerHTML =
+            '<div class="error">❌ Some tests failed. Please check the implementation.</div>'
+        }
+
+        return allPassed
+      }
+
+      // Run tests when page loads
+      window.addEventListener('load', runAllTests)
+    </script>
+  </body>
+</html>

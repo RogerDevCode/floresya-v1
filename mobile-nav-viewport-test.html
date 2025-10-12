@@ -1,0 +1,1233 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mobile Navigation Viewport Testing - FloresYa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/mobile-nav.css" />
+    <style>
+      /* Test-specific styles */
+      body {
+        font-family:
+          'Inter',
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+      }
+
+      .test-container {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .viewport-controls {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 1000;
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        max-width: 300px;
+      }
+
+      .viewport-button {
+        display: block;
+        width: 100%;
+        margin: 5px 0;
+        padding: 8px 12px;
+        background: #f3f4f6;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .viewport-button:hover {
+        background: #e5e7eb;
+      }
+
+      .viewport-button.active {
+        background: #ec4899;
+        color: white;
+        border-color: #ec4899;
+      }
+
+      .test-viewport {
+        margin: 0 auto;
+        border: 3px solid #3b82f6;
+        background: white;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .test-results {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px;
+      }
+
+      .test-item {
+        margin: 10px 0;
+        padding: 10px;
+        background: white;
+        border-radius: 4px;
+        border-left: 4px solid #d1d5db;
+      }
+
+      .test-item.pass {
+        border-left-color: #10b981;
+        background: #f0fdf4;
+      }
+
+      .test-item.fail {
+        border-left-color: #ef4444;
+        background: #fef2f2;
+      }
+
+      .test-item.pending {
+        border-left-color: #f59e0b;
+        background: #fffbeb;
+      }
+
+      .performance-metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+        margin: 15px 0;
+      }
+
+      .metric-card {
+        background: white;
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        text-align: center;
+      }
+
+      .metric-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #3b82f6;
+      }
+
+      .metric-label {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-top: 4px;
+      }
+
+      .debug-info {
+        background: #1e293b;
+        color: #e2e8f0;
+        padding: 15px;
+        border-radius: 6px;
+        font-family: monospace;
+        font-size: 0.875rem;
+        margin: 15px 0;
+        overflow-x: auto;
+      }
+
+      .instructions {
+        background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+        border: 1px solid #f9a8d4;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px;
+      }
+
+      .accessibility-test {
+        background: #f0f9ff;
+        border: 1px solid #7dd3fc;
+        border-radius: 6px;
+        padding: 15px;
+        margin: 10px 0;
+      }
+
+      /* Force scrollbars for testing */
+      .scroll-test-content {
+        height: 200vh;
+        background: linear-gradient(to bottom, #f3f4f6, #e5e7eb);
+        padding: 20px;
+      }
+
+      /* Hide viewport controls on small screens */
+      @media (max-width: 768px) {
+        .viewport-controls {
+          position: relative;
+          top: auto;
+          right: auto;
+          max-width: 100%;
+          margin: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <div class="test-container">
+      <!-- Viewport Controls -->
+      <div class="viewport-controls">
+        <h3 class="text-lg font-bold mb-3">Viewport Testing</h3>
+
+        <div class="mb-3">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Device Size:</label>
+          <button class="viewport-button" data-width="320" data-height="568">
+            iPhone SE (320×568)
+          </button>
+          <button class="viewport-button" data-width="375" data-height="667">
+            iPhone 8 (375×667)
+          </button>
+          <button class="viewport-button" data-width="414" data-height="896">
+            iPhone 11 (414×896)
+          </button>
+          <button class="viewport-button" data-width="390" data-height="844">
+            iPhone 12 (390×844)
+          </button>
+          <button class="viewport-button" data-width="428" data-height="926">
+            iPhone 14 Pro Max (428×926)
+          </button>
+          <button class="viewport-button" data-width="360" data-height="640">
+            Android Small (360×640)
+          </button>
+          <button class="viewport-button" data-width="412" data-height="915">
+            Android Large (412×915)
+          </button>
+          <button class="viewport-button" data-width="768" data-height="1024">
+            iPad (768×1024)
+          </button>
+        </div>
+
+        <div class="mb-3">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Custom Size:</label>
+          <div class="flex gap-2">
+            <input
+              type="number"
+              id="custom-width"
+              placeholder="Width"
+              class="flex-1 px-2 py-1 border rounded"
+              value="375"
+            />
+            <input
+              type="number"
+              id="custom-height"
+              placeholder="Height"
+              class="flex-1 px-2 py-1 border rounded"
+              value="667"
+            />
+            <button
+              id="apply-custom"
+              class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Apply
+            </button>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <button
+            id="reset-viewport"
+            class="viewport-button"
+            style="background: #ef4444; color: white"
+          >
+            Reset to Full Width
+          </button>
+        </div>
+
+        <div class="mb-3">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Tests:</label>
+          <button id="run-tests" class="viewport-button" style="background: #10b981; color: white">
+            Run All Tests
+          </button>
+          <button
+            id="test-performance"
+            class="viewport-button"
+            style="background: #8b5cf6; color: white"
+          >
+            Test Performance
+          </button>
+          <button
+            id="test-accessibility"
+            class="viewport-button"
+            style="background: #f59e0b; color: white"
+          >
+            Test Accessibility
+          </button>
+        </div>
+
+        <div class="text-xs text-gray-500 mt-3">
+          Current: <span id="current-viewport">Full Width</span>
+        </div>
+      </div>
+
+      <!-- Test Viewport Container -->
+      <div class="test-viewport" id="test-viewport">
+        <!-- Demo Content -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+              <div class="flex items-center">
+                <h1 class="text-xl font-bold text-gray-900">🌸 FloresYa</h1>
+              </div>
+
+              <!-- Desktop Navigation -->
+              <nav class="hidden md:flex space-x-8">
+                <a
+                  href="#"
+                  class="text-gray-700 hover:text-pink-600 px-3 py-2 text-sm font-medium transition-colors"
+                >
+                  Inicio
+                </a>
+                <a
+                  href="#"
+                  class="text-gray-700 hover:text-pink-600 px-3 py-2 text-sm font-medium transition-colors"
+                >
+                  Productos
+                </a>
+                <a
+                  href="#"
+                  class="text-gray-700 hover:text-pink-600 px-3 py-2 text-sm font-medium transition-colors"
+                >
+                  Ocasiones
+                </a>
+                <a
+                  href="#"
+                  class="text-gray-700 hover:text-pink-600 px-3 py-2 text-sm font-medium transition-colors"
+                >
+                  Contacto
+                </a>
+              </nav>
+
+              <!-- Mobile Menu Container -->
+              <div class="hamburger-container md:hidden">
+                <!-- Original mobile menu button (will be replaced) -->
+                <button
+                  id="mobile-menu-btn"
+                  class="p-2 rounded-md text-gray-700 hover:text-pink-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  aria-label="Abrir menú de navegación"
+                >
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Original Mobile Menu (will be hidden and moved to drawer) -->
+        <div id="mobile-menu" class="md:hidden">
+          <div class="mobile-nav-links">
+            <a
+              href="#"
+              class="mobile-nav-link block px-4 py-3 text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50 transition-colors"
+            >
+              Inicio
+            </a>
+            <a
+              href="#"
+              class="mobile-nav-link block px-4 py-3 text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50 transition-colors"
+            >
+              Productos
+            </a>
+            <a
+              href="#"
+              class="mobile-nav-link block px-4 py-3 text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50 transition-colors"
+            >
+              Ocasiones
+            </a>
+            <a
+              href="#"
+              class="mobile-nav-link block px-4 py-3 text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50 transition-colors"
+            >
+              Contacto
+            </a>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="flex-grow">
+          <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <!-- Instructions -->
+            <div class="instructions">
+              <h2 class="text-2xl font-bold text-gray-900 mb-4">Mobile Navigation Testing</h2>
+              <p class="text-gray-700 mb-4">
+                This page allows you to test the mobile navigation components across different
+                viewport sizes and devices.
+              </p>
+              <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <h3 class="font-semibold text-gray-900 mb-2">Manual Testing:</h3>
+                  <ul class="space-y-1 text-gray-700">
+                    <li>• Select different device sizes from the controls</li>
+                    <li>• Test hamburger menu animation (click/touch)</li>
+                    <li>• Verify drawer slide-in/out animation</li>
+                    <li>• Test overlay functionality</li>
+                    <li>• Verify touch target sizes (>44px)</li>
+                    <li>• Test keyboard navigation (Tab, Escape)</li>
+                    <li>• Check body scroll lock when drawer is open</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-gray-900 mb-2">Automated Tests:</h3>
+                  <ul class="space-y-1 text-gray-700">
+                    <li>• Click "Run All Tests" for comprehensive validation</li>
+                    <li>• "Test Performance" checks animation speeds</li>
+                    <li>• "Test Accessibility" verifies ARIA compliance</li>
+                    <li>• Results appear in the test results section</li>
+                    <li>• Performance metrics show animation timing</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Test Results -->
+            <div class="test-results">
+              <h3 class="text-xl font-bold text-gray-900 mb-4">Test Results</h3>
+              <div id="test-output">
+                <div class="test-item pending">
+                  <strong>Ready to test</strong> - Select a viewport size and click "Run All Tests"
+                </div>
+              </div>
+
+              <!-- Performance Metrics -->
+              <div class="performance-metrics" id="performance-metrics" style="display: none">
+                <div class="metric-card">
+                  <div class="metric-value" id="animation-duration">-</div>
+                  <div class="metric-label">Animation Duration (ms)</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-value" id="touch-target-size">-</div>
+                  <div class="metric-label">Touch Target Size (px)</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-value" id="drawer-width">-</div>
+                  <div class="metric-label">Drawer Width (px)</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-value" id="z-index">-</div>
+                  <div class="metric-label">Z-Index Stack</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Debug Info -->
+            <div class="debug-info" id="debug-info" style="display: none">
+              <strong>Debug Information:</strong>
+              <pre id="debug-content"></pre>
+            </div>
+
+            <!-- Accessibility Tests -->
+            <div class="accessibility-test" id="accessibility-tests" style="display: none">
+              <h3 class="text-lg font-semibold text-gray-900 mb-3">Accessibility Tests</h3>
+              <div id="accessibility-output">
+                <!-- Accessibility test results will appear here -->
+              </div>
+            </div>
+
+            <!-- Scroll Test Content -->
+            <div class="scroll-test-content">
+              <h3 class="text-2xl font-bold text-gray-900 mb-4">Scroll Lock Test</h3>
+              <p class="text-gray-700 mb-4">
+                This content helps verify that body scrolling is locked when the mobile navigation
+                drawer is open. Try opening the drawer and attempting to scroll the background.
+              </p>
+
+              <div class="space-y-8">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                  <h4 class="text-xl font-semibold text-gray-900 mb-3">Test Section 1</h4>
+                  <p class="text-gray-700">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                    incididunt ut labore et dolore magna aliqua.
+                  </p>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-6">
+                  <h4 class="text-xl font-semibold text-gray-900 mb-3">Test Section 2</h4>
+                  <p class="text-gray-700">
+                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.
+                  </p>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-6">
+                  <h4 class="text-xl font-semibold text-gray-900 mb-3">Test Section 3</h4>
+                  <p class="text-gray-700">
+                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+                    fugiat nulla pariatur.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Load the mobile navigation components -->
+    <script type="module">
+      import { HamburgerMenu } from './js/components/hamburgerMenu.js'
+      import { MobileNav } from './js/components/mobileNav.js'
+      import { onDOMReady } from './js/shared/dom-ready.js'
+
+      // Global test state
+      let testResults = []
+      let mobileNavSystem = null
+      let currentViewport = { width: 'Full', height: 'Full' }
+
+      // Initialize mobile navigation when DOM is ready
+      onDOMReady(() => {
+        try {
+          console.log('🚀 Initializing mobile navigation for testing...')
+
+          // Initialize mobile navigation drawer
+          const mobileNav = new MobileNav({
+            menuBtnSelector: '#mobile-menu-btn',
+            animationDuration: 300
+          })
+
+          // Initialize hamburger menu
+          const hamburgerMenu = new HamburgerMenu({
+            containerSelector: '.hamburger-container',
+            buttonId: 'hamburger-menu-btn',
+            animationDuration: 300,
+            onToggle: isOpen => {
+              // Sync hamburger state with mobile navigation
+              if (isOpen) {
+                mobileNav.open()
+              } else {
+                mobileNav.close()
+              }
+            }
+          })
+
+          // Initialize both components
+          mobileNav.init()
+          hamburgerMenu.init()
+
+          // Set up bidirectional sync
+          setupBidirectionalSync(hamburgerMenu, mobileNav)
+
+          // Store reference for testing
+          mobileNavSystem = { hamburgerMenu, mobileNav }
+
+          console.log('✅ Mobile navigation initialized successfully')
+
+          // Set up viewport controls
+          setupViewportControls()
+
+          // Set up test buttons
+          setupTestControls()
+        } catch (error) {
+          console.error('❌ Failed to initialize mobile navigation:', error)
+          addTestResult('Initialization', false, `Failed to initialize: ${error.message}`)
+        }
+      })
+
+      /**
+       * Set up bidirectional synchronization between hamburger and mobile nav
+       */
+      function setupBidirectionalSync(hamburgerMenu, mobileNav) {
+        const originalToggle = mobileNav.toggle
+
+        mobileNav.toggle = function () {
+          const result = originalToggle.call(this)
+
+          if (this.isOpenDrawer() && !hamburgerMenu.isOpenMenu()) {
+            hamburgerMenu.open()
+          } else if (!this.isOpenDrawer() && hamburgerMenu.isOpenMenu()) {
+            hamburgerMenu.close()
+          }
+
+          return result
+        }
+      }
+
+      /**
+       * Set up viewport control buttons
+       */
+      function setupViewportControls() {
+        const viewportButtons = document.querySelectorAll('.viewport-button[data-width]')
+        const testViewport = document.getElementById('test-viewport')
+        const currentViewportSpan = document.getElementById('current-viewport')
+
+        viewportButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            const width = button.dataset.width
+            const height = button.dataset.height
+
+            // Update active state
+            viewportButtons.forEach(btn => btn.classList.remove('active'))
+            button.classList.add('active')
+
+            // Apply viewport dimensions
+            testViewport.style.width = `${width}px`
+            testViewport.style.height = `${height}px`
+            testViewport.style.margin = '20px auto'
+
+            currentViewport = { width, height }
+            currentViewportSpan.textContent = `${width}×${height}`
+
+            // Clear test results when viewport changes
+            clearTestResults()
+          })
+        })
+
+        // Custom viewport size
+        const customWidth = document.getElementById('custom-width')
+        const customHeight = document.getElementById('custom-height')
+        const applyCustom = document.getElementById('apply-custom')
+
+        applyCustom.addEventListener('click', () => {
+          const width = customWidth.value
+          const height = customHeight.value
+
+          if (width && height) {
+            testViewport.style.width = `${width}px`
+            testViewport.style.height = `${height}px`
+            testViewport.style.margin = '20px auto'
+
+            currentViewport = { width, height }
+            currentViewportSpan.textContent = `${width}×${height}`
+
+            // Update active state
+            viewportButtons.forEach(btn => btn.classList.remove('active'))
+
+            clearTestResults()
+          }
+        })
+
+        // Reset viewport
+        const resetViewport = document.getElementById('reset-viewport')
+        resetViewport.addEventListener('click', () => {
+          testViewport.style.width = ''
+          testViewport.style.height = ''
+          testViewport.style.margin = ''
+
+          currentViewport = { width: 'Full', height: 'Full' }
+          currentViewportSpan.textContent = 'Full Width'
+
+          viewportButtons.forEach(btn => btn.classList.remove('active'))
+
+          clearTestResults()
+        })
+      }
+
+      /**
+       * Set up test control buttons
+       */
+      function setupTestControls() {
+        const runTestsBtn = document.getElementById('run-tests')
+        const testPerformanceBtn = document.getElementById('test-performance')
+        const testAccessibilityBtn = document.getElementById('test-accessibility')
+
+        runTestsBtn.addEventListener('click', runAllTests)
+        testPerformanceBtn.addEventListener('click', testPerformance)
+        testAccessibilityBtn.addEventListener('click', testAccessibility)
+      }
+
+      /**
+       * Run all comprehensive tests
+       */
+      async function runAllTests() {
+        clearTestResults()
+        addTestResult('Starting Tests', true, 'Beginning comprehensive mobile navigation tests...')
+
+        // Test basic functionality
+        await testBasicFunctionality()
+
+        // Test animations
+        await testAnimations()
+
+        // Test touch targets
+        await testTouchTargets()
+
+        // Test keyboard navigation
+        await testKeyboardNavigation()
+
+        // Test body scroll lock
+        await testBodyScrollLock()
+
+        // Test z-index stack
+        await testZIndexStack()
+
+        // Generate summary
+        generateTestSummary()
+      }
+
+      /**
+       * Test basic functionality
+       */
+      async function testBasicFunctionality() {
+        if (!mobileNavSystem) {
+          addTestResult('Basic Functionality', false, 'Mobile navigation system not initialized')
+          return
+        }
+
+        try {
+          const { hamburgerMenu, mobileNav } = mobileNavSystem
+
+          // Test initial state
+          addTestResult('Initial State', !mobileNav.isOpenDrawer(), 'Drawer should start closed')
+          addTestResult(
+            'Hamburger Initial State',
+            !hamburgerMenu.isOpenMenu(),
+            'Hamburger should start closed'
+          )
+
+          // Test opening
+          hamburgerMenu.open()
+          await sleep(350) // Wait for animation
+          addTestResult(
+            'Open Drawer',
+            mobileNav.isOpenDrawer(),
+            'Drawer should open when hamburger is clicked'
+          )
+          addTestResult(
+            'Hamburger Active State',
+            hamburgerMenu.isOpenMenu(),
+            'Hamburger should be active when drawer is open'
+          )
+
+          // Test closing
+          hamburgerMenu.close()
+          await sleep(350)
+          addTestResult(
+            'Close Drawer',
+            !mobileNav.isOpenDrawer(),
+            'Drawer should close when hamburger is clicked'
+          )
+          addTestResult(
+            'Hamburger Inactive State',
+            !hamburgerMenu.isOpenMenu(),
+            'Hamburger should be inactive when drawer is closed'
+          )
+        } catch (error) {
+          addTestResult('Basic Functionality', false, `Error: ${error.message}`)
+        }
+      }
+
+      /**
+       * Test animations
+       */
+      async function testAnimations() {
+        if (!mobileNavSystem) {
+          addTestResult('Animations', false, 'Mobile navigation system not initialized')
+          return
+        }
+
+        try {
+          const { mobileNav } = mobileNavSystem
+
+          // Measure animation duration
+          const startTime = performance.now()
+          mobileNav.open()
+
+          // Check if drawer starts opening immediately
+          const drawer = document.getElementById('mobile-nav-drawer')
+          const isOpening = drawer && drawer.classList.contains('mobile-nav-drawer-open')
+          addTestResult(
+            'Animation Start',
+            isOpening,
+            'Drawer should start opening animation immediately'
+          )
+
+          await sleep(350)
+          const endTime = performance.now()
+          const duration = endTime - startTime
+
+          addTestResult(
+            'Animation Duration',
+            duration <= 400,
+            `Animation completed in ${duration.toFixed(2)}ms (should be ≤400ms)`
+          )
+
+          mobileNav.close()
+          await sleep(350)
+        } catch (error) {
+          addTestResult('Animations', false, `Error: ${error.message}`)
+        }
+      }
+
+      /**
+       * Test touch targets
+       */
+      async function testTouchTargets() {
+        try {
+          // Test hamburger button
+          const hamburgerBtn = document.querySelector('[data-hamburger-menu]')
+          if (hamburgerBtn) {
+            const rect = hamburgerBtn.getBoundingClientRect()
+            const width = rect.width
+            const height = rect.height
+            addTestResult(
+              'Hamburger Touch Target Width',
+              width >= 44,
+              `Hamburger width: ${width}px (should be ≥44px)`
+            )
+            addTestResult(
+              'Hamburger Touch Target Height',
+              height >= 44,
+              `Hamburger height: ${height}px (should be ≥44px)`
+            )
+          }
+
+          // Test drawer (when open)
+          const { mobileNav } = mobileNavSystem
+          mobileNav.open()
+          await sleep(350)
+
+          const closeBtn = document.querySelector('.drawer-close-btn')
+          if (closeBtn) {
+            const rect = closeBtn.getBoundingClientRect()
+            const width = rect.width
+            const height = rect.height
+            addTestResult(
+              'Close Button Width',
+              width >= 44,
+              `Close button width: ${width}px (should be ≥44px)`
+            )
+            addTestResult(
+              'Close Button Height',
+              height >= 44,
+              `Close button height: ${height}px (should be ≥44px)`
+            )
+          }
+
+          const navLinks = document.querySelectorAll('.mobile-nav-link')
+          if (navLinks.length > 0) {
+            const firstLink = navLinks[0]
+            const rect = firstLink.getBoundingClientRect()
+            const height = rect.height
+            addTestResult(
+              'Nav Link Height',
+              height >= 44,
+              `Nav link height: ${height}px (should be ≥44px)`
+            )
+          }
+
+          mobileNav.close()
+          await sleep(350)
+        } catch (error) {
+          addTestResult('Touch Targets', false, `Error: ${error.message}`)
+        }
+      }
+
+      /**
+       * Test keyboard navigation
+       */
+      async function testKeyboardNavigation() {
+        if (!mobileNavSystem) {
+          addTestResult('Keyboard Navigation', false, 'Mobile navigation system not initialized')
+          return
+        }
+
+        try {
+          const { mobileNav } = mobileNavSystem
+
+          // Open drawer for keyboard testing
+          mobileNav.open()
+          await sleep(350)
+
+          // Test ESC key
+          const escEvent = new KeyboardEvent('keydown', { key: 'Escape' })
+          document.dispatchEvent(escEvent)
+          await sleep(350)
+
+          addTestResult(
+            'ESC Key Close',
+            !mobileNav.isOpenDrawer(),
+            'Drawer should close with ESC key'
+          )
+        } catch (error) {
+          addTestResult('Keyboard Navigation', false, `Error: ${error.message}`)
+        }
+      }
+
+      /**
+       * Test body scroll lock
+       */
+      async function testBodyScrollLock() {
+        if (!mobileNavSystem) {
+          addTestResult('Body Scroll Lock', false, 'Mobile navigation system not initialized')
+          return
+        }
+
+        try {
+          const { mobileNav } = mobileNavSystem
+
+          // Test initial state
+          const initiallyLocked = document.body.classList.contains('mobile-nav-open')
+          addTestResult(
+            'Initial Scroll State',
+            !initiallyLocked,
+            'Body should not be scroll-locked initially'
+          )
+
+          // Open drawer and test
+          mobileNav.open()
+          await sleep(350)
+
+          const isLocked = document.body.classList.contains('mobile-nav-open')
+          addTestResult(
+            'Scroll Lock Active',
+            isLocked,
+            'Body should be scroll-locked when drawer is open'
+          )
+
+          // Close drawer and test
+          mobileNav.close()
+          await sleep(350)
+
+          const isUnlocked = !document.body.classList.contains('mobile-nav-open')
+          addTestResult(
+            'Scroll Unlock',
+            isUnlocked,
+            'Body scroll should be restored when drawer is closed'
+          )
+        } catch (error) {
+          addTestResult('Body Scroll Lock', false, `Error: ${error.message}`)
+        }
+      }
+
+      /**
+       * Test z-index stack
+       */
+      async function testZIndexStack() {
+        try {
+          // Test hamburger z-index
+          const hamburgerBtn = document.querySelector('[data-hamburger-menu]')
+          if (hamburgerBtn) {
+            const hamburgerZ = window.getComputedStyle(hamburgerBtn).zIndex
+            addTestResult(
+              'Hamburger Z-Index',
+              hamburgerZ >= 80,
+              `Hamburger z-index: ${hamburgerZ} (should be ≥80)`
+            )
+          }
+
+          // Open drawer to test other elements
+          const { mobileNav } = mobileNavSystem
+          mobileNav.open()
+          await sleep(350)
+
+          // Test overlay z-index
+          const overlay = document.getElementById('mobile-nav-overlay')
+          if (overlay) {
+            const overlayZ = window.getComputedStyle(overlay).zIndex
+            addTestResult(
+              'Overlay Z-Index',
+              overlayZ >= 60,
+              `Overlay z-index: ${overlayZ} (should be ≥60)`
+            )
+          }
+
+          // Test drawer z-index
+          const drawer = document.getElementById('mobile-nav-drawer')
+          if (drawer) {
+            const drawerZ = window.getComputedStyle(drawer).zIndex
+            addTestResult(
+              'Drawer Z-Index',
+              drawerZ >= 70,
+              `Drawer z-index: ${drawerZ} (should be ≥70)`
+            )
+          }
+
+          mobileNav.close()
+          await sleep(350)
+        } catch (error) {
+          addTestResult('Z-Index Stack', false, `Error: ${error.message}`)
+        }
+      }
+
+      /**
+       * Test performance metrics
+       */
+      async function testPerformance() {
+        clearTestResults()
+        document.getElementById('performance-metrics').style.display = 'grid'
+        document.getElementById('debug-info').style.display = 'block'
+
+        if (!mobileNavSystem) {
+          addTestResult('Performance Test', false, 'Mobile navigation system not initialized')
+          return
+        }
+
+        try {
+          const { mobileNav } = mobileNavSystem
+
+          // Test animation performance
+          const iterations = 5
+          const durations = []
+
+          for (let i = 0; i < iterations; i++) {
+            const startTime = performance.now()
+            mobileNav.open()
+
+            // Wait for animation to complete
+            await sleep(350)
+
+            const endTime = performance.now()
+            durations.push(endTime - startTime)
+
+            mobileNav.close()
+            await sleep(350)
+          }
+
+          const avgDuration = durations.reduce((a, b) => a + b, 0) / durations.length
+          const minDuration = Math.min(...durations)
+          const maxDuration = Math.max(...durations)
+
+          document.getElementById('animation-duration').textContent = avgDuration.toFixed(1)
+
+          addTestResult(
+            'Performance Test',
+            avgDuration <= 400,
+            `Average animation time: ${avgDuration.toFixed(2)}ms (${minDuration.toFixed(2)}-${maxDuration.toFixed(2)}ms)`
+          )
+
+          // Measure touch target sizes
+          const hamburgerBtn = document.querySelector('[data-hamburger-menu]')
+          if (hamburgerBtn) {
+            const rect = hamburgerBtn.getBoundingClientRect()
+            document.getElementById('touch-target-size').textContent =
+              `${Math.round(rect.width)}×${Math.round(rect.height)}`
+          }
+
+          // Measure drawer dimensions
+          mobileNav.open()
+          await sleep(350)
+
+          const drawer = document.getElementById('mobile-nav-drawer')
+          if (drawer) {
+            const rect = drawer.getBoundingClientRect()
+            document.getElementById('drawer-width').textContent = Math.round(rect.width)
+          }
+
+          const overlay = document.getElementById('mobile-nav-overlay')
+          if (overlay) {
+            const overlayZ = window.getComputedStyle(overlay).zIndex
+            document.getElementById('z-index').textContent = overlayZ
+          }
+
+          mobileNav.close()
+
+          // Generate debug info
+          const debugInfo = {
+            viewport: currentViewport,
+            userAgent: navigator.userAgent,
+            timestamp: new Date().toISOString(),
+            performance: {
+              averageAnimationDuration: avgDuration,
+              minDuration,
+              maxDuration,
+              iterations
+            }
+          }
+
+          document.getElementById('debug-content').textContent = JSON.stringify(debugInfo, null, 2)
+        } catch (error) {
+          addTestResult('Performance Test', false, `Error: ${error.message}`)
+        }
+      }
+
+      /**
+       * Test accessibility features
+       */
+      async function testAccessibility() {
+        clearTestResults()
+        document.getElementById('accessibility-tests').style.display = 'block'
+
+        if (!mobileNavSystem) {
+          addAccessibilityTest(
+            'System Initialization',
+            false,
+            'Mobile navigation system not initialized'
+          )
+          return
+        }
+
+        try {
+          const { mobileNav, hamburgerMenu } = mobileNavSystem
+
+          // Test ARIA attributes on hamburger
+          const hamburgerBtn = document.querySelector('[data-hamburger-menu]')
+          if (hamburgerBtn) {
+            const ariaLabel = hamburgerBtn.getAttribute('aria-label')
+            const ariaExpanded = hamburgerBtn.getAttribute('aria-expanded')
+            const ariaControls = hamburgerBtn.getAttribute('aria-controls')
+
+            addAccessibilityTest('Hamburger ARIA Label', !!ariaLabel, `aria-label: "${ariaLabel}"`)
+            addAccessibilityTest(
+              'Hamburger ARIA Expanded',
+              ariaExpanded !== null,
+              `aria-expanded: ${ariaExpanded}`
+            )
+            addAccessibilityTest(
+              'Hamburger ARIA Controls',
+              !!ariaControls,
+              `aria-controls: "${ariaControls}"`
+            )
+          }
+
+          // Test ARIA attributes on drawer
+          mobileNav.open()
+          await sleep(350)
+
+          const drawer = document.getElementById('mobile-nav-drawer')
+          if (drawer) {
+            const role = drawer.getAttribute('role')
+            const ariaLabel = drawer.getAttribute('aria-label')
+            const ariaHidden = drawer.getAttribute('aria-hidden')
+
+            addAccessibilityTest('Drawer Role', role === 'navigation', `role: "${role}"`)
+            addAccessibilityTest('Drawer ARIA Label', !!ariaLabel, `aria-label: "${ariaLabel}"`)
+            addAccessibilityTest(
+              'Drawer ARIA Hidden',
+              ariaHidden === 'false',
+              `aria-hidden: ${ariaHidden} (should be "false" when open)`
+            )
+          }
+
+          // Test overlay ARIA
+          const overlay = document.getElementById('mobile-nav-overlay')
+          if (overlay) {
+            const ariaHidden = overlay.getAttribute('aria-hidden')
+            addAccessibilityTest(
+              'Overlay ARIA Hidden',
+              ariaHidden === 'false',
+              `Overlay aria-hidden: ${ariaHidden}`
+            )
+          }
+
+          // Test focus management
+          const closeButton = document.querySelector('.drawer-close-btn')
+          if (closeButton) {
+            addAccessibilityTest(
+              'Close Button Focusable',
+              true,
+              'Close button exists and should be focusable'
+            )
+          }
+
+          mobileNav.close()
+
+          // Test reduced motion support
+          const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          addAccessibilityTest(
+            'Reduced Motion Detection',
+            true,
+            prefersReducedMotion
+              ? 'User prefers reduced motion'
+              : 'User does not prefer reduced motion'
+          )
+
+          // Test keyboard accessibility
+          hamburgerMenu.open()
+          await sleep(350)
+
+          const focusableElements = drawer.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          )
+          addAccessibilityTest(
+            'Focusable Elements',
+            focusableElements.length > 0,
+            `Found ${focusableElements.length} focusable elements in drawer`
+          )
+
+          mobileNav.close()
+        } catch (error) {
+          addAccessibilityTest('Accessibility Test', false, `Error: ${error.message}`)
+        }
+      }
+
+      /**
+       * Add a test result to the output
+       */
+      function addTestResult(testName, passed, details) {
+        testResults.push({ testName, passed, details })
+
+        const output = document.getElementById('test-output')
+        const testItem = document.createElement('div')
+        testItem.className = `test-item ${passed ? 'pass' : 'fail'}`
+        testItem.innerHTML = `
+          <strong>${testName}:</strong> ${passed ? '✅ PASS' : '❌ FAIL'}
+          <br><small>${details}</small>
+        `
+        output.appendChild(testItem)
+      }
+
+      /**
+       * Add an accessibility test result
+       */
+      function addAccessibilityTest(testName, passed, details) {
+        const output = document.getElementById('accessibility-output')
+        const testItem = document.createElement('div')
+        testItem.className = `test-item ${passed ? 'pass' : 'fail'}`
+        testItem.innerHTML = `
+          <strong>${testName}:</strong> ${passed ? '✅ PASS' : '❌ FAIL'}
+          <br><small>${details}</small>
+        `
+        output.appendChild(testItem)
+      }
+
+      /**
+       * Clear test results
+       */
+      function clearTestResults() {
+        testResults = []
+        document.getElementById('test-output').innerHTML = ''
+        document.getElementById('accessibility-output').innerHTML = ''
+        document.getElementById('performance-metrics').style.display = 'none'
+        document.getElementById('debug-info').style.display = 'none'
+        document.getElementById('accessibility-tests').style.display = 'none'
+      }
+
+      /**
+       * Generate test summary
+       */
+      function generateTestSummary() {
+        const passed = testResults.filter(r => r.passed).length
+        const total = testResults.length
+        const percentage = Math.round((passed / total) * 100)
+
+        const summary = document.createElement('div')
+        summary.className = `test-item ${percentage === 100 ? 'pass' : percentage >= 80 ? 'pending' : 'fail'}`
+        summary.innerHTML = `
+          <strong>Test Summary:</strong> ${passed}/${total} tests passed (${percentage}%)
+          <br><small>Viewport: ${currentViewport.width}×${currentViewport.height}</small>
+        `
+
+        document.getElementById('test-output').appendChild(summary)
+      }
+
+      /**
+       * Sleep helper function
+       */
+      function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms))
+      }
+
+      // Export for manual testing
+      window.mobileNavTestUtils = {
+        runAllTests,
+        testPerformance,
+        testAccessibility,
+        mobileNavSystem: () => mobileNavSystem
+      }
+    </script>
+  </body>
+</html>

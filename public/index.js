@@ -8,31 +8,49 @@ import { createIcons } from './js/lucide-icons.js'
 import { createImageCarousel } from './js/components/imageCarousel.js'
 import { addToCart, initCartBadge, initCartEventListeners } from './js/shared/cart.js'
 import { api } from './js/shared/api-client.js'
+import { initMobileNav } from './js/components/mobileNav.js'
+import { initHamburgerMenu } from './js/components/hamburgerMenu.js'
 
 /**
- * Initialize mobile menu toggle
+ * Initialize mobile navigation drawer with hamburger menu
+ * Uses the new MobileNav and HamburgerMenu components
  */
-function initMobileMenu() {
-  const menuBtn = document.getElementById('mobile-menu-btn')
-  const mobileMenu = document.getElementById('mobile-menu')
-
-  if (!menuBtn || !mobileMenu) {
-    return
-  }
-
-  menuBtn.addEventListener('click', () => {
-    const isHidden = mobileMenu.classList.toggle('hidden')
-    menuBtn.setAttribute('aria-expanded', !isHidden)
-  })
-
-  // Close mobile menu on link click
-  const mobileLinks = mobileMenu.querySelectorAll('.mobile-nav-link')
-  mobileLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      mobileMenu.classList.add('hidden')
-      menuBtn.setAttribute('aria-expanded', 'false')
+function initMobileNavigation() {
+  try {
+    // Initialize the mobile navigation drawer
+    const mobileNav = initMobileNav({
+      menuBtnSelector: '#mobile-menu-btn',
+      menuSelector: '#mobile-menu',
+      drawerId: 'mobile-nav-drawer',
+      overlayId: 'mobile-nav-overlay',
+      animationDuration: 250
     })
-  })
+
+    // Initialize the hamburger menu button
+    const hamburgerMenu = initHamburgerMenu({
+      containerSelector: '.nav-actions',
+      buttonId: 'hamburger-menu-btn',
+      animationDuration: 250,
+      activeClass: 'hamburger-active',
+      onToggle: isOpen => {
+        // Sync hamburger menu state with mobile navigation
+        if (isOpen) {
+          mobileNav.open()
+        } else {
+          mobileNav.close()
+        }
+      }
+    })
+
+    // Store references for potential later use
+    window.mobileNavInstance = mobileNav
+    window.hamburgerMenuInstance = hamburgerMenu
+
+    console.log('✅ [index.js] Mobile navigation initialized successfully')
+  } catch (error) {
+    console.error('❌ [index.js] Failed to initialize mobile navigation:', error)
+    throw error // Fail-fast: propagate error
+  }
 }
 
 /**
@@ -798,9 +816,9 @@ function init() {
     initCartEventListeners()
     console.log('✅ [index.js] Cart initialized')
 
-    // Initialize features
-    initMobileMenu()
-    console.log('✅ [index.js] Mobile menu initialized')
+    // Initialize mobile navigation with new components
+    initMobileNavigation()
+    console.log('✅ [index.js] Mobile navigation initialized')
 
     initSmoothScroll()
     console.log('✅ [index.js] Smooth scroll initialized')
