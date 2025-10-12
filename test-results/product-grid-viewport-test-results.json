@@ -1,0 +1,162 @@
+[
+  {
+    "viewport": "Mobile Small",
+    "width": 375,
+    "height": 667,
+    "expectedColumns": 1,
+    "actualColumns": 1,
+    "hasHorizontalScroll": false,
+    "contentVisibility": {
+      "totalProducts": 8,
+      "visibleProducts": 0,
+      "firstProductVisible": true
+    },
+    "gridClasses": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8",
+    "screenshot": "test-results/product-grid-mobile-small.png",
+    "passed": true
+  },
+  {
+    "viewport": "Mobile Large",
+    "width": 414,
+    "height": 896,
+    "expectedColumns": 1,
+    "actualColumns": 1,
+    "hasHorizontalScroll": false,
+    "contentVisibility": {
+      "totalProducts": 8,
+      "visibleProducts": 0,
+      "firstProductVisible": true
+    },
+    "gridClasses": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8",
+    "screenshot": "test-results/product-grid-mobile-large.png",
+    "passed": true
+  },
+  {
+    "viewport": "Mobile XL",
+    "width": 767,
+    "height": 1024,
+    "expectedColumns": 1,
+    "actualColumns": 1,
+    "hasHorizontalScroll": false,
+    "contentVisibility": {
+      "totalProducts": 8,
+      "visibleProducts": 1,
+      "firstProductVisible": true
+    },
+    "gridClasses": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8",
+    "screenshot": "test-results/product-grid-mobile-xl.png",
+    "passed": true
+  },
+  {
+    "viewport": "Tablet",
+    "width": 768,
+    "height": 1024,
+    "expectedColumns": 2,
+    "actualColumns": 2,
+    "hasHorizontalScroll": false,
+    "contentVisibility": {
+      "totalProducts": 8,
+      "visibleProducts": 2,
+      "firstProductVisible": true
+    },
+    "gridClasses": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8",
+    "screenshot": "test-results/product-grid-tablet.png",
+    "passed": true
+  },
+  {
+    "viewport": "Tablet Large",
+    "width": 1023,
+    "height": 768,
+    "expectedColumns": 2,
+    "actualColumns": 2,
+    "hasHorizontalScroll": false,
+    "contentVisibility": {
+      "totalProducts": 8,
+      "visibleProducts": 0,
+      "firstProductVisible": true
+    },
+    "gridClasses": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8",
+    "screenshot": "test-results/product-grid-tablet-large.png",
+    "passed": true
+  },
+  {
+    "viewport": "Desktop Small",
+    "width": 1024,
+    "height": 768,
+    "expectedColumns": 3,
+    "actualColumns": 3,
+    "hasHorizontalScroll": false,
+    "contentVisibility": {
+      "totalProducts": 8,
+      "visibleProducts": 0,
+      "firstProductVisible": true
+    },
+    "gridClasses": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8",
+    "screenshot": "test-results/product-grid-desktop-small.png",
+    "passed": true
+  },
+  {
+    "viewport": "Desktop Medium",
+    "width": 1280,
+    "height": 720,
+    "expectedColumns": 3,
+    "actualColumns": 4,
+    "hasHorizontalScroll": false,
+    "contentVisibility": {
+      "totalProducts": 8,
+      "visibleProducts": 0,
+      "firstProductVisible": true
+    },
+    "gridClasses": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8",
+    "screenshot": "test-results/product-grid-desktop-medium.png",
+    "passed": false
+  },
+  {
+    "viewport": "Desktop Large",
+    "width": 1279,
+    "height": 800,
+    "expectedColumns": 3,
+    "actualColumns": 3,
+    "hasHorizontalScroll": false,
+    "contentVisibility": {
+      "totalProducts": 8,
+      "visibleProducts": 0,
+      "firstProductVisible": true
+    },
+    "gridClasses": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8",
+    "screenshot": "test-results/product-grid-desktop-large.png",
+    "passed": true
+  },
+  {
+    "viewport": "Large Screen",
+    "width": 1280,
+    "height": 800,
+    "expectedColumns": 4,
+    "actualColumns": 4,
+    "hasHorizontalScroll": false,
+    "contentVisibility": {
+      "totalProducts": 8,
+      "visibleProducts": 0,
+      "firstProductVisible": true
+    },
+    "gridClasses": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8",
+    "screenshot": "test-results/product-grid-large-screen.png",
+    "passed": true
+  },
+  {
+    "viewport": "Ultra Wide",
+    "width": 1920,
+    "height": 1080,
+    "expectedColumns": 4,
+    "actualColumns": 4,
+    "hasHorizontalScroll": false,
+    "contentVisibility": {
+      "totalProducts": 8,
+      "visibleProducts": 4,
+      "firstProductVisible": true
+    },
+    "gridClasses": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8",
+    "screenshot": "test-results/product-grid-ultra-wide.png",
+    "passed": true
+  }
+]
