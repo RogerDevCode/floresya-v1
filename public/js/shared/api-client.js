@@ -26,6 +26,9 @@ class ApiClient {
   async request(endpoint, options = {}) {
     try {
       const url = this.baseUrl + endpoint
+      console.log(`🌐 [DEBUG] API Request: ${options.method || 'GET'} ${url}`)
+      console.log(`🌐 [DEBUG] Request options:`, options)
+
       const config = {
         method: options.method || 'GET',
         headers: { ...this.defaultHeaders, ...options.headers }
@@ -35,21 +38,41 @@ class ApiClient {
         config.body = JSON.stringify(options.body)
       }
 
+      console.log(`🌐 [DEBUG] Fetch config:`, config)
+
       const response = await fetch(url, config)
+
+      console.log(`🌐 [DEBUG] Response status: ${response.status} ${response.statusText}`)
+      console.log(`🌐 [DEBUG] Response headers:`, {
+        contentType: response.headers.get('content-type'),
+        cacheControl: response.headers.get('cache-control')
+      })
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
+        console.error(`❌ [DEBUG] API Error Response:`, errorData)
         throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`)
       }
 
       const contentType = response.headers.get('content-type')
       if (contentType && contentType.includes('application/json')) {
-        return await response.json()
+        const data = await response.json()
+        console.log(`✅ [DEBUG] API Response Data:`, data)
+        return data
       }
 
-      return await response.text()
+      const textData = await response.text()
+      console.log(`✅ [DEBUG] API Response Text:`, textData)
+      return textData
     } catch (error) {
-      console.error(`API request failed: ${endpoint}`, error)
+      console.error(`❌ [DEBUG] API request failed: ${endpoint}`, error)
+      console.error(`❌ [DEBUG] Error details:`, {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+        endpoint: endpoint,
+        baseUrl: this.baseUrl
+      })
       throw error
     }
   }

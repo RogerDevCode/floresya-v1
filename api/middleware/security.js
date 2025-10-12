@@ -65,7 +65,13 @@ export function configureHelmet() {
       directives: {
         defaultSrc: ["'self'"],
         styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-        scriptSrc: ["'self'"],
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          "'sha256-+xJ6txSxaHKrLk0C53nnoPP2rf27Rop0wiQQfNCQdDQ='"
+        ],
+        scriptSrcAttr: ["'unsafe-inline'"],
         imgSrc: ["'self'", 'data:', 'https:'],
         connectSrc: ["'self'"],
         fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
@@ -73,7 +79,7 @@ export function configureHelmet() {
         mediaSrc: ["'self'"],
         frameSrc: ["'none'"]
       },
-      reportOnly: process.env.NODE_ENV === 'production' ? true : false
+      reportOnly: false // Desactivar reportOnly para que las políticas se apliquen
     },
     crossOriginEmbedderPolicy: false,
     crossOriginResourcePolicy: { policy: 'cross-origin' },

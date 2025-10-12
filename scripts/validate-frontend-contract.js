@@ -105,7 +105,7 @@ async function getFrontendFiles() {
 /**
  * Analyze file for contract violations
  */
-async function analyzeFileForContractViolations(filePath, content) {
+function analyzeFileForContractViolations(filePath, content) {
   const issues = []
   const lines = content.split('\n')
 
@@ -115,7 +115,8 @@ async function analyzeFileForContractViolations(filePath, content) {
     'lucide-icons.js',
     '.test.js',
     '__tests__',
-    'shared/api.js' // Legacy API client (allowed until full migration)
+    'shared/api.js', // Legacy API client (allowed until full migration)
+    'sw.js' // Service workers have different requirements and can use self.fetch()
   ]
   const isExcludedFile = EXCLUDED_FILES.some(pattern => filePath.includes(pattern))
 

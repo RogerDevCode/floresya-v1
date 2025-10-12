@@ -3,6 +3,7 @@
  * Loads product details from API and renders UI
  */
 
+import { onDOMReady } from '/js/shared/dom-ready.js'
 import { createIcons } from '/js/lucide-icons.js'
 import { addToCart, isInCart, initCartBadge, initCartEventListeners } from '/js/shared/cart.js'
 import { showToast } from '/js/components/toast.js'
@@ -420,5 +421,5 @@ async function init() {
   }
 }
 
-// Run on DOM ready
-document.addEventListener('DOMContentLoaded', init)
+// Run on DOM ready using the safe utility
+onDOMReady(init)

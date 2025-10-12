@@ -3,6 +3,7 @@
  * Handles customer information form and payment processing
  */
 
+import { onDOMReady } from '/js/shared/dom-ready.js'
 import {
   getCartItems,
   clearCart,
@@ -827,7 +828,7 @@ function saveCustomerData() {
 }
 
 // Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', async () => {
+onDOMReady(async () => {
   // Initialize icons first
   if (window.lucide && window.lucide.createIcons) {
     window.lucide.createIcons()

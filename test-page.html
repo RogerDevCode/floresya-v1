@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test FloresYa JS</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+      }
+      .test-result {
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
+      .success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      pre {
+        background-color: #f5f5f5;
+        padding: 10px;
+        border-radius: 5px;
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>FloresYa - Test de Módulos JS</h1>
+    <div id="test-results"></div>
+
+    <script type="module">
+      const results = document.getElementById('test-results')
+
+      function addResult(title, success, details) {
+        const div = document.createElement('div')
+        div.className = `test-result ${success ? 'success' : 'error'}`
+        div.innerHTML = `
+                <h3>${title}</h3>
+                <p>${details}</p>
+            `
+        results.appendChild(div)
+      }
+
+      // Test 1: Import api-client.js
+      try {
+        const apiModule = await import('./public/js/shared/api-client.js')
+        addResult(
+          '✅ Test 1: api-client.js',
+          true,
+          `Módulo cargado correctamente. API disponible: ${typeof apiModule.api === 'object'}`
+        )
+
+        // Test 2: Fetch carousel products
+        try {
+          const carouselData = await apiModule.api.getAllCarouselProducts()
+          addResult(
+            '✅ Test 2: Carousel API',
+            true,
+            `Productos cargados: ${carouselData.data?.length || 0} productos<pre>${JSON.stringify(carouselData.data?.[0], null, 2)}</pre>`
+          )
+        } catch (error) {
+          addResult('❌ Test 2: Carousel API', false, `Error: ${error.message}`)
+        }
+
+        // Test 3: Fetch all products
+        try {
+          const productsData = await apiModule.api.getAllProducts({ limit: 5 })
+          addResult(
+            '✅ Test 3: Products API',
+            true,
+            `Productos cargados: ${productsData.data?.length || 0} productos`
+          )
+        } catch (error) {
+          addResult('❌ Test 3: Products API', false, `Error: ${error.message}`)
+        }
+      } catch (error) {
+        addResult('❌ Test 1: api-client.js', false, `Error al importar: ${error.message}`)
+      }
+
+      // Test 4: Import imageCarousel.js
+      try {
+        const carouselModule = await import('./public/js/components/imageCarousel.js')
+        addResult(
+          '✅ Test 4: imageCarousel.js',
+          true,
+          `Módulo cargado correctamente. createImageCarousel disponible: ${typeof carouselModule.createImageCarousel === 'function'}`
+        )
+      } catch (error) {
+        addResult('❌ Test 4: imageCarousel.js', false, `Error al importar: ${error.message}`)
+      }
+
+      // Test 5: Import lucide-icons.js
+      try {
+        const iconsModule = await import('./public/js/lucide-icons.js')
+        addResult(
+          '✅ Test 5: lucide-icons.js',
+          true,
+          `Módulo cargado correctamente. createIcons disponible: ${typeof iconsModule.createIcons === 'function'}`
+        )
+      } catch (error) {
+        addResult('❌ Test 5: lucide-icons.js', false, `Error al importar: ${error.message}`)
+      }
+
+      // Test 6: Import cart.js
+      try {
+        const cartModule = await import('./public/js/shared/cart.js')
+        addResult(
+          '✅ Test 6: cart.js',
+          true,
+          `Módulo cargado correctamente. Funciones disponibles: ${Object.keys(cartModule).join(', ')}`
+        )
+      } catch (error) {
+        addResult('❌ Test 6: cart.js', false, `Error al importar: ${error.message}`)
+      }
+    </script>
+  </body>
+</html>

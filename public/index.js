@@ -3,6 +3,7 @@
  * Mobile menu toggle and UI interactions for index.html
  */
 
+import { onDOMReady } from './js/shared/dom-ready.js'
 import { createIcons } from './js/lucide-icons.js'
 import { createImageCarousel } from './js/components/imageCarousel.js'
 import { addToCart, initCartBadge, initCartEventListeners } from './js/shared/cart.js'
@@ -70,20 +71,24 @@ async function initCarousel() {
   // Fetch featured products from API
   let featuredProducts = []
   try {
+    console.log('🔍 [DEBUG] Starting carousel products fetch...')
+    console.log('🔍 [DEBUG] API Base URL:', 'http://localhost:3000')
+
     const result = await api.getAllCarouselProducts()
 
-    console.info('🎠 Carousel API Response:', {
+    console.log('🎠 [DEBUG] Carousel API Response:', {
       success: result.success,
       totalProducts: result.data?.length || 0,
-      products: result.data
+      firstProduct: result.data?.[0],
+      fullResponse: result
     })
 
     if (result.success && result.data && result.data.length > 0) {
       // Filter: Only products WITH images (exclude products without image_url_small)
       featuredProducts = result.data.filter(p => p.image_url_small)
 
-      console.info(
-        '🖼️ Product Images:',
+      console.log(
+        '🖼️ [DEBUG] Product Images Filter:',
         featuredProducts.map(p => ({
           id: p.id,
           name: p.name,
@@ -93,16 +98,26 @@ async function initCarousel() {
       )
 
       if (featuredProducts.length === 0) {
+        console.error('❌ [DEBUG] No carousel products with images found')
         throw new Error('No carousel products with images found')
       }
+
+      console.log('✅ [DEBUG] Carousel products loaded successfully:', featuredProducts.length)
     } else {
+      console.error('❌ [DEBUG] No carousel products found in response')
       throw new Error('No carousel products found')
     }
   } catch (error) {
-    console.error('❌ Failed to load carousel products:', error)
+    console.error('❌ [DEBUG] Failed to load carousel products:', error)
+    console.error('❌ [DEBUG] Error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    })
     carouselSlides.innerHTML = `
       <div class="text-center text-red-500 p-8">
         <p class="text-lg">Error al cargar productos destacados</p>
+        <p class="text-sm mt-2">${error.message}</p>
       </div>
     `
     return
@@ -129,6 +144,8 @@ async function initCarousel() {
               alt="${product.name}"
               class="carousel-product-image w-[300px] h-[300px] object-cover rounded-lg shadow-lg"
               data-fallback="./images/placeholder-flower.svg"
+              loading="lazy"
+              decoding="async"
             />
           </div>
           <!-- Product Info -->
@@ -228,7 +245,45 @@ async function initCarousel() {
   })
 
   // Auto-advance carousel every 5 seconds
-  setInterval(nextSlide, 5000)
+  // Use requestAnimationFrame for better performance
+  let lastTime = 0
+  const autoAdvance = timestamp => {
+    if (!lastTime) {
+      lastTime = timestamp
+    }
+    const elapsed = timestamp - lastTime
+
+    if (elapsed >= 5000) {
+      nextSlide()
+      lastTime = timestamp
+    }
+
+    requestAnimationFrame(autoAdvance)
+  }
+
+  // Start auto-advance only when page is visible
+  if ('IntersectionObserver' in window) {
+    const carouselObserver = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            requestAnimationFrame(autoAdvance)
+          } else {
+            lastTime = 0 // Pause when not visible
+          }
+        })
+      },
+      { threshold: 0.1 }
+    )
+
+    const carouselElement = document.getElementById('featuredCarousel')
+    if (carouselElement) {
+      carouselObserver.observe(carouselElement)
+    }
+  } else {
+    // Fallback for older browsers
+    setInterval(nextSlide, 5000)
+  }
 }
 
 /**
@@ -324,6 +379,9 @@ async function loadProducts(page = 1) {
   `
 
   try {
+    console.log('🔍 [DEBUG] Starting products grid fetch...')
+    console.log('🔍 [DEBUG] API Base URL:', 'http://localhost:3000')
+
     // Build query params
     const offset = (page - 1) * PRODUCTS_PER_PAGE
     const searchInput = document.getElementById('searchInput')
@@ -347,15 +405,20 @@ async function loadProducts(page = 1) {
       params.sortBy = sortFilter.value
     }
 
+    console.log('🔍 [DEBUG] Products API Request params:', params)
+
     const result = await api.getAllProducts(params)
 
-    console.info('📦 Products API Response:', {
+    console.log('📦 [DEBUG] Products API Response:', {
       success: result.success,
       totalProducts: result.data?.length || 0,
-      page: page
+      page: page,
+      firstProduct: result.data?.[0],
+      fullResponse: result
     })
 
     if (!result.success || !result.data || result.data.length === 0) {
+      console.error('❌ [DEBUG] No products found in response')
       productsContainer.innerHTML = `
         <div class="col-span-full text-center py-12">
           <p class="text-gray-500 text-lg">No se encontraron productos</p>
@@ -363,6 +426,8 @@ async function loadProducts(page = 1) {
       `
       return
     }
+
+    console.log('✅ [DEBUG] Products grid loaded successfully:', result.data.length)
 
     // Render products
     productsContainer.innerHTML = result.data
@@ -380,9 +445,13 @@ async function loadProducts(page = 1) {
               <p class="text-gray-600 text-sm mb-3 line-clamp-2">
                 ${description}
               </p>
-              <div class="flex items-center justify-between mt-4">
-                <span class="text-2xl font-bold text-pink-600">$${price.toFixed(2)}</span>
-                <div class="flex items-center gap-1 pr-1">
+              <div class="mt-4 space-y-3">
+                <!-- Price centered -->
+                <div class="text-center">
+                  <span class="text-2xl font-bold text-pink-600">$${price.toFixed(2)}</span>
+                </div>
+                <!-- Icons centered below price -->
+                <div class="flex items-center justify-center gap-1">
                   <button
                     class="quick-view-btn bg-gray-300 hover:bg-gray-400 text-gray-900 p-2 rounded-full shadow-md transition-all duration-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                     type="button"
@@ -717,22 +786,39 @@ function addBuyNowHandlers() {
  * Initialize page
  */
 function init() {
-  // Initialize Lucide icons
-  createIcons()
+  try {
+    console.log('🚀 [index.js] Starting initialization...')
 
-  // Initialize cart functionality
-  initCartBadge()
-  initCartEventListeners()
+    // Initialize Lucide icons
+    createIcons()
+    console.log('✅ [index.js] Icons initialized')
 
-  // Initialize features
-  initMobileMenu()
-  initSmoothScroll()
-  initCarousel()
-  initProductsGrid()
+    // Initialize cart functionality
+    initCartBadge()
+    initCartEventListeners()
+    console.log('✅ [index.js] Cart initialized')
 
-  // Mark page as loaded
-  document.documentElement.classList.add('loaded')
+    // Initialize features
+    initMobileMenu()
+    console.log('✅ [index.js] Mobile menu initialized')
+
+    initSmoothScroll()
+    console.log('✅ [index.js] Smooth scroll initialized')
+
+    initCarousel()
+    console.log('✅ [index.js] Carousel initializing...')
+
+    initProductsGrid()
+    console.log('✅ [index.js] Products grid initializing...')
+
+    // Mark page as loaded
+    document.documentElement.classList.add('loaded')
+    console.log('✅ [index.js] Page fully initialized')
+  } catch (error) {
+    console.error('❌ [index.js] Initialization failed:', error)
+    throw error
+  }
 }
 
-// Run on DOM ready
-document.addEventListener('DOMContentLoaded', init)
+// Run on DOM ready using the safe utility
+onDOMReady(init)

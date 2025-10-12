@@ -3,6 +3,7 @@
  * Loads all contact information from settings API
  */
 
+import { onDOMReady } from '/js/shared/dom-ready.js'
 import { api } from '../js/shared/api-client.js'
 import { initCartBadge, initCartEventListeners } from '../js/shared/cart.js'
 
@@ -200,4 +201,4 @@ async function init() {
 }
 
 // Auto-initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', init)
+onDOMReady(init)

@@ -4,9 +4,8 @@
  */
 
 import { api } from '../js/shared/api-client.js'
-import { onDOMReady } from '/js/shared/dom-ready.js'
 
-onDOMReady(init)
+document.addEventListener('DOMContentLoaded', init)
 
 async function init() {
   // Initialize icons first

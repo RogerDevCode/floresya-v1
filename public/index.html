@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Performance optimizations -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="theme-color" content="#ec4899" />
     <meta
       name="description"
       content="FloresYa - Tu floristería en línea de confianza. Hermosos ramos, arreglos florales y plantas para toda ocasión. Entrega a domicilio en la Gran Caracas."
@@ -12,6 +16,29 @@
       content="flores, floristería, ramos, arreglos florales, plantas, Gran Caracas, Caracas, entrega domicilio"
     />
     <title>FloresYa - Tu Floristería en Línea</title>
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+    <link rel="manifest" href="./manifest.json" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Florist",
+        "name": "FloresYa",
+        "description": "Tu floristería en línea de confianza",
+        "url": "https://floresya.com",
+        "telephone": "+58412-1234567",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Gran Caracas",
+          "addressCountry": "VE"
+        }
+      }
+    </script>
 
     <!-- Open Graph -->
     <meta property="og:title" content="FloresYa - Tu Floristería en Línea" />
@@ -28,6 +55,11 @@
 
     <!-- Tailwind CSS -->
     <link rel="stylesheet" href="./css/tailwind.css" />
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="./images/hero-flowers.webp" as="image" />
+    <link rel="preload" href="./css/styles.css" as="style" />
+    <link rel="preload" href="./css/tailwind.css" as="style" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="./images/favicon.ico" />
@@ -152,6 +184,8 @@
                 width="600"
                 height="450"
                 loading="eager"
+                decoding="async"
+                fetchpriority="high"
               />
             </div>
             <!-- Hero decorations -->
@@ -290,7 +324,7 @@
 
           <!-- Products Grid (dynamically loaded) -->
           <div
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
             id="productsContainer"
           >
             <!-- Products will be loaded here by JavaScript -->
@@ -536,5 +570,20 @@
 
     <!-- Scripts al final (ES6 Modules) -->
     <script type="module" src="./index.js"></script>
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker
+            .register('./sw.js')
+            .then(registration => {
+              console.log('SW registered: ', registration)
+            })
+            .catch(registrationError => {
+              console.log('SW registration failed: ', registrationError)
+            })
+        })
+      }
+    </script>
   </body>
 </html>

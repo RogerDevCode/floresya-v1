@@ -159,12 +159,17 @@ export function createIcons() {
   })
 }
 
-// Auto-initialize on DOM ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', createIcons)
-} else {
-  createIcons()
+// Auto-initialize on DOM ready (defensive approach)
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', createIcons, { once: true })
+  } else {
+    // DOM is already loaded, use microtask for consistency
+    queueMicrotask(createIcons)
+  }
 }
 
-// Export for window.lucide compatibility (used in cart.js line 156)
-window.lucide = { createIcons }
+// Export for window.lucide compatibility (used in cart.js and other files)
+if (typeof window !== 'undefined') {
+  window.lucide = { createIcons }
+}

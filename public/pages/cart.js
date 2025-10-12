@@ -4,6 +4,7 @@
  * Uses shared cart utility for data persistence
  */
 
+import { onDOMReady } from '/js/shared/dom-ready.js'
 import {
   getCartItems,
   updateCartItemQuantity,
@@ -345,7 +346,7 @@ function handleClearCart() {
 }
 
 // Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', async () => {
+onDOMReady(async () => {
   // Initialize icons first (from global window.lucide)
   if (window.lucide && window.lucide.createIcons) {
     window.lucide.createIcons()

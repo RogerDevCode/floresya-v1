@@ -94,7 +94,12 @@ export default [
   },
   {
     // Frontend contract enforcement
-    files: ['public/**/*.js', '!public/js/shared/api-client.js', '!public/js/shared/api-types.js'],
+    files: [
+      'public/**/*.js',
+      '!public/js/shared/api-client.js',
+      '!public/js/shared/api-types.js',
+      '!public/sw.js'
+    ],
     rules: {
       'no-restricted-globals': [
         'error',
@@ -123,6 +128,21 @@ export default [
           message: 'External HTTP libraries are prohibited. Use the generated API client instead.'
         }
       ]
+    }
+  },
+  {
+    // Service worker configuration - allow fetch and importScripts
+    files: ['public/sw.js'],
+    languageOptions: {
+      globals: {
+        ...globals.serviceworker,
+        importScripts: 'readonly',
+        self: 'readonly'
+      }
+    },
+    rules: {
+      'no-restricted-globals': 'off',
+      'no-restricted-imports': 'off'
     }
   },
   {

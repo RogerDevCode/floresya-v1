@@ -77,7 +77,8 @@ async function scanFrontendFiles() {
           !entry.name.includes('lucide-icons') &&
           !entry.name.includes('chart.') &&
           entry.name !== 'api-client.js' &&
-          entry.name !== 'api-types.js'
+          entry.name !== 'api-types.js' &&
+          entry.name !== 'sw.js' // Service workers have different requirements
         ) {
           files.push(fullPath)
         }

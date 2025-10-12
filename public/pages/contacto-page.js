@@ -1,5 +1,7 @@
+import { onDOMReady } from '/js/shared/dom-ready.js'
+
 // Initialize Lucide icons
-document.addEventListener('DOMContentLoaded', function () {
+onDOMReady(function () {
   if (typeof window.lucide !== 'undefined') {
     window.lucide.createIcons()
   }
