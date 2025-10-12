@@ -2,7 +2,7 @@
  * Settings Service
  * Key-value store operations
  * Uses indexed key column (unique)
- * NO soft-delete (settings are permanent configuration)
+ * Soft-delete implementation using is_active flag (inactive settings excluded by default)
  * ENTERPRISE FAIL-FAST: Uses custom error classes with metadata
  */
 
@@ -12,7 +12,8 @@ import {
   NotFoundError,
   DatabaseError,
   DatabaseConstraintError,
-  BadRequestError
+  BadRequestError,
+  InternalServerError
 } from '../errors/AppError.js'
 
 const TABLE = DB_SCHEMA.settings.table
@@ -69,13 +70,19 @@ function validateSettingData(data, isUpdate = false) {
 /**
  * Get all settings - optionally filter for public settings only
  * @param {boolean} [publicOnly=false] - Whether to return only public settings
+ * @param {boolean} includeInactive - Include inactive settings (default: false, admin only)
  * @returns {Object[]} - Array of settings ordered by key
  * @throws {NotFoundError} When no settings are found
  * @throws {DatabaseError} When database query fails
  */
-export async function getAllSettings(publicOnly = false) {
+export async function getAllSettings(publicOnly = false, includeInactive = false) {
   try {
     let query = supabase.from(TABLE).select('*')
+
+    // By default, only return active settings
+    if (!includeInactive) {
+      query = query.eq('is_active', true)
+    }
 
     if (publicOnly) {
       query = query.eq('is_public', true)
@@ -110,6 +117,47 @@ export async function getPublicSettings() {
     return await getAllSettings(true)
   } catch (error) {
     console.error('getPublicSettings failed:', error)
+    throw error
+  }
+}
+
+/**
+ * Get setting by key (indexed column)
+ * @param {string} key - Setting key to search for
+ * @param {boolean} includeInactive - Include inactive settings (default: false, admin only)
+ * @returns {Object} - Setting object
+ * @throws {BadRequestError} When key is invalid
+ * @throws {NotFoundError} When setting with key is not found
+ * @throws {DatabaseError} When database query fails
+ */
+export async function getSettingById(key, includeInactive = false) {
+  try {
+    if (!key || typeof key !== 'string') {
+      throw new BadRequestError('Invalid key: must be a string', { key })
+    }
+
+    let query = supabase.from(TABLE).select('*').eq('key', key)
+
+    // By default, only return active settings
+    if (!includeInactive) {
+      query = query.eq('is_active', true)
+    }
+
+    const { data, error } = await query.single()
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        throw new NotFoundError('Setting', key, { key, includeInactive })
+      }
+      throw new DatabaseError('SELECT', TABLE, error, { key })
+    }
+    if (!data) {
+      throw new NotFoundError('Setting', key, { key, includeInactive })
+    }
+
+    return data
+  } catch (error) {
+    console.error(`getSettingById(${key}) failed:`, error)
     throw error
   }
 }
@@ -220,9 +268,14 @@ export async function createSetting(settingData) {
     }
 
     if (!data) {
-      throw new DatabaseError('INSERT', TABLE, new Error('No data returned after insert'), {
-        settingData: newSetting
-      })
+      throw new DatabaseError(
+        'INSERT',
+        TABLE,
+        new InternalServerError('No data returned after insert'),
+        {
+          settingData: newSetting
+        }
+      )
     }
 
     return data
@@ -316,12 +369,12 @@ export async function setSettingValue(key, value) {
 }
 
 /**
- * Delete setting - permanently removes a configuration entry
+ * Soft-delete setting (sets is_active to false)
  * @param {string} key - Setting key to delete
- * @returns {Object} - Deleted setting
+ * @returns {Object} - Deactivated setting
  * @throws {BadRequestError} When key is invalid
- * @throws {NotFoundError} When setting is not found
- * @throws {DatabaseError} When database delete fails
+ * @throws {NotFoundError} When setting is not found or already inactive
+ * @throws {DatabaseError} When database update fails
  */
 export async function deleteSetting(key) {
   try {
@@ -329,18 +382,60 @@ export async function deleteSetting(key) {
       throw new BadRequestError('Invalid key: must be a string', { key })
     }
 
-    const { data, error } = await supabase.from(TABLE).delete().eq('key', key).select().single()
+    const { data, error } = await supabase
+      .from(TABLE)
+      .update({ is_active: false })
+      .eq('key', key)
+      .eq('is_active', true)
+      .select()
+      .single()
 
     if (error) {
-      throw new DatabaseError('DELETE', TABLE, error, { key })
+      throw new DatabaseError('UPDATE', TABLE, error, { key })
     }
     if (!data) {
-      throw new NotFoundError('Setting', key, { key })
+      throw new NotFoundError('Setting', key, { is_active: true })
     }
 
     return data
   } catch (error) {
     console.error(`deleteSetting(${key}) failed:`, error)
+    throw error
+  }
+}
+
+/**
+ * Reactivate setting (reverse soft-delete)
+ * @param {string} key - Setting key to reactivate
+ * @returns {Object} - Reactivated setting
+ * @throws {BadRequestError} When key is invalid
+ * @throws {NotFoundError} When setting is not found or already active
+ * @throws {DatabaseError} When database update fails
+ */
+export async function reactivateSetting(key) {
+  try {
+    if (!key || typeof key !== 'string') {
+      throw new BadRequestError('Invalid key: must be a string', { key })
+    }
+
+    const { data, error } = await supabase
+      .from(TABLE)
+      .update({ is_active: true })
+      .eq('key', key)
+      .eq('is_active', false)
+      .select()
+      .single()
+
+    if (error) {
+      throw new DatabaseError('UPDATE', TABLE, error, { key })
+    }
+    if (!data) {
+      throw new NotFoundError('Setting', key, { is_active: false })
+    }
+
+    return data
+  } catch (error) {
+    console.error(`reactivateSetting(${key}) failed:`, error)
     throw error
   }
 }

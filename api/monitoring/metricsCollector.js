@@ -158,12 +158,19 @@ class MetricsCollector {
 
   /**
    * Record business metrics for orders
+   * BUSINESS RULE: "Una venta cancelada no es una venta" - Exclude cancelled orders from sales metrics
    */
   recordOrder(orderData) {
     try {
+      // Skip cancelled orders - they are NOT considered sales
+      if (orderData.status === 'cancelled') {
+        logger.info(`Skipping cancelled order ${orderData.id} from sales metrics`)
+        return
+      }
+
       this.metrics.business.ordersCreated++
 
-      // Track revenue
+      // Track revenue (only for non-cancelled orders)
       if (orderData.total_amount_usd) {
         this.metrics.business.totalRevenue += orderData.total_amount_usd
 
@@ -172,7 +179,7 @@ class MetricsCollector {
           this.metrics.business.totalRevenue / this.metrics.business.ordersCreated
       }
 
-      // Track product popularity
+      // Track product popularity (only for non-cancelled orders)
       if (orderData.items && Array.isArray(orderData.items)) {
         orderData.items.forEach(item => {
           const productKey = item.product_name || `Product ${item.product_id}`

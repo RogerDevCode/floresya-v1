@@ -50,6 +50,7 @@ export function configureCors() {
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset'],
     maxAge: 86400 // 24 hours
   })
 }
@@ -71,10 +72,15 @@ export function configureHelmet() {
         objectSrc: ["'none'"],
         mediaSrc: ["'self'"],
         frameSrc: ["'none'"]
-      }
+      },
+      reportOnly: process.env.NODE_ENV === 'production' ? true : false
     },
     crossOriginEmbedderPolicy: false,
-    crossOriginResourcePolicy: { policy: 'cross-origin' }
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    // Override default headers to match test expectations
+    frameguard: { action: 'deny' },
+    // Don't use helmet's xssFilter, we'll set it manually in sessionSecurityHeaders
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
   })
 }
 

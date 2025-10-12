@@ -24,8 +24,8 @@ export const getAllProducts = asyncHandler(async (req, res) => {
     offset: req.query.offset ? parseInt(req.query.offset, 10) : undefined
   }
 
-  // includeInactive: admin can see inactive products
-  const includeInactive = req.query.includeInactive === 'true'
+  // includeInactive: only admin can see inactive products (CLAUDE.md #5)
+  const includeInactive = req.user?.role === 'admin' && req.query.includeInactive === 'true'
 
   // includeImageSize: optional image size to attach to products
   const includeImageSize = req.query.imageSize || null

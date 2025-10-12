@@ -13,7 +13,8 @@ import {
   DatabaseError,
   DatabaseConstraintError,
   InsufficientStockError,
-  BadRequestError
+  BadRequestError,
+  InternalServerError
 } from '../errors/AppError.js'
 import { buildSearchCondition } from '../utils/normalize.js'
 import { sanitizeProductData } from '../utils/sanitize.js'
@@ -477,15 +478,16 @@ export async function createProduct(productData) {
 
     const newProduct = {
       name: sanitizedData.name,
-      summary: sanitizedData.summary || null,
-      description: sanitizedData.description || null,
+      summary: sanitizedData.summary !== undefined ? sanitizedData.summary : null,
+      description: sanitizedData.description !== undefined ? sanitizedData.description : null,
       price_usd: sanitizedData.price_usd,
-      price_ves: sanitizedData.price_ves || null,
-      stock: sanitizedData.stock || 0,
-      sku: sanitizedData.sku || null,
+      price_ves: sanitizedData.price_ves !== undefined ? sanitizedData.price_ves : null,
+      stock: sanitizedData.stock !== undefined ? sanitizedData.stock : 0,
+      sku: sanitizedData.sku !== undefined ? sanitizedData.sku : null,
       active: true,
-      featured: sanitizedData.featured || false,
-      carousel_order: sanitizedData.carousel_order || null
+      featured: sanitizedData.featured !== undefined ? sanitizedData.featured : false,
+      carousel_order:
+        sanitizedData.carousel_order !== undefined ? sanitizedData.carousel_order : null
     }
 
     const { data, error } = await supabase.from(TABLE).insert(newProduct).select().single()
@@ -502,9 +504,14 @@ export async function createProduct(productData) {
     }
 
     if (!data) {
-      throw new DatabaseError('INSERT', TABLE, new Error('No data returned after insert'), {
-        productData: newProduct
-      })
+      throw new DatabaseError(
+        'INSERT',
+        TABLE,
+        new InternalServerError('No data returned after insert'),
+        {
+          productData: newProduct
+        }
+      )
     }
 
     return data
@@ -704,7 +711,9 @@ export async function updateCarouselOrder(productId, newOrder) {
       throw new DatabaseError('UPDATE', TABLE, error, { productId })
     }
     if (!data) {
-      throw new DatabaseError('UPDATE', TABLE, new Error('No data returned'), { productId })
+      throw new DatabaseError('UPDATE', TABLE, new InternalServerError('No data returned'), {
+        productId
+      })
     }
 
     return data

@@ -34,6 +34,11 @@ import { standardResponse } from './middleware/responseStandard.js'
 import { initializeOpenApiValidator } from './middleware/openapiValidator.js'
 import { createDivergenceDetectionMiddleware } from './contract/divergenceDetector.js'
 import { createDocumentationComplianceMiddleware } from './contract/documentationSync.js'
+import {
+  configureSecureSession,
+  sessionSecurityHeaders,
+  validateSession
+} from './middleware/sessionSecurity.js'
 import { NotFoundError } from './errors/AppError.js'
 
 // Import routes
@@ -46,6 +51,11 @@ import settingsRoutes from './routes/settingsRoutes.js'
 import adminSettingsRoutes from './routes/admin/settingsRoutes.js'
 
 const app = express()
+
+// Session security (MUST be before body parsing)
+app.use(configureSecureSession())
+// Note: sessionSecurityHeaders will be applied after Helmet to override its values
+app.use(validateSession)
 
 // Body parsing (MUST be before routes)
 app.use(express.json({ limit: '10mb' }))
@@ -102,6 +112,8 @@ app.use(configureCors())
 app.use(configureHelmet())
 app.use(configureSanitize())
 app.use(xssProtection)
+// Apply session security headers after Helmet to override its values
+app.use(sessionSecurityHeaders)
 
 // Rate limiting (for API routes only)
 // More generous limits to support multiple simultaneous requests (carousel, occasions, products, etc.)

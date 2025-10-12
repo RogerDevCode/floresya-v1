@@ -15,8 +15,9 @@ const router = express.Router()
 
 export const getAllSettings = asyncHandler(async (req, res) => {
   const publicOnly = req.query.public === 'true'
+  const includeInactive = req.user?.role === 'admin'
 
-  const settings = await settingsService.getAllSettings(publicOnly)
+  const settings = await settingsService.getAllSettings(publicOnly, includeInactive)
 
   res.json({
     success: true,
@@ -47,7 +48,8 @@ export const getPublicSettings = asyncHandler(async (req, res) => {
 
 export const getSettingsMap = asyncHandler(async (req, res) => {
   const publicOnly = req.query.public === 'true'
-  const map = await settingsService.getSettingsMap(publicOnly)
+  const includeInactive = req.user?.role === 'admin'
+  const map = await settingsService.getSettingsMap(publicOnly, includeInactive)
 
   res.json({
     success: true,

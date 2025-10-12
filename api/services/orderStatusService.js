@@ -15,7 +15,7 @@ import { QUERY_LIMITS } from '../config/constants.js'
 export async function getOrderStatusHistory(orderId) {
   try {
     if (!orderId) {
-      throw new Error('ID de orden requerido')
+      throw new BadRequestError('Order ID required', { orderId })
     }
 
     const { data, error } = await supabase

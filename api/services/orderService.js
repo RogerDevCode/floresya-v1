@@ -2,7 +2,7 @@
  * Order Service
  * CRUD operations with atomic order creation (stored function)
  * Uses indexed columns (user_id, status, created_at)
- * NO soft-delete (orders are permanent records)
+ * Soft-delete implementation using status field (cancelled orders excluded by default)
  */
 
 import { supabase, DB_SCHEMA } from './supabaseClient.js'
@@ -11,7 +11,8 @@ import {
   ValidationError,
   NotFoundError,
   DatabaseError,
-  BadRequestError
+  BadRequestError,
+  InternalServerError
 } from '../errors/AppError.js'
 import { sanitizeOrderData, sanitizeOrderItemData } from '../utils/sanitize.js'
 import { PAGINATION } from '../config/constants.js'
@@ -104,11 +105,12 @@ function validateOrderData(data, isUpdate = false) {
  * @param {string} [filters.search] - Search in customer_name and customer_email (accent-insensitive)
  * @param {number} [filters.limit] - Number of items to return
  * @param {number} [filters.offset] - Number of items to skip
+ * @param {boolean} includeInactive - Include cancelled orders (default: false, admin only)
  * @returns {Object[]} - Array of orders with items
  * @throws {NotFoundError} When no orders are found
  * @throws {DatabaseError} When database query fails
  */
-export async function getAllOrders(filters = {}) {
+export async function getAllOrders(filters = {}, includeInactive = false) {
   try {
     let query = supabase.from(TABLE).select(`
       *,
@@ -135,6 +137,11 @@ export async function getAllOrders(filters = {}) {
 
     if (filters.status && VALID_STATUSES.includes(filters.status)) {
       query = query.eq('status', filters.status)
+    }
+
+    // By default, exclude cancelled orders (business rule: "venta cancelada no es venta")
+    if (!includeInactive) {
+      query = query.neq('status', 'cancelled')
     }
 
     // Date range filter (uses indexed created_at)
@@ -178,6 +185,7 @@ export async function getAllOrders(filters = {}) {
 /**
  * Get order by ID with items and product details
  * @param {number} id - Order ID to retrieve
+ * @param {boolean} includeInactive - Include cancelled orders (default: false, admin only)
  * @returns {Object} - Order object with order_items array
  * @throws {BadRequestError} When ID is invalid
  * @throws {NotFoundError} When order is not found
@@ -185,13 +193,13 @@ export async function getAllOrders(filters = {}) {
  * @example
  * const order = await getOrderById(123)
  */
-export async function getOrderById(id) {
+export async function getOrderById(id, includeInactive = false) {
   try {
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid order ID: must be a number', { orderId: id })
     }
 
-    const { data, error } = await supabase
+    let query = supabase
       .from(TABLE)
       .select(
         `
@@ -200,7 +208,13 @@ export async function getOrderById(id) {
       `
       )
       .eq('id', id)
-      .single()
+
+    // By default, exclude cancelled orders (business rule: "venta cancelada no es venta")
+    if (!includeInactive) {
+      query = query.neq('status', 'cancelled')
+    }
+
+    const { data, error } = await query.single()
 
     if (error) {
       if (error.code === 'PGRST116' || error.message?.includes('Row not found')) {
@@ -378,24 +392,31 @@ export async function createOrderWithItems(orderData, orderItems) {
     }
 
     const orderPayload = {
-      user_id: sanitizedOrderData.user_id || null,
+      user_id: sanitizedOrderData.user_id !== undefined ? sanitizedOrderData.user_id : null,
       customer_email: sanitizedOrderData.customer_email,
       customer_name: sanitizedOrderData.customer_name,
-      customer_phone: sanitizedOrderData.customer_phone || null,
+      customer_phone:
+        sanitizedOrderData.customer_phone !== undefined ? sanitizedOrderData.customer_phone : null,
       delivery_address: sanitizedOrderData.delivery_address,
-      delivery_date: sanitizedOrderData.delivery_date || null,
-      delivery_time_slot: sanitizedOrderData.delivery_time_slot || null,
-      delivery_notes: sanitizedOrderData.delivery_notes || null,
-      status: sanitizedOrderData.status || 'pending',
+      delivery_date:
+        sanitizedOrderData.delivery_date !== undefined ? sanitizedOrderData.delivery_date : null,
+      delivery_time_slot:
+        sanitizedOrderData.delivery_time_slot !== undefined
+          ? sanitizedOrderData.delivery_time_slot
+          : null,
+      delivery_notes:
+        sanitizedOrderData.delivery_notes !== undefined ? sanitizedOrderData.delivery_notes : null,
+      status: sanitizedOrderData.status !== undefined ? sanitizedOrderData.status : 'pending',
       total_amount_usd:
         typeof sanitizedOrderData.total_amount_usd === 'string'
           ? parseFloat(sanitizedOrderData.total_amount_usd)
           : sanitizedOrderData.total_amount_usd,
       total_amount_ves:
         totalAmountVes !== null && totalAmountVes !== undefined ? Math.round(totalAmountVes) : null,
-      currency_rate: currencyRate || null,
-      notes: sanitizedOrderData.notes || null,
-      admin_notes: sanitizedOrderData.admin_notes || null
+      currency_rate: currencyRate !== undefined ? currencyRate : null,
+      notes: sanitizedOrderData.notes !== undefined ? sanitizedOrderData.notes : null,
+      admin_notes:
+        sanitizedOrderData.admin_notes !== undefined ? sanitizedOrderData.admin_notes : null
     }
 
     const itemsPayload = orderItems.map(item => {
@@ -431,7 +452,8 @@ export async function createOrderWithItems(orderData, orderItems) {
       return {
         product_id: productId,
         product_name: sanitizedItem.product_name,
-        product_summary: sanitizedItem.product_summary || null,
+        product_summary:
+          sanitizedItem.product_summary !== undefined ? sanitizedItem.product_summary : null,
         unit_price_usd: unitPriceUsd,
         unit_price_ves: roundedUnitPriceVes,
         quantity: quantity,
@@ -455,10 +477,15 @@ export async function createOrderWithItems(orderData, orderItems) {
 
     // RPC functions return single values, not arrays
     if (data === null || (Array.isArray(data) && data.length === 0)) {
-      throw new DatabaseError('RPC', 'create_order_with_items', new Error('No data returned'), {
-        orderData,
-        itemCount: orderItems.length
-      })
+      throw new DatabaseError(
+        'RPC',
+        'create_order_with_items',
+        new InternalServerError('No data returned'),
+        {
+          orderData,
+          itemCount: orderItems.length
+        }
+      )
     }
 
     return data
@@ -505,7 +532,7 @@ export async function updateOrderStatus(orderId, newStatus, notes = null, change
       throw new DatabaseError(
         'RPC',
         'update_order_status_with_history',
-        new Error('No data returned'),
+        new InternalServerError('No data returned'),
         {
           orderId,
           newStatus

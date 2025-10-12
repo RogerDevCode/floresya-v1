@@ -9,7 +9,11 @@ import { authenticate, authorize, checkOwnership } from '../middleware/auth.js'
 import { validate, validateId, validatePagination } from '../middleware/validate.js'
 import { sanitizeRequestData } from '../middleware/sanitize.js'
 import { advancedValidate } from '../middleware/advancedValidation.js'
-import { protectOrderCreation, protectAdminOperations } from '../middleware/rateLimit.js'
+import {
+  protectOrderCreation,
+  protectAdminOperations,
+  rateLimitCritical
+} from '../middleware/rateLimit.js'
 import { validateBusinessRules } from '../services/businessRules.js'
 import { orderMetricsMiddleware } from '../monitoring/metricsCollector.js'
 import { orderStatusUpdateSchema, orderCreateSchema } from '../middleware/schemas.js'
@@ -19,6 +23,7 @@ const router = express.Router()
 // Admin-only: Get all orders
 router.get(
   '/',
+  rateLimitCritical,
   protectAdminOperations,
   authenticate,
   authorize('admin'),
@@ -29,6 +34,7 @@ router.get(
 // Get order by ID (owner or admin)
 router.get(
   '/:id',
+  rateLimitCritical,
   authenticate,
   validateId(),
   checkOwnership(req => req.order?.user_id), // TODO: Fetch order first
@@ -38,6 +44,7 @@ router.get(
 // Get orders by user (own orders or admin)
 router.get(
   '/user/:userId',
+  rateLimitCritical,
   authenticate,
   validateId('userId'),
   checkOwnership(req => parseInt(req.params.userId, 10)),
@@ -45,7 +52,13 @@ router.get(
 )
 
 // Get order status history
-router.get('/:id/status-history', authenticate, validateId(), orderController.getOrderStatusHistory)
+router.get(
+  '/:id/status-history',
+  rateLimitCritical,
+  authenticate,
+  validateId(),
+  orderController.getOrderStatusHistory
+)
 
 // Create order (public - for checkout process)
 router.post(
@@ -60,11 +73,12 @@ router.post(
 )
 
 // Update order (admin or owner - limited fields)
-router.put('/:id', authenticate, validateId(), orderController.updateOrder)
+router.put('/:id', rateLimitCritical, authenticate, validateId(), orderController.updateOrder)
 
 // Update order status (admin only)
 router.patch(
   '/:id/status',
+  rateLimitCritical,
   authenticate,
   authorize('admin'),
   validateId(),
@@ -75,6 +89,7 @@ router.patch(
 // Cancel order (owner or admin)
 router.patch(
   '/:id/cancel',
+  rateLimitCritical,
   authenticate,
   validateId(),
   validate({

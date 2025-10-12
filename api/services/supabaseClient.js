@@ -8,6 +8,7 @@ import { createClient } from '@supabase/supabase-js'
 import dotenv from 'dotenv'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+import { ConfigurationError } from '../errors/AppError.js'
 
 // Load environment variables only in local development
 const IS_VERCEL = process.env.VERCEL === '1'
@@ -28,8 +29,14 @@ if (!supabaseUrl || !supabaseKey) {
     VERCEL: process.env.VERCEL,
     NODE_ENV: process.env.NODE_ENV
   })
-  throw new Error(
-    'Missing environment variables: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY'
+  throw new ConfigurationError(
+    'Missing environment variables: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY',
+    {
+      hasUrl: !!supabaseUrl,
+      hasKey: !!supabaseKey,
+      isVercel: IS_VERCEL,
+      nodeEnv: process.env.NODE_ENV
+    }
   )
 }
 

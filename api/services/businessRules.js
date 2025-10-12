@@ -276,7 +276,10 @@ class BusinessRulesEngine {
   evaluateRule(rule, entity, context = {}) {
     try {
       if (rule.requiresContext && !context) {
-        throw new Error('Rule requires context but none provided')
+        throw new ValidationError('Rule requires context but none provided', {
+          ruleId: rule.id,
+          requiresContext: true
+        })
       }
 
       return rule.condition(entity, context)

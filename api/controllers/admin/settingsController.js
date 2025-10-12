@@ -9,7 +9,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import * as settingsService from '../../services/settingsService.js'
 import { asyncHandler } from '../../middleware/errorHandler.js'
-import { BadRequestError } from '../../errors/AppError.js'
+import { BadRequestError, DatabaseError } from '../../errors/AppError.js'
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url)
@@ -121,7 +121,7 @@ export const uploadSettingImage = asyncHandler(async (req, res) => {
     })
   } catch (error) {
     console.error('Error saving image to local filesystem:', error)
-    throw new Error(`Error al guardar imagen: ${error.message}`)
+    throw new DatabaseError('INSERT', 'settings', error, { operation: 'saveImage' })
   }
 })
 

@@ -315,6 +315,46 @@ class RateLimitExceededError extends AppError {
 }
 
 /**
+ * Storage Errors
+ */
+
+class StorageError extends AppError {
+  constructor(operation, bucket, originalError, context = {}) {
+    const message = `Storage ${operation} failed on bucket ${bucket}: ${originalError.message}`
+    super(message, {
+      statusCode: 500,
+      code: 'STORAGE_ERROR',
+      isOperational: false,
+      context: {
+        operation, // 'UPLOAD', 'DELETE', 'GET_URL'
+        bucket,
+        originalError: originalError.message,
+        ...context
+      },
+      userMessage: 'A storage error occurred. Please try again.',
+      severity: 'high'
+    })
+  }
+}
+
+/**
+ * Configuration Errors
+ */
+
+class ConfigurationError extends AppError {
+  constructor(message, context = {}) {
+    super(message, {
+      statusCode: 500,
+      code: 'CONFIGURATION_ERROR',
+      isOperational: false,
+      context,
+      userMessage: 'Server configuration error. Please contact support.',
+      severity: 'critical'
+    })
+  }
+}
+
+/**
  * Export all error classes
  */
 export {
@@ -341,5 +381,9 @@ export {
   InvalidStateTransitionError,
   // External Services
   ExternalServiceError,
-  RateLimitExceededError
+  RateLimitExceededError,
+  // Storage
+  StorageError,
+  // Configuration
+  ConfigurationError
 }

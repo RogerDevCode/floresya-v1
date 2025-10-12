@@ -10,7 +10,8 @@ import {
   UnauthorizedError,
   BadRequestError,
   ConflictError,
-  DatabaseError
+  DatabaseError,
+  InternalServerError
 } from '../errors/AppError.js'
 
 /**
@@ -64,7 +65,9 @@ export async function signUp(email, password, metadata = {}) {
     }
 
     if (!data.user) {
-      throw new DatabaseError('SIGNUP', 'auth.users', new Error('No user returned'), { email })
+      throw new DatabaseError('SIGNUP', 'auth.users', new InternalServerError('No user returned'), {
+        email
+      })
     }
 
     return {
@@ -73,6 +76,7 @@ export async function signUp(email, password, metadata = {}) {
       message: 'Check your email to verify your account'
     }
   } catch (error) {
+    console.error(`signUp(${email}) failed:`, error)
     // Re-throw AppError instances as-is (fail-fast)
     if (error.name && error.name.includes('Error')) {
       throw error
@@ -121,6 +125,7 @@ export async function signIn(email, password) {
       refreshToken: data.session.refresh_token
     }
   } catch (error) {
+    console.error(`signIn(${email}) failed:`, error)
     // Re-throw AppError instances as-is (fail-fast)
     if (error.name && error.name.includes('Error')) {
       throw error
@@ -145,6 +150,7 @@ export async function signOut(accessToken) {
 
     return { message: 'Signed out successfully' }
   } catch (error) {
+    console.error('signOut failed:', error)
     // Re-throw AppError instances as-is (fail-fast)
     if (error.name && error.name.includes('Error')) {
       throw error
@@ -176,6 +182,7 @@ export async function refreshToken(refreshToken) {
       accessToken: data.session.access_token
     }
   } catch (error) {
+    console.error('refreshToken failed:', error)
     // Re-throw AppError instances as-is (fail-fast)
     if (error.name && error.name.includes('Error')) {
       throw error
@@ -205,6 +212,7 @@ export async function getUser(accessToken) {
 
     return data.user
   } catch (error) {
+    console.error('getUser failed:', error)
     // Re-throw AppError instances as-is (fail-fast)
     if (error.name && error.name.includes('Error')) {
       throw error
@@ -238,6 +246,7 @@ export async function resetPassword(email) {
       message: 'Password reset email sent. Check your inbox.'
     }
   } catch (error) {
+    console.error(`resetPassword(${email}) failed:`, error)
     // Re-throw AppError instances as-is (fail-fast)
     if (error.name && error.name.includes('Error')) {
       throw error
@@ -283,6 +292,7 @@ export async function updatePassword(accessToken, newPassword) {
       message: 'Password updated successfully'
     }
   } catch (error) {
+    console.error('updatePassword failed:', error)
     // Re-throw AppError instances as-is (fail-fast)
     if (error.name && error.name.includes('Error')) {
       throw error

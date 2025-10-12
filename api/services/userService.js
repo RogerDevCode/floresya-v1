@@ -10,7 +10,8 @@ import {
   NotFoundError,
   DatabaseError,
   DatabaseConstraintError,
-  BadRequestError
+  BadRequestError,
+  InternalServerError
 } from '../errors/AppError.js'
 import { buildSearchCondition } from '../utils/normalize.js'
 import { PAGINATION } from '../config/constants.js'
@@ -241,12 +242,12 @@ export async function createUser(userData) {
 
     const newUser = {
       email: userData.email,
-      full_name: userData.full_name || null,
-      phone: userData.phone || null,
-      role: userData.role || 'user',
-      password_hash: userData.password_hash || null,
+      full_name: userData.full_name !== undefined ? userData.full_name : null,
+      phone: userData.phone !== undefined ? userData.phone : null,
+      role: userData.role !== undefined ? userData.role : 'user',
+      password_hash: userData.password_hash !== undefined ? userData.password_hash : null,
       is_active: true,
-      email_verified: userData.email_verified || false
+      email_verified: userData.email_verified !== undefined ? userData.email_verified : false
     }
 
     const { data, error } = await supabase.from(TABLE).insert(newUser).select().single()
@@ -262,7 +263,9 @@ export async function createUser(userData) {
     }
 
     if (!data) {
-      throw new DatabaseError('INSERT', TABLE, new Error('No data returned'), { userData: newUser })
+      throw new DatabaseError('INSERT', TABLE, new InternalServerError('No data returned'), {
+        userData: newUser
+      })
     }
 
     return data

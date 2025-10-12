@@ -1,8 +1,9 @@
 /**
  * Product Image Service
- * CRUD operations for product images
+ * CRUD operations for product images with soft-delete pattern
  * Uses stored functions for atomic multi-image operations
  * Uses indexed columns (product_id, size, is_primary)
+ * Soft-delete implementation using is_active flag (inactive images excluded by default)
  */
 
 import { supabase, DB_SCHEMA } from './supabaseClient.js'
@@ -11,7 +12,8 @@ import {
   NotFoundError,
   DatabaseError,
   DatabaseConstraintError,
-  BadRequestError
+  BadRequestError,
+  InternalServerError
 } from '../errors/AppError.js'
 import { QUERY_LIMITS } from '../config/constants.js'
 
@@ -186,14 +188,27 @@ export async function getPrimaryImage(productId) {
 
 /**
  * Get image by ID
+ * @param {number} id - Image ID to retrieve
+ * @param {boolean} includeInactive - Include inactive images (default: false, admin only)
+ * @returns {Object} - Image object
+ * @throws {BadRequestError} When ID is invalid
+ * @throws {NotFoundError} When image is not found
+ * @throws {DatabaseError} When database query fails
  */
-export async function getImageById(id) {
+export async function getImageById(id, includeInactive = false) {
   try {
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid image ID: must be a number', { imageId: id })
     }
 
-    const { data, error } = await supabase.from(TABLE).select('*').eq('id', id).single()
+    let query = supabase.from(TABLE).select('*').eq('id', id)
+
+    // By default, only return active images
+    if (!includeInactive) {
+      query = query.eq('is_active', true)
+    }
+
+    const { data, error } = await query.single()
 
     if (error) {
       throw new DatabaseError('SELECT', TABLE, error, { imageId: id })
@@ -267,9 +282,14 @@ export async function createImage(imageData) {
     }
 
     if (!data) {
-      throw new DatabaseError('INSERT', TABLE, new Error('No data returned after insert'), {
-        imageData
-      })
+      throw new DatabaseError(
+        'INSERT',
+        TABLE,
+        new InternalServerError('No data returned after insert'),
+        {
+          imageData
+        }
+      )
     }
 
     return data
@@ -337,10 +357,15 @@ export async function createProductImagesAtomic(
       throw new DatabaseError('INSERT', TABLE, error, { productId, imageIndex })
     }
     if (!data) {
-      throw new DatabaseError('INSERT', TABLE, new Error('No data returned after insert'), {
-        productId,
-        imageIndex
-      })
+      throw new DatabaseError(
+        'INSERT',
+        TABLE,
+        new InternalServerError('No data returned after insert'),
+        {
+          productId,
+          imageIndex
+        }
+      )
     }
 
     return data
@@ -448,7 +473,12 @@ export async function setPrimaryImage(productId, imageIndex) {
 }
 
 /**
- * Delete single image
+ * Soft-delete single image
+ * @param {number} id - Image ID to delete
+ * @returns {Object} - Deactivated image
+ * @throws {BadRequestError} When ID is invalid
+ * @throws {NotFoundError} When image is not found or already inactive
+ * @throws {DatabaseError} When database update fails
  */
 export async function deleteImage(id) {
   try {
@@ -456,13 +486,19 @@ export async function deleteImage(id) {
       throw new BadRequestError('Invalid image ID: must be a number', { imageId: id })
     }
 
-    const { data, error } = await supabase.from(TABLE).delete().eq('id', id).select().single()
+    const { data, error } = await supabase
+      .from(TABLE)
+      .update({ is_active: false })
+      .eq('id', id)
+      .eq('is_active', true)
+      .select()
+      .single()
 
     if (error) {
-      throw new DatabaseError('DELETE', TABLE, error, { imageId: id })
+      throw new DatabaseError('UPDATE', TABLE, error, { imageId: id })
     }
     if (!data) {
-      throw new NotFoundError('Image', id)
+      throw new NotFoundError('Image', id, { is_active: true })
     }
 
     return data
@@ -473,7 +509,47 @@ export async function deleteImage(id) {
 }
 
 /**
- * Delete all images for a product (direct delete)
+ * Reactivate image (reverse soft-delete)
+ * @param {number} id - Image ID to reactivate
+ * @returns {Object} - Reactivated image
+ * @throws {BadRequestError} When ID is invalid
+ * @throws {NotFoundError} When image is not found or already active
+ * @throws {DatabaseError} When database update fails
+ */
+export async function reactivateImage(id) {
+  try {
+    if (!id || typeof id !== 'number') {
+      throw new BadRequestError('Invalid image ID: must be a number', { imageId: id })
+    }
+
+    const { data, error } = await supabase
+      .from(TABLE)
+      .update({ is_active: true })
+      .eq('id', id)
+      .eq('is_active', false)
+      .select()
+      .single()
+
+    if (error) {
+      throw new DatabaseError('UPDATE', TABLE, error, { imageId: id })
+    }
+    if (!data) {
+      throw new NotFoundError('Image', id, { is_active: false })
+    }
+
+    return data
+  } catch (error) {
+    console.error(`reactivateImage(${id}) failed:`, error)
+    throw error
+  }
+}
+
+/**
+ * Soft-delete all images for a product
+ * @param {number} productId - Product ID to delete images for
+ * @returns {Object} - Result with success status and count
+ * @throws {BadRequestError} When productId is invalid
+ * @throws {DatabaseError} When database update fails
  */
 export async function deleteProductImagesSafe(productId) {
   try {
@@ -481,15 +557,51 @@ export async function deleteProductImagesSafe(productId) {
       throw new BadRequestError('Invalid product ID: must be a number', { productId })
     }
 
-    const { data, error } = await supabase.from(TABLE).delete().eq('product_id', productId).select()
+    const { data, error } = await supabase
+      .from(TABLE)
+      .update({ is_active: false })
+      .eq('product_id', productId)
+      .eq('is_active', true)
+      .select()
 
     if (error) {
-      throw new DatabaseError('DELETE', TABLE, error, { productId })
+      throw new DatabaseError('UPDATE', TABLE, error, { productId })
     }
 
     return { success: true, deleted_count: data?.length || 0, product_id: productId }
   } catch (error) {
     console.error(`deleteProductImagesSafe(${productId}) failed:`, error)
+    throw error
+  }
+}
+
+/**
+ * Reactivate all images for a product
+ * @param {number} productId - Product ID to reactivate images for
+ * @returns {Object} - Result with success status and count
+ * @throws {BadRequestError} When productId is invalid
+ * @throws {DatabaseError} When database update fails
+ */
+export async function reactivateProductImages(productId) {
+  try {
+    if (!productId || typeof productId !== 'number') {
+      throw new BadRequestError('Invalid product ID: must be a number', { productId })
+    }
+
+    const { data, error } = await supabase
+      .from(TABLE)
+      .update({ is_active: true })
+      .eq('product_id', productId)
+      .eq('is_active', false)
+      .select()
+
+    if (error) {
+      throw new DatabaseError('UPDATE', TABLE, error, { productId })
+    }
+
+    return { success: true, reactivated_count: data?.length || 0, product_id: productId }
+  } catch (error) {
+    console.error(`reactivateProductImages(${productId}) failed:`, error)
     throw error
   }
 }
@@ -539,12 +651,13 @@ export async function deleteImagesByIndex(productId, imageIndex) {
       // Continue to delete from database even if storage deletion fails
     }
 
-    // 4. Delete from database
+    // 4. Soft-delete from database
     const { data, error } = await supabase
       .from(TABLE)
-      .delete()
+      .update({ is_active: false })
       .eq('product_id', productId)
       .eq('image_index', imageIndex)
+      .eq('is_active', true)
       .select()
 
     if (error) {
@@ -750,9 +863,10 @@ export async function deleteProductImagesBySize(productId, size) {
 
     const { data, error } = await supabase
       .from(TABLE)
-      .delete()
+      .update({ is_active: false })
       .eq('product_id', productId)
       .eq('size', size)
+      .eq('is_active', true)
       .select()
 
     if (error) {

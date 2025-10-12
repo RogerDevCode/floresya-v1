@@ -122,6 +122,13 @@ const RATE_LIMITS = {
     skipSuccessfulRequests: false
   },
 
+  //Critical endpoints (P0.3 requirement)
+  critical_endpoints: {
+    maxRequests: 50, // 50 requests per 15 minutes
+    windowMs: 15 * 60 * 1000, // 15 minutes window
+    skipSuccessfulRequests: false
+  },
+
   // Admin endpoints (moderate limits)
   admin_operations: {
     maxRequests: 50, // 50 requests per minute
@@ -151,6 +158,9 @@ function generateRateLimitKey(req, type = 'general') {
 
     case 'order_read':
       return `order_read:${clientIP}:${userId}`
+
+    case 'critical_endpoints':
+      return `critical:${clientIP}:${userId}`
 
     case 'admin_operations':
       return `admin:${clientIP}:${userId}`
@@ -233,6 +243,13 @@ export function rateLimitAdmin(req, res, next) {
  */
 export function rateLimitFileUpload(req, res, next) {
   return rateLimit('file_upload')(req, res, next)
+}
+
+/**
+ * Rate limiting for critical endpoints (orders, payments)
+ */
+export function rateLimitCritical(req, res, next) {
+  return rateLimit('critical_endpoints')(req, res, next)
 }
 
 /**
@@ -380,6 +397,11 @@ export function protectAdminOperations(req, res, next) {
   rateLimitAdmin(req, res, err => {
     if (err) {
       return next(err)
+    }
+
+    // Don't overwrite X-RateLimit-Type if it already exists (from rateLimitCritical)
+    if (!res.getHeader('X-RateLimit-Type')) {
+      res.setHeader('X-RateLimit-Type', 'admin_operations')
     }
 
     requestMetrics(req, res, next)

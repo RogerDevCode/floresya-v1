@@ -61,7 +61,8 @@ export const getAllUsers = asyncHandler(async (req, res) => {
     offset: req.query.offset
   }
 
-  const users = await userService.getAllUsers(filters)
+  const includeInactive = req.user?.role === 'admin'
+  const users = await userService.getAllUsers(filters, includeInactive)
 
   res.json({
     success: true,
@@ -102,7 +103,8 @@ export const getAllUsers = asyncHandler(async (req, res) => {
  *       500: { $ref: '#/components/responses/InternalServerError' }
  */
 export const getUserById = asyncHandler(async (req, res) => {
-  const user = await userService.getUserById(req.params.id)
+  const includeInactive = req.user?.role === 'admin'
+  const user = await userService.getUserById(req.params.id, includeInactive)
 
   res.json({
     success: true,

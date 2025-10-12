@@ -7,6 +7,7 @@
 import fs from 'fs/promises'
 import path from 'path'
 import yaml from 'js-yaml'
+import { BadRequestError } from '../errors/AppError.js'
 
 let openApiSpec = null
 
@@ -526,7 +527,9 @@ export async function validateRequest(req) {
 
   const operationSpec = getOperationSpec(req.path, req.method)
   if (!operationSpec) {
-    throw new Error(`Operation ${req.method} ${req.path} not defined in API specification`)
+    throw new BadRequestError(
+      `Operation ${req.method} ${req.path} not defined in API specification`
+    )
   }
 
   const paramErrors = validateRequestParams(req, operationSpec)
@@ -535,7 +538,7 @@ export async function validateRequest(req) {
   const allErrors = [...paramErrors, ...bodyErrors]
 
   if (allErrors.length > 0) {
-    const error = new Error('Request does not conform to API specification')
+    const error = new BadRequestError('Request does not conform to API specification')
     error.validationErrors = allErrors
     throw error
   }
@@ -551,12 +554,14 @@ export async function validateResponseData(path, method, statusCode, responseDat
 
   const operationSpec = getOperationSpec(path, method)
   if (!operationSpec) {
-    throw new Error(`Operation ${method} ${path} not defined in API specification`)
+    throw new BadRequestError(`Operation ${method} ${path} not defined in API specification`)
   }
 
   const responseSpec = operationSpec.responses[statusCode] || operationSpec.responses['default']
   if (!responseSpec) {
-    throw new Error(`Response ${statusCode} for ${method} ${path} not defined in API specification`)
+    throw new BadRequestError(
+      `Response ${statusCode} for ${method} ${path} not defined in API specification`
+    )
   }
 
   return validateResponse({ statusCode, locals: { responseBody: responseData } }, operationSpec)

@@ -11,7 +11,8 @@ import {
   NotFoundError,
   DatabaseError,
   DatabaseConstraintError,
-  BadRequestError
+  BadRequestError,
+  InternalServerError
 } from '../errors/AppError.js'
 
 const TABLE = DB_SCHEMA.occasions.table
@@ -238,9 +239,14 @@ export async function createOccasion(occasionData) {
     }
 
     if (!data) {
-      throw new DatabaseError('INSERT', TABLE, new Error('No data returned after insert'), {
-        occasionData: newOccasion
-      })
+      throw new DatabaseError(
+        'INSERT',
+        TABLE,
+        new InternalServerError('No data returned after insert'),
+        {
+          occasionData: newOccasion
+        }
+      )
     }
 
     return data

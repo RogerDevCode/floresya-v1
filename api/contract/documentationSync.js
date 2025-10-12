@@ -7,6 +7,7 @@
 import fs from 'fs/promises'
 import path from 'path'
 import yaml from 'js-yaml'
+import { ConfigurationError } from '../errors/AppError.js'
 
 /**
  * Documentation Synchronizer class
@@ -70,7 +71,7 @@ export class DocumentationSynchronizer {
    */
   getDocumentedEndpoints() {
     if (!this.spec) {
-      throw new Error('Spec not loaded')
+      throw new ConfigurationError('Spec not loaded')
     }
 
     const endpoints = []

@@ -29,7 +29,8 @@ export const getAllOrders = asyncHandler(async (req, res) => {
     offset: req.query.offset
   }
 
-  const orders = await orderService.getAllOrders(filters)
+  const includeInactive = req.user?.role === 'admin'
+  const orders = await orderService.getAllOrders(filters, includeInactive)
 
   res.json({
     success: true,
@@ -70,7 +71,8 @@ export const getAllOrders = asyncHandler(async (req, res) => {
  *       500: { $ref: '#/components/responses/InternalServerError' }
  */
 export const getOrderById = asyncHandler(async (req, res) => {
-  const order = await orderService.getOrderById(req.params.id)
+  const includeInactive = req.user?.role === 'admin'
+  const order = await orderService.getOrderById(req.params.id, includeInactive)
 
   res.json({
     success: true,

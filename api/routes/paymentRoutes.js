@@ -9,6 +9,7 @@ import * as paymentController from '../controllers/paymentController.js'
 import { authenticate } from '../middleware/auth.js'
 import { validate, validateId } from '../middleware/validate.js'
 import { paymentConfirmSchema } from '../middleware/schemas.js'
+import { rateLimitCritical } from '../middleware/rateLimit.js'
 
 const router = express.Router()
 
@@ -26,6 +27,7 @@ router.get('/methods', paymentController.getPaymentMethods)
 // Confirm payment for an order (authenticated users)
 router.post(
   '/:id/confirm',
+  rateLimitCritical,
   authenticate,
   validateId(),
   validate(paymentConfirmSchema),

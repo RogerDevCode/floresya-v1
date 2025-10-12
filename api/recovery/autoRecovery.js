@@ -7,6 +7,7 @@
 import { logger } from '../utils/logger.js'
 import { metricsCollector } from '../monitoring/metricsCollector.js'
 import { resetCircuitBreaker, getCircuitBreakerStatus } from '../middleware/circuitBreaker.js'
+import { ValidationError } from '../errors/AppError.js'
 import { resetAllRateLimits } from '../middleware/rateLimit.js'
 
 class AutoRecoverySystem {
@@ -274,7 +275,7 @@ class AutoRecoverySystem {
         break
 
       default:
-        throw new Error(`Unknown recovery action: ${action}`)
+        throw new ValidationError(`Unknown recovery action: ${action}`, { action })
     }
 
     // Small delay between actions

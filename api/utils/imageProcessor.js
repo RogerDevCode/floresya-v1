@@ -5,6 +5,16 @@
 
 import sharp from 'sharp'
 import crypto from 'crypto'
+import { ValidationError } from '../errors/AppError.js'
+
+// Custom error for image processing
+class ImageProcessingError extends Error {
+  constructor(message, originalError) {
+    super(message)
+    this.name = 'ImageProcessingError'
+    this.originalError = originalError
+  }
+}
 
 /**
  * Image size configurations
@@ -34,7 +44,10 @@ export async function generateImageSizes(imageBuffer, _mimeType = 'image/jpeg') 
     const metadata = await sharp(imageBuffer).metadata()
 
     if (!metadata.width || !metadata.height) {
-      throw new Error('Invalid image: unable to read dimensions')
+      throw new ValidationError('Invalid image: unable to read dimensions', {
+        width: metadata.width,
+        height: metadata.height
+      })
     }
 
     // Generate all sizes in parallel
@@ -61,7 +74,7 @@ export async function generateImageSizes(imageBuffer, _mimeType = 'image/jpeg') 
     return results
   } catch (error) {
     console.error('Error generating image sizes:', error)
-    throw new Error(`Image processing failed: ${error.message}`)
+    throw new ImageProcessingError('Image processing failed', error)
   }
 }
 
@@ -91,9 +104,10 @@ export async function validateImageBuffer(buffer, options = {}) {
   try {
     // Check buffer size
     if (buffer.length > maxSizeBytes) {
-      throw new Error(
-        `Image too large: ${(buffer.length / 1024 / 1024).toFixed(2)}MB (max ${maxSizeBytes / 1024 / 1024}MB)`
-      )
+      throw new ValidationError('Image too large', {
+        actualSize: `${(buffer.length / 1024 / 1024).toFixed(2)}MB`,
+        maxSize: `${maxSizeBytes / 1024 / 1024}MB`
+      })
     }
 
     // Get metadata
@@ -101,14 +115,18 @@ export async function validateImageBuffer(buffer, options = {}) {
 
     // Validate format
     if (!allowedFormats.includes(metadata.format)) {
-      throw new Error(`Invalid format: ${metadata.format}. Allowed: ${allowedFormats.join(', ')}`)
+      throw new ValidationError('Invalid image format', {
+        format: metadata.format,
+        allowedFormats: allowedFormats.join(', ')
+      })
     }
 
     // Validate dimensions
     if (metadata.width < minWidth || metadata.height < minHeight) {
-      throw new Error(
-        `Image too small: ${metadata.width}x${metadata.height} (min ${minWidth}x${minHeight})`
-      )
+      throw new ValidationError('Image too small', {
+        dimensions: `${metadata.width}x${metadata.height}`,
+        minDimensions: `${minWidth}x${minHeight}`
+      })
     }
 
     return {
@@ -139,7 +157,7 @@ export async function processImage(buffer, options = {}) {
     const validation = await validateImageBuffer(buffer, options)
 
     if (!validation.valid) {
-      throw new Error(validation.error)
+      throw new ValidationError('Invalid image', { error: validation.error })
     }
 
     // Calculate hash of original

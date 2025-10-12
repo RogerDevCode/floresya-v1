@@ -1,7 +1,7 @@
 /**
  * FloresYa API Client
  * Auto-generated from OpenAPI specification
- * Generated: 2025-10-10T14:24:48.318Z
+ * Generated: 2025-10-11T23:07:25.351Z
  * Spec Version: 1.0.0
  * Total Endpoints: 43
  *

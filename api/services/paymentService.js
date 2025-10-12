@@ -9,7 +9,8 @@ import {
   ValidationError,
   DatabaseError,
   NotFoundError,
-  BadRequestError
+  BadRequestError,
+  InternalServerError
 } from '../errors/AppError.js'
 
 const ORDERS_TABLE = DB_SCHEMA.orders.table
@@ -283,9 +284,14 @@ export async function confirmPayment(orderId, paymentData) {
     }
 
     if (!data) {
-      throw new DatabaseError('INSERT', PAYMENTS_TABLE, new Error('No data returned'), {
-        orderId
-      })
+      throw new DatabaseError(
+        'INSERT',
+        PAYMENTS_TABLE,
+        new InternalServerError('No data returned'),
+        {
+          orderId
+        }
+      )
     }
 
     return data

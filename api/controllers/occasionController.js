@@ -16,7 +16,8 @@ export const getAllOccasions = asyncHandler(async (req, res) => {
     limit: req.query.limit
   }
 
-  const occasions = await occasionService.getAllOccasions(filters)
+  const includeInactive = req.user?.role === 'admin'
+  const occasions = await occasionService.getAllOccasions(filters, includeInactive)
 
   res.json({
     success: true,
@@ -31,7 +32,8 @@ export const getAllOccasions = asyncHandler(async (req, res) => {
  */
 
 export const getOccasionById = asyncHandler(async (req, res) => {
-  const occasion = await occasionService.getOccasionById(req.params.id)
+  const includeInactive = req.user?.role === 'admin'
+  const occasion = await occasionService.getOccasionById(req.params.id, includeInactive)
 
   res.json({
     success: true,
@@ -46,7 +48,8 @@ export const getOccasionById = asyncHandler(async (req, res) => {
  */
 
 export const getOccasionBySlug = asyncHandler(async (req, res) => {
-  const occasion = await occasionService.getOccasionBySlug(req.params.slug)
+  const includeInactive = req.user?.role === 'admin'
+  const occasion = await occasionService.getOccasionBySlug(req.params.slug, includeInactive)
 
   res.json({
     success: true,
