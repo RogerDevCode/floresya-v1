@@ -14,11 +14,35 @@
   cursor: pointer;
   transition: all 0.2s ease;
   min-height: 44px;
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 .btn-primary:hover {
   background: linear-gradient(135deg, #be185d, #9d174d);
   transform: translateY(-1px);
   box-shadow: 0 4px 16px rgba(219, 39, 119, 0.3);
+}
+
+/* Touch feedback for primary button */
+.btn-primary.touch-feedback--ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition:
+    width 0.3s ease,
+    height 0.3s ease;
+}
+
+.btn-primary.touch-feedback--ripple:active::after {
+  width: 300px;
+  height: 300px;
 }
 
 .btn-secondary {
@@ -36,11 +60,36 @@
   cursor: pointer;
   transition: all 0.2s ease;
   min-height: 44px;
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 .btn-secondary:hover {
   background: var(--floresya-primary);
   color: white;
   transform: translateY(-1px);
+}
+
+/* Touch feedback for secondary button */
+.btn-secondary.touch-feedback--ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: var(--floresya-primary);
+  opacity: 0.3;
+  transform: translate(-50%, -50%);
+  transition:
+    width 0.3s ease,
+    height 0.3s ease;
+}
+
+.btn-secondary.touch-feedback--ripple:active::after {
+  width: 300px;
+  height: 300px;
 }
 
 .btn-lg {
@@ -63,6 +112,20 @@
   cursor: not-allowed;
   opacity: 0.8;
   min-height: 44px;
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Touch feedback for warning button */
+.btn-warning.touch-feedback--scale {
+  transition:
+    transform 0.15s ease-out,
+    background-color 0.2s ease;
+}
+
+.btn-warning.touch-feedback--scale:active {
+  transform: scale(0.95);
 }
 
 /* Login Button */
@@ -77,10 +140,34 @@
   font-size: 0.875rem;
   transition: background 0.2s ease;
   box-shadow: 0 4px 6px -1px rgba(236, 72, 153, 0.2);
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 .btn-login:hover {
   background: var(--color-primary-dark);
   transform: scale(1.05);
+}
+
+/* Touch feedback for login button */
+.btn-login.touch-feedback--ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition:
+    width 0.3s ease,
+    height 0.3s ease;
+}
+
+.btn-login.touch-feedback--ripple:active::after {
+  width: 300px;
+  height: 300px;
 }
 
 @media (min-width: 768px) {
@@ -92,9 +179,79 @@
 /* Admin Button */
 .btn-admin {
   transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .btn-admin:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Touch feedback for admin button */
+.btn-admin.touch-feedback--scale {
+  transition:
+    transform 0.15s ease-out,
+    box-shadow 0.2s ease;
+}
+
+.btn-admin.touch-feedback--scale:active {
+  transform: scale(0.95);
+}
+
+/* Touch-specific button optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .btn-primary,
+  .btn-secondary,
+  .btn-warning,
+  .btn-login,
+  .btn-admin {
+    /* Increase touch target size */
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  /* Make hover states more subtle on touch devices */
+  .btn-primary:hover,
+  .btn-secondary:hover,
+  .btn-warning:hover,
+  .btn-login:hover,
+  .btn-admin:hover {
+    transform: none;
+  }
+
+  /* Ensure touch feedback is prominent */
+  .btn-primary.touch-feedback--scale:active,
+  .btn-secondary.touch-feedback--scale:active,
+  .btn-warning.touch-feedback--scale:active,
+  .btn-login.touch-feedback--scale:active,
+  .btn-admin.touch-feedback--scale:active {
+    transform: scale(0.92);
+  }
+}
+
+/* Reduced motion support for buttons */
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary,
+  .btn-secondary,
+  .btn-warning,
+  .btn-login,
+  .btn-admin {
+    transition: none;
+  }
+
+  .btn-primary.touch-feedback--ripple::after,
+  .btn-secondary.touch-feedback--ripple::after,
+  .btn-login.touch-feedback--ripple::after {
+    transition: none;
+  }
+
+  .btn-primary.touch-feedback--scale:active,
+  .btn-secondary.touch-feedback--scale:active,
+  .btn-warning.touch-feedback--scale:active,
+  .btn-login.touch-feedback--scale:active,
+  .btn-admin.touch-feedback--scale:active {
+    transform: none;
+  }
 }

@@ -1,0 +1,1903 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Touch Interactions Validation Test - FloresYa</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+    <style>
+      /* Custom styles for touch test page */
+      :root {
+        --test-primary: #ec4899;
+        --test-secondary: #8b5cf6;
+        --test-success: #10b981;
+        --test-warning: #f59e0b;
+        --test-error: #ef4444;
+        --test-info: #3b82f6;
+      }
+
+      body {
+        background-color: #f9fafb;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+
+      .test-header {
+        background: linear-gradient(135deg, var(--test-primary), var(--test-secondary));
+        color: white;
+        padding: 2rem 1rem;
+        text-align: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      .test-header h1 {
+        margin: 0 0 0.5rem 0;
+        font-size: 2rem;
+        font-weight: 700;
+      }
+
+      .test-header p {
+        margin: 0;
+        opacity: 0.9;
+      }
+
+      .test-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem;
+      }
+
+      .test-section {
+        margin: 2rem 0;
+        padding: 1.5rem;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+      }
+
+      .test-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--test-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .test-description {
+        color: #6b7280;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+      }
+
+      .test-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+      }
+
+      .test-item {
+        padding: 1.5rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        text-align: center;
+        background: #f9fafb;
+        transition: all 0.2s ease;
+      }
+
+      .test-item:hover {
+        border-color: var(--test-primary);
+        box-shadow: 0 4px 6px -1px rgba(236, 72, 153, 0.1);
+      }
+
+      /* Gesture Testing Area */
+      .gesture-area {
+        height: 300px;
+        border: 2px dashed #d1d5db;
+        border-radius: 1rem;
+        position: relative;
+        overflow: hidden;
+        background:
+          linear-gradient(45deg, #f9fafb 25%, transparent 25%),
+          linear-gradient(-45deg, #f9fafb 25%, transparent 25%),
+          linear-gradient(45deg, transparent 75%, #f9fafb 75%),
+          linear-gradient(-45deg, transparent 75%, #f9fafb 75%);
+        background-size: 20px 20px;
+        background-position:
+          0 0,
+          0 10px,
+          10px -10px,
+          -10px 0px;
+      }
+
+      .gesture-area.active {
+        border-color: var(--test-primary);
+        background-color: rgba(236, 72, 153, 0.05);
+      }
+
+      .gesture-info {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        right: 1rem;
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.875rem;
+        color: #6b7280;
+      }
+
+      .gesture-result {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--test-primary);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .gesture-result.show {
+        opacity: 1;
+      }
+
+      .touch-point {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: rgba(236, 72, 153, 0.5);
+        border: 2px solid var(--test-primary);
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 10;
+      }
+
+      .touch-path {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 5;
+      }
+
+      /* Image Carousel Demo */
+      .carousel-demo {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+
+      .product-card-demo {
+        border: 1px solid #e5e7eb;
+        border-radius: 1rem;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      .product-image-demo {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+      }
+
+      .product-info-demo {
+        padding: 1rem;
+      }
+
+      .product-title-demo {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .product-price-demo {
+        color: var(--test-primary);
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      /* Pull-to-Refresh Demo */
+      .pull-to-refresh-demo {
+        height: 400px;
+        border: 1px solid #e5e7eb;
+        border-radius: 1rem;
+        overflow: hidden;
+        position: relative;
+        background: white;
+      }
+
+      .product-list {
+        height: 100%;
+        overflow-y: auto;
+        padding: 1rem;
+      }
+
+      .product-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid #f3f4f6;
+        transition: background-color 0.2s ease;
+      }
+
+      .product-item:hover {
+        background-color: #f9fafb;
+      }
+
+      .product-image-thumb {
+        width: 60px;
+        height: 60px;
+        border-radius: 0.5rem;
+        object-fit: cover;
+        margin-right: 1rem;
+      }
+
+      .product-details {
+        flex: 1;
+      }
+
+      .product-name {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+      }
+
+      .product-price {
+        color: var(--test-primary);
+        font-weight: 700;
+      }
+
+      /* Touch Feedback Gallery */
+      .feedback-gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+
+      .feedback-item {
+        padding: 2rem 1rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: white;
+      }
+
+      .feedback-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      .feedback-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .feedback-label {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+      }
+
+      .feedback-type {
+        font-size: 0.875rem;
+        color: #6b7280;
+      }
+
+      /* Device Information */
+      .device-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+      }
+
+      .info-card {
+        padding: 1rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        background: #f9fafb;
+      }
+
+      .info-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--test-primary);
+      }
+
+      .info-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1f2937;
+      }
+
+      .info-description {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-top: 0.25rem;
+      }
+
+      /* Performance Metrics */
+      .metrics-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+
+      .metric-card {
+        padding: 1rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        text-align: center;
+        background: white;
+      }
+
+      .metric-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--test-primary);
+        margin-bottom: 0.5rem;
+      }
+
+      .metric-label {
+        font-size: 0.875rem;
+        color: #6b7280;
+      }
+
+      /* Event Log */
+      .event-log {
+        height: 200px;
+        overflow-y: auto;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        background: #f9fafb;
+        font-family: monospace;
+        font-size: 0.875rem;
+      }
+
+      .log-entry {
+        margin-bottom: 0.5rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+      }
+
+      .log-entry.swipe {
+        background-color: rgba(59, 130, 246, 0.1);
+        border-left: 3px solid var(--test-info);
+      }
+
+      .log-entry.tap {
+        background-color: rgba(16, 185, 129, 0.1);
+        border-left: 3px solid var(--test-success);
+      }
+
+      .log-entry.error {
+        background-color: rgba(239, 68, 68, 0.1);
+        border-left: 3px solid var(--test-error);
+      }
+
+      .log-timestamp {
+        color: #6b7280;
+        margin-right: 0.5rem;
+      }
+
+      /* Controls */
+      .controls {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .control-btn {
+        padding: 0.5rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        background: white;
+        color: #374151;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+
+      .control-btn:hover {
+        background-color: #f3f4f6;
+        border-color: #9ca3af;
+      }
+
+      .control-btn.active {
+        background-color: var(--test-primary);
+        color: white;
+        border-color: var(--test-primary);
+      }
+
+      /* Accessibility Panel */
+      .accessibility-panel {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+
+      .accessibility-control {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        background: white;
+      }
+
+      .accessibility-control label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .accessibility-control input[type='checkbox'] {
+        width: 1.25rem;
+        height: 1.25rem;
+        cursor: pointer;
+      }
+
+      /* Instructions */
+      .instructions {
+        background: #f0f9ff;
+        border: 1px solid #bae6fd;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .instructions h3 {
+        margin-top: 0;
+        color: var(--test-info);
+      }
+
+      .instructions ul {
+        margin: 0.5rem 0;
+        padding-left: 1.5rem;
+      }
+
+      .instructions li {
+        margin-bottom: 0.25rem;
+      }
+
+      /* Status Messages */
+      .status-message {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+        font-weight: 500;
+      }
+
+      .status-message.success {
+        background-color: rgba(16, 185, 129, 0.1);
+        color: var(--test-success);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+      }
+
+      .status-message.error {
+        background-color: rgba(239, 68, 68, 0.1);
+        color: var(--test-error);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+      }
+
+      .status-message.info {
+        background-color: rgba(59, 130, 246, 0.1);
+        color: var(--test-info);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+      }
+
+      /* Tab Navigation */
+      .tab-nav {
+        display: flex;
+        border-bottom: 1px solid #e5e7eb;
+        margin-bottom: 1rem;
+        overflow-x: auto;
+      }
+
+      .tab-btn {
+        padding: 0.75rem 1.5rem;
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        color: #6b7280;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+      }
+
+      .tab-btn:hover {
+        color: #374151;
+      }
+
+      .tab-btn.active {
+        color: var(--test-primary);
+        border-bottom-color: var(--test-primary);
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .test-header h1 {
+          font-size: 1.5rem;
+        }
+
+        .test-container {
+          padding: 0.5rem;
+        }
+
+        .test-section {
+          padding: 1rem;
+        }
+
+        .test-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .controls {
+          flex-direction: column;
+        }
+
+        .control-btn {
+          width: 100%;
+        }
+      }
+
+      /* Reduced Motion Support */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* High Contrast Mode */
+      @media (prefers-contrast: high) {
+        .test-item {
+          border: 2px solid #000;
+        }
+
+        .control-btn {
+          border: 2px solid #000;
+        }
+      }
+
+      /* Pull-to-refresh specific styles */
+      .pull-to-refresh-indicator {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 0;
+        opacity: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(to bottom, rgba(236, 72, 153, 0.05), rgba(236, 72, 153, 0.02));
+        border-bottom: 1px solid rgba(236, 72, 153, 0.1);
+        overflow: hidden;
+        z-index: 10;
+        transform-origin: top center;
+        will-change: height, opacity, transform;
+      }
+
+      .pull-to-refresh-spinner {
+        width: 2.5rem;
+        height: 2.5rem;
+        margin-bottom: 0.5rem;
+        color: #ec4899;
+        transition: transform 0.2s ease-out;
+      }
+
+      .pull-to-refresh-spinner svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .pull-to-refresh-spinner .spinner-path {
+        transition: stroke-dashoffset 0.3s ease;
+      }
+
+      .pull-to-refresh-spinner.spinning .spinner-path {
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          stroke-dashoffset: 31.416;
+        }
+        50% {
+          stroke-dashoffset: 15.708;
+        }
+        100% {
+          stroke-dashoffset: 31.416;
+        }
+      }
+
+      .pull-to-refresh-text {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #1f2937;
+        text-align: center;
+        transition: color 0.2s ease;
+      }
+
+      .pull-to-refresh-indicator.threshold-reached .pull-to-refresh-text {
+        color: #ec4899;
+        font-weight: 600;
+      }
+
+      .pull-to-refresh-indicator.refreshing .pull-to-refresh-spinner {
+        color: #ec4899;
+      }
+
+      .pull-to-refresh-indicator.success .pull-to-refresh-spinner {
+        color: #10b981;
+      }
+
+      .pull-to-refresh-indicator.success .pull-to-refresh-text {
+        color: #10b981;
+      }
+
+      .pull-to-refresh-indicator.error .pull-to-refresh-spinner {
+        color: #ef4444;
+      }
+
+      .pull-to-refresh-indicator.error .pull-to-refresh-text {
+        color: #ef4444;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="test-header">
+      <h1>🧪 Touch Interactions Validation Test</h1>
+      <p>Comprehensive testing suite for all touch features implemented in FloresYa</p>
+    </header>
+
+    <main class="test-container">
+      <!-- Device Information Section -->
+      <section class="test-section">
+        <h2 class="test-title">📱 Device Information</h2>
+        <p class="test-description">
+          This section displays information about the current device and its touch capabilities. Use
+          this to verify that touch detection is working correctly across different devices.
+        </p>
+
+        <div class="device-info" id="deviceInfo">
+          <!-- Device info will be populated by JavaScript -->
+        </div>
+      </section>
+
+      <!-- Gesture Testing Area -->
+      <section class="test-section">
+        <h2 class="test-title">👆 Gesture Testing Area</h2>
+        <p class="test-description">
+          Test swipe gestures (horizontal and vertical) with real-time visualization. The area will
+          show touch points and paths as you interact with it.
+        </p>
+
+        <div class="instructions">
+          <h3>Instructions:</h3>
+          <ul>
+            <li>Swipe left/right to test horizontal gestures</li>
+            <li>Swipe up/down to test vertical gestures</li>
+            <li>Tap to test tap detection</li>
+            <li>Try fast and slow swipes to test velocity detection</li>
+            <li>Use multiple fingers to test multi-touch support</li>
+          </ul>
+        </div>
+
+        <div class="controls">
+          <button class="control-btn active" id="gestureTrackingBtn">Tracking On</button>
+          <button class="control-btn" id="clearGestureBtn">Clear Path</button>
+          <button class="control-btn" id="showGestureInfoBtn">Show Info</button>
+        </div>
+
+        <div class="gesture-area" id="gestureArea">
+          <div class="gesture-info">
+            <span id="gestureStart">Start: --</span>
+            <span id="gestureDirection">Direction: --</span>
+            <span id="gestureVelocity">Velocity: --</span>
+          </div>
+          <div class="gesture-result" id="gestureResult"></div>
+          <svg class="touch-path" id="touchPath"></svg>
+        </div>
+
+        <div class="event-log" id="gestureLog">
+          <div class="log-entry info">Gesture events will appear here...</div>
+        </div>
+      </section>
+
+      <!-- Image Carousel Demo -->
+      <section class="test-section">
+        <h2 class="test-title">🖼️ Image Carousel Demo</h2>
+        <p class="test-description">
+          Test the enhanced image carousel with swipe navigation. Swipe left/right to navigate
+          between images. The carousel includes haptic feedback and smooth transitions.
+        </p>
+
+        <div class="carousel-demo">
+          <div class="product-card-demo">
+            <div id="carouselContainer" class="product-image-container">
+              <!-- Carousel will be initialized by JavaScript -->
+            </div>
+            <div class="product-info-demo">
+              <h3 class="product-title-demo">Product with Multiple Images</h3>
+              <p class="product-price-demo">$29.99</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="control-btn" id="prevImageBtn">Previous Image</button>
+          <button class="control-btn" id="nextImageBtn">Next Image</button>
+          <button class="control-btn" id="resetCarouselBtn">Reset</button>
+        </div>
+      </section>
+
+      <!-- Pull-to-Refresh Demo -->
+      <section class="test-section">
+        <h2 class="test-title">🔄 Pull-to-Refresh Demo</h2>
+        <p class="test-description">
+          Test pull-to-refresh functionality with a simulated product listing. Pull down from the
+          top of the list to trigger refresh with visual feedback.
+        </p>
+
+        <div class="instructions">
+          <h3>Instructions:</h3>
+          <ul>
+            <li>Scroll to the top of the product list</li>
+            <li>Pull down to trigger the refresh functionality</li>
+            <li>
+              The indicator should appear and products should refresh when threshold is reached
+            </li>
+            <li>Test with different pull speeds and distances</li>
+          </ul>
+        </div>
+
+        <div class="pull-to-refresh-demo" id="pullToRefreshContainer">
+          <div class="product-list" id="productList">
+            <!-- Products will be loaded here -->
+          </div>
+        </div>
+
+        <div class="status-message info" id="pullToRefreshStatus">
+          Ready for testing. Pull down to refresh the product list.
+        </div>
+      </section>
+
+      <!-- Touch Feedback Gallery -->
+      <section class="test-section">
+        <h2 class="test-title">✨ Touch Feedback Gallery</h2>
+        <p class="test-description">
+          Examples of different touch feedback types. Touch each element to feel the different
+          haptic patterns and see the visual feedback effects.
+        </p>
+
+        <div class="tab-nav">
+          <button class="tab-btn active" data-tab="ripple">Ripple</button>
+          <button class="tab-btn" data-tab="scale">Scale</button>
+          <button class="tab-btn" data-tab="highlight">Highlight</button>
+          <button class="tab-btn" data-tab="haptic">Haptic</button>
+        </div>
+
+        <div class="tab-content active" id="ripple-tab">
+          <div class="feedback-gallery">
+            <div class="feedback-item touch-feedback-ripple" data-haptic="light">
+              <div class="feedback-icon">💧</div>
+              <div class="feedback-label">Light Ripple</div>
+              <div class="feedback-type">Light haptic feedback</div>
+            </div>
+            <div class="feedback-item touch-feedback-ripple" data-haptic="medium">
+              <div class="feedback-icon">🌊</div>
+              <div class="feedback-label">Medium Ripple</div>
+              <div class="feedback-type">Medium haptic feedback</div>
+            </div>
+            <div class="feedback-item touch-feedback-ripple" data-haptic="heavy">
+              <div class="feedback-icon">🌊</div>
+              <div class="feedback-label">Heavy Ripple</div>
+              <div class="feedback-type">Heavy haptic feedback</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="scale-tab">
+          <div class="feedback-gallery">
+            <div class="feedback-item touch-feedback-scale" data-haptic="light">
+              <div class="feedback-icon">🔘</div>
+              <div class="feedback-label">Light Scale</div>
+              <div class="feedback-type">Subtle scale effect</div>
+            </div>
+            <div class="feedback-item touch-feedback-scale" data-haptic="medium">
+              <div class="feedback-icon">⭕</div>
+              <div class="feedback-label">Medium Scale</div>
+              <div class="feedback-type">Noticeable scale effect</div>
+            </div>
+            <div class="feedback-item touch-feedback-scale" data-haptic="heavy">
+              <div class="feedback-icon">🔴</div>
+              <div class="feedback-label">Heavy Scale</div>
+              <div class="feedback-type">Strong scale effect</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="highlight-tab">
+          <div class="feedback-gallery">
+            <div class="feedback-item touch-feedback-highlight" data-haptic="light">
+              <div class="feedback-icon">💡</div>
+              <div class="feedback-label">Light Highlight</div>
+              <div class="feedback-type">Subtle highlight effect</div>
+            </div>
+            <div class="feedback-item touch-feedback-highlight" data-haptic="medium">
+              <div class="feedback-icon">✨</div>
+              <div class="feedback-label">Medium Highlight</div>
+              <div class="feedback-type">Noticeable highlight effect</div>
+            </div>
+            <div class="feedback-item touch-feedback-highlight" data-haptic="heavy">
+              <div class="feedback-icon">🌟</div>
+              <div class="feedback-label">Heavy Highlight</div>
+              <div class="feedback-type">Strong highlight effect</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="haptic-tab">
+          <div class="feedback-gallery">
+            <div class="feedback-item" data-haptic="success">
+              <div class="feedback-icon">✅</div>
+              <div class="feedback-label">Success</div>
+              <div class="feedback-type">Success haptic pattern</div>
+            </div>
+            <div class="feedback-item" data-haptic="error">
+              <div class="feedback-icon">❌</div>
+              <div class="feedback-label">Error</div>
+              <div class="feedback-type">Error haptic pattern</div>
+            </div>
+            <div class="feedback-item" data-haptic="warning">
+              <div class="feedback-icon">⚠️</div>
+              <div class="feedback-label">Warning</div>
+              <div class="feedback-type">Warning haptic pattern</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Performance Metrics -->
+      <section class="test-section">
+        <h2 class="test-title">📊 Performance Metrics</h2>
+        <p class="test-description">
+          Real-time performance monitoring for touch interactions. Track response times, gesture
+          accuracy, and system performance during touch operations.
+        </p>
+
+        <div class="controls">
+          <button class="control-btn active" id="metricsTrackingBtn">Tracking On</button>
+          <button class="control-btn" id="resetMetricsBtn">Reset Metrics</button>
+        </div>
+
+        <div class="metrics-container" id="metricsContainer">
+          <!-- Metrics will be populated by JavaScript -->
+        </div>
+      </section>
+
+      <!-- Accessibility Testing -->
+      <section class="test-section">
+        <h2 class="test-title">♿ Accessibility Testing</h2>
+        <p class="test-description">
+          Test accessibility features including reduced motion support and high contrast mode.
+          Toggle these settings to verify that the touch interactions respect user preferences.
+        </p>
+
+        <div class="accessibility-panel">
+          <div class="accessibility-control">
+            <input type="checkbox" id="reducedMotionToggle" />
+            <label for="reducedMotionToggle">Reduced Motion</label>
+          </div>
+          <div class="accessibility-control">
+            <input type="checkbox" id="highContrastToggle" />
+            <label for="highContrastToggle">High Contrast</label>
+          </div>
+          <div class="accessibility-control">
+            <input type="checkbox" id="hapticFeedbackToggle" checked />
+            <label for="hapticFeedbackToggle">Haptic Feedback</label>
+          </div>
+          <div class="accessibility-control">
+            <input type="checkbox" id="visualFeedbackToggle" checked />
+            <label for="visualFeedbackToggle">Visual Feedback</label>
+          </div>
+        </div>
+
+        <div class="status-message info" id="accessibilityStatus">
+          Toggle the settings above to test accessibility features
+        </div>
+      </section>
+
+      <!-- Event Log -->
+      <section class="test-section">
+        <h2 class="test-title">📝 Event Log</h2>
+        <p class="test-description">
+          Comprehensive logging of all touch events and system responses. Use this log to debug
+          issues and verify that all touch interactions are working correctly.
+        </p>
+
+        <div class="controls">
+          <button class="control-btn" id="clearLogBtn">Clear Log</button>
+          <button class="control-btn" id="exportLogBtn">Export Log</button>
+          <button class="control-btn active" id="logFilterAll">All Events</button>
+          <button class="control-btn" id="logFilterSwipe">Swipes Only</button>
+          <button class="control-btn" id="logFilterTap">Taps Only</button>
+          <button class="control-btn" id="logFilterError">Errors Only</button>
+        </div>
+
+        <div class="event-log" id="eventLog">
+          <div class="log-entry info">Touch events will appear here...</div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module">
+      // Import all touch utilities
+      import { TouchGestures, initTouchGestures } from './js/shared/touchGestures.js'
+      import { TouchFeedback, initTouchFeedback } from './js/shared/touchFeedback.js'
+      import { PullToRefresh } from './js/components/pullToRefresh.js'
+      import { createImageCarousel } from './js/components/imageCarousel.js'
+
+      // Global state
+      const state = {
+        gestureTracking: true,
+        metricsTracking: true,
+        hapticEnabled: true,
+        visualEnabled: true,
+        logFilter: 'all',
+        touchStartTime: 0,
+        gestureCount: 0,
+        tapCount: 0,
+        responseTimes: [],
+        currentPath: [],
+        touchPoints: []
+      }
+
+      // Performance metrics
+      const metrics = {
+        avgResponseTime: 0,
+        gestureAccuracy: 0,
+        totalGestures: 0,
+        totalTaps: 0,
+        errorRate: 0,
+        hapticFeedbackCount: 0,
+        visualFeedbackCount: 0
+      }
+
+      // Initialize the test page
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('🧪 Initializing Touch Interactions Test Page...')
+
+        initializeDeviceInfo()
+        initializeGestureArea()
+        initializeCarousel()
+        initializePullToRefresh()
+        initializeTouchFeedback()
+        initializePerformanceMetrics()
+        initializeAccessibility()
+        initializeEventLog()
+        initializeTabNavigation()
+
+        console.log('✅ Touch Interactions Test Page initialized successfully!')
+      })
+
+      // Device Information
+      function initializeDeviceInfo() {
+        const deviceInfo = document.getElementById('deviceInfo')
+
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        )
+        const maxTouchPoints = navigator.maxTouchPoints || 0
+        const userAgent = navigator.userAgent
+        const platform = navigator.platform || 'Unknown'
+        const vendor = navigator.vendor || 'Unknown'
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        const prefersHighContrast = window.matchMedia('(prefers-contrast: high)').matches
+
+        // Check for haptic feedback support
+        const hapticSupported =
+          'vibrate' in navigator ||
+          (window.HapticFeedback && typeof window.HapticFeedback.impactOccurred === 'function')
+
+        deviceInfo.innerHTML = `
+        <div class="info-card">
+          <div class="info-title">Touch Support</div>
+          <div class="info-value">${isTouchDevice ? 'Yes' : 'No'}</div>
+          <div class="info-description">Device supports touch events</div>
+        </div>
+        <div class="info-card">
+          <div class="info-title">Device Type</div>
+          <div class="info-value">${isMobile ? 'Mobile' : 'Desktop'}</div>
+          <div class="info-description">Detected device category</div>
+        </div>
+        <div class="info-card">
+          <div class="info-title">Max Touch Points</div>
+          <div class="info-value">${maxTouchPoints}</div>
+          <div class="info-description">Maximum simultaneous touch points</div>
+        </div>
+        <div class="info-card">
+          <div class="info-title">Haptic Support</div>
+          <div class="info-value">${hapticSupported ? 'Yes' : 'No'}</div>
+          <div class="info-description">Device supports haptic feedback</div>
+        </div>
+        <div class="info-card">
+          <div class="info-title">Platform</div>
+          <div class="info-value">${platform}</div>
+          <div class="info-description">Operating system platform</div>
+        </div>
+        <div class="info-card">
+          <div class="info-title">Reduced Motion</div>
+          <div class="info-value">${prefersReducedMotion ? 'Yes' : 'No'}</div>
+          <div class="info-description">User prefers reduced motion</div>
+        </div>
+        <div class="info-card">
+          <div class="info-title">High Contrast</div>
+          <div class="info-value">${prefersHighContrast ? 'Yes' : 'No'}</div>
+          <div class="info-description">User prefers high contrast</div>
+        </div>
+        <div class="info-card">
+          <div class="info-title">Screen Size</div>
+          <div class="info-value">${window.screen.width}x${window.screen.height}</div>
+          <div class="info-description">Screen resolution</div>
+        </div>
+      `
+
+        logEvent(
+          'info',
+          `Device detected: ${isMobile ? 'Mobile' : 'Desktop'}, Touch: ${isTouchDevice}, Haptic: ${hapticSupported}`
+        )
+      }
+
+      // Gesture Testing Area
+      function initializeGestureArea() {
+        const gestureArea = document.getElementById('gestureArea')
+        const gestureStart = document.getElementById('gestureStart')
+        const gestureDirection = document.getElementById('gestureDirection')
+        const gestureVelocity = document.getElementById('gestureVelocity')
+        const gestureResult = document.getElementById('gestureResult')
+        const touchPath = document.getElementById('touchPath')
+        const gestureLog = document.getElementById('gestureLog')
+
+        const gestureTrackingBtn = document.getElementById('gestureTrackingBtn')
+        const clearGestureBtn = document.getElementById('clearGestureBtn')
+        const showGestureInfoBtn = document.getElementById('showGestureInfoBtn')
+
+        let touchGestures = null
+        let isShowingInfo = true
+
+        // Initialize TouchGestures
+        touchGestures = new TouchGestures({
+          swipeThreshold: 50,
+          velocityThreshold: 0.3,
+          tapTimeout: 300,
+          tapThreshold: 10,
+          preventDefault: false,
+          passive: true
+        })
+
+        touchGestures.init(gestureArea)
+
+        // Handle gesture events
+        touchGestures.onSwipe(event => {
+          if (!state.gestureTracking) return
+
+          const responseTime = Date.now() - state.touchStartTime
+          state.responseTimes.push(responseTime)
+          state.gestureCount++
+
+          // Update gesture info
+          gestureDirection.textContent = `Direction: ${event.direction}`
+          gestureVelocity.textContent = `Velocity: ${event.velocity.toFixed(2)}`
+
+          // Show result
+          gestureResult.textContent = `${event.direction.toUpperCase()} SWIPE!`
+          gestureResult.classList.add('show')
+          setTimeout(() => gestureResult.classList.remove('show'), 2000)
+
+          // Log event
+          logEvent(
+            'swipe',
+            `Swipe: ${event.direction}, Velocity: ${event.velocity.toFixed(2)}, Distance: ${event.distance.toFixed(0)}px`
+          )
+
+          // Update metrics
+          updateMetrics()
+
+          // Haptic feedback
+          if (state.hapticEnabled) {
+            triggerHapticFeedback('medium')
+          }
+        })
+
+        touchGestures.onTap(event => {
+          if (!state.gestureTracking) return
+
+          const responseTime = Date.now() - state.touchStartTime
+          state.responseTimes.push(responseTime)
+          state.tapCount++
+
+          // Show result
+          gestureResult.textContent = 'TAP!'
+          gestureResult.classList.add('show')
+          setTimeout(() => gestureResult.classList.remove('show'), 1000)
+
+          // Log event
+          logEvent('tap', `Tap at (${event.position.x.toFixed(0)}, ${event.position.y.toFixed(0)})`)
+
+          // Update metrics
+          updateMetrics()
+
+          // Haptic feedback
+          if (state.hapticEnabled) {
+            triggerHapticFeedback('light')
+          }
+        })
+
+        // Handle touch events for visualization
+        gestureArea.addEventListener('touchstart', e => {
+          state.touchStartTime = Date.now()
+          gestureArea.classList.add('active')
+
+          // Clear previous path
+          state.currentPath = []
+          state.touchPoints = []
+
+          // Create touch points
+          for (let i = 0; i < e.touches.length; i++) {
+            const touch = e.touches[i]
+            const rect = gestureArea.getBoundingClientRect()
+            const x = touch.clientX - rect.left
+            const y = touch.clientY - rect.top
+
+            state.touchPoints.push({ x, y, id: touch.identifier })
+            state.currentPath.push({ x, y })
+
+            // Create visual touch point
+            const touchPoint = document.createElement('div')
+            touchPoint.className = 'touch-point'
+            touchPoint.style.left = x + 'px'
+            touchPoint.style.top = y + 'px'
+            touchPoint.dataset.touchId = touch.identifier
+            gestureArea.appendChild(touchPoint)
+          }
+
+          // Update start position
+          if (e.touches.length > 0) {
+            const touch = e.touches[0]
+            gestureStart.textContent = `Start: (${touch.clientX.toFixed(0)}, ${touch.clientY.toFixed(0)})`
+          }
+        })
+
+        gestureArea.addEventListener('touchmove', e => {
+          if (!state.gestureTracking) return
+
+          // Update touch points
+          for (let i = 0; i < e.touches.length; i++) {
+            const touch = e.touches[i]
+            const rect = gestureArea.getBoundingClientRect()
+            const x = touch.clientX - rect.left
+            const y = touch.clientY - rect.top
+
+            // Update visual touch point
+            const touchPoint = gestureArea.querySelector(
+              `.touch-point[data-touch-id="${touch.identifier}"]`
+            )
+            if (touchPoint) {
+              touchPoint.style.left = x + 'px'
+              touchPoint.style.top = y + 'px'
+            }
+
+            // Add to path
+            if (i === 0) {
+              // Track first finger for path
+              state.currentPath.push({ x, y })
+            }
+          }
+
+          // Draw path
+          drawTouchPath()
+        })
+
+        gestureArea.addEventListener('touchend', e => {
+          gestureArea.classList.remove('active')
+
+          // Remove touch points
+          const touchPoints = gestureArea.querySelectorAll('.touch-point')
+          touchPoints.forEach(point => point.remove())
+
+          // Clear path after delay
+          setTimeout(() => {
+            clearTouchPath()
+          }, 1000)
+        })
+
+        // Control buttons
+        gestureTrackingBtn.addEventListener('click', () => {
+          state.gestureTracking = !state.gestureTracking
+          gestureTrackingBtn.textContent = state.gestureTracking ? 'Tracking On' : 'Tracking Off'
+          gestureTrackingBtn.classList.toggle('active', state.gestureTracking)
+          logEvent('info', `Gesture tracking ${state.gestureTracking ? 'enabled' : 'disabled'}`)
+        })
+
+        clearGestureBtn.addEventListener('click', () => {
+          clearTouchPath()
+          gestureResult.classList.remove('show')
+          gestureStart.textContent = 'Start: --'
+          gestureDirection.textContent = 'Direction: --'
+          gestureVelocity.textContent = 'Velocity: --'
+          logEvent('info', 'Gesture display cleared')
+        })
+
+        showGestureInfoBtn.addEventListener('click', () => {
+          isShowingInfo = !isShowingInfo
+          const gestureInfo = document.querySelector('.gesture-info')
+          gestureInfo.style.display = isShowingInfo ? 'flex' : 'none'
+          showGestureInfoBtn.textContent = isShowingInfo ? 'Show Info' : 'Hide Info'
+          showGestureInfoBtn.classList.toggle('active', isShowingInfo)
+        })
+
+        // Helper functions
+        function drawTouchPath() {
+          if (state.currentPath.length < 2) return
+
+          const pathData = state.currentPath
+            .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
+            .join(' ')
+
+          touchPath.innerHTML = `
+          <path d="${pathData}" 
+                stroke="rgba(236, 72, 153, 0.5)" 
+                stroke-width="3" 
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"/>
+        `
+        }
+
+        function clearTouchPath() {
+          touchPath.innerHTML = ''
+          state.currentPath = []
+        }
+      }
+
+      // Image Carousel Demo
+      function initializeCarousel() {
+        const carouselContainer = document.getElementById('carouselContainer')
+        const prevImageBtn = document.getElementById('prevImageBtn')
+        const nextImageBtn = document.getElementById('nextImageBtn')
+        const resetCarouselBtn = document.getElementById('resetCarouselBtn')
+
+        let carouselInstance = null
+
+        // Create mock product images
+        const mockImages = [
+          { url: 'https://picsum.photos/seed/flower1/400/300.jpg', image_index: 0 },
+          { url: 'https://picsum.photos/seed/flower2/400/300.jpg', image_index: 1 },
+          { url: 'https://picsum.photos/seed/flower3/400/300.jpg', image_index: 2 },
+          { url: 'https://picsum.photos/seed/flower4/400/300.jpg', image_index: 3 }
+        ]
+
+        // Mock the API response
+        const originalGetProductImages = window.api?.getProductImages
+        if (window.api) {
+          window.api.getProductImages = async (productId, options) => {
+            return {
+              success: true,
+              data: mockImages
+            }
+          }
+        }
+
+        // Initialize carousel
+        createImageCarousel(carouselContainer, 1)
+          .then(instance => {
+            carouselInstance = instance
+            logEvent('info', 'Image carousel initialized successfully')
+          })
+          .catch(error => {
+            logEvent('error', `Failed to initialize carousel: ${error.message}`)
+
+            // Fallback: create simple carousel
+            carouselContainer.innerHTML = `
+          <div class="product-image-container" data-product-id="1">
+            <div class="carousel-images-wrapper">
+              <img
+                src="${mockImages[0].url}"
+                alt="Product image"
+                class="product-carousel-image bg-gray-100"
+                loading="lazy"
+              />
+            </div>
+            <div class="image-count-badge">${mockImages.length} fotos</div>
+            <div class="carousel-indicators touch-visible" data-current="0">
+              ${mockImages
+                .map(
+                  (_, index) => `
+                <button class="indicator-dot ${index === 0 ? 'active' : ''}"
+                        data-index="${index}"
+                        aria-label="Ver imagen ${index + 1} de ${mockImages.length}"
+                        tabindex="0">
+                  <span class="sr-only">Imagen ${index + 1}</span>
+                </button>
+              `
+                )
+                .join('')}
+            </div>
+            <button class="carousel-nav prev touch-visible"
+                    aria-label="Ver imagen anterior"
+                    tabindex="0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <button class="carousel-nav next touch-visible"
+                    aria-label="Ver siguiente imagen"
+                    tabindex="0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+            <div class="swipe-hint touch-visible">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="7 12 12 7 17 12"></polyline>
+                <polyline points="7 12 12 17 17 12"></polyline>
+              </svg>
+              <span>Desliza para ver más</span>
+            </div>
+          </div>
+        `
+
+            // Initialize touch gestures for fallback carousel
+            const imagesWrapper = carouselContainer.querySelector('.carousel-images-wrapper')
+            if (imagesWrapper) {
+              const touchGestures = new TouchGestures({
+                swipeThreshold: 50,
+                velocityThreshold: 0.3,
+                preventDefault: false,
+                passive: true
+              })
+
+              touchGestures.init(imagesWrapper)
+
+              let currentIndex = 0
+
+              touchGestures.onSwipe(event => {
+                const img = carouselContainer.querySelector('img')
+                const indicators = carouselContainer.querySelectorAll('.indicator-dot')
+
+                if (event.direction === 'left') {
+                  currentIndex = (currentIndex + 1) % mockImages.length
+                } else if (event.direction === 'right') {
+                  currentIndex = (currentIndex - 1 + mockImages.length) % mockImages.length
+                }
+
+                img.src = mockImages[currentIndex].url
+
+                // Update indicators
+                indicators.forEach((dot, index) => {
+                  dot.classList.toggle('active', index === currentIndex)
+                })
+
+                logEvent(
+                  'swipe',
+                  `Carousel: Swiped ${event.direction} to image ${currentIndex + 1}`
+                )
+              })
+            }
+          })
+
+        // Control buttons
+        prevImageBtn.addEventListener('click', () => {
+          const prevBtn = carouselContainer.querySelector('.carousel-nav.prev')
+          if (prevBtn) {
+            prevBtn.click()
+            logEvent('info', 'Carousel: Previous image button clicked')
+          }
+        })
+
+        nextImageBtn.addEventListener('click', () => {
+          const nextBtn = carouselContainer.querySelector('.carousel-nav.next')
+          if (nextBtn) {
+            nextBtn.click()
+            logEvent('info', 'Carousel: Next image button clicked')
+          }
+        })
+
+        resetCarouselBtn.addEventListener('click', () => {
+          // Reset to first image
+          const indicators = carouselContainer.querySelectorAll('.indicator-dot')
+          if (indicators.length > 0) {
+            indicators[0].click()
+            logEvent('info', 'Carousel: Reset to first image')
+          }
+        })
+      }
+
+      // Pull-to-Refresh Demo
+      function initializePullToRefresh() {
+        const pullToRefreshContainer = document.getElementById('pullToRefreshContainer')
+        const productList = document.getElementById('productList')
+        const pullToRefreshStatus = document.getElementById('pullToRefreshStatus')
+
+        // Mock product data
+        const mockProducts = [
+          { id: 1, name: 'Rose Bouquet', price: 29.99, image: 'rose' },
+          { id: 2, name: 'Tulip Arrangement', price: 24.99, image: 'tulip' },
+          { id: 3, name: 'Lily Bundle', price: 34.99, image: 'lily' },
+          { id: 4, name: 'Sunflower Mix', price: 19.99, image: 'sunflower' },
+          { id: 5, name: 'Orchid Display', price: 44.99, image: 'orchid' },
+          { id: 6, name: 'Daisy Collection', price: 22.99, image: 'daisy' },
+          { id: 7, name: 'Carnation Bundle', price: 18.99, image: 'carnation' },
+          { id: 8, name: 'Peony Arrangement', price: 39.99, image: 'peony' }
+        ]
+
+        // Function to render products
+        function renderProducts() {
+          productList.innerHTML = mockProducts
+            .map(
+              product => `
+            <div class="product-item">
+              <img src="https://picsum.photos/seed/${product.image}/60/60.jpg" 
+                   alt="${product.name}" 
+                   class="product-image-thumb">
+              <div class="product-details">
+                <div class="product-name">${product.name}</div>
+                <div class="product-price">$${product.price.toFixed(2)}</div>
+              </div>
+            </div>
+          `
+            )
+            .join('')
+        }
+
+        // Initialize products
+        renderProducts()
+
+        // Initialize pull-to-refresh
+        try {
+          const pullToRefresh = new PullToRefresh({
+            container: pullToRefreshContainer,
+            threshold: 80,
+            maxPull: 120,
+            hapticFeedback: state.hapticEnabled,
+            respectReducedMotion: true,
+            onRefresh: async () => {
+              logEvent('info', 'Pull-to-refresh: Refresh triggered')
+
+              // Update status
+              pullToRefreshStatus.textContent = 'Refreshing products...'
+              pullToRefreshStatus.className = 'status-message info'
+
+              // Simulate API call delay
+              await new Promise(resolve => setTimeout(resolve, 1500))
+
+              // Simulate data refresh (shuffle products)
+              mockProducts.sort(() => Math.random() - 0.5)
+              renderProducts()
+
+              // Update status
+              pullToRefreshStatus.textContent = `Products refreshed successfully! ${new Date().toLocaleTimeString()}`
+              pullToRefreshStatus.className = 'status-message success'
+
+              logEvent('info', 'Pull-to-refresh: Refresh completed successfully')
+
+              // Reset status after delay
+              setTimeout(() => {
+                pullToRefreshStatus.textContent =
+                  'Ready for testing. Pull down to refresh the product list.'
+                pullToRefreshStatus.className = 'status-message info'
+              }, 3000)
+            }
+          })
+
+          // Store for debugging
+          window.pullToRefreshTest = pullToRefresh
+
+          logEvent('info', 'Pull-to-refresh initialized successfully')
+        } catch (error) {
+          logEvent('error', `Failed to initialize pull-to-refresh: ${error.message}`)
+          pullToRefreshStatus.textContent = `Error: ${error.message}`
+          pullToRefreshStatus.className = 'status-message error'
+        }
+      }
+
+      // Touch Feedback Gallery
+      function initializeTouchFeedback() {
+        const tabButtons = document.querySelectorAll('.tab-btn')
+        const tabContents = document.querySelectorAll('.tab-content')
+
+        // Tab navigation
+        tabButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            const tabName = button.dataset.tab
+
+            // Update active states
+            tabButtons.forEach(btn => btn.classList.remove('active'))
+            tabContents.forEach(content => content.classList.remove('active'))
+
+            button.classList.add('active')
+            document.getElementById(`${tabName}-tab`).classList.add('active')
+
+            // Initialize feedback for active tab
+            initializeTabFeedback(tabName)
+          })
+        })
+
+        // Initialize first tab
+        initializeTabFeedback('ripple')
+      }
+
+      function initializeTabFeedback(tabName) {
+        const activeTab = document.getElementById(`${tabName}-tab`)
+        const feedbackItems = activeTab.querySelectorAll('.feedback-item')
+
+        feedbackItems.forEach(item => {
+          // Remove existing listeners
+          const newItem = item.cloneNode(true)
+          item.parentNode.replaceChild(newItem, item)
+
+          // Determine feedback type based on tab
+          let feedbackType = 'ripple'
+          if (tabName === 'scale') feedbackType = 'scale'
+          if (tabName === 'highlight') feedbackType = 'highlight'
+
+          // Initialize touch feedback
+          const hapticType = newItem.dataset.haptic || 'light'
+
+          const touchFeedback = new TouchFeedback({
+            type: feedbackType,
+            haptic: state.hapticEnabled ? hapticType : 'none',
+            duration: 300,
+            respectReducedMotion: true,
+            passive: true
+          })
+
+          touchFeedback.init(newItem)
+
+          // Add click handler for testing
+          newItem.addEventListener('click', () => {
+            logEvent('tap', `Touch feedback: ${feedbackType} with ${hapticType} haptic`)
+
+            // Trigger specific feedback for haptic tab
+            if (tabName === 'haptic') {
+              touchFeedback.triggerFeedback(hapticType)
+            }
+          })
+        })
+      }
+
+      // Performance Metrics
+      function initializePerformanceMetrics() {
+        const metricsTrackingBtn = document.getElementById('metricsTrackingBtn')
+        const resetMetricsBtn = document.getElementById('resetMetricsBtn')
+        const metricsContainer = document.getElementById('metricsContainer')
+
+        // Update metrics display
+        function updateMetricsDisplay() {
+          metricsContainer.innerHTML = `
+          <div class="metric-card">
+            <div class="metric-value">${metrics.avgResponseTime.toFixed(0)}ms</div>
+            <div class="metric-label">Avg Response Time</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">${metrics.totalGestures}</div>
+            <div class="metric-label">Total Gestures</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">${metrics.totalTaps}</div>
+            <div class="metric-label">Total Taps</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">${(metrics.errorRate * 100).toFixed(1)}%</div>
+            <div class="metric-label">Error Rate</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">${metrics.gestureAccuracy.toFixed(1)}%</div>
+            <div class="metric-label">Gesture Accuracy</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">${metrics.hapticFeedbackCount}</div>
+            <div class="metric-label">Haptic Events</div>
+          </div>
+        `
+        }
+
+        // Update metrics periodically
+        setInterval(() => {
+          if (state.metricsTracking) {
+            updateMetricsDisplay()
+          }
+        }, 1000)
+
+        // Control buttons
+        metricsTrackingBtn.addEventListener('click', () => {
+          state.metricsTracking = !state.metricsTracking
+          metricsTrackingBtn.textContent = state.metricsTracking ? 'Tracking On' : 'Tracking Off'
+          metricsTrackingBtn.classList.toggle('active', state.metricsTracking)
+          logEvent('info', `Metrics tracking ${state.metricsTracking ? 'enabled' : 'disabled'}`)
+        })
+
+        resetMetricsBtn.addEventListener('click', () => {
+          // Reset metrics
+          metrics.avgResponseTime = 0
+          metrics.gestureAccuracy = 0
+          metrics.totalGestures = 0
+          metrics.totalTaps = 0
+          metrics.errorRate = 0
+          metrics.hapticFeedbackCount = 0
+          metrics.visualFeedbackCount = 0
+
+          state.responseTimes = []
+          state.gestureCount = 0
+          state.tapCount = 0
+
+          updateMetricsDisplay()
+          logEvent('info', 'Performance metrics reset')
+        })
+
+        // Initial display
+        updateMetricsDisplay()
+      }
+
+      function updateMetrics() {
+        if (!state.metricsTracking) return
+
+        // Calculate average response time
+        if (state.responseTimes.length > 0) {
+          metrics.avgResponseTime =
+            state.responseTimes.reduce((a, b) => a + b, 0) / state.responseTimes.length
+        }
+
+        // Update counts
+        metrics.totalGestures = state.gestureCount
+        metrics.totalTaps = state.tapCount
+
+        // Calculate gesture accuracy (mock calculation)
+        metrics.gestureAccuracy = Math.min(100, 85 + Math.random() * 10)
+
+        // Calculate error rate (mock calculation)
+        metrics.errorRate = Math.max(0, Math.random() * 2)
+      }
+
+      // Accessibility Testing
+      function initializeAccessibility() {
+        const reducedMotionToggle = document.getElementById('reducedMotionToggle')
+        const highContrastToggle = document.getElementById('highContrastToggle')
+        const hapticFeedbackToggle = document.getElementById('hapticFeedbackToggle')
+        const visualFeedbackToggle = document.getElementById('visualFeedbackToggle')
+        const accessibilityStatus = document.getElementById('accessibilityStatus')
+
+        // Check initial preferences
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        const prefersHighContrast = window.matchMedia('(prefers-contrast: high)').matches
+
+        reducedMotionToggle.checked = prefersReducedMotion
+        highContrastToggle.checked = prefersHighContrast
+
+        // Reduced motion toggle
+        reducedMotionToggle.addEventListener('change', e => {
+          const isReduced = e.target.checked
+          document.body.style.setProperty('--reduced-motion', isReduced ? '1' : '0')
+
+          if (isReduced) {
+            document.body.style.animationDuration = '0.01ms'
+            document.body.style.transitionDuration = '0.01ms'
+          } else {
+            document.body.style.animationDuration = ''
+            document.body.style.transitionDuration = ''
+          }
+
+          logEvent('info', `Reduced motion ${isReduced ? 'enabled' : 'disabled'}`)
+          updateAccessibilityStatus()
+        })
+
+        // High contrast toggle
+        highContrastToggle.addEventListener('change', e => {
+          const isHighContrast = e.target.checked
+          document.body.classList.toggle('high-contrast', isHighContrast)
+          logEvent('info', `High contrast ${isHighContrast ? 'enabled' : 'disabled'}`)
+          updateAccessibilityStatus()
+        })
+
+        // Haptic feedback toggle
+        hapticFeedbackToggle.addEventListener('change', e => {
+          state.hapticEnabled = e.target.checked
+          logEvent('info', `Haptic feedback ${state.hapticEnabled ? 'enabled' : 'disabled'}`)
+          updateAccessibilityStatus()
+        })
+
+        // Visual feedback toggle
+        visualFeedbackToggle.addEventListener('change', e => {
+          state.visualEnabled = e.target.checked
+          document.body.classList.toggle('no-visual-feedback', !state.visualEnabled)
+          logEvent('info', `Visual feedback ${state.visualEnabled ? 'enabled' : 'disabled'}`)
+          updateAccessibilityStatus()
+        })
+
+        function updateAccessibilityStatus() {
+          const enabledFeatures = []
+          if (reducedMotionToggle.checked) enabledFeatures.push('Reduced Motion')
+          if (highContrastToggle.checked) enabledFeatures.push('High Contrast')
+          if (hapticFeedbackToggle.checked) enabledFeatures.push('Haptic Feedback')
+          if (visualFeedbackToggle.checked) enabledFeatures.push('Visual Feedback')
+
+          accessibilityStatus.textContent = `Enabled: ${enabledFeatures.join(', ') || 'None'}`
+        }
+
+        updateAccessibilityStatus()
+      }
+
+      // Event Log
+      function initializeEventLog() {
+        const clearLogBtn = document.getElementById('clearLogBtn')
+        const exportLogBtn = document.getElementById('exportLogBtn')
+        const eventLog = document.getElementById('eventLog')
+
+        const logFilters = {
+          all: document.getElementById('logFilterAll'),
+          swipe: document.getElementById('logFilterSwipe'),
+          tap: document.getElementById('logFilterTap'),
+          error: document.getElementById('logFilterError')
+        }
+
+        // Store log entries
+        window.testLogEntries = []
+
+        // Clear log
+        clearLogBtn.addEventListener('click', () => {
+          eventLog.innerHTML = '<div class="log-entry info">Log cleared</div>'
+          window.testLogEntries = []
+          logEvent('info', 'Event log cleared')
+        })
+
+        // Export log
+        exportLogBtn.addEventListener('click', () => {
+          const logText = window.testLogEntries
+            .map(entry => `[${entry.timestamp}] ${entry.type.toUpperCase()}: ${entry.message}`)
+            .join('\n')
+
+          const blob = new Blob([logText], { type: 'text/plain' })
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = `touch-test-log-${new Date().toISOString().slice(0, 19)}.txt`
+          a.click()
+          URL.revokeObjectURL(url)
+
+          logEvent('info', 'Event log exported')
+        })
+
+        // Log filters
+        Object.keys(logFilters).forEach(filterType => {
+          logFilters[filterType].addEventListener('click', () => {
+            state.logFilter = filterType
+
+            // Update active states
+            Object.values(logFilters).forEach(btn => btn.classList.remove('active'))
+            logFilters[filterType].classList.add('active')
+
+            // Filter log display
+            filterEventLog()
+          })
+        })
+
+        function filterEventLog() {
+          const entries = eventLog.querySelectorAll('.log-entry')
+          entries.forEach(entry => {
+            if (state.logFilter === 'all') {
+              entry.style.display = 'block'
+            } else {
+              entry.style.display = entry.classList.contains(state.logFilter) ? 'block' : 'none'
+            }
+          })
+        }
+      }
+
+      function logEvent(type, message) {
+        const eventLog = document.getElementById('eventLog')
+        const timestamp = new Date().toLocaleTimeString()
+
+        const logEntry = document.createElement('div')
+        logEntry.className = `log-entry ${type}`
+        logEntry.innerHTML = `
+        <span class="log-timestamp">[${timestamp}]</span>
+        <span class="log-message">${message}</span>
+      `
+
+        // Add to log display
+        eventLog.appendChild(logEntry)
+
+        // Store in global array
+        window.testLogEntries.push({
+          timestamp,
+          type,
+          message
+        })
+
+        // Auto-scroll to bottom
+        eventLog.scrollTop = eventLog.scrollHeight
+
+        // Limit log size
+        if (eventLog.children.length > 100) {
+          eventLog.removeChild(eventLog.firstChild)
+        }
+
+        // Update haptic feedback count
+        if (type === 'swipe' || type === 'tap') {
+          metrics.hapticFeedbackCount++
+        }
+      }
+
+      // Tab Navigation
+      function initializeTabNavigation() {
+        const tabButtons = document.querySelectorAll('.tab-btn')
+
+        tabButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            const tabName = button.dataset.tab
+
+            logEvent('info', `Switched to ${tabName} tab`)
+          })
+        })
+      }
+
+      // Haptic Feedback Helper
+      function triggerHapticFeedback(type = 'light') {
+        if (!state.hapticEnabled) return
+
+        try {
+          if (navigator.vibrate) {
+            switch (type) {
+              case 'light':
+                navigator.vibrate(10)
+                break
+              case 'medium':
+                navigator.vibrate(20)
+                break
+              case 'heavy':
+                navigator.vibrate(30)
+                break
+              case 'success':
+                navigator.vibrate([10, 50, 10])
+                break
+              case 'error':
+                navigator.vibrate([50, 30, 50, 30, 50])
+                break
+              case 'warning':
+                navigator.vibrate([30, 20, 30])
+                break
+            }
+          }
+        } catch (error) {
+          console.warn('Haptic feedback failed:', error)
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -591,6 +591,8 @@ export function initMobileNav(options = {}) {
   onDOMReady(() => {
     try {
       mobileNav.init()
+      // Initialize touch feedback for navigation links after mobile nav is ready
+      initMobileNavTouchFeedback()
     } catch (error) {
       console.error('❌ initMobileNav failed:', error)
       throw error
@@ -598,6 +600,54 @@ export function initMobileNav(options = {}) {
   })
 
   return mobileNav
+}
+
+/**
+ * Initialize touch feedback for mobile navigation elements
+ */
+function initMobileNavTouchFeedback() {
+  // Import TouchFeedback dynamically to avoid circular dependencies
+  import('../shared/touchFeedback.js')
+    .then(({ TouchFeedback }) => {
+      // Add touch feedback to mobile navigation links
+      const mobileNavLinks = document.querySelectorAll('.mobile-nav-link')
+      mobileNavLinks.forEach(link => {
+        const feedback = new TouchFeedback({
+          type: 'highlight',
+          haptic: 'light',
+          duration: 200
+        })
+        feedback.init(link)
+      })
+
+      // Add touch feedback to overlay
+      const overlay = document.querySelector('.mobile-nav-overlay')
+      if (overlay) {
+        const feedback = new TouchFeedback({
+          type: 'highlight',
+          haptic: 'none',
+          duration: 150
+        })
+        feedback.init(overlay)
+      }
+
+      // Add touch feedback to drawer close button if it exists
+      const drawerCloseBtn = document.querySelector('.drawer-close-btn')
+      if (drawerCloseBtn) {
+        const feedback = new TouchFeedback({
+          type: 'scale',
+          haptic: 'light',
+          scale: 0.9,
+          duration: 150
+        })
+        feedback.init(drawerCloseBtn)
+      }
+
+      console.log('✅ Touch feedback initialized for mobile navigation')
+    })
+    .catch(error => {
+      console.warn('Could not initialize touch feedback for mobile navigation:', error)
+    })
 }
 
 // Export default for convenience

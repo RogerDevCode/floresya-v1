@@ -11,6 +11,10 @@ import {
   initCartEventListeners
 } from '../js/shared/cart.js'
 import { api } from '../js/shared/api-client.js'
+import {
+  initFormTouchFeedback,
+  triggerFormValidationFeedback as _triggerFormValidationFeedback
+} from '../js/shared/formTouchFeedback.js'
 
 // Global state
 let cartItems = []
@@ -76,6 +80,9 @@ async function init() {
 
   // Initialize form validation
   initFormValidation()
+
+  // Initialize touch feedback for forms
+  initFormTouchFeedback()
 }
 
 /**

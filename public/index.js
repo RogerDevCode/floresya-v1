@@ -6,10 +6,17 @@
 import { onDOMReady } from './js/shared/dom-ready.js'
 import { createIcons } from './js/lucide-icons.js'
 import { createImageCarousel } from './js/components/imageCarousel.js'
-import { addToCart, initCartBadge, initCartEventListeners } from './js/shared/cart.js'
+import {
+  addToCart,
+  initCartBadge,
+  initCartEventListeners,
+  initCartTouchFeedback
+} from './js/shared/cart.js'
 import { api } from './js/shared/api-client.js'
 import { initMobileNav } from './js/components/mobileNav.js'
 import { initHamburgerMenu } from './js/components/hamburgerMenu.js'
+import { PullToRefresh } from './js/components/pullToRefresh.js'
+import { TouchFeedback } from './js/shared/touchFeedback.js'
 
 /**
  * Initialize mobile navigation drawer with hamburger menu
@@ -309,11 +316,15 @@ async function initCarousel() {
  */
 let currentPage = 1
 const PRODUCTS_PER_PAGE = 16 // 4x4 grid
+let pullToRefreshInstance = null
 
 async function initProductsGrid() {
   // Load occasions first, then products
   await loadOccasionsFilter()
   await loadProducts(currentPage)
+
+  // Initialize pull-to-refresh on the products container
+  initPullToRefresh()
 
   // Search functionality
   const searchInput = document.getElementById('searchInput')
@@ -344,6 +355,84 @@ async function initProductsGrid() {
       loadProducts(currentPage)
     })
   }
+}
+
+/**
+ * Initialize pull-to-refresh functionality
+ */
+function initPullToRefresh() {
+  const productsContainer = document.getElementById('productos')
+
+  if (!productsContainer) {
+    console.warn('PullToRefresh: Products container not found')
+    return
+  }
+
+  try {
+    pullToRefreshInstance = new PullToRefresh({
+      container: productsContainer,
+      threshold: 80,
+      maxPull: 120,
+      hapticFeedback: true,
+      respectReducedMotion: true,
+      onRefresh: async () => {
+        console.log('PullToRefresh: Refreshing products...')
+
+        // Reset to first page and reload products
+        currentPage = 1
+        await loadProducts(currentPage)
+
+        // Show success message
+        showToast('Products updated successfully!', 'success')
+      }
+    })
+
+    console.log('✅ PullToRefresh: Initialized successfully')
+  } catch (error) {
+    console.error('❌ PullToRefresh: Initialization failed', error)
+  }
+}
+
+/**
+ * Show toast notification
+ * @param {string} message - Message to display
+ * @param {string} type - Type of toast (success, error, info)
+ */
+function showToast(message, type = 'info') {
+  // Simple toast implementation - can be replaced with a more sophisticated toast system
+  const toast = document.createElement('div')
+  toast.className = `fixed bottom-4 right-4 px-4 py-2 rounded-lg text-white z-50 transform transition-all duration-300 translate-y-full`
+
+  // Set background color based on type
+  switch (type) {
+    case 'success':
+      toast.style.backgroundColor = '#10b981'
+      break
+    case 'error':
+      toast.style.backgroundColor = '#ef4444'
+      break
+    default:
+      toast.style.backgroundColor = '#3b82f6'
+  }
+
+  toast.textContent = message
+  document.body.appendChild(toast)
+
+  // Animate in
+  setTimeout(() => {
+    toast.classList.remove('translate-y-full')
+    toast.classList.add('translate-y-0')
+  }, 10)
+
+  // Remove after 3 seconds
+  setTimeout(() => {
+    toast.classList.add('translate-y-full')
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.parentNode.removeChild(toast)
+      }
+    }, 300)
+  }, 3000)
 }
 
 /**
@@ -532,6 +621,9 @@ async function loadProducts(page = 1) {
     // Add click handlers for buy now buttons
     addBuyNowHandlers()
 
+    // Initialize touch feedback for product cards
+    initProductCardTouchFeedback()
+
     // Render pagination
     if (paginationContainer) {
       const hasMore = result.data.length === PRODUCTS_PER_PAGE
@@ -686,7 +778,12 @@ function addCartButtonHandlers() {
         // Add to cart
         await addToCart(product, 1)
 
-        // Visual feedback
+        // Trigger success feedback on the button
+        if (btn._touchFeedback) {
+          btn._touchFeedback.triggerFeedback('success')
+        }
+
+        // Visual feedback (fallback)
         btn.style.transform = 'scale(0.95)'
         setTimeout(() => {
           btn.style.transform = 'scale(1)'
@@ -782,7 +879,12 @@ function addBuyNowHandlers() {
         // Add to cart
         await addToCart(product, 1)
 
-        // Visual feedback
+        // Trigger success feedback on the button
+        if (btn._touchFeedback) {
+          btn._touchFeedback.triggerFeedback('success')
+        }
+
+        // Visual feedback (fallback)
         btn.style.transform = 'scale(0.95)'
         setTimeout(() => {
           btn.style.transform = 'scale(1)'
@@ -801,6 +903,117 @@ function addBuyNowHandlers() {
 }
 
 /**
+ * Initialize touch feedback for product cards and their interactive elements
+ */
+function initProductCardTouchFeedback() {
+  // Initialize touch feedback for product cards
+  const productCards = document.querySelectorAll('.product-card')
+  productCards.forEach(card => {
+    // Add scale feedback to entire card
+    const cardFeedback = new TouchFeedback({
+      type: 'scale',
+      haptic: 'light',
+      scale: 0.98,
+      duration: 150
+    })
+    cardFeedback.init(card)
+
+    // Add ripple feedback to quick view buttons
+    const quickViewBtn = card.querySelector('.quick-view-btn')
+    if (quickViewBtn) {
+      const quickViewFeedback = new TouchFeedback({
+        type: 'ripple',
+        haptic: 'light',
+        color: 'rgba(156, 163, 175, 0.3)',
+        duration: 300
+      })
+      quickViewFeedback.init(quickViewBtn)
+    }
+
+    // Add ripple feedback to add to cart buttons
+    const addToCartBtn = card.querySelector('.add-to-cart-btn')
+    if (addToCartBtn) {
+      const cartFeedback = new TouchFeedback({
+        type: 'ripple',
+        haptic: 'medium',
+        color: 'rgba(236, 72, 153, 0.3)',
+        duration: 300
+      })
+      cartFeedback.init(addToCartBtn)
+    }
+
+    // Add ripple feedback to buy now buttons
+    const buyNowBtn = card.querySelector('.buy-now-btn')
+    if (buyNowBtn) {
+      const buyNowFeedback = new TouchFeedback({
+        type: 'ripple',
+        haptic: 'medium',
+        color: 'rgba(16, 185, 129, 0.3)',
+        duration: 300
+      })
+      buyNowFeedback.init(buyNowBtn)
+    }
+
+    // Add scale feedback to carousel container
+    const carouselContainer = card.querySelector('[data-carousel-container]')
+    if (carouselContainer) {
+      const carouselFeedback = new TouchFeedback({
+        type: 'scale',
+        haptic: 'light',
+        scale: 0.97,
+        duration: 150
+      })
+      carouselFeedback.init(carouselContainer)
+    }
+  })
+
+  // Initialize touch feedback for pagination buttons
+  const paginationBtns = document.querySelectorAll('.pagination button')
+  paginationBtns.forEach(btn => {
+    const feedback = new TouchFeedback({
+      type: 'scale',
+      haptic: 'light',
+      scale: 0.95,
+      duration: 150
+    })
+    feedback.init(btn)
+  })
+
+  // Initialize touch feedback for filter and sort controls
+  const searchInput = document.getElementById('searchInput')
+  if (searchInput) {
+    const feedback = new TouchFeedback({
+      type: 'highlight',
+      haptic: 'none',
+      duration: 200
+    })
+    feedback.init(searchInput)
+  }
+
+  const occasionFilter = document.getElementById('occasionFilter')
+  if (occasionFilter) {
+    const feedback = new TouchFeedback({
+      type: 'highlight',
+      haptic: 'light',
+      duration: 200
+    })
+    feedback.init(occasionFilter)
+  }
+
+  const sortFilter = document.getElementById('sortFilter')
+  if (sortFilter) {
+    const feedback = new TouchFeedback({
+      type: 'highlight',
+      haptic: 'light',
+      duration: 200
+    })
+    feedback.init(sortFilter)
+  }
+
+  console.log('✅ Touch feedback initialized for product cards')
+}
+
+/**
  * Initialize page
  */
 function init() {
@@ -814,6 +1027,7 @@ function init() {
     // Initialize cart functionality
     initCartBadge()
     initCartEventListeners()
+    initCartTouchFeedback()
     console.log('✅ [index.js] Cart initialized')
 
     // Initialize mobile navigation with new components
@@ -828,6 +1042,9 @@ function init() {
 
     initProductsGrid()
     console.log('✅ [index.js] Products grid initializing...')
+
+    // Store pullToRefreshInstance globally for potential access
+    window.pullToRefreshInstance = pullToRefreshInstance
 
     // Mark page as loaded
     document.documentElement.classList.add('loaded')

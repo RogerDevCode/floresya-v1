@@ -8,6 +8,8 @@ import { createIcons } from '/js/lucide-icons.js'
 import { addToCart, isInCart, initCartBadge, initCartEventListeners } from '/js/shared/cart.js'
 import { showToast } from '/js/components/toast.js'
 import { api } from '/js/shared/api-client.js'
+import { TouchFeedback } from '/js/shared/touchFeedback.js'
+import { initQuantityTouchFeedback } from '/js/shared/formTouchFeedback.js'
 
 /**
  * State
@@ -237,6 +239,9 @@ function initQuantityControls() {
     return
   }
 
+  // Initialize touch feedback for quantity controls
+  initQuantityTouchFeedback()
+
   qtyMinus.addEventListener('click', () => {
     const currentValue = parseInt(qtyInput.value, 10) || 1
     if (currentValue > 1) {
@@ -412,6 +417,9 @@ async function init() {
     initQuantityControls()
     initCartActions()
 
+    // Initialize touch feedback for product page buttons
+    initProductButtonTouchFeedback()
+
     // Mark page as loaded
     document.documentElement.classList.add('loaded')
   } catch (error) {
@@ -419,6 +427,39 @@ async function init() {
     showError(error.message || 'Error al cargar el producto')
     throw error
   }
+}
+
+/**
+ * Initialize touch feedback for product page buttons
+ */
+function initProductButtonTouchFeedback() {
+  // Add to cart button
+  const addToCartBtn = document.getElementById('add-to-cart-btn')
+  if (addToCartBtn) {
+    const feedback = new TouchFeedback({
+      type: 'ripple',
+      haptic: 'medium',
+      color: 'rgba(236, 72, 153, 0.3)',
+      duration: 300
+    })
+    feedback.init(addToCartBtn)
+    addToCartBtn._touchFeedback = feedback
+  }
+
+  // Buy now button
+  const buyNowBtn = document.getElementById('buy-now-btn')
+  if (buyNowBtn) {
+    const feedback = new TouchFeedback({
+      type: 'ripple',
+      haptic: 'medium',
+      color: 'rgba(16, 185, 129, 0.3)',
+      duration: 300
+    })
+    feedback.init(buyNowBtn)
+    buyNowBtn._touchFeedback = feedback
+  }
+
+  console.log('✅ Touch feedback initialized for product page buttons')
 }
 
 // Run on DOM ready using the safe utility

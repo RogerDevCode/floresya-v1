@@ -1,10 +1,13 @@
 /**
  * Image Carousel Component (Vanilla JS)
+ * Enhanced with touch swipe navigation
  * Hover-activated: Shows first image by default, cycles on hover
+ * Touch-enabled: Swipe to navigate between images
  * No dependencies, CSP-compliant
  */
 
 import { api } from '../shared/api-client.js'
+import { TouchGestures } from '../shared/touchGestures.js'
 
 /**
  * Create hover-activated image carousel for product card
@@ -39,16 +42,62 @@ export async function createImageCarousel(container, productId) {
     const images = response.data.sort((a, b) => a.image_index - b.image_index)
     const defaultImage = images[0] // First image is default
 
+    // Check if touch device
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+
     // Render initial HTML (default image only)
     container.innerHTML = `
       <div class="product-image-container" data-product-id="${productId}">
-        <img
-          src="${defaultImage.url}"
-          alt="Product image"
-          class="product-carousel-image bg-gray-100"
-          loading="lazy"
-        />
-        ${images.length > 1 ? `<div class="image-count-badge">${images.length} fotos</div>` : ''}
+        <div class="carousel-images-wrapper">
+          <img
+            src="${defaultImage.url}"
+            alt="Product image"
+            class="product-carousel-image bg-gray-100"
+            loading="lazy"
+          />
+        </div>
+        ${
+          images.length > 1
+            ? `
+          <div class="image-count-badge">${images.length} fotos</div>
+          <div class="carousel-indicators ${isTouchDevice ? 'touch-visible' : 'touch-hidden'}" data-current="0">
+            ${images
+              .map(
+                (_, index) => `
+              <button class="indicator-dot ${index === 0 ? 'active' : ''}"
+                      data-index="${index}"
+                      aria-label="Ver imagen ${index + 1} de ${images.length}"
+                      tabindex="0">
+                <span class="sr-only">Imagen ${index + 1}</span>
+              </button>
+            `
+              )
+              .join('')}
+          </div>
+          <button class="carousel-nav prev ${isTouchDevice ? 'touch-visible' : 'touch-hidden'}"
+                  aria-label="Ver imagen anterior"
+                  tabindex="0">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <button class="carousel-nav next ${isTouchDevice ? 'touch-visible' : 'touch-hidden'}"
+                  aria-label="Ver siguiente imagen"
+                  tabindex="0">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+          <div class="swipe-hint ${isTouchDevice ? 'touch-visible' : 'touch-hidden'}">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="7 12 12 7 17 12"></polyline>
+              <polyline points="7 12 12 17 17 12"></polyline>
+            </svg>
+            <span>Desliza para ver más</span>
+          </div>
+        `
+            : ''
+        }
       </div>
     `
 
@@ -60,9 +109,18 @@ export async function createImageCarousel(container, productId) {
     // Carousel state
     let currentIndex = 0
     let autoplayTimer = null
+    let touchGestures = null
+    let isSwipeHintShown = false
 
     const imageContainer = container.querySelector('.product-image-container')
+    const imagesWrapper = imageContainer.querySelector('.carousel-images-wrapper')
     const imgElement = imageContainer.querySelector('img')
+
+    // Touch-specific elements
+    const indicators = imageContainer.querySelector('.carousel-indicators')
+    const prevBtn = imageContainer.querySelector('.carousel-nav.prev')
+    const nextBtn = imageContainer.querySelector('.carousel-nav.next')
+    const swipeHint = imageContainer.querySelector('.swipe-hint')
 
     // Add error handling for image loading
     const handleImageError = () => {
@@ -73,21 +131,203 @@ export async function createImageCarousel(container, productId) {
     imgElement.addEventListener('error', handleImageError)
 
     /**
+     * Navigate to specific image with smooth transition
+     */
+    function goToImage(index, animate = true) {
+      if (index < 0) {
+        index = images.length - 1
+      }
+      if (index >= images.length) {
+        index = 0
+      }
+
+      const wasChanged = currentIndex !== index
+      currentIndex = index
+
+      if (animate) {
+        // Add fade transition
+        imgElement.style.opacity = '0'
+
+        setTimeout(() => {
+          imgElement.src = images[currentIndex].url
+          imgElement.classList.remove('bg-gray-100')
+          imgElement.style.opacity = '1'
+
+          // Update indicators
+          updateIndicators()
+
+          // Haptic feedback if supported
+          if (wasChanged && navigator.vibrate) {
+            navigator.vibrate(10)
+          }
+        }, 150)
+      } else {
+        imgElement.src = images[currentIndex].url
+        imgElement.classList.remove('bg-gray-100')
+        updateIndicators()
+      }
+
+      // Hide swipe hint after first interaction
+      if (isSwipeHintShown && swipeHint) {
+        swipeHint.classList.add('hidden')
+        isSwipeHintShown = true
+      }
+    }
+
+    /**
      * Cycle to next image
      */
     function nextImage() {
-      currentIndex = (currentIndex + 1) % images.length
-      imgElement.src = images[currentIndex].url
-      imgElement.classList.remove('bg-gray-100')
+      goToImage(currentIndex + 1)
+    }
+
+    /**
+     * Cycle to previous image
+     */
+    function prevImage() {
+      goToImage(currentIndex - 1)
     }
 
     /**
      * Reset to default image
      */
     function resetToDefault() {
-      currentIndex = 0
-      imgElement.src = defaultImage.url
-      imgElement.classList.remove('bg-gray-100')
+      goToImage(0, false)
+    }
+
+    /**
+     * Update visual indicators
+     */
+    function updateIndicators() {
+      if (!indicators) {
+        return
+      }
+
+      // Update current index attribute
+      indicators.setAttribute('data-current', currentIndex.toString())
+
+      // Update active indicator
+      const dots = indicators.querySelectorAll('.indicator-dot')
+      dots.forEach((dot, index) => {
+        if (index === currentIndex) {
+          dot.classList.add('active')
+          dot.setAttribute('aria-current', 'true')
+        } else {
+          dot.classList.remove('active')
+          dot.removeAttribute('aria-current')
+        }
+      })
+    }
+
+    /**
+     * Initialize touch gestures
+     */
+    function initTouchGestures() {
+      if (!isTouchDevice || !imagesWrapper) {
+        return
+      }
+
+      touchGestures = new TouchGestures({
+        swipeThreshold: 50,
+        velocityThreshold: 0.3,
+        preventDefault: false,
+        passive: true
+      })
+
+      touchGestures.init(imagesWrapper)
+
+      touchGestures.onSwipe(event => {
+        if (event.direction === 'left') {
+          nextImage()
+        } else if (event.direction === 'right') {
+          prevImage()
+        }
+      })
+
+      // Add visual feedback during swipe
+      imagesWrapper.addEventListener(
+        'touchstart',
+        () => {
+          imagesWrapper.classList.add('swiping')
+        },
+        { passive: true }
+      )
+
+      imagesWrapper.addEventListener(
+        'touchend',
+        () => {
+          setTimeout(() => {
+            imagesWrapper.classList.remove('swiping')
+          }, 300)
+        },
+        { passive: true }
+      )
+    }
+
+    /**
+     * Show swipe hint on first load
+     */
+    function showSwipeHint() {
+      if (!isTouchDevice || !swipeHint || isSwipeHintShown) {
+        return
+      }
+
+      // Show hint after a delay
+      setTimeout(() => {
+        if (!isSwipeHintShown) {
+          swipeHint.classList.add('show')
+
+          // Auto-hide after 3 seconds
+          setTimeout(() => {
+            swipeHint.classList.remove('show')
+            isSwipeHintShown = true
+          }, 3000)
+        }
+      }, 1500)
+    }
+
+    /**
+     * Initialize navigation buttons and indicators
+     */
+    function initNavigationControls() {
+      if (!indicators) {
+        return
+      }
+
+      // Indicator clicks
+      const dots = indicators.querySelectorAll('.indicator-dot')
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => goToImage(index))
+
+        // Keyboard navigation
+        dot.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            goToImage(index)
+          }
+        })
+      })
+
+      // Navigation buttons
+      if (prevBtn) {
+        prevBtn.addEventListener('click', prevImage)
+        prevBtn.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            prevImage()
+          }
+        })
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', nextImage)
+        nextBtn.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            nextImage()
+          }
+        })
+      }
     }
 
     /**
@@ -111,7 +351,14 @@ export async function createImageCarousel(container, productId) {
       resetToDefault()
     }
 
-    // Attach hover events
+    // Initialize touch and navigation controls
+    if (images.length > 1) {
+      initNavigationControls()
+      initTouchGestures()
+      showSwipeHint()
+    }
+
+    // Attach hover events (maintain backward compatibility)
     imageContainer.addEventListener('mouseenter', startCycling)
     imageContainer.addEventListener('mouseleave', stopCycling)
 
@@ -122,6 +369,27 @@ export async function createImageCarousel(container, productId) {
         imageContainer.removeEventListener('mouseenter', startCycling)
         imageContainer.removeEventListener('mouseleave', stopCycling)
         imgElement.removeEventListener('error', handleImageError)
+
+        // Clean up touch gestures
+        if (touchGestures) {
+          touchGestures.destroy()
+        }
+
+        // Clean up navigation controls
+        if (indicators) {
+          const dots = indicators.querySelectorAll('.indicator-dot')
+          dots.forEach(dot => {
+            dot.removeEventListener('click', goToImage)
+          })
+        }
+
+        if (prevBtn) {
+          prevBtn.removeEventListener('click', prevImage)
+        }
+
+        if (nextBtn) {
+          nextBtn.removeEventListener('click', nextImage)
+        }
       }
     }
   } catch (error) {

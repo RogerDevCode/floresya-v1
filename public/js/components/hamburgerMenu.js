@@ -340,6 +340,31 @@ export class HamburgerMenu {
 
     console.log('✅ HamburgerMenu: Destroyed successfully')
   }
+
+  /**
+   * Initialize touch feedback for the hamburger button
+   * @returns {void}
+   */
+  initTouchFeedback() {
+    // Import TouchFeedback dynamically to avoid circular dependencies
+    import('../shared/touchFeedback.js')
+      .then(({ TouchFeedback }) => {
+        if (this.button) {
+          const feedback = new TouchFeedback({
+            type: 'scale',
+            haptic: 'light',
+            scale: 0.9,
+            duration: 150
+          })
+          feedback.init(this.button)
+          // Store reference for later access
+          this.button._touchFeedback = feedback
+        }
+      })
+      .catch(error => {
+        console.warn('Could not initialize touch feedback for hamburger menu:', error)
+      })
+  }
 }
 
 /**

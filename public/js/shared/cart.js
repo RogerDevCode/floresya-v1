@@ -216,10 +216,34 @@ export function updateCartBadge(count) {
   }
 
   if (badge) {
+    const previousCount = parseInt(badge.textContent, 10) || 0
+
+    // Update badge content
     badge.textContent = count
     badge.setAttribute('aria-label', `${count} productos`)
+
     // Hide badge if count is 0
     badge.style.display = count > 0 ? 'inline-flex' : 'none'
+
+    // Add touch feedback animation when count changes
+    if (previousCount !== count && count > previousCount) {
+      // Pulse animation for item added
+      badge.classList.add('cart-badge--pulse')
+      setTimeout(() => {
+        badge.classList.remove('cart-badge--pulse')
+      }, 300)
+
+      // Trigger haptic feedback if supported
+      if ('vibrate' in navigator) {
+        navigator.vibrate(10)
+      }
+    } else if (previousCount !== count && count < previousCount) {
+      // Shake animation for item removed
+      badge.classList.add('cart-badge--shake')
+      setTimeout(() => {
+        badge.classList.remove('cart-badge--shake')
+      }, 300)
+    }
   }
 }
 
@@ -284,6 +308,12 @@ function showCartNotification(message) {
   if (window.showToast) {
     window.showToast(message, 'success')
   }
+
+  // Trigger haptic feedback for cart notification
+  if ('vibrate' in navigator) {
+    // Double tap for cart notification
+    navigator.vibrate([10, 50, 10])
+  }
 }
 
 /**
@@ -333,7 +363,68 @@ export function testCart() {
   }
 }
 
+/**
+ * Initialize touch feedback for cart elements
+ */
+export function initCartTouchFeedback() {
+  // Touch feedback for cart icons/badges
+  const cartBadges = document.querySelectorAll('.cart-badge, #cart-count-badge, #cart-count')
+  cartBadges.forEach(badge => {
+    // Add scale feedback on touch
+    badge.addEventListener('touchstart', () => {
+      badge.style.transform = 'scale(1.1)'
+    })
+
+    badge.addEventListener('touchend', () => {
+      badge.style.transform = 'scale(1)'
+    })
+
+    // Add click feedback
+    badge.addEventListener('click', () => {
+      // Pulse animation on click
+      badge.classList.add('cart-badge--pulse')
+      setTimeout(() => {
+        badge.classList.remove('cart-badge--pulse')
+      }, 300)
+
+      // Haptic feedback
+      if ('vibrate' in navigator) {
+        navigator.vibrate(5)
+      }
+    })
+  })
+
+  // Touch feedback for cart buttons
+  const cartButtons = document.querySelectorAll('.cart-btn, .add-to-cart-btn, .view-cart-btn')
+  cartButtons.forEach(button => {
+    // Add ripple effect to cart buttons
+    button.addEventListener('touchstart', e => {
+      const ripple = document.createElement('span')
+      ripple.className = 'cart-button-ripple'
+
+      const rect = button.getBoundingClientRect()
+      const size = Math.max(rect.width, rect.height)
+      const x = e.touches[0].clientX - rect.left - size / 2
+      const y = e.touches[0].clientY - rect.top - size / 2
+
+      ripple.style.width = ripple.style.height = size + 'px'
+      ripple.style.left = x + 'px'
+      ripple.style.top = y + 'px'
+
+      button.appendChild(ripple)
+
+      // Remove ripple after animation
+      setTimeout(() => {
+        ripple.remove()
+      }, 600)
+    })
+  })
+
+  console.log('✅ Touch feedback initialized for cart elements')
+}
+
 // Make test function available globally for debugging
 if (typeof window !== 'undefined') {
   window.testCart = testCart
+  window.initCartTouchFeedback = initCartTouchFeedback
 }
