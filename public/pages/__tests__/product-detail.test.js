@@ -9,7 +9,7 @@ import { api } from '../../js/shared/api-client.js'
 // Mock the api client
 vi.mock('../../js/shared/api-client.js', () => ({
   api: {
-    getProduct: vi.fn(),
+    getProductsById: vi.fn(),
     getProductImages: vi.fn()
   }
 }))
@@ -56,7 +56,7 @@ describe('Product Detail Page - API Integration', () => {
     vi.clearAllMocks()
   })
 
-  it('should fetch product data from api.getProduct', async () => {
+  it('should fetch product data from api.getProductsById', async () => {
     const mockProduct = {
       id: 67,
       name: 'Ramo Tropical Vibrante',
@@ -68,13 +68,13 @@ describe('Product Detail Page - API Integration', () => {
       active: true
     }
 
-    api.getProduct.mockResolvedValueOnce({
+    api.getProductsById.mockResolvedValueOnce({
       success: true,
       data: mockProduct,
       message: 'Product retrieved successfully'
     })
 
-    const result = await api.getProduct(67)
+    const result = await api.getProductsById(67)
 
     expect(result.success).toBe(true)
     expect(result.data.id).toBe(67)
@@ -125,10 +125,10 @@ describe('Product Detail Page - API Integration', () => {
   })
 
   it('should handle 404 product not found', async () => {
-    api.getProduct.mockRejectedValueOnce(new Error('Product not found'))
+    api.getProductsById.mockRejectedValueOnce(new Error('Product not found'))
 
     try {
-      await api.getProduct(999)
+      await api.getProductsById(999)
       expect.fail('Should have thrown error')
     } catch (error) {
       expect(error.message).toBe('Product not found')
@@ -136,10 +136,10 @@ describe('Product Detail Page - API Integration', () => {
   })
 
   it('should handle network errors gracefully', async () => {
-    api.getProduct.mockRejectedValueOnce(new Error('Network error'))
+    api.getProductsById.mockRejectedValueOnce(new Error('Network error'))
 
     try {
-      await api.getProduct(67)
+      await api.getProductsById(67)
       expect.fail('Should have thrown error')
     } catch (error) {
       expect(error.message).toBe('Network error')
@@ -301,10 +301,10 @@ describe('Product Detail Page - Error Handling', () => {
   })
 
   it('should fail fast on API errors', async () => {
-    api.getProduct.mockRejectedValueOnce(new Error('Internal server error'))
+    api.getProductsById.mockRejectedValueOnce(new Error('Internal server error'))
 
     try {
-      await api.getProduct(67)
+      await api.getProductsById(67)
       expect.fail('Should have thrown error')
     } catch (error) {
       expect(error.message).toContain('error')
