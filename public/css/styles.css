@@ -589,11 +589,11 @@ body {
   transition:
     transform 0.2s ease-out,
     opacity 0.15s ease-in-out;
-  will-change: transform, opacity;
 }
 
 .product-image-container:hover .product-carousel-image {
   transform: scale(1.05);
+  will-change: transform; /* Only optimize during hover */
 }
 
 /* Touch feedback during swipe */
@@ -1544,6 +1544,11 @@ body.admin-page {
   overflow: hidden;
   z-index: 10;
   transform-origin: top center;
+}
+
+/* Only optimize during active pull gesture */
+.pull-to-refresh-indicator.threshold-reached,
+.pull-to-refresh-indicator.refreshing {
   will-change: height, opacity, transform;
 }
 
@@ -1673,11 +1678,11 @@ body.admin-page {
   opacity: 0.3;
   transform: scale(0);
   pointer-events: none;
-  will-change: transform, opacity;
 }
 
 .touch-ripple--active {
   animation: rippleExpand var(--touch-feedback-duration, 300ms) ease-out;
+  will-change: transform, opacity; /* Only optimize during animation */
 }
 
 .touch-ripple--removing {
