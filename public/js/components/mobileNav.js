@@ -134,16 +134,16 @@ export class MobileNav {
     // Create overlay
     this.overlay = document.createElement('div')
     this.overlay.id = this.options.overlayId
-    this.overlay.className =
-      'fixed inset-0 bg-black bg-opacity-50 z-[60] opacity-0 pointer-events-none transition-opacity duration-300 mobile-nav-overlay'
+    // IMPORTANT: Only use mobile-nav-overlay class - CSS handles all styling
+    this.overlay.className = 'mobile-nav-overlay'
     this.overlay.setAttribute('aria-hidden', 'true')
     this.overlay.setAttribute('data-mobile-nav-overlay', '')
 
     // Create drawer
     this.drawer = document.createElement('div')
     this.drawer.id = this.options.drawerId
-    this.drawer.className =
-      'fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white shadow-xl z-[70] transform translate-x-full transition-transform duration-300 overflow-y-auto mobile-nav-drawer'
+    // IMPORTANT: Only use mobile-nav-drawer class - remove Tailwind transform classes that conflict with CSS
+    this.drawer.className = 'mobile-nav-drawer'
     this.drawer.setAttribute('role', 'navigation')
     this.drawer.setAttribute('aria-label', 'Menú de navegación móvil')
     this.drawer.setAttribute('aria-hidden', 'true')
