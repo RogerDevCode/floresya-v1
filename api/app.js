@@ -40,6 +40,7 @@ import {
   validateSession
 } from './middleware/sessionSecurity.js'
 import { NotFoundError } from './errors/AppError.js'
+import { cacheMiddleware } from './middleware/cache.js'
 
 // Import routes
 import productRoutes from './routes/productRoutes.js'
@@ -128,6 +129,9 @@ app.use(
 // Logging middleware
 app.use(requestLoggingMiddleware)
 
+// Cache headers (HTTP caching - replaces Service Worker)
+app.use(cacheMiddleware)
+
 // Circuit breaker for database operations
 app.use(withDatabaseCircuitBreaker())
 
@@ -149,8 +153,27 @@ try {
   console.error('❌ Failed to initialize OpenAPI validator:', error)
 }
 
-// Serve static files from public directory
-app.use(express.static('public'))
+// Serve static files from public directory with custom cache control
+app.use(
+  express.static('public', {
+    maxAge: '1y', // 1 year for immutable assets
+    immutable: true,
+    setHeaders: (res, path) => {
+      // Override for HTML files (1 day cache with revalidation)
+      if (path.endsWith('.html')) {
+        res.setHeader('Cache-Control', 'public, max-age=86400, must-revalidate')
+      }
+      // Images get long cache
+      else if (/\.(jpg|jpeg|png|gif|webp|svg|ico)$/i.test(path)) {
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+      }
+      // JS and CSS get long cache
+      else if (/\.(js|css)$/i.test(path)) {
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+      }
+    }
+  })
+)
 
 // API routes
 app.use('/api/products', productRoutes)
