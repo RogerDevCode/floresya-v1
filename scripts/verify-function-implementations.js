@@ -261,6 +261,202 @@ const COMMON_FUNCTION_PARAMETERS = new Set([
   'func'
 ])
 
+// Native JavaScript methods (to avoid false positives on variable.method())
+const NATIVE_STRING_METHODS = new Set([
+  'charAt',
+  'charCodeAt',
+  'concat',
+  'endsWith',
+  'includes',
+  'indexOf',
+  'lastIndexOf',
+  'match',
+  'padEnd',
+  'padStart',
+  'repeat',
+  'replace',
+  'replaceAll',
+  'search',
+  'slice',
+  'split',
+  'startsWith',
+  'substring',
+  'toLowerCase',
+  'toUpperCase',
+  'trim',
+  'trimEnd',
+  'trimStart',
+  'valueOf',
+  'toString',
+  'localeCompare',
+  'normalize'
+])
+
+const NATIVE_ARRAY_METHODS = new Set([
+  'at',
+  'concat',
+  'copyWithin',
+  'entries',
+  'every',
+  'fill',
+  'filter',
+  'find',
+  'findIndex',
+  'findLast',
+  'findLastIndex',
+  'flat',
+  'flatMap',
+  'forEach',
+  'includes',
+  'indexOf',
+  'join',
+  'keys',
+  'lastIndexOf',
+  'map',
+  'pop',
+  'push',
+  'reduce',
+  'reduceRight',
+  'reverse',
+  'shift',
+  'slice',
+  'some',
+  'sort',
+  'splice',
+  'toReversed',
+  'toSorted',
+  'toSpliced',
+  'toString',
+  'unshift',
+  'values',
+  'with'
+])
+
+const NATIVE_OBJECT_METHODS = new Set([
+  'hasOwnProperty',
+  'isPrototypeOf',
+  'propertyIsEnumerable',
+  'toLocaleString',
+  'toString',
+  'valueOf'
+])
+
+// DOM methods (very common in frontend code)
+const DOM_METHODS = new Set([
+  // Element methods
+  'addEventListener',
+  'removeEventListener',
+  'dispatchEvent',
+  'getAttribute',
+  'setAttribute',
+  'removeAttribute',
+  'hasAttribute',
+  'querySelector',
+  'querySelectorAll',
+  'getElementById',
+  'getElementsByClassName',
+  'appendChild',
+  'removeChild',
+  'insertBefore',
+  'replaceChild',
+  'closest',
+  'matches',
+  'contains',
+  // classList methods
+  'add',
+  'remove',
+  'toggle',
+  'contains',
+  // Style/DOM manipulation
+  'focus',
+  'blur',
+  'click',
+  'submit',
+  'reset',
+  'scrollIntoView',
+  'scrollTo',
+  'scrollBy',
+  'preventDefault',
+  'stopPropagation',
+  'stopImmediatePropagation'
+])
+
+// Test framework methods (Jest/Vitest)
+const TEST_METHODS = new Set([
+  'toThrow',
+  'toBe',
+  'toEqual',
+  'toMatchObject',
+  'toHaveBeenCalled',
+  'mockResolvedValueOnce',
+  'mockReturnValueOnce',
+  'mockRejectedValueOnce',
+  'mockImplementation',
+  'mockReturnValue',
+  'mockResolvedValue',
+  'toBeCalledWith',
+  'toHaveBeenCalledWith',
+  'toHaveBeenCalledTimes',
+  'toContain',
+  'toMatch',
+  'toBeTruthy',
+  'toBeFalsy',
+  'rejects',
+  'resolves',
+  'toMatchSnapshot'
+])
+
+// HTTP Response methods (Express, Fetch)
+const HTTP_METHODS = new Set([
+  'json',
+  'text',
+  'blob',
+  'arrayBuffer',
+  'formData',
+  'status',
+  'send',
+  'sendStatus',
+  'redirect',
+  'render',
+  'set',
+  'get',
+  'cookie',
+  'clearCookie'
+])
+
+// Methods that exist on multiple types (combined whitelist)
+const COMMON_NATIVE_METHODS = new Set([
+  ...NATIVE_STRING_METHODS,
+  ...NATIVE_ARRAY_METHODS,
+  ...NATIVE_OBJECT_METHODS,
+  ...DOM_METHODS,
+  ...TEST_METHODS,
+  ...HTTP_METHODS,
+  // Map/Set methods
+  'has',
+  'get',
+  'set',
+  'delete',
+  'clear',
+  'size',
+  // Promise methods
+  'then',
+  'catch',
+  'finally',
+  // Common patterns
+  'length',
+  'name',
+  'constructor',
+  // Number methods
+  'toFixed',
+  'toPrecision',
+  'toExponential',
+  // Common object patterns
+  'bind',
+  'call',
+  'apply'
+])
+
 // ============================================================================
 // AST ANALYZER
 // ============================================================================
@@ -670,12 +866,17 @@ class FunctionValidator {
       calls.forEach(call => {
         const { object, method, line, col } = call
 
-        // Skip if object is a local variable
+        // Skip if method is a native JavaScript method (huge reduction of false positives)
+        if (COMMON_NATIVE_METHODS.has(method)) {
+          return
+        }
+
+        // Skip if object is a local variable (likely has native methods)
         if (localVars.has(object)) {
           return
         }
 
-        // Skip if object is a function parameter
+        // Skip if object is a function parameter (likely has native methods)
         if (params.has(object)) {
           return
         }
