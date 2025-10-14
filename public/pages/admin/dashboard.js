@@ -82,6 +82,9 @@ function init() {
     window.lucide.createIcons()
   }
 
+  // Setup mobile sidebar
+  setupMobileSidebar()
+
   // Setup navigation
   setupNavigation()
 
@@ -90,6 +93,66 @@ function init() {
 
   // Load initial view
   showView('dashboard')
+}
+
+/**
+ * Setup mobile sidebar toggle
+ */
+function setupMobileSidebar() {
+  const sidebar = document.getElementById('admin-sidebar')
+  const overlay = document.getElementById('admin-sidebar-overlay')
+  const toggleBtn = document.getElementById('admin-sidebar-toggle')
+  const closeBtn = document.getElementById('admin-sidebar-close')
+
+  if (!sidebar || !overlay || !toggleBtn) {
+    console.warn('Admin sidebar elements not found')
+    return
+  }
+
+  // Open sidebar
+  function openSidebar() {
+    sidebar.classList.add('active')
+    overlay.classList.add('active')
+    document.body.style.overflow = 'hidden' // Prevent background scrolling
+  }
+
+  // Close sidebar
+  function closeSidebar() {
+    sidebar.classList.remove('active')
+    overlay.classList.remove('active')
+    document.body.style.overflow = '' // Restore scrolling
+  }
+
+  // Toggle button click
+  toggleBtn.addEventListener('click', openSidebar)
+
+  // Close button click
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeSidebar)
+  }
+
+  // Overlay click
+  overlay.addEventListener('click', closeSidebar)
+
+  // Close sidebar when clicking a menu item (mobile only)
+  const menuItems = sidebar.querySelectorAll('.sidebar-menu-item')
+  menuItems.forEach(item => {
+    item.addEventListener('click', () => {
+      // Only close on mobile (check if sidebar has active class)
+      if (sidebar.classList.contains('active')) {
+        closeSidebar()
+      }
+    })
+  })
+
+  // Close sidebar on escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && sidebar.classList.contains('active')) {
+      closeSidebar()
+    }
+  })
+
+  console.log('✅ Mobile sidebar initialized')
 }
 
 // ==================== DASHBOARD STATS ====================

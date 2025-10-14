@@ -1509,21 +1509,107 @@ body.admin-page {
   height: 2rem;
 }
 
+/* ====================  ADMIN SIDEBAR RESPONSIVE ==================== */
+
+/* Admin Sidebar Overlay (Mobile) */
+.admin-sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 45;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+
+.admin-sidebar-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Admin Sidebar - Rename from .sidebar to .admin-sidebar */
+.admin-sidebar {
+  width: var(--sidebar-width);
+  min-height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 46;
+  background: linear-gradient(to bottom, #ec4899, #db2777);
+  padding-top: var(--navbar-height);
+  transition: transform 0.3s ease;
+}
+
+.admin-sidebar-content {
+  padding: 1rem;
+  height: calc(100vh - var(--navbar-height));
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.admin-sidebar-footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+}
+
+.admin-sidebar-close {
+  display: none; /* Hidden on desktop */
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  z-index: 50;
+}
+
+.admin-sidebar-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 /* Responsive adjustments for admin sidebar */
 @media (max-width: 768px) {
-  .sidebar {
-    width: 70px;
+  /* Hide sidebar off-screen by default */
+  .admin-sidebar {
+    transform: translateX(-100%);
   }
 
+  /* Show sidebar when active */
+  .admin-sidebar.active {
+    transform: translateX(0);
+  }
+
+  /* Show close button on mobile */
+  .admin-sidebar-close {
+    display: block;
+  }
+
+  /* Remove left margin from main content */
   .main-content {
-    margin-left: 70px;
+    margin-left: 0;
   }
 
-  .menu-text {
-    opacity: 0;
-    width: 0;
-    height: 0;
-    overflow: hidden;
+  /* Adjust dashboard stats grid for mobile */
+  .dashboard-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Make stat cards more compact on mobile */
+  .stat-card {
+    padding: 1rem;
   }
 }
 

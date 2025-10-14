@@ -21,14 +21,24 @@
     >
       <div class="container mx-auto px-4">
         <div class="flex items-center justify-between h-16">
-          <!-- Back Button -->
-          <a
-            href="../../index.html"
-            class="text-gray-600 hover:text-pink-600 transition-colors"
-            title="Volver a la página principal"
-          >
-            <i data-lucide="arrow-left" class="h-6 w-6"></i>
-          </a>
+          <!-- Hamburger Menu (Mobile Only) + Back Button -->
+          <div class="flex items-center gap-3">
+            <button
+              id="admin-sidebar-toggle"
+              class="md:hidden text-gray-600 hover:text-pink-600 transition-colors p-2"
+              title="Toggle menu"
+              aria-label="Toggle sidebar"
+            >
+              <i data-lucide="menu" class="h-6 w-6"></i>
+            </button>
+            <a
+              href="../../index.html"
+              class="text-gray-600 hover:text-pink-600 transition-colors hidden md:block"
+              title="Volver a la página principal"
+            >
+              <i data-lucide="arrow-left" class="h-6 w-6"></i>
+            </a>
+          </div>
 
           <!-- Logo (Clickable) -->
           <a
@@ -40,7 +50,7 @@
               alt="Logo FloresYa Admin"
               class="h-10 w-10 rounded-full"
             />
-            <span class="text-xl font-bold text-pink-600 hidden md:block">FloresYa Admin</span>
+            <span class="text-xl font-bold text-pink-600 hidden sm:block">FloresYa Admin</span>
           </a>
 
           <!-- User Info -->
@@ -48,7 +58,7 @@
             <span class="text-sm text-gray-600 hidden md:block" id="admin-user-display">Admin</span>
             <button
               id="logout-btn"
-              class="text-gray-600 hover:text-pink-600 transition-colors"
+              class="text-gray-600 hover:text-pink-600 transition-colors p-2"
               title="Cerrar sesión"
             >
               <i data-lucide="log-out" class="h-6 w-6"></i>
@@ -58,9 +68,21 @@
       </div>
     </nav>
 
+    <!-- Sidebar Overlay (Mobile) -->
+    <div id="admin-sidebar-overlay" class="admin-sidebar-overlay"></div>
+
     <!-- Sidebar -->
-    <aside id="sidebar" class="sidebar">
-      <div class="p-4">
+    <aside id="admin-sidebar" class="admin-sidebar">
+      <div class="admin-sidebar-content">
+        <!-- Close button for mobile -->
+        <button
+          id="admin-sidebar-close"
+          class="admin-sidebar-close md:hidden"
+          aria-label="Close sidebar"
+        >
+          <i data-lucide="x" class="h-6 w-6"></i>
+        </button>
+
         <div class="space-y-1">
           <!-- Dashboard -->
           <a href="#" class="sidebar-menu-item active" data-view="dashboard">
@@ -106,7 +128,7 @@
         </div>
 
         <!-- Version Info -->
-        <div class="mt-auto pt-4 border-t border-white/20 text-white/70 text-xs">
+        <div class="admin-sidebar-footer">
           <p>Version 1.0.0</p>
           <p>FloresYa Admin</p>
         </div>
