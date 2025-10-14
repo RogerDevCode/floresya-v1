@@ -32,7 +32,7 @@ export async function createImageCarousel(container, productId) {
             src="${placeholderUrl}"
             alt="Product placeholder"
             class="product-carousel-image"
-            loading="lazy"
+            loading="eager"
           />
         </div>
       `
@@ -46,6 +46,10 @@ export async function createImageCarousel(container, productId) {
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
 
     // Render initial HTML (default image only)
+    // First 8 products load eagerly (above the fold), rest lazy load
+    const isAboveFold =
+      Array.from(document.querySelectorAll('[data-carousel-container]')).indexOf(container) < 8
+
     container.innerHTML = `
       <div class="product-image-container" data-product-id="${productId}">
         <div class="carousel-images-wrapper">
@@ -53,7 +57,9 @@ export async function createImageCarousel(container, productId) {
             src="${defaultImage.url}"
             alt="Product image"
             class="product-carousel-image bg-gray-100"
-            loading="lazy"
+            loading="${isAboveFold ? 'eager' : 'lazy'}"
+            decoding="async"
+            fetchpriority="${isAboveFold ? 'high' : 'auto'}"
           />
         </div>
         ${

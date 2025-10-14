@@ -154,22 +154,34 @@ try {
 }
 
 // Serve static files from public directory with custom cache control
+// In development: no cache for JS/CSS to facilitate hot reloading
+// In production: aggressive caching for immutable assets
+const isDevelopment = process.env.NODE_ENV !== 'production'
+
 app.use(
   express.static('public', {
-    maxAge: '1y', // 1 year for immutable assets
-    immutable: true,
+    maxAge: isDevelopment ? 0 : '1y',
+    immutable: !isDevelopment,
     setHeaders: (res, path) => {
-      // Override for HTML files (1 day cache with revalidation)
-      if (path.endsWith('.html')) {
-        res.setHeader('Cache-Control', 'public, max-age=86400, must-revalidate')
-      }
-      // Images get long cache
-      else if (/\.(jpg|jpeg|png|gif|webp|svg|ico)$/i.test(path)) {
-        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
-      }
-      // JS and CSS get long cache
-      else if (/\.(js|css)$/i.test(path)) {
-        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+      if (isDevelopment) {
+        // Development: no cache for JS/CSS, short cache for everything else
+        if (/\.(js|css)$/i.test(path)) {
+          res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
+          res.setHeader('Pragma', 'no-cache')
+        } else if (path.endsWith('.html')) {
+          res.setHeader('Cache-Control', 'no-cache, must-revalidate')
+        } else {
+          res.setHeader('Cache-Control', 'public, max-age=300') // 5 min for images
+        }
+      } else {
+        // Production: aggressive caching
+        if (path.endsWith('.html')) {
+          res.setHeader('Cache-Control', 'public, max-age=86400, must-revalidate')
+        } else if (/\.(jpg|jpeg|png|gif|webp|svg|ico)$/i.test(path)) {
+          res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+        } else if (/\.(js|css)$/i.test(path)) {
+          res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+        }
       }
     }
   })

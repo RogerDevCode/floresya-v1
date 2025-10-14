@@ -10,8 +10,18 @@
  */
 
 class ApiClient {
-  constructor(baseUrl = 'http://localhost:3000') {
-    this.baseUrl = baseUrl
+  constructor(baseUrl) {
+    // Auto-detect base URL based on environment
+    // In production (Vercel): use empty string (relative URLs)
+    // In development (localhost): use http://localhost:3000
+    if (!baseUrl) {
+      const isLocalhost =
+        window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      this.baseUrl = isLocalhost ? 'http://localhost:3000' : ''
+    } else {
+      this.baseUrl = baseUrl
+    }
+
     this.defaultHeaders = {
       'Content-Type': 'application/json'
     }

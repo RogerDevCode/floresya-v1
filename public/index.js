@@ -14,17 +14,16 @@ import {
 } from './js/shared/cart.js'
 import { api } from './js/shared/api-client.js'
 import { initMobileNav } from './js/components/mobileNav.js'
-import { initHamburgerMenu } from './js/components/hamburgerMenu.js'
 import { PullToRefresh } from './js/components/pullToRefresh.js'
 import { TouchFeedback } from './js/shared/touchFeedback.js'
 
 /**
- * Initialize mobile navigation drawer with hamburger menu
- * Uses the new MobileNav and HamburgerMenu components
+ * Initialize mobile navigation drawer
+ * Uses the existing #mobile-menu-btn button from HTML
  */
 function initMobileNavigation() {
   try {
-    // Initialize the mobile navigation drawer
+    // Initialize the mobile navigation drawer with existing button
     const mobileNav = initMobileNav({
       menuBtnSelector: '#mobile-menu-btn',
       menuSelector: '#mobile-menu',
@@ -33,25 +32,8 @@ function initMobileNavigation() {
       animationDuration: 250
     })
 
-    // Initialize the hamburger menu button
-    const hamburgerMenu = initHamburgerMenu({
-      containerSelector: '.nav-actions',
-      buttonId: 'hamburger-menu-btn',
-      animationDuration: 250,
-      activeClass: 'hamburger-active',
-      onToggle: isOpen => {
-        // Sync hamburger menu state with mobile navigation
-        if (isOpen) {
-          mobileNav.open()
-        } else {
-          mobileNav.close()
-        }
-      }
-    })
-
-    // Store references for potential later use
+    // Store reference for potential later use
     window.mobileNavInstance = mobileNav
-    window.hamburgerMenuInstance = hamburgerMenu
 
     console.log('✅ [index.js] Mobile navigation initialized successfully')
   } catch (error) {
@@ -169,8 +151,9 @@ async function initCarousel() {
               alt="${product.name}"
               class="carousel-product-image w-[300px] h-[300px] object-cover rounded-lg shadow-lg"
               data-fallback="./images/placeholder-flower.svg"
-              loading="lazy"
+              loading="${index === 0 ? 'eager' : 'lazy'}"
               decoding="async"
+              fetchpriority="${index === 0 ? 'high' : 'auto'}"
             />
           </div>
           <!-- Product Info -->

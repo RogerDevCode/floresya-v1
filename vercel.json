@@ -83,7 +83,7 @@
       ]
     },
     {
-      "source": "/(.*)\\.js$",
+      "source": "/:path*.js",
       "headers": [
         {
           "key": "Content-Type",
@@ -96,7 +96,7 @@
       ]
     },
     {
-      "source": "/(.*)\\.css$",
+      "source": "/:path*.css",
       "headers": [
         {
           "key": "Content-Type",
@@ -109,7 +109,7 @@
       ]
     },
     {
-      "source": "/(.*)\\.html$",
+      "source": "/:path*.html",
       "headers": [
         {
           "key": "Content-Type",
@@ -122,7 +122,7 @@
       ]
     },
     {
-      "source": "/(.*)\\.json$",
+      "source": "/:path*.json",
       "headers": [
         {
           "key": "Content-Type",
@@ -135,20 +135,7 @@
       ]
     },
     {
-      "source": "/(.*)\\.webp$",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "image/webp"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
-      "source": "/(.*)\\.(?:png|jpg|jpeg|gif|svg|ico)$",
+      "source": "/:path*.(png|jpg|jpeg|gif|svg|ico|webp)",
       "headers": [
         {
           "key": "Cache-Control",
