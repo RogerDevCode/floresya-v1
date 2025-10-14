@@ -79,7 +79,8 @@ async function initCarousel() {
   let featuredProducts = []
   try {
     console.log('🔍 [DEBUG] Starting carousel products fetch...')
-    console.log('🔍 [DEBUG] API Base URL:', 'http://localhost:3000')
+    console.log('🔍 [DEBUG] Current hostname:', window.location.hostname)
+    console.log('🔍 [DEBUG] API instance available:', !!api)
 
     const result = await api.getAllCarouselProducts()
 
@@ -119,12 +120,32 @@ async function initCarousel() {
     console.error('❌ [DEBUG] Error details:', {
       message: error.message,
       stack: error.stack,
-      name: error.name
+      name: error.name,
+      hostname: window.location.hostname,
+      apiAvailable: typeof api !== 'undefined'
     })
+
+    // More informative error message
+    const errorMsg =
+      error.message === 'NetworkError when attempting to fetch resource.'
+        ? 'Error de conexión con el servidor. Por favor, verifica tu conexión a internet.'
+        : error.message
+
     carouselSlides.innerHTML = `
-      <div class="text-center text-red-500 p-8">
-        <p class="text-lg">Error al cargar productos destacados</p>
-        <p class="text-sm mt-2">${error.message}</p>
+      <div class="text-center text-gray-600 p-8">
+        <div class="mb-4">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <p class="text-lg font-semibold text-gray-700 mb-2">No se pudieron cargar los productos destacados</p>
+        <p class="text-sm text-gray-500">${errorMsg}</p>
+        <button 
+          onclick="window.location.reload()" 
+          class="mt-4 px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"
+        >
+          Reintentar
+        </button>
       </div>
     `
     return
