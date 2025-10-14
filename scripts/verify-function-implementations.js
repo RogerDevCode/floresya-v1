@@ -206,6 +206,11 @@ const GLOBAL_FUNCTIONS = new Set([
   'Reflect',
   'JSON',
   'Intl',
+  'URL',
+  'URLSearchParams',
+  'Blob',
+  'File',
+  'FormData',
 
   // DOM APIs (frontend)
   'document',
@@ -222,6 +227,12 @@ const GLOBAL_FUNCTIONS = new Set([
   'confirm',
   'prompt',
 
+  // Service Worker globals
+  'self',
+  'clients',
+  'caches',
+  'registration',
+
   // Node.js globals
   'process',
   'Buffer',
@@ -231,6 +242,11 @@ const GLOBAL_FUNCTIONS = new Set([
   'require',
   'module',
   'exports',
+
+  // Express/HTTP objects (common parameter names)
+  'req',
+  'res',
+  'next',
 
   // Test frameworks
   'describe',
@@ -242,7 +258,11 @@ const GLOBAL_FUNCTIONS = new Set([
   'beforeAll',
   'afterAll',
   'jest',
-  'vitest'
+  'vitest',
+
+  // Common local variable patterns
+  'pattern',
+  'regex'
 ])
 
 // Common parameter names that are functions (to avoid false positives)
@@ -258,7 +278,14 @@ const COMMON_FUNCTION_PARAMETERS = new Set([
   'handler',
   'listener',
   'fn',
-  'func'
+  'func',
+  // Event-related parameters
+  'e',
+  'event',
+  'evt',
+  // Cache/storage parameters
+  'cache',
+  'storage'
 ])
 
 // Native JavaScript methods (to avoid false positives on variable.method())
@@ -585,6 +612,7 @@ class ASTAnalyzer {
 
   /**
    * Extrae variables locales (const, let, var)
+   * También trata destructuring como "imports" disponibles para validación
    */
   extractLocalVariables(ast, filePath) {
     acornWalk.simple(ast, {
@@ -592,10 +620,23 @@ class ASTAnalyzer {
         if (node.id && node.id.type === 'Identifier') {
           this.db.addLocalVariable(filePath, node.id.name)
         } else if (node.id && node.id.type === 'ObjectPattern') {
-          // const { a, b } = obj
+          // const { a, b } = obj - Destructuring
+          // CLAVE: Registrar destructured vars como "imports" disponibles
           node.id.properties.forEach(prop => {
+            let varName = null
+
             if (prop.value && prop.value.type === 'Identifier') {
-              this.db.addLocalVariable(filePath, prop.value.name)
+              // const { a: b } = obj → b es la variable
+              varName = prop.value.name
+            } else if (prop.key && prop.key.type === 'Identifier' && !prop.value) {
+              // const { a } = obj → shorthand, a es la variable
+              varName = prop.key.name
+            }
+
+            if (varName) {
+              this.db.addLocalVariable(filePath, varName)
+              // Registrar también como "import" para que se valide contra API
+              this.db.addImport(filePath, varName, '__destructured__')
             }
           })
         } else if (node.id && node.id.type === 'ArrayPattern') {
@@ -700,6 +741,7 @@ class ASTAnalyzer {
    * Resuelve una MemberExpression a { objectName, methodName }
    * Ejemplos:
    *   api.getProducts() → { objectName: 'api', methodName: 'getProducts' }
+   *   supabase.storage.from() → { objectName: 'supabase', methodName: 'from' }
    *   this.api.getProducts() → { objectName: 'api', methodName: 'getProducts' }
    */
   resolveMemberExpression(node) {
@@ -711,16 +753,18 @@ class ASTAnalyzer {
       methodName = node.property.name
     }
 
-    // Get object name (left side)
+    // Get root object name (leftmost identifier in chain)
+    // supabase.storage.from() → we want 'supabase', not 'storage'
     let current = node.object
     while (current) {
       if (current.type === 'Identifier') {
         objectName = current.name
         break
       } else if (current.type === 'MemberExpression') {
-        current = current.property
+        // Traverse to the left (root of chain)
+        current = current.object
       } else if (current.type === 'ThisExpression') {
-        // Skip 'this.'
+        // Skip 'this.' and continue
         current = null
       } else {
         break
