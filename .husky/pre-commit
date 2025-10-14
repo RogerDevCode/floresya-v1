@@ -1,1 +1,6 @@
 npx lint-staged
+
+# Validate function implementations (non-blocking in v1.0 - too many false positives)
+# TODO: Enable blocking mode when false positives are reduced
+echo "🔬 Verifying function implementations (non-blocking)..."
+npm run verify:functions --silent || echo "⚠️  Function verification found issues (non-blocking for now)"
