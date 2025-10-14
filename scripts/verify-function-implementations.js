@@ -271,6 +271,10 @@ const COMMON_FUNCTION_PARAMETERS = new Set([
   'cb',
   'resolve',
   'reject',
+  'onResolve',
+  'onReject',
+  'onFulfilled',
+  'onRejected',
   'next',
   'done',
   'success',
@@ -285,7 +289,15 @@ const COMMON_FUNCTION_PARAMETERS = new Set([
   'evt',
   // Cache/storage parameters
   'cache',
-  'storage'
+  'storage',
+  // DOM element parameters
+  'element',
+  'el',
+  'node',
+  'btn',
+  'button',
+  'container',
+  'linksContainer'
 ])
 
 // Native JavaScript methods (to avoid false positives on variable.method())
@@ -922,6 +934,11 @@ class FunctionValidator {
 
         // Skip if object is a function parameter (likely has native methods)
         if (params.has(object)) {
+          return
+        }
+
+        // Skip if object is a common parameter name (DOM elements, callbacks, etc.)
+        if (COMMON_FUNCTION_PARAMETERS.has(object)) {
           return
         }
 
