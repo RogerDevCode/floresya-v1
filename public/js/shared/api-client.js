@@ -28,6 +28,14 @@ class ApiClient {
   }
 
   /**
+   * Get auth token from localStorage (for mock auth)
+   * @returns {string|null}
+   */
+  getAuthToken() {
+    return localStorage.getItem('auth_token') || null
+  }
+
+  /**
    * Make HTTP request with error handling
    * @param {string} endpoint - API endpoint
    * @param {object} options - Fetch options
@@ -39,9 +47,18 @@ class ApiClient {
       console.log(`🌐 [DEBUG] API Request: ${options.method || 'GET'} ${url}`)
       console.log(`🌐 [DEBUG] Request options:`, options)
 
+      // Get auth token and include in headers if available
+      const token = this.getAuthToken()
+      const headers = { ...this.defaultHeaders, ...options.headers }
+
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+        console.log(`🔐 [DEBUG] Including auth token in request`)
+      }
+
       const config = {
         method: options.method || 'GET',
-        headers: { ...this.defaultHeaders, ...options.headers }
+        headers: headers
       }
 
       if (options.body && options.method !== 'GET') {

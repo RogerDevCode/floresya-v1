@@ -8,6 +8,7 @@
 import { initAdminCommon } from '../../js/admin-common.js'
 import { toast } from '../../js/components/toast.js'
 import { api } from '../../js/shared/api-client.js'
+import '../../js/services/authMock.js' // ⚠️ DEV ONLY - Side-effect import for auth mock
 
 // Chart.js will be loaded via script tag in HTML
 // Global state
