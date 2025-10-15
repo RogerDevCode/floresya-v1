@@ -12,6 +12,10 @@ import logger from './logger.js'
 // DUAL-MODE: Check environment
 const IS_DEV = process.env.NODE_ENV === 'development' && !process.env.FORCE_AUTH
 
+// ⚠️ TEMPORARY: Allow mock auth in production (REMOVE BEFORE REAL DEPLOYMENT)
+const ALLOW_MOCK_AUTH = process.env.ALLOW_MOCK_AUTH === 'true' || IS_DEV
+const MOCK_TOKEN = 'dev-mock-token-admin-floresya'
+
 // Mock user for development (auto-authenticated)
 const DEV_MOCK_USER = {
   id: '00000000-0000-0000-0000-000000000001',
@@ -23,6 +27,11 @@ const DEV_MOCK_USER = {
   },
   email_confirmed_at: new Date().toISOString(),
   created_at: new Date().toISOString()
+}
+
+// Log mock auth status
+if (ALLOW_MOCK_AUTH && !IS_DEV) {
+  logger.warn('⚠️ MOCK AUTH ENABLED IN PRODUCTION - Remove ALLOW_MOCK_AUTH before deployment!')
 }
 
 /**
@@ -43,7 +52,7 @@ export async function authenticate(req, res, next) {
       return next()
     }
 
-    // PRODUCTION MODE: Real JWT verification
+    // PRODUCTION MODE: Real JWT verification (with mock bypass)
     const authHeader = req.headers.authorization
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -51,6 +60,18 @@ export async function authenticate(req, res, next) {
     }
 
     const token = authHeader.replace('Bearer ', '')
+
+    // ⚠️ TEMPORARY: Check for mock token (REMOVE BEFORE REAL DEPLOYMENT)
+    if (ALLOW_MOCK_AUTH && token === MOCK_TOKEN) {
+      req.user = DEV_MOCK_USER
+      req.token = token
+      logger.warn('⚠️ MOCK AUTH: Accepted mock token in production', {
+        email: DEV_MOCK_USER.email,
+        role: DEV_MOCK_USER.user_metadata.role,
+        path: req.path
+      })
+      return next()
+    }
 
     // Verify token with Supabase (throws UnauthorizedError if invalid)
     const user = await getUser(token)
