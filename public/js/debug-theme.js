@@ -344,17 +344,107 @@
     }
   }
 
-  // Initialize debug system
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', runDiagnosis)
-  } else {
-    runDiagnosis()
+  // Initialize debug system with retry mechanism for themeManager
+  function initializeDebugWithRetry() {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        runDiagnosisWithRetry()
+      })
+    } else {
+      runDiagnosisWithRetry()
+    }
   }
+
+  // Run diagnosis with retry mechanism for themeManager
+  function runDiagnosisWithRetry(maxRetries = 5, retryDelay = 200) {
+    let retryCount = 0
+
+    function attemptDiagnosis() {
+      checkDOMState()
+
+      // Check if themeManager is available
+      if (typeof window.themeManager !== 'undefined') {
+        // themeManager is available, run full diagnosis
+        checkDependencies()
+        checkThemePreload()
+        checkScriptOrder()
+        checkCSSConflicts()
+        checkJSErrors()
+
+        setTimeout(() => {
+          debugInfo.recommendations = generateRecommendations()
+          finalizeDiagnosis()
+        }, 200)
+      } else {
+        // themeManager not available, retry or give up
+        retryCount++
+        if (retryCount < maxRetries) {
+          console.warn(
+            `⚠️ [Theme Debug] themeManager not available, retrying (${retryCount}/${maxRetries})...`
+          )
+          setTimeout(attemptDiagnosis, retryDelay * retryCount)
+        } else {
+          // Give up, run diagnosis without themeManager
+          console.error(
+            '❌ [Theme Debug] themeManager not available after retries, proceeding without it'
+          )
+          checkDependencies()
+          checkThemePreload()
+          checkScriptOrder()
+          checkCSSConflicts()
+          checkJSErrors()
+
+          setTimeout(() => {
+            debugInfo.recommendations = generateRecommendations()
+            finalizeDiagnosis()
+          }, 200)
+        }
+      }
+    }
+
+    attemptDiagnosis()
+  }
+
+  // Finalize diagnosis and display results
+  function finalizeDiagnosis() {
+    console.group('🎨 [Theme Debug] Diagnosis Results')
+    console.log('Debug Info:', debugInfo)
+
+    if (debugInfo.errors.length > 0) {
+      console.error('Errors found:', debugInfo.errors)
+    }
+
+    if (debugInfo.warnings.length > 0) {
+      console.warn('Warnings found:', debugInfo.warnings)
+    }
+
+    if (debugInfo.recommendations.length > 0) {
+      console.log('Recommendations:', debugInfo.recommendations)
+    }
+
+    // Create visual indicator in production
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      createDebugIndicator()
+    }
+
+    console.groupEnd()
+
+    // Store results for later reference
+    try {
+      sessionStorage.setItem('theme-debug-results', JSON.stringify(debugInfo))
+    } catch (error) {
+      console.warn('Could not store debug results in sessionStorage:', error)
+    }
+  }
+
+  // Start the debug system with retry mechanism
+  initializeDebugWithRetry()
 
   // Expose debug functions globally
   window.themeDebug = {
     getInfo: () => debugInfo,
     runDiagnosis,
+    runDiagnosisWithRetry,
     attemptAutoFix,
     createDebugIndicator
   }

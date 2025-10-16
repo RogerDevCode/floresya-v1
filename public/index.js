@@ -1050,6 +1050,10 @@ function init() {
     try {
       themeManager.init()
       console.log('✅ [index.js] Theme manager initialized')
+
+      // Expose themeManager globally for debug scripts
+      window.themeManager = themeManager
+      console.log('✅ [index.js] Theme manager exposed to global window object')
     } catch (error) {
       console.error('❌ [index.js] Theme manager initialization failed:', error)
       // Continue with default theme
