@@ -1,7 +1,9 @@
 /**
  * Product Editor Page Logic
  */
-document.addEventListener('DOMContentLoaded', () => {
+import { onDOMReady } from '../../js/shared/dom-ready.js'
+
+onDOMReady(() => {
   // Initialize icons first
   if (window.lucide && window.lucide.createIcons) {
     window.lucide.createIcons()

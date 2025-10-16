@@ -259,9 +259,7 @@ export function initializeApiIntegration() {
   console.log('✅ API integration ready')
 }
 
+import { onDOMReady } from './dom-ready.js'
+
 // Auto-inicializar
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeApiIntegration)
-} else {
-  initializeApiIntegration()
-}
+onDOMReady(initializeApiIntegration)

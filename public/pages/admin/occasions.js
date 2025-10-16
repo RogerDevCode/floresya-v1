@@ -470,8 +470,10 @@ function handleCancel() {
   resetForm()
 }
 
+import { onDOMReady } from '../../js/shared/dom-ready.js'
+
 // Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
+onDOMReady(() => {
   // Initialize icons first
   if (window.lucide && window.lucide.createIcons) {
     window.lucide.createIcons()

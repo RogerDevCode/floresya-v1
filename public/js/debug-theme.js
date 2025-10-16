@@ -4,6 +4,8 @@
  * Se ejecuta en producción para identificar problemas
  */
 
+// Import DOM ready utility at the top
+import { onDOMReady } from './shared/dom-ready.js'
 ;(function () {
   'use strict'
 
@@ -344,17 +346,6 @@
     }
   }
 
-  // Initialize debug system with retry mechanism for themeManager
-  function initializeDebugWithRetry() {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => {
-        runDiagnosisWithRetry()
-      })
-    } else {
-      runDiagnosisWithRetry()
-    }
-  }
-
   // Run diagnosis with retry mechanism for themeManager
   function runDiagnosisWithRetry(maxRetries = 5, retryDelay = 200) {
     let retryCount = 0
@@ -437,8 +428,10 @@
     }
   }
 
-  // Start the debug system with retry mechanism
-  initializeDebugWithRetry()
+  // Initialize debug system with proper DOM ready check
+  onDOMReady(() => {
+    runDiagnosisWithRetry()
+  })
 
   // Expose debug functions globally
   window.themeDebug = {

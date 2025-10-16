@@ -26,7 +26,9 @@ const customMobileNav = new MobileNav({
 customMobileNav.init()
 
 // Example 3: Advanced usage with event listeners
-document.addEventListener('DOMContentLoaded', () => {
+import { onDOMReady } from '../shared/dom-ready.js'
+
+onDOMReady(() => {
   const advancedMobileNav = new MobileNav()
 
   // Initialize the component

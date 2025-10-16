@@ -226,7 +226,9 @@ async function saveAllSettings() {
   }
 }
 
+import { onDOMReady } from '../../js/shared/dom-ready.js'
+
 // Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
+onDOMReady(() => {
   init()
 })

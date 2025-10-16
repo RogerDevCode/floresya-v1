@@ -268,8 +268,10 @@ class ProductImageManager {
   }
 }
 
+import { onDOMReady } from '../../js/shared/dom-ready.js'
+
 // Initialize image manager when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
+onDOMReady(() => {
   // Initialize only if we're on the product edit page
   if (document.getElementById('images-preview')) {
     window.productImageManager = new ProductImageManager('images-preview')

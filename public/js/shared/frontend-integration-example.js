@@ -398,9 +398,7 @@ export function initializeApiIntegration() {
   console.log('✅ API integration initialized')
 }
 
+import { onDOMReady } from './dom-ready.js'
+
 // Auto-inicializar si el script se carga directamente
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeApiIntegration)
-} else {
-  initializeApiIntegration()
-}
+onDOMReady(initializeApiIntegration)

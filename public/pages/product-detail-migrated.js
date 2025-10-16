@@ -426,5 +426,7 @@ async function init() {
   }
 }
 
+import { onDOMReady } from '../js/shared/dom-ready.js'
+
 // Run on DOM ready
-document.addEventListener('DOMContentLoaded', init)
+onDOMReady(init)

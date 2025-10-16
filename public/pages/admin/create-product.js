@@ -63,8 +63,10 @@ function ensureSinglePrimaryImage() {
   }
 }
 
+import { onDOMReady } from '../../js/shared/dom-ready.js'
+
 // Initialize page
-document.addEventListener('DOMContentLoaded', async () => {
+onDOMReady(async () => {
   console.log('✓ Create Product page loaded')
 
   // Initialize icons
