@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-10-15T22:46:39.579Z",
+  "timestamp": "2025-10-16T17:28:46.578Z",
   "valid": true,
   "summary": {
-    "filesScanned": 40,
-    "availableMethods": 67,
+    "filesScanned": 46,
+    "availableMethods": 64,
     "totalIssues": 0,
     "errors": 0,
     "warnings": 0
@@ -48,7 +48,6 @@
     "getPaymentmethodsById",
     "getPrimaryImage",
     "getProductImages",
-    "getProductOccasions",
     "getProductsById",
     "getProductsByOccasion",
     "getProductsWithOccasions",
@@ -56,12 +55,10 @@
     "getUsersById",
     "getValue",
     "handleError",
-    "linkProductOccasion",
     "reactivateOccasions",
     "reactivatePaymentMethods",
     "reactivateProducts",
     "reactivateUsers",
-    "replaceProductOccasions",
     "updateCarouselProducts",
     "updateOccasionDisplayOrder",
     "updateOccasions",

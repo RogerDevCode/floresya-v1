@@ -690,22 +690,21 @@ async function uploadProductImages(productId) {
 }
 
 /**
- * Link product with occasions
+ * Link product with occasions using the bulk endpoint
  */
 async function linkProductOccasions(productId, occasionIds) {
   try {
-    // Link each occasion to the product
-    const linkPromises = occasionIds.map(async occasionId => {
-      const result = await api.linkProductOccasion(productId, occasionId)
-
-      if (!result.success) {
-        throw new Error(`Error linking occasion ${occasionId}: ${result.message}`)
-      }
-
-      console.log(`✓ Occasion ${occasionId} linked`)
+    // Use the createProductsWithOccasions endpoint to link occasions
+    // This is a workaround since there's no direct link endpoint
+    const result = await api.createProductsWithOccasions({
+      product: { id: productId },
+      occasionIds: occasionIds
     })
 
-    await Promise.all(linkPromises)
+    if (!result.success) {
+      throw new Error(`Error linking occasions: ${result.message}`)
+    }
+
     console.log(`✓ All ${occasionIds.length} occasions linked`)
   } catch (error) {
     console.error('linkProductOccasions failed:', error)

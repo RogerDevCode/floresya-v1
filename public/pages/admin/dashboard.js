@@ -15,6 +15,52 @@ import '../../js/services/authMock.js' // ⚠️ DEV ONLY - Side-effect import f
 let _currentView = 'dashboard'
 let products = [] // Will be populated from API
 
+// ==================== UTILITY FUNCTIONS ====================
+
+/**
+ * Escape HTML to prevent XSS
+ */
+function escapeHtml(text) {
+  const div = document.createElement('div')
+  div.textContent = text
+  return div.innerHTML
+}
+
+/**
+ * Format date for display
+ */
+function formatDate(dateString) {
+  if (!dateString) {
+    return 'N/A'
+  }
+
+  try {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('es-VE', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    })
+  } catch (_error) {
+    return 'Fecha inválida'
+  }
+}
+
+/**
+ * Debounce function to limit API calls
+ */
+function debounce(func, wait) {
+  let timeout
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout)
+      func(...args)
+    }
+    clearTimeout(timeout)
+    timeout = setTimeout(later, wait)
+  }
+}
+
 /**
  * Load products from API
  * @param {boolean} includeInactive - Include inactive products (admin only)
@@ -829,6 +875,11 @@ async function showView(view) {
     }
   }
 
+  // Special handling for users view
+  if (view === 'users') {
+    loadUsersData()
+  }
+
   // Special handling for settings view
   if (view === 'settings') {
     handleSettingsView()
@@ -1515,6 +1566,832 @@ async function loadBcvPrice() {
   }
 }
 
+// ==================== USER MANAGEMENT ====================
+
+let users = []
+let currentEditingUser = null
+
+/**
+ * Load users data from API
+ */
+async function loadUsersData() {
+  try {
+    showUsersLoading(true)
+
+    // Set admin auth token
+    if (window.authMock) {
+      localStorage.setItem('authToken', 'admin-token')
+    }
+
+    const filters = buildUsersFilters()
+    const result = await api.getAllUsers(filters)
+
+    if (!result.success) {
+      throw new Error(result.message || 'Failed to load users')
+    }
+
+    users = result.data || []
+    updateUsersStats(users)
+    renderUsersTable(users)
+    setupUsersEventListeners()
+  } catch (error) {
+    console.error('Error loading users:', error)
+    toast.error('Error al cargar usuarios: ' + error.message)
+    showUsersError()
+  } finally {
+    showUsersLoading(false)
+  }
+}
+
+/**
+ * Build filters object from form inputs
+ */
+function buildUsersFilters() {
+  const filters = {}
+
+  const searchInput = document.getElementById('user-search-input')
+  const roleFilter = document.getElementById('user-role-filter')
+  const statusFilter = document.getElementById('user-status-filter')
+  const emailVerifiedFilter = document.getElementById('email-verified-filter')
+
+  if (searchInput?.value.trim()) {
+    filters.search = searchInput.value.trim()
+  }
+
+  if (roleFilter?.value) {
+    filters.role = roleFilter.value
+  }
+
+  if (statusFilter?.value) {
+    if (statusFilter.value === 'active') {
+      // Don't filter, default is active
+    } else if (statusFilter.value === 'inactive') {
+      filters.includeInactive = true
+    }
+  }
+
+  if (emailVerifiedFilter?.value) {
+    filters.email_verified = emailVerifiedFilter.value === 'true'
+  }
+
+  return filters
+}
+
+/**
+ * Update users statistics cards
+ */
+function updateUsersStats(usersList) {
+  const totalUsers = document.getElementById('total-users')
+  const activeUsers = document.getElementById('active-users')
+  const adminUsers = document.getElementById('admin-users')
+
+  if (totalUsers) {
+    totalUsers.textContent = usersList.length
+  }
+  if (activeUsers) {
+    activeUsers.textContent = usersList.filter(u => u.is_active).length
+  }
+  if (adminUsers) {
+    adminUsers.textContent = usersList.filter(u => u.role === 'admin').length
+  }
+  const verifiedUsers = document.getElementById('verified-users')
+  if (verifiedUsers) {
+    verifiedUsers.textContent = usersList.filter(u => u.email_verified).length
+  }
+}
+
+/**
+ * Render users table
+ */
+function renderUsersTable(usersList) {
+  const tableBody = document.getElementById('users-table-body')
+  const emptyState = document.getElementById('users-empty')
+
+  if (!tableBody) {
+    return
+  }
+
+  if (usersList.length === 0) {
+    tableBody.innerHTML = ''
+    if (emptyState) {
+      emptyState.classList.remove('hidden')
+    }
+    return
+  }
+
+  if (emptyState) {
+    emptyState.classList.add('hidden')
+  }
+
+  tableBody.innerHTML = usersList
+    .map(
+      user => `
+    <tr class="hover:bg-gray-50">
+      <td class="px-6 py-4 whitespace-nowrap">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 h-10 w-10 bg-pink-100 rounded-full flex items-center justify-center">
+            <i data-lucide="user" class="h-5 w-5 text-pink-600"></i>
+          </div>
+          <div class="ml-4">
+            <div class="text-sm font-medium text-gray-900">${escapeHtml(user.full_name || 'Sin nombre')}</div>
+            <div class="text-sm text-gray-500">ID: ${user.id}</div>
+          </div>
+        </div>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap">
+        <div class="text-sm text-gray-900">${escapeHtml(user.email)}</div>
+        <div class="text-sm text-gray-500">${user.phone || 'Sin teléfono'}</div>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap">
+        ${
+          user.role === 'admin' && user.id === 3
+            ? `
+          <span class="status-badge-role status-role-admin">
+            <i data-lucide="shield" class="h-3 w-3 mr-1"></i>
+            Administrador
+          </span>
+        `
+            : `
+          <button
+            onclick="toggleUserRole(${user.id}, '${user.role}')"
+            class="status-badge-role ${
+              user.role === 'admin'
+                ? 'status-role-admin hover:opacity-80'
+                : 'status-role-user hover:opacity-80'
+            } transition-colors"
+            title="Click para cambiar rol"
+          >
+            <i data-lucide="${user.role === 'admin' ? 'shield' : 'user'}" class="h-3 w-3 mr-1"></i>
+            ${user.role === 'admin' ? 'Administrador' : 'Cliente'}
+          </button>
+        `
+        }
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap">
+        ${
+          user.role === 'admin' && user.id === 3
+            ? `
+          <span class="status-badge-user status-active-user">
+            <i data-lucide="check-circle" class="h-3 w-3 mr-1"></i>
+            Activo
+          </span>
+        `
+            : `
+          <button
+            onclick="toggleUserStatus(${user.id}, ${user.is_active})"
+            class="status-badge-user ${
+              user.is_active
+                ? 'status-active-user hover:opacity-80'
+                : 'status-inactive-user hover:opacity-80'
+            } transition-colors"
+            title="Click para ${user.is_active ? 'desactivar' : 'activar'}"
+          >
+            <i data-lucide="${user.is_active ? 'check-circle' : 'x-circle'}" class="h-3 w-3 mr-1"></i>
+            ${user.is_active ? 'Activo' : 'Inactivo'}
+          </button>
+        `
+        }
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap">
+        ${
+          user.role === 'admin' && user.id === 3
+            ? `
+          <span class="status-badge-email status-email-verified">
+            <i data-lucide="mail-check" class="h-3 w-3 mr-1"></i>
+            Verificado
+          </span>
+        `
+            : `
+          <button
+            onclick="toggleEmailVerification(${user.id}, ${user.email_verified})"
+            class="status-badge-email ${
+              user.email_verified
+                ? 'status-email-verified hover:opacity-80'
+                : 'status-email-pending hover:opacity-80'
+            } transition-colors"
+            title="Click para ${user.email_verified ? 'marcar como no verificado' : 'verificar'}"
+          >
+            <i data-lucide="${user.email_verified ? 'mail-check' : 'mail'}" class="h-3 w-3 mr-1"></i>
+            ${user.email_verified ? 'Verificado' : 'Pendiente'}
+          </button>
+        `
+        }
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        ${formatDate(user.created_at)}
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+        <div class="flex justify-end space-x-2">
+          <button
+            onclick="editUser(${user.id})"
+            class="text-pink-600 hover:text-pink-900 p-1 rounded"
+            title="Editar usuario"
+          >
+            <i data-lucide="edit" class="h-4 w-4"></i>
+          </button>
+          ${
+            user.is_active
+              ? `
+            <button
+              onclick="deactivateUser(${user.id}, '${escapeHtml(user.full_name || user.email)}')"
+              class="text-yellow-600 hover:text-yellow-900 p-1 rounded"
+              title="Desactivar usuario"
+            >
+              <i data-lucide="ban" class="h-4 w-4"></i>
+            </button>
+          `
+              : `
+            <button
+              onclick="reactivateUser(${user.id}, '${escapeHtml(user.full_name || user.email)}')"
+              class="text-green-600 hover:text-green-900 p-1 rounded"
+              title="Reactivar usuario"
+            >
+              <i data-lucide="user-check"
+              class="h-4 w-4"></i>
+            </button>
+          `
+          }
+        </div>
+      </td>
+    </tr>
+  `
+    )
+    .join('')
+
+  // Reinitialize Lucide icons for new elements
+  if (window.lucide && window.lucide.createIcons) {
+    window.lucide.createIcons()
+  }
+}
+
+/**
+ * Setup users event listeners
+ */
+function setupUsersEventListeners() {
+  // Search input
+  const searchInput = document.getElementById('user-search-input')
+  if (searchInput) {
+    searchInput.addEventListener('input', debounce(loadUsersData, 500))
+  }
+
+  // Filters
+  const roleFilter = document.getElementById('user-role-filter')
+  const statusFilter = document.getElementById('user-status-filter')
+
+  if (roleFilter) {
+    roleFilter.addEventListener('change', loadUsersData)
+  }
+  if (statusFilter) {
+    statusFilter.addEventListener('change', loadUsersData)
+  }
+  const emailVerifiedFilter = document.getElementById('email-verified-filter')
+  if (emailVerifiedFilter) {
+    emailVerifiedFilter.addEventListener('change', loadUsersData)
+  }
+
+  // Create user button
+  const createBtn = document.getElementById('create-user-btn')
+  if (createBtn) {
+    createBtn.addEventListener('click', openCreateUserModal)
+  }
+
+  // Modal events
+  setupUserModalEvents()
+  setupDeleteModalEvents()
+}
+
+/**
+ * Setup user modal events
+ */
+function setupUserModalEvents() {
+  const modal = document.getElementById('user-modal')
+  const form = document.getElementById('user-form')
+  const closeBtn = document.getElementById('close-user-modal')
+  const cancelBtn = document.getElementById('cancel-user-form')
+  const emailInput = document.getElementById('user-email')
+  const magicLinkBtn = document.getElementById('send-magic-link-btn')
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeUserModal)
+  }
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', closeUserModal)
+  }
+  if (form) {
+    form.addEventListener('submit', handleUserFormSubmit)
+  }
+
+  // Auto-complete form when email is entered
+  if (emailInput) {
+    emailInput.addEventListener('blur', handleEmailLookup)
+  }
+
+  // Magic Link button (disabled for now)
+  if (magicLinkBtn) {
+    magicLinkBtn.addEventListener('click', () => {
+      toast.info('Funcionalidad de Magic Link próximamente disponible')
+    })
+  }
+
+  // Close modal on outside click
+  if (modal) {
+    modal.addEventListener('click', e => {
+      if (e.target === modal) {
+        closeUserModal()
+      }
+    })
+  }
+}
+
+/**
+ * Handle email lookup for auto-completion
+ */
+async function handleEmailLookup(e) {
+  const email = e.target.value.trim()
+
+  if (!email || !email.includes('@')) {
+    return
+  }
+
+  try {
+    // Buscar usuario por email
+    const result = await api.getAllEmail(email)
+
+    if (result.success && result.data) {
+      const user = result.data
+
+      // Auto-completar formulario con datos existentes
+      document.getElementById('user-full-name').value = user.full_name || ''
+      document.getElementById('user-phone').value = user.phone || ''
+      document.getElementById('user-role').value = user.role || 'user'
+
+      // Guardar referencia al usuario existente
+      currentEditingUser = user
+
+      // Actualizar título del modal
+      const modalTitle = document.getElementById('user-modal-title')
+      if (modalTitle) {
+        modalTitle.textContent = 'Actualizar Usuario Existente'
+      }
+
+      // Actualizar texto del botón submit
+      const submitText = document.getElementById('user-form-submit-text')
+      if (submitText) {
+        submitText.textContent = 'Actualizar Usuario'
+      }
+
+      toast.info(`Usuario encontrado: ${user.full_name}. Los datos se actualizarán al guardar.`)
+    }
+  } catch (_error) {
+    // Si no encuentra el usuario, es un nuevo usuario (guest)
+    console.log('Usuario no encontrado, será creado como nuevo:', email)
+    currentEditingUser = null
+
+    // Restablecer título
+    const modalTitle = document.getElementById('user-modal-title')
+    if (modalTitle) {
+      modalTitle.textContent = 'Crear Nuevo Usuario'
+    }
+
+    const submitText = document.getElementById('user-form-submit-text')
+    if (submitText) {
+      submitText.textContent = 'Crear Usuario'
+    }
+  }
+}
+
+/**
+ * Setup delete modal events
+ */
+function setupDeleteModalEvents() {
+  const modal = document.getElementById('confirm-delete-modal')
+  const cancelBtn = document.getElementById('cancel-delete')
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', closeDeleteModal)
+  }
+
+  // Close modal on outside click
+  if (modal) {
+    modal.addEventListener('click', e => {
+      if (e.target === modal) {
+        closeDeleteModal()
+      }
+    })
+  }
+}
+
+/**
+ * Open create user modal
+ */
+function openCreateUserModal() {
+  currentEditingUser = null
+
+  const modal = document.getElementById('user-modal')
+  const title = document.getElementById('user-modal-title')
+  const submitText = document.getElementById('user-form-submit-text')
+  const passwordSection = document.getElementById('password-section')
+  const resetSection = document.getElementById('password-reset-section')
+  const form = document.getElementById('user-form')
+
+  if (title) {
+    title.textContent = 'Crear Nuevo Usuario'
+  }
+  if (submitText) {
+    submitText.textContent = 'Crear Usuario'
+  }
+  if (passwordSection) {
+    passwordSection.classList.remove('hidden')
+  }
+  if (resetSection) {
+    resetSection.classList.add('hidden')
+  }
+
+  if (form) {
+    form.reset()
+  }
+
+  if (modal) {
+    modal.classList.remove('hidden')
+  }
+}
+
+/**
+ * Open edit user modal
+ */
+function editUser(userId) {
+  try {
+    const user = users.find(u => u.id === userId)
+    if (!user) {
+      throw new Error('Usuario no encontrado')
+    }
+
+    currentEditingUser = user
+
+    const modal = document.getElementById('user-modal')
+    const title = document.getElementById('user-modal-title')
+    const submitText = document.getElementById('user-form-submit-text')
+    const passwordSection = document.getElementById('password-section')
+    const resetSection = document.getElementById('password-reset-section')
+    const form = document.getElementById('user-form')
+
+    if (title) {
+      title.textContent = 'Editar Usuario'
+    }
+    if (submitText) {
+      submitText.textContent = 'Guardar Cambios'
+    }
+    if (passwordSection) {
+      passwordSection.classList.add('hidden')
+    }
+    if (resetSection) {
+      resetSection.classList.remove('hidden')
+    }
+
+    if (form) {
+      form.email.value = user.email || ''
+      form.full_name.value = user.full_name || ''
+      form.phone.value = user.phone || ''
+      form.role.value = user.role || 'user'
+    }
+
+    if (modal) {
+      modal.classList.remove('hidden')
+    }
+  } catch (error) {
+    console.error('Error loading user for edit:', error)
+    toast.error('Error al cargar usuario: ' + error.message)
+  }
+}
+
+/**
+ * Check if user form has unsaved changes
+ * @returns {boolean} True if form has changes
+ */
+function hasUnsavedUserFormChanges() {
+  const form = document.getElementById('user-form')
+  if (!form) {
+    return false
+  }
+
+  const email = document.getElementById('user-email')?.value || ''
+  const fullName = document.getElementById('user-full-name')?.value || ''
+  const phone = document.getElementById('user-phone')?.value || ''
+  const role = document.getElementById('user-role')?.value || ''
+  const password = document.getElementById('user-password')?.value || ''
+
+  // Check if any field has content
+  return (
+    email.trim() !== '' ||
+    fullName.trim() !== '' ||
+    phone.trim() !== '' ||
+    role !== '' ||
+    password !== ''
+  )
+}
+
+/**
+ * Close user modal with unsaved changes confirmation
+ */
+function closeUserModal() {
+  try {
+    // Check for unsaved changes
+    if (hasUnsavedUserFormChanges()) {
+      const confirmDiscard = window.confirm(
+        '¿Estás seguro de que quieres cerrar? Hay cambios sin guardar que se perderán.'
+      )
+      if (!confirmDiscard) {
+        return
+      }
+    }
+
+    // Reset form
+    const form = document.getElementById('user-form')
+    if (form) {
+      form.reset()
+    }
+
+    // Hide modal
+    const modal = document.getElementById('user-modal')
+    if (modal) {
+      modal.classList.add('hidden')
+    }
+
+    // Clear editing state
+    currentEditingUser = null
+  } catch (error) {
+    console.error('Error closing user modal:', error)
+    throw error
+  }
+}
+
+/**
+ * Handle user form submit
+ */
+async function handleUserFormSubmit(e) {
+  e.preventDefault()
+
+  try {
+    const form = e.target
+    const formData = new FormData(form)
+    const userData = Object.fromEntries(formData.entries())
+
+    const submitBtn = form.querySelector('button[type="submit"]')
+    const _originalText = submitBtn.textContent
+    submitBtn.disabled = true
+    submitBtn.textContent = currentEditingUser ? 'Guardando...' : 'Creando...'
+
+    const result = currentEditingUser
+      ? await api.updateUsers(currentEditingUser.id, userData)
+      : await api.createUsers(userData)
+
+    if (!result.success) {
+      throw new Error(result.message || 'Operation failed')
+    }
+
+    toast.success(
+      currentEditingUser ? 'Usuario actualizado correctamente' : 'Usuario creado correctamente'
+    )
+    closeUserModal()
+    await loadUsersData()
+  } catch (error) {
+    console.error('Error saving user:', error)
+    toast.error('Error al guardar usuario: ' + error.message)
+  } finally {
+    const submitBtn = e.target.querySelector('button[type="submit"]')
+    submitBtn.disabled = false
+    submitBtn.textContent = currentEditingUser ? 'Guardar Cambios' : 'Crear Usuario'
+  }
+}
+
+/**
+ * Deactivate user
+ */
+function deactivateUser(userId, userName) {
+  const modal = document.getElementById('confirm-delete-modal')
+  const message = document.getElementById('delete-confirm-message')
+  const confirmBtn = document.getElementById('confirm-delete')
+
+  if (message) {
+    message.textContent = `¿Estás seguro de que deseas desactivar al usuario "${userName}"?`
+  }
+
+  if (confirmBtn) {
+    confirmBtn.onclick = async () => {
+      try {
+        confirmBtn.disabled = true
+        confirmBtn.textContent = 'Desactivando...'
+
+        const result = await api.deleteUsers(userId)
+
+        if (!result.success) {
+          throw new Error(result.message)
+        }
+
+        toast.success('Usuario desactivado correctamente')
+        closeDeleteModal()
+        await loadUsersData()
+      } catch (error) {
+        console.error('Error deactivating user:', error)
+        toast.error('Error al desactivar usuario: ' + error.message)
+      } finally {
+        confirmBtn.disabled = false
+        confirmBtn.textContent = 'Desactivar Usuario'
+      }
+    }
+  }
+
+  if (modal) {
+    modal.classList.remove('hidden')
+  }
+}
+
+/**
+ * Reactivate user
+ */
+async function reactivateUser(userId, userName) {
+  try {
+    const result = await api.reactivateUsers(userId, {})
+
+    if (!result.success) {
+      throw new Error(result.message)
+    }
+
+    toast.success(`Usuario "${userName}" reactivado correctamente`)
+    await loadUsersData()
+  } catch (error) {
+    console.error('Error reactivating user:', error)
+    toast.error('Error al reactivar usuario: ' + error.message)
+  }
+}
+
+/**
+ * Toggle user role (user <-> admin)
+ */
+window.toggleUserRole = async function (userId, currentRole) {
+  try {
+    // Protección: No permitir cambiar rol del admin principal (ID 3)
+    if (userId === 3) {
+      toast.warning('No se puede cambiar el rol del administrador principal')
+      return
+    }
+
+    const newRole = currentRole === 'admin' ? 'user' : 'admin'
+    const confirmChange = window.confirm(
+      `¿Estás seguro de cambiar el rol a "${newRole === 'admin' ? 'Administrador' : 'Cliente'}"?`
+    )
+
+    if (!confirmChange) {
+      return
+    }
+
+    const result = await api.updateUsers(userId, { role: newRole })
+
+    if (!result.success) {
+      throw new Error(result.message || 'Error al cambiar rol')
+    }
+
+    toast.success(`Rol actualizado a "${newRole === 'admin' ? 'Administrador' : 'Cliente'}"`)
+    await loadUsersData()
+  } catch (error) {
+    console.error('Error toggling user role:', error)
+    toast.error('Error al cambiar rol: ' + error.message)
+  }
+}
+
+/**
+ * Toggle user active status
+ */
+window.toggleUserStatus = async function (userId, currentStatus) {
+  try {
+    // Protección: No permitir desactivar al admin principal (ID 3)
+    if (userId === 3 && currentStatus === true) {
+      toast.warning('No se puede desactivar al administrador principal')
+      return
+    }
+
+    const action = currentStatus ? 'desactivar' : 'activar'
+    const confirmChange = window.confirm(`¿Estás seguro de ${action} este usuario?`)
+
+    if (!confirmChange) {
+      return
+    }
+
+    let result
+    if (currentStatus) {
+      // Desactivar (soft delete)
+      result = await api.deleteUsers(userId)
+    } else {
+      // Reactivar
+      result = await api.reactivateUsers(userId, {})
+    }
+
+    if (!result.success) {
+      throw new Error(result.message || `Error al ${action} usuario`)
+    }
+
+    toast.success(`Usuario ${action === 'desactivar' ? 'desactivado' : 'activado'} correctamente`)
+    await loadUsersData()
+  } catch (error) {
+    console.error('Error toggling user status:', error)
+    toast.error('Error al cambiar estado: ' + error.message)
+  }
+}
+
+/**
+ * Toggle email verification status
+ */
+window.toggleEmailVerification = async function (userId, currentStatus) {
+  try {
+    // Protección: Admin principal (ID 3) siempre verificado
+    if (userId === 3 && currentStatus === true) {
+      toast.warning('El email del administrador principal siempre está verificado')
+      return
+    }
+
+    const action = currentStatus ? 'marcar como no verificado' : 'verificar'
+    const confirmChange = window.confirm(`¿Estás seguro de ${action} el email de este usuario?`)
+
+    if (!confirmChange) {
+      return
+    }
+
+    // Para desmarcar verificación, usamos el endpoint de actualización
+    let result
+    if (currentStatus) {
+      // Desmarcar verificación (actualizar con email_verified = false)
+      result = await api.updateUsers(userId, { email_verified: false })
+    } else {
+      // Verificar email
+      result = await api.verifyUserEmail(userId, {})
+    }
+
+    if (!result.success) {
+      throw new Error(result.message || `Error al ${action} email`)
+    }
+
+    toast.success(
+      `Email ${currentStatus ? 'marcado como no verificado' : 'verificado'} correctamente`
+    )
+    await loadUsersData()
+  } catch (error) {
+    console.error('Error toggling email verification:', error)
+    toast.error('Error al cambiar verificación: ' + error.message)
+  }
+}
+
+/**
+ * Close delete modal
+ */
+function closeDeleteModal() {
+  const modal = document.getElementById('confirm-delete-modal')
+  if (modal) {
+    modal.classList.add('hidden')
+  }
+}
+
+/**
+ * Show users loading state
+ */
+function showUsersLoading(show) {
+  const loading = document.getElementById('users-loading')
+  const tableBody = document.getElementById('users-table-body')
+  const emptyState = document.getElementById('users-empty')
+
+  if (loading) {
+    loading.classList.toggle('hidden', !show)
+  }
+  if (tableBody) {
+    tableBody.classList.toggle('hidden', show)
+  }
+  if (emptyState) {
+    emptyState.classList.add('hidden')
+  }
+}
+
+/**
+ * Show users error state
+ */
+function showUsersError() {
+  const tableBody = document.getElementById('users-table-body')
+  const emptyState = document.getElementById('users-empty')
+
+  if (tableBody) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+          <i data-lucide="alert-circle" class="h-8 w-8 mx-auto mb-2"></i>
+          <p>Error al cargar usuarios</p>
+        </td>
+      </tr>
+    `
+  }
+
+  if (emptyState) {
+    emptyState.classList.add('hidden')
+  }
+}
+
 /**
  * Special handling for settings view
  */
@@ -1524,3 +2401,10 @@ async function handleSettingsView() {
   await loadLogoPreview()
   await loadBcvPrice()
 }
+
+// ==================== GLOBAL FUNCTIONS FOR HTML ONCLICK ====================
+
+// Expose user management functions globally for HTML onclick handlers
+window.editUser = editUser
+window.deactivateUser = deactivateUser
+window.reactivateUser = reactivateUser

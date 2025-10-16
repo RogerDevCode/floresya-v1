@@ -50,6 +50,9 @@
     <meta property="og:url" content="https://floresya.com" />
     <meta property="og:image" content="./images/og-image.jpg" />
 
+    <!-- Theme Preload (ANTES de CSS para evitar FOUC) -->
+    <script src="./js/themes/themePreload.js"></script>
+
     <!-- CSS tradicional -->
     <link rel="stylesheet" href="./css/styles.css" />
 
@@ -90,6 +93,9 @@
 
           <!-- Actions (Desktop) -->
           <div class="nav-actions">
+            <!-- Theme Selector -->
+            <div id="theme-selector-container"></div>
+
             <!-- Cart -->
             <a
               href="/pages/cart.html"

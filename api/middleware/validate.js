@@ -198,6 +198,24 @@ export const commonSchemas = {
     required: true,
     minLength: 8
   },
+  /**
+   * ID parameter for resource routes
+   */
+  IdParam: {
+    type: 'number',
+    required: true,
+    integer: true,
+    min: 1
+  },
+  /**
+   * Occasion ID parameter
+   */
+  OccasionIdParam: {
+    type: 'number',
+    required: true,
+    integer: true,
+    min: 1
+  },
   name: {
     type: 'string',
     required: true,

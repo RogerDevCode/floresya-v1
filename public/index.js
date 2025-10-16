@@ -1,6 +1,7 @@
 /**
  * FloresYa - Index Page (ES6 Module)
  * Mobile menu toggle and UI interactions for index.html
+ * Siguiendo CLAUDE.md: KISS, fail-fast, ES6 modules
  */
 
 import { onDOMReady } from './js/shared/dom-ready.js'
@@ -16,6 +17,8 @@ import { api } from './js/shared/api-client.js'
 import { initMobileNav } from './js/components/mobileNav.js'
 import { PullToRefresh } from './js/components/pullToRefresh.js'
 import { TouchFeedback } from './js/shared/touchFeedback.js'
+import { themeManager } from './js/themes/themeManager.js'
+import ThemeSelector from './js/components/ThemeSelector.js'
 
 /**
  * Initialize mobile navigation drawer
@@ -1023,6 +1026,20 @@ function initProductCardTouchFeedback() {
 function init() {
   try {
     console.log('🚀 [index.js] Starting initialization...')
+
+    // Initialize Theme Manager (must be first to apply theme before UI loads)
+    themeManager.init()
+    console.log('✅ [index.js] Theme manager initialized')
+
+    // Initialize Theme Selector UI
+    const themeSelectorContainer = document.getElementById('theme-selector-container')
+    if (themeSelectorContainer) {
+      const themeSelector = new ThemeSelector('theme-selector-container')
+      window.themeSelectorInstance = themeSelector
+      console.log('✅ [index.js] Theme selector initialized')
+    } else {
+      console.warn('⚠️ [index.js] Theme selector container not found')
+    }
 
     // Initialize Lucide icons
     createIcons()

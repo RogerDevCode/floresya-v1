@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'
 import request from 'supertest'
 import app from '../../api/app.js'
+import { TEST_USERS, TEST_PRODUCTS } from '../test-config.js'
 
 // Mock authentication middleware for integration tests
 vi.mock('../../api/middleware/auth.js', () => ({
@@ -33,20 +34,20 @@ describe('Order API Integration Tests', () => {
   let createdOrderId = null
 
   const testOrder = {
-    customer_email: 'integration-test@example.com',
-    customer_name: 'Integration Test Customer',
+    customer_email: TEST_USERS.ACTIVE_USER.email,
+    customer_name: TEST_USERS.ACTIVE_USER.full_name,
     delivery_address: '123 Test Street',
-    total_amount_usd: 49.98, // 2 items at $24.99 each
+    total_amount_usd: TEST_PRODUCTS.FEATURED_ROSES.price_usd * 2,
     user_id: null
   }
 
   const orderItems = [
     {
-      product_id: 1, // Using a dummy product ID
-      product_name: 'Order Test Product',
+      product_id: 1, // Will be updated with actual test product ID
+      product_name: TEST_PRODUCTS.FEATURED_ROSES.name,
       quantity: 2,
-      unit_price_usd: 24.99,
-      subtotal_usd: 49.98
+      unit_price_usd: TEST_PRODUCTS.FEATURED_ROSES.price_usd,
+      subtotal_usd: TEST_PRODUCTS.FEATURED_ROSES.price_usd * 2
     }
   ]
 

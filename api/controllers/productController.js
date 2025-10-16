@@ -623,7 +623,194 @@ export const reactivateProduct = asyncHandler(async (req, res) => {
 })
 
 /**
- * Replace all occasions for a product (TRANSACTIONAL)
+ * Get occasions linked to a specific product
+ * @swagger
+ * /api/products/{id}/occasions:
+ *   get:
+ *     tags: [Products]
+ *     summary: Get occasions linked to a product
+ *     description: Retrieve all occasions that are linked to a specific product
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Product occasions retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/responses/SuccessResponse'
+ *                 - type: object
+ *                 properties:
+ *                   data:
+ *                     type: array
+ *                     items:
+ *                       $ref: '#/components/schemas/ProductOccasion'
+ *       404: { $ref: '#/components/responses/NotFoundError' }
+ *       500: { $ref: '#/components/responses/InternalServerErrorError' }
+ */
+export const getProductOccasions = asyncHandler(async (req, res) => {
+  try {
+    const productId = parseInt(req.params.id)
+
+    if (!productId) {
+      throw new BadRequestError('Invalid product ID', { productId })
+    }
+
+    const result = await productService.getProductOccasions(productId)
+
+    res.json({
+      success: true,
+      data: result,
+      message: 'Product occasions retrieved successfully'
+    })
+  } catch (error) {
+    console.error(`getProductOccasions(${productId}) failed:`, error)
+    throw error
+  }
+})
+
+/**
+ * Link a single occasion to a product
+ * @swagger
+ * /api/products/{id}/occasions/{occasionId}
+ *   post:
+ *     tags: [Products]
+ *     summary: Link occasion to product
+ *     description: Link a single occasion to a product
+ *     security:
+ *       - bearerAuth: []
+ *       - access: Admin only
+ *       x-admin-only: true
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *       - $ref: '#/components/parameters/OccasionIdParam'
+ *     responses:
+ *       200:
+ *         description: Occasion linked successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/responses/SuccessResponse'
+ *                 - type: object
+ *                 properties:
+ *                   data:
+ *                     description: Updated product occasion relationship
+ *       400: { $ref: '#/components/responses/ValidationError' }
+ *       401: { $ref: '#/components/responses/UnauthorizedError' }
+ *       403: { $ref: '#/components/responses/ForbiddenError' }
+ *       404: { $ref: '#/components/responses/NotFoundError' }
+ *       500: { $ref: '#/components/responses/InternalServerErrorError' }
+ */
+export const linkProductOccasion = asyncHandler(async (req, res) => {
+  try {
+    const productId = parseInt(req.params.id)
+    const occasionId = parseInt(req.params.occasionId)
+
+    if (!productId || !occasionId) {
+      throw new BadRequestError('Product ID and Occasion ID are required', {
+        productId,
+        occasionId
+      })
+    }
+
+    const result = await productService.linkProductOccasion(productId, occasionId)
+
+    res.json({
+      success: true,
+      data: result,
+      message: 'Occasion linked to product successfully'
+    })
+  } catch (error) {
+    console.error(`linkProductOccasion(${productId}, ${occasionId}) failed:`, error)
+    throw error
+  }
+})
+
+/**
+ * Get occasions linked to a specific product
+ * @swagger
+ * /api/products/{id}/occasions/{occasionId}
+ *   get:
+ *     tags: [Products]
+ *     summary: Get occasions linked to a product
+ *     description: Retrieve all occasions that are linked to a specific product
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *       - $ref: '#/components/parameters/OccasionIdParam'
+ *     responses:
+ *       200:
+ *         description: Product occasions retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/responses/SuccessResponse'
+ *                 - type: object
+ *                 properties:
+ *                   data:
+ *                     type: array
+ *                     items:
+ *                       $ref: '#/components/schemas/ProductOccasion'
+ *       404: { $ref: '#/components/responses/NotFoundError' }
+ *       500: { $ref: '#/components/responses/InternalServerErrorError' }
+ */
+/**
+ * Replace all occasions for a product
+ * @swagger
+ * /api/products/{id}/occasions:
+ *   put:
+ *     tags: [Products]
+ *     summary: Replace all occasions for a product
+ *     description: Replace all occasions linked to a product (transactional operation)
+ *     security:
+ *       - bearerAuth: []
+ *     access: Admin only
+ *     x-admin-only: true
+ *     x-transactional: true
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     - name: body
+ *       in: body
+ *       required: true
+ *       schema:
+ *         type: object
+ *         required:
+ *           - occasion_ids
+ *         properties:
+ *           occasion_ids:
+ *             type: array
+ *             items:
+ *               type: integer
+ *             description: Array of occasion IDs to link to the product
+ *     responses:
+ *       200:
+ *         description: Product occasions replaced successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/responses/SuccessResponse'
+ *                 - type: object
+ *                 properties:
+ *                   data:
+ *                     description: Updated product with new occasions
+ *                     type: object
+ *                     allOf:
+ *                       - $ref: '#/components/schemas/Product'
+ *                       - type: object
+ *                         properties:
+ *                           occasion_ids:
+ *                             type: array
+ *                             items:
+ *                               type: integer
+ *                             description: Array of occasion IDs
+ *       400: { $ref: '#/components/responses/ValidationError' }
+ *       401: { $ref: '#/components/responses/UnauthorizedError' }
+ *       403: { $ref: '#/components/responses/ForbiddenError' }
+ *       404: { $ref: '#/components/responses/NotFoundError' }
+ *       500: { $ref: '#/components/responses/InternalServerErrorError' }
  * @route PUT /api/products/:id/occasions
  * @access Admin
  */

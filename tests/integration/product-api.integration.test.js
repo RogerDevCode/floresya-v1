@@ -7,23 +7,24 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import request from 'supertest'
 import app from '../../api/app.js'
 import { NotFoundError } from '../../api/errors/AppError.js'
+import { TEST_PRODUCTS } from '../test-config.js'
 
 // Mock the product service to avoid database dependencies
 vi.mock('../../api/services/productService.js', () => ({
   getProductById: vi.fn((productId, _includeInactive) => {
-    if (productId === 67) {
+    // Use test product data
+    if (productId === 1) {
       return Promise.resolve({
-        id: 67,
-        name: 'Ramo Tropical Vibrante',
-        summary: 'Explosión de colores tropicales',
-        description:
-          'Explosión de colores tropicales con aves del paraíso, heliconias y flores exóticas',
-        price_usd: 45.99,
-        price_ves: 1837.96,
-        stock: 15,
-        sku: 'FY-001',
-        active: true,
-        featured: true,
+        id: 1,
+        name: TEST_PRODUCTS.FEATURED_ROSES.name,
+        summary: '12 rosas rojas frescas',
+        description: 'Un ramo elegante de 12 rosas rojas seleccionadas a mano',
+        price_usd: TEST_PRODUCTS.FEATURED_ROSES.price_usd,
+        price_ves: TEST_PRODUCTS.FEATURED_ROSES.price_ves,
+        stock: TEST_PRODUCTS.FEATURED_ROSES.stock,
+        sku: TEST_PRODUCTS.FEATURED_ROSES.sku,
+        active: TEST_PRODUCTS.FEATURED_ROSES.active,
+        featured: TEST_PRODUCTS.FEATURED_ROSES.featured,
         carousel_order: 1,
         created_at: '2025-09-30T02:22:35.04999+00:00',
         updated_at: '2025-09-30T02:22:35.04999+00:00'
@@ -38,11 +39,11 @@ vi.mock('../../api/services/productService.js', () => ({
   getAllProducts: vi.fn((filters, _includeInactive) => {
     const products = [
       {
-        id: 67,
-        name: 'Ramo Tropical Vibrante',
-        price_usd: 45.99,
-        active: true,
-        featured: true
+        id: 1,
+        name: TEST_PRODUCTS.FEATURED_ROSES.name,
+        price_usd: TEST_PRODUCTS.FEATURED_ROSES.price_usd,
+        active: TEST_PRODUCTS.FEATURED_ROSES.active,
+        featured: TEST_PRODUCTS.FEATURED_ROSES.featured
       }
     ]
 
@@ -129,17 +130,17 @@ describe('Product API Integration Tests', () => {
 
   describe('GET /api/products/:id', () => {
     it('should return product data for valid ID', async () => {
-      const response = await request(app).get('/api/products/67').expect(200)
+      const response = await request(app).get('/api/products/1').expect(200)
 
       expect(response.body).toMatchObject({
         success: true,
         message: 'Product retrieved successfully'
       })
       expect(response.body.data).toBeDefined()
-      expect(response.body.data.id).toBe(67)
-      expect(response.body.data.name).toBe('Ramo Tropical Vibrante')
-      expect(response.body.data.price_usd).toBe(45.99)
-      expect(response.body.data.stock).toBe(15)
+      expect(response.body.data.id).toBe(1)
+      expect(response.body.data.name).toBe(TEST_PRODUCTS.FEATURED_ROSES.name)
+      expect(response.body.data.price_usd).toBe(TEST_PRODUCTS.FEATURED_ROSES.price_usd)
+      expect(response.body.data.stock).toBe(TEST_PRODUCTS.FEATURED_ROSES.stock)
     })
 
     it('should return 400 for invalid product ID (non-numeric)', async () => {
@@ -275,7 +276,7 @@ describe('Product API Integration Tests', () => {
       }
 
       const response = await request(app)
-        .patch('/api/products/67')
+        .patch('/api/products/1')
         .set('Content-Type', 'application/json')
         .send(updates)
 
@@ -297,7 +298,7 @@ describe('Product API Integration Tests', () => {
 
   describe('DELETE /api/products/:id', () => {
     it('should soft delete product successfully', async () => {
-      const response = await request(app).delete('/api/products/67').expect(200)
+      const response = await request(app).delete('/api/products/1').expect(200)
 
       expect(response.body.success).toBe(true)
       expect(response.body.data.active).toBe(false)

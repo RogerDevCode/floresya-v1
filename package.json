@@ -25,6 +25,8 @@
     "test:e2e:debug": "playwright test --debug",
     "get-schema": "node get-schema.js",
     "seed": "node seed-products.js",
+    "seed:test": "node seed-test-data.js",
+    "cleanup:test": "node cleanup-test-data.js",
     "serve": "serve public -p 3000",
     "generate:openapi": "node scripts/generate-openapi-spec.js",
     "generate:client": "node scripts/generate-api-client.js",

@@ -71,7 +71,24 @@ function validateRequestParams(req, operationSpec) {
         const expectedType = param.schema.type
         const actualType = typeof value
 
-        if (expectedType === 'integer') {
+        if (expectedType === 'boolean') {
+          // Handle string booleans (HTTP query params are always strings)
+          if (actualType === 'string') {
+            const normalizedValue = value.toLowerCase()
+            if (normalizedValue === 'true' || normalizedValue === 'false') {
+              // Convert to actual boolean for downstream processing
+              if (paramIn === 'query') {
+                req.query[paramName] = normalizedValue === 'true'
+              }
+            } else {
+              errors.push({
+                location: paramIn,
+                msg: `Parameter '${paramName}' expected boolean ('true' or 'false'), got '${value}'`,
+                param: paramName
+              })
+            }
+          }
+        } else if (expectedType === 'integer') {
           // Handle string numbers for integers
           if (actualType !== 'number' && isNaN(Number(value))) {
             errors.push({
@@ -80,7 +97,11 @@ function validateRequestParams(req, operationSpec) {
               param: paramName
             })
           }
-        } else if (expectedType !== 'integer' && actualType !== expectedType) {
+        } else if (
+          expectedType !== 'integer' &&
+          expectedType !== 'boolean' &&
+          actualType !== expectedType
+        ) {
           errors.push({
             location: paramIn,
             msg: `Parameter '${paramName}' expected type '${expectedType}', got '${actualType}'`,

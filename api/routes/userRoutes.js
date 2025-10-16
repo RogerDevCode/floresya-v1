@@ -47,7 +47,8 @@ router.put(
   validate({
     full_name: { type: 'string', minLength: 2, maxLength: 255 },
     phone: { type: 'string', pattern: /^\+?[\d\s-()]+$/ },
-    role: { type: 'string', enum: ['user', 'admin'] }
+    role: { type: 'string', enum: ['user', 'admin'] },
+    email_verified: { type: 'boolean' }
   }),
   userController.updateUser
 )

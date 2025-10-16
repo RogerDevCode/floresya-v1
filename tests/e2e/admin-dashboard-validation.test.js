@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { createClient } from '@supabase/supabase-js'
 import dotenv from 'dotenv'
+import { TEST_PREFIX } from '../test-config.js'
 
 // Load environment variables
 dotenv.config({ path: '.env.local' })
@@ -129,6 +130,7 @@ test.describe('Admin Dashboard - Complete E2E Validation', () => {
         )
       `
       )
+      .like('notes', `${TEST_PREFIX}%`)
       .order('created_at', { ascending: false })
 
     if (error) {
@@ -249,6 +251,7 @@ test.describe('Admin Dashboard - Complete E2E Validation', () => {
     const { data: allOrders } = await supabase
       .from('orders')
       .select('*')
+      .like('notes', `${TEST_PREFIX}%`)
       .order('created_at', { ascending: false })
 
     // Apply same filters as dashboard
@@ -561,6 +564,7 @@ test.describe('Admin Dashboard - Complete E2E Validation', () => {
         )
       `
       )
+      .like('notes', `${TEST_PREFIX}%`)
       .order('created_at', { ascending: false })
 
     if (error) {

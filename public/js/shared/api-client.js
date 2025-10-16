@@ -1,7 +1,7 @@
 /**
  * FloresYa API Client
  * Auto-generated from OpenAPI specification
- * Generated: 2025-10-15T18:20:24.461Z
+ * Generated: 2025-10-16T17:21:41.841Z
  * Spec Version: 1.0.0
  * Total Endpoints: 44
  *
@@ -1063,11 +1063,6 @@ export const api = {
   confirmPayments: (id, data) => apiClient.confirmPayments(id, data),
   getAllPayments: params => apiClient.getAllPayments(params),
   getAllOccasions: () => apiClient.getAllOccasions(),
-  getProductOccasions: productId => apiClient.getProductOccasions(productId),
-  replaceProductOccasions: (productId, occasionIds) =>
-    apiClient.replaceProductOccasions(productId, occasionIds),
-  linkProductOccasion: (productId, occasionId) =>
-    apiClient.linkProductOccasion(productId, occasionId),
   createOccasions: data => apiClient.createOccasions(data),
   getOccasionsById: id => apiClient.getOccasionsById(id),
   updateOccasions: (id, data) => apiClient.updateOccasions(id, data),

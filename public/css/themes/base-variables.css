@@ -1,0 +1,157 @@
+/**
+ * FloresYa - Variables CSS Base para Sistema de Temas
+ * Este archivo define todas las variables CSS que serán sobrescritas por cada tema.
+ * Siguiendo principios de CLAUDE.md: KISS, variables granulares por componente.
+ */
+
+:root {
+  /* ==================== COLORES GLOBALES ==================== */
+
+  /* Primarios */
+  --theme-primary: #ec4899;
+  --theme-primary-dark: #db2777;
+  --theme-primary-light: #f9a8d4;
+  --theme-primary-hover: #be185d;
+
+  /* Secundarios */
+  --theme-secondary: #10b981;
+  --theme-secondary-dark: #059669;
+  --theme-secondary-light: #6ee7b7;
+
+  /* Acentos */
+  --theme-accent: #f59e0b;
+  --theme-accent-dark: #d97706;
+  --theme-accent-light: #fbbf24;
+
+  /* Fondos */
+  --theme-bg-primary: #ffffff;
+  --theme-bg-secondary: #f8fafc;
+  --theme-bg-tertiary: #f1f5f9;
+
+  /* Texto */
+  --theme-text-primary: #1f2937;
+  --theme-text-secondary: #6b7280;
+  --theme-text-tertiary: #9ca3af;
+  --theme-text-inverted: #ffffff;
+
+  /* Bordes */
+  --theme-border-light: #e5e7eb;
+  --theme-border-medium: #d1d5db;
+  --theme-border-dark: #9ca3af;
+
+  /* Estados */
+  --theme-success: #10b981;
+  --theme-warning: #f59e0b;
+  --theme-error: #ef4444;
+  --theme-info: #3b82f6;
+
+  /* ==================== NAVBAR ==================== */
+
+  --navbar-bg: rgba(255, 255, 255, 0.95);
+  --navbar-text: #374151;
+  --navbar-text-hover: #ec4899;
+  --navbar-border: #e5e7eb;
+  --navbar-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  --navbar-brand-color: #db2777;
+  --navbar-icon-color: #6b7280;
+  --navbar-icon-hover: #ec4899;
+
+  /* ==================== HERO SECTION ==================== */
+
+  --hero-bg-start: #fdf2f8;
+  --hero-bg-end: #fce7f3;
+  --hero-title-color: #1f2937;
+  --hero-subtitle-color: #6b7280;
+  --hero-accent-color: #ec4899;
+  --hero-shadow: 0 0 100px rgba(236, 72, 153, 0.1);
+
+  /* ==================== CAROUSEL ==================== */
+
+  --carousel-bg: #ffffff;
+  --carousel-nav-bg: rgba(0, 0, 0, 0.5);
+  --carousel-nav-hover: rgba(0, 0, 0, 0.7);
+  --carousel-nav-color: #ffffff;
+  --carousel-indicator-inactive: rgba(255, 255, 255, 0.4);
+  --carousel-indicator-active: #ffffff;
+  --carousel-indicator-bg: rgba(0, 0, 0, 0.5);
+  --carousel-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  /* ==================== PRODUCT CARDS ==================== */
+
+  --card-bg: #ffffff;
+  --card-border: #e5e7eb;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  --card-shadow-hover: 0 20px 25px rgba(0, 0, 0, 0.1);
+  --card-title-color: #1f2937;
+  --card-text-color: #6b7280;
+  --card-price-color: #ec4899;
+  --card-badge-bg: #ec4899;
+  --card-badge-text: #ffffff;
+  --card-overlay-bg: rgba(0, 0, 0, 0.7);
+
+  /* ==================== BUTTONS ==================== */
+
+  --btn-primary-bg: #ec4899;
+  --btn-primary-hover: #db2777;
+  --btn-primary-text: #ffffff;
+  --btn-primary-shadow: 0 4px 16px rgba(236, 72, 153, 0.3);
+
+  --btn-secondary-bg: transparent;
+  --btn-secondary-border: #ec4899;
+  --btn-secondary-text: #ec4899;
+  --btn-secondary-hover-bg: #ec4899;
+  --btn-secondary-hover-text: #ffffff;
+
+  --btn-warning-bg: #f59e0b;
+  --btn-warning-hover: #d97706;
+  --btn-warning-text: #ffffff;
+
+  /* ==================== FOOTER ==================== */
+
+  --footer-bg: #1f2937;
+  --footer-text: #d1d5db;
+  --footer-heading: #f9a8d4;
+  --footer-link-hover: #ec4899;
+  --footer-border: #374151;
+
+  /* ==================== TESTIMONIALS ==================== */
+
+  --testimonial-bg: #fdf2f8;
+  --testimonial-border: #ec4899;
+  --testimonial-text: #374151;
+  --testimonial-author: #ec4899;
+  --testimonial-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+
+  /* ==================== FORMS ==================== */
+
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --input-border-focus: #ec4899;
+  --input-text: #1f2937;
+  --input-placeholder: #9ca3af;
+  --input-shadow-focus: 0 0 0 3px rgba(236, 72, 153, 0.1);
+
+  /* ==================== BADGES ==================== */
+
+  --badge-primary-bg: #ec4899;
+  --badge-primary-text: #ffffff;
+  --badge-secondary-bg: #10b981;
+  --badge-secondary-text: #ffffff;
+  --badge-warning-bg: #f59e0b;
+  --badge-warning-text: #ffffff;
+
+  /* ==================== SHADOWS ==================== */
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  /* ==================== TRANSITIONS ==================== */
+
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-theme: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}

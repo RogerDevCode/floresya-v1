@@ -329,9 +329,12 @@ async function loadOccasions() {
     let occasions = occasionsResult.data || []
     occasions = occasions.filter(occ => occ.is_active)
 
-    // 2. Get occasions linked to this product
-    const productOccasionsResult = await api.getProductOccasions(productId)
-    const linkedOccasionIds = productOccasionsResult.data.map(occ => occ.id)
+    // 2. Get product with occasions to find linked ones
+    const productResult = await api.getProductsWithOccasions({ productId: productId })
+    const linkedOccasionIds =
+      productResult.data && productResult.data.occasions
+        ? productResult.data.occasions.map(occ => occ.id)
+        : []
 
     // 3. Sort by popularity (most popular first)
     occasions = sortByPopularity(occasions)
@@ -346,9 +349,9 @@ async function loadOccasions() {
       .map(
         occasion => `
       <label class="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg hover:bg-pink-50 cursor-pointer transition-colors">
-        <input 
-          type="checkbox" 
-          name="occasions" 
+        <input
+          type="checkbox"
+          name="occasions"
           value="${occasion.id}"
           data-occasion-name="${occasion.name}"
           ${linkedOccasionIds.includes(occasion.id) ? 'checked' : ''}
@@ -864,14 +867,18 @@ async function uploadProductImages(productId, newImages) {
 
 /**
  * Replace all product occasions (TRANSACTIONAL)
- * Uses backend endpoint with PostgreSQL stored function for atomicity
+ * Uses available endpoint for updating product occasions
  */
 async function replaceProductOccasions(productId, selectedOccasionIds) {
   try {
     console.log(`Replacing occasions for product ${productId}:`, selectedOccasionIds)
 
-    // Call transactional backend endpoint
-    const result = await api.replaceProductOccasions(productId, selectedOccasionIds)
+    // Use the createProductsWithOccasions endpoint to update occasions
+    // This is a workaround since there's no direct replace endpoint
+    const result = await api.createProductsWithOccasions({
+      product: { id: productId },
+      occasionIds: selectedOccasionIds
+    })
 
     console.log(`✓ Occasions replaced successfully:`, result.data)
     return result

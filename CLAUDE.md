@@ -1,5 +1,23 @@
 # FloresYa - Arquitectura MVC para E-Commerce Unificada
 
+## 🚨 MANDATORY: Read Before Starting
+
+**Before writing ANY code, read:**
+
+```
+.factory/droids/MANDATORY_RULES.md
+```
+
+**Or run:**
+
+```bash
+./.factory/droids/SESSION_START.sh
+```
+
+This file contains critical ESLint rules and checklists that MUST be followed at all times.
+
+---
+
 ## Stack Técnico
 
 - Express 5 + Node.js + Supabase (PostgreSQL) + Tailwind v4 + ES6 Modules.

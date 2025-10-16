@@ -125,6 +125,25 @@ router.patch(
   productController.reactivateProduct
 )
 
+// Get occasions linked to a product
+router.get(
+  '/:id/occasions',
+  authenticate,
+  authorize('admin'),
+  validateId(),
+  productController.getProductOccasions
+)
+
+// Link a single occasion to a product
+router.post(
+  '/:id/occasions/:occasionId',
+  authenticate,
+  authorize('admin'),
+  validateId(),
+  validateId('occasionId'),
+  productController.linkProductOccasion
+)
+
 // Replace product occasions (TRANSACTIONAL)
 router.put(
   '/:id/occasions',
