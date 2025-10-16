@@ -9,7 +9,7 @@ import { onDOMReady } from './shared/dom-ready.js'
 ;(function () {
   'use strict'
 
-  console.group('🎨 [Theme Debug] Starting diagnosis...')
+  console.group('🔧 [Theme System Diagnostics] Starting diagnosis...')
 
   const debugInfo = {
     timestamp: new Date().toISOString(),
@@ -247,8 +247,8 @@ import { onDOMReady } from './shared/dom-ready.js'
     setTimeout(() => {
       debugInfo.recommendations = generateRecommendations()
 
-      console.group('🎨 [Theme Debug] Diagnosis Results')
-      console.log('Debug Info:', debugInfo)
+      console.group('🔧 [Theme System Diagnostics] Results')
+      console.log('Diagnostic Info:', debugInfo)
 
       if (debugInfo.errors.length > 0) {
         console.error('Errors found:', debugInfo.errors)
@@ -262,86 +262,21 @@ import { onDOMReady } from './shared/dom-ready.js'
         console.log('Recommendations:', debugInfo.recommendations)
       }
 
-      // Create visual indicator in production
-      if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-        createDebugIndicator()
-      }
-
       console.groupEnd()
 
       // Store results for later reference
-      try {
-        sessionStorage.setItem('theme-debug-results', JSON.stringify(debugInfo))
-      } catch (error) {
-        console.warn('Could not store debug results in sessionStorage:', error)
-      }
+      storeDebugResults()
     }, 200)
   }
 
-  // Create visual debug indicator
-  function createDebugIndicator() {
-    // Check if indicator already exists to prevent duplicates
-    if (document.getElementById('theme-debug-indicator')) {
-      return
+  // Store debug results for later access
+  function storeDebugResults() {
+    try {
+      sessionStorage.setItem('theme-debug-results', JSON.stringify(debugInfo))
+      console.log('🎨 [Theme Debug] Results stored in sessionStorage')
+    } catch (error) {
+      console.warn('🎨 [Theme Debug] Could not store debug results in sessionStorage:', error)
     }
-
-    const indicator = document.createElement('div')
-    indicator.id = 'theme-debug-indicator'
-    indicator.style.cssText = `
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: rgba(0, 0, 0, 0.8);
-      color: white;
-      padding: 8px 12px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-family: monospace;
-      z-index: 9999;
-      cursor: pointer;
-      transition: opacity 0.3s ease;
-    `
-
-    const status =
-      debugInfo.errors.length > 0 ? 'ERROR' : debugInfo.warnings.length > 0 ? 'WARN' : 'OK'
-    const color = status === 'ERROR' ? '#ff4444' : status === 'WARN' ? '#ffaa00' : '#44ff44'
-
-    indicator.style.backgroundColor = color
-    indicator.textContent = `Theme Debug: ${status}`
-
-    indicator.addEventListener('click', () => {
-      console.clear()
-      console.group('🎨 [Theme Debug] Detailed Results')
-      console.log('Full debug info:', debugInfo)
-      console.groupEnd()
-    })
-
-    // Use a safer approach to append to body
-    if (document.body) {
-      document.body.appendChild(indicator)
-    } else {
-      // If body isn't ready yet, wait for it
-      const observer = new MutationObserver(() => {
-        if (document.body) {
-          document.body.appendChild(indicator)
-          observer.disconnect()
-        }
-      })
-      observer.observe(document.documentElement, { childList: true, subtree: true })
-    }
-
-    // Auto-hide after 15 seconds to give more visibility time
-    setTimeout(() => {
-      if (indicator.parentNode) {
-        // Fade out before removing
-        indicator.style.opacity = '0'
-        setTimeout(() => {
-          if (indicator.parentNode) {
-            indicator.parentNode.removeChild(indicator)
-          }
-        }, 300)
-      }
-    }, 15000)
   }
 
   // Auto-fix common issues
@@ -395,13 +330,13 @@ import { onDOMReady } from './shared/dom-ready.js'
         retryCount++
         if (retryCount < maxRetries) {
           console.warn(
-            `⚠️ [Theme Debug] themeManager not available, retrying (${retryCount}/${maxRetries})...`
+            `⚠️ [Theme System Diagnostics] themeManager not available, retrying (${retryCount}/${maxRetries})...`
           )
           setTimeout(attemptDiagnosis, retryDelay * retryCount)
         } else {
           // Give up, run diagnosis without themeManager
           console.error(
-            '❌ [Theme Debug] themeManager not available after retries, proceeding without it'
+            '❌ [Theme System Diagnostics] themeManager not available after retries, proceeding without it'
           )
           checkDependencies()
           checkThemePreload()
@@ -422,8 +357,8 @@ import { onDOMReady } from './shared/dom-ready.js'
 
   // Finalize diagnosis and display results
   function finalizeDiagnosis() {
-    console.group('🎨 [Theme Debug] Diagnosis Results')
-    console.log('Debug Info:', debugInfo)
+    console.group('🔧 [Theme System Diagnostics] Results')
+    console.log('Diagnostic Info:', debugInfo)
 
     if (debugInfo.errors.length > 0) {
       console.error('Errors found:', debugInfo.errors)
@@ -437,19 +372,10 @@ import { onDOMReady } from './shared/dom-ready.js'
       console.log('Recommendations:', debugInfo.recommendations)
     }
 
-    // Create visual indicator in production
-    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-      createDebugIndicator()
-    }
-
     console.groupEnd()
 
     // Store results for later reference
-    try {
-      sessionStorage.setItem('theme-debug-results', JSON.stringify(debugInfo))
-    } catch (error) {
-      console.warn('Could not store debug results in sessionStorage:', error)
-    }
+    storeDebugResults()
   }
 
   // Initialize debug system with proper DOM ready check
@@ -462,7 +388,6 @@ import { onDOMReady } from './shared/dom-ready.js'
     getInfo: () => debugInfo,
     runDiagnosis,
     runDiagnosisWithRetry,
-    attemptAutoFix,
-    createDebugIndicator
+    attemptAutoFix
   }
 })()

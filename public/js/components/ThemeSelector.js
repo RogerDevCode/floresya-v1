@@ -55,7 +55,9 @@ export class ThemeSelector {
         )
       }
 
-      if (!window.createIcons) {
+      // No need to check for window.createIcons since we import createIcons directly
+      // Just ensure that createIcons is available from our import
+      if (typeof createIcons !== 'function') {
         throw new Error(
           'createIcons function is not available. Make sure lucide-icons.js is loaded'
         )
@@ -187,7 +189,11 @@ export class ThemeSelector {
       `
 
       // Renderizar iconos
-      createIcons()
+      if (typeof createIcons === 'function') {
+        createIcons()
+      } else if (window.createIcons && typeof window.createIcons === 'function') {
+        window.createIcons()
+      }
 
       // Guardar referencias
       this.toggleBtn = document.getElementById('theme-toggle-btn')
@@ -381,7 +387,11 @@ export class ThemeSelector {
       })
 
       // Re-renderizar iconos
-      createIcons()
+      if (typeof createIcons === 'function') {
+        createIcons()
+      } else if (window.createIcons && typeof window.createIcons === 'function') {
+        window.createIcons()
+      }
 
       console.log('✅ [ThemeSelector] Display updated')
     } catch (error) {
@@ -414,7 +424,9 @@ export class ThemeSelector {
       `
 
       // Initialize icons
-      if (window.createIcons) {
+      if (typeof createIcons === 'function') {
+        createIcons()
+      } else if (window.createIcons && typeof window.createIcons === 'function') {
         window.createIcons()
       }
 
