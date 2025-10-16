@@ -189,6 +189,30 @@ app.use(
   })
 )
 
+// Serve admin pages with /admin/ prefix mapping to public/pages/admin/
+app.use(
+  '/admin',
+  express.static('public/pages/admin', {
+    maxAge: isDevelopment ? 0 : '1h',
+    setHeaders: (res, path) => {
+      if (isDevelopment) {
+        // Development: no cache for HTML/JS/CSS
+        if (/\.(js|css)$/i.test(path)) {
+          res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
+          res.setHeader('Pragma', 'no-cache')
+        } else if (path.endsWith('.html')) {
+          res.setHeader('Cache-Control', 'no-cache, must-revalidate')
+        }
+      } else {
+        // Production: moderate caching for admin pages
+        if (path.endsWith('.html')) {
+          res.setHeader('Cache-Control', 'public, max-age=3600, must-revalidate')
+        }
+      }
+    }
+  })
+)
+
 // API routes
 app.use('/api/products', productRoutes)
 app.use('/api/orders', orderRoutes)
