@@ -280,6 +280,11 @@ import { onDOMReady } from './shared/dom-ready.js'
 
   // Create visual debug indicator
   function createDebugIndicator() {
+    // Check if indicator already exists to prevent duplicates
+    if (document.getElementById('theme-debug-indicator')) {
+      return
+    }
+
     const indicator = document.createElement('div')
     indicator.id = 'theme-debug-indicator'
     indicator.style.cssText = `
@@ -294,6 +299,7 @@ import { onDOMReady } from './shared/dom-ready.js'
       font-family: monospace;
       z-index: 9999;
       cursor: pointer;
+      transition: opacity 0.3s ease;
     `
 
     const status =
@@ -310,14 +316,32 @@ import { onDOMReady } from './shared/dom-ready.js'
       console.groupEnd()
     })
 
-    document.body.appendChild(indicator)
+    // Use a safer approach to append to body
+    if (document.body) {
+      document.body.appendChild(indicator)
+    } else {
+      // If body isn't ready yet, wait for it
+      const observer = new MutationObserver(() => {
+        if (document.body) {
+          document.body.appendChild(indicator)
+          observer.disconnect()
+        }
+      })
+      observer.observe(document.documentElement, { childList: true, subtree: true })
+    }
 
-    // Auto-hide after 10 seconds
+    // Auto-hide after 15 seconds to give more visibility time
     setTimeout(() => {
       if (indicator.parentNode) {
-        indicator.parentNode.removeChild(indicator)
+        // Fade out before removing
+        indicator.style.opacity = '0'
+        setTimeout(() => {
+          if (indicator.parentNode) {
+            indicator.parentNode.removeChild(indicator)
+          }
+        }, 300)
       }
-    }, 10000)
+    }, 15000)
   }
 
   // Auto-fix common issues
