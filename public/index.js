@@ -4,9 +4,22 @@
  * Siguiendo CLAUDE.md: KISS, fail-fast, ES6 modules
  */
 
+// Import dependencies in correct order
 import { onDOMReady } from './js/shared/dom-ready.js'
+
+// Theme system imports (must be loaded first)
+import { themeManager } from './js/themes/themeManager.js'
+
+// UI utilities
 import { createIcons } from './js/lucide-icons.js'
+
+// Component imports
+import ThemeSelector from './js/components/ThemeSelector.js'
 import { createImageCarousel } from './js/components/imageCarousel.js'
+import { initMobileNav } from './js/components/mobileNav.js'
+import { PullToRefresh } from './js/components/pullToRefresh.js'
+
+// Feature imports
 import {
   addToCart,
   initCartBadge,
@@ -14,11 +27,7 @@ import {
   initCartTouchFeedback
 } from './js/shared/cart.js'
 import { api } from './js/shared/api-client.js'
-import { initMobileNav } from './js/components/mobileNav.js'
-import { PullToRefresh } from './js/components/pullToRefresh.js'
 import { TouchFeedback } from './js/shared/touchFeedback.js'
-import { themeManager } from './js/themes/themeManager.js'
-import ThemeSelector from './js/components/ThemeSelector.js'
 
 /**
  * Initialize mobile navigation drawer
@@ -1026,20 +1035,144 @@ function initProductCardTouchFeedback() {
 function init() {
   try {
     console.log('🚀 [index.js] Starting initialization...')
+    console.log('🔍 [index.js] Checking dependencies...')
+
+    // Log dependency status
+    console.log('📋 [index.js] Dependencies status:', {
+      themeManager: !!themeManager,
+      ThemeSelector: !!ThemeSelector,
+      createIcons: !!createIcons,
+      onDOMReady: !!onDOMReady,
+      api: !!api
+    })
 
     // Initialize Theme Manager (must be first to apply theme before UI loads)
-    themeManager.init()
-    console.log('✅ [index.js] Theme manager initialized')
-
-    // Initialize Theme Selector UI
-    const themeSelectorContainer = document.getElementById('theme-selector-container')
-    if (themeSelectorContainer) {
-      const themeSelector = new ThemeSelector('theme-selector-container')
-      window.themeSelectorInstance = themeSelector
-      console.log('✅ [index.js] Theme selector initialized')
-    } else {
-      console.warn('⚠️ [index.js] Theme selector container not found')
+    try {
+      themeManager.init()
+      console.log('✅ [index.js] Theme manager initialized')
+    } catch (error) {
+      console.error('❌ [index.js] Theme manager initialization failed:', error)
+      // Continue with default theme
     }
+
+    // Initialize Theme Selector UI with enhanced error handling
+    let retryCount = 0
+    const maxRetries = 3
+
+    function initializeThemeSelector() {
+      try {
+        console.log(
+          `🎨 [index.js] Attempting to initialize theme selector (attempt ${retryCount + 1}/${maxRetries})`
+        )
+
+        // Check if container exists
+        let themeSelectorContainer = document.getElementById('theme-selector-container')
+
+        // Create container dynamically if it doesn't exist
+        if (!themeSelectorContainer) {
+          console.warn('⚠️ [index.js] Theme selector container not found, creating dynamically...')
+
+          // Find the nav-actions container to insert the theme selector
+          const navActions = document.querySelector('.nav-actions')
+          if (navActions) {
+            themeSelectorContainer = document.createElement('div')
+            themeSelectorContainer.id = 'theme-selector-container'
+            themeSelectorContainer.className = 'theme-selector-wrapper'
+
+            // Insert before the cart icon
+            const cartIcon = navActions.querySelector('a[href*="cart"]')
+            if (cartIcon) {
+              navActions.insertBefore(themeSelectorContainer, cartIcon)
+            } else {
+              // Fallback: append to nav-actions
+              navActions.appendChild(themeSelectorContainer)
+            }
+
+            console.log('✅ [index.js] Theme selector container created dynamically')
+          } else {
+            throw new Error('Could not find nav-actions container to create theme selector')
+          }
+        }
+
+        // Initialize the ThemeSelector
+        const themeSelector = new ThemeSelector('theme-selector-container')
+        window.themeSelectorInstance = themeSelector
+        console.log('✅ [index.js] Theme selector initialized successfully')
+        return true
+      } catch (error) {
+        console.error('❌ [index.js] Theme selector initialization failed:', error)
+
+        // Retry logic
+        retryCount++
+        if (retryCount < maxRetries) {
+          console.log(
+            `🔄 [index.js] Retrying theme selector initialization in ${retryCount * 200}ms...`
+          )
+          setTimeout(initializeThemeSelector, retryCount * 200)
+        } else {
+          console.error('❌ [index.js] Max retries reached for theme selector initialization')
+
+          // Create fallback theme selector
+          createFallbackThemeSelector()
+        }
+        return false
+      }
+    }
+
+    function createFallbackThemeSelector() {
+      try {
+        console.log('🔄 [index.js] Creating fallback theme selector...')
+
+        const navActions = document.querySelector('.nav-actions')
+        if (navActions) {
+          const fallbackContainer = document.createElement('div')
+          fallbackContainer.id = 'theme-selector-container-fallback'
+          fallbackContainer.className = 'theme-selector-wrapper'
+          fallbackContainer.innerHTML = `
+            <button
+              id="fallback-theme-btn"
+              class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+              type="button"
+              title="Cambiar tema"
+            >
+              <span>🎨</span>
+              <i data-lucide="chevron-down" class="h-4 w-4 text-gray-600"></i>
+            </button>
+          `
+
+          // Insert before the cart icon
+          const cartIcon = navActions.querySelector('a[href*="cart"]')
+          if (cartIcon) {
+            navActions.insertBefore(fallbackContainer, cartIcon)
+          } else {
+            navActions.appendChild(fallbackContainer)
+          }
+
+          // Add basic theme switching functionality
+          const fallbackBtn = document.getElementById('fallback-theme-btn')
+          if (fallbackBtn) {
+            fallbackBtn.addEventListener('click', () => {
+              // Simple theme toggle between light and dark
+              const currentTheme = document.documentElement.getAttribute('data-theme') || 'light'
+              const newTheme = currentTheme === 'light' ? 'dark' : 'light'
+              document.documentElement.setAttribute('data-theme', newTheme)
+              localStorage.setItem('floresya-theme-preference', newTheme)
+              fallbackBtn.querySelector('span').textContent = newTheme === 'light' ? '☀️' : '🌙'
+            })
+          }
+
+          // Initialize icons
+          createIcons()
+
+          console.log('✅ [index.js] Fallback theme selector created')
+        }
+      } catch (error) {
+        console.error('❌ [index.js] Failed to create fallback theme selector:', error)
+      }
+    }
+
+    // Initialize theme selector with retry logic
+    initializeThemeSelector()
 
     // Initialize Lucide icons
     createIcons()
@@ -1069,10 +1202,41 @@ function init() {
 
     // Mark page as loaded
     document.documentElement.classList.add('loaded')
+
+    // Final verification
+    console.log('🔍 [index.js] Final verification:')
+    console.log(
+      '- Theme selector container exists:',
+      !!document.getElementById('theme-selector-container')
+    )
+    console.log('- Theme manager initialized:', !!window.themeManager)
+    console.log('- Theme selector instance:', !!window.themeSelectorInstance)
+    console.log('- Current theme:', document.documentElement.getAttribute('data-theme'))
+
+    // Run debug check if available
+    if (window.themeDebug) {
+      console.log('🔍 [index.js] Running theme debug check...')
+      window.themeDebug.runDiagnosis()
+    }
+
     console.log('✅ [index.js] Page fully initialized')
   } catch (error) {
     console.error('❌ [index.js] Initialization failed:', error)
-    throw error
+
+    // Emit error event for potential error tracking
+    window.dispatchEvent(
+      new CustomEvent('initializationError', {
+        detail: { error: error.message, stack: error.stack }
+      })
+    )
+
+    // Try to continue with basic functionality
+    try {
+      document.documentElement.classList.add('loaded')
+      console.warn('⚠️ [index.js] Continuing with basic functionality')
+    } catch (fallbackError) {
+      console.error('❌ [index.js] Even fallback failed:', fallbackError)
+    }
   }
 }
 

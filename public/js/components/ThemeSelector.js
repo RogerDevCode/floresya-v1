@@ -17,14 +17,24 @@ export class ThemeSelector {
    * @param {string} containerId - ID del contenedor
    */
   constructor(containerId) {
+    this.containerId = containerId
     this.container = document.getElementById(containerId)
     this.dropdown = null
     this.toggleBtn = null
     this.isOpen = false
+    this.initializationAttempts = 0
+    this.maxInitializationAttempts = 3
 
+    console.log(`🎨 [ThemeSelector] Constructor called for container: ${containerId}`)
+
+    // Enhanced container validation
     if (!this.container) {
       const error = new Error(`ThemeSelector container not found: ${containerId}`)
       console.error('❌ [ThemeSelector]', error)
+      console.error(
+        '❌ [ThemeSelector] Available containers:',
+        Array.from(document.querySelectorAll('[id]')).map(el => el.id)
+      )
       throw error
     }
 
@@ -35,9 +45,30 @@ export class ThemeSelector {
    * Inicializa el componente
    */
   init() {
-    console.log('🎨 [ThemeSelector] Initializing...')
+    console.log(`🎨 [ThemeSelector] Initializing... (attempt ${this.initializationAttempts + 1})`)
 
     try {
+      // Verify dependencies are loaded
+      if (!window.themeManager) {
+        throw new Error(
+          'themeManager is not available. Make sure themeManager.js is loaded before ThemeSelector.js'
+        )
+      }
+
+      if (!window.createIcons) {
+        throw new Error(
+          'createIcons function is not available. Make sure lucide-icons.js is loaded'
+        )
+      }
+
+      // Re-check container in case it was dynamically created
+      if (!this.container) {
+        this.container = document.getElementById(this.containerId)
+        if (!this.container) {
+          throw new Error(`Container ${this.containerId} still not found during initialization`)
+        }
+      }
+
       this.render()
       this.bindEvents()
       this.updateCurrentThemeDisplay()
@@ -48,10 +79,20 @@ export class ThemeSelector {
         this.updateCurrentThemeDisplay()
       })
 
-      console.log('✅ [ThemeSelector] Initialized')
+      console.log('✅ [ThemeSelector] Initialized successfully')
     } catch (error) {
       console.error('❌ [ThemeSelector] Initialization failed:', error)
-      throw error
+
+      this.initializationAttempts++
+      if (this.initializationAttempts < this.maxInitializationAttempts) {
+        console.log(
+          `🔄 [ThemeSelector] Retrying initialization in ${this.initializationAttempts * 200}ms...`
+        )
+        setTimeout(() => this.init(), this.initializationAttempts * 200)
+      } else {
+        console.error('❌ [ThemeSelector] Max initialization attempts reached')
+        this.createFallbackUI()
+      }
     }
   }
 
@@ -345,6 +386,71 @@ export class ThemeSelector {
       console.log('✅ [ThemeSelector] Display updated')
     } catch (error) {
       console.error('❌ [ThemeSelector] Failed to update display:', error)
+    }
+  }
+
+  /**
+   * Creates a fallback UI when full initialization fails
+   */
+  createFallbackUI() {
+    try {
+      console.log('🔄 [ThemeSelector] Creating fallback UI...')
+
+      if (!this.container) {
+        console.error('❌ [ThemeSelector] Cannot create fallback: container not found')
+        return
+      }
+
+      this.container.innerHTML = `
+        <button
+          id="fallback-theme-toggle"
+          class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+          type="button"
+          title="Cambiar tema (básico)"
+        >
+          <span id="fallback-theme-icon">☀️</span>
+          <i data-lucide="chevron-down" class="h-4 w-4 text-gray-600"></i>
+        </button>
+      `
+
+      // Initialize icons
+      if (window.createIcons) {
+        window.createIcons()
+      }
+
+      // Add basic theme switching
+      const fallbackBtn = document.getElementById('fallback-theme-toggle')
+      const fallbackIcon = document.getElementById('fallback-theme-icon')
+
+      if (fallbackBtn && fallbackIcon) {
+        // Set initial icon based on current theme
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light'
+        fallbackIcon.textContent = currentTheme === 'light' ? '☀️' : '🌙'
+
+        fallbackBtn.addEventListener('click', () => {
+          const newTheme = currentTheme === 'light' ? 'dark' : 'light'
+          document.documentElement.setAttribute('data-theme', newTheme)
+
+          try {
+            localStorage.setItem('floresya-theme-preference', newTheme)
+          } catch (e) {
+            console.warn('⚠️ [ThemeSelector] Could not save theme preference:', e)
+          }
+
+          fallbackIcon.textContent = newTheme === 'light' ? '☀️' : '🌙'
+
+          // Emit theme changed event for compatibility
+          window.dispatchEvent(
+            new CustomEvent('themeChanged', {
+              detail: { themeId: newTheme, themeName: newTheme === 'light' ? 'Claro' : 'Oscuro' }
+            })
+          )
+        })
+      }
+
+      console.log('✅ [ThemeSelector] Fallback UI created successfully')
+    } catch (error) {
+      console.error('❌ [ThemeSelector] Failed to create fallback UI:', error)
     }
   }
 }
