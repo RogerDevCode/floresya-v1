@@ -3,7 +3,7 @@
  * Runs once after all tests complete
  */
 
-export default async function globalTeardown() {
+export default function globalTeardown() {
   console.log('🧹 Global Teardown: Cleaning up...')
 
   // Add any cleanup logic here

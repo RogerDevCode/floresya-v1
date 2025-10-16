@@ -231,7 +231,7 @@ export const TestUtils = {
   /**
    * Wait for a specified amount of time
    */
-  async wait(ms) {
+  wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
   },
 

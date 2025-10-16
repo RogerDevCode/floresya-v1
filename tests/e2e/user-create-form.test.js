@@ -92,7 +92,7 @@ async function hasFormChanges(page) {
 }
 
 test.describe('User Create Form - Modal Behavior', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(({ page }) => {
     // Enable console logging for debugging
     page.on('console', msg => {
       if (msg.type() === 'error') {
@@ -155,7 +155,7 @@ test.describe('User Create Form - Modal Behavior', () => {
 })
 
 test.describe('User Create Form - Cancel with Unsaved Changes', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(({ page }) => {
     page.on('console', msg => {
       if (msg.type() === 'error') {
         console.error('Browser Console Error:', msg.text())
@@ -252,7 +252,7 @@ test.describe('User Create Form - Cancel with Unsaved Changes', () => {
 })
 
 test.describe('User Create Form - Field Validation', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(({ page }) => {
     page.on('console', msg => {
       if (msg.type() === 'error') {
         console.error('Browser Console Error:', msg.text())
@@ -338,7 +338,7 @@ test.describe('User Create Form - Field Validation', () => {
 })
 
 test.describe('User Create Form - Form Interactions', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(({ page }) => {
     page.on('console', msg => {
       if (msg.type() === 'error') {
         console.error('Browser Console Error:', msg.text())
@@ -402,7 +402,7 @@ test.describe('User Create Form - Form Interactions', () => {
 })
 
 test.describe('User Create Form - Form Submission', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(({ page }) => {
     page.on('console', msg => {
       if (msg.type() === 'error') {
         console.error('Browser Console Error:', msg.text())
