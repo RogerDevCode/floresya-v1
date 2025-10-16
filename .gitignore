@@ -48,3 +48,14 @@ coverage/
 Thumbs.db
 .DS_Store
 .vercel
+
+# Test results and reports
+playwright-report/
+test-results/
+*.zip
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

@@ -1,5 +1,8 @@
 name: FloresYa CI/CD Pipeline
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [ main, develop ]
@@ -167,9 +170,27 @@ jobs:
 
     - name: Start application in background
       run: |
-        npm start &
+        echo "🚀 Starting application in background..."
+        npm start > server.log 2>&1 &
+        SERVER_PID=$!
+        echo "Server PID: $SERVER_PID"
         echo "Waiting for server to start..."
-        npx wait-on http://localhost:3000 --timeout 30000
+        
+        # Wait with increased timeout and better logging
+        for i in {1..12}; do
+          echo "⏳ Attempt $i/12: Checking if server is ready..."
+          if curl -f http://localhost:3000/health > /dev/null 2>&1; then
+            echo "✅ Server is ready!"
+            break
+          fi
+          if [ $i -eq 12 ]; then
+            echo "❌ Server failed to start after 2 minutes"
+            echo "Server logs:"
+            cat server.log
+            exit 1
+          fi
+          sleep 10
+        done
 
     - name: Run API integration tests
       run: npm run test
@@ -194,7 +215,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: playwright-report
+        name: playwright-report-${{ github.run_number }}
         path: playwright-report/
         retention-days: 30
 
@@ -202,8 +223,16 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: test-results
+        name: test-results-${{ github.run_number }}
         path: test-results/
+        retention-days: 7
+
+    - name: Upload server logs
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: server-logs-${{ github.run_number }}
+        path: server.log
         retention-days: 7
 
   deploy-preview:
