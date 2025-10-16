@@ -57,10 +57,24 @@ export class ThemeSelector {
 
       // No need to check for window.createIcons since we import createIcons directly
       // Just ensure that createIcons is available from our import
+      console.log('🎨 [ThemeSelector] Checking createIcons availability:', {
+        importedCreateIcons: typeof createIcons,
+        windowLucide: typeof window.lucide,
+        windowLucideCreateIcons: window.lucide
+          ? typeof window.lucide.createIcons
+          : 'no window.lucide',
+        createIconsValue: createIcons
+      })
+
       if (typeof createIcons !== 'function') {
-        throw new Error(
-          'createIcons function is not available. Make sure lucide-icons.js is loaded'
-        )
+        // Fallback to window.lucide.createIcons if import didn't work
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+          console.log('🎨 [ThemeSelector] Using fallback window.lucide.createIcons')
+        } else {
+          throw new Error(
+            'createIcons function is not available. Make sure lucide-icons.js is loaded'
+          )
+        }
       }
 
       // Re-check container in case it was dynamically created
@@ -191,6 +205,8 @@ export class ThemeSelector {
       // Renderizar iconos
       if (typeof createIcons === 'function') {
         createIcons()
+      } else if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons()
       } else if (window.createIcons && typeof window.createIcons === 'function') {
         window.createIcons()
       }
@@ -389,6 +405,8 @@ export class ThemeSelector {
       // Re-renderizar iconos
       if (typeof createIcons === 'function') {
         createIcons()
+      } else if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons()
       } else if (window.createIcons && typeof window.createIcons === 'function') {
         window.createIcons()
       }
@@ -426,6 +444,8 @@ export class ThemeSelector {
       // Initialize icons
       if (typeof createIcons === 'function') {
         createIcons()
+      } else if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons()
       } else if (window.createIcons && typeof window.createIcons === 'function') {
         window.createIcons()
       }
