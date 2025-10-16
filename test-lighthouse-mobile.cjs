@@ -20,7 +20,7 @@ if (!fs.existsSync(LHCI_DIR)) {
 /**
  * Ejecuta pruebas de Lighthouse para dispositivos móviles
  */
-async function runLighthouseMobileTests() {
+function runLighthouseMobileTests() {
   console.log('🔍 Iniciando pruebas de Lighthouse para dispositivos móviles...')
 
   const results = {
@@ -37,14 +37,14 @@ async function runLighthouseMobileTests() {
     // Verificar si Lighthouse CLI está disponible
     try {
       execSync('lighthouse --version', { stdio: 'pipe' })
-    } catch (error) {
+    } catch (_error) {
       console.log('⚠️ Lighthouse CLI no encontrado. Instalando...')
       execSync('npm install -g lighthouse', { stdio: 'inherit' })
     }
 
     // Ejecutar Lighthouse para móvil
     console.log('📱 Ejecutando Lighthouse para dispositivo móvil...')
-    const lighthouseOutput = execSync(
+    execSync(
       `lighthouse http://localhost:3001/public/index.html --output=json --output-path=${REPORT_FILE} --chrome-flags="--headless" --form-factor=mobile --screenEmulation.disabled=false --screenEmulation.mobile=true --screenEmulation.width=375 --screenEmulation.height=667 --screenEmulation.deviceScaleFactor=2 --screenEmulation.disabled=false --emulatedUserAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"`,
       { encoding: 'utf8', stdio: 'pipe' }
     )
@@ -357,8 +357,12 @@ function generateHTMLReport(lighthouseData, results) {
  * Determina la clase CSS según la puntuación
  */
 function getScoreClass(score) {
-  if (score >= 90) return 'score-good'
-  if (score >= 50) return 'score-medium'
+  if (score >= 90) {
+    return 'score-good'
+  }
+  if (score >= 50) {
+    return 'score-medium'
+  }
   return 'score-poor'
 }
 
@@ -366,7 +370,9 @@ function getScoreClass(score) {
  * Formatea el tiempo en milisegundos a segundos
  */
 function formatTime(ms) {
-  if (!ms) return 'N/A'
+  if (!ms) {
+    return 'N/A'
+  }
   return `${(ms / 1000).toFixed(2)}s`
 }
 

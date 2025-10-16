@@ -1,7 +1,7 @@
 /**
  * TypeScript Types for FloresYa API
  * Auto-generated from OpenAPI specification
- * Generated: 2025-10-11T23:07:25.359Z
+ * Generated: 2025-10-15T18:20:24.464Z
  * Spec Version: 1.0.0
  */
 
@@ -173,5 +173,17 @@ export interface PaymentConfirm {
 export interface OrderCreate {
   order: object
   items: Array<object>
+}
+
+export interface PaymentMethod {
+  id?: number
+  name?: string
+  type?: 'bank_transfer' | 'mobile_payment' | 'cash' | 'crypto' | 'international'
+  description?: string
+  account_info?: string
+  is_active?: boolean
+  display_order?: number
+  created_at?: string
+  updated_at?: string
 }
 

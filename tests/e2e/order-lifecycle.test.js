@@ -22,7 +22,7 @@ test.describe('Order Lifecycle E2E Tests', () => {
   const ADMIN_PASSWORD = 'admin123'
   const CUSTOMER_EMAIL = 'e2e-customer@test.com'
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(({ page }) => {
     // Enable console logging for debugging
     page.on('console', msg => {
       if (msg.type() === 'error') {

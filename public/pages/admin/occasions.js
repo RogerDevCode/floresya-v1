@@ -5,11 +5,14 @@
 
 import '../../js/lucide-icons.js'
 import { api } from '../../js/shared/api-client.js'
+import { generateSlug, getRandomIcon, getRandomColor } from '../../js/shared/occasion-helpers.js'
+import { sortByPopularity } from '../../js/shared/occasion-popularity.js'
 
 // Global state
 let currentFilter = 'all' // 'all', 'active', 'inactive'
 let selectedOccasion = null
 let occasions = []
+let originalFormValues = {} // For change detection
 
 /**
  * Fetch occasions from API
@@ -154,31 +157,31 @@ function setupEventListeners() {
   // Delete occasion button
   document.getElementById('delete-occasion-btn').addEventListener('click', deleteOccasion)
 
-  // Cancel button
-  document.getElementById('cancel-occasion-btn').addEventListener('click', resetForm)
+  // Cancel button with change detection
+  document.getElementById('cancel-occasion-btn').addEventListener('click', handleCancel)
+
+  // Back arrow with change detection
+  const backArrow = document.getElementById('back-arrow')
+  if (backArrow) {
+    backArrow.addEventListener('click', () => {
+      if (hasFormChanges()) {
+        const confirmed = confirm(
+          '¿Descartar cambios?\n\nHas realizado cambios en el formulario. Si continúas, los cambios se perderán.'
+        )
+        if (!confirmed) {
+          return
+        }
+      }
+      window.location.href = './dashboard.html'
+    })
+  }
 
   // Auto-generate slug from name
   document.getElementById('occasion-name').addEventListener('input', function () {
-    if (!selectedOccasion) {
-      const name = this.value
-      const slug = generateSlug(name)
-      document.getElementById('occasion-slug').value = slug
-    }
+    const name = this.value
+    const slug = generateSlug(name)
+    document.getElementById('occasion-slug').value = slug
   })
-}
-
-/**
- * Generate slug from name
- */
-function generateSlug(name) {
-  return name
-    .toLowerCase()
-    .trim()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove accents
-    .replace(/[^\w\s-]/g, '') // Remove special characters
-    .replace(/[\s_-]+/g, '-') // Replace spaces with hyphens
-    .replace(/^-+|-+$/g, '') // Remove leading/trailing hyphens
 }
 
 /**
@@ -197,6 +200,9 @@ async function loadOccasions() {
         filteredOccasions = filteredOccasions.filter(occasion => !occasion.is_active)
         break
     }
+
+    // Sort by popularity (most popular first)
+    filteredOccasions = sortByPopularity(filteredOccasions)
 
     renderOccasionsTable(filteredOccasions)
   } catch (error) {
@@ -278,6 +284,21 @@ function selectOccasion(occasion) {
 
   // Show delete button
   document.getElementById('delete-occasion-btn').classList.remove('hidden')
+
+  // Capture original values for change detection
+  captureOriginalValues()
+}
+
+/**
+ * Capture original form values for change detection
+ */
+function captureOriginalValues() {
+  originalFormValues = {
+    name: document.getElementById('occasion-name').value,
+    description: document.getElementById('occasion-description').value,
+    color: document.getElementById('occasion-color').value,
+    isActive: document.getElementById('occasion-is-active').checked
+  }
 }
 
 /**
@@ -286,17 +307,29 @@ function selectOccasion(occasion) {
 async function saveOccasion() {
   const id = document.getElementById('occasion-id').value
   const name = document.getElementById('occasion-name').value.trim()
-  const slug = document.getElementById('occasion-slug').value.trim()
+  let slug = document.getElementById('occasion-slug').value.trim()
   const description = document.getElementById('occasion-description').value.trim()
-  const icon = document.getElementById('occasion-icon').value.trim()
+  let icon = document.getElementById('occasion-icon').value.trim()
   const color = document.getElementById('occasion-color').value
   const displayOrder = parseInt(document.getElementById('occasion-display-order').value) || 0
   const isActive = document.getElementById('occasion-is-active').checked
 
   // Basic validation
-  if (!name || !slug) {
-    alert('Por favor complete los campos obligatorios (Nombre y Slug)')
+  if (!name) {
+    alert('Por favor ingrese un nombre para la ocasión')
     return
+  }
+
+  // Auto-generate slug if empty
+  if (!slug) {
+    slug = generateSlug(name)
+    document.getElementById('occasion-slug').value = slug
+  }
+
+  // Auto-generate icon if empty (new occasion)
+  if (!icon && !id) {
+    icon = getRandomIcon(occasions)
+    document.getElementById('occasion-icon').value = icon
   }
 
   try {
@@ -304,7 +337,7 @@ async function saveOccasion() {
       name,
       slug,
       description,
-      icon,
+      icon: icon || 'gift', // Default icon
       color,
       display_order: displayOrder,
       is_active: isActive
@@ -378,10 +411,13 @@ function resetForm() {
   document.getElementById('occasion-slug').value = ''
   document.getElementById('occasion-description').value = ''
   document.getElementById('occasion-icon').value = ''
-  document.getElementById('occasion-color').value = '#000000'
+  document.getElementById('occasion-color').value = getRandomColor()
   document.getElementById('occasion-display-order').value = '0'
   document.getElementById('occasion-is-active').checked = true
   selectedOccasion = null
+
+  // Reset original values
+  originalFormValues = {}
 
   // Remove selection from table rows
   document.querySelectorAll('.table-row').forEach(row => {
@@ -390,6 +426,48 @@ function resetForm() {
 
   // Hide delete button
   document.getElementById('delete-occasion-btn').classList.add('hidden')
+}
+
+/**
+ * Check if form has unsaved changes
+ */
+function hasFormChanges() {
+  if (!originalFormValues || Object.keys(originalFormValues).length === 0) {
+    // New occasion - check if any field has value
+    const name = document.getElementById('occasion-name').value.trim()
+    const description = document.getElementById('occasion-description').value.trim()
+
+    return name.length > 0 || description.length > 0
+  }
+
+  // Editing - compare with original
+  const currentName = document.getElementById('occasion-name').value
+  const currentDescription = document.getElementById('occasion-description').value
+  const currentColor = document.getElementById('occasion-color').value
+  const currentIsActive = document.getElementById('occasion-is-active').checked
+
+  return (
+    currentName !== originalFormValues.name ||
+    currentDescription !== originalFormValues.description ||
+    currentColor !== originalFormValues.color ||
+    currentIsActive !== originalFormValues.isActive
+  )
+}
+
+/**
+ * Handle cancel with change detection
+ */
+function handleCancel() {
+  if (hasFormChanges()) {
+    const confirmed = confirm(
+      '¿Descartar cambios?\n\nHas realizado cambios en el formulario. Si continúas, los cambios se perderán.'
+    )
+    if (!confirmed) {
+      return
+    }
+  }
+
+  resetForm()
 }
 
 // Initialize when DOM is ready

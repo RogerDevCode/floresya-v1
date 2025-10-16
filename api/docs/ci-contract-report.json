@@ -1,15 +1,15 @@
 {
-  "timestamp": "2025-10-14T22:43:16.114Z",
+  "timestamp": "2025-10-15T22:46:39.033Z",
   "success": true,
   "checks": [
     {
       "name": "openapi_generation",
       "status": "PASS",
       "details": {
-        "timestamp": "2025-10-14T22:43:16.262Z",
+        "timestamp": "2025-10-15T22:46:39.147Z",
         "version": "1.0.0",
-        "endpoints": 43,
-        "schemas": 15,
+        "endpoints": 44,
+        "schemas": 16,
         "tags": 6,
         "generation": {
           "success": true,
@@ -32,8 +32,8 @@
       "name": "specification_structure",
       "status": "PASS",
       "details": {
-        "endpoints": 43,
-        "schemas": 15,
+        "endpoints": 44,
+        "schemas": 16,
         "version": "1.0.0"
       }
     },
@@ -44,15 +44,15 @@
         "hasSwaggerAnnotations": true,
         "hasEndpointAnnotations": true,
         "hasResponseDefinitions": true,
-        "annotationLines": 2171
+        "annotationLines": 2460
       }
     }
   ],
   "summary": {
-    "timestamp": "2025-10-14T22:43:16.262Z",
+    "timestamp": "2025-10-15T22:46:39.147Z",
     "version": "1.0.0",
-    "endpoints": 43,
-    "schemas": 15,
+    "endpoints": 44,
+    "schemas": 16,
     "tags": 6,
     "generation": {
       "success": true,

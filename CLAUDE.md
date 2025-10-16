@@ -252,6 +252,11 @@ onDOMReady(init)
 - **Testing**: En `tests/integration/contractEnforcement.test.js`. Verifica validaciones y rechazos. Run: `npm run verify:spec`.
 - **Monitoring**: Logs todas las violaciones. Genera reports con `npm run verify:contract`.
 
+- curly: ["error", "all"] - Siempre usar llaves
+- prefer-const - Usar const cuando no hay reasignación
+- no-unused-vars - No declarar variables sin usar
+- require-await - No usar async sin await
+
 Prohibido: Ignorar violaciones; siempre rechaza y loguea.
 
 ## Automatización OpenAPI (Obligatoria)

@@ -1581,6 +1581,20 @@ body.admin-page {
 }
 
 /* Responsive adjustments for admin sidebar */
+
+/* Desktop: sidebar always visible */
+@media (min-width: 769px) {
+  .admin-sidebar {
+    transform: translateX(0) !important;
+    display: block !important;
+  }
+
+  .main-content {
+    margin-left: var(--sidebar-width) !important;
+  }
+}
+
+/* Mobile: sidebar hidden by default */
 @media (max-width: 768px) {
   /* Hide sidebar off-screen by default */
   .admin-sidebar {

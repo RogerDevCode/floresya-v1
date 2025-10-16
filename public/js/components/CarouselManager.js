@@ -67,7 +67,10 @@ export class CarouselManager {
           this.state.carouselSlots[index] = {
             productId: product.id,
             name: product.name,
-            imageUrl: product.image_url_thumb || '/images/placeholder-flower.svg',
+            imageUrl:
+              product.image_url_small ||
+              product.image_url_thumb ||
+              '/images/placeholder-flower.svg',
             order: product.carousel_order
           }
         }

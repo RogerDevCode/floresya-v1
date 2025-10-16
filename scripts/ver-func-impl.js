@@ -1337,7 +1337,7 @@ class CrossFileSymbolResolver {
   /**
    * Extrae métodos de un archivo fuente
    */
-  async extractMethodsFromSource(sourceFile, objectName) {
+  extractMethodsFromSource(sourceFile, objectName) {
     try {
       // This would require parsing the source file and extracting object methods
       // For now, return available methods from database
@@ -1691,7 +1691,7 @@ class EnhancedFunctionValidator {
   /**
    * Construye los prototype chains para objetos conocidos
    */
-  async buildPrototypeChains() {
+  buildPrototypeChains() {
     // Build prototype chains for common objects
     const commonObjects = ['api', 'apiClient', 'supabase', 'console', 'document']
 

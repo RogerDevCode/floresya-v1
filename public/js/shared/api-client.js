@@ -1,38 +1,20 @@
 /**
  * FloresYa API Client
  * Auto-generated from OpenAPI specification
- * Generated: 2025-10-11T23:07:25.351Z
+ * Generated: 2025-10-15T18:20:24.461Z
  * Spec Version: 1.0.0
- * Total Endpoints: 43
+ * Total Endpoints: 44
  *
  * IMPORTANT: This file is AUTO-GENERATED. Do not edit manually.
  * Regenerate using: npm run generate:client
  */
 
 class ApiClient {
-  constructor(baseUrl) {
-    // Auto-detect base URL based on environment
-    // In production (Vercel): use empty string (relative URLs)
-    // In development (localhost): use http://localhost:3000
-    if (!baseUrl) {
-      const isLocalhost =
-        window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-      this.baseUrl = isLocalhost ? 'http://localhost:3000' : ''
-    } else {
-      this.baseUrl = baseUrl
-    }
-
+  constructor(baseUrl = 'http://localhost:3000') {
+    this.baseUrl = baseUrl
     this.defaultHeaders = {
       'Content-Type': 'application/json'
     }
-  }
-
-  /**
-   * Get auth token from localStorage (for mock auth)
-   * @returns {string|null}
-   */
-  getAuthToken() {
-    return localStorage.getItem('auth_token') || null
   }
 
   /**
@@ -44,62 +26,30 @@ class ApiClient {
   async request(endpoint, options = {}) {
     try {
       const url = this.baseUrl + endpoint
-      console.log(`🌐 [DEBUG] API Request: ${options.method || 'GET'} ${url}`)
-      console.log(`🌐 [DEBUG] Request options:`, options)
-
-      // Get auth token and include in headers if available
-      const token = this.getAuthToken()
-      const headers = { ...this.defaultHeaders, ...options.headers }
-
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`
-        console.log(`🔐 [DEBUG] Including auth token in request`)
-      }
-
       const config = {
         method: options.method || 'GET',
-        headers: headers
+        headers: { ...this.defaultHeaders, ...options.headers }
       }
 
       if (options.body && options.method !== 'GET') {
         config.body = JSON.stringify(options.body)
       }
 
-      console.log(`🌐 [DEBUG] Fetch config:`, config)
-
       const response = await fetch(url, config)
-
-      console.log(`🌐 [DEBUG] Response status: ${response.status} ${response.statusText}`)
-      console.log(`🌐 [DEBUG] Response headers:`, {
-        contentType: response.headers.get('content-type'),
-        cacheControl: response.headers.get('cache-control')
-      })
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        console.error(`❌ [DEBUG] API Error Response:`, errorData)
         throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`)
       }
 
       const contentType = response.headers.get('content-type')
       if (contentType && contentType.includes('application/json')) {
-        const data = await response.json()
-        console.log(`✅ [DEBUG] API Response Data:`, data)
-        return data
+        return await response.json()
       }
 
-      const textData = await response.text()
-      console.log(`✅ [DEBUG] API Response Text:`, textData)
-      return textData
+      return await response.text()
     } catch (error) {
-      console.error(`❌ [DEBUG] API request failed: ${endpoint}`, error)
-      console.error(`❌ [DEBUG] Error details:`, {
-        message: error.message,
-        stack: error.stack,
-        name: error.name,
-        endpoint: endpoint,
-        baseUrl: this.baseUrl
-      })
+      console.error(`API request failed: ${endpoint}`, error)
       throw error
     }
   }
@@ -161,7 +111,7 @@ class ApiClient {
 
   /**
    * Update product
-   * Admin only - Updates product fields
+   * Admin only - Updates an existing product
    * @param {any} id - Parameter
    * @param {any} data - Parameter
    * @returns {Promise<any>} API response
@@ -418,7 +368,7 @@ class ApiClient {
   }
 
   /**
-   * Create new order with customer and payment information
+   * Create new order
    * Create a new order (public endpoint for checkout process)
    * @param {any} data - Parameter
    * @returns {Promise<any>} API response
@@ -645,7 +595,7 @@ class ApiClient {
   }
 
   /**
-   * Get available payment methods for Venezuela
+   * Get available payment methods
    * Public - Returns available payment methods for Venezuela
    * @returns {Promise<any>} API response
    */
@@ -778,7 +728,7 @@ class ApiClient {
    * @param {any} data - Parameter
    * @returns {Promise<any>} API response
    */
-  updateDisplayorder(id, data) {
+  updateOccasionDisplayOrder(id, data) {
     if (!id || id <= 0) {
       throw new Error('Invalid id')
     }
@@ -938,90 +888,102 @@ class ApiClient {
   }
 
   /**
-   * Confirm payment
-   * @param {any} id - Parameter
+   * Get all payment methods
+   * Public - Returns all active payment methods, sorted by display_order.
    * @returns {Promise<any>} API response
    */
-  getPaymentById(id) {
-    if (!id || id <= 0) {
-      throw new Error('Invalid id')
-    }
-
-    const endpoint = `/api/payment/${id}`
+  getAllPaymentmethods() {
+    const endpoint = `/api/payment-methods`
     return this.request(endpoint)
   }
 
   /**
-   * Create product
-   * @param {any} id - Parameter
+   * Create new payment method
+   * Admin only - Creates a new payment method.
    * @param {any} data - Parameter
    * @returns {Promise<any>} API response
    */
-  createProduct(id, data) {
-    if (!id || id <= 0) {
-      throw new Error('Invalid id')
-    }
-
-    const endpoint = `/api/product/${id}`
+  createPaymentmethods(data) {
+    const endpoint = `/api/payment-methods`
     return this.request(endpoint, { method: 'POST', body: data })
   }
 
   /**
-   * Update product
+   * Get payment method by ID
+   * Get payment method details by its unique ID.
    * @param {any} id - Parameter
-   * @param {any} data - Parameter
    * @returns {Promise<any>} API response
    */
-  updateProduct(id, data) {
+  getPaymentmethodsById(id) {
     if (!id || id <= 0) {
       throw new Error('Invalid id')
     }
 
-    const endpoint = `/api/product/${id}`
+    const endpoint = `/api/payment-methods/${id}`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Update payment method
+   * Admin only - Updates an existing payment method.
+   * @param {any} id - Parameter
+   * @param {any} data - Parameter
+   * @returns {Promise<any>} API response
+   */
+  updatePaymentmethods(id, data) {
+    if (!id || id <= 0) {
+      throw new Error('Invalid id')
+    }
+
+    const endpoint = `/api/payment-methods/${id}`
+    return this.request(endpoint, { method: 'PUT', body: data })
+  }
+
+  /**
+   * Delete payment method (soft delete)
+   * Admin only - Soft deletes a payment method by setting its `is_active` flag to false.
+   * @param {any} id - Parameter
+   * @returns {Promise<any>} API response
+   */
+  deletePaymentmethods(id) {
+    if (!id || id <= 0) {
+      throw new Error('Invalid id')
+    }
+
+    const endpoint = `/api/payment-methods/${id}`
+    return this.request(endpoint, { method: 'DELETE' })
+  }
+
+  /**
+   * Update payment method display order
+   * Admin only - Atomically updates the display order for a payment method.
+   * @param {any} id - Parameter
+   * @param {any} data - Parameter
+   * @returns {Promise<any>} API response
+   */
+  updatePaymentMethodDisplayOrder(id, data) {
+    if (!id || id <= 0) {
+      throw new Error('Invalid id')
+    }
+
+    const endpoint = `/api/payment-methods/${id}/display-order`
     return this.request(endpoint, { method: 'PATCH', body: data })
   }
 
   /**
-   * Set primary image
-   * @param {any} id - Parameter
-   * @returns {Promise<any>} API response
-   */
-  getProductimageById(id) {
-    if (!id || id <= 0) {
-      throw new Error('Invalid id')
-    }
-
-    const endpoint = `/api/productimage/${id}`
-    return this.request(endpoint)
-  }
-
-  /**
-   * Create product images
+   * Reactivate payment method
+   * Admin only - Reactivates a soft-deleted payment method by setting its `is_active` flag to true.
    * @param {any} id - Parameter
    * @param {any} data - Parameter
    * @returns {Promise<any>} API response
    */
-  createProductimage(id, data) {
+  reactivatePaymentMethods(id, data) {
     if (!id || id <= 0) {
       throw new Error('Invalid id')
     }
 
-    const endpoint = `/api/productimage/${id}`
-    return this.request(endpoint, { method: 'POST', body: data })
-  }
-
-  /**
-   * Delete images by index
-   * @param {any} id - Parameter
-   * @returns {Promise<any>} API response
-   */
-  deleteProductimage(id) {
-    if (!id || id <= 0) {
-      throw new Error('Invalid id')
-    }
-
-    const endpoint = `/api/productimage/${id}`
-    return this.request(endpoint, { method: 'DELETE' })
+    const endpoint = `/api/payment-methods/${id}/reactivate`
+    return this.request(endpoint, { method: 'PATCH', body: data })
   }
 
   // ==================== UTILITIES ====================
@@ -1101,12 +1063,17 @@ export const api = {
   confirmPayments: (id, data) => apiClient.confirmPayments(id, data),
   getAllPayments: params => apiClient.getAllPayments(params),
   getAllOccasions: () => apiClient.getAllOccasions(),
+  getProductOccasions: productId => apiClient.getProductOccasions(productId),
+  replaceProductOccasions: (productId, occasionIds) =>
+    apiClient.replaceProductOccasions(productId, occasionIds),
+  linkProductOccasion: (productId, occasionId) =>
+    apiClient.linkProductOccasion(productId, occasionId),
   createOccasions: data => apiClient.createOccasions(data),
   getOccasionsById: id => apiClient.getOccasionsById(id),
   updateOccasions: (id, data) => apiClient.updateOccasions(id, data),
   deleteOccasions: id => apiClient.deleteOccasions(id),
   getAllSlug: slug => apiClient.getAllSlug(slug),
-  updateDisplayorder: (id, data) => apiClient.updateDisplayorder(id, data),
+  updateOccasionDisplayOrder: (id, data) => apiClient.updateOccasionDisplayOrder(id, data),
   reactivateOccasions: (id, data) => apiClient.reactivateOccasions(id, data),
   getAllPublic: () => apiClient.getAllPublic(),
   getAllMap: () => apiClient.getAllMap(),
@@ -1119,11 +1086,13 @@ export const api = {
   uploadSettingImage: data => apiClient.uploadSettingImage(data),
   createBcvprice: data => apiClient.createBcvprice(data),
   getAllBusinessrules: () => apiClient.getAllBusinessrules(),
-  getPaymentById: id => apiClient.getPaymentById(id),
-  createProduct: (id, data) => apiClient.createProduct(id, data),
-  updateProduct: (id, data) => apiClient.updateProduct(id, data),
-  getProductimageById: id => apiClient.getProductimageById(id),
-  createProductimage: (id, data) => apiClient.createProductimage(id, data),
-  deleteProductimage: id => apiClient.deleteProductimage(id),
+  getAllPaymentmethods: () => apiClient.getAllPaymentmethods(),
+  createPaymentmethods: data => apiClient.createPaymentmethods(data),
+  getPaymentmethodsById: id => apiClient.getPaymentmethodsById(id),
+  updatePaymentmethods: (id, data) => apiClient.updatePaymentmethods(id, data),
+  deletePaymentmethods: id => apiClient.deletePaymentmethods(id),
+  updatePaymentMethodDisplayOrder: (id, data) =>
+    apiClient.updatePaymentMethodDisplayOrder(id, data),
+  reactivatePaymentMethods: (id, data) => apiClient.reactivatePaymentMethods(id, data),
   handleError: error => apiClient.handleError(error)
 }

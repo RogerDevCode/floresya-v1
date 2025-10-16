@@ -68,7 +68,7 @@ async function runFullValidation() {
   try {
     // 1. Verificar configuración de Tailwind
     console.log('\n📋 PASO 1: Verificando configuración de Tailwind CSS...')
-    report.validationResults.tailwindConfig = await validateTailwindConfig()
+    report.validationResults.tailwindConfig = validateTailwindConfig()
 
     // 2. Ejecutar pruebas de breakpoints
     console.log('\n📱 PASO 2: Ejecutando pruebas de breakpoints...')
@@ -95,7 +95,7 @@ async function runFullValidation() {
     console.log(`\n📄 Reporte JSON guardado en: ${CONSOLIDATED_REPORT}`)
 
     // 8. Generar reporte HTML
-    await generateHTMLReport(report)
+    generateHTMLReport(report)
     console.log(`📄 Reporte HTML guardado en: ${HTML_REPORT}`)
 
     const duration = Math.round((Date.now() - startTime) / 1000)
@@ -111,7 +111,7 @@ async function runFullValidation() {
 /**
  * Valida la configuración de Tailwind CSS
  */
-async function validateTailwindConfig() {
+function validateTailwindConfig() {
   try {
     // Verificar que existe el archivo de configuración
     const configPath = './tailwind.config.js'
@@ -351,7 +351,7 @@ function generateConclusion(report) {
 /**
  * Genera un reporte HTML completo
  */
-async function generateHTMLReport(report) {
+function generateHTMLReport(report) {
   const html = `
 <!DOCTYPE html>
 <html lang="es">

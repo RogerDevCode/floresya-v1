@@ -125,4 +125,16 @@ router.patch(
   productController.reactivateProduct
 )
 
+// Replace product occasions (TRANSACTIONAL)
+router.put(
+  '/:id/occasions',
+  authenticate,
+  authorize('admin'),
+  validateId(),
+  validate({
+    occasion_ids: { type: 'array', required: true, items: 'number' }
+  }),
+  productController.replaceProductOccasions
+)
+
 export default router

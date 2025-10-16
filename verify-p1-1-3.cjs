@@ -33,7 +33,9 @@ const { chromium } = require('playwright');
 
     const metrics = await page.evaluate(() => {
       const container = document.getElementById('productsContainer');
-      if (!container) return null;
+      if (!container) {
+        return null;
+      }
 
       const cards = container.querySelectorAll('.product-card');
       const containerStyle = window.getComputedStyle(container);

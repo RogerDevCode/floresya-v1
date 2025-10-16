@@ -621,3 +621,29 @@ export const reactivateProduct = asyncHandler(async (req, res) => {
     message: 'Product reactivated successfully'
   })
 })
+
+/**
+ * Replace all occasions for a product (TRANSACTIONAL)
+ * @route PUT /api/products/:id/occasions
+ * @access Admin
+ */
+export const replaceProductOccasions = asyncHandler(async (req, res) => {
+  const productId = parseInt(req.params.id)
+  const { occasion_ids } = req.body
+
+  // Validate occasion_ids is provided
+  if (!occasion_ids) {
+    return res.status(400).json({
+      success: false,
+      error: 'occasion_ids is required'
+    })
+  }
+
+  const result = await productService.replaceProductOccasions(productId, occasion_ids)
+
+  res.json({
+    success: true,
+    data: result,
+    message: 'Product occasions updated successfully'
+  })
+})

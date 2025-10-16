@@ -428,7 +428,12 @@ async function generateOpenApiSpec() {
           { name: 'Settings', description: 'Settings management endpoints' }
         ]
       },
-      apis: ['./api/docs/openapi-annotations.js', './api/controllers/*.js', './api/routes/*.js']
+      apis: [
+        './api/docs/openapi-annotations.js',
+        './api/docs/openapi-annotations-payment-methods.js'
+        // Controllers and routes are documented in openapi-annotations.js
+        // NOT scanned directly to avoid duplicates
+      ]
     }
 
     // Generate the OpenAPI specification

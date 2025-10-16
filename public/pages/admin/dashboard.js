@@ -897,6 +897,25 @@ async function loadOccasionsFilter() {
 }
 
 /**
+ * Normalize text for accent-insensitive search
+ * Matches backend normalization logic
+ * @param {string} text - Text to normalize
+ * @returns {string} Normalized text
+ */
+function normalizeText(text) {
+  if (!text || typeof text !== 'string') {
+    return ''
+  }
+
+  return text
+    .toLowerCase()
+    .normalize('NFD') // Decompose combined characters (é → e + ́)
+    .replace(/[\u0300-\u036f]/g, '') // Remove diacritical marks
+    .replace(/[^a-z0-9 ]/g, '') // Keep only alphanumeric + spaces
+    .trim()
+}
+
+/**
  * Filter products based on search criteria
  */
 async function filterProducts() {
@@ -909,19 +928,20 @@ async function filterProducts() {
     return
   }
 
-  const searchTerm = searchInput.value.toLowerCase()
+  const searchTerm = searchInput.value.trim()
   const occasionId = occasionFilter.value
   const status = statusFilter.value
 
   let filtered = [...products]
 
-  // Text search
+  // Text search with accent-insensitive normalization
   if (searchTerm) {
+    const normalizedSearch = normalizeText(searchTerm)
     filtered = filtered.filter(
       product =>
-        product.name.toLowerCase().includes(searchTerm) ||
-        (product.description && product.description.toLowerCase().includes(searchTerm)) ||
-        (product.sku && product.sku.toLowerCase().includes(searchTerm))
+        normalizeText(product.name).includes(normalizedSearch) ||
+        normalizeText(product.description || '').includes(normalizedSearch) ||
+        normalizeText(product.sku || '').includes(normalizedSearch)
     )
   }
 
@@ -1007,7 +1027,8 @@ function renderProducts(products) {
       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
         <a
           href="./edit-product.html?id=${product.id}"
-          class="text-indigo-600 hover:text-indigo-900"
+          class="text-indigo-600 hover:text-indigo-900 edit-product-link"
+          data-product-id="${product.id}"
         >
           Editar
         </a>
@@ -1023,6 +1044,25 @@ function renderProducts(products) {
 
     productsList.appendChild(row)
   })
+
+  // Add event listeners to edit links (save return URL for back navigation)
+  document.querySelectorAll('.edit-product-link').forEach(link => {
+    link.addEventListener('click', () => {
+      // Save current URL for back navigation (preserves pagination, filters, etc.)
+      const currentUrl = window.location.href
+      sessionStorage.setItem('editProductReturnUrl', currentUrl)
+    })
+  })
+
+  // Add event listener to "Nuevo Producto" button (save return URL for back navigation)
+  const newProductBtn = document.getElementById('new-product-btn')
+  if (newProductBtn) {
+    newProductBtn.addEventListener('click', () => {
+      // Save current URL for back navigation
+      const currentUrl = window.location.href
+      sessionStorage.setItem('editProductReturnUrl', currentUrl)
+    })
+  }
 
   // Add event listeners to delete links
   document.querySelectorAll('.delete-product-link').forEach(link => {
@@ -1402,7 +1442,7 @@ async function saveBcvPrice() {
  * ALWAYS use local path: public/images/hero-flowers.webp
  * Hero images are stored locally in public/images/, NOT in Supabase
  */
-async function loadHeroImagePreview() {
+function loadHeroImagePreview() {
   try {
     // Hero image siempre en public/images/hero-flowers.webp (relative to /public/pages/admin/)
     const heroImageUrl = '../../images/hero-flowers.webp'
@@ -1431,7 +1471,7 @@ async function loadHeroImagePreview() {
  * ALWAYS use local path: public/images/logoFloresYa.jpeg
  * Logo images are stored locally in public/images/, NOT in Supabase
  */
-async function loadLogoPreview() {
+function loadLogoPreview() {
   try {
     // Logo siempre en public/images/logoFloresYa.jpeg (relative to /public/pages/admin/)
     const logoUrl = '../../images/logoFloresYa.jpeg'

@@ -7,6 +7,7 @@
 import { createIcons } from '../../js/lucide-icons.js'
 import { CarouselManager } from '../../js/components/CarouselManager.js'
 import { api } from '../../js/shared/api-client.js'
+import { trackOccasionSelection, sortByPopularity } from '../../js/shared/occasion-popularity.js'
 
 // Toast notification utility
 const toast = {
@@ -83,6 +84,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Render initial empty image grid
   renderImageGrid()
 
+  // Load occasions
+  loadOccasions()
+
   // Setup auto-calculation of price_ves when price_usd changes
   const priceUsdInput = document.getElementById('product-price-usd')
   priceUsdInput.addEventListener('input', calculatePriceVes)
@@ -90,7 +94,199 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Form submit handler
   const form = document.getElementById('create-product-form')
   form.addEventListener('submit', handleCreateProduct)
+
+  // Cancel button handler
+  const cancelBtn = document.getElementById('cancel-btn')
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', handleCancel)
+  }
+
+  // Back button (arrow) handler
+  const backBtn = document.getElementById('back-btn')
+  if (backBtn) {
+    backBtn.addEventListener('click', handleCancel) // Same behavior as cancel
+  }
 })
+
+/**
+ * Load occasions and render checkboxes
+ */
+async function loadOccasions() {
+  try {
+    const result = await api.getAllOccasions()
+    let occasions = result.data || []
+
+    // Filter only active occasions
+    occasions = occasions.filter(occ => occ.is_active)
+
+    // Sort by popularity (most popular first)
+    occasions = sortByPopularity(occasions)
+
+    const container = document.getElementById('occasions-container')
+    if (!container) {
+      return
+    }
+
+    // Render checkboxes
+    container.innerHTML = occasions
+      .map(
+        occasion => `
+      <label class="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg hover:bg-pink-50 cursor-pointer transition-colors">
+        <input 
+          type="checkbox" 
+          name="occasions" 
+          value="${occasion.id}"
+          data-occasion-name="${occasion.name}"
+          class="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded occasion-checkbox"
+        />
+        <i data-lucide="${occasion.icon || 'heart'}" class="h-4 w-4 text-pink-600"></i>
+        <span class="text-sm text-gray-700">${occasion.name}</span>
+      </label>
+    `
+      )
+      .join('')
+
+    // Add event listeners for tracking
+    container.querySelectorAll('.occasion-checkbox').forEach(checkbox => {
+      checkbox.addEventListener('change', e => {
+        if (e.target.checked) {
+          const occasionId = parseInt(e.target.value)
+          trackOccasionSelection(occasionId)
+          console.log(
+            `✓ Tracked occasion selection: ${e.target.dataset.occasionName} (ID: ${occasionId})`
+          )
+        }
+      })
+    })
+
+    // Re-create icons
+    createIcons()
+
+    console.log(`✓ Loaded ${occasions.length} occasions (sorted by popularity)`)
+  } catch (error) {
+    console.error('Error loading occasions:', error)
+    toast.error('Error al cargar ocasiones')
+  }
+}
+
+/**
+ * Get selected occasion IDs
+ */
+function getSelectedOccasions() {
+  const checkboxes = document.querySelectorAll('input[name="occasions"]:checked')
+  return Array.from(checkboxes).map(cb => parseInt(cb.value))
+}
+
+/**
+ * Get default form values
+ */
+function getDefaultFormValues() {
+  return {
+    name: '',
+    description: '',
+    sku: '',
+    price_usd: '',
+    stock: '3', // Default value in HTML
+    images: [],
+    occasions: []
+  }
+}
+
+/**
+ * Get current form values
+ */
+function getCurrentFormValues() {
+  return {
+    name: document.getElementById('product-name')?.value.trim() || '',
+    description: document.getElementById('product-description')?.value.trim() || '',
+    sku: document.getElementById('product-sku')?.value.trim() || '',
+    price_usd: document.getElementById('product-price-usd')?.value || '',
+    stock: document.getElementById('product-stock')?.value || '',
+    images: [...productImages], // Copy of images array
+    occasions: getSelectedOccasions()
+  }
+}
+
+/**
+ * Check if form has changes from default values
+ */
+function hasFormChanges() {
+  const defaultValues = getDefaultFormValues()
+  const currentValues = getCurrentFormValues()
+
+  // Compare each field
+  if (currentValues.name !== defaultValues.name) {
+    return true
+  }
+  if (currentValues.description !== defaultValues.description) {
+    return true
+  }
+  if (currentValues.sku !== defaultValues.sku) {
+    return true
+  }
+  if (currentValues.price_usd !== defaultValues.price_usd) {
+    return true
+  }
+  if (currentValues.stock !== defaultValues.stock) {
+    return true
+  }
+  if (currentValues.images.length > 0) {
+    return true
+  } // Any images uploaded
+  if (currentValues.occasions.length > 0) {
+    return true
+  } // Any occasions selected
+
+  return false
+}
+
+/**
+ * Handle cancel button click
+ */
+function handleCancel(event) {
+  event.preventDefault()
+
+  // Check if form has changes
+  if (hasFormChanges()) {
+    // Show confirmation dialog
+    const confirmed = confirm(
+      '¿Descartar cambios?\n\nHas realizado cambios en el formulario. Si sales ahora, los cambios se perderán.'
+    )
+
+    if (!confirmed) {
+      // User chose to stay
+      return
+    }
+  }
+
+  // Navigate back to products (respects pagination and previous location)
+  navigateBackToProducts()
+}
+
+/**
+ * Navigate back to products panel (respects pagination and previous location)
+ */
+function navigateBackToProducts() {
+  // Check if we have a stored return URL (set by dashboard when navigating to create)
+  const returnUrl = sessionStorage.getItem('editProductReturnUrl')
+
+  if (returnUrl) {
+    // Clear the stored URL
+    sessionStorage.removeItem('editProductReturnUrl')
+    // Navigate to the stored URL
+    window.location.href = returnUrl
+    return
+  }
+
+  // Fallback: Use document.referrer if it's from dashboard
+  if (document.referrer && document.referrer.includes('dashboard.html')) {
+    window.location.href = document.referrer
+    return
+  }
+
+  // Final fallback: Go to products panel
+  window.location.href = './dashboard.html#products'
+}
 
 /**
  * Load BCV rate from settings
@@ -430,13 +626,19 @@ async function handleCreateProduct(event) {
     createIcons()
 
     // 1. Create product
-    const result = await api.createProduct(productData)
+    const result = await api.createProducts(productData)
     console.log('✓ Product created:', result)
 
     const productId = result.data.id
 
     // 2. Upload images
     await uploadProductImages(productId)
+
+    // 3. Link occasions
+    const occasions = getSelectedOccasions()
+    if (occasions.length > 0) {
+      await linkProductOccasions(productId, occasions)
+    }
 
     // Success - restore button
     submitBtn.disabled = false
@@ -488,6 +690,30 @@ async function uploadProductImages(productId) {
 }
 
 /**
+ * Link product with occasions
+ */
+async function linkProductOccasions(productId, occasionIds) {
+  try {
+    // Link each occasion to the product
+    const linkPromises = occasionIds.map(async occasionId => {
+      const result = await api.linkProductOccasion(productId, occasionId)
+
+      if (!result.success) {
+        throw new Error(`Error linking occasion ${occasionId}: ${result.message}`)
+      }
+
+      console.log(`✓ Occasion ${occasionId} linked`)
+    })
+
+    await Promise.all(linkPromises)
+    console.log(`✓ All ${occasionIds.length} occasions linked`)
+  } catch (error) {
+    console.error('linkProductOccasions failed:', error)
+    throw error
+  }
+}
+
+/**
  * Reset form after successful product creation
  */
 function resetForm() {
@@ -498,6 +724,11 @@ function resetForm() {
   document.getElementById('product-price-usd').value = ''
   document.getElementById('product-price-ves').value = ''
   document.getElementById('product-stock').value = '3'
+
+  // Clear occasions checkboxes
+  document.querySelectorAll('input[name="occasions"]:checked').forEach(cb => {
+    cb.checked = false
+  })
 
   // Clear images
   productImages.length = 0

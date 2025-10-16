@@ -302,7 +302,14 @@ function generateMethodName(path, method, operation) {
       : `get${capitalize(pathParts[0])}Status`
   }
   if (path.includes('/reactivate')) {
-    return `reactivate${capitalize(pathParts[0])}`
+    // Special handling for payment-methods to avoid hyphens in method names
+    let resourceName = pathParts[0]
+    if (resourceName === 'payment-methods') {
+      resourceName = 'paymentMethods'
+    } else {
+      resourceName = capitalize(resourceName)
+    }
+    return `reactivate${capitalize(resourceName)}`
   }
   if (path.includes('/verify-email')) {
     return 'verifyUserEmail'
@@ -342,7 +349,16 @@ function generateMethodName(path, method, operation) {
     return 'updateStock'
   }
   if (path.includes('/display-order')) {
-    return 'updateDisplayorder'
+    // Be more specific about which resource this belongs to
+    if (path.includes('/payment-methods/')) {
+      return 'updatePaymentMethodDisplayOrder'
+    } else if (path.includes('/occasions/')) {
+      return 'updateOccasionDisplayOrder'
+    } else if (path.includes('/products/')) {
+      return 'updateProductDisplayOrder'
+    } else {
+      return 'updateDisplayorder'
+    }
   }
   if (path.includes('/value')) {
     return 'getValue'

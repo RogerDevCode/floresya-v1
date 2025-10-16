@@ -47,9 +47,11 @@ import productRoutes from './routes/productRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import paymentRoutes from './routes/paymentRoutes.js'
+import paymentMethodRoutes from './routes/paymentMethodRoutes.js'
 import occasionRoutes from './routes/occasionRoutes.js'
 import settingsRoutes from './routes/settingsRoutes.js'
 import adminSettingsRoutes from './routes/admin/settingsRoutes.js'
+import migrationRoutes from './routes/migrationRoutes.js'
 
 const app = express()
 
@@ -192,9 +194,11 @@ app.use('/api/products', productRoutes)
 app.use('/api/orders', orderRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/payments', paymentRoutes)
+app.use('/api/payment-methods', paymentMethodRoutes)
 app.use('/api/occasions', occasionRoutes)
 app.use('/api/settings', settingsRoutes)
 app.use('/api/admin/settings', adminSettingsRoutes)
+app.use('/api/migrations', migrationRoutes)
 
 // 404 handler (MUST be after all routes)
 app.use((req, res, next) => {

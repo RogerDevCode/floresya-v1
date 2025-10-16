@@ -887,3 +887,69 @@ export async function decrementStock(id, quantity) {
     throw new DatabaseError('UPDATE', TABLE, error, { productId: id, quantity })
   }
 }
+
+/**
+ * Replace all occasions for a product (TRANSACTIONAL)
+ * Uses PostgreSQL stored function for atomic DELETE + INSERT
+ * @param {number} productId - Product ID
+ * @param {number[]} occasionIds - Array of occasion IDs to link
+ * @returns {Promise<Object>} Operation result with counts
+ * @throws {ValidationError} Invalid parameters
+ * @throws {NotFoundError} Product not found
+ * @throws {DatabaseError} Database error
+ */
+export async function replaceProductOccasions(productId, occasionIds = []) {
+  try {
+    // Validate parameters
+    if (!productId || typeof productId !== 'number') {
+      throw new ValidationError('Invalid product ID', { productId })
+    }
+
+    if (!Array.isArray(occasionIds)) {
+      throw new ValidationError('occasion_ids must be an array', { occasionIds })
+    }
+
+    // Validate all occasion IDs are numbers
+    const invalidIds = occasionIds.filter(id => typeof id !== 'number' || id <= 0)
+    if (invalidIds.length > 0) {
+      throw new ValidationError('Invalid occasion IDs', { invalidIds })
+    }
+
+    console.log(`Replacing occasions for product ${productId}:`, occasionIds)
+
+    // Call PostgreSQL stored function (TRANSACTIONAL)
+    const { data, error } = await supabase.rpc('replace_product_occasions', {
+      p_product_id: productId,
+      p_occasion_ids: occasionIds
+    })
+
+    if (error) {
+      // Check for specific error types
+      if (error.message && error.message.includes('not found')) {
+        throw new NotFoundError('Product', productId)
+      }
+      if (error.message && error.message.includes('invalid or inactive')) {
+        throw new ValidationError('One or more occasion IDs are invalid or inactive', {
+          occasionIds
+        })
+      }
+      throw new DatabaseError('RPC', 'replace_product_occasions', error, {
+        productId,
+        occasionIds
+      })
+    }
+
+    console.log(`✓ Occasions replaced for product ${productId}:`, data)
+    return data
+  } catch (error) {
+    console.error(`replaceProductOccasions(${productId}) failed:`, error)
+    if (error.isOperational) {
+      throw error
+    }
+    throw new InternalServerError('Failed to replace product occasions', {
+      productId,
+      occasionIds,
+      error
+    })
+  }
+}

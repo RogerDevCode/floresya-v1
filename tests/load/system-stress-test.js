@@ -85,7 +85,7 @@ class SystemStressTester {
     }
   }
 
-  async makeRequest() {
+  makeRequest() {
     return new Promise(resolve => {
       const endpoint = this.selectRandomEndpoint()
       const startTime = performance.now()

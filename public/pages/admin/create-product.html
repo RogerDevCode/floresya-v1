@@ -13,13 +13,14 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-4">
-            <a
-              href="./dashboard.html"
+            <button
+              id="back-btn"
+              type="button"
               class="text-gray-600 hover:text-pink-600 transition-colors"
-              title="Volver al Dashboard"
+              title="Volver a Productos"
             >
               <i data-lucide="arrow-left" class="h-6 w-6"></i>
-            </a>
+            </button>
             <h1 class="text-2xl font-bold text-gray-900">Crear Nuevo Producto</h1>
           </div>
         </div>
@@ -139,6 +140,25 @@
             <div id="carousel-manager-container"></div>
           </div>
 
+          <!-- Occasions Section -->
+          <div class="space-y-4 border-t pt-6">
+            <h2 class="text-lg font-semibold text-gray-900 flex items-center space-x-2">
+              <i data-lucide="heart" class="h-5 w-5 text-pink-600"></i>
+              <span>Ocasiones</span>
+            </h2>
+            <p class="text-sm text-gray-600">
+              Selecciona las ocasiones para las que este producto es ideal
+            </p>
+
+            <!-- Occasions checkboxes grid -->
+            <div
+              id="occasions-container"
+              class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"
+            >
+              <!-- Occasions loaded dynamically -->
+            </div>
+          </div>
+
           <!-- Images Section -->
           <div class="space-y-4 border-t pt-6">
             <h2 class="text-lg font-semibold text-gray-900 flex items-center space-x-2">
@@ -167,12 +187,13 @@
 
           <!-- Actions -->
           <div class="flex items-center justify-end space-x-4 border-t pt-6">
-            <a
-              href="./dashboard.html"
+            <button
+              type="button"
+              id="cancel-btn"
               class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
             >
               Cancelar
-            </a>
+            </button>
             <button
               type="submit"
               id="create-product-btn"

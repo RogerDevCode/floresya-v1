@@ -1,0 +1,90 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+    - navigation [ref=e2]:
+        - generic [ref=e4]:
+            - link "Volver a la página principal" [ref=e6] [cursor=pointer]:
+                - /url: ../../index.html
+                - img [ref=e7]
+            - link "Logo FloresYa Admin FloresYa Admin" [ref=e9] [cursor=pointer]:
+                - /url: ../../index.html
+                - img "Logo FloresYa Admin" [ref=e10]
+                - generic [ref=e11]: FloresYa Admin
+            - generic [ref=e12]:
+                - generic [ref=e13]: Admin
+                - button "Cerrar sesión" [ref=e14]:
+                    - img [ref=e15]
+    - complementary [ref=e18]:
+        - generic [ref=e19]:
+            - generic [ref=e20]:
+                - link "Dashboard" [ref=e21] [cursor=pointer]:
+                    - /url: '#'
+                    - img [ref=e22]
+                    - generic [ref=e27]: Dashboard
+                - link "Productos" [active] [ref=e28] [cursor=pointer]:
+                    - /url: '#'
+                    - img [ref=e29]
+                    - generic [ref=e36]: Productos
+                - link "Pedidos" [ref=e37] [cursor=pointer]:
+                    - /url: ./orders.html
+                    - img [ref=e38]
+                    - generic [ref=e42]: Pedidos
+                - link "Usuarios" [ref=e43] [cursor=pointer]:
+                    - /url: '#'
+                    - img [ref=e44]
+                    - generic [ref=e49]: Usuarios
+                - link "Ocasiones" [ref=e50] [cursor=pointer]:
+                    - /url: ./occasions.html
+                    - img [ref=e51]
+                    - generic [ref=e53]: Ocasiones
+                - link "Editor de Contacto" [ref=e54] [cursor=pointer]:
+                    - /url: ./contact-editor.html
+                    - img [ref=e55]
+                    - generic [ref=e58]: Editor de Contacto
+                - link "Configuración" [ref=e59] [cursor=pointer]:
+                    - /url: '#'
+                    - img [ref=e60]
+                    - generic [ref=e63]: Configuración
+            - generic [ref=e64]:
+                - paragraph [ref=e65]: Version 1.0.0
+                - paragraph [ref=e66]: FloresYa Admin
+    - main [ref=e67]:
+        - generic [ref=e68]:
+            - generic [ref=e69]:
+                - heading "Gestión de Productos" [level=1] [ref=e70]
+                - link "Nuevo Producto" [ref=e71] [cursor=pointer]:
+                    - /url: ./create-product.html
+                    - img [ref=e72]
+                    - generic [ref=e73]: Nuevo Producto
+            - generic [ref=e75]:
+                - generic [ref=e76]:
+                    - generic [ref=e77]: Buscar
+                    - textbox "Buscar productos..." [ref=e78]
+                - generic [ref=e79]:
+                    - generic [ref=e80]: Ocasión
+                    - combobox [ref=e81]:
+                        - option "Todas las ocasiones" [selected]
+                - generic [ref=e82]:
+                    - generic [ref=e83]: Estado
+                    - combobox [ref=e84]:
+                        - option "Todos" [selected]
+                        - option "Activo"
+                        - option "Inactivo"
+                - generic [ref=e85]:
+                    - button "Aplicar Filtros" [ref=e88]:
+                        - img [ref=e89]
+                        - generic [ref=e91]: Aplicar Filtros
+                    - button "Limpiar" [ref=e94]:
+                        - img [ref=e95]
+                        - generic [ref=e98]: Limpiar
+            - table [ref=e101]:
+                - rowgroup [ref=e102]:
+                    - row "Producto Precio Stock Estado Acciones" [ref=e103]:
+                        - cell "Producto" [ref=e104]
+                        - cell "Precio" [ref=e105]
+                        - cell "Stock" [ref=e106]
+                        - cell "Estado" [ref=e107]
+                        - cell "Acciones" [ref=e108]
+                - rowgroup
+```

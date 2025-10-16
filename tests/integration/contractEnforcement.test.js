@@ -208,7 +208,7 @@ describe('Contract Divergence Detection', () => {
     consoleWarnSpy.mockRestore()
   })
 
-  it('should maintain contract compliance for valid requests', async () => {
+  it('should maintain contract compliance for valid requests', () => {
     const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation()
 
     // This test verifies that valid requests don't trigger violation logs

@@ -565,6 +565,44 @@ components:
               subtotal_ves:
                 type: number
                 minimum: 0
+    paymentMethod:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Banco Mercantil
+        type:
+          type: string
+          enum:
+            - bank_transfer
+            - mobile_payment
+            - cash
+            - crypto
+            - international
+          example: bank_transfer
+        description:
+          type: string
+          example: Transferencias desde Banco Mercantil
+          nullable: true
+        account_info:
+          type: string
+          example: 0105-1234-5678-9012
+          nullable: true
+        is_active:
+          type: boolean
+          example: true
+        display_order:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
   responses:
     UnauthorizedError:
       description: Authentication required
@@ -719,8 +757,7 @@ paths:
             schema:
               type: object
               required:
-                - name
-                - price_usd
+                - product
               properties:
                 product:
                   type: object
@@ -754,31 +791,6 @@ paths:
                       type: integer
                       minimum: 0
                       maximum: 7
-                name:
-                  type: string
-                  minLength: 2
-                  maxLength: 255
-                summary:
-                  type: string
-                description:
-                  type: string
-                price_usd:
-                  type: number
-                  minimum: 0
-                price_ves:
-                  type: number
-                  minimum: 0
-                stock:
-                  type: integer
-                  minimum: 0
-                sku:
-                  type: string
-                  maxLength: 50
-                featured:
-                  type: boolean
-                carousel_order:
-                  type: integer
-                  minimum: 0
       responses:
         '201':
           description: Product created successfully
@@ -797,8 +809,6 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/products/{id}:
     get:
       tags:
@@ -836,7 +846,7 @@ paths:
       tags:
         - Products
       summary: Update product
-      description: Admin only - Updates product fields
+      description: Admin only - Updates an existing product
       security:
         - bearerAuth: []
       parameters:
@@ -914,20 +924,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
-                allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
-                  - type: object
-                    properties:
-                      data:
-                        $ref: '#/components/schemas/product'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/products/carousel:
     get:
       tags:
@@ -976,8 +978,6 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/product'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
     post:
       tags:
         - Products
@@ -1049,8 +1049,6 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/products/occasion/{occasionId}:
     get:
       tags:
@@ -1082,8 +1080,6 @@ paths:
                           $ref: '#/components/schemas/product'
         '404':
           $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/products/sku/{sku}:
     get:
       tags:
@@ -1243,16 +1239,12 @@ paths:
                     properties:
                       data:
                         $ref: '#/components/schemas/product'
-        '400':
-          $ref: '#/components/responses/ValidationError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/products/{id}/stock:
     patch:
       tags:
@@ -1287,16 +1279,12 @@ paths:
                     properties:
                       data:
                         $ref: '#/components/schemas/product'
-        '400':
-          $ref: '#/components/responses/ValidationError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/products/{id}/images/{imageIndex}:
     delete:
       tags:
@@ -1390,8 +1378,6 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/orders:
     get:
       tags:
@@ -1458,7 +1444,7 @@ paths:
     post:
       tags:
         - Orders
-      summary: Create new order with customer and payment information
+      summary: Create new order
       description: Create a new order (public endpoint for checkout process)
       requestBody:
         required: true
@@ -1467,11 +1453,7 @@ paths:
             schema:
               type: object
               required:
-                - customer_email
-                - customer_name
-                - customer_phone
-                - delivery_address
-                - total_amount_usd
+                - order
                 - items
               properties:
                 order:
@@ -1492,7 +1474,7 @@ paths:
                       maxLength: 255
                     customer_phone:
                       type: string
-                      pattern: ^\\+?[\\d\\s-()]+$
+                      pattern: ^\+?[\d\s-()]+$
                     delivery_address:
                       type: string
                       minLength: 10
@@ -1502,7 +1484,7 @@ paths:
                       format: date
                     delivery_time_slot:
                       type: string
-                      pattern: ^\\d{2}:\\d{2}-\\d{2}:\\d{2}$
+                      pattern: ^\d{2}:\d{2}-\d{2}:\d{2}$
                     delivery_notes:
                       type: string
                       maxLength: 1000
@@ -1561,39 +1543,6 @@ paths:
                       subtotal_ves:
                         type: number
                         minimum: 0
-                customer_email:
-                  type: string
-                  format: email
-                customer_name:
-                  type: string
-                  minLength: 2
-                customer_phone:
-                  type: string
-                delivery_address:
-                  type: string
-                  minLength: 10
-                delivery_notes:
-                  type: string
-                notes:
-                  type: string
-                total_amount_usd:
-                  type: number
-                  minimum: 0
-                total_amount_ves:
-                  type: number
-                  minimum: 0
-                currency_rate:
-                  type: number
-                  minimum: 0
-                status:
-                  type: string
-                  enum:
-                    - pending
-                    - verified
-                    - preparing
-                    - shipped
-                    - delivered
-                    - cancelled
       responses:
         '201':
           description: Order created successfully
@@ -1606,13 +1555,10 @@ paths:
                     properties:
                       data:
                         $ref: '#/components/schemas/order'
-                $ref: '#/components/schemas/SuccessResponse'
         '400':
           $ref: '#/components/responses/ValidationError'
         '429':
           description: Too many requests
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/orders/{id}:
     get:
       tags:
@@ -1641,8 +1587,6 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
     put:
       tags:
         - Orders
@@ -1677,16 +1621,12 @@ paths:
                     properties:
                       data:
                         $ref: '#/components/schemas/order'
-        '400':
-          $ref: '#/components/responses/ValidationError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/orders/user/{userId}:
     get:
       tags:
@@ -1723,8 +1663,6 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/orders/{id}/status-history:
     get:
       tags:
@@ -1755,8 +1693,6 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/orders/{id}/status:
     patch:
       tags:
@@ -1785,16 +1721,12 @@ paths:
                     properties:
                       data:
                         $ref: '#/components/schemas/order'
-        '400':
-          $ref: '#/components/responses/ValidationError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/orders/{id}/cancel:
     patch:
       tags:
@@ -1827,16 +1759,12 @@ paths:
                     properties:
                       data:
                         $ref: '#/components/schemas/order'
-        '400':
-          $ref: '#/components/responses/ValidationError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/users:
     get:
       tags:
@@ -1884,8 +1812,6 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
     post:
       tags:
         - Users
@@ -1910,7 +1836,7 @@ paths:
                   maxLength: 255
                 phone:
                   type: string
-                  pattern: ^\\+?[\\d\\s-()]+$
+                  pattern: ^\+?[\d\s-()]+$
                 role:
                   type: string
                   enum:
@@ -1936,8 +1862,6 @@ paths:
           $ref: '#/components/responses/ValidationError'
         '409':
           description: User already exists
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/users/{id}:
     get:
       tags:
@@ -1966,8 +1890,6 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
     put:
       tags:
         - Users
@@ -1990,7 +1912,7 @@ paths:
                   maxLength: 255
                 phone:
                   type: string
-                  pattern: ^\\+?[\\d\\s-()]+$
+                  pattern: ^\+?[\d\s-()]+$
                 role:
                   type: string
                   enum:
@@ -2008,16 +1930,12 @@ paths:
                     properties:
                       data:
                         $ref: '#/components/schemas/user'
-        '400':
-          $ref: '#/components/responses/ValidationError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
     delete:
       tags:
         - Users
@@ -2034,20 +1952,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
-                allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
-                  - type: object
-                    properties:
-                      data:
-                        $ref: '#/components/schemas/user'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/users/email/{email}:
     get:
       tags:
@@ -2082,8 +1992,6 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/users/{id}/reactivate:
     patch:
       tags:
@@ -2112,8 +2020,6 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/users/{id}/verify-email:
     patch:
       tags:
@@ -2142,13 +2048,11 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/payments/methods:
     get:
       tags:
         - Payments
-      summary: Get available payment methods for Venezuela
+      summary: Get available payment methods
       description: Public - Returns available payment methods for Venezuela
       responses:
         '200':
@@ -2164,7 +2068,6 @@ paths:
                         type: array
                         items:
                           type: string
-                $ref: '#/components/schemas/SuccessResponse'
   /api/payments/{id}/confirm:
     post:
       tags:
@@ -2856,16 +2759,17 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
-  /api/payment/{id}:
+  /api/payment-methods:
     get:
       tags:
-        - payment
-      summary: Confirm payment
+        - Payment Methods
+      summary: Get all payment methods
+      description: Public - Returns all active payment methods, sorted by display_order.
       parameters:
-        - $ref: '#/components/parameters/IdParam'
+        - $ref: '#/components/parameters/LimitParam'
       responses:
         '200':
-          description: Confirm payment operation
+          description: Payment methods retrieved successfully.
           content:
             application/json:
               schema:
@@ -2874,96 +2778,54 @@ paths:
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/payment'
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/paymentMethod'
         '400':
           $ref: '#/components/responses/ValidationError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /api/product/{id}:
-    post:
-      tags:
-        - product
-      summary: Create product
-      parameters:
-        - $ref: '#/components/parameters/IdParam'
-      responses:
-        '200':
-          description: Create product operation
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
-                  - type: object
-                    properties:
-                      data:
-                        $ref: '#/components/schemas/product'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-    patch:
-      tags:
-        - product
-      summary: Update product
-      parameters:
-        - $ref: '#/components/parameters/IdParam'
-      responses:
-        '200':
-          description: Update product operation
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
-                  - type: object
-                    properties:
-                      data:
-                        $ref: '#/components/schemas/product'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /api/productimage/{id}:
-    get:
-      tags:
-        - productimage
-      summary: Set primary image
-      parameters:
-        - $ref: '#/components/parameters/IdParam'
-      responses:
-        '200':
-          description: Set primary image operation
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
-                  - type: object
-                    properties:
-                      data:
-                        $ref: '#/components/schemas/productimage'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: '#/components/responses/InternalServerError'
     post:
       tags:
-        - productimage
-      summary: Create product images
-      parameters:
-        - $ref: '#/components/parameters/IdParam'
+        - Payment Methods
+      summary: Create new payment method
+      description: Admin only - Creates a new payment method.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - type
+              properties:
+                name:
+                  type: string
+                  minLength: 2
+                  maxLength: 100
+                type:
+                  type: string
+                  enum:
+                    - bank_transfer
+                    - mobile_payment
+                    - cash
+                    - crypto
+                    - international
+                description:
+                  type: string
+                account_info:
+                  type: string
+                is_active:
+                  type: boolean
+                display_order:
+                  type: integer
+                  minimum: 0
       responses:
-        '200':
-          description: Create product images operation
+        '201':
+          description: Payment method created successfully.
           content:
             application/json:
               schema:
@@ -2972,22 +2834,149 @@ paths:
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/productimage'
+                        $ref: '#/components/schemas/paymentMethod'
         '400':
           $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/payment-methods/{id}:
+    get:
+      tags:
+        - Payment Methods
+      summary: Get payment method by ID
+      description: Get payment method details by its unique ID.
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Payment method retrieved successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/paymentMethod'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+        - Payment Methods
+      summary: Update payment method
+      description: Admin only - Updates an existing payment method.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 2
+                  maxLength: 100
+                type:
+                  type: string
+                  enum:
+                    - bank_transfer
+                    - mobile_payment
+                    - cash
+                    - crypto
+                    - international
+                description:
+                  type: string
+                account_info:
+                  type: string
+                is_active:
+                  type: boolean
+                display_order:
+                  type: integer
+                  minimum: 0
+      responses:
+        '200':
+          description: Payment method updated successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/paymentMethod'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: '#/components/responses/InternalServerError'
     delete:
       tags:
-        - productimage
-      summary: Delete images by index
+        - Payment Methods
+      summary: Delete payment method (soft delete)
+      description: Admin only - Soft deletes a payment method by setting its `is_active` flag to false.
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: '#/components/parameters/IdParam'
       responses:
         '200':
-          description: Delete images by index operation
+          description: Payment method deactivated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/payment-methods/{id}/display-order:
+    patch:
+      tags:
+        - Payment Methods
+      summary: Update payment method display order
+      description: Admin only - Atomically updates the display order for a payment method.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - order
+              properties:
+                order:
+                  type: integer
+                  minimum: 0
+      responses:
+        '200':
+          description: Display order updated successfully.
           content:
             application/json:
               schema:
@@ -2996,9 +2985,41 @@ paths:
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/productimage'
-        '400':
-          $ref: '#/components/responses/ValidationError'
+                        $ref: '#/components/schemas/paymentMethod'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/payment-methods/{id}/reactivate:
+    patch:
+      tags:
+        - Payment Methods
+      summary: Reactivate payment method
+      description: Admin only - Reactivates a soft-deleted payment method by setting its `is_active` flag to true.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Payment method reactivated successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/paymentMethod'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '500':

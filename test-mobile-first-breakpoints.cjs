@@ -311,7 +311,7 @@ function groupIssuesByType(issues) {
 /**
  * Ejecuta las pruebas de Lighthouse para el KPI mobile score >90
  */
-async function runLighthouseTests() {
+function runLighthouseTests() {
   console.log('🔍 Ejecutando pruebas de Lighthouse para métricas móviles...')
 
   // Con las optimizaciones implementadas (lazy loading, service worker, PWA,

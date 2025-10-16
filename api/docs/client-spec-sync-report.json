@@ -1,11 +1,11 @@
 {
-  "timestamp": "2025-10-14T22:43:16.400Z",
+  "timestamp": "2025-10-15T22:46:39.277Z",
   "valid": true,
   "issues": [],
   "warnings": [],
   "summary": {
-    "specEndpoints": 62,
-    "clientMethods": 62,
+    "specEndpoints": 63,
+    "clientMethods": 63,
     "coverage": 100,
     "orphanedEndpoints": [],
     "missingMethods": [],

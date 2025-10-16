@@ -7,6 +7,7 @@
 import { createIcons } from '../../js/lucide-icons.js'
 import { CarouselManager } from '../../js/components/CarouselManager.js'
 import { api } from '../../js/shared/api-client.js'
+import { trackOccasionSelection, sortByPopularity } from '../../js/shared/occasion-popularity.js'
 
 // Toast notification utility
 const toast = {
@@ -33,6 +34,9 @@ let carouselManager = null
 
 // BCV rate (loaded from settings)
 let bcvRate = 0
+
+// Original product values (for change detection)
+let originalValues = null
 
 /**
  * Ensure only one image is marked as primary
@@ -86,6 +90,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Load product data
   await loadProduct()
 
+  // Load occasions
+  await loadOccasions()
+
   // Setup auto-calculation of price_ves when price_usd changes
   const priceUsdInput = document.getElementById('product-price-usd')
   priceUsdInput.addEventListener('input', calculatePriceVes)
@@ -93,7 +100,146 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Form submit handler
   const form = document.getElementById('edit-product-form')
   form.addEventListener('submit', handleUpdateProduct)
+
+  // Cancel button handler
+  const cancelBtn = document.getElementById('cancel-btn')
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', handleCancel)
+  }
+
+  // Back button (arrow) handler
+  const backBtn = document.getElementById('back-btn')
+  if (backBtn) {
+    backBtn.addEventListener('click', handleCancel) // Same behavior as cancel
+  }
 })
+
+/**
+ * Capture original form values after loading product
+ */
+function captureOriginalValues() {
+  originalValues = {
+    name: document.getElementById('product-name')?.value.trim() || '',
+    description: document.getElementById('product-description')?.value.trim() || '',
+    sku: document.getElementById('product-sku')?.value.trim() || '',
+    price_usd: document.getElementById('product-price-usd')?.value || '',
+    stock: document.getElementById('product-stock')?.value || '',
+    images: productImages.map(img => ({
+      url: img.url,
+      isPrimary: img.isPrimary
+    }))
+  }
+}
+
+/**
+ * Get current form values
+ */
+function getCurrentFormValues() {
+  return {
+    name: document.getElementById('product-name')?.value.trim() || '',
+    description: document.getElementById('product-description')?.value.trim() || '',
+    sku: document.getElementById('product-sku')?.value.trim() || '',
+    price_usd: document.getElementById('product-price-usd')?.value || '',
+    stock: document.getElementById('product-stock')?.value || '',
+    images: productImages.map(img => ({
+      url: img.url,
+      isPrimary: img.isPrimary
+    }))
+  }
+}
+
+/**
+ * Check if form has changes from original values
+ */
+function hasFormChanges() {
+  if (!originalValues) {
+    return false
+  }
+
+  const currentValues = getCurrentFormValues()
+
+  // Compare each field
+  if (currentValues.name !== originalValues.name) {
+    return true
+  }
+  if (currentValues.description !== originalValues.description) {
+    return true
+  }
+  if (currentValues.sku !== originalValues.sku) {
+    return true
+  }
+  if (currentValues.price_usd !== originalValues.price_usd) {
+    return true
+  }
+  if (currentValues.stock !== originalValues.stock) {
+    return true
+  }
+
+  // Compare images count
+  if (currentValues.images.length !== originalValues.images.length) {
+    return true
+  }
+
+  // Compare images content (URLs and primary status)
+  for (let i = 0; i < currentValues.images.length; i++) {
+    if (currentValues.images[i].url !== originalValues.images[i].url) {
+      return true
+    }
+    if (currentValues.images[i].isPrimary !== originalValues.images[i].isPrimary) {
+      return true
+    }
+  }
+
+  return false
+}
+
+/**
+ * Handle cancel button click
+ */
+function handleCancel(event) {
+  event.preventDefault()
+
+  // Check if form has changes
+  if (hasFormChanges()) {
+    // Show confirmation dialog
+    const confirmed = confirm(
+      '¿Descartar cambios?\n\nHas realizado cambios en el formulario. Si sales ahora, los cambios se perderán.'
+    )
+
+    if (!confirmed) {
+      // User chose to stay
+      return
+    }
+  }
+
+  // Navigate back to products (respects pagination and previous location)
+  navigateBackToProducts()
+}
+
+/**
+ * Navigate back to products panel (respects pagination and previous location)
+ */
+function navigateBackToProducts() {
+  // Check if we have a stored return URL (set by dashboard when navigating to edit)
+  const returnUrl = sessionStorage.getItem('editProductReturnUrl')
+
+  if (returnUrl) {
+    // Clear the stored URL
+    sessionStorage.removeItem('editProductReturnUrl')
+    // Navigate to the stored URL
+    window.location.href = returnUrl
+    return
+  }
+
+  // Fallback: Use document.referrer if it's from dashboard
+  if (document.referrer && document.referrer.includes('dashboard.html')) {
+    window.location.href = document.referrer
+    return
+  }
+
+  // Final fallback: Go to products panel
+  window.location.href = './dashboard.html#products'
+}
 
 /**
  * Load BCV rate from settings
@@ -155,6 +301,9 @@ async function loadProduct() {
     // Load existing images
     await loadExistingImages()
 
+    // Capture original values for change detection
+    captureOriginalValues()
+
     // Show form, hide loading
     document.getElementById('loading-state').classList.add('hidden')
     document.getElementById('edit-product-form').classList.remove('hidden')
@@ -168,6 +317,79 @@ async function loadProduct() {
       window.location.href = './dashboard.html'
     }, 2000)
   }
+}
+
+/**
+ * Load occasions and pre-select the ones linked to this product
+ */
+async function loadOccasions() {
+  try {
+    // 1. Get all active occasions
+    const occasionsResult = await api.getAllOccasions()
+    let occasions = occasionsResult.data || []
+    occasions = occasions.filter(occ => occ.is_active)
+
+    // 2. Get occasions linked to this product
+    const productOccasionsResult = await api.getProductOccasions(productId)
+    const linkedOccasionIds = productOccasionsResult.data.map(occ => occ.id)
+
+    // 3. Sort by popularity (most popular first)
+    occasions = sortByPopularity(occasions)
+
+    const container = document.getElementById('occasions-container')
+    if (!container) {
+      return
+    }
+
+    // 4. Render checkboxes with pre-selected ones
+    container.innerHTML = occasions
+      .map(
+        occasion => `
+      <label class="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg hover:bg-pink-50 cursor-pointer transition-colors">
+        <input 
+          type="checkbox" 
+          name="occasions" 
+          value="${occasion.id}"
+          data-occasion-name="${occasion.name}"
+          ${linkedOccasionIds.includes(occasion.id) ? 'checked' : ''}
+          class="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded occasion-checkbox"
+        />
+        <i data-lucide="${occasion.icon || 'heart'}" class="h-4 w-4 text-pink-600"></i>
+        <span class="text-sm text-gray-700">${occasion.name}</span>
+      </label>
+    `
+      )
+      .join('')
+
+    // 5. Add event listeners for tracking (only when checking NEW occasions)
+    container.querySelectorAll('.occasion-checkbox').forEach(checkbox => {
+      checkbox.addEventListener('change', e => {
+        if (e.target.checked) {
+          const occasionId = parseInt(e.target.value)
+          trackOccasionSelection(occasionId)
+          console.log(
+            `✓ Tracked occasion selection: ${e.target.dataset.occasionName} (ID: ${occasionId})`
+          )
+        }
+      })
+    })
+
+    // Re-create icons
+    createIcons()
+
+    console.log(`✓ Loaded ${occasions.length} occasions (${linkedOccasionIds.length} pre-selected)`)
+  } catch (error) {
+    console.error('Error loading occasions:', error)
+    toast.error('Error al cargar ocasiones')
+  }
+}
+
+/**
+ * Get selected occasion IDs
+ */
+function getSelectedOccasions() {
+  const checkboxes = document.querySelectorAll('input[name="occasions"]:checked')
+  return Array.from(checkboxes).map(cb => parseInt(cb.value))
 }
 
 /**
@@ -575,7 +797,7 @@ async function handleUpdateProduct(event) {
     createIcons()
 
     // 1. Update product
-    const result = await api.updateProduct(productId, productData)
+    const result = await api.updateProducts(productId, productData)
     console.log('✓ Product updated:', result)
 
     // 2. Upload NEW images only (images with file !== null)
@@ -583,6 +805,10 @@ async function handleUpdateProduct(event) {
     if (newImages.length > 0) {
       await uploadProductImages(productId, newImages)
     }
+
+    // 3. Update occasions (replace all - transactional approach)
+    const selectedOccasions = getSelectedOccasions()
+    await replaceProductOccasions(productId, selectedOccasions)
 
     // Success - restore button and stay on page
     submitBtn.disabled = false
@@ -593,8 +819,9 @@ async function handleUpdateProduct(event) {
       'Producto actualizado exitosamente. Puedes hacer más cambios o cancelar para salir.'
     )
 
-    // Reload product data to get fresh state (including new images)
+    // Reload product data to get fresh state (including new images and occasions)
     await loadProduct()
+    await loadOccasions()
   } catch (error) {
     console.error('Error updating product:', error)
     toast.error('Error al actualizar producto: ' + error.message)
@@ -632,5 +859,24 @@ async function uploadProductImages(productId, newImages) {
   } catch (error) {
     console.error('Error uploading images:', error)
     throw error
+  }
+}
+
+/**
+ * Replace all product occasions (TRANSACTIONAL)
+ * Uses backend endpoint with PostgreSQL stored function for atomicity
+ */
+async function replaceProductOccasions(productId, selectedOccasionIds) {
+  try {
+    console.log(`Replacing occasions for product ${productId}:`, selectedOccasionIds)
+
+    // Call transactional backend endpoint
+    const result = await api.replaceProductOccasions(productId, selectedOccasionIds)
+
+    console.log(`✓ Occasions replaced successfully:`, result.data)
+    return result
+  } catch (error) {
+    console.error('replaceProductOccasions failed:', error)
+    throw new Error(`Error al actualizar ocasiones: ${error.message}`)
   }
 }

@@ -223,6 +223,9 @@ function togglePaymentForms() {
     case 'crypto':
       document.getElementById('crypto-form').classList.remove('hidden')
       break
+    case 'cash':
+      // Cash payment doesn't require a form, so we don't show anything
+      break
   }
 }
 
@@ -460,18 +463,25 @@ async function handlePayment() {
       bcvRate
     }
 
-    // Add payment method specific data
+    // Add payment method specific data and reference number
     if (paymentMethod === 'mobile_payment') {
       paymentData.mobilePhone = document.getElementById('mobile-phone').value
       paymentData.mobileBank = document.getElementById('mobile-bank').value
+      paymentData.referenceNumber = orderReference
     } else if (paymentMethod === 'bank_transfer') {
       paymentData.bankName = document.getElementById('bank-name').value
       paymentData.accountNumber = document.getElementById('account-number').value
       paymentData.accountHolder = document.getElementById('account-holder').value
+      paymentData.referenceNumber = orderReference
     } else if (paymentMethod === 'zelle') {
       paymentData.zelleEmail = document.getElementById('zelle-email').value
+      paymentData.referenceNumber = orderReference
     } else if (paymentMethod === 'crypto') {
       paymentData.cryptoAddress = document.getElementById('crypto-address').value
+      paymentData.referenceNumber = orderReference
+    } else if (paymentMethod === 'cash') {
+      // For cash payments, use the order reference as the payment reference
+      paymentData.referenceNumber = orderReference
     }
 
     // Log data being sent to backend for debugging
@@ -498,6 +508,49 @@ async function handlePayment() {
 
     // Create order via API
     const orderResponse = await createOrder(customerData, paymentData)
+
+    // For all payment methods, confirm the payment after creating the order
+    try {
+      // Prepare payment confirmation data
+      const paymentConfirmationData = {
+        payment_method: paymentData.paymentMethod,
+        reference_number: paymentData.referenceNumber || orderResponse.id.toString(), // Use order ID as fallback
+        payment_details: null
+      }
+
+      // Add payment method specific details
+      if (paymentMethod === 'mobile_payment') {
+        paymentConfirmationData.payment_details = {
+          phone: paymentData.mobilePhone,
+          bank: paymentData.mobileBank
+        }
+      } else if (paymentMethod === 'bank_transfer') {
+        paymentConfirmationData.payment_details = {
+          bank: paymentData.bankName,
+          account_number: paymentData.accountNumber,
+          account_holder: paymentData.accountHolder
+        }
+      } else if (paymentMethod === 'zelle') {
+        paymentConfirmationData.payment_details = {
+          email: paymentData.zelleEmail
+        }
+      } else if (paymentMethod === 'crypto') {
+        paymentConfirmationData.payment_details = {
+          address: paymentData.cryptoAddress
+        }
+      } else if (paymentMethod === 'cash') {
+        paymentConfirmationData.payment_details = 'Pago en efectivo contra entrega'
+      }
+
+      // Confirm the payment
+      await api.confirmPayments(orderResponse.id, paymentConfirmationData)
+      console.log('✅ Payment confirmed successfully for order:', orderResponse.id)
+    } catch (paymentConfirmError) {
+      // Log the error but don't fail the entire process since the order was created
+      console.error('Payment confirmation error (order still created):', paymentConfirmError)
+      // Optionally inform the user that payment confirmation had an issue
+      // but continue with the success flow since the order was created
+    }
 
     // Show success message
     showSuccessMessage(orderResponse)
@@ -576,6 +629,12 @@ function validatePaymentMethod() {
         alert('Por favor ingrese la dirección de la billetera')
         return false
       }
+      break
+    }
+
+    case 'cash': {
+      // Cash payments don't require additional fields beyond what's already validated
+      // in the main form (customer info, delivery address, etc.)
       break
     }
   }

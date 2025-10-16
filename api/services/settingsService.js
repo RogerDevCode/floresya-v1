@@ -75,19 +75,16 @@ function validateSettingData(data, isUpdate = false) {
  * @throws {NotFoundError} When no settings are found
  * @throws {DatabaseError} When database query fails
  */
-export async function getAllSettings(publicOnly = false, includeInactive = false) {
+export async function getAllSettings(publicOnly = false, _includeInactive = false) {
   try {
     let query = supabase.from(TABLE).select('*')
 
-    // By default, only return active settings
-    if (!includeInactive) {
-      query = query.eq('is_active', true)
-    }
-
+    // Filter for public settings if requested
     if (publicOnly) {
       query = query.eq('is_public', true)
     }
 
+    // Order by key
     query = query.order('key', { ascending: true })
 
     const { data, error } = await query
@@ -136,12 +133,7 @@ export async function getSettingById(key, includeInactive = false) {
       throw new BadRequestError('Invalid key: must be a string', { key })
     }
 
-    let query = supabase.from(TABLE).select('*').eq('key', key)
-
-    // By default, only return active settings
-    if (!includeInactive) {
-      query = query.eq('is_active', true)
-    }
+    const query = supabase.from(TABLE).select('*').eq('key', key)
 
     const { data, error } = await query.single()
 
