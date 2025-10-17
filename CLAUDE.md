@@ -52,7 +52,7 @@ floresya-v1/
 │   ├── js/
 │   │   ├── shared/                      # SSOT: api.js, validators.js, dom.js
 │   │   ├── components/                  # Componentes UI reutilizables
-│   │   └── lucide-icons.js              # Íconos compatibles con CSP
+│   │   └──               # Íconos compatibles con CSP
 │   └── css/
 │       ├── input.css                    # Fuente Tailwind (@import 'tailwindcss')
 │       ├── tailwind.css                 # Compilado (NO EDITAR)
@@ -237,7 +237,7 @@ Ejemplo Obligatorio:
 ```javascript
 import { onDOMReady } from '/js/shared/dom-ready.js'
 import { api } from '../js/shared/api-client.js'
-import { createIcons } from '../js/lucide-icons.js'
+import { createIcons } from '../js/'
 
 async function init() {
   try {

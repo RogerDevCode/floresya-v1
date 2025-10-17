@@ -4,7 +4,7 @@
  * Compatible con el contrato OpenAPI actualizado
  */
 
-import { createIcons } from '/js/lucide-icons.js'
+import { createIcons } from '/js/'
 import { addToCart, updateCartBadge, isInCart } from '/js/shared/cart.js'
 import { showToast } from '/js/components/toast.js'
 import { api } from '/js/shared/api-client.js'

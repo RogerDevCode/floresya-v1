@@ -3,7 +3,7 @@
  * Handles CRUD operations for occasions with soft delete functionality
  */
 
-import '../../js/lucide-icons.js'
+import '../../js/'
 import { api } from '../../js/shared/api-client.js'
 import { generateSlug, getRandomIcon, getRandomColor } from '../../js/shared/occasion-helpers.js'
 import { sortByPopularity } from '../../js/shared/occasion-popularity.js'
@@ -98,9 +98,6 @@ const _oldMockData = [
  */
 function init() {
   // Initialize Lucide icons
-  if (window.lucide && window.lucide.createIcons) {
-    window.lucide.createIcons()
-  }
 
   // Setup event listeners
   setupEventListeners()
@@ -475,9 +472,6 @@ import { onDOMReady } from '../../js/shared/dom-ready.js'
 // Initialize when DOM is ready
 onDOMReady(() => {
   // Initialize icons first
-  if (window.lucide && window.lucide.createIcons) {
-    window.lucide.createIcons()
-  }
 
   // Then initialize occasions management
   init()

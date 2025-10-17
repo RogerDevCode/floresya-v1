@@ -50,9 +50,9 @@ The application now uses a static icon system instead of runtime conversion for 
 
 ## Scripts
 
-### 1. extract-lucide-icons.js
+### 1. extract-
 
-- Extracts all SVG content from `lucide-icons.js` to individual `.svg` files
+- Extracts all SVG content from ``to individual`.svg` files
 - Creates manifest file for reference
 
 ### 2. build-static-icons.js
@@ -89,4 +89,4 @@ The following npm script is available:
 
 ## Backward Compatibility
 
-The previous `lucide-icons.js` file is maintained as-is for any remaining runtime icon usage. However, its use is deprecated in favor of the static approach.
+The previous `` file is maintained as-is for any remaining runtime icon usage. However, its use is deprecated in favor of the static approach.

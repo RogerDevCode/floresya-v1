@@ -10,9 +10,6 @@ onDOMReady(init)
 
 async function init() {
   // Initialize icons first
-  if (window.lucide && window.lucide.createIcons) {
-    window.lucide.createIcons()
-  }
 
   // 1. Get order ID from URL
   const urlParams = new URLSearchParams(window.location.search)
@@ -95,7 +92,4 @@ function showError(message) {
       </div>
     </div>
   `
-  if (window.lucide && window.lucide.createIcons) {
-    window.lucide.createIcons()
-  }
 }

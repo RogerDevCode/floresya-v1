@@ -214,7 +214,7 @@
 - [ ] **P1.4.2** Implementar tree shaking para lucide-icons
   - **Acción**: Importar solo iconos usados: `import { ShoppingCart, User } from 'lucide'`
   - **Validación**: Bundle analyzer
-  - **KPI**: -60% tamaño lucide-icons.js
+  - **KPI**: -60% tamaño
 
 - [ ] **P1.4.3** Minificar y comprimir CSS/JS con build tools
   - **Acción**: Configurar esbuild o Terser en npm scripts

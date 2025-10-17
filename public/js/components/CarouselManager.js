@@ -4,7 +4,7 @@
  * Single Responsibility: Manage carousel slot selection and ordering
  */
 
-import { createIcons } from '../lucide-icons.js'
+// Static SVG icons used - no import needed
 import { api } from '../shared/api-client.js'
 
 const MAX_CAROUSEL_SIZE = 7
@@ -146,7 +146,7 @@ export class CarouselManager {
     `
 
     // Call createIcons after render (icons will be initialized by parent page)
-    setTimeout(() => createIcons(), 0)
+    // Static SVG icons used - no runtime initialization needed
   }
 
   /**

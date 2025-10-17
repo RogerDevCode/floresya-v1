@@ -192,9 +192,6 @@ class ProductImageManager {
     })
 
     // Reinitialize icons
-    if (window.lucide && window.lucide.createIcons) {
-      window.lucide.createIcons()
-    }
   }
 
   /**

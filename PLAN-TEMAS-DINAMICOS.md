@@ -1751,7 +1751,7 @@ import('/js/themes/themeManager.js').then(m => {
 
 ```javascript
 import { themeManager } from '../themes/themeManager.js'
-import { createIcons } from '../lucide-icons.js'
+import { createIcons } from '../'
 
 /**
  * Theme Selector Component
@@ -2283,7 +2283,7 @@ if (document.readyState === 'loading') {
     <!-- Footer (igual que index.html) -->
 
     <!-- Scripts -->
-    <script type="module" src="/js/lucide-icons.js"></script>
+    <script type="module" src="/js/"></script>
     <script type="module" src="theme-gallery.js"></script>
   </body>
 </html>
@@ -2296,7 +2296,7 @@ if (document.readyState === 'loading') {
 ```javascript
 import { themeManager } from '../js/themes/themeManager.js'
 import ThemeSelector from '../js/components/ThemeSelector.js'
-import { createIcons } from '../js/lucide-icons.js'
+import { createIcons } from '../js/'
 
 /**
  * Theme Gallery Page

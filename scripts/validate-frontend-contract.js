@@ -112,7 +112,7 @@ function analyzeFileForContractViolations(filePath, content) {
   // Define exclusions to avoid false positives
   const EXCLUDED_FILES = [
     'chart.min.js',
-    'lucide-icons.js',
+    '',
     '.test.js',
     '__tests__',
     'shared/api.js', // Legacy API client (allowed until full migration)

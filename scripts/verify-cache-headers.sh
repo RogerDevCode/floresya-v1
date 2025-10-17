@@ -45,7 +45,6 @@ test_cache() {
 
 # Test different resource types
 test_cache "http://localhost:3000/css/tailwind.css" "max-age=31536000" "CSS (Static Asset)"
-test_cache "http://localhost:3000/js/lucide-icons.js" "max-age=31536000" "JavaScript (Static Asset)"
 test_cache "http://localhost:3000/index.html" "max-age=86400" "HTML (Semi-dynamic)"
 test_cache "http://localhost:3000/api/products" "no-cache" "API Endpoint"
 

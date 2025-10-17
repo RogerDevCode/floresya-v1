@@ -5,7 +5,7 @@
  */
 
 import { onDOMReady } from '../js/shared/dom-ready.js'
-import { createIcons } from '../js/lucide-icons.js'
+import { createIcons } from '../js/'
 import { themeManager } from '../js/themes/themeManager.js'
 import ThemeSelector from '../js/components/ThemeSelector.js'
 

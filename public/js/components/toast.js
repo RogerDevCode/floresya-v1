@@ -61,9 +61,6 @@ export function showToast(message, type = 'info', duration = 4000) {
   container.appendChild(toast)
 
   // Initialize icons
-  if (window.lucide && window.lucide.createIcons) {
-    window.lucide.createIcons()
-  }
 
   // Animate in
   setTimeout(() => {

@@ -304,7 +304,7 @@ async function toggleEmailVerification(userId, currentStatus) {
 
 ### 3. **Iconos Lucide Agregados**
 
-**Archivo**: [`public/js/lucide-icons.js`](public/js/lucide-icons.js#L144-L150)
+**Archivo**: [`public/js/`](public/js/#L144-L150)
 
 Se agregaron 5 nuevos iconos:
 
@@ -492,7 +492,7 @@ if (userId === 1) {
    - Líneas 1682-1751: Renderizado de badges toggleables
    - Líneas 2167-2272: Funciones `toggleUserRole()`, `toggleUserStatus()`, `toggleEmailVerification()`
 
-2. [`public/js/lucide-icons.js`](public/js/lucide-icons.js)
+2. [`public/js/`](public/js/)
    - Líneas 144-150: Iconos `check-circle`, `x-circle`, `mail-check`, `mail`
 
 ### **Backend**:
@@ -567,7 +567,7 @@ if (!reason) return
 
 - **Renderizado de Tabla**: [`dashboard.js:1649-1748`](public/pages/admin/dashboard.js#L1649-L1748)
 - **Funciones Toggle**: [`dashboard.js:2167-2272`](public/pages/admin/dashboard.js#L2167-L2272)
-- **Iconos Lucide**: [`lucide-icons.js:144-150`](public/js/lucide-icons.js#L144-L150)
+- **Iconos Lucide**: [`:144-150`](public/js/#L144-L150)
 - **Validación Backend**: [`userRoutes.js:51`](api/routes/userRoutes.js#L51)
 - **API Client**: [`api-client.js:1054-1061`](public/js/shared/api-client.js#L1054-L1061)
 

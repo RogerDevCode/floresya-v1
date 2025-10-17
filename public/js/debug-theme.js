@@ -212,7 +212,7 @@ import { onDOMReady } from './shared/dom-ready.js'
       recommendations.push({
         priority: 'medium',
         issue: 'lucide-icons not loaded',
-        solution: 'Ensure lucide-icons.js is loaded before ThemeSelector.js'
+        solution: 'Ensure  is loaded before ThemeSelector.js'
       })
     }
 

@@ -5,7 +5,7 @@
  */
 
 import { api } from '../shared/api-client.js'
-import { createIcons } from '../lucide-icons.js'
+// Static SVG icons used - no import needed
 import { showToast } from './toast.js'
 
 // Toast notification utility
@@ -163,7 +163,7 @@ export class PaymentMethodManager {
       </div>
     `
 
-    createIcons()
+    // Static SVG icons used - no runtime initialization needed
   }
 
   /**
@@ -221,7 +221,7 @@ export class PaymentMethodManager {
       .map(paymentMethod => this.createPaymentMethodCard(paymentMethod))
       .join('')
 
-    createIcons()
+    // Static SVG icons used - no runtime initialization needed
   }
 
   /**
@@ -575,7 +575,7 @@ export class PaymentMethodManager {
       `
 
       document.body.appendChild(modal)
-      createIcons()
+      // Static SVG icons used - no runtime initialization needed
     }
 
     // Show modal
@@ -603,7 +603,7 @@ export class PaymentMethodManager {
               <i data-lucide="loader" class="h-5 w-5 animate-spin"></i>
               <span>Creando...</span>
             `
-            createIcons()
+            // Static SVG icons used - no runtime initialization needed
           }
 
           // Get form data
@@ -635,7 +635,7 @@ export class PaymentMethodManager {
             submitBtn.innerHTML = `
               <span>Crear Método de Pago</span>
             `
-            createIcons()
+            // Static SVG icons used - no runtime initialization needed
           }
         }
       }
@@ -779,7 +779,7 @@ export class PaymentMethodManager {
         `
 
         document.body.appendChild(modal)
-        createIcons()
+        // Static SVG icons used - no runtime initialization needed
       }
 
       // Populate form with existing data
@@ -817,7 +817,7 @@ export class PaymentMethodManager {
                 <i data-lucide="loader" class="h-5 w-5 animate-spin"></i>
                 <span>Guardando...</span>
               `
-              createIcons()
+              // Static SVG icons used - no runtime initialization needed
             }
 
             // Get form data
@@ -849,7 +849,7 @@ export class PaymentMethodManager {
               submitBtn.innerHTML = `
                 <span>Guardar Cambios</span>
               `
-              createIcons()
+              // Static SVG icons used - no runtime initialization needed
             }
           }
         }

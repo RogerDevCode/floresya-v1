@@ -3,7 +3,7 @@
  * Manage all contact page settings from admin panel
  */
 
-import '../../js/lucide-icons.js'
+import '../../js/'
 import { api } from '../../js/shared/api-client.js'
 
 // State
@@ -15,9 +15,6 @@ let hasChanges = false
  */
 async function init() {
   // Initialize Lucide icons
-  if (window.lucide && window.lucide.createIcons) {
-    window.lucide.createIcons()
-  }
 
   // Load settings
   await loadSettings()
@@ -124,9 +121,6 @@ function updateSaveButtons() {
     }
 
     // Re-initialize icons
-    if (window.lucide && window.lucide.createIcons) {
-      window.lucide.createIcons()
-    }
   })
 }
 

@@ -4,7 +4,7 @@
  */
 
 import { onDOMReady } from '/js/shared/dom-ready.js'
-import { createIcons } from '/js/lucide-icons.js'
+import { createIcons } from '/js/'
 import { addToCart, isInCart, initCartBadge, initCartEventListeners } from '/js/shared/cart.js'
 import { showToast } from '/js/components/toast.js'
 import { api } from '/js/shared/api-client.js'

@@ -4,7 +4,7 @@
  * Integrated with the main admin dashboard
  */
 
-import '../../js/lucide-icons.js'
+import '../../js/'
 
 // Global state for occasions management
 let currentOccasionsFilter = 'all' // 'all', 'active', 'inactive'

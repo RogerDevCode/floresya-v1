@@ -54,9 +54,8 @@ export class ThemeSelector {
         )
       }
 
-      // With static icons now implemented, runtime icon generation is no longer needed
-      // Icons should be embedded as static SVG in the HTML, eliminating timing issues
-      console.log('🎨 [ThemeSelector] Using static icons, no runtime conversion needed')
+      // Static SVG icons are used - no runtime icon conversion needed
+      console.log('🎨 [ThemeSelector] Using static SVG icons from /public/images/lucide/')
 
       // Re-check container in case it was dynamically created
       if (!this.container) {
@@ -183,8 +182,8 @@ export class ThemeSelector {
         </div>
       `
 
-      // With static icons, no runtime icon rendering is needed
-      // Icons are already rendered as static SVG in the HTML
+      // Static SVG icons are used - no runtime initialization needed
+      console.log('🎨 [ThemeSelector] Static SVG icons are already embedded in HTML')
 
       // Guardar referencias
       this.toggleBtn = document.getElementById('theme-toggle-btn')

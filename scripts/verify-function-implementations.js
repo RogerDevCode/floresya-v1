@@ -1049,7 +1049,7 @@ class FileScanner {
       'playwright-report'
     ])
 
-    this.excludedFiles = new Set(['chart.min.js', 'lucide-icons.js', 'api-types.js'])
+    this.excludedFiles = new Set(['chart.min.js', '', 'api-types.js'])
   }
 
   /**

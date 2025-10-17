@@ -34,7 +34,7 @@ floresya-v1/
 │   ├── js/
 │   │   ├── shared/                      # SSOT: api.js, validators.js, dom.js
 │   │   ├── components/                  # Componentes UI reutilizables
-│   │   └── lucide-icons.js              # Íconos compatibles con CSP
+│   │   └──               # Íconos compatibles con CSP
 │   └── css/
 │       ├── input.css                    # Fuente Tailwind (@import 'tailwindcss')
 │       ├── tailwind.css                 # Compilado (NO EDITAR)

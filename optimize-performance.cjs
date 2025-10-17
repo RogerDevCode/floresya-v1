@@ -108,7 +108,7 @@ const urlsToCache = [
   '/index.html',
   '/css/styles.css',
   '/css/tailwind.css',
-  '/js/lucide-icons.js',
+
   '/js/shared/api-client.js',
   '/js/shared/cart.js',
   '/index.js',

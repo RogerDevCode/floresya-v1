@@ -3,7 +3,7 @@
  * Handles order status changes with inline dropdown
  */
 
-import '../../js/lucide-icons.js'
+import '../../js/'
 import { initAdminCommon } from '../../js/admin-common.js'
 import { api } from '../../js/shared/api-client.js'
 
@@ -65,10 +65,6 @@ const ORDER_STATUSES = {
  * Initialize orders management
  */
 async function init() {
-  if (window.lucide && window.lucide.createIcons) {
-    window.lucide.createIcons()
-  }
-
   // Set initial year filter to current year
   const yearFilter = document.getElementById('year-filter')
   if (yearFilter) {
@@ -524,9 +520,6 @@ function renderOrdersTable(ordersToRender) {
     if (emptyState) {
       emptyState.classList.remove('hidden')
     }
-    if (window.lucide && window.lucide.createIcons) {
-      window.lucide.createIcons()
-    }
     return
   }
 
@@ -643,9 +636,6 @@ function renderOrdersTable(ordersToRender) {
   })
 
   // Reinitialize icons
-  if (window.lucide && window.lucide.createIcons) {
-    window.lucide.createIcons()
-  }
 }
 
 /**
@@ -839,9 +829,6 @@ function showOrderDetails(orderId) {
   }
 
   // Reinitialize icons
-  if (window.lucide && window.lucide.createIcons) {
-    window.lucide.createIcons()
-  }
 }
 
 /**
@@ -1015,10 +1002,6 @@ async function showOrderHistory(orderId) {
 
     modal.classList.remove('hidden')
     updateScrollIndicator('history')
-
-    if (window.lucide && window.lucide.createIcons) {
-      window.lucide.createIcons()
-    }
   } catch (error) {
     console.error('Error loading order history:', error)
     alert(`Error al cargar historial: ${error.message}`)

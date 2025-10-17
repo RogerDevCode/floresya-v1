@@ -896,9 +896,6 @@ function saveCustomerData() {
 // Initialize when DOM is ready
 onDOMReady(async () => {
   // Initialize icons first
-  if (window.lucide && window.lucide.createIcons) {
-    window.lucide.createIcons()
-  }
 
   // Then initialize payment functionality
   await init()

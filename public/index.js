@@ -11,7 +11,6 @@ import { onDOMReady } from './js/shared/dom-ready.js'
 import { themeManager } from './js/themes/themeManager.js'
 
 // UI utilities
-import { createIcons } from './js/lucide-icons.js'
 
 // Component imports
 import ThemeSelector from './js/components/ThemeSelector.js'
@@ -622,8 +621,7 @@ async function loadProducts(page = 1) {
       }
     })
 
-    // Reinitialize icons for cart buttons
-    createIcons()
+    // Icons are now static SVG - no need to reinitialize
 
     // Add click handlers for quick-view buttons (eye icon)
     addQuickViewHandlers()
@@ -722,8 +720,7 @@ function renderPagination(container, currentPage, hasMore) {
     })
   })
 
-  // Reinitialize icons for pagination buttons
-  createIcons()
+  // Icons are now static SVG - no need to reinitialize
 }
 
 /**
@@ -1041,7 +1038,7 @@ function init() {
     console.log('📋 [index.js] Dependencies status:', {
       themeManager: !!themeManager,
       ThemeSelector: !!ThemeSelector,
-      createIcons: !!createIcons,
+      // createIcons removed - using static SVG icons now
       onDOMReady: !!onDOMReady,
       api: !!api
     })
@@ -1165,8 +1162,7 @@ function init() {
             })
           }
 
-          // Initialize icons
-          createIcons()
+          // Icons are now static SVG - no need to initialize
 
           console.log('✅ [index.js] Fallback theme selector created')
         }
@@ -1178,8 +1174,7 @@ function init() {
     // Initialize theme selector with retry logic
     initializeThemeSelector()
 
-    // Initialize Lucide icons
-    createIcons()
+    // Icons are now static SVG - no need to initialize
     console.log('✅ [index.js] Icons initialized')
 
     // Initialize cart functionality

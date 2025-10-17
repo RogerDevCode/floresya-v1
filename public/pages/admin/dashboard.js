@@ -125,9 +125,6 @@ async function loadProductImages(products) {
  */
 function init() {
   // Initialize Lucide icons
-  if (window.lucide && window.lucide.createIcons) {
-    window.lucide.createIcons()
-  }
 
   // Setup mobile sidebar
   setupMobileSidebar()
@@ -587,9 +584,6 @@ function renderTopProducts(topProducts) {
       </div>
     `
     // Reinitialize icons
-    if (window.lucide && window.lucide.createIcons) {
-      window.lucide.createIcons()
-    }
     return
   }
 
@@ -1157,9 +1151,6 @@ import { onDOMReady } from '../../js/shared/dom-ready.js'
 // Initialize when DOM is ready
 onDOMReady(() => {
   // Initialize icons first
-  if (window.lucide && window.lucide.createIcons) {
-    window.lucide.createIcons()
-  }
 
   // Then initialize admin functionality
   init()
@@ -1380,9 +1371,6 @@ async function saveHeroImage() {
         `
       }
       // Reinitialize icons
-      if (window.lucide && window.lucide.createIcons) {
-        window.lucide.createIcons()
-      }
       // Reset file input
       heroImageFile = null
       document.getElementById('hero-image-upload').value = ''
@@ -1821,9 +1809,6 @@ function renderUsersTable(usersList) {
     .join('')
 
   // Reinitialize Lucide icons for new elements
-  if (window.lucide && window.lucide.createIcons) {
-    window.lucide.createIcons()
-  }
 }
 
 /**

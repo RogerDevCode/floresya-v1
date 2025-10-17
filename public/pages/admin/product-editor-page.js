@@ -5,9 +5,6 @@ import { onDOMReady } from '../../js/shared/dom-ready.js'
 
 onDOMReady(() => {
   // Initialize icons first
-  if (window.lucide && window.lucide.createIcons) {
-    window.lucide.createIcons()
-  }
 
   // Add event listeners for buttons
   document.getElementById('save-product-btn').addEventListener('click', () => {

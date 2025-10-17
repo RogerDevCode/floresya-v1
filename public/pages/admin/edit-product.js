@@ -4,7 +4,7 @@
  * KISS: No dual-mode logic, no conditional flows
  */
 
-import { createIcons } from '../../js/lucide-icons.js'
+import { createIcons } from '../../js/'
 import { CarouselManager } from '../../js/components/CarouselManager.js'
 import { api } from '../../js/shared/api-client.js'
 import { trackOccasionSelection, sortByPopularity } from '../../js/shared/occasion-popularity.js'

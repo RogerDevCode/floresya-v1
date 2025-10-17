@@ -309,7 +309,7 @@ function init() {
 
 ```javascript
 import { themeManager } from '../themes/themeManager.js'
-import { createIcons } from '../lucide-icons.js'
+import { createIcons } from '../'
 
 /**
  * Theme Selector Component - Selector de temas para la navbar

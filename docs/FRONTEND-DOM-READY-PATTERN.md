@@ -104,7 +104,7 @@ if (element) {
 
 // 1. Imports
 import { onDOMReady } from '/js/shared/dom-ready.js'
-import { createIcons } from '/js/lucide-icons.js'
+import { createIcons } from '/js/'
 import { api } from '/js/shared/api-client.js'
 
 // 2. State/Constants
@@ -163,7 +163,7 @@ Los siguientes archivos ya implementan el nuevo patrón:
 
 ### Componentes
 
-- ✅ `/public/js/lucide-icons.js` (auto-init mejorado)
+- ✅ `/public/js/` (auto-init mejorado)
 
 ## 🚫 Qué NO Hacer
 

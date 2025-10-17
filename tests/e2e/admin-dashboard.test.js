@@ -143,7 +143,7 @@ test.describe('Admin Dashboard E2E Tests', () => {
       }
     })
 
-    // Check that SVG icons are present (after lucide-icons.js processing)
+    // Check that SVG icons are present (after  processing)
     // Instead of checking for <i data-lucide>, we check for SVG elements
     const svgIcons = page.locator('svg')
     const svgCount = await svgIcons.count()

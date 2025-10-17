@@ -99,16 +99,16 @@
         addResult('❌ Test 4: imageCarousel.js', false, `Error al importar: ${error.message}`)
       }
 
-      // Test 5: Import lucide-icons.js
+      // Test 5: Import
       try {
-        const iconsModule = await import('./public/js/lucide-icons.js')
+        const iconsModule = await import('./public/js/')
         addResult(
-          '✅ Test 5: lucide-icons.js',
+          '✅ Test 5: ',
           true,
           `Módulo cargado correctamente. createIcons disponible: ${typeof iconsModule.createIcons === 'function'}`
         )
       } catch (error) {
-        addResult('❌ Test 5: lucide-icons.js', false, `Error al importar: ${error.message}`)
+        addResult('❌ Test 5: ', false, `Error al importar: ${error.message}`)
       }
 
       // Test 6: Import cart.js

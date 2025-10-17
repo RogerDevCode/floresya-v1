@@ -253,7 +253,7 @@ const excludedDirs = ['node_modules', '.git', 'dist', 'build', 'coverage', 'play
 
 const excludedFiles = [
   'chart.min.js',
-  'lucide-icons.js',
+  '',
   'api-types.js' // Auto-generado
 ]
 ```
