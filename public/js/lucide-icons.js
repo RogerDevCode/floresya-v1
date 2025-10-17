@@ -1,6 +1,9 @@
 /**
  * Lucide Icons - CSP-compatible loader (ES6 Module)
  * Manually creates SVG icons without eval() or inline scripts
+ *
+ * DEPRECATED: Please use static SVG icons from /public/images/lucide/ instead.
+ * This runtime conversion is maintained for backward compatibility only.
  */
 
 const ICONS = {

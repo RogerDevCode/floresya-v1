@@ -57,7 +57,24 @@
               class="relative p-2 text-pink-600 hover:text-pink-700 transition-colors"
               aria-label="Carrito de compras"
             >
-              <i data-lucide="shopping-cart" class="h-6 w-6"></i>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-6 w-6"
+              >
+                <circle cx="8" cy="21" r="1" />
+                <circle cx="19" cy="21" r="1" />
+                <path
+                  d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"
+                />
+              </svg>
               <span
                 id="cart-count-badge"
                 class="cart-badge absolute -top-1 -right-1 bg-pink-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold"
@@ -81,7 +98,21 @@
           id="back-button"
           class="flex items-center space-x-2 text-white/90 hover:text-white transition-colors bg-white/20 hover:bg-white/30 rounded-lg px-4 py-2 backdrop-blur-sm"
         >
-          <i data-lucide="arrow-left" class="h-5 w-5"></i>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="h-5 w-5"
+          >
+            <path d="m12 19-7-7 7-7" />
+            <path d="M19 12H5" />
+          </svg>
           <span class="font-medium">Regresar</span>
         </button>
       </div>
@@ -92,13 +123,45 @@
         <div class="lg:col-span-2">
           <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-6">
             <h1 class="text-3xl font-bold text-gray-900 mb-6 flex items-center">
-              <i data-lucide="shopping-bag" class="h-8 w-8 text-pink-600 mr-3"></i>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-8 w-8 text-pink-600 mr-3"
+              >
+                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                <path d="M3 6h18" />
+                <path d="M16 10a4 4 0 0 1-8 0" />
+              </svg>
               Mi Carrito
             </h1>
 
             <!-- Empty Cart Message -->
             <div id="empty-cart" class="hidden text-center py-12">
-              <i data-lucide="shopping-cart" class="h-24 w-24 text-gray-300 mx-auto mb-4"></i>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-24 w-24 text-gray-300 mx-auto mb-4"
+              >
+                <circle cx="8" cy="21" r="1" />
+                <circle cx="19" cy="21" r="1" />
+                <path
+                  d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"
+                />
+              </svg>
               <p class="text-xl text-gray-500 mb-4">Tu carrito está vacío</p>
               <a
                 href="/#productos"
@@ -119,7 +182,24 @@
                 id="clear-cart-button"
                 class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
               >
-                <i data-lucide="trash-2" class="h-5 w-5"></i>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-5 w-5"
+                >
+                  <path d="M3 6h18" />
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                  <line x1="10" x2="10" y1="11" y2="17" />
+                  <line x1="14" x2="14" y1="11" y2="17" />
+                </svg>
                 <span>Vaciar Carrito</span>
               </button>
             </div>
@@ -198,13 +278,43 @@
               class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-4 rounded-lg transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled
             >
-              <i data-lucide="credit-card" class="h-5 w-5"></i>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-5 w-5"
+              >
+                <rect width="20" height="14" x="2" y="5" rx="2" />
+                <path d="M2 10h20" />
+              </svg>
               <span>Proceder al Pago</span>
             </button>
 
             <!-- Security Badge -->
             <div class="mt-4 flex items-center justify-center text-sm text-gray-500">
-              <i data-lucide="shield-check" class="h-4 w-4 mr-2"></i>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-4 w-4 mr-2"
+              >
+                <path
+                  d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+                />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
               <span>Pago 100% seguro</span>
             </div>
           </div>

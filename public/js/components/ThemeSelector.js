@@ -6,7 +6,6 @@
  */
 
 import { themeManager } from '../themes/themeManager.js'
-import { createIcons } from '../lucide-icons.js'
 
 /**
  * Theme Selector Component Class
@@ -55,27 +54,9 @@ export class ThemeSelector {
         )
       }
 
-      // No need to check for window.createIcons since we import createIcons directly
-      // Just ensure that createIcons is available from our import
-      console.log('🎨 [ThemeSelector] Checking createIcons availability:', {
-        importedCreateIcons: typeof createIcons,
-        windowLucide: typeof window.lucide,
-        windowLucideCreateIcons: window.lucide
-          ? typeof window.lucide.createIcons
-          : 'no window.lucide',
-        createIconsValue: createIcons
-      })
-
-      if (typeof createIcons !== 'function') {
-        // Fallback to window.lucide.createIcons if import didn't work
-        if (window.lucide && typeof window.lucide.createIcons === 'function') {
-          console.log('🎨 [ThemeSelector] Using fallback window.lucide.createIcons')
-        } else {
-          throw new Error(
-            'createIcons function is not available. Make sure lucide-icons.js is loaded'
-          )
-        }
-      }
+      // With static icons now implemented, runtime icon generation is no longer needed
+      // Icons should be embedded as static SVG in the HTML, eliminating timing issues
+      console.log('🎨 [ThemeSelector] Using static icons, no runtime conversion needed')
 
       // Re-check container in case it was dynamically created
       if (!this.container) {
@@ -202,14 +183,8 @@ export class ThemeSelector {
         </div>
       `
 
-      // Renderizar iconos
-      if (typeof createIcons === 'function') {
-        createIcons()
-      } else if (window.lucide && typeof window.lucide.createIcons === 'function') {
-        window.lucide.createIcons()
-      } else if (window.createIcons && typeof window.createIcons === 'function') {
-        window.createIcons()
-      }
+      // With static icons, no runtime icon rendering is needed
+      // Icons are already rendered as static SVG in the HTML
 
       // Guardar referencias
       this.toggleBtn = document.getElementById('theme-toggle-btn')
@@ -402,14 +377,8 @@ export class ThemeSelector {
         }
       })
 
-      // Re-renderizar iconos
-      if (typeof createIcons === 'function') {
-        createIcons()
-      } else if (window.lucide && typeof window.lucide.createIcons === 'function') {
-        window.lucide.createIcons()
-      } else if (window.createIcons && typeof window.createIcons === 'function') {
-        window.createIcons()
-      }
+      // With static icons, no runtime icon re-rendering is needed
+      // Icons are already rendered as static SVG in the HTML
 
       console.log('✅ [ThemeSelector] Display updated')
     } catch (error) {
@@ -441,14 +410,8 @@ export class ThemeSelector {
         </button>
       `
 
-      // Initialize icons
-      if (typeof createIcons === 'function') {
-        createIcons()
-      } else if (window.lucide && typeof window.lucide.createIcons === 'function') {
-        window.lucide.createIcons()
-      } else if (window.createIcons && typeof window.createIcons === 'function') {
-        window.createIcons()
-      }
+      // With static icons, no runtime icon initialization is needed
+      // Icons are already rendered as static SVG in the HTML
 
       // Add basic theme switching
       const fallbackBtn = document.getElementById('fallback-theme-toggle')
