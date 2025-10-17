@@ -5,7 +5,7 @@
  */
 
 import { onDOMReady } from '../js/shared/dom-ready.js'
-import { createIcons } from '../js/'
+// Static SVG icons used - no runtime initialization needed
 import { themeManager } from '../js/themes/themeManager.js'
 import ThemeSelector from '../js/components/ThemeSelector.js'
 
@@ -103,8 +103,7 @@ function renderThemeGrid(category = 'all') {
     }
   })
 
-  // Re-renderizar iconos
-  createIcons()
+  // Static SVG icons used - no runtime initialization needed
 
   // Añadir event listeners
   attachThemeCardListeners()
@@ -302,10 +301,9 @@ function attachThemeCardListeners() {
 
         // Visual feedback
         btn.innerHTML = '<i data-lucide="check" class="h-4 w-4"></i> Aplicado'
-        createIcons()
         setTimeout(() => {
           btn.innerHTML = `<i data-lucide="palette" class="h-4 w-4"></i> Aplicar Tema`
-          createIcons()
+          // Static SVG icons used - no runtime initialization needed
         }, 1500)
       } catch (error) {
         console.error('❌ [ThemeGallery] Failed to apply theme:', error)
@@ -413,10 +411,10 @@ function initActionButtons() {
 
         // Visual feedback
         resetBtn.innerHTML = '<i data-lucide="check" class="inline h-4 w-4 mr-2"></i> Restaurado'
-        createIcons()
+        // Static SVG icons used - no runtime initialization needed
         setTimeout(() => {
           resetBtn.innerHTML = `<i data-lucide="refresh-cw" class="inline h-4 w-4 mr-2"></i> Restaurar por Defecto`
-          createIcons()
+          // Static SVG icons used - no runtime initialization needed
         }, 1500)
       } catch (error) {
         console.error('❌ [ThemeGallery] Failed to reset theme:', error)
@@ -451,10 +449,10 @@ function initActionButtons() {
 
         // Visual feedback
         exportBtn.innerHTML = '<i data-lucide="check" class="inline h-4 w-4 mr-2"></i> Exportado'
-        createIcons()
+        // Static SVG icons used - no runtime initialization needed
         setTimeout(() => {
           exportBtn.innerHTML = `<i data-lucide="download" class="inline h-4 w-4 mr-2"></i> Exportar Configuración`
-          createIcons()
+          // Static SVG icons used - no runtime initialization needed
         }, 1500)
       } catch (error) {
         console.error('❌ [ThemeGallery] Failed to export theme:', error)
@@ -480,8 +478,7 @@ function init() {
       new ThemeSelector('theme-selector-container')
     }
 
-    // Inicializar iconos
-    createIcons()
+    // Static SVG icons used - no runtime initialization needed
 
     // Renderizar grilla de temas
     renderThemeGrid('all')

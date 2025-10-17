@@ -4,7 +4,7 @@
  * KISS: No dual-mode logic, no conditional flows
  */
 
-import { createIcons } from '../../js/'
+// Static SVG icons used - no runtime initialization needed
 import { CarouselManager } from '../../js/components/CarouselManager.js'
 import { api } from '../../js/shared/api-client.js'
 import { trackOccasionSelection, sortByPopularity } from '../../js/shared/occasion-popularity.js'
@@ -69,8 +69,7 @@ import { onDOMReady } from '../../js/shared/dom-ready.js'
 onDOMReady(async () => {
   console.log('✓ Create Product page loaded')
 
-  // Initialize icons
-  createIcons()
+  // Static SVG icons used - no runtime initialization needed
 
   // Load BCV rate from settings
   await loadBcvRate()
@@ -161,8 +160,7 @@ async function loadOccasions() {
       })
     })
 
-    // Re-create icons
-    createIcons()
+    // Static SVG icons used - no runtime initialization needed
 
     console.log(`✓ Loaded ${occasions.length} occasions (sorted by popularity)`)
   } catch (error) {
@@ -334,8 +332,6 @@ function renderImageGrid() {
     const slot = createEmptySlot(productImages.length)
     grid.appendChild(slot)
   }
-
-  createIcons()
 }
 
 /**
@@ -625,7 +621,7 @@ async function handleCreateProduct(event) {
     submitBtn.disabled = true
     submitBtn.innerHTML =
       '<i data-lucide="loader" class="h-5 w-5 animate-spin"></i> <span>Creando...</span>'
-    createIcons()
+    // Static SVG icons used - no runtime initialization needed
 
     // 1. Create product
     const result = await api.createProducts(productData)
@@ -645,7 +641,7 @@ async function handleCreateProduct(event) {
     // Success - restore button
     submitBtn.disabled = false
     submitBtn.innerHTML = '<i data-lucide="save" class="h-5 w-5"></i> <span>Crear Producto</span>'
-    createIcons()
+    // Static SVG icons used - no runtime initialization needed
 
     toast.success('Producto creado exitosamente')
 
@@ -659,7 +655,7 @@ async function handleCreateProduct(event) {
     const submitBtn = document.getElementById('create-product-btn')
     submitBtn.disabled = false
     submitBtn.innerHTML = '<i data-lucide="save" class="h-5 w-5"></i> <span>Crear Producto</span>'
-    createIcons()
+    // Static SVG icons used - no runtime initialization needed
   }
 }
 
@@ -744,6 +740,6 @@ function resetForm() {
     }
   })
 
-  createIcons()
+  // Static SVG icons used - no runtime initialization needed
   console.log('✓ Form reset, ready for new product')
 }

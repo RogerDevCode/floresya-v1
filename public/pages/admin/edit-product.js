@@ -4,7 +4,7 @@
  * KISS: No dual-mode logic, no conditional flows
  */
 
-import { createIcons } from '../../js/'
+// Static SVG icons used - no runtime initialization needed
 import { CarouselManager } from '../../js/components/CarouselManager.js'
 import { api } from '../../js/shared/api-client.js'
 import { trackOccasionSelection, sortByPopularity } from '../../js/shared/occasion-popularity.js'
@@ -71,8 +71,7 @@ import { onDOMReady } from '../../js/shared/dom-ready.js'
 onDOMReady(async () => {
   console.log('✓ Edit Product page loaded')
 
-  // Initialize icons
-  createIcons()
+  // Static SVG icons used - no runtime initialization needed
 
   // Get product ID from URL
   const params = new URLSearchParams(window.location.search)
@@ -310,7 +309,7 @@ async function loadProduct() {
     document.getElementById('loading-state').classList.add('hidden')
     document.getElementById('edit-product-form').classList.remove('hidden')
 
-    createIcons()
+    // Static SVG icons used - no runtime initialization needed
   } catch (error) {
     console.error('Error loading product:', error)
     toast.error('Error al cargar producto: ' + error.message)
@@ -379,8 +378,7 @@ async function loadOccasions() {
       })
     })
 
-    // Re-create icons
-    createIcons()
+    // Static SVG icons used - no runtime initialization needed
 
     console.log(`✓ Loaded ${occasions.length} occasions (${linkedOccasionIds.length} pre-selected)`)
   } catch (error) {
@@ -486,8 +484,6 @@ function renderImageGrid() {
     const slot = createEmptySlot(productImages.length)
     grid.appendChild(slot)
   }
-
-  createIcons()
 }
 
 /**
@@ -799,7 +795,7 @@ async function handleUpdateProduct(event) {
     submitBtn.disabled = true
     submitBtn.innerHTML =
       '<i data-lucide="loader" class="h-5 w-5 animate-spin"></i> <span>Guardando...</span>'
-    createIcons()
+    // Static SVG icons used - no runtime initialization needed
 
     // 1. Update product
     const result = await api.updateProducts(productId, productData)
@@ -818,7 +814,7 @@ async function handleUpdateProduct(event) {
     // Success - restore button and stay on page
     submitBtn.disabled = false
     submitBtn.innerHTML = '<i data-lucide="save" class="h-5 w-5"></i> <span>Guardar Cambios</span>'
-    createIcons()
+    // Static SVG icons used - no runtime initialization needed
 
     toast.success(
       'Producto actualizado exitosamente. Puedes hacer más cambios o cancelar para salir.'
@@ -835,7 +831,7 @@ async function handleUpdateProduct(event) {
     const submitBtn = document.getElementById('save-product-btn')
     submitBtn.disabled = false
     submitBtn.innerHTML = '<i data-lucide="save" class="h-5 w-5"></i> <span>Guardar Cambios</span>'
-    createIcons()
+    // Static SVG icons used - no runtime initialization needed
   }
 }
 

@@ -4,7 +4,7 @@
  * Compatible con el contrato OpenAPI actualizado
  */
 
-import { createIcons } from '/js/'
+// Static SVG icons used - no import needed
 import { addToCart, updateCartBadge, isInCart } from '/js/shared/cart.js'
 import { showToast } from '/js/components/toast.js'
 import { api } from '/js/shared/api-client.js'
@@ -125,8 +125,7 @@ function renderProduct(product, images) {
   document.getElementById('loading-spinner').classList.add('hidden')
   document.getElementById('product-content').classList.remove('hidden')
 
-  // Reinitialize icons
-  createIcons()
+  // Static SVG icons used - no runtime initialization needed
 }
 
 /**
@@ -220,8 +219,7 @@ function showError(message) {
     errorContainer.classList.remove('hidden')
   }
 
-  // Reinitialize icons
-  createIcons()
+  // Static SVG icons used - no runtime initialization needed
 }
 
 /**
@@ -390,8 +388,7 @@ function initCartActions() {
  */
 async function init() {
   try {
-    // Initialize Lucide icons first
-    createIcons()
+    // Static SVG icons used - no runtime initialization needed
 
     // Get product ID from URL
     const productId = getProductIdFromURL()

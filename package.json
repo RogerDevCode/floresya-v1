@@ -9,7 +9,6 @@
     "start": "node api/server.js",
     "build:icons": "node scripts/build-static-icons.js",
     "build:css": "tailwindcss -i ./public/css/input.css -o ./public/css/tailwind.css --minify && npm run format",
-    "build:icons": "node scripts/build-static-icons.js",
     "validate:icons": "node scripts/validate-static-icons.js",
     "watch:css": "tailwindcss -i ./public/css/input.css -o ./public/css/tailwind.css --watch",
     "copy:chart": "cp node_modules/chart.js/dist/chart.umd.min.js public/js/chart.min.js",

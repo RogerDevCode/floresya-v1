@@ -168,10 +168,7 @@ function renderCart() {
   // Attach event listeners to dynamically created buttons
   attachCartItemListeners()
 
-  // Re-initialize Lucide icons for dynamically added elements
-  if (window.lucide) {
-    window.lucide.createIcons()
-  }
+  // Static SVG icons used - no runtime initialization needed
 
   updateCartBadge(getTotalItems())
   updateSummary()
@@ -347,10 +344,7 @@ function handleClearCart() {
 
 // Initialize when DOM is ready
 onDOMReady(async () => {
-  // Initialize icons first (from global window.lucide)
-  if (window.lucide && window.lucide.createIcons) {
-    window.lucide.createIcons()
-  }
+  // Static SVG icons used - no runtime initialization needed
 
   // Then initialize cart functionality
   await init()

@@ -1,8 +1,6 @@
 import { onDOMReady } from '/js/shared/dom-ready.js'
 
-// Initialize Lucide icons
+// Static SVG icons used - no runtime initialization needed
 onDOMReady(function () {
-  if (typeof window.lucide !== 'undefined') {
-    window.lucide.createIcons()
-  }
+  // Icons are already rendered as static SVG in the HTML
 })

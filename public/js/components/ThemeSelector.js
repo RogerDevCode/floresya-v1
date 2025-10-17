@@ -56,6 +56,7 @@ export class ThemeSelector {
 
       // Static SVG icons are used - no runtime icon conversion needed
       console.log('🎨 [ThemeSelector] Using static SVG icons from /public/images/lucide/')
+      console.log('🔍 [Icon System Debug] ThemeSelector initialized with static SVG icons')
 
       // Re-check container in case it was dynamically created
       if (!this.container) {
@@ -184,6 +185,7 @@ export class ThemeSelector {
 
       // Static SVG icons are used - no runtime initialization needed
       console.log('🎨 [ThemeSelector] Static SVG icons are already embedded in HTML')
+      console.log('🔍 [Icon System Debug] ThemeSelector rendered with static SVG icons')
 
       // Guardar referencias
       this.toggleBtn = document.getElementById('theme-toggle-btn')
@@ -378,6 +380,7 @@ export class ThemeSelector {
 
       // With static icons, no runtime icon re-rendering is needed
       // Icons are already rendered as static SVG in the HTML
+      console.log('🔍 [Icon System Debug] ThemeSelector display updated with static SVG icons')
 
       console.log('✅ [ThemeSelector] Display updated')
     } catch (error) {
@@ -411,6 +414,7 @@ export class ThemeSelector {
 
       // With static icons, no runtime icon initialization is needed
       // Icons are already rendered as static SVG in the HTML
+      console.log('🔍 [Icon System Debug] Fallback UI created with static SVG icons')
 
       // Add basic theme switching
       const fallbackBtn = document.getElementById('fallback-theme-toggle')
