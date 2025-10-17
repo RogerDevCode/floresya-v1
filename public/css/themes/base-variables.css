@@ -76,6 +76,22 @@
   --carousel-indicator-bg: rgba(0, 0, 0, 0.5);
   --carousel-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
+  /* ==================== PRODUCTS SECTION ==================== */
+
+  --products-section-bg: #ffffff;
+  --products-section-bg-image: none;
+  --products-section-bg-position: center;
+  --products-section-bg-size: cover;
+  --products-section-bg-repeat: no-repeat;
+  --products-section-bg-blend: normal;
+  --products-section-pattern: none;
+  --products-section-pattern-opacity: 0.1;
+  --products-section-texture: none;
+  --products-section-overlay: none;
+  --products-section-overlay-opacity: 0;
+  --products-section-border: none;
+  --products-section-shadow: none;
+
   /* ==================== PRODUCT CARDS ==================== */
 
   --card-bg: #ffffff;

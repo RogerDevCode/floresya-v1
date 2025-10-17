@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test de Theme Selector Dropdown</title>
+    <script src="public/js/themes/themePreload.js"></script>
+    <link rel="stylesheet" href="public/css/styles.css" />
+    <style>
+      body {
+        padding: 2rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+      .test-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      }
+      .test-section {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+      }
+      .test-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+      }
+      .theme-preview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+      .theme-card {
+        padding: 1rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        text-align: center;
+        transition: transform 0.2s;
+      }
+      .theme-card:hover {
+        transform: translateY(-2px);
+      }
+      .theme-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+      .instructions {
+        background: #f0f9ff;
+        border: 1px solid #0ea5e9;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-container">
+      <h1 style="text-align: center; margin-bottom: 2rem; color: #1f2937">
+        🎨 Test de Theme Selector Dropdown
+      </h1>
+
+      <div class="instructions">
+        <h3>📋 Instrucciones de Prueba:</h3>
+        <ul>
+          <li>✅ Haz clic en el botón del selector de temas para abrir el dropdown</li>
+          <li>✅ Verifica que todos los 14 temas sean visibles</li>
+          <li>✅ Prueba el scroll del dropdown (debe funcionar suavemente)</li>
+          <li>✅ Selecciona diferentes temas y verifica que se apliquen correctamente</li>
+          <li>
+            ✅ Los temas nuevos: 🦇🌹 Corcho Vampírico y 🌃💜 Neon Cyberpunk deben estar incluidos
+          </li>
+          <li>✅ El tema seleccionado debe mostrar un checkmark y resaltado</li>
+        </ul>
+      </div>
+
+      <div class="test-section">
+        <div class="test-header">
+          <h2>🎛️ Selector de Temas</h2>
+          <div id="theme-selector-container"></div>
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h2>🎭 Vista Previa de Temas</h2>
+        <div class="theme-preview" id="theme-preview">
+          <!-- Los temas se cargarán dinámicamente -->
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h2>📊 Estado Actual</h2>
+        <div id="current-theme-info">
+          <p><strong>Tema actual:</strong> <span id="current-theme">Cargando...</span></p>
+          <p>
+            <strong>Total de temas disponibles:</strong> <span id="total-themes">Cargando...</span>
+          </p>
+          <p><strong>Estado del dropdown:</strong> <span id="dropdown-status">Cerrado</span></p>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { ThemeSelector } from './public/js/components/ThemeSelector.js'
+      import { themeManager } from './public/js/themes/themeManager.js'
+
+      // Inicializar todo cuando el DOM esté listo
+      document.addEventListener('DOMContentLoaded', async () => {
+        console.log('🧪 [Test] Starting dropdown test...')
+
+        try {
+          // Inicializar theme manager
+          await themeManager.init()
+
+          // Crear theme selector
+          const selector = new ThemeSelector('theme-selector-container')
+
+          // Monitorear estado del dropdown
+          const toggleBtn = document.getElementById('theme-toggle-btn')
+          const dropdown = document.getElementById('theme-dropdown')
+
+          if (toggleBtn && dropdown) {
+            toggleBtn.addEventListener('click', () => {
+              const isHidden = dropdown.classList.contains('hidden')
+              document.getElementById('dropdown-status').textContent = isHidden
+                ? 'Abierto'
+                : 'Cerrado'
+            })
+          }
+
+          // Actualizar información de temas
+          updateThemeInfo()
+
+          // Escuchar cambios de tema
+          window.addEventListener('themeChanged', updateThemeInfo)
+
+          // Crear vista previa de todos los temas
+          createThemePreview()
+
+          console.log('✅ [Test] Test initialized successfully')
+        } catch (error) {
+          console.error('❌ [Test] Test initialization failed:', error)
+          document.getElementById('current-theme').textContent = 'Error: ' + error.message
+        }
+      })
+
+      function updateThemeInfo() {
+        try {
+          const currentTheme = themeManager.getCurrentThemeDefinition()
+          const allThemes = themeManager.getAvailableThemes()
+
+          document.getElementById('current-theme').textContent =
+            `${currentTheme.icon} ${currentTheme.name} (${currentTheme.id})`
+          document.getElementById('total-themes').textContent = allThemes.length
+        } catch (error) {
+          console.error('Error updating theme info:', error)
+        }
+      }
+
+      function createThemePreview() {
+        try {
+          const container = document.getElementById('theme-preview')
+          const themes = themeManager.getAvailableThemes()
+
+          container.innerHTML = themes
+            .map(
+              theme => `
+                    <div class="theme-card" data-theme="${theme.id}">
+                        <div class="theme-icon">${theme.icon}</div>
+                        <h4>${theme.name}</h4>
+                        <p style="font-size: 0.875rem; color: #6b7280; margin: 0.5rem 0;">
+                            ${theme.description}
+                        </p>
+                        <span style="font-size: 0.75rem; padding: 0.25rem 0.5rem; background: #f3f4f6; border-radius: 4px;">
+                            ${theme.category}
+                        </span>
+                    </div>
+                `
+            )
+            .join('')
+
+          // Agregar click para cambiar tema
+          container.querySelectorAll('.theme-card').forEach(card => {
+            card.addEventListener('click', () => {
+              const themeId = card.dataset.theme
+              themeManager.setTheme(themeId)
+            })
+          })
+
+          console.log(`✅ [Test] Created preview for ${themes.length} themes`)
+        } catch (error) {
+          console.error('Error creating theme preview:', error)
+        }
+      }
+
+      // Actualizar vista previa cuando cambia el tema
+      window.addEventListener('themeChanged', () => {
+        const currentThemeId = themeManager.getCurrentTheme()
+        document.querySelectorAll('.theme-card').forEach(card => {
+          if (card.dataset.theme === currentThemeId) {
+            card.style.border = '2px solid #ec4899'
+            card.style.background = '#fdf2f8'
+          } else {
+            card.style.border = '1px solid #e5e7eb'
+            card.style.background = 'white'
+          }
+        })
+      })
+    </script>
+  </body>
+</html>

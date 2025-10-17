@@ -700,7 +700,7 @@ function renderPagination(container, currentPage, hasMore) {
       aria-label="Página anterior"
       data-page="${currentPage - 1}"
     >
-      <i data-lucide="chevron-left" class="h-4 w-4"></i>
+      <i data-lucide="chevron-left" class="h-5 w-5 text-yellow-500 stroke-2"></i>
     </button>
   `
 
@@ -734,7 +734,7 @@ function renderPagination(container, currentPage, hasMore) {
       aria-label="Página siguiente"
       data-page="${currentPage + 1}"
     >
-      <i data-lucide="chevron-right" class="h-4 w-4"></i>
+      <i data-lucide="chevron-right" class="h-5 w-5 text-yellow-500 stroke-2"></i>
     </button>
   `
 

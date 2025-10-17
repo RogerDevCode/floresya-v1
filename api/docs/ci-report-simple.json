@@ -1,8 +1,8 @@
 {
   "success": true,
-  "timestamp": "2025-10-17T11:16:12.756Z",
+  "timestamp": "2025-10-17T17:43:34.189Z",
   "summary": {
-    "timestamp": "2025-10-17T11:16:12.894Z",
+    "timestamp": "2025-10-17T17:43:34.323Z",
     "version": "1.0.0",
     "endpoints": 44,
     "schemas": 16,

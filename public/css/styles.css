@@ -977,6 +977,45 @@ body {
   right: -1.5rem;
 }
 
+/* ===== PRODUCTS SECTION ===== */
+.products-section {
+  background-color: var(--products-section-bg);
+  background-image: var(--products-section-bg-image);
+  background-position: var(--products-section-bg-position);
+  background-size: var(--products-section-bg-size);
+  background-repeat: var(--products-section-bg-repeat);
+  background-blend-mode: var(--products-section-bg-blend);
+  border: var(--products-section-border);
+  box-shadow: var(--products-section-shadow);
+  position: relative;
+}
+
+.products-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--products-section-pattern);
+  opacity: var(--products-section-pattern-opacity);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.products-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--products-section-overlay);
+  opacity: var(--products-section-overlay-opacity);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Ensure content stays above backgrounds */
+.products-section > .container {
+  position: relative;
+  z-index: 2;
+}
+
 /* ===== PRODUCT CARDS ===== */
 .product-card {
   transition:

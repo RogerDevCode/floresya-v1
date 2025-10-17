@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test de Texturas de Productos</title>
+    <script src="public/js/themes/themePreload.js"></script>
+    <link rel="stylesheet" href="public/css/styles.css" />
+    <style>
+      .theme-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        padding: 2rem;
+      }
+      .theme-preview {
+        height: 200px;
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+      }
+      .theme-name {
+        text-align: center;
+        font-weight: bold;
+        margin-top: 1rem;
+        font-size: 1.1rem;
+      }
+      .theme-controls {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+      }
+      .theme-controls select {
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        margin-left: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="theme-controls">
+      <label>Theme Activo:</label>
+      <select id="themeSelector">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+        <option value="eleganciaModerna">Elegancia Moderna</option>
+        <option value="vintageRomantico">Vintage Romántico</option>
+        <option value="tropicalVibrante">Tropical Vibrante</option>
+        <option value="jardinNatural">Jardín Natural</option>
+        <option value="zenMinimalista">Zen Minimalista</option>
+        <option value="darkula">Darkula</option>
+        <option value="wood">Madera</option>
+        <option value="girasol">Girasol</option>
+        <option value="corkVampiro">🦇🌹 Corcho Vampírico</option>
+        <option value="neonCyberpunk">🌃💜 Neon Cyberpunk</option>
+        <option value="highContrastLight">Alto Contraste Claro</option>
+        <option value="highContrastDark">Alto Contraste Oscuro</option>
+      </select>
+    </div>
+
+    <div class="theme-grid">
+      <div>
+        <div class="theme-preview products-section">
+          <div class="container">
+            <h3>Products Section</h3>
+            <p>Esta es la sección de productos con texturas</p>
+          </div>
+        </div>
+        <div class="theme-name">Products Section</div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { ThemeManager } from './public/js/themes/themeManager.js'
+
+      const themeManager = new ThemeManager()
+      const themeSelector = document.getElementById('themeSelector')
+
+      // Inicializar tema
+      themeManager.init()
+
+      // Cambiar tema cuando se selecciona
+      themeSelector.addEventListener('change', e => {
+        themeManager.setTheme(e.target.value)
+      })
+
+      // Establecer tema inicial
+      themeSelector.value = themeManager.getCurrentTheme()
+    </script>
+  </body>
+</html>
