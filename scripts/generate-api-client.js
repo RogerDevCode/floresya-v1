@@ -77,7 +77,7 @@ async function generateApiClient() {
  */
 function generateClientCode(spec) {
   const paths = spec.paths || {}
-  const servers = spec.servers || []
+  // const servers = spec.servers || []
   const timestamp = new Date().toISOString()
 
   // Generar métodos dinámicamente desde paths
@@ -98,7 +98,7 @@ function generateClientCode(spec) {
  */
 
 class ApiClient {
-  constructor(baseUrl = '${servers[0]?.url || 'http://localhost:3000'}') {
+  constructor(baseUrl = '') {
     this.baseUrl = baseUrl
     this.defaultHeaders = {
       'Content-Type': 'application/json'

@@ -230,36 +230,6 @@ Prohibido: Usar bibliotecas como Zod; solo validación manual simple.
 3. **CSP Strict**: `script-src: 'self'` only. Prohibido `'unsafe-inline'`, `'unsafe-eval'`, CDNs sin check.
 4. **Tailwind v4**: Fuente en input.css, compilado en tailwind.css (NO EDITAR). Build: `npm run build:css`. Prohibido `@apply`. CSS custom en styles.css.
 5. **Fail-Fast**: En JS frontend, try-catch con log y throw.
-6. **DOM-Ready Pattern**: OBLIGATORIO usar `onDOMReady()` de `/js/shared/dom-ready.js` para toda inicialización que acceda al DOM. Prohibido `document.addEventListener('DOMContentLoaded')` directo. Prohibido atributo `async` en `<script type="module">`. Todo código debe ejecutarse solo después de que el DOM esté completamente cargado. Referencia: `/docs/FRONTEND-DOM-READY-PATTERN.md`.
-
-Ejemplo Obligatorio:
-
-```javascript
-import { onDOMReady } from '/js/shared/dom-ready.js'
-import { api } from '../js/shared/api-client.js'
-import { createIcons } from '../js/'
-
-async function init() {
-  try {
-    console.log('🚀 Starting initialization...')
-
-    // Initialize in logical order
-    createIcons()
-    const products = await api.getAllProducts()
-    renderProducts(products)
-
-    // Mark page as loaded
-    document.documentElement.classList.add('loaded')
-    console.log('✅ Page fully initialized')
-  } catch (error) {
-    console.error('❌ Initialization failed:', error)
-    throw error // Fail-fast
-  }
-}
-
-// Execute on DOM ready using the safe utility
-onDOMReady(init)
-```
 
 ## Contract Enforcement System (Obligatorio)
 

@@ -4,7 +4,7 @@
  * Integrated with the main admin dashboard
  */
 
-import '../../js/'
+// No longer needed - removed invalid directory import
 
 // Global state for occasions management
 let currentOccasionsFilter = 'all' // 'all', 'active', 'inactive'

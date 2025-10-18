@@ -929,14 +929,19 @@
         <!-- Filters and Actions -->
         <div class="bg-white rounded-xl shadow-md p-6 admin-card mb-6">
           <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-            <!-- Search -->
+            <!-- Search and Role Filters -->
             <div class="flex-1 max-w-md">
-              <div class="relative">
+              <label
+                class="block text-sm font-bold text-gray-900 mb-2 bg-white inline-block px-3 py-1 rounded-md shadow-sm border border-gray-300"
+              >
+                🔍 Búsqueda de Usuarios
+              </label>
+              <div class="relative mb-3">
                 <input
                   type="text"
                   id="user-search-input"
                   placeholder="Buscar por nombre o email..."
-                  class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                  class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-black"
                 />
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -954,39 +959,89 @@
                   <path d="m21 21-4.3-4.3" />
                 </svg>
               </div>
+
+              <!-- Filters Row -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <!-- Role Filter -->
+                <div>
+                  <label
+                    class="block text-sm font-bold text-gray-900 mb-2 bg-white inline-block px-3 py-1 rounded-md shadow-sm border border-gray-300"
+                  >
+                    👥 Filtro por Rol
+                  </label>
+                  <select
+                    id="user-role-filter"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-black"
+                  >
+                    <option value="">Ver Todos</option>
+                    <option value="admin">Administrador</option>
+                    <option value="user">Cliente</option>
+                  </select>
+                </div>
+
+                <!-- Email Verification Filter -->
+                <div>
+                  <label
+                    class="block text-sm font-bold text-gray-900 mb-2 bg-white inline-block px-3 py-1 rounded-md shadow-sm border border-gray-300"
+                  >
+                    ✉️ Email Verificado
+                  </label>
+                  <select
+                    id="user-email-verified-filter"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-black"
+                  >
+                    <option value="">Todos</option>
+                    <option value="true">Verificados</option>
+                    <option value="false">Pendientes</option>
+                  </select>
+                </div>
+
+                <!-- Status Filter -->
+                <div>
+                  <label
+                    class="block text-sm font-bold text-gray-900 mb-2 bg-white inline-block px-3 py-1 rounded-md shadow-sm border border-gray-300"
+                  >
+                    ⚡ Estado del Usuario
+                  </label>
+                  <select
+                    id="user-status-filter"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-black"
+                  >
+                    <option value="">Todos</option>
+                    <option value="true">Activos</option>
+                    <option value="false">Inactivos</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
-            <!-- Filters and Actions -->
-            <div class="flex flex-wrap gap-3">
-              <!-- Role Filter -->
-              <select
-                id="user-role-filter"
-                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+            <!-- Actions -->
+            <div
+              class="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto"
+            >
+              <!-- Clear Filters Button -->
+              <button
+                id="clear-search-btn"
+                class="px-4 py-2 bg-orange-100 hover:bg-orange-200 border border-orange-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors flex items-center space-x-2 text-orange-700 font-semibold"
+                title="Limpiar búsqueda"
               >
-                <option value="">Todos los roles</option>
-                <option value="user">Clientes</option>
-                <option value="admin">Administradores</option>
-              </select>
-
-              <!-- Status Filter -->
-              <select
-                id="user-status-filter"
-                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-              >
-                <option value="">Todos los estados</option>
-                <option value="active">Activos</option>
-                <option value="inactive">Inactivos</option>
-              </select>
-
-              <!-- Email Verification Filter -->
-              <select
-                id="email-verified-filter"
-                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-              >
-                <option value="">Todos los emails</option>
-                <option value="true">Verificados</option>
-                <option value="false">No verificados</option>
-              </select>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-4 w-4"
+                >
+                  <path d="M3 6h18" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6" />
+                </svg>
+                <span class="text-sm">🗑️ Limpiar Filtros</span>
+              </button>
 
               <!-- New User Button -->
               <button
@@ -1028,22 +1083,17 @@
                   <th
                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Contacto
-                  </th>
-                  <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
                     Rol
                   </th>
                   <th
                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Estado
+                    Email Verificado
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Email Verificado
+                    Estado
                   </th>
                   <th
                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -1061,6 +1111,66 @@
                 <!-- Users will be populated here -->
               </tbody>
             </table>
+
+            <!-- Pagination -->
+            <div id="users-pagination" class="flex items-center justify-between mt-6 px-4">
+              <div class="flex items-center text-sm text-gray-700">
+                <span id="pagination-info" class="mr-4">
+                  Mostrando <span id="pagination-start">0</span>-<span id="pagination-end">0</span>
+                  de <span id="pagination-total">0</span> usuarios
+                </span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <button
+                  id="pagination-prev"
+                  class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  disabled
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-4 w-4"
+                  >
+                    <polyline points="15 18 9 12 3 6"></polyline>
+                    <polyline points="3 6 9 12 15 18"></polyline>
+                  </svg>
+                  <span class="ml-1">Anterior</span>
+                </button>
+
+                <div id="pagination-numbers" class="flex space-x-1">
+                  <!-- Page numbers will be generated here -->
+                </div>
+
+                <button
+                  id="pagination-next"
+                  class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <span class="mr-1">Siguiente</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-4 w-4"
+                  >
+                    <polyline points="9 18 15 12 21 6"></polyline>
+                    <polyline points="21 12 15 6 9 18"></polyline>
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
 
           <!-- Loading State -->
@@ -1338,6 +1448,11 @@
                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     Última Modificación
+                  </th>
+                  <th
+                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Acciones
                   </th>
                 </tr>
               </thead>

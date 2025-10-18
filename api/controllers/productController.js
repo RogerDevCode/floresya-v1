@@ -1,12 +1,98 @@
 /**
  * Product Controller
  * Handles HTTP logic for product operations
- * Delegates business logic to productService
  */
 
 import * as productService from '../services/productService.js'
 import * as carouselService from '../services/carouselService.js'
 import { asyncHandler } from '../middleware/errorHandler.js'
+
+/**
+ * Helper Functions
+ * Common utilities following KISS, DRY, and SSOT principles
+ */
+
+/**
+ * Creates standardized API response
+ * @param {Object} data - Response data
+ * @param {string} message - Success message
+ * @returns {Object} Formatted response object
+ */
+const createResponse = (data, message) => ({
+  success: true,
+  data,
+  message
+})
+
+/**
+ * Gets appropriate HTTP status code for operation
+ * @param {string} operation - Operation type (create, update, delete, etc.)
+ * @returns {number} HTTP status code
+ */
+const getStatusCode = operation => {
+  const statusCodes = {
+    create: 201,
+    update: 200,
+    delete: 200,
+    reactivate: 200,
+    stock: 200,
+    carousel: 200,
+    link: 200,
+    replace: 200
+  }
+  return statusCodes[operation] || 200
+}
+
+/**
+ * Gets appropriate success message for operation
+ * @param {string} operation - Operation type
+ * @param {string} entity - Entity name (user, product, etc.)
+ * @returns {string} Success message
+ */
+const getSuccessMessage = (operation, entity = 'Product') => {
+  const messages = {
+    create: `${entity} created successfully`,
+    update: `${entity} updated successfully`,
+    delete: `${entity} deactivated successfully`,
+    reactivate: `${entity} reactivated successfully`,
+    stock: 'Stock updated successfully',
+    carousel: 'Carousel order updated successfully',
+    link: 'Occasion linked to product successfully',
+    replace: 'Product occasions updated successfully',
+    retrieve: `${entity} retrieved successfully`,
+    occasions: 'Product occasions retrieved successfully'
+  }
+  return messages[operation] || `${entity} operation completed successfully`
+}
+
+/**
+ * Validates product ID parameter
+ * @param {string} idParam - ID parameter from request
+ * @param {string} operation - Operation being performed (for error messages)
+ * @returns {number} Validated numeric ID
+ * @throws {AppError} 400 for invalid IDs, maintains existing error handling for service layer
+ */
+const validateProductId = (idParam, operation = 'operation') => {
+  // Check if parameter exists
+  if (!idParam) {
+    const error = new AppError(`Product ID is required for ${operation}`, 400)
+    throw error
+  }
+
+  // Try to parse as integer
+  const numericId = parseInt(idParam, 10)
+
+  // Check if parsing failed (NaN) or if it's not a positive integer
+  if (isNaN(numericId) || numericId <= 0) {
+    const error = new AppError(
+      `Invalid product ID '${idParam}' for ${operation}. Must be a positive integer.`,
+      400
+    )
+    throw error
+  }
+
+  return numericId
+}
 
 /**
  * GET /api/products
@@ -20,24 +106,17 @@ export const getAllProducts = asyncHandler(async (req, res) => {
     search: req.query.search,
     occasion: req.query.occasion,
     sortBy: req.query.sortBy,
-    limit: req.query.limit ? parseInt(req.query.limit, 10) : undefined,
-    offset: req.query.offset ? parseInt(req.query.offset, 10) : undefined
+    limit: req.query.limit,
+    offset: req.query.offset
   }
 
-  // includeInactive: only admin can see inactive products (CLAUDE.md #5)
   const includeInactive = req.user?.role === 'admin' && req.query.includeInactive === 'true'
-
-  // includeImageSize: optional image size to attach to products
   const includeImageSize = req.query.imageSize || null
 
   const products = await productService.getAllProducts(filters, includeInactive, includeImageSize)
 
-  res.status(200).json({
-    success: true,
-    data: products,
-    message:
-      products.length === 0 ? 'No products found for filters' : 'Products retrieved successfully'
-  })
+  const response = createResponse(products, getSuccessMessage('retrieve', 'Products'))
+  res.json(response)
 })
 
 /**
@@ -45,26 +124,13 @@ export const getAllProducts = asyncHandler(async (req, res) => {
  * Get product by ID
  */
 export const getProductById = asyncHandler(async (req, res) => {
-  const productId = parseInt(req.params.id, 10)
-
-  if (isNaN(productId) || productId <= 0) {
-    return res.status(400).json({
-      success: false,
-      error: 'Invalid id: must be a positive integer',
-      message: 'Invalid id: must be a positive integer'
-    })
-  }
-
-  // includeImageSize: optional image size to attach to product
+  const productId = validateProductId(req.params.id, 'getProductById')
   const includeImageSize = req.query.imageSize || null
 
   const product = await productService.getProductById(productId, false, includeImageSize)
 
-  res.status(200).json({
-    success: true,
-    data: product,
-    message: 'Product retrieved successfully'
-  })
+  const response = createResponse(product, getSuccessMessage('retrieve'))
+  res.json(response)
 })
 
 /**
@@ -74,11 +140,8 @@ export const getProductById = asyncHandler(async (req, res) => {
 export const getProductBySku = asyncHandler(async (req, res) => {
   const product = await productService.getProductBySku(req.params.sku)
 
-  res.json({
-    success: true,
-    data: product,
-    message: 'Product retrieved successfully'
-  })
+  const response = createResponse(product, getSuccessMessage('retrieve'))
+  res.json(response)
 })
 
 /**
@@ -88,11 +151,8 @@ export const getProductBySku = asyncHandler(async (req, res) => {
 export const getCarouselProducts = asyncHandler(async (req, res) => {
   const products = await productService.getCarouselProducts()
 
-  res.json({
-    success: true,
-    data: products,
-    message: 'Carousel products retrieved successfully'
-  })
+  const response = createResponse(products, getSuccessMessage('retrieve', 'Carousel products'))
+  res.json(response)
 })
 
 /**
@@ -132,11 +192,11 @@ export const getProductsWithOccasions = asyncHandler(async (req, res) => {
 
   const products = await productService.getProductsWithOccasions(limit, offset)
 
-  res.json({
-    success: true,
-    data: products,
-    message: 'Products with occasions retrieved successfully'
-  })
+  const response = createResponse(
+    products,
+    getSuccessMessage('retrieve', 'Products with occasions')
+  )
+  res.json(response)
 })
 
 /**
@@ -177,11 +237,8 @@ export const getProductsByOccasion = asyncHandler(async (req, res) => {
 
   const products = await productService.getProductsByOccasion(occasionId, limit)
 
-  res.json({
-    success: true,
-    data: products,
-    message: 'Products retrieved successfully'
-  })
+  const response = createResponse(products, getSuccessMessage('retrieve', 'Products'))
+  res.json(response)
 })
 
 /**
@@ -272,11 +329,8 @@ export const createProduct = asyncHandler(async (req, res) => {
 
   const product = await productService.createProduct(req.body)
 
-  res.status(201).json({
-    success: true,
-    data: product,
-    message: 'Product created successfully'
-  })
+  const response = createResponse(product, getSuccessMessage('create'))
+  res.status(getStatusCode('create')).json(response)
 })
 
 /**
@@ -335,11 +389,8 @@ export const createProductWithOccasions = asyncHandler(async (req, res) => {
 
   const result = await productService.createProductWithOccasions(product, occasionIds)
 
-  res.status(201).json({
-    success: true,
-    data: result,
-    message: 'Product with occasions created successfully'
-  })
+  const response = createResponse(result, getSuccessMessage('create', 'Product with occasions'))
+  res.status(getStatusCode('create')).json(response)
 })
 
 /**
@@ -416,7 +467,7 @@ export const createProductWithOccasions = asyncHandler(async (req, res) => {
  *       500: { $ref: '#/components/responses/InternalServerError' }
  */
 export const updateProduct = asyncHandler(async (req, res) => {
-  const productId = parseInt(req.params.id, 10)
+  const productId = validateProductId(req.params.id, 'updateProduct')
 
   // Resolve carousel conflicts before updating
   if (req.body.featured && req.body.carousel_order) {
@@ -425,11 +476,8 @@ export const updateProduct = asyncHandler(async (req, res) => {
 
   const product = await productService.updateProduct(productId, req.body)
 
-  res.json({
-    success: true,
-    data: product,
-    message: 'Product updated successfully'
-  })
+  const response = createResponse(product, getSuccessMessage('update'))
+  res.json(response)
 })
 
 /**
@@ -475,14 +523,12 @@ export const updateProduct = asyncHandler(async (req, res) => {
  */
 export const updateCarouselOrder = asyncHandler(async (req, res) => {
   const { order } = req.body
+  const productId = validateProductId(req.params.id, 'updateCarouselOrder')
 
-  const result = await productService.updateCarouselOrder(req.params.id, order)
+  const result = await productService.updateCarouselOrder(productId, order)
 
-  res.json({
-    success: true,
-    data: result,
-    message: 'Carousel order updated successfully'
-  })
+  const response = createResponse(result, getSuccessMessage('carousel'))
+  res.json(response)
 })
 
 /**
@@ -528,14 +574,12 @@ export const updateCarouselOrder = asyncHandler(async (req, res) => {
  */
 export const updateStock = asyncHandler(async (req, res) => {
   const { quantity } = req.body
+  const productId = validateProductId(req.params.id, 'updateStock')
 
-  const product = await productService.updateStock(req.params.id, quantity)
+  const product = await productService.updateStock(productId, quantity)
 
-  res.json({
-    success: true,
-    data: product,
-    message: 'Stock updated successfully'
-  })
+  const response = createResponse(product, getSuccessMessage('stock'))
+  res.json(response)
 })
 
 /**
@@ -572,13 +616,12 @@ export const updateStock = asyncHandler(async (req, res) => {
  *       500: { $ref: '#/components/responses/InternalServerError' }
  */
 export const deleteProduct = asyncHandler(async (req, res) => {
-  const product = await productService.deleteProduct(req.params.id)
+  const productId = validateProductId(req.params.id, 'deleteProduct')
 
-  res.json({
-    success: true,
-    data: product,
-    message: 'Product deactivated successfully'
-  })
+  const product = await productService.deleteProduct(productId)
+
+  const response = createResponse(product, getSuccessMessage('delete'))
+  res.json(response)
 })
 
 /**
@@ -613,13 +656,12 @@ export const deleteProduct = asyncHandler(async (req, res) => {
  *       500: { $ref: '#/components/responses/InternalServerError' }
  */
 export const reactivateProduct = asyncHandler(async (req, res) => {
-  const product = await productService.reactivateProduct(req.params.id)
+  const productId = validateProductId(req.params.id, 'reactivateProduct')
 
-  res.json({
-    success: true,
-    data: product,
-    message: 'Product reactivated successfully'
-  })
+  const product = await productService.reactivateProduct(productId)
+
+  const response = createResponse(product, getSuccessMessage('reactivate'))
+  res.json(response)
 })
 
 /**
@@ -650,24 +692,12 @@ export const reactivateProduct = asyncHandler(async (req, res) => {
  *       500: { $ref: '#/components/responses/InternalServerErrorError' }
  */
 export const getProductOccasions = asyncHandler(async (req, res) => {
-  try {
-    const productId = parseInt(req.params.id)
+  const productId = validateProductId(req.params.id, 'getProductOccasions')
 
-    if (!productId) {
-      throw new BadRequestError('Invalid product ID', { productId })
-    }
+  const result = await productService.getProductOccasions(productId)
 
-    const result = await productService.getProductOccasions(productId)
-
-    res.json({
-      success: true,
-      data: result,
-      message: 'Product occasions retrieved successfully'
-    })
-  } catch (error) {
-    console.error(`getProductOccasions(${productId}) failed:`, error)
-    throw error
-  }
+  const response = createResponse(result, getSuccessMessage('occasions'))
+  res.json(response)
 })
 
 /**
@@ -704,28 +734,12 @@ export const getProductOccasions = asyncHandler(async (req, res) => {
  *       500: { $ref: '#/components/responses/InternalServerErrorError' }
  */
 export const linkProductOccasion = asyncHandler(async (req, res) => {
-  try {
-    const productId = parseInt(req.params.id)
-    const occasionId = parseInt(req.params.occasionId)
+  const productId = validateProductId(req.params.id, 'linkProductOccasion')
 
-    if (!productId || !occasionId) {
-      throw new BadRequestError('Product ID and Occasion ID are required', {
-        productId,
-        occasionId
-      })
-    }
+  const result = await productService.linkProductOccasion(productId, req.params.occasionId)
 
-    const result = await productService.linkProductOccasion(productId, occasionId)
-
-    res.json({
-      success: true,
-      data: result,
-      message: 'Occasion linked to product successfully'
-    })
-  } catch (error) {
-    console.error(`linkProductOccasion(${productId}, ${occasionId}) failed:`, error)
-    throw error
-  }
+  const response = createResponse(result, getSuccessMessage('link'))
+  res.json(response)
 })
 
 /**
@@ -815,22 +829,10 @@ export const linkProductOccasion = asyncHandler(async (req, res) => {
  * @access Admin
  */
 export const replaceProductOccasions = asyncHandler(async (req, res) => {
-  const productId = parseInt(req.params.id)
-  const { occasion_ids } = req.body
+  const productId = validateProductId(req.params.id, 'replaceProductOccasions')
 
-  // Validate occasion_ids is provided
-  if (!occasion_ids) {
-    return res.status(400).json({
-      success: false,
-      error: 'occasion_ids is required'
-    })
-  }
+  const result = await productService.replaceProductOccasions(productId, req.body.occasion_ids)
 
-  const result = await productService.replaceProductOccasions(productId, occasion_ids)
-
-  res.json({
-    success: true,
-    data: result,
-    message: 'Product occasions updated successfully'
-  })
+  const response = createResponse(result, getSuccessMessage('replace'))
+  res.json(response)
 })

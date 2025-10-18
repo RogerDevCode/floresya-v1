@@ -1,7 +1,7 @@
 /**
  * FloresYa API Client
  * Auto-generated from OpenAPI specification
- * Generated: 2025-10-16T17:21:41.841Z
+ * Generated: 2025-10-18T19:00:34.132Z
  * Spec Version: 1.0.0
  * Total Endpoints: 44
  *
@@ -10,7 +10,7 @@
  */
 
 class ApiClient {
-  constructor(baseUrl = 'http://localhost:3000') {
+  constructor(baseUrl = '') {
     this.baseUrl = baseUrl
     this.defaultHeaders = {
       'Content-Type': 'application/json'
@@ -29,6 +29,12 @@ class ApiClient {
       const config = {
         method: options.method || 'GET',
         headers: { ...this.defaultHeaders, ...options.headers }
+      }
+
+      // Add authentication header if token available
+      const token = localStorage.getItem('auth_token')
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
       }
 
       if (options.body && options.method !== 'GET') {

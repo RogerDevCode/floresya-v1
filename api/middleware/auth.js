@@ -12,6 +12,10 @@ import logger from './logger.js'
 // DUAL-MODE: Check environment
 const IS_DEV = process.env.NODE_ENV === 'development' && !process.env.FORCE_AUTH
 
+// Debug: Log environment detection
+console.log('🔍 AUTH DEBUG - NODE_ENV:', process.env.NODE_ENV)
+console.log('🔍 AUTH DEBUG - IS_DEV:', IS_DEV)
+
 // ⚠️ TEMPORARY: Allow mock auth in production (REMOVE BEFORE REAL DEPLOYMENT)
 const ALLOW_MOCK_AUTH = process.env.ALLOW_MOCK_AUTH === 'true' || IS_DEV
 const MOCK_TOKEN = 'dev-mock-token-admin-floresya'
@@ -35,6 +39,15 @@ if (ALLOW_MOCK_AUTH && !IS_DEV) {
 }
 
 /**
+ * Helper: Get user role from user object (DRY principle)
+ * @param {Object} user - User object
+ * @returns {string} User role
+ */
+const getUserRole = user => {
+  return user?.user_metadata?.role || user?.role || 'user'
+}
+
+/**
  * Authenticate user (DUAL-MODE)
  * - Development: Auto-inject DEV_MOCK_USER
  * - Production: Verify Supabase JWT
@@ -43,6 +56,7 @@ export async function authenticate(req, res, next) {
   try {
     // DEVELOPMENT MODE: Auto-inject mock user (zero friction)
     if (IS_DEV) {
+      console.log('🔍 AUTH MIDDLEWARE - IS_DEV true, injecting mock user')
       req.user = DEV_MOCK_USER
       req.token = 'dev-mock-token'
       logger.info('🔓 DEV MODE: Auto-authenticated', {
@@ -103,7 +117,7 @@ export function authorize(allowedRoles) {
     }
 
     const roles = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles]
-    const userRole = req.user.user_metadata?.role || 'user'
+    const userRole = getUserRole(req.user)
 
     if (!roles.includes(userRole)) {
       logger.warn('Access denied', {
@@ -204,7 +218,7 @@ export function checkOwnership(getResourceOwnerId) {
     }
 
     // Admin bypass (works in both modes)
-    const userRole = req.user.user_metadata?.role || 'user'
+    const userRole = req.user.user_metadata?.role || req.user?.role || 'user'
     if (userRole === 'admin') {
       logger.info('Ownership check bypassed (admin)', {
         userId: req.user.id,

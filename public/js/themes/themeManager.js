@@ -254,5 +254,10 @@ export class ThemeManager {
 // Instancia global singleton
 export const themeManager = new ThemeManager()
 
+// Función de inicialización para compatibilidad
+export const initThemeManager = () => {
+  themeManager.init()
+}
+
 // Export por defecto
 export default themeManager

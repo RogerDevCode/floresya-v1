@@ -1,12 +1,12 @@
 {
-  "timestamp": "2025-10-17T17:43:34.189Z",
+  "timestamp": "2025-10-18T21:10:42.836Z",
   "success": true,
   "checks": [
     {
       "name": "openapi_generation",
       "status": "PASS",
       "details": {
-        "timestamp": "2025-10-17T17:43:34.323Z",
+        "timestamp": "2025-10-18T21:10:42.945Z",
         "version": "1.0.0",
         "endpoints": 44,
         "schemas": 16,
@@ -44,12 +44,12 @@
         "hasSwaggerAnnotations": true,
         "hasEndpointAnnotations": true,
         "hasResponseDefinitions": true,
-        "annotationLines": 2460
+        "annotationLines": 2466
       }
     }
   ],
   "summary": {
-    "timestamp": "2025-10-17T17:43:34.323Z",
+    "timestamp": "2025-10-18T21:10:42.945Z",
     "version": "1.0.0",
     "endpoints": 44,
     "schemas": 16,

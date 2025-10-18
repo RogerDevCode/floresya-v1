@@ -8,9 +8,60 @@ import * as paymentMethodService from '../services/paymentMethodService.js'
 import { asyncHandler } from '../middleware/errorHandler.js'
 
 /**
+ * Helper Functions
+ * Common utilities following KISS, DRY, and SSOT principles
+ */
+
+/**
+ * Creates standardized API response
+ * @param {Object} data - Response data
+ * @param {string} message - Success message
+ * @returns {Object} Formatted response object
+ */
+const createResponse = (data, message) => ({
+  success: true,
+  data,
+  message
+})
+
+/**
+ * Gets appropriate HTTP status code for operation
+ * @param {string} operation - Operation type (create, update, delete, etc.)
+ * @returns {number} HTTP status code
+ */
+const getStatusCode = operation => {
+  const statusCodes = {
+    create: 201,
+    update: 200,
+    delete: 200,
+    reactivate: 200,
+    display: 200
+  }
+  return statusCodes[operation] || 200
+}
+
+/**
+ * Gets appropriate success message for operation
+ * @param {string} operation - Operation type
+ * @param {string} entity - Entity name (user, product, etc.)
+ * @returns {string} Success message
+ */
+const getSuccessMessage = (operation, entity = 'Payment method') => {
+  const messages = {
+    create: `${entity} created successfully`,
+    update: `${entity} updated successfully`,
+    delete: `${entity} deactivated successfully`,
+    reactivate: `${entity} reactivated successfully`,
+    display: 'Display order updated successfully',
+    retrieve: `${entity} retrieved successfully`,
+    methods: 'Payment methods retrieved successfully'
+  }
+  return messages[operation] || `${entity} operation completed successfully`
+}
+
+/**
  * GET /api/payment-methods
  * Get all payment methods with filters
- * @returns {Object[]} - Array of payment methods
  */
 export const getAllPaymentMethods = asyncHandler(async (req, res) => {
   const filters = {
@@ -18,17 +69,10 @@ export const getAllPaymentMethods = asyncHandler(async (req, res) => {
   }
 
   const includeInactive = req.user?.role === 'admin' && req.query.includeInactive === 'true'
-
   const paymentMethods = await paymentMethodService.getAllPaymentMethods(filters, includeInactive)
 
-  res.status(200).json({
-    success: true,
-    data: paymentMethods,
-    message:
-      paymentMethods.length === 0
-        ? 'No payment methods found'
-        : 'Payment methods retrieved successfully'
-  })
+  const response = createResponse(paymentMethods, getSuccessMessage('methods'))
+  res.json(response)
 })
 
 /**
@@ -36,25 +80,14 @@ export const getAllPaymentMethods = asyncHandler(async (req, res) => {
  * Get payment method by ID
  */
 export const getPaymentMethodById = asyncHandler(async (req, res) => {
-  const id = parseInt(req.params.id, 10)
-
-  if (isNaN(id) || id <= 0) {
-    return res.status(400).json({
-      success: false,
-      error: 'Invalid id: must be a positive integer',
-      message: 'Invalid id: must be a positive integer'
-    })
-  }
-
   const includeInactive = req.user?.role === 'admin'
+  const paymentMethod = await paymentMethodService.getPaymentMethodById(
+    req.params.id,
+    includeInactive
+  )
 
-  const paymentMethod = await paymentMethodService.getPaymentMethodById(id, includeInactive)
-
-  res.status(200).json({
-    success: true,
-    data: paymentMethod,
-    message: 'Payment method retrieved successfully'
-  })
+  const response = createResponse(paymentMethod, getSuccessMessage('retrieve'))
+  res.json(response)
 })
 
 /**
@@ -64,11 +97,8 @@ export const getPaymentMethodById = asyncHandler(async (req, res) => {
 export const createPaymentMethod = asyncHandler(async (req, res) => {
   const paymentMethod = await paymentMethodService.createPaymentMethod(req.body)
 
-  res.status(201).json({
-    success: true,
-    data: paymentMethod,
-    message: 'Payment method created successfully'
-  })
+  const response = createResponse(paymentMethod, getSuccessMessage('create'))
+  res.status(getStatusCode('create')).json(response)
 })
 
 /**
@@ -76,23 +106,10 @@ export const createPaymentMethod = asyncHandler(async (req, res) => {
  * Update payment method
  */
 export const updatePaymentMethod = asyncHandler(async (req, res) => {
-  const id = parseInt(req.params.id, 10)
+  const paymentMethod = await paymentMethodService.updatePaymentMethod(req.params.id, req.body)
 
-  if (isNaN(id) || id <= 0) {
-    return res.status(400).json({
-      success: false,
-      error: 'Invalid id: must be a positive integer',
-      message: 'Invalid id: must be a positive integer'
-    })
-  }
-
-  const paymentMethod = await paymentMethodService.updatePaymentMethod(id, req.body)
-
-  res.status(200).json({
-    success: true,
-    data: paymentMethod,
-    message: 'Payment method updated successfully'
-  })
+  const response = createResponse(paymentMethod, getSuccessMessage('update'))
+  res.json(response)
 })
 
 /**
@@ -100,23 +117,10 @@ export const updatePaymentMethod = asyncHandler(async (req, res) => {
  * Soft-delete payment method
  */
 export const deletePaymentMethod = asyncHandler(async (req, res) => {
-  const id = parseInt(req.params.id, 10)
+  const paymentMethod = await paymentMethodService.deletePaymentMethod(req.params.id)
 
-  if (isNaN(id) || id <= 0) {
-    return res.status(400).json({
-      success: false,
-      error: 'Invalid id: must be a positive integer',
-      message: 'Invalid id: must be a positive integer'
-    })
-  }
-
-  const paymentMethod = await paymentMethodService.deletePaymentMethod(id)
-
-  res.status(200).json({
-    success: true,
-    data: paymentMethod,
-    message: 'Payment method deactivated successfully'
-  })
+  const response = createResponse(paymentMethod, getSuccessMessage('delete'))
+  res.json(response)
 })
 
 /**
@@ -124,23 +128,10 @@ export const deletePaymentMethod = asyncHandler(async (req, res) => {
  * Reactivate payment method
  */
 export const reactivatePaymentMethod = asyncHandler(async (req, res) => {
-  const id = parseInt(req.params.id, 10)
+  const paymentMethod = await paymentMethodService.reactivatePaymentMethod(req.params.id)
 
-  if (isNaN(id) || id <= 0) {
-    return res.status(400).json({
-      success: false,
-      error: 'Invalid id: must be a positive integer',
-      message: 'Invalid id: must be a positive integer'
-    })
-  }
-
-  const paymentMethod = await paymentMethodService.reactivatePaymentMethod(id)
-
-  res.status(200).json({
-    success: true,
-    data: paymentMethod,
-    message: 'Payment method reactivated successfully'
-  })
+  const response = createResponse(paymentMethod, getSuccessMessage('reactivate'))
+  res.json(response)
 })
 
 /**
@@ -148,30 +139,9 @@ export const reactivatePaymentMethod = asyncHandler(async (req, res) => {
  * Update display order
  */
 export const updateDisplayOrder = asyncHandler(async (req, res) => {
-  const id = parseInt(req.params.id, 10)
   const { order } = req.body
+  const paymentMethod = await paymentMethodService.updateDisplayOrder(req.params.id, order)
 
-  if (isNaN(id) || id <= 0) {
-    return res.status(400).json({
-      success: false,
-      error: 'Invalid id: must be a positive integer',
-      message: 'Invalid id: must be a positive integer'
-    })
-  }
-
-  if (order === undefined || typeof order !== 'number' || order < 0) {
-    return res.status(400).json({
-      success: false,
-      error: 'Invalid order: must be a non-negative number',
-      message: 'Invalid order: must be a non-negative number'
-    })
-  }
-
-  const paymentMethod = await paymentMethodService.updateDisplayOrder(id, order)
-
-  res.status(200).json({
-    success: true,
-    data: paymentMethod,
-    message: 'Display order updated successfully'
-  })
+  const response = createResponse(paymentMethod, getSuccessMessage('display'))
+  res.json(response)
 })

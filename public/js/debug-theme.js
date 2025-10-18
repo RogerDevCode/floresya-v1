@@ -77,8 +77,9 @@ import { onDOMReady } from './shared/dom-ready.js'
     // Check ThemeSelector class
     debugInfo.dependencies.themeSelector = typeof window.ThemeSelector !== 'undefined'
 
-    // Check lucide icons
+    // Check lucide icons (using static SVG system now)
     debugInfo.dependencies.lucideIcons = typeof window.createIcons !== 'undefined'
+    debugInfo.dependencies.staticSvgIcons = document.querySelectorAll('[data-lucide]').length > 0
 
     // Check domReady utility
     debugInfo.dependencies.domReady = typeof window.onDOMReady !== 'undefined'

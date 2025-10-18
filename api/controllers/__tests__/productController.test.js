@@ -81,7 +81,7 @@ describe('Product Controller - getProductById', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'validation',
+        error: 'ValidationError', // Fixed: Using PascalCase for consistency
         message: 'Validation failed. Please check your input.'
       })
     })
@@ -100,7 +100,7 @@ describe('Product Controller - getProductById', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'validation'
+        error: 'ValidationError' // Fixed: Using PascalCase for consistency
       })
     })
 
@@ -109,7 +109,7 @@ describe('Product Controller - getProductById', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'validation'
+        error: 'ValidationError' // Fixed: Using PascalCase for consistency
       })
     })
 

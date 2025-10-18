@@ -67,13 +67,12 @@ export function configureHelmet() {
         styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
         scriptSrc: [
           "'self'",
-          "'unsafe-inline'",
           "'unsafe-eval'",
           "'sha256-+xJ6txSxaHKrLk0C53nnoPP2rf27Rop0wiQQfNCQdDQ='"
         ],
         scriptSrcAttr: ["'unsafe-inline'"],
         imgSrc: ["'self'", 'data:', 'https:'],
-        connectSrc: ["'self'"],
+        connectSrc: ["'self'", 'http://localhost:3000', 'http://localhost:5173'],
         fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
         objectSrc: ["'none'"],
         mediaSrc: ["'self'"],

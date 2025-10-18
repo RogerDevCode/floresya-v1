@@ -7,6 +7,14 @@
 
 import { themeManager } from '../themes/themeManager.js'
 
+// Fallback for createIcons function (migrated to static SVG system)
+if (typeof window.createIcons === 'undefined') {
+  window.createIcons = function () {
+    console.log('🎨 [ThemeSelector] createIcons fallback called - using static SVG system')
+    return Promise.resolve()
+  }
+}
+
 /**
  * Theme Selector Component Class
  */
@@ -55,6 +63,11 @@ export class ThemeSelector {
         throw new Error(
           'themeManager is not available. Make sure themeManager.js is loaded before ThemeSelector.js'
         )
+      }
+
+      // Handle createIcons availability gracefully (migrated to static SVG system)
+      if (typeof window.createIcons !== 'undefined') {
+        console.log('⚠️ [ThemeSelector] createIcons detected but static SVG system is preferred')
       }
 
       // Static SVG icons are used - no runtime icon conversion needed

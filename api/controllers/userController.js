@@ -1,383 +1,309 @@
 /**
  * User Controller
  * Handles HTTP logic for user operations
+ * Delegates business logic to service layer
  */
 
 import * as userService from '../services/userService.js'
 import { asyncHandler } from '../middleware/errorHandler.js'
+import { BadRequestError, UnauthorizedError } from '../errors/AppError.js'
+
+/**
+ * Helper Functions - Common utilities following KISS, DRY, and SSOT principles
+ */
+
+/**
+ * Creates standardized API response
+ * @param {Object} data - Response data
+ * @param {string} message - Success message
+ * @returns {Object} Formatted response object
+ */
+const createResponse = (data, message) => ({
+  success: true,
+  data,
+  message
+})
+
+/**
+ * Gets appropriate HTTP status code for operation
+ * @param {string} operation - Operation type (create, update, delete, etc.)
+ * @returns {number} HTTP status code
+ */
+const getStatusCode = operation => {
+  const statusCodes = {
+    create: 201,
+    update: 200,
+    delete: 200
+  }
+  return statusCodes[operation] || 200
+}
+
+/**
+ * Gets appropriate success message for operation
+ * @param {string} operation - Operation type
+ * @param {string} entity - Entity name (user, product, etc.)
+ * @returns {string} Success message
+ */
+const getSuccessMessage = (operation, entity = 'User') => {
+  const messages = {
+    create: `${entity} created successfully`,
+    update: `${entity} updated successfully`,
+    delete: `${entity} deactivated successfully`,
+    retrieve: `${entity} retrieved successfully`,
+    users: 'Users retrieved successfully'
+  }
+  return messages[operation] || `${entity} operation completed successfully`
+}
 
 /**
  * GET /api/users
- * Get all active users with filters
- * Supports search query: ?search=jose (searches in full_name and email)
- */
-/**
- * @swagger
- * /api/users:
- *   get:
- *     tags: [Users]
- *     summary: Get all users
- *     description: Admin only - Returns paginated list of all users
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - $ref: '#/components/parameters/LimitParam'
- *       - $ref: '#/components/parameters/OffsetParam'
- *       - name: role
- *         in: query
- *         schema:
- *           type: string
- *           enum: [user, admin]
- *         description: Filter by user role
- *       - name: email_verified
- *         in: query
- *         schema: { type: boolean }
- *         description: Filter by email verification status
- *       - name: search
- *         in: query
- *         schema: { type: string }
- *         description: Search in full_name and email (accent-insensitive, uses indexed normalized columns)
- *     responses:
- *       200:
- *         description: Users retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/SuccessResponse'
- *                 - type: object
- *                   properties:
- *                     data: { type: array, items: { $ref: '#/components/schemas/user' } }
- *       401: { $ref: '#/components/responses/UnauthorizedError' }
- *       403: { $ref: '#/components/responses/ForbiddenError' }
- *       500: { $ref: '#/components/responses/InternalServerError' }
+ * Get all users with filters
  */
 export const getAllUsers = asyncHandler(async (req, res) => {
+  // KISS principle: No mandatory pagination - show all users by default
   const filters = {
+    search: req.query.search,
     role: req.query.role,
-    email_verified: req.query.email_verified === 'true',
-    search: req.query.search, // New: accent-insensitive search
-    limit: req.query.limit,
-    offset: req.query.offset
+    email_verified: req.query.email_verified
   }
 
-  const includeInactive = req.user?.role === 'admin'
+  // Optional pagination - only when provided
+  if (req.query.limit !== undefined) {
+    filters.limit = Number(req.query.limit)
+    filters.offset = Number(req.query.offset) || 0
+  }
+
+  // FAIL FAST - Explicit admin check
+  const userRole = req.user?.user_metadata?.role || req.user?.role
+  if (!req.user || userRole !== 'admin') {
+    throw new UnauthorizedError('Admin access required to view all users', {
+      userRole,
+      requiredRole: 'admin'
+    })
+  }
+
+  const includeInactive = true
   const users = await userService.getAllUsers(filters, includeInactive)
 
-  res.json({
-    success: true,
-    data: users,
-    message: 'Users retrieved successfully'
-  })
+  const response = createResponse(users, getSuccessMessage('users'))
+  res.json(response)
 })
 
 /**
  * GET /api/users/:id
  * Get user by ID
  */
-/**
- * @swagger
- * /api/users/{id}:
- *   get:
- *     tags: [Users]
- *     summary: Get user by ID
- *     description: Get user details by ID (owner or admin only)
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - $ref: '#/components/parameters/IdParam'
- *     responses:
- *       200:
- *         description: User retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/SuccessResponse'
- *                 - type: object
- *                   properties:
- *                     data: { $ref: '#/components/schemas/user' }
- *       401: { $ref: '#/components/responses/UnauthorizedError' }
- *       403: { $ref: '#/components/responses/ForbiddenError' }
- *       404: { $ref: '#/components/responses/NotFoundError' }
- *       500: { $ref: '#/components/responses/InternalServerError' }
- */
 export const getUserById = asyncHandler(async (req, res) => {
-  const includeInactive = req.user?.role === 'admin'
-  const user = await userService.getUserById(req.params.id, includeInactive)
+  // FAIL FAST - Validate ID parameter
+  if (!req.params.id) {
+    throw new BadRequestError('User ID is required in path parameters', {
+      params: req.params,
+      rule: 'id parameter required'
+    })
+  }
 
-  res.json({
-    success: true,
-    data: user,
-    message: 'User retrieved successfully'
-  })
+  const userId = Number(req.params.id)
+  if (isNaN(userId) || userId <= 0) {
+    throw new BadRequestError('Invalid user ID: must be a positive number', {
+      userId: req.params.id,
+      rule: 'positive number required'
+    })
+  }
+
+  // FAIL FAST - Explicit admin check for inactive user access
+  const userRole = req.user?.user_metadata?.role || req.user?.role
+  const includeInactive = req.user && userRole === 'admin'
+  const user = await userService.getUserById(userId, includeInactive)
+
+  const response = createResponse(user, getSuccessMessage('retrieve'))
+  res.json(response)
 })
 
 /**
  * GET /api/users/email/:email
  * Get user by email
  */
-/**
- * @swagger
- * /api/users/email/{email}:
- *   get:
- *     tags: [Users]
- *     summary: Get user by email
- *     description: Admin only - Get user details by email address
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - name: email
- *         in: path
- *         required: true
- *         schema: { type: string, format: email }
- *         description: User email address
- *     responses:
- *       200:
- *         description: User retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/SuccessResponse'
- *                 - type: object
- *                   properties:
- *                     data: { $ref: '#/components/schemas/user' }
- *       401: { $ref: '#/components/responses/UnauthorizedError' }
- *       403: { $ref: '#/components/responses/ForbiddenError' }
- *       404: { $ref: '#/components/responses/NotFoundError' }
- *       500: { $ref: '#/components/responses/InternalServerError' }
- */
 export const getUserByEmail = asyncHandler(async (req, res) => {
-  const user = await userService.getUserByEmail(req.params.email)
+  // FAIL FAST - Validate email parameter
+  if (!req.params.email) {
+    throw new BadRequestError('Email is required in path parameters', {
+      params: req.params,
+      rule: 'email parameter required'
+    })
+  }
 
-  res.json({
-    success: true,
-    data: user,
-    message: 'User retrieved successfully'
-  })
+  const user = await userService.getUserByEmail(req.params.email, false)
+
+  const response = createResponse(user, getSuccessMessage('retrieve'))
+  res.json(response)
+})
+
+/**
+ * GET /api/users/filter
+ * Get users by intelligent filter (role, state, email-verified)
+ */
+export const getUsersByFilter = asyncHandler(async (req, res) => {
+  // FAIL FAST - Require at least one filter
+  if (!req.query.role && req.query.state === undefined && req.query.email_verified === undefined) {
+    throw new BadRequestError(
+      'At least one filter parameter is required: role, state, or email_verified',
+      {
+        providedQuery: req.query,
+        rule: 'filter parameter required'
+      }
+    )
+  }
+
+  // FAIL FAST - Validate pagination parameters
+  if (!req.query.limit || !req.query.offset) {
+    throw new BadRequestError('Query parameters limit and offset are required', {
+      providedQuery: req.query,
+      rule: 'Both limit and offset must be provided as query parameters'
+    })
+  }
+
+  const filters = {
+    role: req.query.role,
+    state: req.query.state === 'true' ? true : req.query.state === 'false' ? false : undefined,
+    email_verified:
+      req.query.email_verified === 'true'
+        ? true
+        : req.query.email_verified === 'false'
+          ? false
+          : undefined,
+    limit: Number(req.query.limit),
+    offset: Number(req.query.offset)
+  }
+
+  const users = await userService.getUsersByFilter(filters)
+
+  const response = createResponse(users, getSuccessMessage('users'))
+  res.json(response)
 })
 
 /**
  * POST /api/users
- * Create new user
- */
-/**
- * @swagger
- * /api/users:
- *   post:
- *     tags: [Users]
- *     summary: Create new user
- *     description: Create a new user account (public registration)
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required: [email, full_name]
- *             properties:
- *               email: { type: string, format: email }
- *               full_name: { type: string, minLength: 2, maxLength: 255 }
- *               phone: { type: string, pattern: '^\\+?[\\d\\s-()]+$' }
- *               role: { type: string, enum: [user, admin], default: user }
- *               password_hash: { type: string, minLength: 8 }
- *     responses:
- *       201:
- *         description: User created successfully
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/SuccessResponse'
- *                 - type: object
- *                   properties:
- *                     data: { $ref: '#/components/schemas/user' }
- *       400: { $ref: '#/components/responses/ValidationError' }
- *       409: { description: User already exists }
- *       500: { $ref: '#/components/responses/InternalServerError' }
+ * Create new user (client registration - no password required)
  */
 export const createUser = asyncHandler(async (req, res) => {
   const user = await userService.createUser(req.body)
 
-  res.status(201).json({
-    success: true,
-    data: user,
-    message: 'User created successfully'
-  })
+  const response = createResponse(user, getSuccessMessage('create'))
+  res.status(getStatusCode('create')).json(response)
 })
 
 /**
  * PUT /api/users/:id
  * Update user
  */
-/**
- * @swagger
- * /api/users/{id}:
- *   put:
- *     tags: [Users]
- *     summary: Update user
- *     description: Update user details (owner or admin only)
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - $ref: '#/components/parameters/IdParam'
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               full_name: { type: string, minLength: 2, maxLength: 255 }
- *               phone: { type: string, pattern: '^\\+?[\\d\\s-()]+$' }
- *               role: { type: string, enum: [user, admin] }
- *     responses:
- *       200:
- *         description: User updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/SuccessResponse'
- *                 - type: object
- *                   properties:
- *                     data: { $ref: '#/components/schemas/user' }
- *       401: { $ref: '#/components/responses/UnauthorizedError' }
- *       403: { $ref: '#/components/responses/ForbiddenError' }
- *       404: { $ref: '#/components/responses/NotFoundError' }
- *       400: { $ref: '#/components/responses/ValidationError' }
- *       500: { $ref: '#/components/responses/InternalServerError' }
- */
 export const updateUser = asyncHandler(async (req, res) => {
-  const user = await userService.updateUser(req.params.id, req.body)
+  // FAIL FAST - Validate ID parameter
+  if (!req.params.id) {
+    throw new BadRequestError('User ID is required in path parameters', {
+      params: req.params,
+      rule: 'id parameter required'
+    })
+  }
 
-  res.json({
-    success: true,
-    data: user,
-    message: 'User updated successfully'
-  })
+  const userId = Number(req.params.id)
+  if (isNaN(userId) || userId <= 0) {
+    throw new BadRequestError('Invalid user ID: must be a positive number', {
+      userId: req.params.id,
+      rule: 'positive number required'
+    })
+  }
+
+  // FAIL FAST - Validate request body
+  if (!req.body || Object.keys(req.body).length === 0) {
+    throw new BadRequestError('Request body is required with update data', {
+      body: req.body,
+      rule: 'non-empty request body required'
+    })
+  }
+
+  const user = await userService.updateUser(userId, req.body)
+
+  const response = createResponse(user, getSuccessMessage('update'))
+  res.json(response)
 })
 
 /**
  * DELETE /api/users/:id
  * Soft-delete user
  */
-/**
- * @swagger
- * /api/users/{id}:
- *   delete:
- *     tags: [Users]
- *     summary: Delete user (soft delete)
- *     description: Admin only - Soft deletes a user (sets is_active to false)
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - $ref: '#/components/parameters/IdParam'
- *     responses:
- *       200:
- *         description: User deleted successfully
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/SuccessResponse'
- *                 - type: object
- *                   properties:
- *                     data: { $ref: '#/components/schemas/user' }
- *       401: { $ref: '#/components/responses/UnauthorizedError' }
- *       403: { $ref: '#/components/responses/ForbiddenError' }
- *       404: { $ref: '#/components/responses/NotFoundError' }
- *       500: { $ref: '#/components/responses/InternalServerError' }
- */
 export const deleteUser = asyncHandler(async (req, res) => {
-  const user = await userService.deleteUser(req.params.id)
+  // FAIL FAST - Validate ID parameter
+  if (!req.params.id) {
+    throw new BadRequestError('User ID is required in path parameters', {
+      params: req.params,
+      rule: 'id parameter required'
+    })
+  }
 
-  res.json({
-    success: true,
-    data: user,
-    message: 'User deactivated successfully'
-  })
+  const userId = Number(req.params.id)
+  if (isNaN(userId) || userId <= 0) {
+    throw new BadRequestError('Invalid user ID: must be a positive number', {
+      userId: req.params.id,
+      rule: 'positive number required'
+    })
+  }
+
+  const user = await userService.deleteUser(userId)
+
+  const response = createResponse(user, getSuccessMessage('delete'))
+  res.json(response)
 })
 
 /**
  * PATCH /api/users/:id/reactivate
- * Reactivate user
- */
-/**
- * @swagger
- * /api/users/{id}/reactivate:
- *   patch:
- *     tags: [Users]
- *     summary: Reactivate user
- *     description: Admin only - Reactivates a soft-deleted user
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - $ref: '#/components/parameters/IdParam'
- *     responses:
- *       200:
- *         description: User reactivated successfully
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/SuccessResponse'
- *                 - type: object
- *                   properties:
- *                     data: { $ref: '#/components/schemas/user' }
- *       401: { $ref: '#/components/responses/UnauthorizedError' }
- *       403: { $ref: '#/components/responses/ForbiddenError' }
- *       404: { $ref: '#/components/responses/NotFoundError' }
- *       500: { $ref: '#/components/responses/InternalServerError' }
+ * Reactivate user (admin only)
  */
 export const reactivateUser = asyncHandler(async (req, res) => {
-  const user = await userService.reactivateUser(req.params.id)
+  // FAIL FAST - Validate ID parameter
+  if (!req.params.id) {
+    throw new BadRequestError('User ID is required in path parameters', {
+      params: req.params,
+      rule: 'id parameter required'
+    })
+  }
 
-  res.json({
-    success: true,
-    data: user,
-    message: 'User reactivated successfully'
-  })
+  const userId = Number(req.params.id)
+  if (isNaN(userId) || userId <= 0) {
+    throw new BadRequestError('Invalid user ID: must be a positive number', {
+      userId: req.params.id,
+      rule: 'positive number required'
+    })
+  }
+
+  const user = await userService.reactivateUser(userId)
+
+  const response = createResponse(user, getSuccessMessage('update'))
+  res.json(response)
 })
 
 /**
  * PATCH /api/users/:id/verify-email
- * Verify user email
- */
-/**
- * @swagger
- * /api/users/{id}/verify-email:
- *   patch:
- *     tags: [Users]
- *     summary: Verify user email
- *     description: Verify user email address (owner or admin only)
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - $ref: '#/components/parameters/IdParam'
- *     responses:
- *       200:
- *         description: Email verified successfully
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/SuccessResponse'
- *                 - type: object
- *                   properties:
- *                     data: { $ref: '#/components/schemas/user' }
- *       401: { $ref: '#/components/responses/UnauthorizedError' }
- *       403: { $ref: '#/components/responses/ForbiddenError' }
- *       404: { $ref: '#/components/responses/NotFoundError' }
- *       500: { $ref: '#/components/responses/InternalServerError' }
+ * Verify user email (owner or admin)
  */
 export const verifyUserEmail = asyncHandler(async (req, res) => {
-  const user = await userService.verifyUserEmail(req.params.id)
+  // FAIL FAST - Validate ID parameter
+  if (!req.params.id) {
+    throw new BadRequestError('User ID is required in path parameters', {
+      params: req.params,
+      rule: 'id parameter required'
+    })
+  }
 
-  res.json({
-    success: true,
-    data: user,
-    message: 'Email verified successfully'
-  })
+  const userId = Number(req.params.id)
+  if (isNaN(userId) || userId <= 0) {
+    throw new BadRequestError('Invalid user ID: must be a positive number', {
+      userId: req.params.id,
+      rule: 'positive number required'
+    })
+  }
+
+  const user = await userService.verifyUserEmail(userId)
+
+  const response = createResponse(user, getSuccessMessage('update'))
+  res.json(response)
 })

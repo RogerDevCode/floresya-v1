@@ -3,10 +3,10 @@
  * Handles CRUD operations for occasions with soft delete functionality
  */
 
-import '../../js/'
 import { api } from '../../js/shared/api-client.js'
 import { generateSlug, getRandomIcon, getRandomColor } from '../../js/shared/occasion-helpers.js'
 import { sortByPopularity } from '../../js/shared/occasion-popularity.js'
+import { initThemeManager } from '../../js/themes/themeManager.js'
 
 // Global state
 let currentFilter = 'all' // 'all', 'active', 'inactive'
@@ -241,6 +241,55 @@ function renderOccasionsTable(occasionsToRender) {
       </td>
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${occasion.display_order}</td>
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${updatedAt}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+        <div class="flex justify-end space-x-2">
+          <button
+            onclick="event.stopPropagation(); editOccasion(${occasion.id})"
+            class="text-pink-600 hover:text-pink-900 p-1 rounded"
+            title="Editar ocasión"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </button>
+          <button
+            onclick="event.stopPropagation(); toggleOccasionStatus(${occasion.id}, ${occasion.is_active})"
+            class="${
+              occasion.is_active
+                ? 'text-yellow-600 hover:text-yellow-900'
+                : 'text-green-600 hover:text-green-900'
+            } p-1 rounded"
+            title="${occasion.is_active ? 'Desactivar ocasión' : 'Activar ocasión'}"
+          >
+            ${
+              occasion.is_active
+                ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                    <path d="M9 9a3 3 0 1 1 6 0"/>
+                    <path d="M12 12v3"/>
+                    <path d="M3 12a9 9 0 1 0 18 0"/>
+                  </svg>`
+                : `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                    <path d="M20 6L9 17l-5-5"/>
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                  </svg>`
+            }
+          </button>
+          <button
+            onclick="event.stopPropagation(); deleteOccasionById(${occasion.id}, '${occasion.name.replace(/'/g, "\\'")}')"
+            class="text-red-600 hover:text-red-900 p-1 rounded"
+            title="Eliminar ocasión"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+              <path d="M3 6h18"/>
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+              <line x1="10" x2="10" y1="11" y2="17"/>
+              <line x1="14" x2="14" y1="11" y2="17"/>
+            </svg>
+          </button>
+        </div>
+      </td>
     `
 
     // Add click event to select the occasion
@@ -270,13 +319,57 @@ function selectOccasion(occasion) {
 
   // Populate the form with occasion data
   document.getElementById('occasion-id').value = occasion.id
-  document.getElementById('edition-title').textContent = `Editar: ${occasion.name}`
-  document.getElementById('occasion-name').value = occasion.name
-  document.getElementById('occasion-slug').value = occasion.slug
-  document.getElementById('occasion-description').value = occasion.description || ''
-  document.getElementById('occasion-icon').value = occasion.icon || ''
-  document.getElementById('occasion-color').value = occasion.color || '#000000'
-  document.getElementById('occasion-display-order').value = occasion.display_order || 0
+
+  // Try different possible title IDs for different pages
+  const titleElement =
+    document.getElementById('edition-title-occasion') || document.getElementById('edition-title')
+  if (titleElement) {
+    titleElement.textContent = `Editar: ${occasion.name}`
+  }
+
+  // Populate form fields with black text to ensure visibility
+  const nameField = document.getElementById('occasion-name')
+  const slugField = document.getElementById('occasion-slug')
+  const descriptionField = document.getElementById('occasion-description')
+  const iconField = document.getElementById('occasion-icon')
+  const colorField = document.getElementById('occasion-color')
+  const displayOrderField = document.getElementById('occasion-display-order')
+
+  nameField.value = occasion.name
+  nameField.style.color = 'black'
+
+  slugField.value = occasion.slug
+  slugField.style.color = 'black'
+
+  descriptionField.value = occasion.description || ''
+  descriptionField.style.color = 'black'
+
+  iconField.value = occasion.icon || ''
+  iconField.style.color = 'black'
+
+  colorField.value = occasion.color || '#000000'
+  colorField.style.color = 'black'
+
+  displayOrderField.value = occasion.display_order || 0
+  displayOrderField.style.color = 'black'
+
+  // Ensure text remains black when user types
+  const ensureBlackText = field => {
+    field.addEventListener('input', () => {
+      field.style.color = 'black'
+    })
+    field.addEventListener('focus', () => {
+      field.style.color = 'black'
+    })
+  }
+
+  ensureBlackText(nameField)
+  ensureBlackText(slugField)
+  ensureBlackText(descriptionField)
+  ensureBlackText(iconField)
+  ensureBlackText(colorField)
+  ensureBlackText(displayOrderField)
+
   document.getElementById('occasion-is-active').checked = occasion.is_active
 
   // Show delete button
@@ -284,6 +377,9 @@ function selectOccasion(occasion) {
 
   // Capture original values for change detection
   captureOriginalValues()
+
+  // Set focus to the name field for better UX
+  nameField.focus()
 }
 
 /**
@@ -403,13 +499,57 @@ async function deleteOccasion() {
  */
 function resetForm() {
   document.getElementById('occasion-id').value = ''
-  document.getElementById('edition-title').textContent = 'Nueva Ocasión'
-  document.getElementById('occasion-name').value = ''
-  document.getElementById('occasion-slug').value = ''
-  document.getElementById('occasion-description').value = ''
-  document.getElementById('occasion-icon').value = ''
-  document.getElementById('occasion-color').value = getRandomColor()
-  document.getElementById('occasion-display-order').value = '0'
+
+  // Try different possible title IDs for different pages
+  const titleElement =
+    document.getElementById('edition-title-occasion') || document.getElementById('edition-title')
+  if (titleElement) {
+    titleElement.textContent = 'Nueva Ocasión'
+  }
+
+  // Reset form fields with black text to ensure visibility
+  const nameField = document.getElementById('occasion-name')
+  const slugField = document.getElementById('occasion-slug')
+  const descriptionField = document.getElementById('occasion-description')
+  const iconField = document.getElementById('occasion-icon')
+  const colorField = document.getElementById('occasion-color')
+  const displayOrderField = document.getElementById('occasion-display-order')
+
+  nameField.value = ''
+  nameField.style.color = 'black'
+
+  slugField.value = ''
+  slugField.style.color = 'black'
+
+  descriptionField.value = ''
+  descriptionField.style.color = 'black'
+
+  iconField.value = ''
+  iconField.style.color = 'black'
+
+  colorField.value = getRandomColor()
+  colorField.style.color = 'black'
+
+  displayOrderField.value = '0'
+  displayOrderField.style.color = 'black'
+
+  // Ensure text remains black when user types
+  const ensureBlackText = field => {
+    field.addEventListener('input', () => {
+      field.style.color = 'black'
+    })
+    field.addEventListener('focus', () => {
+      field.style.color = 'black'
+    })
+  }
+
+  ensureBlackText(nameField)
+  ensureBlackText(slugField)
+  ensureBlackText(descriptionField)
+  ensureBlackText(iconField)
+  ensureBlackText(colorField)
+  ensureBlackText(displayOrderField)
+
   document.getElementById('occasion-is-active').checked = true
   selectedOccasion = null
 
@@ -469,10 +609,92 @@ function handleCancel() {
 
 import { onDOMReady } from '../../js/shared/dom-ready.js'
 
+// ==================== GLOBAL FUNCTIONS FOR HTML ONCLICK ====================
+
+// Expose occasion management functions globally for HTML onclick handlers
+window.editOccasion = function (occasionId) {
+  const occasion = occasions.find(o => o.id === occasionId)
+  if (occasion) {
+    selectOccasion(occasion)
+  }
+}
+
+window.toggleOccasionStatus = async function (occasionId, currentStatus) {
+  try {
+    const occasion = occasions.find(o => o.id === occasionId)
+    if (!occasion) {
+      console.error('Occasion not found:', occasionId)
+      return
+    }
+
+    const action = currentStatus ? 'desactivar' : 'activar'
+    const actionText = currentStatus ? 'desactivada' : 'activada'
+
+    const confirmChange = window.confirm(
+      `¿Estás seguro de ${action} la ocasión "${occasion.name}"?`
+    )
+
+    if (!confirmChange) {
+      return
+    }
+
+    console.log(`Changing occasion ${occasionId} status from ${currentStatus} to ${!currentStatus}`)
+
+    const result = await api.updateOccasions(occasionId, { is_active: !currentStatus })
+
+    if (!result.success) {
+      throw new Error(result.message || `Error al ${action} ocasión`)
+    }
+
+    alert(`Ocasión ${actionText} correctamente`)
+    await loadOccasions()
+  } catch (error) {
+    console.error('Error toggling occasion status:', error)
+    alert('Error al cambiar estado: ' + (error.message || 'Error desconocido'))
+  }
+}
+
+window.deleteOccasionById = async function (occasionId, occasionName) {
+  try {
+    const occasion = occasions.find(o => o.id === occasionId)
+    if (!occasion) {
+      console.error('Occasion not found:', occasionId)
+      return
+    }
+
+    if (
+      !confirm(
+        `¿Está seguro de que desea eliminar la ocasión "${occasionName}"? Esta acción desactivará la ocasión.`
+      )
+    ) {
+      return
+    }
+
+    const result = await api.deleteOccasions(occasionId)
+
+    if (!result.success) {
+      throw new Error(result.message || 'Error al eliminar ocasión')
+    }
+
+    alert('Ocasión desactivada exitosamente!')
+
+    // Reset form if the deleted occasion was selected
+    if (selectedOccasion && selectedOccasion.id === occasionId) {
+      resetForm()
+    }
+
+    await loadOccasions()
+  } catch (error) {
+    console.error('Error deleting occasion:', error)
+    alert('Error al eliminar ocasión: ' + (error.message || 'Error desconocido'))
+  }
+}
+
 // Initialize when DOM is ready
 onDOMReady(() => {
   // Initialize icons first
 
   // Then initialize occasions management
   init()
+  initThemeManager()
 })

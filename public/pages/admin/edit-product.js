@@ -8,6 +8,7 @@
 import { CarouselManager } from '../../js/components/CarouselManager.js'
 import { api } from '../../js/shared/api-client.js'
 import { trackOccasionSelection, sortByPopularity } from '../../js/shared/occasion-popularity.js'
+import { initThemeManager } from '../../js/themes/themeManager.js'
 
 // Toast notification utility
 const toast = {
@@ -70,6 +71,9 @@ import { onDOMReady } from '../../js/shared/dom-ready.js'
 // Initialize page
 onDOMReady(async () => {
   console.log('✓ Edit Product page loaded')
+
+  // Initialize theme manager
+  initThemeManager()
 
   // Static SVG icons used - no runtime initialization needed
 

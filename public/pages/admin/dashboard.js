@@ -8,6 +8,7 @@
 import { initAdminCommon } from '../../js/admin-common.js'
 import { toast } from '../../js/components/toast.js'
 import { api } from '../../js/shared/api-client.js'
+import { initThemeManager } from '../../js/themes/themeManager.js'
 import '../../js/services/authMock.js' // ⚠️ DEV ONLY - Side-effect import for auth mock
 
 // Chart.js will be loaded via script tag in HTML
@@ -1155,6 +1156,7 @@ onDOMReady(() => {
   // Then initialize admin functionality
   init()
   initAdminCommon()
+  initThemeManager()
 
   // Initialize occasions module
   if (window.occasionsModule && window.occasionsModule.initOccasionsManagement) {
@@ -1562,9 +1564,9 @@ let users = []
 let currentEditingUser = null
 
 /**
- * Load users data from API
+ * Load users data from API (KISS principle - no mandatory pagination)
  */
-async function loadUsersData() {
+async function loadUsersData(_page = 1) {
   try {
     showUsersLoading(true)
 
@@ -1574,6 +1576,30 @@ async function loadUsersData() {
     }
 
     const filters = buildUsersFilters()
+
+    // KISS principle: Only add pagination if user explicitly searches or navigates
+    const hasSearchFilter = filters.search && filters.search.trim().length > 0
+    const hasRoleFilter = filters.role && filters.role.trim().length > 0
+    const hasEmailVerifiedFilter = filters.email_verified !== undefined
+    const hasStatusFilter = filters.is_active !== undefined
+    const hasAnyFilter =
+      hasSearchFilter || hasRoleFilter || hasEmailVerifiedFilter || hasStatusFilter
+
+    if (hasAnyFilter) {
+      // Only paginate when user is searching
+      // Always reset to page 1 when starting a new search
+      paginationState.currentPage = 1
+
+      filters.limit = paginationState.pageSize
+      filters.offset = (paginationState.currentPage - 1) * paginationState.pageSize
+      console.log('Loading users with filters and pagination:', filters)
+    } else {
+      // Reset pagination when showing all users
+      paginationState.currentPage = 1
+      // No pagination for initial load - show ALL users
+      console.log('Loading ALL users without pagination:', filters)
+    }
+
     const result = await api.getAllUsers(filters)
 
     if (!result.success) {
@@ -1581,17 +1607,192 @@ async function loadUsersData() {
     }
 
     users = result.data || []
-    updateUsersStats(users)
+
+    // Update pagination state
+    if (hasAnyFilter) {
+      paginationState.totalUsers = result.total || users.length
+      paginationState.totalPages = Math.ceil(paginationState.totalUsers / paginationState.pageSize)
+    } else {
+      // When showing all users, disable pagination
+      paginationState.totalUsers = users.length
+      paginationState.totalPages = 1
+    }
+
+    console.log(
+      `Loaded ${users.length} users of ${paginationState.totalUsers} total (page ${paginationState.currentPage})`
+    )
+
     renderUsersTable(users)
+    updateUsersStats(users)
+    updatePaginationControls()
     setupUsersEventListeners()
   } catch (error) {
     console.error('Error loading users:', error)
-    toast.error('Error al cargar usuarios: ' + error.message)
+    toast.error('Error al cargar usuarios: ' + (error.message || 'Error desconocido'))
     showUsersError()
   } finally {
     showUsersLoading(false)
   }
 }
+
+// Pagination state
+const paginationState = {
+  currentPage: 1,
+  pageSize: 10,
+  totalPages: 0,
+  totalUsers: 0
+}
+
+/**
+ * Clear user search and reset pagination
+ */
+function clearUserSearch() {
+  const searchInput = document.getElementById('user-search-input')
+  const roleFilter = document.getElementById('user-role-filter')
+  const emailVerifiedFilter = document.getElementById('user-email-verified-filter')
+  const statusFilter = document.getElementById('user-status-filter')
+
+  if (searchInput) {
+    searchInput.value = ''
+    searchInput.focus()
+  }
+
+  if (roleFilter) {
+    roleFilter.value = ''
+  }
+
+  if (emailVerifiedFilter) {
+    emailVerifiedFilter.value = ''
+  }
+
+  if (statusFilter) {
+    statusFilter.value = ''
+  }
+
+  // Reset pagination to first page and reload all users
+  paginationState.currentPage = 1
+
+  // Reload data without page parameter to show all users
+  loadUsersData()
+}
+
+/**
+ * Go to specific page
+ */
+function goToPage(page) {
+  if (page < 1 || page > paginationState.totalPages) {
+    return
+  }
+
+  paginationState.currentPage = page
+  loadUsersData(page)
+}
+
+/**
+ * Update pagination controls visibility and state
+ */
+function updatePaginationControls() {
+  const prevBtn = document.getElementById('pagination-prev')
+  const nextBtn = document.getElementById('pagination-next')
+  const pageNumbers = document.getElementById('pagination-numbers')
+  const startEl = document.getElementById('pagination-start')
+  const endEl = document.getElementById('pagination-end')
+  const totalEl = document.getElementById('pagination-total')
+
+  // Update info text
+  const start = (paginationState.currentPage - 1) * paginationState.pageSize + 1
+  const end = Math.min(
+    paginationState.currentPage * paginationState.pageSize,
+    paginationState.totalUsers
+  )
+
+  if (startEl) {
+    startEl.textContent = start
+  }
+  if (endEl) {
+    endEl.textContent = end
+  }
+  if (totalEl) {
+    totalEl.textContent = paginationState.totalUsers
+  }
+
+  // Update button states
+  if (prevBtn) {
+    prevBtn.disabled = paginationState.currentPage <= 1
+  }
+  if (nextBtn) {
+    nextBtn.disabled = paginationState.currentPage >= paginationState.totalPages
+  }
+
+  // Generate page numbers
+  if (pageNumbers) {
+    pageNumbers.innerHTML = ''
+
+    const maxVisiblePages = 5
+    const _startPage = 1
+    const _endPage = paginationState.totalPages
+
+    if (paginationState.totalPages <= maxVisiblePages) {
+      // Show all pages
+      for (let i = 1; i <= paginationState.totalPages; i++) {
+        pageNumbers.innerHTML += createPageButton(i, i === paginationState.currentPage)
+      }
+    } else {
+      // Show limited pages with ellipsis
+      if (paginationState.currentPage <= 3) {
+        // Near start: 1, 2, 3, ..., last
+        for (let i = 1; i <= 3; i++) {
+          pageNumbers.innerHTML += createPageButton(i, i === paginationState.currentPage)
+        }
+        if (paginationState.totalPages > 3) {
+          pageNumbers.innerHTML += '<span class="px-2 text-gray-500">...</span>'
+          pageNumbers.innerHTML += createPageButton(
+            paginationState.totalPages,
+            paginationState.currentPage === paginationState.totalPages
+          )
+        }
+      } else if (paginationState.currentPage >= paginationState.totalPages - 2) {
+        // Near end: first, ..., last-2, last-1, last
+        pageNumbers.innerHTML += createPageButton(1, paginationState.currentPage === 1)
+        pageNumbers.innerHTML += '<span class="px-2 text-gray-500">...</span>'
+        for (let i = paginationState.totalPages - 2; i <= paginationState.totalPages; i++) {
+          pageNumbers.innerHTML += createPageButton(i, i === paginationState.currentPage)
+        }
+      } else {
+        // Middle: first, ..., current-1, current, current+1, ..., last
+        pageNumbers.innerHTML += createPageButton(1, paginationState.currentPage === 1)
+        pageNumbers.innerHTML += '<span class="px-2 text-gray-500">...</span>'
+        for (let i = paginationState.currentPage - 1; i <= paginationState.currentPage + 1; i++) {
+          pageNumbers.innerHTML += createPageButton(i, i === paginationState.currentPage)
+        }
+        pageNumbers.innerHTML += '<span class="px-2 text-gray-500">...</span>'
+        pageNumbers.innerHTML += createPageButton(
+          paginationState.totalPages,
+          paginationState.currentPage === paginationState.totalPages
+        )
+      }
+    }
+  }
+}
+
+/**
+ * Create pagination button element
+ */
+function createPageButton(pageNum, isCurrent) {
+  const baseClasses = 'px-3 py-2 text-sm border rounded-md transition-colors'
+  const activeClasses = 'bg-pink-600 text-white border-pink-600'
+  const inactiveClasses = 'border-gray-300 hover:bg-gray-50 text-gray-700'
+
+  const classes = isCurrent
+    ? `${baseClasses} ${activeClasses}`
+    : `${baseClasses} ${inactiveClasses}`
+
+  return `<button class="${classes}" onclick="window.goToPage(${pageNum})">${pageNum}</button>`
+}
+
+// Make pagination functions globally accessible
+window.goToPage = goToPage
+window.clearUserSearch = clearUserSearch
 
 /**
  * Build filters object from form inputs
@@ -1601,27 +1802,23 @@ function buildUsersFilters() {
 
   const searchInput = document.getElementById('user-search-input')
   const roleFilter = document.getElementById('user-role-filter')
+  const emailVerifiedFilter = document.getElementById('user-email-verified-filter')
   const statusFilter = document.getElementById('user-status-filter')
-  const emailVerifiedFilter = document.getElementById('email-verified-filter')
 
   if (searchInput?.value.trim()) {
     filters.search = searchInput.value.trim()
   }
 
-  if (roleFilter?.value) {
-    filters.role = roleFilter.value
+  if (roleFilter?.value.trim()) {
+    filters.role = roleFilter.value.trim()
   }
 
-  if (statusFilter?.value) {
-    if (statusFilter.value === 'active') {
-      // Don't filter, default is active
-    } else if (statusFilter.value === 'inactive') {
-      filters.includeInactive = true
-    }
+  if (emailVerifiedFilter?.value.trim()) {
+    filters.email_verified = emailVerifiedFilter.value.trim() === 'true'
   }
 
-  if (emailVerifiedFilter?.value) {
-    filters.email_verified = emailVerifiedFilter.value === 'true'
+  if (statusFilter?.value.trim()) {
+    filters.is_active = statusFilter.value.trim() === 'true'
   }
 
   return filters
@@ -1634,6 +1831,7 @@ function updateUsersStats(usersList) {
   const totalUsers = document.getElementById('total-users')
   const activeUsers = document.getElementById('active-users')
   const adminUsers = document.getElementById('admin-users')
+  const verifiedUsers = document.getElementById('verified-users')
 
   if (totalUsers) {
     totalUsers.textContent = usersList.length
@@ -1644,7 +1842,6 @@ function updateUsersStats(usersList) {
   if (adminUsers) {
     adminUsers.textContent = usersList.filter(u => u.role === 'admin').length
   }
-  const verifiedUsers = document.getElementById('verified-users')
   if (verifiedUsers) {
     verifiedUsers.textContent = usersList.filter(u => u.email_verified).length
   }
@@ -1680,38 +1877,49 @@ function renderUsersTable(usersList) {
       <td class="px-6 py-4 whitespace-nowrap">
         <div class="flex items-center">
           <div class="flex-shrink-0 h-10 w-10 bg-pink-100 rounded-full flex items-center justify-center">
-            <i data-lucide="user" class="h-5 w-5 text-pink-600"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-pink-600">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
           </div>
           <div class="ml-4">
             <div class="text-sm font-medium text-gray-900">${escapeHtml(user.full_name || 'Sin nombre')}</div>
-            <div class="text-sm text-gray-500">ID: ${user.id}</div>
+            <div class="text-sm text-gray-500">${escapeHtml(user.email)}</div>
+            <div class="text-xs text-gray-400">ID: ${user.id}</div>
           </div>
         </div>
-      </td>
-      <td class="px-6 py-4 whitespace-nowrap">
-        <div class="text-sm text-gray-900">${escapeHtml(user.email)}</div>
-        <div class="text-sm text-gray-500">${user.phone || 'Sin teléfono'}</div>
       </td>
       <td class="px-6 py-4 whitespace-nowrap">
         ${
           user.role === 'admin' && user.id === 3
             ? `
-          <span class="status-badge-role status-role-admin">
-            <i data-lucide="shield" class="h-3 w-3 mr-1"></i>
+          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3 w-3 mr-1">
+              <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+            </svg>
             Administrador
           </span>
         `
             : `
           <button
             onclick="toggleUserRole(${user.id}, '${user.role}')"
-            class="status-badge-role ${
+            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
               user.role === 'admin'
-                ? 'status-role-admin hover:opacity-80'
-                : 'status-role-user hover:opacity-80'
+                ? 'bg-purple-100 text-purple-800 hover:opacity-80'
+                : 'bg-gray-100 text-gray-800 hover:opacity-80'
             } transition-colors"
             title="Click para cambiar rol"
           >
-            <i data-lucide="${user.role === 'admin' ? 'shield' : 'user'}" class="h-3 w-3 mr-1"></i>
+            ${
+              user.role === 'admin'
+                ? `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3 w-3 mr-1">
+                    <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+                  </svg>`
+                : `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3 w-3 mr-1">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>`
+            }
             ${user.role === 'admin' ? 'Administrador' : 'Cliente'}
           </button>
         `
@@ -1721,51 +1929,48 @@ function renderUsersTable(usersList) {
         ${
           user.role === 'admin' && user.id === 3
             ? `
-          <span class="status-badge-user status-active-user">
-            <i data-lucide="check-circle" class="h-3 w-3 mr-1"></i>
-            Activo
-          </span>
-        `
-            : `
-          <button
-            onclick="toggleUserStatus(${user.id}, ${user.is_active})"
-            class="status-badge-user ${
-              user.is_active
-                ? 'status-active-user hover:opacity-80'
-                : 'status-inactive-user hover:opacity-80'
-            } transition-colors"
-            title="Click para ${user.is_active ? 'desactivar' : 'activar'}"
-          >
-            <i data-lucide="${user.is_active ? 'check-circle' : 'x-circle'}" class="h-3 w-3 mr-1"></i>
-            ${user.is_active ? 'Activo' : 'Inactivo'}
-          </button>
-        `
-        }
-      </td>
-      <td class="px-6 py-4 whitespace-nowrap">
-        ${
-          user.role === 'admin' && user.id === 3
-            ? `
-          <span class="status-badge-email status-email-verified">
-            <i data-lucide="mail-check" class="h-3 w-3 mr-1"></i>
+          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3 w-3 mr-1">
+              <path d="M22 4H2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V4Z"/>
+              <path d="M17 10l-5 5-3-3"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
             Verificado
           </span>
         `
             : `
           <button
             onclick="toggleEmailVerification(${user.id}, ${user.email_verified})"
-            class="status-badge-email ${
+            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
               user.email_verified
-                ? 'status-email-verified hover:opacity-80'
-                : 'status-email-pending hover:opacity-80'
+                ? 'bg-green-100 text-green-800 hover:opacity-80'
+                : 'bg-yellow-100 text-yellow-800 hover:opacity-80'
             } transition-colors"
             title="Click para ${user.email_verified ? 'marcar como no verificado' : 'verificar'}"
           >
-            <i data-lucide="${user.email_verified ? 'mail-check' : 'mail'}" class="h-3 w-3 mr-1"></i>
+            ${
+              user.email_verified
+                ? `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3 w-3 mr-1">
+                    <path d="M22 4H2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V4Z"/>
+                    <path d="M17 10l-5 5-3-3"/>
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                  </svg>`
+                : `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3 w-3 mr-1">
+                    <path d="M22 4H2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V4Z"/>
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                  </svg>`
+            }
             ${user.email_verified ? 'Verificado' : 'Pendiente'}
           </button>
         `
         }
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-center">
+        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+          user.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }">
+          ${user.is_active ? 'Activo' : 'Inactivo'}
+        </span>
       </td>
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
         ${formatDate(user.created_at)}
@@ -1777,29 +1982,38 @@ function renderUsersTable(usersList) {
             class="text-pink-600 hover:text-pink-900 p-1 rounded"
             title="Editar usuario"
           >
-            <i data-lucide="edit" class="h-4 w-4"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
           </button>
           ${
-            user.is_active
+            user.role !== 'admin' || user.id !== 3
               ? `
             <button
-              onclick="deactivateUser(${user.id}, '${escapeHtml(user.full_name || user.email)}')"
-              class="text-yellow-600 hover:text-yellow-900 p-1 rounded"
-              title="Desactivar usuario"
+              onclick="toggleUserStatus(${user.id}, ${user.is_active})"
+              class="${
+                user.is_active
+                  ? 'text-yellow-600 hover:text-yellow-900'
+                  : 'text-green-600 hover:text-green-900'
+              } p-1 rounded"
+              title="${user.is_active ? 'Desactivar usuario' : 'Reactivar usuario'}"
             >
-              <i data-lucide="ban" class="h-4 w-4"></i>
+              ${
+                user.is_active
+                  ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                      <path d="M9 9a3 3 0 1 1 6 0"/>
+                      <path d="M12 12v3"/>
+                      <path d="M3 12a9 9 0 1 0 18 0"/>
+                    </svg>`
+                  : `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                      <path d="M20 6L9 17l-5-5"/>
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                    </svg>`
+              }
             </button>
           `
-              : `
-            <button
-              onclick="reactivateUser(${user.id}, '${escapeHtml(user.full_name || user.email)}')"
-              class="text-green-600 hover:text-green-900 p-1 rounded"
-              title="Reactivar usuario"
-            >
-              <i data-lucide="user-check"
-              class="h-4 w-4"></i>
-            </button>
-          `
+              : ''
           }
         </div>
       </td>
@@ -1807,8 +2021,6 @@ function renderUsersTable(usersList) {
   `
     )
     .join('')
-
-  // Reinitialize Lucide icons for new elements
 }
 
 /**
@@ -1821,25 +2033,34 @@ function setupUsersEventListeners() {
     searchInput.addEventListener('input', debounce(loadUsersData, 500))
   }
 
-  // Filters
+  // Role filter
   const roleFilter = document.getElementById('user-role-filter')
-  const statusFilter = document.getElementById('user-status-filter')
-
   if (roleFilter) {
     roleFilter.addEventListener('change', loadUsersData)
   }
-  if (statusFilter) {
-    statusFilter.addEventListener('change', loadUsersData)
-  }
-  const emailVerifiedFilter = document.getElementById('email-verified-filter')
+
+  // Email verification filter
+  const emailVerifiedFilter = document.getElementById('user-email-verified-filter')
   if (emailVerifiedFilter) {
     emailVerifiedFilter.addEventListener('change', loadUsersData)
+  }
+
+  // Status filter
+  const statusFilter = document.getElementById('user-status-filter')
+  if (statusFilter) {
+    statusFilter.addEventListener('change', loadUsersData)
   }
 
   // Create user button
   const createBtn = document.getElementById('create-user-btn')
   if (createBtn) {
     createBtn.addEventListener('click', openCreateUserModal)
+  }
+
+  // Clear search button
+  const clearSearchBtn = document.getElementById('clear-search-btn')
+  if (clearSearchBtn) {
+    clearSearchBtn.addEventListener('click', clearUserSearch)
   }
 
   // Modal events
@@ -1901,8 +2122,8 @@ async function handleEmailLookup(e) {
   }
 
   try {
-    // Buscar usuario por email
-    const result = await api.getAllEmail(email)
+    // Buscar usuario por email - usar búsqueda general con parámetro de email
+    const result = await api.getAllUsers({ search: email })
 
     if (result.success && result.data) {
       const user = result.data
@@ -2223,14 +2444,23 @@ window.toggleUserRole = async function (userId, currentRole) {
       return
     }
 
+    // Validar parámetros
+    if (!currentRole || !['admin', 'user'].includes(currentRole)) {
+      console.error('Invalid current role:', currentRole)
+      toast.error('Error: rol actual inválido')
+      return
+    }
+
     const newRole = currentRole === 'admin' ? 'user' : 'admin'
-    const confirmChange = window.confirm(
-      `¿Estás seguro de cambiar el rol a "${newRole === 'admin' ? 'Administrador' : 'Cliente'}"?`
-    )
+    const roleName = newRole === 'admin' ? 'Administrador' : 'Cliente'
+
+    const confirmChange = window.confirm(`¿Estás seguro de cambiar el rol a "${roleName}"?`)
 
     if (!confirmChange) {
       return
     }
+
+    console.log(`Changing user ${userId} role from ${currentRole} to ${newRole}`)
 
     const result = await api.updateUsers(userId, { role: newRole })
 
@@ -2238,11 +2468,11 @@ window.toggleUserRole = async function (userId, currentRole) {
       throw new Error(result.message || 'Error al cambiar rol')
     }
 
-    toast.success(`Rol actualizado a "${newRole === 'admin' ? 'Administrador' : 'Cliente'}"`)
+    toast.success(`Rol actualizado a "${roleName}"`)
     await loadUsersData()
   } catch (error) {
     console.error('Error toggling user role:', error)
-    toast.error('Error al cambiar rol: ' + error.message)
+    toast.error('Error al cambiar rol: ' + (error.message || 'Error desconocido'))
   }
 }
 
@@ -2257,12 +2487,23 @@ window.toggleUserStatus = async function (userId, currentStatus) {
       return
     }
 
+    // Validar parámetros
+    if (typeof currentStatus !== 'boolean') {
+      console.error('Invalid current status:', currentStatus)
+      toast.error('Error: estado actual inválido')
+      return
+    }
+
     const action = currentStatus ? 'desactivar' : 'activar'
+    const actionText = currentStatus ? 'desactivado' : 'activado'
+
     const confirmChange = window.confirm(`¿Estás seguro de ${action} este usuario?`)
 
     if (!confirmChange) {
       return
     }
+
+    console.log(`Changing user ${userId} status from ${currentStatus} to ${!currentStatus}`)
 
     let result
     if (currentStatus) {
@@ -2277,11 +2518,11 @@ window.toggleUserStatus = async function (userId, currentStatus) {
       throw new Error(result.message || `Error al ${action} usuario`)
     }
 
-    toast.success(`Usuario ${action === 'desactivar' ? 'desactivado' : 'activado'} correctamente`)
+    toast.success(`Usuario ${actionText} correctamente`)
     await loadUsersData()
   } catch (error) {
     console.error('Error toggling user status:', error)
-    toast.error('Error al cambiar estado: ' + error.message)
+    toast.error('Error al cambiar estado: ' + (error.message || 'Error desconocido'))
   }
 }
 
@@ -2296,12 +2537,25 @@ window.toggleEmailVerification = async function (userId, currentStatus) {
       return
     }
 
+    // Validar parámetros
+    if (typeof currentStatus !== 'boolean') {
+      console.error('Invalid current verification status:', currentStatus)
+      toast.error('Error: estado de verificación inválido')
+      return
+    }
+
     const action = currentStatus ? 'marcar como no verificado' : 'verificar'
+    const actionText = currentStatus ? 'marcado como no verificado' : 'verificado'
+
     const confirmChange = window.confirm(`¿Estás seguro de ${action} el email de este usuario?`)
 
     if (!confirmChange) {
       return
     }
+
+    console.log(
+      `Changing user ${userId} email verification from ${currentStatus} to ${!currentStatus}`
+    )
 
     // Para desmarcar verificación, usamos el endpoint de actualización
     let result
@@ -2317,13 +2571,11 @@ window.toggleEmailVerification = async function (userId, currentStatus) {
       throw new Error(result.message || `Error al ${action} email`)
     }
 
-    toast.success(
-      `Email ${currentStatus ? 'marcado como no verificado' : 'verificado'} correctamente`
-    )
+    toast.success(`Email ${actionText} correctamente`)
     await loadUsersData()
   } catch (error) {
     console.error('Error toggling email verification:', error)
-    toast.error('Error al cambiar verificación: ' + error.message)
+    toast.error('Error al cambiar verificación: ' + (error.message || 'Error desconocido'))
   }
 }
 
@@ -2367,7 +2619,11 @@ function showUsersError() {
     tableBody.innerHTML = `
       <tr>
         <td colspan="7" class="px-6 py-8 text-center text-gray-500">
-          <i data-lucide="alert-circle" class="h-8 w-8 mx-auto mb-2"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 mx-auto mb-2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" x2="12" y1="8" y2="12"/>
+            <line x1="12" x2="12.01" y1="16" y2="16"/>
+          </svg>
           <p>Error al cargar usuarios</p>
         </td>
       </tr>

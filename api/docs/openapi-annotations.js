@@ -1213,6 +1213,8 @@
  *                 - type: object
  *                   properties:
  *                     data: { type: array, items: { $ref: '#/components/schemas/user' } }
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
@@ -1352,6 +1354,8 @@
  *                 - type: object
  *                   properties:
  *                     data: { $ref: '#/components/schemas/user' }
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
@@ -1377,6 +1381,8 @@
  *         content:
  *           application/json:
  *             schema: { $ref: '#/components/schemas/SuccessResponse' }
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:

@@ -18,7 +18,7 @@ describe('Payment Method API', () => {
     testPaymentMethod = await createTestPaymentMethod()
 
     // Setup auth token for admin operations
-    authToken = process.env.TEST_ADMIN_TOKEN || 'test-admin-token'
+    authToken = process.env.TEST_ADMIN_TOKEN || 'dev-mock-token-admin-floresya'
   })
 
   afterEach(async () => {

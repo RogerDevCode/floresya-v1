@@ -7,6 +7,7 @@ import express from 'express'
 import * as productImageController from '../controllers/productImageController.js'
 import { authenticate, authorize } from '../middleware/auth.js'
 import { uploadSingle, handleMulterError } from '../middleware/uploadImage.js'
+import { validateId } from '../middleware/validate.js'
 
 const router = express.Router()
 
@@ -15,13 +16,13 @@ const router = express.Router()
  * Get all images for a product
  * Query params: size (optional) - filter by image size (thumb, small, medium, large)
  */
-router.get('/:id/images', productImageController.getProductImages)
+router.get('/:id/images', validateId(), productImageController.getProductImages)
 
 /**
  * GET /api/products/:id/images/primary
  * Get primary image for a product
  */
-router.get('/:id/images/primary', productImageController.getPrimaryImage)
+router.get('/:id/images/primary', validateId(), productImageController.getPrimaryImage)
 
 /**
  * POST /api/products/:id/images
@@ -31,6 +32,7 @@ router.get('/:id/images/primary', productImageController.getPrimaryImage)
  */
 router.post(
   '/:id/images',
+  validateId(),
   authenticate,
   authorize('admin'),
   uploadSingle, // Multer middleware for file upload
@@ -45,6 +47,8 @@ router.post(
  */
 router.delete(
   '/:id/images/:imageIndex',
+  validateId(),
+  validateId('imageIndex'),
   authenticate,
   authorize('admin'),
   productImageController.deleteImagesByIndex
@@ -57,6 +61,8 @@ router.delete(
  */
 router.patch(
   '/:id/images/primary/:imageIndex',
+  validateId(),
+  validateId('imageIndex'),
   authenticate,
   authorize('admin'),
   productImageController.setPrimaryImage

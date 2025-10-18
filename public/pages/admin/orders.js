@@ -3,7 +3,6 @@
  * Handles order status changes with inline dropdown
  */
 
-import '../../js/'
 import { initAdminCommon } from '../../js/admin-common.js'
 import { api } from '../../js/shared/api-client.js'
 
@@ -387,22 +386,66 @@ function applyFilters() {
 }
 
 /**
+ * Safely update DOM element text content if element exists
+ * @param {string} elementId - The DOM element ID
+ * @param {string} text - The text content to set
+ */
+function safeUpdateElementText(elementId, text) {
+  const element = document.getElementById(elementId)
+  if (element) {
+    element.textContent = text
+  } else {
+    console.warn(`Element with ID '${elementId}' not found in DOM`)
+  }
+}
+
+/**
  * Update statistics based on fully filtered orders (all filters applied)
+ * Shows individual status counts and revenue statistics according to applied filters
  */
 function updateStats(filteredOrders) {
   const stats = {
     pending: filteredOrders.filter(o => o.status === 'pending').length,
-    processing: filteredOrders.filter(
-      o => o.status === 'verified' || o.status === 'preparing' || o.status === 'shipped'
-    ).length,
-    completed: filteredOrders.filter(o => o.status === 'delivered').length,
+    verified: filteredOrders.filter(o => o.status === 'verified').length,
+    preparing: filteredOrders.filter(o => o.status === 'preparing').length,
+    shipped: filteredOrders.filter(o => o.status === 'shipped').length,
+    delivered: filteredOrders.filter(o => o.status === 'delivered').length,
     cancelled: filteredOrders.filter(o => o.status === 'cancelled').length
   }
 
-  document.getElementById('stats-pending').textContent = stats.pending
-  document.getElementById('stats-processing').textContent = stats.processing
-  document.getElementById('stats-completed').textContent = stats.completed
-  document.getElementById('stats-cancelled').textContent = stats.cancelled
+  // Update individual status statistics
+  safeUpdateElementText('stats-pending', stats.pending)
+  safeUpdateElementText('stats-verified', stats.verified)
+  safeUpdateElementText('stats-preparing', stats.preparing)
+  safeUpdateElementText('stats-shipped', stats.shipped)
+  safeUpdateElementText('stats-delivered', stats.delivered)
+  safeUpdateElementText('stats-cancelled', stats.cancelled)
+
+  // Update processing total (verified + preparing + shipped)
+  const processingTotal = stats.verified + stats.preparing + stats.shipped
+  safeUpdateElementText('stats-processing', processingTotal)
+
+  // Update completed total (delivered)
+  safeUpdateElementText('stats-completed', stats.delivered)
+
+  // Revenue and items statistics (all in USD)
+  const totalUsd = filteredOrders.reduce((sum, order) => sum + order.total_usd, 0)
+  const totalItems = filteredOrders.reduce(
+    (sum, order) => sum + order.items.reduce((itemSum, item) => itemSum + item.quantity, 0),
+    0
+  )
+
+  const avgUsd = filteredOrders.length > 0 ? totalUsd / filteredOrders.length : 0
+  const avgItems = filteredOrders.length > 0 ? totalItems / filteredOrders.length : 0
+  const maxUsd =
+    filteredOrders.length > 0 ? Math.max(...filteredOrders.map(order => order.total_usd)) : 0
+
+  // Format currency values (all in USD)
+  safeUpdateElementText('stats-total-usd', `$${totalUsd.toFixed(2)}`)
+  safeUpdateElementText('stats-avg-usd', `$${avgUsd.toFixed(2)}`)
+  safeUpdateElementText('stats-max-usd', `$${maxUsd.toFixed(2)}`)
+  safeUpdateElementText('stats-total-items', totalItems)
+  safeUpdateElementText('stats-avg-items', avgItems.toFixed(1))
 }
 
 /**

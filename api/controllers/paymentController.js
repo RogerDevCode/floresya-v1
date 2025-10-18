@@ -1,212 +1,62 @@
 /**
- * Payment Controller - Venezuelan Payment Methods
- * Handles payment processing and order creation
+ * Payment Controller
+ * Handles HTTP logic for payment operations
  */
 
 import * as paymentService from '../services/paymentService.js'
 import { asyncHandler } from '../middleware/errorHandler.js'
 
 /**
- * @swagger
- * /api/payments/methods:
- *   get:
- *     tags: [Payments]
- *     summary: Get available payment methods for Venezuela
- *     responses:
- *       200:
- *         description: Payment methods retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/SuccessResponse'
+ * Helper Functions
+ * Common utilities following KISS, DRY, and SSOT principles
  */
+
 /**
- * @swagger
- * /api/payment/{id}:
- *   get:
- *     tags: [payment]
- *     summary: Get payment methods
- *     parameters:
- *       - $ref: '#/components/parameters/IdParam'
- *     responses:
- *       200:
- *         description: Get payment methods operation
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/SuccessResponse'
- *                 - type: object
- *                   properties:
- *                     data: { $ref: '#/components/schemas/payment' }
- *       400: { $ref: '#/components/responses/ValidationError' }
- *       404: { $ref: '#/components/responses/NotFoundError' }
- *       500: { $ref: '#/components/responses/InternalServerError' }
+ * Creates standardized API response
+ * @param {Object} data - Response data
+ * @param {string} message - Success message
+ * @returns {Object} Formatted response object
  */
+const createResponse = (data, message) => ({
+  success: true,
+  data,
+  message
+})
+
 /**
- * @swagger
- * /api/payment/{id}:
- *   get:
- *     tags: [payment]
- *     summary: Get payment methods
- *     parameters:
- *       - $ref: '#/components/parameters/IdParam'
- *     responses:
- *       200:
- *         description: Get payment methods operation
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/SuccessResponse'
- *                 - type: object
- *                   properties:
- *                     data: { $ref: '#/components/schemas/payment' }
- *       400: { $ref: '#/components/responses/ValidationError' }
- *       404: { $ref: '#/components/responses/NotFoundError' }
- *       500: { $ref: '#/components/responses/InternalServerError' }
+ * Gets appropriate success message for operation
+ * @param {string} operation - Operation type
+ * @param {string} entity - Entity name (user, product, etc.)
+ * @returns {string} Success message
+ */
+const getSuccessMessage = (operation, entity = 'Payment') => {
+  const messages = {
+    create: `${entity} created successfully`,
+    update: `${entity} updated successfully`,
+    delete: `${entity} deleted successfully`,
+    confirm: `${entity} confirmed successfully`,
+    process: `${entity} processed successfully`,
+    refund: `${entity} refunded successfully`,
+    retrieve: `${entity} retrieved successfully`,
+    methods: 'Payment methods retrieved successfully'
+  }
+  return messages[operation] || `${entity} operation completed successfully`
+}
+
+/**
+ * GET /api/payments/methods
+ * Get available payment methods
  */
 export const getPaymentMethods = asyncHandler(async (req, res) => {
   const paymentMethods = await paymentService.getPaymentMethods()
 
-  res.status(200).json({
-    success: true,
-    data: paymentMethods,
-    message: 'Payment methods retrieved successfully'
-  })
+  const response = createResponse(paymentMethods, getSuccessMessage('methods'))
+  res.json(response)
 })
 
 /**
- * @swagger
- * /api/orders:
- *   post:
- *     tags: [Orders]
- *     summary: Create new order with customer and payment information
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - customer_email
- *               - customer_name
- *               - customer_phone
- *               - delivery_address
- *               - total_amount_usd
- *               - items
- *             properties:
- *               customer_email:
- *                 type: string
- *                 format: email
- *               customer_name:
- *                 type: string
- *                 minLength: 2
- *               customer_phone:
- *                 type: string
- *               delivery_address:
- *                 type: string
- *                 minLength: 10
- *               delivery_notes:
- *                 type: string
- *               notes:
- *                 type: string
- *               total_amount_usd:
- *                 type: number
- *                 minimum: 0
- *               total_amount_ves:
- *                 type: number
- *                 minimum: 0
- *               currency_rate:
- *                 type: number
- *                 minimum: 0
- *               status:
- *                 type: string
- *                 enum: [pending, verified, preparing, shipped, delivered, cancelled]
- *               items:
- *                 type: array
- *                 items:
- *                   type: object
- *                   required:
- *                     - product_id
- *                     - product_name
- *                     - unit_price_usd
- *                     - quantity
- *                   properties:
- *                     product_id:
- *                       type: integer
- *                     product_name:
- *                       type: string
- *                     product_summary:
- *                       type: string
- *                     unit_price_usd:
- *                       type: number
- *                     unit_price_ves:
- *                       type: number
- *                     quantity:
- *                       type: integer
- *                       minimum: 1
- *                     subtotal_usd:
- *                       type: number
- *                     subtotal_ves:
- *                       type: number
- *     responses:
- *       201:
- *         description: Order created successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/SuccessResponse'
- */
-/**
  * POST /api/payments/:id/confirm
  * Confirm payment for an order
- */
-/**
- * @swagger
- * /api/payment/{id}:
- *   get:
- *     tags: [payment]
- *     summary: Confirm payment
- *     parameters:
- *       - $ref: '#/components/parameters/IdParam'
- *     responses:
- *       200:
- *         description: Confirm payment operation
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/SuccessResponse'
- *                 - type: object
- *                   properties:
- *                     data: { $ref: '#/components/schemas/payment' }
- *       400: { $ref: '#/components/responses/ValidationError' }
- *       404: { $ref: '#/components/responses/NotFoundError' }
- *       500: { $ref: '#/components/responses/InternalServerError' }
- */
-/**
- * @swagger
- * /api/payment/{id}:
- *   get:
- *     tags: [payment]
- *     summary: Confirm payment
- *     parameters:
- *       - $ref: '#/components/parameters/IdParam'
- *     responses:
- *       200:
- *         description: Confirm payment operation
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/SuccessResponse'
- *                 - type: object
- *                   properties:
- *                     data: { $ref: '#/components/schemas/payment' }
- *       400: { $ref: '#/components/responses/ValidationError' }
- *       404: { $ref: '#/components/responses/NotFoundError' }
- *       500: { $ref: '#/components/responses/InternalServerError' }
  */
 export const confirmPayment = asyncHandler(async (req, res) => {
   const { id } = req.params
@@ -220,9 +70,6 @@ export const confirmPayment = asyncHandler(async (req, res) => {
 
   const payment = await paymentService.confirmPayment(parseInt(id), paymentData)
 
-  res.status(200).json({
-    success: true,
-    data: payment,
-    message: 'Payment confirmed successfully'
-  })
+  const response = createResponse(payment, getSuccessMessage('confirm'))
+  res.json(response)
 })

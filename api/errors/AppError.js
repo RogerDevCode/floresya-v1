@@ -134,12 +134,18 @@ class ValidationError extends AppError {
   }
 
   /**
-   * Override toJSON to return 'validation' instead of 'ValidationError' for API compatibility
+   * Override toJSON to return 'ValidationError' for API consistency (following PascalCase standard)
    */
   toJSON(includeStack = false) {
+    console.log('🔍 DEBUG: ValidationError.toJSON called', {
+      className: this.constructor.name,
+      shouldReturn: 'ValidationError',
+      currentBehavior: 'Returning ValidationError for consistency'
+    })
+
     return {
       success: false,
-      error: 'validation', // Tests expect 'validation' not 'ValidationError'
+      error: 'ValidationError', // Following PascalCase standard for consistency
       code: this.code,
       message: this.userMessage,
       details: this.isOperational ? this.context : undefined,

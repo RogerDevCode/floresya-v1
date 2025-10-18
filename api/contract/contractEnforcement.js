@@ -474,9 +474,15 @@ export function contractEnforcementMiddleware() {
         const paramErrors = validateRequestParams(req, operationSpec)
         if (paramErrors.length > 0) {
           console.warn(`CONTRACT VIOLATION - Parameters: ${JSON.stringify(paramErrors)}`)
+          console.log('🔍 DEBUG: Contract enforcement returning error type', {
+            shouldBe: 'ValidationError',
+            currentlyReturning: 'validation',
+            issue: 'Inconsistent error type - should use PascalCase'
+          })
+
           return res.status(400).json({
             success: false,
-            error: 'validation',
+            error: 'ValidationError', // Fixed: Using PascalCase for consistency
             message: 'Request parameters validation failed',
             details: paramErrors,
             contract: 'See /api-docs for the official API specification'
@@ -487,9 +493,15 @@ export function contractEnforcementMiddleware() {
         const bodyErrors = validateRequestBody(req, operationSpec)
         if (bodyErrors.length > 0) {
           console.warn(`CONTRACT VIOLATION - Request Body: ${JSON.stringify(bodyErrors)}`)
+          console.log('🔍 DEBUG: Contract enforcement returning error type for body validation', {
+            shouldBe: 'ValidationError',
+            currentlyReturning: 'validation',
+            issue: 'Inconsistent error type - should use PascalCase'
+          })
+
           return res.status(400).json({
             success: false,
-            error: 'validation',
+            error: 'ValidationError', // Fixed: Using PascalCase for consistency
             message: 'Request body contract validation failed',
             details: bodyErrors,
             contract: 'See /api-docs for the official API specification'

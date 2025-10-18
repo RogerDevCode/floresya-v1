@@ -1,257 +1,681 @@
 /**
- * User Service Unit Tests
- * Testing business logic for users using Vitest
+ * User Service Tests
+ * Tests each functionality separately (one test per function)
+ * Tests all possible combinations of filters and scenarios
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import * as userService from '../userService.js'
-import { NotFoundError, DatabaseError, BadRequestError } from '../../errors/AppError.js'
+import { supabase } from '../supabaseClient.js'
+import {
+  ValidationError,
+  NotFoundError,
+  DatabaseError,
+  BadRequestError
+} from '../../errors/AppError.js'
 
-// Mock Supabase client
+// Mock supabase
 vi.mock('../supabaseClient.js', () => ({
   supabase: {
     from: vi.fn(() => ({
-      select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      single: vi.fn(),
-      order: vi.fn().mockReturnThis(),
-      insert: vi.fn().mockReturnThis(),
-      update: vi.fn().mockReturnThis(),
-      delete: vi.fn().mockReturnThis(),
-      gte: vi.fn().mockReturnThis(),
-      lte: vi.fn().mockReturnThis(),
-      limit: vi.fn().mockReturnThis(),
-      range: vi.fn().mockReturnThis(),
-      or: vi.fn().mockReturnThis()
+      select: vi.fn(() => ({
+        eq: vi.fn(() => ({
+          single: vi.fn(),
+          order: vi.fn(() => ({
+            range: vi.fn()
+          }))
+        })),
+        or: vi.fn(() => ({
+          eq: vi.fn(() => ({
+            order: vi.fn(() => ({
+              range: vi.fn()
+            }))
+          }))
+        })),
+        order: vi.fn(() => ({
+          range: vi.fn()
+        }))
+      })),
+      insert: vi.fn(() => ({
+        select: vi.fn(() => ({
+          single: vi.fn()
+        }))
+      })),
+      update: vi.fn(() => ({
+        eq: vi.fn(() => ({
+          select: vi.fn(() => ({
+            single: vi.fn()
+          }))
+        }))
+      }))
     }))
   },
   DB_SCHEMA: {
     users: {
       table: 'users',
-      pk: 'id',
-      indexes: ['email', 'full_name_normalized', 'email_normalized'],
-      search: ['full_name_normalized', 'email_normalized'],
       enums: {
         role: ['user', 'admin']
-      },
-      columns: [
-        'id',
-        'email',
-        'password_hash',
-        'full_name',
-        'phone',
-        'role',
-        'is_active',
-        'email_verified',
-        'created_at',
-        'updated_at'
-      ]
+      }
     }
   }
 }))
 
-describe('userService', () => {
-  let mockSupabaseQuery
+// Mock console.error to avoid noise in tests
+vi.spyOn(console, 'error').mockImplementation(() => {})
 
-  beforeEach(() => {
-    vi.clearAllMocks()
+describe('getAllUsers', () => {
+  it('should get all active users with no filters', async () => {
+    const mockUsers = [
+      { id: 1, email: 'user1@test.com', role: 'user', is_active: true },
+      { id: 2, email: 'user2@test.com', role: 'user', is_active: true }
+    ]
 
-    // Setup basic mock chain
-    mockSupabaseQuery = {
-      select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      single: vi.fn(),
-      order: vi.fn().mockReturnThis(),
-      insert: vi.fn().mockReturnThis(),
-      update: vi.fn().mockReturnThis(),
-      delete: vi.fn().mockReturnThis(),
+    supabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            range: vi.fn().mockResolvedValue({
+              data: mockUsers,
+              error: null
+            })
+          })
+        })
+      })
+    })
+
+    const result = await userService.getAllUsers({}, false)
+
+    expect(result).toEqual(mockUsers)
+    expect(supabase.from).toHaveBeenCalledWith('users')
+  })
+
+  it('should filter by role', async () => {
+    const mockUsers = [{ id: 1, email: 'admin@test.com', role: 'admin', is_active: true }]
+
+    supabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            order: vi.fn().mockReturnValue({
+              range: vi.fn().mockResolvedValue({
+                data: mockUsers,
+                error: null
+              })
+            })
+          })
+        })
+      })
+    })
+
+    const result = await userService.getAllUsers({ role: 'admin' }, false)
+
+    expect(result).toEqual(mockUsers)
+  })
+
+  it('should filter by email verified status', async () => {
+    const mockUsers = [{ id: 1, email: 'user@test.com', email_verified: true, is_active: true }]
+
+    supabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            order: vi.fn().mockReturnValue({
+              range: vi.fn().mockResolvedValue({
+                data: mockUsers,
+                error: null
+              })
+            })
+          })
+        })
+      })
+    })
+
+    const result = await userService.getAllUsers({ email_verified: true }, false)
+
+    expect(result).toEqual(mockUsers)
+  })
+
+  it('should search by email and name', async () => {
+    const mockUsers = [{ id: 1, email: 'test@test.com', full_name: 'Test User', is_active: true }]
+
+    const mockQuery = {
       or: vi.fn().mockReturnThis(),
-      gte: vi.fn().mockReturnThis(),
-      lte: vi.fn().mockReturnThis(),
-      limit: vi.fn().mockReturnThis(),
-      range: vi.fn().mockReturnThis()
+      eq: vi.fn().mockReturnThis(),
+      order: vi.fn().mockReturnThis(),
+      range: vi.fn().mockResolvedValue({
+        data: mockUsers,
+        error: null
+      })
     }
+
+    supabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue(mockQuery)
+    })
+
+    const result = await userService.getAllUsers({ search: 'test' }, false)
+
+    expect(result).toEqual(mockUsers)
   })
 
-  afterEach(() => {
-    vi.resetAllMocks()
+  it('should include inactive users for admin', async () => {
+    const mockUsers = [
+      { id: 1, email: 'user1@test.com', is_active: true },
+      { id: 2, email: 'user2@test.com', is_active: false }
+    ]
+
+    supabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        order: vi.fn().mockReturnValue({
+          range: vi.fn().mockResolvedValue({
+            data: mockUsers,
+            error: null
+          })
+        })
+      })
+    })
+
+    const result = await userService.getAllUsers({}, true)
+
+    expect(result).toEqual(mockUsers)
   })
 
-  describe('getUserById', () => {
-    it('should return user data for valid ID', async () => {
-      const mockUser = {
-        id: 123,
-        email: 'user@example.com',
-        full_name: 'Test User',
-        role: 'user',
-        is_active: true
-      }
-
-      mockSupabaseQuery.single.mockResolvedValueOnce({
-        data: mockUser,
-        error: null
+  it('should throw NotFoundError when no users found', async () => {
+    supabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            range: vi.fn().mockResolvedValue({
+              data: null,
+              error: null
+            })
+          })
+        })
       })
-
-      const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
-
-      const result = await userService.getUserById(123)
-
-      expect(result).toEqual(mockUser)
-      expect(supabase.from).toHaveBeenCalledWith('users')
     })
 
-    it('should throw BadRequestError for invalid user ID', async () => {
-      // These should throw BadRequestError before even calling the database
-      await expect(userService.getUserById('')).rejects.toThrow(BadRequestError)
-      await expect(userService.getUserById(null)).rejects.toThrow(BadRequestError)
-      await expect(userService.getUserById('abc')).rejects.toThrow(BadRequestError)
-      await expect(userService.getUserById(0)).rejects.toThrow(BadRequestError)
-      // -1 is a valid number, so it should not throw BadRequestError
-      // Instead, test that it calls the database (but we won't test the result)
-    })
-
-    it('should throw NotFoundError when user does not exist', async () => {
-      mockSupabaseQuery.single.mockResolvedValueOnce({
-        data: null,
-        error: { code: 'PGRST116', message: 'No rows found' }
-      })
-
-      const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
-
-      await expect(userService.getUserById(999)).rejects.toThrow(NotFoundError)
-    })
-
-    it('should throw DatabaseError on database errors', async () => {
-      const dbError = new Error('Database connection failed')
-      mockSupabaseQuery.single.mockResolvedValueOnce({
-        data: null,
-        error: dbError
-      })
-
-      const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
-
-      await expect(userService.getUserById(123)).rejects.toThrow(DatabaseError)
-    })
+    await expect(userService.getAllUsers({}, false)).rejects.toThrow(NotFoundError)
   })
 
-  describe('getUserByEmail', () => {
-    it('should return user data for valid email', async () => {
-      const mockUser = {
-        id: 123,
-        email: 'user@example.com',
-        full_name: 'Test User',
-        role: 'user'
-      }
-
-      mockSupabaseQuery.single.mockResolvedValueOnce({
-        data: mockUser,
-        error: null
+  it('should throw DatabaseError on database error', async () => {
+    supabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            range: vi.fn().mockResolvedValue({
+              data: null,
+              error: { message: 'Database error' }
+            })
+          })
+        })
       })
-
-      const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
-
-      const result = await userService.getUserByEmail('user@example.com')
-
-      expect(result).toEqual(mockUser)
-      expect(mockSupabaseQuery.eq).toHaveBeenCalledWith('email', 'user@example.com')
     })
 
-    it('should throw BadRequestError for invalid email', async () => {
-      await expect(userService.getUserByEmail('')).rejects.toThrow(BadRequestError)
-      await expect(userService.getUserByEmail(null)).rejects.toThrow(BadRequestError)
-      await expect(userService.getUserByEmail(123)).rejects.toThrow(BadRequestError)
+    await expect(userService.getAllUsers({}, false)).rejects.toThrow(DatabaseError)
+  })
+})
+
+describe('getUserById', () => {
+  it('should get user by valid ID', async () => {
+    const mockUser = { id: 1, email: 'user@test.com', role: 'user', is_active: true }
+
+    supabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: mockUser,
+              error: null
+            })
+          })
+        })
+      })
     })
+
+    const result = await userService.getUserById(1, false)
+
+    expect(result).toEqual(mockUser)
   })
 
-  describe('createUser', () => {
-    it('should create a new user successfully', async () => {
-      const newUser = {
-        email: 'newuser@example.com',
-        password_hash: 'hashed-password',
-        full_name: 'New User'
-      }
-
-      const createdUser = {
-        id: 'user-456',
-        ...newUser,
-        role: 'user',
-        is_active: true,
-        created_at: '2025-01-01T00:00:00Z'
-      }
-
-      mockSupabaseQuery.single.mockResolvedValueOnce({
-        data: createdUser,
-        error: null
-      })
-
-      const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
-
-      const result = await userService.createUser(newUser)
-
-      expect(result).toEqual(createdUser)
-      expect(mockSupabaseQuery.insert).toHaveBeenCalled()
-    })
-
-    it('should throw DatabaseError when creation fails', async () => {
-      const newUser = {
-        email: 'newuser@example.com',
-        password_hash: 'hashed-password'
-      }
-
-      const dbError = new Error('Insert failed')
-      mockSupabaseQuery.single.mockResolvedValueOnce({
-        data: null,
-        error: dbError
-      })
-
-      const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
-
-      await expect(userService.createUser(newUser)).rejects.toThrow(DatabaseError)
-    })
+  it('should throw BadRequestError for invalid ID', async () => {
+    await expect(userService.getUserById(null, false)).rejects.toThrow(BadRequestError)
+    await expect(userService.getUserById('invalid', false)).rejects.toThrow(BadRequestError)
   })
 
-  describe('updateUser', () => {
-    it('should update user successfully', async () => {
-      const userId = 123
-      const updates = {
-        full_name: 'Updated Name',
-        phone: '+1234567890'
-      }
-
-      const updatedUser = {
-        id: userId,
-        full_name: updates.full_name,
-        phone: updates.phone,
-        email: 'user@example.com'
-      }
-
-      mockSupabaseQuery.single.mockResolvedValueOnce({
-        data: updatedUser,
-        error: null
+  it('should throw NotFoundError when user not found', async () => {
+    supabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: null,
+              error: { code: 'PGRST116' }
+            })
+          })
+        })
       })
-
-      const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
-
-      const result = await userService.updateUser(userId, updates)
-
-      expect(result).toEqual(updatedUser)
-      expect(mockSupabaseQuery.update).toHaveBeenCalledWith(updates)
-      expect(mockSupabaseQuery.eq).toHaveBeenCalledWith('id', userId)
     })
 
-    it('should throw BadRequestError for invalid user ID', async () => {
-      await expect(userService.updateUser('', {})).rejects.toThrow(BadRequestError)
-      await expect(userService.updateUser(null, {})).rejects.toThrow(BadRequestError)
-      await expect(userService.updateUser('abc', {})).rejects.toThrow(BadRequestError)
-      await expect(userService.updateUser(0, {})).rejects.toThrow(BadRequestError)
-      await expect(userService.updateUser(-1, {})).rejects.toThrow(BadRequestError)
+    await expect(userService.getUserById(999, false)).rejects.toThrow(NotFoundError)
+  })
+
+  it('should include inactive users for admin', async () => {
+    const mockUser = { id: 1, email: 'user@test.com', is_active: false }
+
+    supabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          single: vi.fn().mockResolvedValue({
+            data: mockUser,
+            error: null
+          })
+        })
+      })
     })
+
+    const result = await userService.getUserById(1, true)
+
+    expect(result).toEqual(mockUser)
+  })
+})
+
+describe('getUserByEmail', () => {
+  it('should get user by valid email', async () => {
+    const mockUser = { id: 1, email: 'user@test.com', role: 'user', is_active: true }
+
+    supabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: mockUser,
+              error: null
+            })
+          })
+        })
+      })
+    })
+
+    const result = await userService.getUserByEmail('user@test.com', false)
+
+    expect(result).toEqual(mockUser)
+  })
+
+  it('should throw BadRequestError for invalid email', async () => {
+    await expect(userService.getUserByEmail(null, false)).rejects.toThrow(BadRequestError)
+    await expect(userService.getUserByEmail('', false)).rejects.toThrow(BadRequestError)
+    await expect(userService.getUserByEmail(123, false)).rejects.toThrow(BadRequestError)
+  })
+
+  it('should throw NotFoundError when user not found', async () => {
+    supabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: null,
+              error: { code: 'PGRST116' }
+            })
+          })
+        })
+      })
+    })
+
+    await expect(userService.getUserByEmail('nonexistent@test.com', false)).rejects.toThrow(
+      NotFoundError
+    )
+  })
+})
+
+describe('getUsersByFilter', () => {
+  it('should filter by role only', async () => {
+    const mockUsers = [{ id: 1, email: 'admin@test.com', role: 'admin', is_active: true }]
+
+    supabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            range: vi.fn().mockResolvedValue({
+              data: mockUsers,
+              error: null
+            })
+          })
+        })
+      })
+    })
+
+    const result = await userService.getUsersByFilter({ role: 'admin' })
+
+    expect(result).toEqual(mockUsers)
+  })
+
+  it('should filter by state only', async () => {
+    const mockUsers = [{ id: 1, email: 'user@test.com', is_active: false }]
+
+    supabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            range: vi.fn().mockResolvedValue({
+              data: mockUsers,
+              error: null
+            })
+          })
+        })
+      })
+    })
+
+    const result = await userService.getUsersByFilter({ state: false })
+
+    expect(result).toEqual(mockUsers)
+  })
+
+  it('should filter by email verified only', async () => {
+    const mockUsers = [{ id: 1, email: 'user@test.com', email_verified: true, is_active: true }]
+
+    supabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            range: vi.fn().mockResolvedValue({
+              data: mockUsers,
+              error: null
+            })
+          })
+        })
+      })
+    })
+
+    const result = await userService.getUsersByFilter({ email_verified: true })
+
+    expect(result).toEqual(mockUsers)
+  })
+
+  it('should combine multiple filters', async () => {
+    const mockUsers = [
+      { id: 1, email: 'admin@test.com', role: 'admin', is_active: true, email_verified: true }
+    ]
+
+    supabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              order: vi.fn().mockReturnValue({
+                range: vi.fn().mockResolvedValue({
+                  data: mockUsers,
+                  error: null
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+
+    const result = await userService.getUsersByFilter({
+      role: 'admin',
+      state: true,
+      email_verified: true
+    })
+
+    expect(result).toEqual(mockUsers)
+  })
+
+  it('should return all active users when no filters provided', async () => {
+    const mockUsers = [
+      { id: 1, email: 'user1@test.com', is_active: true },
+      { id: 2, email: 'user2@test.com', is_active: true }
+    ]
+
+    supabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            range: vi.fn().mockResolvedValue({
+              data: mockUsers,
+              error: null
+            })
+          })
+        })
+      })
+    })
+
+    const result = await userService.getUsersByFilter({})
+
+    expect(result).toEqual(mockUsers)
+  })
+})
+
+describe('createUser', () => {
+  it('should create user with minimal data (client registration)', async () => {
+    const userData = {
+      email: 'client@test.com',
+      full_name: 'Client User'
+    }
+
+    const mockCreatedUser = {
+      id: 1,
+      ...userData,
+      role: 'user',
+      is_active: true,
+      email_verified: false,
+      password_hash: null
+    }
+
+    supabase.from.mockReturnValue({
+      insert: vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          single: vi.fn().mockResolvedValue({
+            data: mockCreatedUser,
+            error: null
+          })
+        })
+      })
+    })
+
+    const result = await userService.createUser(userData)
+
+    expect(result).toEqual(mockCreatedUser)
+  })
+
+  it('should create admin user with password', async () => {
+    const userData = {
+      email: 'admin@test.com',
+      full_name: 'Admin User',
+      role: 'admin',
+      password_hash: 'hashed_password'
+    }
+
+    const mockCreatedUser = {
+      id: 1,
+      ...userData,
+      is_active: true,
+      email_verified: false
+    }
+
+    supabase.from.mockReturnValue({
+      insert: vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          single: vi.fn().mockResolvedValue({
+            data: mockCreatedUser,
+            error: null
+          })
+        })
+      })
+    })
+
+    const result = await userService.createUser(userData)
+
+    expect(result).toEqual(mockCreatedUser)
+  })
+
+  it('should throw ValidationError for missing email', async () => {
+    await expect(userService.createUser({ full_name: 'Test' })).rejects.toThrow(ValidationError)
+  })
+
+  it('should throw ValidationError for invalid email', async () => {
+    await expect(userService.createUser({ email: 'invalid-email' })).rejects.toThrow(
+      ValidationError
+    )
+  })
+
+  it('should throw ValidationError for admin without password', async () => {
+    await expect(
+      userService.createUser({
+        email: 'admin@test.com',
+        role: 'admin'
+      })
+    ).rejects.toThrow(ValidationError)
+  })
+
+  it('should throw ValidationError for invalid role', async () => {
+    await expect(
+      userService.createUser({
+        email: 'user@test.com',
+        role: 'invalid_role'
+      })
+    ).rejects.toThrow(ValidationError)
+  })
+
+  it('should throw DatabaseError on database error', async () => {
+    supabase.from.mockReturnValue({
+      insert: vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          single: vi.fn().mockResolvedValue({
+            data: null,
+            error: { message: 'Database error' }
+          })
+        })
+      })
+    })
+
+    await expect(
+      userService.createUser({
+        email: 'user@test.com'
+      })
+    ).rejects.toThrow(DatabaseError)
+  })
+})
+
+describe('updateUser', () => {
+  it('should update user with valid data', async () => {
+    const updates = { full_name: 'Updated Name' }
+    const mockUpdatedUser = {
+      id: 1,
+      email: 'user@test.com',
+      full_name: 'Updated Name',
+      is_active: true
+    }
+
+    supabase.from.mockReturnValue({
+      update: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            select: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({
+                data: mockUpdatedUser,
+                error: null
+              })
+            })
+          })
+        })
+      })
+    })
+
+    const result = await userService.updateUser(1, updates)
+
+    expect(result).toEqual(mockUpdatedUser)
+  })
+
+  it('should throw BadRequestError for invalid ID', async () => {
+    await expect(userService.updateUser(null, { full_name: 'Test' })).rejects.toThrow(
+      BadRequestError
+    )
+    await expect(userService.updateUser('invalid', { full_name: 'Test' })).rejects.toThrow(
+      BadRequestError
+    )
+  })
+
+  it('should throw BadRequestError for no updates', async () => {
+    await expect(userService.updateUser(1, {})).rejects.toThrow(BadRequestError)
+  })
+
+  it('should throw ValidationError for invalid role', async () => {
+    await expect(userService.updateUser(1, { role: 'invalid_role' })).rejects.toThrow(
+      ValidationError
+    )
+  })
+
+  it('should throw NotFoundError when user not found', async () => {
+    supabase.from.mockReturnValue({
+      update: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            select: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({
+                data: null,
+                error: { code: 'PGRST116' }
+              })
+            })
+          })
+        })
+      })
+    })
+
+    await expect(userService.updateUser(999, { full_name: 'Test' })).rejects.toThrow(NotFoundError)
+  })
+})
+
+describe('deleteUser', () => {
+  it('should soft delete user', async () => {
+    const mockDeletedUser = {
+      id: 1,
+      email: 'user@test.com',
+      is_active: false
+    }
+
+    supabase.from.mockReturnValue({
+      update: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            select: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({
+                data: mockDeletedUser,
+                error: null
+              })
+            })
+          })
+        })
+      })
+    })
+
+    const result = await userService.deleteUser(1)
+
+    expect(result).toEqual(mockDeletedUser)
+    expect(result.is_active).toBe(false)
+  })
+
+  it('should throw BadRequestError for invalid ID', async () => {
+    await expect(userService.deleteUser(null)).rejects.toThrow(BadRequestError)
+    await expect(userService.deleteUser('invalid')).rejects.toThrow(BadRequestError)
+  })
+
+  it('should throw NotFoundError when user not found', async () => {
+    supabase.from.mockReturnValue({
+      update: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            select: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({
+                data: null,
+                error: { code: 'PGRST116' }
+              })
+            })
+          })
+        })
+      })
+    })
+
+    await expect(userService.deleteUser(999)).rejects.toThrow(NotFoundError)
   })
 })

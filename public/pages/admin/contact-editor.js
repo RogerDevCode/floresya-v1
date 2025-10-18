@@ -3,8 +3,8 @@
  * Manage all contact page settings from admin panel
  */
 
-import '../../js/'
 import { api } from '../../js/shared/api-client.js'
+import { initThemeManager } from '../../js/themes/themeManager.js'
 
 // State
 let settings = {}
@@ -225,4 +225,5 @@ import { onDOMReady } from '../../js/shared/dom-ready.js'
 // Initialize when DOM is ready
 onDOMReady(() => {
   init()
+  initThemeManager()
 })

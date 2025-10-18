@@ -1,7 +1,7 @@
 /**
  * User Service
- * Full CRUD operations with soft-delete (is_active flag)
- * Uses indexed columns for optimized queries
+ * Business logic for user operations
+ * KISS implementation - simple and direct
  */
 
 import { supabase, DB_SCHEMA } from './supabaseClient.js'
@@ -9,438 +9,484 @@ import {
   ValidationError,
   NotFoundError,
   DatabaseError,
-  DatabaseConstraintError,
-  BadRequestError,
-  InternalServerError
+  BadRequestError
 } from '../errors/AppError.js'
-import { buildSearchCondition } from '../utils/normalize.js'
-import { PAGINATION } from '../config/constants.js'
 
 const TABLE = DB_SCHEMA.users.table
 const VALID_ROLES = DB_SCHEMA.users.enums.role
-const SEARCH_COLUMNS = DB_SCHEMA.users.search
 
 /**
- * Validate user data (ENTERPRISE FAIL-FAST)
- * @param {Object} data - User data to validate
- * @param {string} [data.email] - User email address (required for creation)
- * @param {string} [data.full_name] - User's full name
- * @param {string} [data.phone] - User phone number
- * @param {string} [data.role] - User role (must be valid enum value)
- * @param {string} [data.password_hash] - Password hash
- * @param {boolean} [data.email_verified] - Email verification status
- * @param {boolean} isUpdate - Whether this is for an update operation (default: false)
- * @throws {ValidationError} With detailed field-level validation errors
- * @example
- * // For creation
- * validateUserData({
- *   email: 'user@example.com',
- *   full_name: 'Juan Pérez',
- *   role: 'user'
- * }, false)
- *
- * // For update
- * validateUserData({
- *   role: 'admin'
- * }, true)
+ * Validate user ID (KISS principle)
  */
-function validateUserData(data, isUpdate = false) {
-  if (!isUpdate) {
-    if (!data.email || typeof data.email !== 'string' || !data.email.includes('@')) {
-      throw new ValidationError('Invalid email: must be valid email string', {
-        field: 'email',
-        value: data.email,
-        rule: 'valid email format required'
-      })
-    }
-  }
-
-  if (data.email !== undefined && (typeof data.email !== 'string' || !data.email.includes('@'))) {
-    throw new ValidationError('Invalid email format', {
-      field: 'email',
-      value: data.email,
-      rule: 'valid email format required'
-    })
-  }
-
-  if (data.role !== undefined && !VALID_ROLES.includes(data.role)) {
-    throw new ValidationError(`Invalid role: must be one of ${VALID_ROLES.join(', ')}`, {
-      field: 'role',
-      value: data.role,
-      validValues: VALID_ROLES
-    })
-  }
-
-  if (data.phone !== undefined && data.phone !== null && typeof data.phone !== 'string') {
-    throw new ValidationError('Invalid phone: must be a string', {
-      field: 'phone',
-      value: data.phone,
-      rule: 'string type required'
-    })
+function validateUserId(id, operation = 'operation') {
+  if (!id || typeof id !== 'number') {
+    throw new BadRequestError(`Invalid user ID: must be a number`, { userId: id, operation })
   }
 }
 
 /**
- * Get all users with filters
- * Supports accent-insensitive search via normalized columns
- * @param {Object} [filters={}] - Filter options
- * @param {string} [filters.search] - Search in full_name and email (accent-insensitive)
- * @param {string} [filters.role] - Filter by user role
- * @param {boolean} [filters.email_verified] - Filter by email verification status
- * @param {number} [filters.limit] - Maximum number of users to return
- * @param {number} [filters.offset] - Number of users to skip
- * @param {boolean} includeInactive - Include inactive users (default: false, admin only)
- * @returns {Object[]} - Array of users
- * @throws {NotFoundError} When no users are found
- * @throws {DatabaseError} When database query fails
+ * Enhanced error handler (KISS principle)
  */
-export async function getAllUsers(filters = {}, includeInactive = false) {
+async function withErrorHandling(operation, operationName, context = {}) {
   try {
-    let query = supabase.from(TABLE).select('*')
-
-    // Search filter (uses indexed normalized columns)
-    const searchCondition = buildSearchCondition(SEARCH_COLUMNS, filters.search)
-    if (searchCondition) {
-      query = query.or(searchCondition)
-    }
-
-    // By default, only return active users
-    if (!includeInactive) {
-      query = query.eq('is_active', true)
-    }
-
-    if (filters.role && VALID_ROLES.includes(filters.role)) {
-      query = query.eq('role', filters.role)
-    }
-
-    if (filters.email_verified !== undefined) {
-      query = query.eq('email_verified', filters.email_verified)
-    }
-
-    query = query
-      .order('created_at', { ascending: false })
-      .limit(filters.limit || PAGINATION.DEFAULT_LIMIT)
-
-    if (filters.offset) {
-      query = query.range(
-        filters.offset,
-        filters.offset + (filters.limit || PAGINATION.DEFAULT_LIMIT) - 1
-      )
-    }
-
-    const { data, error } = await query
-
-    if (error) {
-      throw new DatabaseError('SELECT', TABLE, error)
-    }
-    if (!data) {
-      throw new NotFoundError('Users', null)
-    }
-
-    return data
+    return await operation()
   } catch (error) {
-    console.error('getAllUsers failed:', error)
+    console.error(`${operationName} failed:`, { error: error.message, context })
     throw error
   }
+}
+
+/**
+ * Apply activity filter (FAIL FAST - no fallback)
+ */
+function applyActivityFilter(query, includeInactive) {
+  if (includeInactive === true) {
+    return query
+  }
+  if (includeInactive === false) {
+    return query.eq('is_active', true)
+  }
+  // FAIL FAST - no fallback, explicit boolean required
+  throw new BadRequestError('includeInactive must be boolean (true/false)', { includeInactive })
+}
+
+/**
+ * Get all users with simple filters (KISS principle)
+ * - Shows ALL users by default (no pagination required)
+ * - Only applies filters when explicitly provided
+ */
+export function getAllUsers(filters = {}, includeInactive = false) {
+  return withErrorHandling(
+    async () => {
+      let query = supabase.from(TABLE).select('*')
+
+      // Apply activity filter
+      query = applyActivityFilter(query, includeInactive)
+
+      // Apply filters ONLY when explicitly provided (no default filtering)
+      if (filters.role && VALID_ROLES.includes(filters.role)) {
+        query = query.eq('role', filters.role)
+      }
+
+      if (filters.email_verified !== undefined) {
+        query = query.eq('email_verified', filters.email_verified)
+      }
+
+      // Apply search filter (simple, no regex)
+      if (filters.search) {
+        const searchTerm = filters.search
+        query = query.or(`email.ilike.%${searchTerm}%,full_name.ilike.%${searchTerm}%`)
+      }
+
+      query = query.order('created_at', { ascending: false })
+
+      // Pagination: Optional - only when limit is provided
+      if (filters.limit !== undefined) {
+        // Validate limit
+        if (typeof filters.limit !== 'number' || filters.limit <= 0 || filters.limit > 100) {
+          throw new BadRequestError('Invalid limit: must be a positive number <= 100', {
+            limit: filters.limit,
+            rule: 'positive number <= 100 required'
+          })
+        }
+
+        // Validate and sanitize offset
+        let offset = filters.offset ?? 0
+        // Convert to number if it's a string (common from query params)
+        offset = Number(offset)
+        if (isNaN(offset) || offset < 0) {
+          // Default to 0 if invalid
+          offset = 0
+        }
+
+        query = query.range(offset, offset + filters.limit - 1)
+      }
+
+      const { data, error } = await query
+
+      if (error) {
+        throw new DatabaseError('SELECT', TABLE, error, { filters })
+      }
+
+      // Don't throw error if no users found - return empty array
+      return data || []
+    },
+    'getAllUsers',
+    { filters, includeInactive }
+  )
 }
 
 /**
  * Get user by ID
- * @param {number} id - User ID to retrieve
- * @param {boolean} includeInactive - Include inactive users (default: false, admin only)
- * @returns {Object} - User object
- * @throws {BadRequestError} When ID is invalid
- * @throws {NotFoundError} When user is not found
- * @throws {DatabaseError} When database query fails
  */
-export async function getUserById(id, includeInactive = false) {
-  try {
-    if (!id || typeof id !== 'number') {
-      throw new BadRequestError('Invalid user ID: must be a number', { userId: id })
-    }
+export function getUserById(id, includeInactive = false) {
+  return withErrorHandling(
+    async () => {
+      validateUserId(id, 'getUserById')
 
-    let query = supabase.from(TABLE).select('*').eq('id', id)
+      let query = supabase.from(TABLE).select('*').eq('id', id)
+      query = applyActivityFilter(query, includeInactive)
 
-    // By default, only return active users
-    if (!includeInactive) {
-      query = query.eq('is_active', true)
-    }
+      const { data, error } = await query.single()
 
-    const { data, error } = await query.single()
+      if (error) {
+        if (error.code === 'PGRST116') {
+          throw new NotFoundError('User', id, { includeInactive })
+        }
+        throw new DatabaseError('SELECT', TABLE, error, { userId: id })
+      }
 
-    if (error) {
-      if (error.code === 'PGRST116') {
+      if (!data) {
         throw new NotFoundError('User', id, { includeInactive })
       }
-      throw new DatabaseError('SELECT', TABLE, error, { userId: id })
-    }
-    if (!data) {
-      throw new NotFoundError('User', id, { includeInactive })
-    }
 
-    return data
-  } catch (error) {
-    console.error(`getUserById(${id}) failed:`, error)
-    throw error
-  }
+      return data
+    },
+    `getUserById(${id})`,
+    { userId: id, includeInactive }
+  )
 }
 
 /**
- * Get user by email (indexed column)
- * @param {string} email - User email to search for
- * @param {boolean} includeInactive - Include inactive users (default: false, admin only)
- * @returns {Object} - User object
- * @throws {BadRequestError} When email is invalid
- * @throws {NotFoundError} When user with email is not found
- * @throws {DatabaseError} When database query fails
+ * Get user by email
  */
-export async function getUserByEmail(email, includeInactive = false) {
-  try {
-    if (!email || typeof email !== 'string') {
-      throw new BadRequestError('Invalid email: must be a string', { email })
-    }
-
-    let query = supabase.from(TABLE).select('*').eq('email', email)
-
-    if (!includeInactive) {
-      query = query.eq('is_active', true)
-    }
-
-    const { data, error } = await query.single()
-
-    if (error) {
-      if (error.code === 'PGRST116') {
-        throw new NotFoundError('User', email, { email })
+export function getUserByEmail(email, includeInactive = false) {
+  return withErrorHandling(
+    async () => {
+      // FAIL FAST - Validate email parameter
+      if (!email) {
+        throw new BadRequestError('Email is required', { email })
       }
-      throw new DatabaseError('SELECT', TABLE, error, { email })
-    }
 
-    return data
-  } catch (error) {
-    console.error(`getUserByEmail(${email}) failed:`, error)
-    throw error
-  }
-}
+      if (typeof email !== 'string') {
+        throw new BadRequestError('Email must be a string', { email, type: typeof email })
+      }
 
-/**
- * Create new user
- * @param {Object} userData - User data to create
- * @param {string} userData.email - User email (required)
- * @param {string} [userData.full_name] - User's full name
- * @param {string} [userData.phone] - User phone number
- * @param {string} [userData.role='user'] - User role
- * @param {string} [userData.password_hash] - Password hash
- * @param {boolean} [userData.email_verified=false] - Email verification status
- * @returns {Object} - Created user
- * @throws {ValidationError} When user data is invalid
- * @throws {DatabaseConstraintError} When user violates database constraints (e.g., duplicate email)
- * @throws {DatabaseError} When database insert fails
- */
-export async function createUser(userData) {
-  try {
-    validateUserData(userData, false)
-
-    const newUser = {
-      email: userData.email,
-      full_name: userData.full_name !== undefined ? userData.full_name : null,
-      phone: userData.phone !== undefined ? userData.phone : null,
-      role: userData.role !== undefined ? userData.role : 'user',
-      password_hash: userData.password_hash !== undefined ? userData.password_hash : null,
-      is_active: true,
-      email_verified: userData.email_verified !== undefined ? userData.email_verified : false
-    }
-
-    const { data, error } = await supabase.from(TABLE).insert(newUser).select().single()
-
-    if (error) {
-      if (error.code === '23505') {
-        throw new DatabaseConstraintError('unique_email', TABLE, {
-          email: userData.email,
-          message: `User with email ${userData.email} already exists`
+      // FAIL FAST - Basic email format validation
+      if (!email.includes('@') || !email.includes('.')) {
+        throw new ValidationError('Invalid email format', {
+          field: 'email',
+          value: email,
+          rule: 'valid email format required'
         })
       }
-      throw new DatabaseError('INSERT', TABLE, error, { userData: newUser })
-    }
 
-    if (!data) {
-      throw new DatabaseError('INSERT', TABLE, new InternalServerError('No data returned'), {
-        userData: newUser
-      })
-    }
+      let query = supabase.from(TABLE).select('*').eq('email', email)
+      query = applyActivityFilter(query, includeInactive)
 
-    return data
-  } catch (error) {
-    console.error('createUser failed:', error)
-    throw error
-  }
-}
+      const { data, error } = await query.single()
 
-/**
- * Update user (limited fields) - only allows updating specific user fields
- * @param {number} id - User ID to update
- * @param {Object} updates - Updated user data
- * @param {string} [updates.full_name] - User's full name
- * @param {string} [updates.phone] - User phone number
- * @param {string} [updates.role] - User role
- * @param {boolean} [updates.email_verified] - Email verification status
- * @param {string} [updates.password_hash] - Password hash
- * @returns {Object} - Updated user
- * @throws {BadRequestError} When ID is invalid or no valid updates are provided
- * @throws {ValidationError} When user data is invalid
- * @throws {NotFoundError} When user is not found
- * @throws {DatabaseError} When database update fails
- */
-export async function updateUser(id, updates) {
-  try {
-    if (!id || typeof id !== 'number') {
-      throw new BadRequestError('Invalid user ID: must be a number', { userId: id })
-    }
-
-    if (!updates || Object.keys(updates).length === 0) {
-      throw new BadRequestError('No updates provided', { userId: id })
-    }
-
-    validateUserData(updates, true)
-
-    const allowedFields = ['full_name', 'phone', 'role', 'email_verified', 'password_hash']
-    const sanitized = {}
-
-    for (const key of allowedFields) {
-      if (updates[key] !== undefined) {
-        sanitized[key] = updates[key]
+      if (error) {
+        if (error.code === 'PGRST116') {
+          throw new NotFoundError('User', email, { email, includeInactive })
+        }
+        throw new DatabaseError('SELECT', TABLE, error, { email })
       }
-    }
 
-    if (Object.keys(sanitized).length === 0) {
-      throw new BadRequestError('No valid fields to update', { userId: id })
-    }
+      if (!data) {
+        throw new NotFoundError('User', email, { email, includeInactive })
+      }
 
-    const { data, error } = await supabase
-      .from(TABLE)
-      .update(sanitized)
-      .eq('id', id)
-      .eq('is_active', true)
-      .select()
-      .single()
-
-    if (error) {
-      throw new DatabaseError('UPDATE', TABLE, error, { userId: id })
-    }
-    if (!data) {
-      throw new NotFoundError('User', id, { active: true })
-    }
-
-    return data
-  } catch (error) {
-    console.error(`updateUser(${id}) failed:`, error)
-    throw error
-  }
+      return data
+    },
+    `getUserByEmail(${email})`,
+    { email, includeInactive }
+  )
 }
 
 /**
- * Soft-delete user (reverse soft-delete)
- * @param {number} id - User ID to delete
- * @returns {Object} - Deactivated user
- * @throws {BadRequestError} When ID is invalid
- * @throws {NotFoundError} When user is not found or already inactive
- * @throws {DatabaseError} When database update fails
+ * Get users by intelligent filter (role, state, email-verified)
+ * This is the smart filter function - combines multiple criteria
  */
-export async function deleteUser(id) {
-  try {
-    if (!id || typeof id !== 'number') {
-      throw new BadRequestError('Invalid user ID: must be a number', { userId: id })
-    }
+export function getUsersByFilter(filters = {}) {
+  return withErrorHandling(
+    async () => {
+      let query = supabase.from(TABLE).select('*')
 
-    const { data, error } = await supabase
-      .from(TABLE)
-      .update({ is_active: false })
-      .eq('id', id)
-      .eq('is_active', true)
-      .select()
-      .single()
+      // Apply all filters intelligently
+      if (filters.role && VALID_ROLES.includes(filters.role)) {
+        query = query.eq('role', filters.role)
+      }
 
-    if (error) {
-      throw new DatabaseError('UPDATE', TABLE, error, { userId: id })
-    }
-    if (!data) {
-      throw new NotFoundError('User', id, { active: true })
-    }
+      if (filters.state !== undefined) {
+        query = query.eq('is_active', filters.state)
+      }
 
-    return data
-  } catch (error) {
-    console.error(`deleteUser(${id}) failed:`, error)
-    throw error
-  }
+      if (filters.email_verified !== undefined) {
+        query = query.eq('email_verified', filters.email_verified)
+      }
+
+      // FAIL FAST - Require at least one filter
+      if (!filters.role && filters.state === undefined && filters.email_verified === undefined) {
+        throw new BadRequestError(
+          'At least one filter must be specified: role, state, or email_verified',
+          {
+            providedFilters: Object.keys(filters),
+            rule: 'filter required'
+          }
+        )
+      }
+
+      query = query.order('created_at', { ascending: false })
+
+      // FAIL FAST - Require explicit pagination parameters
+      if (filters.limit === undefined || filters.offset === undefined) {
+        throw new BadRequestError('Pagination parameters limit and offset are required', {
+          limit: filters.limit,
+          offset: filters.offset,
+          rule: 'Both limit and offset must be provided'
+        })
+      }
+
+      // Validate pagination parameters
+      if (typeof filters.limit !== 'number' || filters.limit <= 0 || filters.limit > 100) {
+        throw new BadRequestError('Invalid limit: must be a positive number <= 100', {
+          limit: filters.limit,
+          rule: 'positive number <= 100 required'
+        })
+      }
+
+      if (typeof filters.offset !== 'number' || filters.offset < 0) {
+        throw new BadRequestError('Invalid offset: must be a non-negative number', {
+          offset: filters.offset,
+          rule: 'non-negative number required'
+        })
+      }
+
+      query = query.range(filters.offset, filters.offset + filters.limit - 1)
+
+      const { data, error } = await query
+
+      if (error) {
+        throw new DatabaseError('SELECT', TABLE, error, { filters })
+      }
+
+      if (!data) {
+        throw new NotFoundError('Users', null)
+      }
+
+      return data
+    },
+    'getUsersByFilter',
+    { filters }
+  )
 }
 
 /**
- * Reactivate user (reverse soft-delete)
+ * Create new user (client registration - no password required)
+ */
+export function createUser(userData) {
+  return withErrorHandling(
+    async () => {
+      // Validate required fields for client registration
+      if (!userData.email || typeof userData.email !== 'string') {
+        throw new ValidationError('Email is required and must be a string', {
+          field: 'email',
+          value: userData.email,
+          rule: 'required string'
+        })
+      }
+
+      // Validate email format (simple check - no regex as requested)
+      if (!userData.email.includes('@') || !userData.email.includes('.')) {
+        throw new ValidationError('Invalid email format', {
+          field: 'email',
+          value: userData.email,
+          rule: 'valid email format required'
+        })
+      }
+
+      // For client registration, password is optional
+      // For admin creation, password is required
+      if (userData.role === 'admin' && !userData.password_hash) {
+        throw new ValidationError('Password is required for admin users', {
+          field: 'password_hash',
+          rule: 'required for admin role'
+        })
+      }
+
+      // Validate role if provided
+      if (userData.role && !VALID_ROLES.includes(userData.role)) {
+        throw new ValidationError(`Invalid role: must be one of ${VALID_ROLES.join(', ')}`, {
+          field: 'role',
+          value: userData.role,
+          validValues: VALID_ROLES
+        })
+      }
+
+      // FAIL FAST - Explicit field requirements
+      const newUser = {
+        email: userData.email,
+        full_name: userData.full_name ?? null,
+        phone: userData.phone ?? null,
+        role: userData.role ?? 'user',
+        password_hash: userData.password_hash ?? null,
+        is_active: true,
+        email_verified: userData.email_verified ?? false
+      }
+
+      const { data, error } = await supabase.from(TABLE).insert(newUser).select().single()
+
+      if (error) {
+        throw new DatabaseError('INSERT', TABLE, error, { email: userData.email })
+      }
+
+      return data
+    },
+    'createUser',
+    { email: userData.email }
+  )
+}
+
+/**
+ * Update user
+ */
+export function updateUser(id, updates) {
+  return withErrorHandling(
+    async () => {
+      validateUserId(id, 'updateUser')
+
+      if (!updates || Object.keys(updates).length === 0) {
+        throw new BadRequestError('No updates provided', { userId: id })
+      }
+
+      // Validate role if being updated
+      if (updates.role && !VALID_ROLES.includes(updates.role)) {
+        throw new ValidationError(`Invalid role: must be one of ${VALID_ROLES.join(', ')}`, {
+          field: 'role',
+          value: updates.role,
+          validValues: VALID_ROLES
+        })
+      }
+
+      const { data, error } = await supabase
+        .from(TABLE)
+        .update(updates)
+        .eq('id', id)
+        .eq('is_active', true)
+        .select()
+        .single()
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          throw new NotFoundError('User', id, { active: true })
+        }
+        throw new DatabaseError('UPDATE', TABLE, error, { userId: id })
+      }
+
+      if (!data) {
+        throw new NotFoundError('User', id, { active: true })
+      }
+
+      return data
+    },
+    `updateUser(${id})`,
+    { userId: id }
+  )
+}
+
+/**
+ * Soft-delete user
+ */
+export function deleteUser(id) {
+  return withErrorHandling(
+    async () => {
+      validateUserId(id, 'deleteUser')
+
+      const { data, error } = await supabase
+        .from(TABLE)
+        .update({ is_active: false })
+        .eq('id', id)
+        .eq('is_active', true)
+        .select()
+        .single()
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          throw new NotFoundError('User', id, { active: true })
+        }
+        throw new DatabaseError('UPDATE', TABLE, error, { userId: id })
+      }
+
+      if (!data) {
+        throw new NotFoundError('User', id, { active: true })
+      }
+
+      return data
+    },
+    `deleteUser(${id})`,
+    { userId: id }
+  )
+}
+
+/**
+ * Reactivate user (undo soft-delete)
  * @param {number} id - User ID to reactivate
- * @returns {Object} - Reactivated user
- * @throws {BadRequestError} When ID is invalid
- * @throws {NotFoundError} When user is not found or already active
- * @throws {DatabaseError} When database update fails
+ * @returns {Promise<Object>} Reactivated user data
  */
-export async function reactivateUser(id) {
-  try {
-    if (!id || typeof id !== 'number') {
-      throw new BadRequestError('Invalid user ID: must be a number', { userId: id })
-    }
+export function reactivateUser(id) {
+  return withErrorHandling(
+    async () => {
+      validateUserId(id, 'reactivateUser')
 
-    const { data, error } = await supabase
-      .from(TABLE)
-      .update({ is_active: true })
-      .eq('id', id)
-      .eq('is_active', false)
-      .select()
-      .single()
+      const { data, error } = await supabase
+        .from(TABLE)
+        .update({ is_active: true })
+        .eq('id', id)
+        .eq('is_active', false)
+        .select()
+        .single()
 
-    if (error) {
-      throw new DatabaseError('UPDATE', TABLE, error, { userId: id })
-    }
-    if (!data) {
-      throw new NotFoundError('User', id, { active: false })
-    }
+      if (error) {
+        if (error.code === 'PGRST116') {
+          throw new NotFoundError('User', id, { active: false })
+        }
+        throw new DatabaseError('UPDATE', TABLE, error, { userId: id })
+      }
 
-    return data
-  } catch (error) {
-    console.error(`reactivateUser(${id}) failed:`, error)
-    throw error
-  }
+      if (!data) {
+        throw new NotFoundError('User', id, { active: false })
+      }
+
+      return data
+    },
+    `reactivateUser(${id})`,
+    { userId: id }
+  )
 }
 
 /**
- * Verify user email - sets email_verified to true
+ * Verify user email
  * @param {number} id - User ID to verify email for
- * @returns {Object} - Updated user with verified email
- * @throws {BadRequestError} When ID is invalid
- * @throws {NotFoundError} When user is not found or inactive
- * @throws {DatabaseError} When database update fails
+ * @returns {Promise<Object>} Updated user data with verified email
  */
-export async function verifyUserEmail(id) {
-  try {
-    if (!id || typeof id !== 'number') {
-      throw new BadRequestError('Invalid user ID: must be a number', { userId: id })
-    }
+export function verifyUserEmail(id) {
+  return withErrorHandling(
+    async () => {
+      validateUserId(id, 'verifyUserEmail')
 
-    const { data, error } = await supabase
-      .from(TABLE)
-      .update({ email_verified: true })
-      .eq('id', id)
-      .eq('is_active', true)
-      .select()
-      .single()
+      const { data, error } = await supabase
+        .from(TABLE)
+        .update({ email_verified: true })
+        .eq('id', id)
+        .eq('is_active', true)
+        .select()
+        .single()
 
-    if (error) {
-      throw new DatabaseError('UPDATE', TABLE, error, { userId: id })
-    }
-    if (!data) {
-      throw new NotFoundError('User', id, { active: true })
-    }
+      if (error) {
+        if (error.code === 'PGRST116') {
+          throw new NotFoundError('User', id, { active: true })
+        }
+        throw new DatabaseError('UPDATE', TABLE, error, { userId: id })
+      }
 
-    return data
-  } catch (error) {
-    console.error(`verifyUserEmail(${id}) failed:`, error)
-    throw error
-  }
+      if (!data) {
+        throw new NotFoundError('User', id, { active: true })
+      }
+
+      return data
+    },
+    `verifyUserEmail(${id})`,
+    { userId: id }
+  )
 }

@@ -44,12 +44,11 @@ export const QUERY_LIMITS = {
 }
 
 /**
- * Currency exchange rates
+ * Currency exchange codes
  * USD to VES (Venezuelan Bolivar)
+ * NOTE: Exchange rates should be fetched from settings, not hardcoded
  */
 export const CURRENCY = {
-  /** Current USD to VES exchange rate */
-  USD_TO_VES: 36.45,
   /** Currency codes */
   CODES: {
     USD: 'USD',

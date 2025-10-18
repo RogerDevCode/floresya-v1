@@ -4,6 +4,68 @@
  * Implementación con carga dinámica de módulos usando el patrón solicitado
  */
 
+/**
+ * Show cart notification message
+ * @param {string} message - Message to display
+ * @param {string} type - Type of message ('success', 'error', 'info')
+ */
+function showCartMessage(message, type = 'success') {
+  // Create toast container if it doesn't exist
+  let toastContainer = document.getElementById('cart-toast-container')
+  if (!toastContainer) {
+    toastContainer = document.createElement('div')
+    toastContainer.id = 'cart-toast-container'
+    toastContainer.className = 'fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none'
+    document.body.appendChild(toastContainer)
+  }
+
+  // Create toast element
+  const toast = document.createElement('div')
+
+  // Set styling based on type
+  let bgColor = 'bg-green-500'
+  let iconSvg =
+    '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>'
+
+  if (type === 'error') {
+    bgColor = 'bg-red-500'
+    iconSvg =
+      '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>'
+  } else if (type === 'info') {
+    bgColor = 'bg-blue-500'
+    iconSvg =
+      '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>'
+  }
+
+  toast.className = `pointer-events-auto px-4 py-3 rounded-lg shadow-lg text-white text-sm ${bgColor} flex items-center gap-2 min-w-[250px] transform translate-x-0 transition-all duration-300 ease-in-out`
+
+  toast.innerHTML = `
+    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      ${iconSvg}
+    </svg>
+    <span class="flex-1">${message}</span>
+  `
+
+  // Add to container
+  toastContainer.appendChild(toast)
+
+  // Animate in
+  setTimeout(() => {
+    toast.classList.remove('translate-x-full')
+    toast.classList.add('translate-x-0')
+  }, 10)
+
+  // Remove after 3 seconds
+  setTimeout(() => {
+    toast.classList.add('translate-x-full')
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.parentNode.removeChild(toast)
+      }
+    }, 300)
+  }, 3000)
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     console.log('🚀 [index.js] Starting dynamic module loading...')
@@ -186,7 +248,7 @@ async function initCarousel() {
       const description = product.description || 'Hermoso arreglo floral'
 
       return `
-    <div class="carousel-slide ${index === 0 ? 'active' : ''} absolute inset-0 transition-opacity duration-500 ${index === 0 ? 'opacity-100' : 'opacity-0'}" data-slide="${index}">
+    <div class="carousel-slide ${index === 0 ? 'active' : ''} absolute inset-0 transition-opacity duration-500 ${index === 0 ? 'opacity-100' : 'opacity-0'}" data-slide="${index}" data-product-id="${product.id}">
       <div class="h-full flex items-center justify-center p-8">
         <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <!-- Product Image -->
@@ -206,9 +268,39 @@ async function initCarousel() {
             <h4 class="text-2xl font-bold text-gray-900 mb-3">${product.name}</h4>
             <p class="text-gray-600 mb-4">${description}</p>
             <p class="text-3xl font-bold text-pink-600 mb-6">$${price.toFixed(2)}</p>
-            <button class="btn btn-primary btn-lg">
-              Agregar al Carrito
-            </button>
+            
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+              <button 
+                class="btn btn-primary btn-lg carousel-add-to-cart"
+                data-product-id="${product.id}"
+                data-product-name="${product.name}"
+                data-product-price="${price}"
+                data-product-image="${imageUrl}"
+              >
+                <span class="flex items-center gap-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                  </svg>
+                  Agregar al Carrito
+                </span>
+              </button>
+              
+              <button 
+                class="btn btn-secondary btn-lg carousel-quick-buy"
+                data-product-id="${product.id}"
+                data-product-name="${product.name}"
+                data-product-price="${price}"
+                data-product-image="${imageUrl}"
+              >
+                <span class="flex items-center gap-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                  </svg>
+                  Compra Rápida
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -293,6 +385,99 @@ async function initCarousel() {
       if (fallback && this.src !== fallback) {
         console.warn('⚠️ Image failed to load:', this.src, '→ Using fallback')
         this.src = fallback
+      }
+    })
+  })
+
+  // Cart functionality - Attach event listeners to carousel buttons
+  const addToCartButtons = carouselSlides.querySelectorAll('.carousel-add-to-cart')
+  const quickBuyButtons = carouselSlides.querySelectorAll('.carousel-quick-buy')
+
+  addToCartButtons.forEach(button => {
+    button.addEventListener('click', async e => {
+      e.preventDefault()
+      e.stopPropagation()
+
+      const productId = parseInt(button.getAttribute('data-product-id'), 10)
+      const productName = button.getAttribute('data-product-name')
+      const productPrice = parseFloat(button.getAttribute('data-product-price'))
+      const productImage = button.getAttribute('data-product-image')
+
+      try {
+        // Import cart module dynamically
+        const { addToCart } = await import('./js/shared/cart.js')
+
+        // Create product object
+        const product = {
+          id: productId,
+          name: productName,
+          price_usd: productPrice,
+          image_url_small: productImage,
+          quantity: 1
+        }
+
+        // Add to cart
+        addToCart(product)
+
+        // Show success message
+        showCartMessage('✅ ¡Producto agregado al carrito!', 'success')
+
+        // Update button state temporarily
+        const originalText = button.innerHTML
+        button.innerHTML =
+          '<span class="flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Agregado</span>'
+        button.classList.add('bg-green-600', 'hover:bg-green-700')
+        button.classList.remove('bg-pink-600', 'hover:bg-pink-700')
+
+        // Reset button after 2 seconds
+        setTimeout(() => {
+          button.innerHTML = originalText
+          button.classList.remove('bg-green-600', 'hover:bg-green-700')
+          button.classList.add('bg-pink-600', 'hover:bg-pink-700')
+        }, 2000)
+      } catch (error) {
+        console.error('Error adding to cart:', error)
+        showCartMessage('❌ Error al agregar al carrito', 'error')
+      }
+    })
+  })
+
+  quickBuyButtons.forEach(button => {
+    button.addEventListener('click', async e => {
+      e.preventDefault()
+      e.stopPropagation()
+
+      const productId = parseInt(button.getAttribute('data-product-id'), 10)
+      const productName = button.getAttribute('data-product-name')
+      const productPrice = parseFloat(button.getAttribute('data-product-price'))
+      const productImage = button.getAttribute('data-product-image')
+
+      try {
+        // Import cart module dynamically
+        const { addToCart } = await import('./js/shared/cart.js')
+
+        // Create product object
+        const product = {
+          id: productId,
+          name: productName,
+          price_usd: productPrice,
+          image_url_small: productImage,
+          quantity: 1
+        }
+
+        // Add to cart
+        addToCart(product)
+
+        // Show success message
+        showCartMessage('✅ ¡Producto agregado! Redirigiendo al checkout...', 'success')
+
+        // Redirect to checkout after 1.5 seconds
+        setTimeout(() => {
+          window.location.href = '/pages/payment.html'
+        }, 1500)
+      } catch (error) {
+        console.error('Error with quick buy:', error)
+        showCartMessage('❌ Error al procesar la compra', 'error')
       }
     })
   })

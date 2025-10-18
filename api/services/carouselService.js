@@ -100,7 +100,7 @@ export async function isCarouselFull(excludeProductId = null) {
       .eq('active', true)
 
     if (excludeProductId) {
-      query = query.neq('id', excludeProductId)
+      query = query.filter('id', 'neq', excludeProductId)
     }
 
     const { count, error } = await query
@@ -144,7 +144,7 @@ export async function resolveCarouselOrderConflict(newOrder, excludeProductId = 
       .order('carousel_order', { ascending: false }) // Process from highest to lowest
 
     if (excludeProductId) {
-      query = query.neq('id', excludeProductId)
+      query = query.filter('id', 'neq', excludeProductId)
     }
 
     const { data: conflicts, error } = await query

@@ -12,6 +12,11 @@ import {
   BadRequestError,
   InternalServerError
 } from '../errors/AppError.js'
+import {
+  validateEmail,
+  validateVenezuelanPhone,
+  getPaymentMethodDisplayName
+} from '../utils/validation.js'
 
 const ORDERS_TABLE = DB_SCHEMA.orders.table
 const PAYMENTS_TABLE = DB_SCHEMA.payments.table
@@ -58,57 +63,50 @@ export async function getPaymentMethods() {
  * _getPaymentMethodDisplayName('cash') // Returns: 'Efectivo'
  */
 function _getPaymentMethodDisplayName(method) {
-  const names = {
-    cash: 'Efectivo',
-    mobile_payment: 'Pago Móvil',
-    bank_transfer: 'Transferencia Bancaria',
-    zelle: 'Zelle',
-    crypto: 'Criptomonedas'
+  try {
+    return getPaymentMethodDisplayName(method)
+  } catch (_error) {
+    // Fallback for backward compatibility (should not happen in normal flow)
+    console.warn('Invalid payment method in _getPaymentMethodDisplayName:', method)
+    return method
   }
-  return names[method] || method
 }
 
 /**
- * Validate Venezuelan phone number format
+ * Validate Venezuelan phone number format (FAIL-FAST version)
  * @param {string} phone - Phone number to validate
  * @returns {boolean} - True if phone number is valid Venezuelan format
+ * @throws {ValidationError} When phone format is invalid
  * @example
  * isValidVenezuelanPhone('04141234567') // Returns: true
  * isValidVenezuelanPhone('584141234567') // Returns: true
- * isValidVenezuelanPhone('123456789') // Returns: false
+ * isValidVenezuelanPhone('123456789') // Throws ValidationError
  */
 export function isValidVenezuelanPhone(phone) {
-  if (!phone) {
+  try {
+    validateVenezuelanPhone(phone)
+    return true
+  } catch (_error) {
     return false
   }
-
-  // Remove all non-digits
-  const digits = phone.replace(/\D/g, '')
-
-  // Check if it starts with 0 and has 10 digits, or starts with 58 and has 12 digits
-  return (
-    (digits.startsWith('0') && digits.length === 10) ||
-    (digits.startsWith('58') && digits.length === 12) ||
-    (digits.length === 10 &&
-      ['0412', '0414', '0416', '0424', '0426'].some(prefix => digits.startsWith(prefix)))
-  )
 }
 
 /**
- * Validate email format using regex pattern
+ * Validate email format using regex pattern (FAIL-FAST version)
  * @param {string} email - Email address to validate
  * @returns {boolean} - True if email format is valid
+ * @throws {ValidationError} When email format is invalid
  * @example
  * isValidEmail('user@example.com') // Returns: true
  * isValidEmail('invalid-email') // Returns: false
  */
 export function isValidEmail(email) {
-  if (!email) {
+  try {
+    validateEmail(email)
+    return true
+  } catch (_error) {
     return false
   }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
 }
 
 /**
@@ -126,11 +124,13 @@ export function generateOrderReference() {
 }
 
 /**
- * Get delivery cost from settings with fallback to default value
- * @returns {number} Delivery cost in USD (default: 7.0 if setting not found)
+ * Get delivery cost from settings (FAIL-FAST - no fallback)
+ * @returns {number} Delivery cost in USD
  * @throws {DatabaseError} If settings query fails
+ * @throws {NotFoundError} If delivery cost setting is not found
+ * @throws {ValidationError} If delivery cost value is invalid
  * @example
- * const cost = await getDeliveryCost() // Returns: 7.0 or configured value
+ * const cost = await getDeliveryCost() // Returns configured value or throws error
  */
 export async function getDeliveryCost() {
   try {
@@ -141,34 +141,41 @@ export async function getDeliveryCost() {
       .single()
 
     if (error) {
-      console.warn('getDeliveryCost: Setting not found, using default $7.00')
-      return 7.0
+      throw new DatabaseError('SELECT', 'settings', error, { key: 'DELIVERY_COST_USD' })
     }
 
     if (!data) {
-      console.warn('getDeliveryCost: No data returned, using default $7.00')
-      return 7.0
+      throw new NotFoundError('Setting', 'DELIVERY_COST_USD', { key: 'DELIVERY_COST_USD' })
     }
 
     const cost = parseFloat(data.value)
     if (isNaN(cost) || cost < 0) {
-      console.warn('getDeliveryCost: Invalid value, using default $7.00')
-      return 7.0
+      throw new ValidationError('Invalid delivery cost value', {
+        key: 'DELIVERY_COST_USD',
+        value: data.value,
+        rule: 'must be a non-negative number'
+      })
     }
 
     return cost
   } catch (error) {
+    // Re-throw AppError instances as-is (fail-fast)
+    if (error.name && error.name.includes('Error')) {
+      throw error
+    }
     console.error('getDeliveryCost failed:', error)
-    // Fail-safe: return default cost
-    return 7.0
+    throw new DatabaseError('SELECT', 'settings', error, { key: 'DELIVERY_COST_USD' })
   }
 }
 
 /**
- * Get BCV exchange rate from settings with fallback to default value
- * @returns {number} BCV rate (USD to VES) (default: 40.0 if setting not found)
+ * Get BCV exchange rate from settings (FAIL-FAST - no fallback)
+ * @returns {number} BCV rate (USD to VES)
+ * @throws {DatabaseError} If settings query fails
+ * @throws {NotFoundError} If BCV rate setting is not found
+ * @throws {ValidationError} If BCV rate value is invalid
  * @example
- * const rate = await getBCVRate() // Returns: 40.0 or configured value
+ * const rate = await getBCVRate() // Returns configured value or throws error
  */
 export async function getBCVRate() {
   try {
@@ -179,26 +186,30 @@ export async function getBCVRate() {
       .single()
 
     if (error) {
-      console.warn('getBCVRate: Setting not found, using default rate 40.00')
-      return 40.0
+      throw new DatabaseError('SELECT', 'settings', error, { key: 'bcv_usd_rate' })
     }
 
     if (!data) {
-      console.warn('getBCVRate: No data returned, using default rate 40.00')
-      return 40.0
+      throw new NotFoundError('Setting', 'bcv_usd_rate', { key: 'bcv_usd_rate' })
     }
 
     const rate = parseFloat(data.value)
     if (isNaN(rate) || rate <= 0) {
-      console.warn('getBCVRate: Invalid rate, using default 40.00')
-      return 40.0
+      throw new ValidationError('Invalid BCV rate value', {
+        key: 'bcv_usd_rate',
+        value: data.value,
+        rule: 'must be a positive number'
+      })
     }
 
     return rate
   } catch (error) {
+    // Re-throw AppError instances as-is (fail-fast)
+    if (error.name && error.name.includes('Error')) {
+      throw error
+    }
     console.error('getBCVRate failed:', error)
-    // Fail-safe: return default rate
-    return 40.0
+    throw new DatabaseError('SELECT', 'settings', error, { key: 'bcv_usd_rate' })
   }
 }
 

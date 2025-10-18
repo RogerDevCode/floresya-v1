@@ -71,6 +71,16 @@ export function errorHandler(err, req, res, _next) {
   const isDevelopment = process.env.NODE_ENV === 'development'
   const response = error.toJSON(isDevelopment)
 
+  // DEBUG: Log error type processing
+  console.log('🔍 DEBUG: ErrorHandler processing error', {
+    errorName: error.name,
+    errorTypeInResponse: response.error,
+    statusCode: error.statusCode,
+    isValidationError: error.name === 'ValidationError',
+    expectedType: 'ValidationError',
+    actualType: response.error
+  })
+
   // SECURITY: Never expose stack traces or internal context in production
   if (!isDevelopment && error.statusCode >= 500) {
     delete response.details
