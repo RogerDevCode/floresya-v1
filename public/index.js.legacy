@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('🚀 [index.js] Starting dynamic module loading...')
 
     // Cargar módulos dinámicamente usando el patrón solicitado
-    await Promise.all([
+    const modules = await Promise.all([
       import('./js/shared/dom-ready.js'),
       import('./js/themes/themeManager.js'),
       import('./js/components/ThemeSelector.js'),
@@ -83,12 +83,35 @@ document.addEventListener('DOMContentLoaded', async () => {
       import('./js/shared/touchFeedback.js')
     ])
 
-    // Nota: Los módulos se cargan dinámicamente dentro de cada función que los necesita
+    // Extraer las funciones necesarias de cada módulo
+    const { themeManager } = modules[1]
+    const { initCartBadge, initCartEventListeners, initCartTouchFeedback } = modules[6]
+    const ThemeSelectorModule = modules[2]
+    const ThemeSelector = ThemeSelectorModule.default || ThemeSelectorModule
 
     console.log('✅ [index.js] All modules loaded successfully')
 
     // Ejecutar inicialización con módulos cargados dinámicamente
-    await init()
+    await init({
+      themeManager,
+      ThemeSelector,
+      initCartBadge,
+      initCartEventListeners,
+      initCartTouchFeedback
+    })
+
+    // Try to load cuco clock module separately (optional)
+    console.log('🔍 [CUCO DEBUG] About to import cuco clock module...')
+    import('./js/components/cucoClock.js')
+      .then(() => {
+        console.log('✅ [index.js] Cuco clock module loaded successfully')
+      })
+      .catch(error => {
+        console.warn(
+          '⚠️ [index.js] Cuco clock module failed to load, fallback will be used:',
+          error.message
+        )
+      })
 
     console.log('✅ [index.js] Dynamic module system initialization complete')
   } catch (error) {
@@ -226,8 +249,8 @@ async function initCarousel() {
         </div>
         <p class="text-lg font-semibold text-gray-700 mb-2">No se pudieron cargar los productos destacados</p>
         <p class="text-sm text-gray-500">${errorMsg}</p>
-        <button
-          onclick="window.location.reload()"
+        <button 
+          onclick="window.location.reload()" 
           class="mt-4 px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"
         >
           Reintentar
@@ -875,7 +898,7 @@ function renderPagination(container, currentPage, hasMore) {
       aria-label="Página anterior"
       data-page="${currentPage - 1}"
     >
-      <i data-lucide="chevron-left" class="h-4 w-4"></i>
+      <i data-lucide="chevron-left" class="h-5 w-5 text-yellow-500 stroke-2"></i>
     </button>
   `
 
@@ -909,7 +932,7 @@ function renderPagination(container, currentPage, hasMore) {
       aria-label="Página siguiente"
       data-page="${currentPage + 1}"
     >
-      <i data-lucide="chevron-right" class="h-4 w-4"></i>
+      <i data-lucide="chevron-right" class="h-5 w-5 text-yellow-500 stroke-2"></i>
     </button>
   `
 
@@ -1128,135 +1151,146 @@ function addBuyNowHandlers() {
 /**
  * Initialize touch feedback for product cards and their interactive elements
  */
-async function initProductCardTouchFeedback() {
-  // Import TouchFeedback module dynamically
-  const { TouchFeedback } = await import('./js/shared/touchFeedback.js')
+function initProductCardTouchFeedback() {
+  // Import TouchFeedback module once and use it for all elements
+  import('./js/shared/touchFeedback.js')
+    .then(({ TouchFeedback }) => {
+      // Initialize touch feedback for product cards
+      const productCards = document.querySelectorAll('.product-card')
+      productCards.forEach(card => {
+        // Add scale feedback to entire card
+        const cardFeedback = new TouchFeedback({
+          type: 'scale',
+          haptic: 'light',
+          scale: 0.98,
+          duration: 150
+        })
+        cardFeedback.init(card)
 
-  // Initialize touch feedback for product cards
-  const productCards = document.querySelectorAll('.product-card')
-  productCards.forEach(card => {
-    // Add scale feedback to entire card
-    const cardFeedback = new TouchFeedback({
-      type: 'scale',
-      haptic: 'light',
-      scale: 0.98,
-      duration: 150
-    })
-    cardFeedback.init(card)
+        // Add ripple feedback to quick view buttons
+        const quickViewBtn = card.querySelector('.quick-view-btn')
+        if (quickViewBtn) {
+          const quickViewFeedback = new TouchFeedback({
+            type: 'ripple',
+            haptic: 'light',
+            color: 'rgba(156, 163, 175, 0.3)',
+            duration: 300
+          })
+          quickViewFeedback.init(quickViewBtn)
+        }
 
-    // Add ripple feedback to quick view buttons
-    const quickViewBtn = card.querySelector('.quick-view-btn')
-    if (quickViewBtn) {
-      const quickViewFeedback = new TouchFeedback({
-        type: 'ripple',
-        haptic: 'light',
-        color: 'rgba(156, 163, 175, 0.3)',
-        duration: 300
+        // Add ripple feedback to add to cart buttons
+        const addToCartBtn = card.querySelector('.add-to-cart-btn')
+        if (addToCartBtn) {
+          const cartFeedback = new TouchFeedback({
+            type: 'ripple',
+            haptic: 'medium',
+            color: 'rgba(236, 72, 153, 0.3)',
+            duration: 300
+          })
+          cartFeedback.init(addToCartBtn)
+        }
+
+        // Add ripple feedback to buy now buttons
+        const buyNowBtn = card.querySelector('.buy-now-btn')
+        if (buyNowBtn) {
+          const buyNowFeedback = new TouchFeedback({
+            type: 'ripple',
+            haptic: 'medium',
+            color: 'rgba(16, 185, 129, 0.3)',
+            duration: 300
+          })
+          buyNowFeedback.init(buyNowBtn)
+        }
+
+        // Add scale feedback to carousel container
+        const carouselContainer = card.querySelector('[data-carousel-container]')
+        if (carouselContainer) {
+          const carouselFeedback = new TouchFeedback({
+            type: 'scale',
+            haptic: 'light',
+            scale: 0.97,
+            duration: 150
+          })
+          carouselFeedback.init(carouselContainer)
+        }
       })
-      quickViewFeedback.init(quickViewBtn)
-    }
 
-    // Add ripple feedback to add to cart buttons
-    const addToCartBtn = card.querySelector('.add-to-cart-btn')
-    if (addToCartBtn) {
-      const cartFeedback = new TouchFeedback({
-        type: 'ripple',
-        haptic: 'medium',
-        color: 'rgba(236, 72, 153, 0.3)',
-        duration: 300
+      // Initialize touch feedback for pagination buttons
+      const paginationBtns = document.querySelectorAll('.pagination button')
+      paginationBtns.forEach(btn => {
+        const feedback = new TouchFeedback({
+          type: 'scale',
+          haptic: 'light',
+          scale: 0.95,
+          duration: 150
+        })
+        feedback.init(btn)
       })
-      cartFeedback.init(addToCartBtn)
-    }
 
-    // Add ripple feedback to buy now buttons
-    const buyNowBtn = card.querySelector('.buy-now-btn')
-    if (buyNowBtn) {
-      const buyNowFeedback = new TouchFeedback({
-        type: 'ripple',
-        haptic: 'medium',
-        color: 'rgba(16, 185, 129, 0.3)',
-        duration: 300
-      })
-      buyNowFeedback.init(buyNowBtn)
-    }
+      // Initialize touch feedback for filter and sort controls
+      const searchInput = document.getElementById('searchInput')
+      if (searchInput) {
+        const feedback = new TouchFeedback({
+          type: 'highlight',
+          haptic: 'none',
+          duration: 200
+        })
+        feedback.init(searchInput)
+      }
 
-    // Add scale feedback to carousel container
-    const carouselContainer = card.querySelector('[data-carousel-container]')
-    if (carouselContainer) {
-      const carouselFeedback = new TouchFeedback({
-        type: 'scale',
-        haptic: 'light',
-        scale: 0.97,
-        duration: 150
-      })
-      carouselFeedback.init(carouselContainer)
-    }
-  })
+      const occasionFilter = document.getElementById('occasionFilter')
+      if (occasionFilter) {
+        const feedback = new TouchFeedback({
+          type: 'highlight',
+          haptic: 'light',
+          duration: 200
+        })
+        feedback.init(occasionFilter)
+      }
 
-  // Initialize touch feedback for pagination buttons
-  const paginationBtns = document.querySelectorAll('.pagination button')
-  paginationBtns.forEach(btn => {
-    const feedback = new TouchFeedback({
-      type: 'scale',
-      haptic: 'light',
-      scale: 0.95,
-      duration: 150
+      const sortFilter = document.getElementById('sortFilter')
+      if (sortFilter) {
+        const feedback = new TouchFeedback({
+          type: 'highlight',
+          haptic: 'light',
+          duration: 200
+        })
+        feedback.init(sortFilter)
+      }
+
+      console.log('✅ Touch feedback initialized for product cards')
     })
-    feedback.init(btn)
-  })
-
-  // Initialize touch feedback for filter and sort controls
-  const searchInput = document.getElementById('searchInput')
-  if (searchInput) {
-    // Import TouchFeedback module dynamically
-    const { TouchFeedback } = await import('./js/shared/touchFeedback.js')
-    const feedback = new TouchFeedback({
-      type: 'highlight',
-      haptic: 'none',
-      duration: 200
+    .catch(error => {
+      console.error('Failed to load TouchFeedback module:', error)
     })
-    feedback.init(searchInput)
-  }
-
-  const occasionFilter = document.getElementById('occasionFilter')
-  if (occasionFilter) {
-    // Import TouchFeedback module dynamically
-    const { TouchFeedback } = await import('./js/shared/touchFeedback.js')
-    const feedback = new TouchFeedback({
-      type: 'highlight',
-      haptic: 'light',
-      duration: 200
-    })
-    feedback.init(occasionFilter)
-  }
-
-  const sortFilter = document.getElementById('sortFilter')
-  if (sortFilter) {
-    // Import TouchFeedback module dynamically
-    const { TouchFeedback } = await import('./js/shared/touchFeedback.js')
-    const feedback = new TouchFeedback({
-      type: 'highlight',
-      haptic: 'light',
-      duration: 200
-    })
-    feedback.init(sortFilter)
-  }
-
-  console.log('✅ Touch feedback initialized for product cards')
 }
 
 /**
  * Initialize page
  */
-async function init() {
+function init({
+  themeManager,
+  ThemeSelector,
+  initCartBadge,
+  initCartEventListeners,
+  initCartTouchFeedback
+}) {
   try {
     console.log('🚀 [index.js] Starting initialization...')
     console.log('🔍 [index.js] Checking dependencies...')
 
+    // Log dependency status
+    console.log('📋 [index.js] Dependencies status:', {
+      themeManager: !!themeManager,
+      ThemeSelector: !!ThemeSelector,
+      initCartBadge: !!initCartBadge,
+      initCartEventListeners: !!initCartEventListeners,
+      initCartTouchFeedback: !!initCartTouchFeedback
+    })
+
     // Initialize Theme Manager (must be first to apply theme before UI loads)
     try {
-      // Import theme manager module dynamically
-      const { themeManager } = await import('./js/themes/themeManager.js')
       themeManager.init()
       console.log('✅ [index.js] Theme manager initialized')
 
@@ -1272,7 +1306,7 @@ async function init() {
     let retryCount = 0
     const maxRetries = 3
 
-    async function initializeThemeSelector() {
+    function initializeThemeSelector() {
       try {
         console.log(
           `🎨 [index.js] Attempting to initialize theme selector (attempt ${retryCount + 1}/${maxRetries})`
@@ -1307,10 +1341,8 @@ async function init() {
           }
         }
 
-        // Import ThemeSelector module dynamically
-        const ThemeSelectorModule = await import('./js/components/ThemeSelector.js')
-        const ThemeSelectorClass = ThemeSelectorModule.default || ThemeSelectorModule
-        const themeSelector = new ThemeSelectorClass('theme-selector-container')
+        // Initialize the ThemeSelector
+        const themeSelector = new ThemeSelector('theme-selector-container')
         window.themeSelectorInstance = themeSelector
         console.log('✅ [index.js] Theme selector initialized successfully')
         return true
@@ -1394,10 +1426,6 @@ async function init() {
     console.log('🔍 [Icon System Debug] No runtime icon initialization required')
 
     // Initialize cart functionality
-    // Import cart module dynamically
-    const { initCartBadge, initCartEventListeners, initCartTouchFeedback } = await import(
-      './js/shared/cart.js'
-    )
     initCartBadge()
     initCartEventListeners()
     initCartTouchFeedback()
@@ -1416,6 +1444,106 @@ async function init() {
     initProductsGrid()
     console.log('✅ [index.js] Products grid initializing...')
 
+    // Add cuco clock toggle button event listener (button is now in HTML)
+    console.log('🔍 [CUCO DEBUG] Adding event listener to cuco toggle button...')
+    const cucoToggleButton = document.getElementById('cuco-clock-toggle')
+    if (cucoToggleButton) {
+      cucoToggleButton.addEventListener('click', e => {
+        e.preventDefault()
+        e.stopPropagation()
+        console.log('🔍 [CUCO DEBUG] cuco button clicked!')
+
+        // Check if cuco clock exists, if not try to initialize it
+        if (!window.cucoClock) {
+          console.log('🔍 [CUCO DEBUG] cucoClock not found, attempting to initialize...')
+
+          // Try to create a simple fallback clock
+          try {
+            window.cucoClock = {
+              isClockVisible: false,
+              toggleClock() {
+                this.isClockVisible = !this.isClockVisible
+                console.log('🔍 [CUCO DEBUG] Toggle called, visible:', this.isClockVisible)
+
+                // Create a simple clock if it doesn't exist
+                let simpleClock = document.querySelector('.simple-cuco-clock')
+                if (!simpleClock) {
+                  simpleClock = document.createElement('div')
+                  simpleClock.className = 'simple-cuco-clock'
+                  simpleClock.innerHTML = `
+                    <div style="
+                      position: fixed;
+                      top: 80px;
+                      right: 20px;
+                      background: white;
+                      border: 2px solid #ec4899;
+                      border-radius: 10px;
+                      padding: 15px;
+                      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                      z-index: 10000;
+                      font-family: monospace;
+                      font-size: 18px;
+                      color: #1f2937;
+                    ">
+                      <div style="text-align: center; margin-bottom: 10px;">
+                        🕐 Cuco Clock
+                      </div>
+                      <div class="simple-time-display">--:--</div>
+                      <div style="font-size: 12px; margin-top: 5px; color: #6b7280;">
+                        Click to close
+                      </div>
+                    </div>
+                  `
+                  document.body.appendChild(simpleClock)
+                }
+
+                simpleClock.style.display = this.isClockVisible ? 'block' : 'none'
+
+                if (this.isClockVisible) {
+                  // Update time every second
+                  const updateTime = () => {
+                    const now = new Date()
+                    const timeStr = now.toLocaleTimeString('es-ES', {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })
+                    const timeDisplay = simpleClock.querySelector('.simple-time-display')
+                    if (timeDisplay) {
+                      timeDisplay.textContent = timeStr
+                    }
+                  }
+                  updateTime()
+                  this.timeInterval = setInterval(updateTime, 1000)
+
+                  // Add close functionality
+                  simpleClock.addEventListener('click', e => {
+                    e.stopPropagation()
+                    this.toggleClock()
+                  })
+                } else {
+                  // Clear interval when hidden
+                  if (this.timeInterval) {
+                    clearInterval(this.timeInterval)
+                  }
+                }
+              }
+            }
+            console.log('🔍 [CUCO DEBUG] Fallback cuco clock created')
+          } catch (error) {
+            console.error('🔍 [CUCO DEBUG] Failed to create fallback clock:', error)
+          }
+        }
+
+        if (window.cucoClock) {
+          window.cucoClock.toggleClock()
+          console.log('🔍 [CUCO DEBUG] window.cucoClock.toggleClock() called')
+        }
+      })
+      console.log('✅ Cuco clock toggle event listener added successfully')
+    } else {
+      console.error('❌ Could not find cuco toggle button in DOM')
+    }
+
     // Store pullToRefreshInstance globally for potential access
     window.pullToRefreshInstance = pullToRefreshInstance
 
@@ -1430,6 +1558,7 @@ async function init() {
     )
     console.log('- Theme manager initialized:', !!window.themeManager)
     console.log('- Theme selector instance:', !!window.themeSelectorInstance)
+    console.log('- Cuco clock instance:', !!window.cucoClock)
     console.log('- Current theme:', document.documentElement.getAttribute('data-theme'))
 
     // Run debug check if available
@@ -1459,6 +1588,101 @@ async function init() {
     } catch (fallbackError) {
       console.error('❌ [index.js] Even fallback failed:', fallbackError)
     }
+  }
+}
+
+/**
+ * Add cuco clock toggle button to the navbar
+ */
+async function addCucoClockToggle() {
+  console.log('🔍 [CUCO DEBUG] addCucoClockToggle() STARTED')
+
+  // Wait a bit to ensure the DOM is ready
+  await new Promise(resolve => setTimeout(resolve, 100))
+
+  console.log('🔍 [CUCO DEBUG] Looking for nav-actions container...')
+
+  // Find the nav-actions container
+  const navActions = document.querySelector('.nav-actions')
+  console.log('🔍 [CUCO DEBUG] navActions found:', !!navActions)
+
+  if (navActions) {
+    console.log('🔍 [CUCO DEBUG] navActions children before:', navActions.children.length)
+
+    // Create the toggle button
+    const cucoToggleBtn = document.createElement('button')
+    cucoToggleBtn.className = 'cuco-clock-toggle nav-icon'
+    cucoToggleBtn.id = 'cuco-clock-toggle'
+    cucoToggleBtn.type = 'button'
+    cucoToggleBtn.title = 'Toggle Cuco Clock'
+    cucoToggleBtn.innerHTML = `
+      <svg class="icon cuco-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+    `
+
+    console.log('🔍 [CUCO DEBUG] cuco button created, classes:', cucoToggleBtn.className)
+    console.log('🔍 [CUCO DEBUG] cuco button ID:', cucoToggleBtn.id)
+
+    // Insert before the cart icon
+    const cartIcon =
+      navActions.querySelector('a[href*="cart"]') ||
+      navActions.querySelector('.nav-icon:last-child')
+    console.log('🔍 [CUCO DEBUG] cartIcon found:', !!cartIcon)
+
+    if (cartIcon) {
+      navActions.insertBefore(cucoToggleBtn, cartIcon)
+      console.log('🔍 [CUCO DEBUG] cuco button inserted before cart')
+    } else {
+      // Fallback: append to nav-actions
+      navActions.appendChild(cucoToggleBtn)
+      console.log('🔍 [CUCO DEBUG] cuco button appended to nav-actions')
+    }
+
+    console.log('🔍 [CUCO DEBUG] navActions children after:', navActions.children.length)
+    console.log('🔍 [CUCO DEBUG] Checking if button is in DOM...')
+    const buttonInDOM = document.getElementById('cuco-clock-toggle')
+    console.log('🔍 [CUCO DEBUG] Button in DOM after insertion:', !!buttonInDOM)
+
+    if (buttonInDOM) {
+      console.log(
+        '🔍 [CUCO DEBUG] Button visibility:',
+        buttonInDOM.offsetWidth > 0 && buttonInDOM.offsetHeight > 0
+      )
+      console.log(
+        '🔍 [CUCO DEBUG] Button computed display:',
+        window.getComputedStyle(buttonInDOM).display
+      )
+      console.log(
+        '🔍 [CUCO DEBUG] Button computed visibility:',
+        window.getComputedStyle(buttonInDOM).visibility
+      )
+    }
+
+    // Add click functionality to toggle the cuco clock
+    cucoToggleBtn.addEventListener('click', () => {
+      console.log('🔍 [CUCO DEBUG] cuco button clicked!')
+      if (window.cucoClock) {
+        window.cucoClock.toggleClock()
+        console.log('🔍 [CUCO DEBUG] window.cucoClock.toggleClock() called')
+      } else {
+        console.warn('🔍 [CUCO DEBUG] window.cucoClock not available')
+      }
+    })
+
+    console.log('✅ Cuco clock toggle button added to navbar')
+
+    // Add visual debugging border temporarily
+    cucoToggleBtn.style.border = '2px solid red'
+    cucoToggleBtn.style.backgroundColor = 'rgba(255, 0, 0, 0.3)'
+  } else {
+    console.warn('⚠️ Could not find nav-actions container to add cuco clock toggle')
+    console.log('🔍 [CUCO DEBUG] All nav elements:', document.querySelectorAll('nav').length)
+    console.log(
+      '🔍 [CUCO DEBUG] All .nav-actions:',
+      document.querySelectorAll('.nav-actions').length
+    )
   }
 }
 

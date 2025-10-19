@@ -1,6 +1,9 @@
 /* ===== IMPORT THEME VARIABLES ===== */
 @import './themes/base-variables.css';
 
+/* ===== CUCO CLOCK ===== */
+@import './components/cuco-clock.css';
+
 /* ===== CONTACT EDITOR INPUT STYLING ===== */
 .setting-input {
   /* Default styling for contact editor inputs */
@@ -32,6 +35,90 @@
   /* For IE/Edge */
   color: var(--placeholder-color, #9ca3af);
   opacity: 0.7;
+}
+
+/* ===== CONTACT PAGE INPUTS - FORCE BLACK TEXT ===== */
+/* Forzar color de texto negro en TODOS los inputs de la página de contacto */
+
+/* Target the contact page specifically */
+body:has(#newsletter-email) input,
+body:has(#newsletter-email) textarea,
+body:has(#newsletter-email) select {
+  /* Forzar color de texto negro con máxima prioridad */
+  color: #000000 !important;
+}
+
+/* También targetear inputs por contexto de página de contacto */
+.contacto-page input,
+.contacto-page textarea,
+.contacto-page select,
+/* Si hay forms en contacto */
+.contacto-form input,
+.contacto-form textarea,
+.contacto-form select,
+/* Inputs específicos de newsletter */
+#newsletter-email,
+input[type="email"][placeholder*="email"],
+input[type="email"][placeholder*="Email"] {
+  /* Forzar color de texto negro con máxima prioridad */
+  color: #000000 !important;
+}
+
+/* Asegurar que los placeholders no se vean afectados */
+.contacto-page input::placeholder,
+.contacto-page textarea::placeholder,
+.contacto-page select::placeholder,
+#newsletter-email::placeholder,
+input[type='email']::placeholder {
+  /* Mantener color original para placeholders */
+  color: #9ca3af !important;
+  opacity: 0.7 !important;
+}
+
+/* Para cualquier input que pueda estar dentro de secciones de contacto */
+section:has(input[type='email']) input,
+section:has(input[type='text']) input,
+section:has(input[type='tel']) input,
+section:has(input[type='url']) input,
+section:has(textarea) textarea {
+  color: #000000 !important;
+}
+
+/* Override de estilos de tema para inputs específicos */
+[data-theme] .setting-input,
+[data-theme] input,
+[data-theme] textarea,
+[data-theme] select {
+  color: #000000 !important;
+}
+
+/* Target específico para la página de contacto por URL */
+body[data-page='contacto'] input,
+body[data-page='contacto'] textarea,
+body[data-page='contacto'] select {
+  color: #000000 !important;
+}
+
+/* Override máximo para cualquier estilo dinámico o de tema */
+.contacto-page *,
+.contacto-page *::before,
+.contacto-page *::after {
+  /* Resetear propiedades que puedan afectar el color del texto de inputs */
+  text-shadow: none !important;
+  -webkit-text-fill-color: unset !important;
+}
+
+/* Forzar negro en inputs con la máxima especificidad posible */
+body.contacto-page[data-page='contacto'] input[type='email'],
+body.contacto-page[data-page='contacto'] input[type='text'],
+body.contacto-page[data-page='contacto'] input[type='tel'],
+body.contacto-page[data-page='contacto'] input[type='url'],
+body.contacto-page[data-page='contacto'] input[type='number'],
+body.contacto-page[data-page='contacto'] textarea,
+body.contacto-page[data-page='contacto'] select {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  text-shadow: none !important;
 }
 
 /* ===== THEME TRANSITIONS ===== */

@@ -709,6 +709,14 @@ class ASTAnalyzer {
         if (node.callee.type === 'Identifier') {
           this.db.addFunctionCall(filePath, node.callee.name, loc.line, loc.column, 'direct')
         }
+
+        // Extract parameters from callback functions passed as arguments
+        node.arguments.forEach(arg => {
+          if (arg.type === 'FunctionExpression' || arg.type === 'ArrowFunctionExpression') {
+            // This is a callback function - extract its parameters as local variables
+            this.extractFunctionParameters(arg, filePath)
+          }
+        })
         // Member call is handled in extractMemberCalls
       }
     })

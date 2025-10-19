@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('🚀 [index.js] Starting dynamic module loading...')
 
     // Cargar módulos dinámicamente usando el patrón solicitado
-    const modules = await Promise.all([
+    await Promise.all([
       import('./js/shared/dom-ready.js'),
       import('./js/themes/themeManager.js'),
       import('./js/components/ThemeSelector.js'),
@@ -83,22 +83,46 @@ document.addEventListener('DOMContentLoaded', async () => {
       import('./js/shared/touchFeedback.js')
     ])
 
-    // Extraer las funciones necesarias de cada módulo
-    const { themeManager } = modules[1]
-    const { initCartBadge, initCartEventListeners, initCartTouchFeedback } = modules[6]
-    const ThemeSelectorModule = modules[2]
-    const ThemeSelector = ThemeSelectorModule.default || ThemeSelectorModule
+    // Nota: Los módulos se cargan dinámicamente dentro de cada función que los necesita
 
     console.log('✅ [index.js] All modules loaded successfully')
 
     // Ejecutar inicialización con módulos cargados dinámicamente
-    await init({
-      themeManager,
-      ThemeSelector,
-      initCartBadge,
-      initCartEventListeners,
-      initCartTouchFeedback
-    })
+    await init()
+
+    // Try to load cuco clock module separately (optional)
+    console.log('🔍 [CUCO DEBUG] About to import cuco clock module...')
+    import('./js/components/cucoClock.js')
+      .then(() => {
+        console.log('✅ [index.js] Cuco clock module loaded successfully')
+
+        // Set up cuco clock toggle button event listener
+        const cucoButton = document.getElementById('cuco-clock-toggle')
+        if (cucoButton) {
+          console.log('🔍 [CUCO DEBUG] Adding click listener to cuco toggle button...')
+          cucoButton.addEventListener('click', e => {
+            e.preventDefault()
+            e.stopPropagation()
+            console.log('🔍 [CUCO DEBUG] cuco button clicked!')
+
+            if (window.cucoClock) {
+              window.cucoClock.toggleClock()
+              console.log('🔍 [CUCO DEBUG] window.cucoClock.toggleClock() called')
+            } else {
+              console.warn('🔍 [CUCO DEBUG] window.cucoClock not available')
+            }
+          })
+          console.log('✅ Cuco clock toggle event listener added successfully')
+        } else {
+          console.error('❌ Could not find cuco toggle button in DOM')
+        }
+      })
+      .catch(error => {
+        console.warn(
+          '⚠️ [index.js] Cuco clock module failed to load, fallback will be used:',
+          error.message
+        )
+      })
 
     console.log('✅ [index.js] Dynamic module system initialization complete')
   } catch (error) {
@@ -236,8 +260,8 @@ async function initCarousel() {
         </div>
         <p class="text-lg font-semibold text-gray-700 mb-2">No se pudieron cargar los productos destacados</p>
         <p class="text-sm text-gray-500">${errorMsg}</p>
-        <button 
-          onclick="window.location.reload()" 
+        <button
+          onclick="window.location.reload()"
           class="mt-4 px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"
         >
           Reintentar
@@ -885,7 +909,7 @@ function renderPagination(container, currentPage, hasMore) {
       aria-label="Página anterior"
       data-page="${currentPage - 1}"
     >
-      <i data-lucide="chevron-left" class="h-5 w-5 text-yellow-500 stroke-2"></i>
+      <i data-lucide="chevron-left" class="h-4 w-4"></i>
     </button>
   `
 
@@ -919,7 +943,7 @@ function renderPagination(container, currentPage, hasMore) {
       aria-label="Página siguiente"
       data-page="${currentPage + 1}"
     >
-      <i data-lucide="chevron-right" class="h-5 w-5 text-yellow-500 stroke-2"></i>
+      <i data-lucide="chevron-right" class="h-4 w-4"></i>
     </button>
   `
 
@@ -1138,146 +1162,135 @@ function addBuyNowHandlers() {
 /**
  * Initialize touch feedback for product cards and their interactive elements
  */
-function initProductCardTouchFeedback() {
-  // Import TouchFeedback module once and use it for all elements
-  import('./js/shared/touchFeedback.js')
-    .then(({ TouchFeedback }) => {
-      // Initialize touch feedback for product cards
-      const productCards = document.querySelectorAll('.product-card')
-      productCards.forEach(card => {
-        // Add scale feedback to entire card
-        const cardFeedback = new TouchFeedback({
-          type: 'scale',
-          haptic: 'light',
-          scale: 0.98,
-          duration: 150
-        })
-        cardFeedback.init(card)
+async function initProductCardTouchFeedback() {
+  // Import TouchFeedback module dynamically
+  const { TouchFeedback } = await import('./js/shared/touchFeedback.js')
 
-        // Add ripple feedback to quick view buttons
-        const quickViewBtn = card.querySelector('.quick-view-btn')
-        if (quickViewBtn) {
-          const quickViewFeedback = new TouchFeedback({
-            type: 'ripple',
-            haptic: 'light',
-            color: 'rgba(156, 163, 175, 0.3)',
-            duration: 300
-          })
-          quickViewFeedback.init(quickViewBtn)
-        }
-
-        // Add ripple feedback to add to cart buttons
-        const addToCartBtn = card.querySelector('.add-to-cart-btn')
-        if (addToCartBtn) {
-          const cartFeedback = new TouchFeedback({
-            type: 'ripple',
-            haptic: 'medium',
-            color: 'rgba(236, 72, 153, 0.3)',
-            duration: 300
-          })
-          cartFeedback.init(addToCartBtn)
-        }
-
-        // Add ripple feedback to buy now buttons
-        const buyNowBtn = card.querySelector('.buy-now-btn')
-        if (buyNowBtn) {
-          const buyNowFeedback = new TouchFeedback({
-            type: 'ripple',
-            haptic: 'medium',
-            color: 'rgba(16, 185, 129, 0.3)',
-            duration: 300
-          })
-          buyNowFeedback.init(buyNowBtn)
-        }
-
-        // Add scale feedback to carousel container
-        const carouselContainer = card.querySelector('[data-carousel-container]')
-        if (carouselContainer) {
-          const carouselFeedback = new TouchFeedback({
-            type: 'scale',
-            haptic: 'light',
-            scale: 0.97,
-            duration: 150
-          })
-          carouselFeedback.init(carouselContainer)
-        }
-      })
-
-      // Initialize touch feedback for pagination buttons
-      const paginationBtns = document.querySelectorAll('.pagination button')
-      paginationBtns.forEach(btn => {
-        const feedback = new TouchFeedback({
-          type: 'scale',
-          haptic: 'light',
-          scale: 0.95,
-          duration: 150
-        })
-        feedback.init(btn)
-      })
-
-      // Initialize touch feedback for filter and sort controls
-      const searchInput = document.getElementById('searchInput')
-      if (searchInput) {
-        const feedback = new TouchFeedback({
-          type: 'highlight',
-          haptic: 'none',
-          duration: 200
-        })
-        feedback.init(searchInput)
-      }
-
-      const occasionFilter = document.getElementById('occasionFilter')
-      if (occasionFilter) {
-        const feedback = new TouchFeedback({
-          type: 'highlight',
-          haptic: 'light',
-          duration: 200
-        })
-        feedback.init(occasionFilter)
-      }
-
-      const sortFilter = document.getElementById('sortFilter')
-      if (sortFilter) {
-        const feedback = new TouchFeedback({
-          type: 'highlight',
-          haptic: 'light',
-          duration: 200
-        })
-        feedback.init(sortFilter)
-      }
-
-      console.log('✅ Touch feedback initialized for product cards')
+  // Initialize touch feedback for product cards
+  const productCards = document.querySelectorAll('.product-card')
+  productCards.forEach(card => {
+    // Add scale feedback to entire card
+    const cardFeedback = new TouchFeedback({
+      type: 'scale',
+      haptic: 'light',
+      scale: 0.98,
+      duration: 150
     })
-    .catch(error => {
-      console.error('Failed to load TouchFeedback module:', error)
+    cardFeedback.init(card)
+
+    // Add ripple feedback to quick view buttons
+    const quickViewBtn = card.querySelector('.quick-view-btn')
+    if (quickViewBtn) {
+      const quickViewFeedback = new TouchFeedback({
+        type: 'ripple',
+        haptic: 'light',
+        color: 'rgba(156, 163, 175, 0.3)',
+        duration: 300
+      })
+      quickViewFeedback.init(quickViewBtn)
+    }
+
+    // Add ripple feedback to add to cart buttons
+    const addToCartBtn = card.querySelector('.add-to-cart-btn')
+    if (addToCartBtn) {
+      const cartFeedback = new TouchFeedback({
+        type: 'ripple',
+        haptic: 'medium',
+        color: 'rgba(236, 72, 153, 0.3)',
+        duration: 300
+      })
+      cartFeedback.init(addToCartBtn)
+    }
+
+    // Add ripple feedback to buy now buttons
+    const buyNowBtn = card.querySelector('.buy-now-btn')
+    if (buyNowBtn) {
+      const buyNowFeedback = new TouchFeedback({
+        type: 'ripple',
+        haptic: 'medium',
+        color: 'rgba(16, 185, 129, 0.3)',
+        duration: 300
+      })
+      buyNowFeedback.init(buyNowBtn)
+    }
+
+    // Add scale feedback to carousel container
+    const carouselContainer = card.querySelector('[data-carousel-container]')
+    if (carouselContainer) {
+      const carouselFeedback = new TouchFeedback({
+        type: 'scale',
+        haptic: 'light',
+        scale: 0.97,
+        duration: 150
+      })
+      carouselFeedback.init(carouselContainer)
+    }
+  })
+
+  // Initialize touch feedback for pagination buttons
+  const paginationBtns = document.querySelectorAll('.pagination button')
+  paginationBtns.forEach(btn => {
+    const feedback = new TouchFeedback({
+      type: 'scale',
+      haptic: 'light',
+      scale: 0.95,
+      duration: 150
     })
+    feedback.init(btn)
+  })
+
+  // Initialize touch feedback for filter and sort controls
+  const searchInput = document.getElementById('searchInput')
+  if (searchInput) {
+    // Import TouchFeedback module dynamically
+    const { TouchFeedback } = await import('./js/shared/touchFeedback.js')
+    const feedback = new TouchFeedback({
+      type: 'highlight',
+      haptic: 'none',
+      duration: 200
+    })
+    feedback.init(searchInput)
+  }
+
+  const occasionFilter = document.getElementById('occasionFilter')
+  if (occasionFilter) {
+    // Import TouchFeedback module dynamically
+    const { TouchFeedback } = await import('./js/shared/touchFeedback.js')
+    const feedback = new TouchFeedback({
+      type: 'highlight',
+      haptic: 'light',
+      duration: 200
+    })
+    feedback.init(occasionFilter)
+  }
+
+  const sortFilter = document.getElementById('sortFilter')
+  if (sortFilter) {
+    // Import TouchFeedback module dynamically
+    const { TouchFeedback } = await import('./js/shared/touchFeedback.js')
+    const feedback = new TouchFeedback({
+      type: 'highlight',
+      haptic: 'light',
+      duration: 200
+    })
+    feedback.init(sortFilter)
+  }
+
+  console.log('✅ Touch feedback initialized for product cards')
 }
 
 /**
  * Initialize page
  */
-function init({
-  themeManager,
-  ThemeSelector,
-  initCartBadge,
-  initCartEventListeners,
-  initCartTouchFeedback
-}) {
+async function init() {
   try {
     console.log('🚀 [index.js] Starting initialization...')
     console.log('🔍 [index.js] Checking dependencies...')
 
-    // Log dependency status
-    console.log('📋 [index.js] Dependencies status:', {
-      themeManager: !!themeManager,
-      ThemeSelector: !!ThemeSelector,
-      initCartBadge: !!initCartBadge,
-      initCartEventListeners: !!initCartEventListeners,
-      initCartTouchFeedback: !!initCartTouchFeedback
-    })
-
     // Initialize Theme Manager (must be first to apply theme before UI loads)
     try {
+      // Import theme manager module dynamically
+      const { themeManager } = await import('./js/themes/themeManager.js')
       themeManager.init()
       console.log('✅ [index.js] Theme manager initialized')
 
@@ -1293,7 +1306,7 @@ function init({
     let retryCount = 0
     const maxRetries = 3
 
-    function initializeThemeSelector() {
+    async function initializeThemeSelector() {
       try {
         console.log(
           `🎨 [index.js] Attempting to initialize theme selector (attempt ${retryCount + 1}/${maxRetries})`
@@ -1328,8 +1341,10 @@ function init({
           }
         }
 
-        // Initialize the ThemeSelector
-        const themeSelector = new ThemeSelector('theme-selector-container')
+        // Import ThemeSelector module dynamically
+        const ThemeSelectorModule = await import('./js/components/ThemeSelector.js')
+        const ThemeSelectorClass = ThemeSelectorModule.default || ThemeSelectorModule
+        const themeSelector = new ThemeSelectorClass('theme-selector-container')
         window.themeSelectorInstance = themeSelector
         console.log('✅ [index.js] Theme selector initialized successfully')
         return true
@@ -1413,6 +1428,10 @@ function init({
     console.log('🔍 [Icon System Debug] No runtime icon initialization required')
 
     // Initialize cart functionality
+    // Import cart module dynamically
+    const { initCartBadge, initCartEventListeners, initCartTouchFeedback } = await import(
+      './js/shared/cart.js'
+    )
     initCartBadge()
     initCartEventListeners()
     initCartTouchFeedback()

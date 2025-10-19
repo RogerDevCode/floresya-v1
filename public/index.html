@@ -95,6 +95,50 @@
             <!-- Theme Selector -->
             <div id="theme-selector-container"></div>
 
+            <!-- Cuco Clock Toggle -->
+            <button
+              id="cuco-clock-toggle"
+              class="cuco-clock-toggle nav-icon"
+              type="button"
+              title="Toggle Cuco Clock"
+              style="
+                background: transparent;
+                border: none;
+                color: var(--navbar-icon-color, #6b7280);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                padding: 0.5rem;
+                border-radius: 50%;
+                margin-left: 0.5rem;
+                position: relative;
+                width: 2.5rem;
+                height: 2.5rem;
+                min-width: 2.5rem;
+                min-height: 2.5rem;
+                transition:
+                  color 0.2s ease,
+                  background-color 0.2s ease;
+              "
+            >
+              <svg
+                class="icon cuco-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </button>
+
             <!-- Cart -->
             <a
               href="/pages/cart.html"
@@ -952,7 +996,7 @@
     <script type="module" src="./js/debug-theme.js"></script>
 
     <!-- Main application script -->
-    <script type="module" src="./index-dynamic.js"></script>
+    <script type="module" src="./index.js"></script>
 
     <script>
       // Unregister any existing service workers (cleanup from previous version)

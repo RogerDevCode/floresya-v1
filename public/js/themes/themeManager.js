@@ -154,9 +154,9 @@ export class ThemeManager {
     if (window.location.pathname.includes('contact-editor')) {
       const inputs = document.querySelectorAll('.setting-input')
 
-      inputs.forEach(input => {
+      inputs.forEach(inputElement => {
         // Get the computed background color after theme change
-        const computedStyle = window.getComputedStyle(input)
+        const computedStyle = window.getComputedStyle(inputElement)
         const bgColor = computedStyle.backgroundColor
 
         // Parse the background color
@@ -174,10 +174,13 @@ export class ThemeManager {
           const textColor = luminance > 0.5 ? '#000000' : '#ffffff'
 
           // Apply the text color
-          input.style.color = textColor
+          inputElement.style.color = textColor
 
           // Also adjust placeholder text color
-          input.style.setProperty('--placeholder-color', luminance > 0.5 ? '#6b7280' : '#a3a3a3')
+          inputElement.style.setProperty(
+            '--placeholder-color',
+            luminance > 0.5 ? '#6b7280' : '#a3a3a3'
+          )
         }
       })
     }

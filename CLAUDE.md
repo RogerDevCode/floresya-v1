@@ -122,6 +122,37 @@ Prohibido saltar capas o acceder a DB fuera de services.
 Ejemplo Obligatorio:
 
 ```javascript
+/** Helper Functions */
+const createResponse = (data, message) => ({
+  success: true,
+  data,
+  message
+})
+
+const getStatusCode = operation => {
+  const statusCodes = {
+    create: 201,
+    update: 200,
+    delete: 200,
+    reactivate: 200,
+    display: 200
+  }
+  return statusCodes[operation] || 200
+}
+
+const getSuccessMessage = (operation, entity = 'Entity') => {
+  const messages = {
+    create: `${entity} created successfully`,
+    update: `${entity} updated successfully`,
+    delete: `${entity} deactivated successfully`,
+    reactivate: `${entity} reactivated successfully`,
+    display: 'Display order updated successfully',
+    retrieve: `${entity} retrieved successfully`,
+    methods: 'Entities retrieved successfully'
+  }
+  return messages[operation] || `${entity} operation completed successfully`
+}
+
 import * as productService from '../services/productService.js'
 import { asyncHandler } from '../utils/asyncHandler.js'
 
@@ -130,9 +161,8 @@ export const getAllProducts = asyncHandler(async (req, res) => {
   const includeInactive = req.user?.role === 'admin' && req.query.includeInactive === 'true'
   const filters = { limit, offset, featured, search }
   const products = await productService.getAllProducts(filters, includeInactive)
-  res
-    .status(200)
-    .json({ success: true, data: products, message: 'Products retrieved successfully' })
+  const response = createResponse(products, getSuccessMessage('retrieve', 'Products'))
+  res.status(getStatusCode('retrieve')).json(response)
 })
 ```
 
@@ -144,33 +174,65 @@ export const getAllProducts = asyncHandler(async (req, res) => {
 - Fail-fast: Lanza errores específicos usando clases personalizadas.
 - Siempre usan try-catch con log y re-throw.
 - Incluyen metadata en errores.
+- Funciones helper para validación y manejo de errores consistentes
 
 Ejemplo Obligatorio:
 
 ```javascript
+/** Validaciones DRY */
+function validateEntityId(id, operation = 'operation') {
+  if (!id || typeof id !== 'number') {
+    throw new BadRequestError(`Invalid entity ID: must be a number`, { entityId: id, operation })
+  }
+}
+
+function validateEntityData(data, isUpdate = false) {
+  if (!isUpdate && !data.nombre) {
+    throw new ValidationError('Nombre is required', {
+      field: 'nombre',
+      value: data.nombre,
+      rule: 'required field'
+    })
+  }
+}
+
+/** Enhanced error handler with consistent logging (DRY principle) */
+async function withErrorHandling(operation, operationName, context = {}) {
+  try {
+    return await operation()
+  } catch (error) {
+    console.error(`${operationName} failed:`, { error: error.message, context })
+    throw error
+  }
+}
+
 import { supabase, DB_SCHEMA } from './supabaseClient.js'
-import { BadRequestError, NotFoundError, DatabaseError } from '../errors/AppError.js'
+import {
+  BadRequestError,
+  NotFoundError,
+  DatabaseError,
+  ValidationError
+} from '../errors/AppError.js'
 
 const TABLE = DB_SCHEMA.products.table
 
 export async function getProductById(id, includeInactive = false) {
-  try {
-    if (!id || typeof id !== 'number') {
-      throw new BadRequestError('Invalid product ID', { productId: id })
-    }
-    let query = supabase.from(TABLE).select('*').eq('id', id)
-    if (!includeInactive) query = query.eq('active', true)
-    const { data, error } = await query.single()
-    if (error) {
-      if (error.code === 'PGRST116') throw new NotFoundError('Product', id)
-      throw new DatabaseError('SELECT', TABLE, error, { productId: id })
-    }
-    if (!data) throw new NotFoundError('Product', id)
-    return data
-  } catch (error) {
-    console.error(`getProductById(${id}) failed:`, error)
-    throw new DatabaseError('SELECT', TABLE, error, { productId: id })
-  }
+  return withErrorHandling(
+    async () => {
+      validateEntityId(id, 'getProductById')
+      let query = supabase.from(TABLE).select('*').eq('id', id)
+      if (!includeInactive) query = query.eq('active', true)
+      const { data, error } = await query.single()
+      if (error) {
+        if (error.code === 'PGRST116') throw new NotFoundError('Product', id)
+        throw new DatabaseError('SELECT', TABLE, error, { productId: id })
+      }
+      if (!data) throw new NotFoundError('Product', id)
+      return data
+    },
+    `getProductById(${id})`,
+    { productId: id }
+  )
 }
 ```
 
@@ -240,17 +302,12 @@ Prohibido: Usar bibliotecas como Zod; solo validación manual simple.
 - **Testing**: En `tests/integration/contractEnforcement.test.js`. Verifica validaciones y rechazos. Run: `npm run verify:spec`.
 - **Monitoring**: Logs todas las violaciones. Genera reports con `npm run verify:contract`.
 
-- curly: ["error", "all"] - Siempre usar llaves
-- prefer-const - Usar const cuando no hay reasignación
-- no-unused-vars - No declarar variables sin usar
-- require-await - No usar async sin await
-
 Prohibido: Ignorar violaciones; siempre rechaza y loguea.
 
 ## Automatización OpenAPI (Obligatoria)
 
 - **Generador**: `scripts/generate-openapi-spec.js` crea spec desde JSDoc. Salidas: .json, .yaml, generation-summary.json.
-- **Watcher**: `scripts/watch-openapi.js` vigila cambios en api/\*_/_.js y regenera automáticamente.
+- **Watcher**: `scripts/watch-openapi.js` vigila cambios en api/_*/*_.js y regenera automáticamente.
 - **Validación CI/CD**: `scripts/validate-contract-ci.js` para pipelines; salida JSON en ci-contract-report.json.
 - **Uso**: `npm run generate:openapi`, `npm run watch:openapi`, `npm run validate:contract:ci`.
 - **Patrones de Watch**: Incluye controllers, routes, services, middleware, docs.
