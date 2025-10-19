@@ -91,7 +91,7 @@ export class ThemeManager {
   }
 
   /**
-   * Aplica un tema específico
+   * Applies the tema específico
    * @param {string} themeId - ID del tema
    * @param {boolean} save - Si debe guardarse
    * @returns {boolean} Éxito o fallo
@@ -135,11 +135,51 @@ export class ThemeManager {
         })
       )
 
+      // 7. Adjust contrast for inputs after theme change
+      this.adjustInputContrastIfNeeded()
+
       console.log('✅ [ThemeManager] Theme applied:', theme.name)
       return true
     } catch (error) {
       console.error('❌ [ThemeManager] Failed to apply theme:', error)
       throw error
+    }
+  }
+
+  /**
+   * Adjusts input text colors for better contrast after theme change
+   */
+  adjustInputContrastIfNeeded() {
+    // Check if we're on a page that needs contrast adjustment
+    if (window.location.pathname.includes('contact-editor')) {
+      const inputs = document.querySelectorAll('.setting-input')
+
+      inputs.forEach(input => {
+        // Get the computed background color after theme change
+        const computedStyle = window.getComputedStyle(input)
+        const bgColor = computedStyle.backgroundColor
+
+        // Parse the background color
+        const bgMatch = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/)
+
+        if (bgMatch) {
+          const r = parseInt(bgMatch[1])
+          const g = parseInt(bgMatch[2])
+          const b = parseInt(bgMatch[3])
+
+          // Calculate luminance using the relative luminance formula
+          const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255
+
+          // Choose text color based on contrast
+          const textColor = luminance > 0.5 ? '#000000' : '#ffffff'
+
+          // Apply the text color
+          input.style.color = textColor
+
+          // Also adjust placeholder text color
+          input.style.setProperty('--placeholder-color', luminance > 0.5 ? '#6b7280' : '#a3a3a3')
+        }
+      })
     }
   }
 

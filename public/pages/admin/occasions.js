@@ -696,5 +696,17 @@ onDOMReady(() => {
 
   // Then initialize occasions management
   init()
-  initThemeManager()
+
+  // Initialize theme manager with fallback
+  try {
+    if (typeof initThemeManager === 'function') {
+      initThemeManager()
+    } else if (window.themeManager && typeof window.themeManager.init === 'function') {
+      window.themeManager.init()
+    } else {
+      console.warn('Theme manager not available')
+    }
+  } catch (error) {
+    console.warn('Failed to initialize theme manager:', error)
+  }
 })
