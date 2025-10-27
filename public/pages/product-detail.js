@@ -10,6 +10,7 @@ import { showToast } from '/js/components/toast.js'
 import { api } from '/js/shared/api-client.js'
 import { TouchFeedback } from '/js/shared/touchFeedback.js'
 import { initQuantityTouchFeedback } from '/js/shared/formTouchFeedback.js'
+import { loadingMessages } from '/js/components/loadingMessages.js'
 
 /**
  * State
@@ -389,6 +390,9 @@ function initCartActions() {
 async function init() {
   try {
     // Static SVG icons used - no runtime initialization needed
+
+    // 🌸 Easter Egg: Inicializar mensajes florales de carga
+    loadingMessages.applyToId('loading-spinner')
 
     // Get product ID from URL
     const productId = getProductIdFromURL()

@@ -96,25 +96,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       .then(() => {
         console.log('✅ [index.js] Cuco clock module loaded successfully')
 
-        // Set up cuco clock toggle button event listener
-        const cucoButton = document.getElementById('cuco-clock-toggle')
-        if (cucoButton) {
-          console.log('🔍 [CUCO DEBUG] Adding click listener to cuco toggle button...')
-          cucoButton.addEventListener('click', e => {
-            e.preventDefault()
-            e.stopPropagation()
-            console.log('🔍 [CUCO DEBUG] cuco button clicked!')
-
-            if (window.cucoClock) {
-              window.cucoClock.toggleClock()
-              console.log('🔍 [CUCO DEBUG] window.cucoClock.toggleClock() called')
-            } else {
-              console.warn('🔍 [CUCO DEBUG] window.cucoClock not available')
-            }
-          })
-          console.log('✅ Cuco clock toggle event listener added successfully')
+        // Set up event listener when DOM is ready
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', setupCucoClockButton)
         } else {
-          console.error('❌ Could not find cuco toggle button in DOM')
+          setupCucoClockButton()
         }
       })
       .catch(error => {
@@ -123,6 +109,29 @@ document.addEventListener('DOMContentLoaded', async () => {
           error.message
         )
       })
+
+    // Function to set up the cuco clock button event listener
+    function setupCucoClockButton() {
+      const cucoButton = document.getElementById('cuco-clock-toggle')
+      if (cucoButton) {
+        console.log('🔍 [CUCO DEBUG] Adding click listener to cuco toggle button...')
+        cucoButton.addEventListener('click', e => {
+          e.preventDefault()
+          e.stopPropagation()
+          console.log('🔍 [CUCO DEBUG] cuco button clicked!')
+
+          if (window.cucoClock) {
+            window.cucoClock.toggleClock()
+            console.log('🔍 [CUCO DEBUG] window.cucoClock.toggleClock() called')
+          } else {
+            console.warn('🔍 [CUCO DEBUG] window.cucoClock not available')
+          }
+        })
+        console.log('✅ Cuco clock toggle event listener added successfully')
+      } else {
+        console.error('❌ Could not find cuco toggle button in DOM')
+      }
+    }
 
     console.log('✅ [index.js] Dynamic module system initialization complete')
   } catch (error) {

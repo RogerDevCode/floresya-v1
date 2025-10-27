@@ -6,7 +6,7 @@
 /**
  * Setup logout button functionality
  */
-export function setupLogout() {
+export const setupLogout = () => {
   const logoutBtn = document.getElementById('logout-btn')
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
@@ -24,7 +24,7 @@ export function setupLogout() {
  * Display current user info
  * @param {string} username - Username to display
  */
-export function displayUserInfo(username = 'Admin') {
+export const displayUserInfo = (username = 'Admin') => {
   const userDisplay = document.getElementById('admin-user-display')
   if (userDisplay) {
     userDisplay.textContent = username
@@ -34,7 +34,7 @@ export function displayUserInfo(username = 'Admin') {
 /**
  * Initialize common admin functionalities
  */
-export function initAdminCommon() {
+export const initAdminCommon = () => {
   setupLogout()
   displayUserInfo()
 }

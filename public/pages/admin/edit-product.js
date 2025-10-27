@@ -9,6 +9,7 @@ import { CarouselManager } from '../../js/components/CarouselManager.js'
 import { api } from '../../js/shared/api-client.js'
 import { trackOccasionSelection, sortByPopularity } from '../../js/shared/occasion-popularity.js'
 import { initThemeManager } from '../../js/themes/themeManager.js'
+import { loadingMessages } from '../../js/components/loadingMessages.js'
 
 // Toast notification utility
 const toast = {
@@ -76,6 +77,9 @@ onDOMReady(async () => {
   initThemeManager()
 
   // Static SVG icons used - no runtime initialization needed
+
+  // 🌸 Easter Egg: Inicializar mensajes florales de carga
+  loadingMessages.applyToId('loading-state')
 
   // Get product ID from URL
   const params = new URLSearchParams(window.location.search)

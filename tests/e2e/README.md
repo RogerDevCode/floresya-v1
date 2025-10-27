@@ -1,363 +1,357 @@
-# FloresYa - Tests E2E (End-to-End)
+# E2E Tests - FloresYa
 
-## Descripción
+Test suite de End-to-End (E2E) para validar que todas las páginas HTML carguen correctamente y que el patrón DOMContentLoaded funcione como se espera.
 
-Este directorio contiene tests end-to-end completos para FloresYa que validan el ciclo de vida completo de las órdenes y todos los flujos de compra de la aplicación.
+## 📋 Tabla de Contenidos
 
-## Tests Disponibles
+- [Configuración](#configuración)
+- [Tests Disponibles](#tests-disponibles)
+- [Ejecución](#ejecución)
+- [Scripts Personalizados](#scripts-personalizados)
+- [Reportes](#reportes)
+- [Troubleshooting](#troubleshooting)
 
-### `order-lifecycle.test.js`
+## 🚀 Configuración
 
-Test comprehensivo que cubre:
+### Prerrequisitos
 
-1. **Flujo de compra desde Hero Section (Página Principal)**
-   - CTA "Explorar Catálogo"
-   - CTA "Arreglos para Bodas"
-   - Navegación a productos
-   - Compra directa con "Buy Now"
-   - Agregar al carrito y checkout
+1. **Node.js** y **npm** instalados
+2. **Playwright** instalado (ya viene configurado en el proyecto)
+3. Dependencias del proyecto instaladas: `npm install`
 
-2. **Flujo de compra desde Product Cards (Grid View)**
-   - Agregar múltiples productos al carrito
-   - Vista rápida (Quick View - ícono de ojo)
-   - Click en imagen de producto
-   - Botón "Agregar al Carrito"
-   - Botón "Comprar Ahora"
-
-3. **Flujo de compra desde Carousel (Productos Destacados)**
-   - Agregar producto desde slide activo
-   - Navegación con botones Prev/Next
-   - Navegación con indicadores
-   - Múltiples productos desde diferentes slides
-
-4. **Ciclo de Vida Completo del Pedido**
-   - Agregar productos → Carrito → Checkout → Pago → Confirmación
-   - Manejo de carrito vacío
-   - Validación de formularios de pago
-
-5. **Gestión de Órdenes por Admin (skipped por defecto)**
-   - Login como admin
-   - Visualizar órdenes pendientes
-   - Transiciones de estado: pending → processing → shipped → delivered
-   - Historial de estados
-
-6. **Funcionalidades Adicionales**
-   - Búsqueda de productos
-   - Filtros por ocasión
-   - Ordenamiento por precio
-   - Paginación
-   - Responsive (mobile viewport)
-
-### `homepage.test.js`
-
-Tests básicos de la página principal:
-
-- Carga correcta del título
-- Elementos de navegación visibles
-- Hero section con contenido correcto
-- Sección de productos destacados
-
-## Requisitos Previos
-
-1. **Dependencias instaladas**:
-
-   ```bash
-   npm install
-   ```
-
-2. **Playwright instalado**:
-
-   ```bash
-   npx playwright install
-   ```
-
-3. **Servidor local corriendo** en `http://localhost:3000`:
-   ```bash
-   npm run dev
-   ```
-
-## Ejecutar Tests
-
-### Modo Normal (Headless)
-
-Ejecuta todos los tests E2E en modo headless:
+### Instalación de Navegadores Playwright
 
 ```bash
+# Instalar navegadores para Playwright
+npx playwright install
+
+# O instalar navegadores específicos
+npx playwright install chromium firefox webkit
+```
+
+## 📋 Tests Disponibles
+
+### 1. **Page Loading Tests** (`page-loading-comprehensive.test.js`)
+
+Valida que todas las páginas HTML del proyecto carguen correctamente.
+
+**Coverage:**
+
+- ✅ 23 páginas HTML totales
+- ✅ Main pages (index, cart, contacto, etc.)
+- ✅ Design pages (diseno-1.html, diseno-2.html, etc.)
+- ✅ Admin pages (dashboard, orders, product editor, etc.)
+- ✅ Demo pages (hamburger-menu-demo, product-integration-demo)
+
+**Validaciones:**
+
+- Status code 200
+- Títulos correctos
+- DOCTYPE HTML
+- Estructura básica del DOM
+- Ausencia de errores JavaScript
+- Tiempos de carga aceptables
+
+### 2. **DOMContentLoaded Pattern Validation** (`domcontentloaded-pattern.test.js`)
+
+Valida específicamente que el patrón DOMContentLoaded funcione correctamente.
+
+**Validaciones:**
+
+- Scripts se ejecutan después de DOM ready
+- Manejo de errores de carga de scripts
+- Orden correcto de carga dinámica
+- Timing correcto de ejecución
+- Funcionalidad posterior a carga
+- Compatibilidad entre navegadores
+
+### 3. **Admin Pages Loading Tests** (`admin-pages-loading.test.js`)
+
+Valida las páginas de administración con patrones de carga complejos.
+
+**Coverage:**
+
+- Dashboard (con Chart.js)
+- Orders management
+- Product creation/editing
+- Image management
+- Contact editor
+- Occasions management
+
+**Validaciones:**
+
+- Carga de Chart.js
+- Funcionalidad de image upload
+- Diseño responsive
+- Manejo de dependencias faltantes
+- Funcionalidad con problemas de red
+
+### 4. **Design Pages Loading Tests** (`design-pages-loading.test.js`)
+
+Valida las páginas de diseños y temas.
+
+**Coverage:**
+
+- Gallery de diseños
+- 5 páginas de diseños específicas
+- Theme gallery
+- Theme preloader
+
+**Validaciones:**
+
+- Carga de temas y preloader
+- Estilos específicos de diseños
+- Comportamiento responsive
+- Características interactivas
+- Manejo de recursos faltantes
+
+## 🎯 Ejecución
+
+### Scripts Disponibles
+
+```bash
+# Ejecutar todos los tests E2E
 npm run test:e2e
+
+# Tests específicos de carga de páginas
+npm run test:e2e:loading
+
+# Tests específicos de DOMContentLoaded
+npm run test:e2e:domcontentloaded
+
+# Tests de páginas de administración
+npm run test:e2e:admin
+
+# Tests de páginas de diseños
+npm run test:e2e:design
+
+# Tests completos (comprehensive)
+npm run test:e2e:comprehensive
 ```
 
-### Modo UI (Interfaz Gráfica)
-
-Ejecuta los tests con interfaz gráfica de Playwright:
+### Ejecución Manual
 
 ```bash
-npm run test:e2e:ui
-```
+# Usar Playwright directamente
+npx playwright test
 
-Esta opción permite:
+# Ejecutar tests específicos
+npx playwright test page-loading-comprehensive.test.js
 
-- Ver los tests ejecutándose en tiempo real
-- Inspeccionar cada paso
-- Ver screenshots y videos
-- Debugging visual
+# Ejecutar con interfaz gráfica
+npx playwright test --ui
 
-### Modo Debug
+# Ejecutar en modo debug
+npx playwright test --debug
 
-Ejecuta tests en modo debug paso a paso:
-
-```bash
-npm run test:e2e:debug
-```
-
-### Ejecutar Test Específico
-
-Ejecuta solo el test de order lifecycle:
-
-```bash
-npx playwright test order-lifecycle
-```
-
-Ejecuta solo tests de homepage:
-
-```bash
-npx playwright test homepage
-```
-
-### Ejecutar en un Navegador Específico
-
-Solo Chromium:
-
-```bash
+# Ejecutar en específico navegador
 npx playwright test --project=chromium
-```
-
-Solo Firefox:
-
-```bash
 npx playwright test --project=firefox
-```
-
-Solo WebKit (Safari):
-
-```bash
 npx playwright test --project=webkit
 ```
 
-## Configuración
+### Ejecución con Servidor Automático
 
-La configuración de Playwright se encuentra en `/playwright.config.js`:
+El script `run-e2e-tests.cjs` se encarga de:
 
-- **Base URL**: `http://localhost:3000`
-- **Viewport**: 1280x720
-- **Timeouts**:
-  - Action timeout: 15 segundos
-  - Navigation timeout: 30 segundos
-- **Screenshots**: Solo en fallos
-- **Videos**: Solo en fallos
-- **Retries**: 1 retry (2 en CI)
-
-## Estructura de Tests
-
-Cada test suite (`test.describe`) agrupa tests relacionados:
-
-```javascript
-test.describe('Nombre del Suite', () => {
-  test('debe hacer algo específico', async ({ page }) => {
-    // Arrange
-    await page.goto(BASE_URL)
-
-    // Act
-    await page.locator('.button').click()
-
-    // Assert
-    await expect(page).toHaveURL(/expected-url/)
-  })
-})
-```
-
-## Tests Skipped
-
-Algunos tests están marcados con `test.skip()` porque requieren configuración adicional:
-
-- **Admin Order Management**: Requiere autenticación de admin implementada
-- **API Status Transitions**: Requiere setup de API client con tokens
-
-Para habilitar estos tests:
-
-1. Implementa la funcionalidad requerida
-2. Configura credenciales en variables de entorno
-3. Remueve `.skip` del test
-
-## Debugging
-
-### Ver Trace de Ejecución
-
-Después de ejecutar tests con fallos:
+1. ✅ Verificar si el servidor ya está corriendo
+2. 🚀 Iniciar el servidor de desarrollo si es necesario
+3. ⏳ Esperar a que el servidor esté listo
+4. 🧪 Ejecutar los tests E2E
+5. 🛑 Limpiar el proceso del servidor
 
 ```bash
+# Usar el script automatizado
+node scripts/run-e2e-tests.cjs
+
+# Con patrón específico
+node scripts/run-e2e-tests.cjs --pattern="DOMContentLoaded"
+```
+
+## 📊 Reportes
+
+### Reporte HTML
+
+```bash
+# Generar reporte HTML
+npx playwright test --reporter=html
+
+# Ver reporte
 npx playwright show-report
 ```
 
-Esto abrirá un reporte HTML con:
+### Reportes en Consola
 
-- Screenshots de cada paso
-- Videos de ejecución
-- Logs de consola
-- Network requests
-- DOM snapshots
+Los tests muestran información detallada en la consola:
 
-### Inspector de Playwright
-
-Para inspeccionar un test específico:
-
-```bash
-npx playwright test --debug order-lifecycle
+```
+🚀 Testing Homepage at /
+✅ Homepage loaded successfully
+🚀 Testing Cart at /pages/cart.html
+✅ Cart loaded successfully
+...
+📊 SUMMARY:
+   ✅ Success: 23 files
+   ⚠️  Warnings: 0 files
+   ❌ Errors: 0 files
 ```
 
-Esto abrirá el Playwright Inspector donde puedes:
+## 🔧 Scripts Personalizados
 
-- Ejecutar paso a paso
-- Inspeccionar selectores
-- Ver el DOM en tiempo real
-- Editar y re-ejecutar tests
+### `run-e2e-tests.cjs`
 
-## Mejores Prácticas
+Script principal que orquestra la ejecución de tests E2E.
 
-1. **Espera Explícita**: Usa `waitForSelector`, `waitForTimeout` cuando sea necesario
-2. **Selectores Estables**: Prefiere selectores por role, texto, o data attributes
-3. **Assertions Claras**: Usa `expect` de Playwright para mejores mensajes de error
-4. **Aislamiento**: Cada test debe ser independiente
-5. **Cleanup**: Usa `beforeEach` y `afterEach` para setup/teardown
-
-## Solución de Problemas Comunes
-
-### Error: "Target page, context or browser has been closed"
-
-**Solución**: Aumenta los timeouts en `playwright.config.js`
-
-### Error: "waiting for selector to be visible"
-
-**Solución**:
-
-- Verifica que el servidor esté corriendo
-- Verifica que el selector sea correcto
-- Aumenta el timeout específico del selector
-
-### Tests Fallando en CI pero Pasando Localmente
-
-**Solución**:
-
-- Verifica que las dependencias estén instaladas en CI
-- Asegúrate de que el servidor esté levantado antes de los tests
-- Aumenta timeouts para CI (ya configurado con `retries: 2`)
-
-### Error: "net::ERR_CONNECTION_REFUSED"
-
-**Solución**:
-
-- Verifica que el servidor esté corriendo en puerto 3000
-- Ejecuta `npm run dev` antes de los tests
-
-## Reportes
-
-Los reportes se generan automáticamente en:
-
-- **HTML Report**: `playwright-report/index.html`
-- **Screenshots**: `test-results/`
-- **Videos**: `test-results/`
-
-Para ver el reporte:
+**Opciones:**
 
 ```bash
-npx playwright show-report
+node scripts/run-e2e-tests.cjs --pattern="PATRÓN_DE_BÚSQUEDA"
 ```
 
-## CI/CD Integration
+**Patrones disponibles:**
 
-En CI/CD (GitHub Actions, GitLab CI, etc.):
+- `Page Loading` - Tests de carga general
+- `DOMContentLoaded` - Tests del patrón DOMContentLoaded
+- `Admin Pages` - Tests de páginas de administración
+- `Design Pages` - Tests de páginas de diseños
+- `Comprehensive` - Tests completos
 
-1. **Install dependencies**:
+## 🛠️ Troubleshooting
 
-   ```bash
-   npm ci
-   npx playwright install --with-deps
-   ```
+### Problemas Comunes
 
-2. **Start server**:
+#### 1. **Servidor no inicia**
 
-   ```bash
-   npm run dev &
-   ```
+```bash
+Error: Server failed to start within timeout period
+```
 
-3. **Run tests**:
+**Solución:**
 
-   ```bash
-   npm run test:e2e
-   ```
+- Verificar que el puerto 3000 esté disponible
+- Revisar variables de entorno (.env)
+- Ejecutar `npm run dev` manualmente para ver errores
 
-4. **Upload artifacts** (opcional):
-   - `playwright-report/`
-   - `test-results/`
+#### 2. **Tests fallan por tiempo de espera**
 
-## Cobertura de Tests
+```bash
+Test timeout of 30000ms exceeded
+```
 
-Los tests E2E actuales cubren:
+**Solución:**
 
-✅ **Flujos de Usuario**:
+- Incrementar timeout en playwright.config.js
+- Verificar que el servidor esté corriendo rápido
+- Revisar dependencias de red externas
 
-- Navegación desde hero section
-- Compra desde product cards
-- Compra desde carousel
-- Búsqueda y filtrado
-- Paginación
-- Responsive (mobile)
+#### 3. **Navegadores no instalados**
 
-✅ **Ciclo de Vida de Orden**:
+```bash
+Error: Executable doesn't exist
+```
 
-- Agregar al carrito
-- Checkout
-- Formulario de pago
-- Confirmación de orden
+**Solución:**
 
-⏳ **Pendiente** (requiere implementación):
+```bash
+npx playwright install
+npx playwright install-deps
+```
 
-- Login/Logout de usuarios
-- Admin dashboard completo
-- Transiciones de estado vía API
-- Payment gateway integration
+#### 4. **Scripts no cargan**
 
-## Contribuir
+```bash
+Script initialization failed
+```
 
-Para agregar nuevos tests:
+**Solución:**
 
-1. Crea un nuevo archivo `.test.js` en `/tests/e2e/`
-2. Importa las dependencias necesarias
-3. Estructura tu test con `test.describe` y `test`
-4. Ejecuta y verifica que pasen
-5. Commit con mensaje descriptivo
+- Verificar que los archivos JS existan
+- Revisar rutas en los HTML
+- Verificar sintaxis JavaScript
 
-Ejemplo:
+### Debugging
+
+#### Modo Debug
+
+```bash
+npx playwright test --debug
+```
+
+#### Ver Consola del Navegador
 
 ```javascript
-import { test, expect } from '@playwright/test'
-
-test.describe('Nueva Funcionalidad', () => {
-  test('debe hacer algo', async ({ page }) => {
-    await page.goto('http://localhost:3000')
-    // ... test logic
-  })
-})
+// En los tests, monitorear la consola
+page.on('console', msg => console.log(msg.text()))
+page.on('pageerror', error => console.log(error.message))
 ```
 
-## Recursos
+#### Screenshots en Fallos
 
-- [Documentación de Playwright](https://playwright.dev/)
-- [Best Practices](https://playwright.dev/docs/best-practices)
-- [Debugging Guide](https://playwright.dev/docs/debug)
-- [Playwright Inspector](https://playwright.dev/docs/inspector)
+Los tests automáticamente toman screenshots cuando fallan. Se encuentran en:
+
+```
+test-results/
+├── chrome/
+├── firefox/
+└── webkit/
+```
+
+## 📈 Métricas y Benchmarks
+
+### Tiempos de Carga Esperados
+
+- **Main pages**: < 3 segundos
+- **Admin pages**: < 5 segundos
+- **Demo pages**: < 2 segundos
+
+### Cobertura Actual
+
+- ✅ **23 páginas HTML** cubiertas
+- ✅ **3 navegadores** (Chrome, Firefox, Safari)
+- ✅ **3 viewports** (Desktop, Tablet, Mobile)
+- ✅ **4 categorías** de tests
+- ✅ **50+ casos** de prueba
+
+## 🔄 Integración CI/CD
+
+### GitHub Actions
+
+```yaml
+- name: Run E2E tests
+  run: npm run test:e2e:ci
+```
+
+### Variables de Entorno
+
+```bash
+# Para CI
+PLAYWRIGHT_BROWSERS_PATH=0
+CI=true
+```
+
+## 📝 Mejores Prácticas
+
+1. **Ejecutar tests localmente antes de commits**
+2. **Usar patrones específicos para debugging**
+3. **Mantener actualizados los navegadores Playwright**
+4. **Revisar reportes HTML para análisis detallado**
+5. **Monitorear tiempos de carga en cada ejecución**
+
+## 🆘 Ayuda
+
+Para ayuda adicional:
+
+```bash
+# Ayuda de Playwright
+npx playwright --help
+
+# Listar tests disponibles
+npx playwright test --list
+
+# Ver configuración
+npx playwright test --config=playwright.config.js --dry-run
+```
 
 ---
 
-**Última actualización**: 2025-10-10
-**Versión**: 1.0.0
-**Mantenedor**: FloresYa Team
+**Nota:** Estos tests están diseñados para complementar los tests unitarios y de integración existentes. Se enfocan específicamente en validar que las páginas HTML carguen correctamente con el patrón DOMContentLoaded implementado.

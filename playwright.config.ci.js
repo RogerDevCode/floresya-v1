@@ -17,14 +17,33 @@ const config = {
   retries: process.env.CI ? 3 : 1, // 3 retries in CI instead of 2
   workers: process.env.CI ? 1 : undefined, // Sequential execution in CI
   reporter: [['html', { outputFolder: 'playwright-report' }], ['list']],
+  testIgnore: [
+    '**/*.unit.test.js',
+    '**/*.integration.test.js',
+    '**/unit/**',
+    '**/integration/**',
+    'node_modules/**',
+    '**/setup.js'
+  ],
+  testMatch: ['**/e2e/**/*.test.js'],
+  // Prevent loading of any test frameworks that might conflict
+  // Avoid loading any global test configuration
   projects: [
     {
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome']
-      }
+      },
+      testIgnore: [
+        '**/*.unit.test.js',
+        '**/*.integration.test.js',
+        '**/unit/**',
+        '**/integration/**',
+        'node_modules/**',
+        '**/setup.js',
+        '**/vitest*'
+      ]
     }
-    // Only Chromium for CI to optimize execution time
   ]
 }
 

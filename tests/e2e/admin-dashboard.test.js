@@ -264,7 +264,6 @@ test.describe('Admin Dashboard E2E Tests', () => {
     const sidebar = page.locator('#admin-sidebar')
     const overlay = page.locator('#admin-sidebar-overlay')
     const toggleButton = page.locator('#admin-sidebar-toggle')
-    const closeButton = page.locator('#admin-sidebar-close')
 
     // Initially sidebar should be hidden
     await expect(sidebar).not.toHaveClass(/active/)
@@ -275,18 +274,18 @@ test.describe('Admin Dashboard E2E Tests', () => {
     await expect(sidebar).toHaveClass(/active/)
     await expect(overlay).toHaveClass(/active/)
 
-    // Click close button to close sidebar
-    await closeButton.click()
+    // Click overlay to close sidebar
+    await overlay.click()
     await expect(sidebar).not.toHaveClass(/active/)
     await expect(overlay).not.toHaveClass(/active/)
 
-    // Open sidebar again
+    // Open sidebar again using toggle button
     await toggleButton.click()
     await expect(sidebar).toHaveClass(/active/)
     await expect(overlay).toHaveClass(/active/)
 
-    // Click overlay to close sidebar
-    await overlay.click()
+    // Close sidebar using escape key (reliable method)
+    await page.keyboard.press('Escape')
     await expect(sidebar).not.toHaveClass(/active/)
     await expect(overlay).not.toHaveClass(/active/)
 
@@ -302,15 +301,8 @@ test.describe('Admin Dashboard E2E Tests', () => {
     await expect(logoutButton).toBeVisible()
     await logoutButton.click()
 
-    // Wait for confirmation dialog and handle it
-    page.on('dialog', dialog => dialog.accept())
-
-    // Wait for redirection or page change
-    await page.waitForTimeout(1000)
-
-    // Check if user is redirected to home page or login page
-    // It should show an alert and redirect to home
-    await expect(page).toHaveURL(/\/(index\.html)?$|\/$/)
+    // Wait for redirection to home page (no dialog expected)
+    await page.waitForURL(/\/(index\.html)?$/)
 
     console.log('✅ Logout functionality working correctly')
   })

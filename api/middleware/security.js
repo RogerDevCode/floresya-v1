@@ -60,25 +60,32 @@ export function configureCors() {
  * Secure HTTP headers
  */
 export function configureHelmet() {
+  // En desarrollo, usar una política más permisiva
+  const isDevelopment = process.env.NODE_ENV !== 'production'
+
   return helmet({
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
         styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-        scriptSrc: [
-          "'self'",
-          "'unsafe-eval'",
-          "'sha256-+xJ6txSxaHKrLk0C53nnoPP2rf27Rop0wiQQfNCQdDQ='"
-        ],
+        scriptSrc: isDevelopment
+          ? ["'self'", "'unsafe-eval'", "'unsafe-inline'"] // Desarrollo: permitir scripts en línea
+          : [
+              // Producción: solo hashes específicos
+              "'self'",
+              "'unsafe-eval'",
+              "'sha256-+xJ6txSxaHKrLk0C53nnoPP2rf27Rop0wiQQfNCQdDQ='",
+              "'sha256-7H18Ed8O8mRf1f878Fj7BDCZF6XRLui9qZpWYd5+sFI='"
+            ],
         scriptSrcAttr: ["'unsafe-inline'"],
         imgSrc: ["'self'", 'data:', 'https:'],
-        connectSrc: ["'self'", 'http://localhost:3000', 'http://localhost:5173'],
+        connectSrc: ["'self'", 'http://localhost:3000', 'http://localhost:5173', 'ws:', 'wss:'],
         fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
         objectSrc: ["'none'"],
         mediaSrc: ["'self'"],
         frameSrc: ["'none'"]
       },
-      reportOnly: false // Desactivar reportOnly para que las políticas se apliquen
+      reportOnly: isDevelopment // En desarrollo, solo reportar violaciones
     },
     crossOriginEmbedderPolicy: false,
     crossOriginResourcePolicy: { policy: 'cross-origin' },

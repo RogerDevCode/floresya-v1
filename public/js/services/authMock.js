@@ -15,13 +15,13 @@
  * - Remove this mock file
  */
 
-const DEV_MODE = true // ⚠️ SET TO FALSE IN PRODUCTION
+export const DEV_MODE = true // ⚠️ SET TO FALSE IN PRODUCTION
 
 // Mock JWT token (matches backend DEV_MOCK_USER)
-const MOCK_TOKEN = 'dev-mock-token-admin-floresya'
+export const MOCK_TOKEN = 'dev-mock-token-admin-floresya'
 
 // Mock admin user
-const MOCK_USER = {
+export const MOCK_USER = {
   id: '00000000-0000-0000-0000-000000000001',
   email: 'admin@floresya.dev',
   name: 'Admin Dev',

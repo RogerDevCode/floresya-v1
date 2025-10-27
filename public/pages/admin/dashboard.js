@@ -9,12 +9,28 @@ import { initAdminCommon } from '../../js/admin-common.js'
 import { toast } from '../../js/components/toast.js'
 import { api } from '../../js/shared/api-client.js'
 import { initThemeManager } from '../../js/themes/themeManager.js'
+import { loadingMessages } from '../../js/components/loadingMessages.js'
 import '../../js/services/authMock.js' // ⚠️ DEV ONLY - Side-effect import for auth mock
 
 // Chart.js will be loaded via script tag in HTML
 // Global state
 let _currentView = 'dashboard'
 let products = [] // Will be populated from API
+
+// 🌸 Easter Egg: Mensajes florales para estados de guardado
+function getSavingMessage() {
+  const messages = [
+    '🌱 Plantando cambios...',
+    '💐 Guardando con flores...',
+    '🌻 Haciendo florecer actualizaciones...',
+    '🌺 Cuidando tu jardín de datos...',
+    '🌷 Regando modificaciones...',
+    '🌹 Cultivando mejoras...',
+    '🌸 Floreciendo guardado...',
+    '🌼 Haciendo crecer tus cambios...'
+  ]
+  return messages[Math.floor(Math.random() * messages.length)]
+}
 
 // ==================== UTILITY FUNCTIONS ====================
 
@@ -823,11 +839,15 @@ function setupEventListeners() {
   const logoutBtn = document.getElementById('logout-btn')
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
-      if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
-        // Simulate logout
-        alert('Sesión cerrada. Redirigiendo al login...')
-        window.location.href = '/' // Redirect to home or login page
-      }
+      // Remove auth token from localStorage
+      localStorage.removeItem('authToken')
+      sessionStorage.removeItem('authToken')
+
+      // Simulate logout
+      console.log('Logging out...')
+
+      // Redirect to home page immediately (no alert needed for automated tests)
+      window.location.href = '/index.html'
     })
   }
 }
@@ -1349,7 +1369,7 @@ async function saveHeroImage() {
   try {
     // Show loading state
     const saveButton = document.getElementById('save-hero-image-btn')
-    saveButton.innerHTML = '<i data-lucide="loader" class="h-4 w-4 animate-spin"></i> Guardando...'
+    saveButton.innerHTML = `<i data-lucide="loader" class="h-4 w-4 animate-spin"></i> ${getSavingMessage()}`
     saveButton.disabled = true
 
     // Create form data
@@ -1403,7 +1423,7 @@ async function saveLogo() {
   try {
     // Show loading state
     const saveButton = document.getElementById('save-logo-btn')
-    saveButton.innerHTML = '<i data-lucide="loader" class="h-4 w-4 animate-spin"></i> Guardando...'
+    saveButton.innerHTML = `<i data-lucide="loader" class="h-4 w-4 animate-spin"></i> ${getSavingMessage()}`
     saveButton.disabled = true
 
     // Create form data
@@ -1452,7 +1472,7 @@ async function saveBcvPrice() {
   try {
     // Show loading state
     const saveButton = document.getElementById('save-bcv-price-btn')
-    saveButton.innerHTML = '<i data-lucide="loader" class="h-4 w-4 animate-spin"></i> Guardando...'
+    saveButton.innerHTML = `<i data-lucide="loader" class="h-4 w-4 animate-spin"></i> ${getSavingMessage()}`
     saveButton.disabled = true
 
     // Send request to save BCV price
@@ -2347,7 +2367,7 @@ async function handleUserFormSubmit(e) {
     const submitBtn = form.querySelector('button[type="submit"]')
     const _originalText = submitBtn.textContent
     submitBtn.disabled = true
-    submitBtn.textContent = currentEditingUser ? 'Guardando...' : 'Creando...'
+    submitBtn.textContent = currentEditingUser ? getSavingMessage() : `🌱 ${getSavingMessage()}`
 
     const result = currentEditingUser
       ? await api.updateUsers(currentEditingUser.id, userData)
@@ -2599,6 +2619,10 @@ function showUsersLoading(show) {
 
   if (loading) {
     loading.classList.toggle('hidden', !show)
+    // 🌸 Easter Egg: Aplicar mensaje floral cuando se muestra loading
+    if (show) {
+      loadingMessages.applyToElement(loading)
+    }
   }
   if (tableBody) {
     tableBody.classList.toggle('hidden', show)

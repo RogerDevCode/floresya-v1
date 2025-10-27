@@ -24,17 +24,17 @@ class CucoClock {
       if (savedState) {
         const parsed = JSON.parse(savedState)
         this.isClockVisible = parsed.isVisible !== undefined ? parsed.isVisible : false
-        this.soundEnabled = parsed.soundEnabled !== undefined ? parsed.soundEnabled : true
+        this.soundEnabled = parsed.soundEnabled !== undefined ? parsed.soundEnabled : false
         console.log('🔍 [CUCO DEBUG] Loaded state from localStorage:', parsed)
       } else {
         this.isClockVisible = false
-        this.soundEnabled = true
-        console.log('🔍 [CUCO DEBUG] No saved state found, using defaults')
+        this.soundEnabled = false
+        console.log('🔍 [CUCO DEBUG] No saved state found, using defaults (clock disabled)')
       }
     } catch (error) {
       console.warn('⚠️ [CUCO WARNING] Failed to load state from localStorage:', error)
       this.isClockVisible = false
-      this.soundEnabled = true
+      this.soundEnabled = false
     }
 
     this.lastHour = null
@@ -141,6 +141,8 @@ class CucoClock {
       console.log('🔍 [CUCO DEBUG] Initializing cuco audio...')
       this.cucoAudio = new Audio('/reloj-cucu.mp3')
       this.cucoAudio.preload = 'auto'
+      // 🔊 Bajar volumen al 35%
+      this.cucoAudio.volume = 0.35
 
       // Set up audio event listeners
       this.cucoAudio.addEventListener('canplaythrough', () => {
@@ -160,12 +162,12 @@ class CucoClock {
 
   addEventListeners() {
     try {
-      // Click en la cara del reloj para hacer cucu manual
+      // Click en la cara del reloj para hacer cucu manual (2 veces)
       const clockFace = this.clockElement.querySelector('.cuco-clock-face')
       if (clockFace) {
         clockFace.addEventListener('click', () => {
-          console.log('🔍 [CUCO DEBUG] Clock face clicked - manual cuco')
-          this.triggerCucoSound()
+          console.log('🔍 [CUCO DEBUG] Clock face clicked - manual cuco (2 times)')
+          this.triggerCucoSound(2)
         })
       }
 
@@ -218,12 +220,12 @@ class CucoClock {
         this.minuteHand.style.transform = `rotate(${minuteRotation}deg)`
       }
 
-      // Check for new hour
+      // Check for new hour - now always sounds 2 times
       if (hours !== this.lastHour && minutes === 0 && seconds === 0) {
         this.lastHour = hours
         if (this.soundEnabled) {
-          const displayHour = hours === 0 ? 12 : hours % 12 || 12
-          this.triggerCucoSound(displayHour)
+          // 🕐 Siempre suena exactamente 2 veces (cu-cu) independiente de la hora
+          this.triggerCucoSound(2)
         }
       }
     } catch (error) {
@@ -256,7 +258,7 @@ class CucoClock {
         if (this.soundEnabled) {
           this.playCucoAudio()
         }
-        await this.wait(800) // Wait between cuco sounds
+        await this.wait(1300) // Wait between cuco sounds (1300ms pause)
       }
 
       // Hide everything after animation
@@ -308,7 +310,8 @@ class CucoClock {
 
       oscillator.type = 'sine'
       oscillator.frequency.value = 1000 // Frequency for cuco sound
-      gainNode.gain.value = 0.3
+      // 🔊 Bajar volumen a la mitad (de 0.3 a 0.15)
+      gainNode.gain.value = 0.15
 
       oscillator.start()
       oscillator.stop(audioContext.currentTime + 0.3)
@@ -347,6 +350,19 @@ class CucoClock {
     } catch (error) {
       console.error('❌ [CUCO ERROR] Failed to toggle sound:', error)
       throw error
+    }
+  }
+
+  saveState() {
+    try {
+      const state = {
+        isVisible: this.isClockVisible,
+        soundEnabled: this.soundEnabled
+      }
+      localStorage.setItem('cucoClockState', JSON.stringify(state))
+      console.log('🔍 [CUCO DEBUG] State saved to localStorage:', state)
+    } catch (error) {
+      console.warn('⚠️ [CUCO WARNING] Failed to save state to localStorage:', error)
     }
   }
 

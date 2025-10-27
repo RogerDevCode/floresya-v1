@@ -59,6 +59,9 @@
     <!-- Tailwind CSS -->
     <link rel="stylesheet" href="./css/tailwind.css" />
 
+    <!-- Cuco Clock CSS -->
+    <link rel="stylesheet" href="./css/components/cuco-clock.css" />
+
     <!-- Preload critical resources -->
     <link rel="preload" href="./images/hero-flowers.webp" as="image" />
     <link rel="preload" href="./css/styles.css" as="style" />
@@ -134,8 +137,16 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
               >
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
+                <!-- Simple cuckoo bird shape -->
+                <path d="M9 9c0-1.1.9-2 2-2h2a2 2 0 0 1 2 2v1c0 1.1-.9 2-2 2h-2a2 2 0 0 1-2-2V9z" />
+                <path d="M12 11v2" />
+                <path d="M10 13h4" />
+                <path d="M11 15h2" />
+                <circle cx="10.5" cy="9.5" r="0.5" fill="currentColor" />
+                <path d="M15 10l1-1" />
+                <path d="M9 10l-1-1" />
+                <!-- Clock outline -->
+                <circle cx="12" cy="12" r="8" opacity="0.3" />
               </svg>
             </button>
 
@@ -994,6 +1005,12 @@
     <!-- Scripts al final (ES6 Modules) -->
     <!-- Debug script (non-module for immediate execution) -->
     <script type="module" src="./js/debug-theme.js"></script>
+
+    <!-- 🌸 Easter Egg: Mensajes florales de carga globales -->
+    <script type="module" src="./js/components/loadingMessages.js"></script>
+
+    <!-- 🎊 Easter Egg: Sistema de confeti festivo -->
+    <script type="module" src="./js/components/festiveConfetti.js"></script>
 
     <!-- Main application script -->
     <script type="module" src="./index.js"></script>

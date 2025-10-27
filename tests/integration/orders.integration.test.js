@@ -65,8 +65,8 @@ global.localStorage = {
   clear: vi.fn()
 }
 
-// Mock fetch API more comprehensively
-global.fetch = vi.fn()
+// Mock globalThis.fetch API more comprehensively
+global.globalThis.fetch = vi.fn()
 
 // Mock console
 global.console = {
@@ -84,8 +84,8 @@ describe('Orders Management Integration Tests', () => {
     // Reset mocks
     vi.clearAllMocks()
 
-    // Store original fetch to restore later
-    originalFetch = global.fetch
+    // Store original globalThis.fetch to restore later
+    originalFetch = global.globalThis.fetch
 
     // Mock orders data
     mockOrdersData = [
@@ -148,13 +148,13 @@ describe('Orders Management Integration Tests', () => {
   })
 
   afterEach(() => {
-    // Restore original fetch
-    global.fetch = originalFetch
+    // Restore original globalThis.fetch
+    global.globalThis.fetch = originalFetch
   })
 
-  it('should fetch orders from API and populate the table', async () => {
+  it('should globalThis.fetch orders from API and populate the table', async () => {
     // Mock successful API response
-    global.fetch.mockResolvedValueOnce({
+    global.globalThis.fetch.mockResolvedValueOnce({
       ok: true,
       json: () => ({
         success: true,
@@ -193,7 +193,7 @@ describe('Orders Management Integration Tests', () => {
     // Simulate the fetchOrdersFromAPI function
     async function fetchOrdersFromAPI() {
       try {
-        const response = await fetch('/api/orders', {
+        const response = await globalThis.fetch('/api/orders', {
           headers: {
             Authorization: 'Bearer admin:1:admin' // TODO: Use real auth token
           }
@@ -232,7 +232,7 @@ describe('Orders Management Integration Tests', () => {
 
         return allOrders
       } catch (error) {
-        console.error('Error fetching orders from API:', error)
+        console.error('Error globalThis.fetching orders from API:', error)
         throw error
       }
     }
@@ -240,7 +240,7 @@ describe('Orders Management Integration Tests', () => {
     // Test the API call and data processing
     const allOrders = await fetchOrdersFromAPI()
 
-    expect(fetch).toHaveBeenCalledWith('/api/orders', {
+    expect(globalThis.fetch).toHaveBeenCalledWith('/api/orders', {
       headers: {
         Authorization: 'Bearer admin:1:admin'
       }
@@ -261,7 +261,7 @@ describe('Orders Management Integration Tests', () => {
 
   it('should handle API errors gracefully', async () => {
     // Mock failed API response
-    global.fetch.mockResolvedValueOnce({
+    global.globalThis.fetch.mockResolvedValueOnce({
       ok: false,
       status: 500,
       statusText: 'Internal Server Error'
@@ -282,7 +282,7 @@ describe('Orders Management Integration Tests', () => {
 
     async function fetchOrdersFromAPI() {
       try {
-        const response = await fetch('/api/orders', {
+        const response = await globalThis.fetch('/api/orders', {
           headers: {
             Authorization: 'Bearer admin:1:admin' // TODO: Use real auth token
           }
@@ -299,7 +299,7 @@ describe('Orders Management Integration Tests', () => {
 
         return result.data
       } catch (error) {
-        console.error('Error fetching orders from API:', error)
+        console.error('Error globalThis.fetching orders from API:', error)
         // Simulate showErrorState
         return null
       }
@@ -308,14 +308,14 @@ describe('Orders Management Integration Tests', () => {
     const result = await fetchOrdersFromAPI()
     expect(result).toBeNull()
     expect(global.console.error).toHaveBeenCalledWith(
-      'Error fetching orders from API:',
+      'Error globalThis.fetching orders from API:',
       expect.any(Error)
     )
   })
 
   it('should update order status via API', async () => {
     // Mock successful API response for status update
-    global.fetch.mockResolvedValueOnce({
+    global.globalThis.fetch.mockResolvedValueOnce({
       ok: true,
       json: () => ({
         success: true,
@@ -330,7 +330,7 @@ describe('Orders Management Integration Tests', () => {
     async function changeOrderStatus(orderId, newStatus) {
       try {
         // Update via API
-        const response = await fetch(`/api/orders/${orderId}/status`, {
+        const response = await globalThis.fetch(`/api/orders/${orderId}/status`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -357,7 +357,7 @@ describe('Orders Management Integration Tests', () => {
 
     const result = await changeOrderStatus(orderId, newStatus)
 
-    expect(fetch).toHaveBeenCalledWith(`/api/orders/${orderId}/status`, {
+    expect(globalThis.fetch).toHaveBeenCalledWith(`/api/orders/${orderId}/status`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -371,7 +371,7 @@ describe('Orders Management Integration Tests', () => {
 
   it('should handle order status update errors', async () => {
     // Mock failed API response for status update
-    global.fetch.mockResolvedValueOnce({
+    global.globalThis.fetch.mockResolvedValueOnce({
       ok: false,
       status: 400,
       statusText: 'Bad Request',
@@ -387,7 +387,7 @@ describe('Orders Management Integration Tests', () => {
     async function changeOrderStatus(orderId, newStatus) {
       try {
         // Update via API
-        const response = await fetch(`/api/orders/${orderId}/status`, {
+        const response = await globalThis.fetch(`/api/orders/${orderId}/status`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',

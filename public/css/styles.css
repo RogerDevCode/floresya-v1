@@ -1,6 +1,25 @@
 /* ===== IMPORT THEME VARIABLES ===== */
 @import './themes/base-variables.css';
 
+/* ===== LOADING MESSAGES EASTER EGG ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.loading-message {
+  animation: fadeIn 0.5s ease-in;
+  font-style: italic;
+  color: var(--primary-color, #ec4899);
+  font-weight: 500;
+}
+
 /* ===== CUCO CLOCK ===== */
 @import './components/cuco-clock.css';
 
@@ -1807,7 +1826,7 @@ body.admin-page {
 .admin-sidebar-close {
   display: none; /* Hidden on desktop */
   position: absolute;
-  top: 1rem;
+  top: 1rem; /* Back to original position */
   right: 1rem;
   background: rgba(255, 255, 255, 0.2);
   color: white;
@@ -1816,7 +1835,9 @@ body.admin-page {
   padding: 0.5rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  z-index: 50;
+  z-index: 100; /* High z-index to be above all elements */
+  /* Ensure button is inside sidebar bounds */
+  max-width: calc(100% - 2rem);
 }
 
 .admin-sidebar-close:hover {
