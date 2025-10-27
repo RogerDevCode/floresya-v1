@@ -213,13 +213,13 @@ describe('Product Service Unit Tests', () => {
     it('should throw ValidationError when ID is invalid', async () => {
       // Act & Assert
       await expect(productService.getProductById('invalid')).rejects.toThrow(
-        'Invalid product ID: must be a number'
+        'Invalid product ID: must be a positive number'
       )
       await expect(productService.getProductById(null)).rejects.toThrow(
-        'Invalid product ID: must be a number'
+        'Invalid product ID: must be a positive number'
       )
       await expect(productService.getProductById(0)).rejects.toThrow(
-        'Invalid product ID: must be a number'
+        'Invalid product ID: must be a positive number'
       )
     })
 
@@ -373,10 +373,10 @@ describe('Product Service Unit Tests', () => {
     it('should throw BadRequestError for invalid product ID', async () => {
       // Act & Assert
       await expect(productService.updateProduct('invalid', { name: 'New Name' })).rejects.toThrow(
-        'Invalid product ID: must be a number'
+        'Invalid product ID: must be a positive number'
       )
       await expect(productService.updateProduct(0, { name: 'New Name' })).rejects.toThrow(
-        'Invalid product ID: must be a number'
+        'Invalid product ID: must be a positive number'
       )
     })
   })
@@ -412,10 +412,10 @@ describe('Product Service Unit Tests', () => {
     it('should throw BadRequestError for invalid product ID', async () => {
       // Act & Assert
       await expect(productService.deleteProduct('invalid')).rejects.toThrow(
-        'Invalid product ID: must be a number'
+        'Invalid product ID: must be a positive number'
       )
       await expect(productService.deleteProduct(null)).rejects.toThrow(
-        'Invalid product ID: must be a number'
+        'Invalid product ID: must be a positive number'
       )
     })
   })

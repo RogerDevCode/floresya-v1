@@ -47,11 +47,15 @@ vi.mock('../api/services/supabaseClient.js', () => ({
       // Create a complete chainable mock
       const mockQuery = {
         eq: vi.fn().mockReturnThis(),
+        neq: vi.fn().mockReturnThis(),
+        not: vi.fn().mockReturnThis(),
         or: vi.fn().mockReturnThis(),
         in: vi.fn().mockReturnThis(),
         order: vi.fn().mockReturnThis(),
         limit: vi.fn().mockReturnThis(),
         offset: vi.fn().mockReturnThis(),
+        gte: vi.fn().mockReturnThis(),
+        lte: vi.fn().mockReturnThis(),
         single: vi.fn().mockResolvedValue({ data: null, error: null }),
         select: vi.fn(() => mockQuery)
       }

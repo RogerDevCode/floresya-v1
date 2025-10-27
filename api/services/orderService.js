@@ -141,7 +141,7 @@ export async function getAllOrders(filters = {}, includeInactive = false) {
 
     // By default, exclude cancelled orders (business rule: "venta cancelada no es venta")
     if (!includeInactive) {
-      query = query.filter('status', 'neq', 'cancelled')
+      query = query.neq('status', 'cancelled')
     }
 
     // Date range filter (uses indexed created_at)
@@ -211,7 +211,7 @@ export async function getOrderById(id, includeInactive = false) {
 
     // By default, exclude cancelled orders (business rule: "venta cancelada no es venta")
     if (!includeInactive) {
-      query = query.filter('status', 'neq', 'cancelled')
+      query = query.neq('status', 'cancelled')
     }
 
     const { data, error } = await query.single()
