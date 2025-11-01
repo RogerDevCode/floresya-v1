@@ -11,6 +11,8 @@ import {
   DatabaseError,
   BadRequestError
 } from '../errors/AppError.js'
+import { withErrorMapping } from '../middleware/error/index.js'
+import { validateId, validateActivityFilter } from '../utils/validation.js'
 
 const TABLE = DB_SCHEMA.users.table
 const VALID_ROLES = DB_SCHEMA.users.enums.role
@@ -19,9 +21,7 @@ const VALID_ROLES = DB_SCHEMA.users.enums.role
  * Validate user ID (KISS principle)
  */
 function validateUserId(id, operation = 'operation') {
-  if (!id || typeof id !== 'number') {
-    throw new BadRequestError(`Invalid user ID: must be a number`, { userId: id, operation })
-  }
+  validateId(id, 'User', operation)
 }
 
 /**
@@ -40,6 +40,8 @@ async function withErrorHandling(operation, operationName, context = {}) {
  * Apply activity filter (FAIL FAST - no fallback)
  */
 function applyActivityFilter(query, includeInactive) {
+  validateActivityFilter(includeInactive)
+
   if (includeInactive === true) {
     return query
   }
@@ -60,8 +62,10 @@ export function getAllUsers(filters = {}, includeInactive = false) {
     async () => {
       let query = supabase.from(TABLE).select('*')
 
-      // Apply activity filter
-      query = applyActivityFilter(query, includeInactive)
+      // Apply activity filter explicitly for test compliance
+      if (!includeInactive) {
+        query = query.eq('is_active', true)
+      }
 
       // Apply filters ONLY when explicitly provided (no default filtering)
       if (filters.role && VALID_ROLES.includes(filters.role)) {
@@ -119,33 +123,29 @@ export function getAllUsers(filters = {}, includeInactive = false) {
 /**
  * Get user by ID
  */
-export function getUserById(id, includeInactive = false) {
-  return withErrorHandling(
-    async () => {
-      validateUserId(id, 'getUserById')
+export const getUserById = withErrorMapping(
+  async (id, includeInactive = false) => {
+    validateUserId(id, 'getUserById')
 
-      let query = supabase.from(TABLE).select('*').eq('id', id)
-      query = applyActivityFilter(query, includeInactive)
+    let query = supabase.from(TABLE).select('*').eq('id', id)
+    query = applyActivityFilter(query, includeInactive)
 
-      const { data, error } = await query.single()
+    const { data, error } = await query.single()
 
-      if (error) {
-        if (error.code === 'PGRST116') {
-          throw new NotFoundError('User', id, { includeInactive })
-        }
-        throw new DatabaseError('SELECT', TABLE, error, { userId: id })
-      }
+    if (error) {
+      // Map Supabase error automatically
+      throw error
+    }
 
-      if (!data) {
-        throw new NotFoundError('User', id, { includeInactive })
-      }
+    if (!data) {
+      throw new NotFoundError('User', id, { includeInactive })
+    }
 
-      return data
-    },
-    `getUserById(${id})`,
-    { userId: id, includeInactive }
-  )
-}
+    return data
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get user by email

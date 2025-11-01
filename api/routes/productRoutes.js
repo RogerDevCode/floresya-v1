@@ -7,10 +7,15 @@
 import express from 'express'
 import * as productController from '../controllers/productController.js'
 import * as productImageController from '../controllers/productImageController.js'
-import { authenticate, authorize } from '../middleware/auth.js'
-import { validate, validateId, validatePagination } from '../middleware/validate.js'
-import { productCreateSchema, productUpdateSchema } from '../middleware/schemas.js'
-import { uploadSingle } from '../middleware/uploadImage.js'
+import { authenticate, authorize } from '../middleware/auth/index.js'
+import {
+  validate,
+  validateId,
+  validatePagination,
+  productCreateSchema,
+  productUpdateSchema
+} from '../middleware/validation/index.js'
+import { uploadSingle } from '../middleware/utilities/index.js'
 
 const router = express.Router()
 

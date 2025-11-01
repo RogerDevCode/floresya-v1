@@ -1,0 +1,249 @@
+Test 1     	 FAIL  tests/integration/orders.integration.test.js [ tests/integration/orders.integration.test.js ]
+Test 2     	 FAIL  tests/integration/robustness.integration.test.js [ tests/integration/robustness.integration.test.js ]
+Test 3     	 FAIL  tests/orders.api.test.js > Orders API Endpoint Tests > GET /api/orders/:id should return 404 when order not found
+Test 4     	 FAIL  tests/orders.api.test.js > Orders API Endpoint Tests > PATCH /api/orders/:id/status should validate input
+Test 5     	 FAIL  tests/orders.api.test.js > Orders API Endpoint Tests > API should handle database errors gracefully
+Test 6     	 FAIL  tests/architecture/architectural-compliance.test.js > Architectural Compliance Tests - P0.1.1 > Service Layer Exclusivity - Supabase Client Access > should not import supabaseClient outside api/services/
+Test 7     	 FAIL  tests/architecture/architectural-compliance.test.js > Architectural Compliance Tests - P0.1.1 > Service Layer Exclusivity - Supabase Client Access > should ensure only services/ directory contains database operations
+Test 8     	 FAIL  tests/architecture/architectural-compliance.test.js > Architectural Compliance Tests - P0.1.1 > Service Layer Exclusivity - Supabase Client Access > should ensure controllers only call services and handle HTTP logic
+Test 9     	 FAIL  tests/architecture/architectural-compliance.test.js > Architectural Compliance Tests - P0.1.1 > MVC Strict Pattern Compliance > should ensure proper separation of concerns across layers
+Test 10    	 FAIL  tests/architecture/business-rules-compliance.test.js > Business Rules Compliance Tests - P0.1.5 > Cancelled Order Business Rule > should ensure order status history tracks cancellations properly
+Test 11    	 FAIL  tests/architecture/custom-error-compliance.test.js > Custom Error Compliance Tests - P0.1.4 > Custom Error Class Usage > should use appropriate custom error classes for different error types
+Test 12    	 FAIL  tests/architecture/custom-error-compliance.test.js > Custom Error Compliance Tests - P0.1.4 > Custom Error Class Usage > should ensure error handling in controllers uses custom errors
+Test 13    	 FAIL  tests/architecture/custom-error-compliance.test.js > Custom Error Compliance Tests - P0.1.4 > Error Response Format Compliance > should ensure custom errors have proper toJSON method
+Test 14    	 FAIL  tests/architecture/error-handling-compliance.test.js > Error Handling Compliance Tests - P0.1.2 > Silent Error Handling Detection > should not use fallback operators (||, ??) in critical operations
+Test 15    	 FAIL  tests/architecture/error-handling-compliance.test.js > Error Handling Compliance Tests - P0.1.2 > Silent Error Handling Detection > should ensure fail-fast behavior in critical operations
+Test 16    	 FAIL  tests/architecture/error-handling-compliance.test.js > Error Handling Compliance Tests - P0.1.2 > Silent Error Handling Detection > should ensure proper error propagation in controllers
+Test 17    	 FAIL  tests/architecture/error-handling-compliance.test.js > Error Handling Compliance Tests - P0.1.2 > Custom Error Class Usage > should use custom error classes instead of generic Error
+Test 18    	 FAIL  tests/integration/contractEnforcement.test.js > API Contract Enforcement > Order Creation Contract > should reject orders with missing required fields
+Test 19    	 FAIL  tests/integration/contractEnforcement.test.js > API Contract Enforcement > Order Creation Contract > should reject orders with incorrect field types
+Test 20    	 FAIL  tests/integration/contractEnforcement.test.js > API Contract Enforcement > Product CRUD Contract > should enforce product creation schema
+Test 21    	 FAIL  tests/integration/contractEnforcement.test.js > API Contract Enforcement > Parameter Validation > should reject invalid path parameters
+Test 22    	 FAIL  tests/integration/contractEnforcement.test.js > API Contract Enforcement > Parameter Validation > should reject invalid query parameters
+Test 23    	 FAIL  tests/integration/contractEnforcement.test.js > Contract Divergence Detection > should detect and log contract violations
+Test 24    	 FAIL  tests/integration/contractEnforcement.test.js > Schema Validation > should validate order schema correctly
+Test 25    	 FAIL  tests/integration/order-api.integration.test.js > Order API Integration Tests > should create a new order with items
+Test 26    	 FAIL  tests/integration/order-api.integration.test.js > Order API Integration Tests > should retrieve the created order by ID
+Test 27    	 FAIL  tests/integration/order-api.integration.test.js > Order API Integration Tests > should retrieve all orders with filtering
+Test 28    	 FAIL  tests/integration/order-api.integration.test.js > Order API Integration Tests > should update order status
+Test 29    	 FAIL  tests/integration/order-api.integration.test.js > Order API Integration Tests > should update order details
+Test 30    	 FAIL  tests/integration/order-api.integration.test.js > Order API Integration Tests > should get order status history
+Test 31    	 FAIL  tests/integration/order-api.integration.test.js > Order API Integration Tests > should cancel the order
+Test 32    	 FAIL  tests/integration/product-api-PAIT-new.test.js > Product API Integration Tests - PAIT Enhanced > PUT /api/products/:id > PAIT-013: should update product successfully
+Test 33    	 FAIL  tests/integration/product-api-PAIT-new.test.js > Product API Integration Tests - PAIT Enhanced > DELETE /api/products/:id > PAIT-014: should soft delete product successfully
+Test 34    	 FAIL  tests/integration/product-api-PAIT-new.test.js > Product API Integration Tests - PAIT Enhanced > PATCH /api/products/:id/stock > PAIT-015: should update stock successfully
+Test 35    	 FAIL  tests/integration/product-api-PAIT-new.test.js > Product API Integration Tests - PAIT Enhanced > Error Scenarios > PAIT-019: should handle validation errors
+Test 36    	 FAIL  tests/integration/product-api-PAIT-new.test.js > Product API Integration Tests - PAIT Enhanced > Complete Integration Flows > PAIT-022: should handle full CRUD flow
+Test 37    	 FAIL  tests/security/advanced-attack-vectors.test.js > Advanced Security - Attack Vector Coverage > NoSQL Injection (MongoDB/Supabase specific) > should validate query parameters strictly
+Test 38    	 FAIL  tests/security/fuzz-testing.test.js > Fuzz Testing Framework > Path Traversal Fuzz Testing > should handle path traversal fuzz attempts
+Test 39    	 FAIL  tests/security/fuzz-testing.test.js > Fuzz Testing Framework > Command Injection Fuzz Testing > should handle command injection fuzz attempts
+Test 40    	 FAIL  tests/security/fuzz-testing.test.js > Fuzz Testing Framework > Template Injection Fuzz Testing > should handle template injection fuzz attempts
+Test 41    	 FAIL  tests/security/fuzz-testing.test.js > Fuzz Testing Framework > Protocol Injection Fuzz Testing > should handle protocol injection fuzz attempts
+Test 42    	 FAIL  tests/security/fuzz-testing.test.js > Fuzz Testing Framework > Unicode Fuzz Testing > should handle unicode fuzz attempts
+Test 43    	 FAIL  tests/security/fuzz-testing.test.js > Fuzz Testing Framework > Buffer Overflow Fuzz Testing > should handle buffer overflow attempts
+Test 44    	 FAIL  tests/security/fuzz-testing.test.js > Fuzz Testing Framework > Multi-Vector Fuzz Testing > should handle combined attack vectors
+Test 45    	 FAIL  tests/security/fuzz-testing.test.js > Fuzz Testing Framework > Multi-Vector Fuzz Testing > should handle fuzz with special characters
+Test 46    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > GET /api/occasions > should get all active occasions
+Test 47    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > GET /api/occasions > should handle limit parameter correctly
+Test 48    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > GET /api/occasions > should handle includeInactive parameter for admin
+Test 49    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > GET /api/occasions/:id > should get occasion by ID
+Test 50    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > GET /api/occasions/:id > should return 404 for non-existent occasion
+Test 51    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > GET /api/occasions/:id > should return 400 for invalid ID
+Test 52    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > GET /api/occasions/slug/:slug > should get occasion by slug
+Test 53    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > GET /api/occasions/slug/:slug > should return 404 for non-existent slug
+Test 54    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > POST /api/occasions > should create a new occasion (admin only)
+Test 55    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > POST /api/occasions > should return 401 for unauthorized access
+Test 56    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > POST /api/occasions > should return 400 for validation errors
+Test 57    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > PUT /api/occasions/:id > should update an existing occasion (admin only)
+Test 58    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > PUT /api/occasions/:id > should return 401 for unauthorized access
+Test 59    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > PUT /api/occasions/:id > should return 404 for non-existent occasion
+Test 60    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > PUT /api/occasions/:id > should return 400 for validation errors
+Test 61    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > PATCH /api/occasions/:id/display-order > should update display order (admin only)
+Test 62    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > PATCH /api/occasions/:id/display-order > should return 401 for unauthorized access
+Test 63    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > PATCH /api/occasions/:id/display-order > should return 404 for non-existent occasion
+Test 64    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > PATCH /api/occasions/:id/display-order > should return 400 for invalid order parameter
+Test 65    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > DELETE /api/occasions/:id > should soft-delete an occasion (admin only)
+Test 66    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > DELETE /api/occasions/:id > should return 401 for unauthorized access
+Test 67    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > DELETE /api/occasions/:id > should return 404 for non-existent occasion
+Test 68    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > PATCH /api/occasions/:id/reactivate > should reactivate an occasion (admin only)
+Test 69    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > PATCH /api/occasions/:id/reactivate > should return 401 for unauthorized access
+Test 70    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > PATCH /api/occasions/:id/reactivate > should return 404 for non-existent occasion
+Test 71    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > Response Structure Consistency > should return consistent response structure for all endpoints
+Test 72    	 FAIL  api/__tests__/integration/occasionController.int.test.js > Occasion Controller API > HTTP Status Codes > should return correct HTTP status codes for all operations
+Test 73    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > GET /api/orders > should get all orders with filters (admin only)
+Test 74    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > GET /api/orders > should return 401 for unauthorized access
+Test 75    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > GET /api/orders > should handle query filters correctly
+Test 76    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > GET /api/orders > should handle status filter
+Test 77    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > GET /api/orders > should handle date range filters
+Test 78    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > GET /api/orders > should handle search parameter
+Test 79    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > GET /api/orders/:id > should get order by ID (admin only)
+Test 80    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > GET /api/orders/:id > should return 401 for unauthorized access
+Test 81    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > GET /api/orders/:id > should return 404 for non-existent order
+Test 82    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > GET /api/orders/:id > should return 400 for invalid ID
+Test 83    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > GET /api/orders/user/:userId > should get orders by user
+Test 84    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > GET /api/orders/user/:userId > should handle status filter for user orders
+Test 85    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > GET /api/orders/user/:userId > should return 404 for non-existent user
+Test 86    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > GET /api/orders/:id/status-history > should get order status history
+Test 87    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > GET /api/orders/:id/status-history > should return 404 for non-existent order
+Test 88    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > POST /api/orders > should create a new order with items
+Test 89    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > POST /api/orders > should return 400 for validation errors
+Test 90    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > POST /api/orders > should return 404 for non-existent user
+Test 91    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > PUT /api/orders/:id > should update an existing order (admin only)
+Test 92    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > PUT /api/orders/:id > should return 401 for unauthorized access
+Test 93    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > PUT /api/orders/:id > should return 404 for non-existent order
+Test 94    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > PUT /api/orders/:id > should return 400 for validation errors
+Test 95    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > PATCH /api/orders/:id/status > should update order status (admin only)
+Test 96    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > PATCH /api/orders/:id/status > should return 401 for unauthorized access
+Test 97    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > PATCH /api/orders/:id/status > should return 404 for non-existent order
+Test 98    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > PATCH /api/orders/:id/status > should return 400 for invalid status
+Test 99    	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > PATCH /api/orders/:id/cancel > should cancel an order
+Test 100   	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > PATCH /api/orders/:id/cancel > should return 404 for non-existent order
+Test 101   	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > PATCH /api/orders/:id/cancel > should return 400 for already cancelled order
+Test 102   	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > Response Structure Consistency > should return consistent response structure for all endpoints
+Test 103   	 FAIL  api/__tests__/integration/orderController.int.test.js > Order Controller API > HTTP Status Codes > should return correct HTTP status codes for all operations
+Test 104   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > GET /api/payments > should get all payments with filters (admin only)
+Test 105   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > GET /api/payments > should return 401 for unauthorized access
+Test 106   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > GET /api/payments > should handle query filters correctly
+Test 107   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > GET /api/payments > should handle status filter
+Test 108   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > GET /api/payments > should handle date range filters
+Test 109   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > GET /api/payments/:id > should get payment by ID (admin only)
+Test 110   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > GET /api/payments/:id > should return 401 for unauthorized access
+Test 111   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > GET /api/payments/:id > should return 404 for non-existent payment
+Test 112   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > GET /api/payments/order/:orderId > should get payments by order ID
+Test 113   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > GET /api/payments/order/:orderId > should return 404 for non-existent order
+Test 114   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > GET /api/payments/user/:userId > should get payments by user ID
+Test 115   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > GET /api/payments/user/:userId > should return 404 for non-existent user
+Test 116   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > POST /api/payments > should create a new payment (admin only)
+Test 117   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > POST /api/payments > should return 401 for unauthorized access
+Test 118   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > POST /api/payments > should return 400 for validation errors
+Test 119   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > POST /api/payments > should return 404 for non-existent order
+Test 120   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > PUT /api/payments/:id > should update an existing payment (admin only)
+Test 121   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > PUT /api/payments/:id > should return 401 for unauthorized access
+Test 122   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > PUT /api/payments/:id > should return 404 for non-existent payment
+Test 123   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > PUT /api/payments/:id > should return 400 for validation errors
+Test 124   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > PATCH /api/payments/:id/status > should update payment status (admin only)
+Test 125   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > PATCH /api/payments/:id/status > should return 401 for unauthorized access
+Test 126   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > PATCH /api/payments/:id/status > should return 404 for non-existent payment
+Test 127   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > PATCH /api/payments/:id/status > should return 400 for invalid status
+Test 128   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > DELETE /api/payments/:id > should soft-delete a payment (admin only)
+Test 129   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > DELETE /api/payments/:id > should return 401 for unauthorized access
+Test 130   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > DELETE /api/payments/:id > should return 404 for non-existent payment
+Test 131   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > Response Structure Consistency > should return consistent response structure for all endpoints
+Test 132   	 FAIL  api/__tests__/integration/paymentController.int.test.js > Payment Controller API > HTTP Status Codes > should return correct HTTP status codes for all operations
+Test 133   	 FAIL  api/__tests__/integration/paymentMethod.int.test.js > Payment Method API > GET /api/payment-methods > should get all active payment methods
+Test 134   	 FAIL  api/__tests__/integration/paymentMethod.int.test.js > Payment Method API > GET /api/payment-methods > should handle invalid limit parameter
+Test 135   	 FAIL  api/__tests__/integration/paymentMethod.int.test.js > Payment Method API > GET /api/payment-methods/:id > should get payment method by ID
+Test 136   	 FAIL  api/__tests__/integration/paymentMethod.int.test.js > Payment Method API > GET /api/payment-methods/:id > should return 404 for non-existent payment method
+Test 137   	 FAIL  api/__tests__/integration/paymentMethod.int.test.js > Payment Method API > GET /api/payment-methods/:id > should return 400 for invalid ID
+Test 138   	 FAIL  api/__tests__/integration/paymentMethod.int.test.js > Payment Method API > POST /api/payment-methods > should create a new payment method (admin only)
+Test 139   	 FAIL  api/__tests__/integration/paymentMethod.int.test.js > Payment Method API > POST /api/payment-methods > should return 401 for unauthorized access
+Test 140   	 FAIL  api/__tests__/integration/paymentMethod.int.test.js > Payment Method API > POST /api/payment-methods > should return 400 for validation errors
+Test 141   	 FAIL  api/__tests__/integration/paymentMethod.int.test.js > Payment Method API > PUT /api/payment-methods/:id > should update an existing payment method (admin only)
+Test 142   	 FAIL  api/__tests__/integration/paymentMethod.int.test.js > Payment Method API > PUT /api/payment-methods/:id > should return 401 for unauthorized access
+Test 143   	 FAIL  api/__tests__/integration/paymentMethod.int.test.js > Payment Method API > PUT /api/payment-methods/:id > should return 404 for non-existent payment method
+Test 144   	 FAIL  api/__tests__/integration/paymentMethod.int.test.js > Payment Method API > DELETE /api/payment-methods/:id > should soft-delete a payment method (admin only)
+Test 145   	 FAIL  api/__tests__/integration/paymentMethod.int.test.js > Payment Method API > DELETE /api/payment-methods/:id > should return 401 for unauthorized access
+Test 146   	 FAIL  api/__tests__/integration/paymentMethod.int.test.js > Payment Method API > PATCH /api/payment-methods/:id/reactivate > should reactivate a payment method (admin only)
+Test 147   	 FAIL  api/__tests__/integration/paymentMethod.int.test.js > Payment Method API > PATCH /api/payment-methods/:id/reactivate > should return 401 for unauthorized access
+Test 148   	 FAIL  api/__tests__/integration/paymentMethod.int.test.js > Payment Method API > PATCH /api/payment-methods/:id/display-order > should update payment method display order (admin only)
+Test 149   	 FAIL  api/__tests__/integration/paymentMethod.int.test.js > Payment Method API > PATCH /api/payment-methods/:id/display-order > should return 401 for unauthorized access
+Test 150   	 FAIL  api/__tests__/integration/paymentMethod.int.test.js > Payment Method API > PATCH /api/payment-methods/:id/display-order > should return 400 for invalid order parameter
+Test 151   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > GET /api/payment-methods > should get all active payment methods
+Test 152   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > GET /api/payment-methods > should handle limit parameter correctly
+Test 153   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > GET /api/payment-methods > should handle invalid limit parameter
+Test 154   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > GET /api/payment-methods/:id > should get payment method by ID
+Test 155   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > GET /api/payment-methods/:id > should return 404 for non-existent payment method
+Test 156   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > GET /api/payment-methods/:id > should return 400 for invalid ID
+Test 157   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > POST /api/payment-methods > should create a new payment method (admin only)
+Test 158   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > POST /api/payment-methods > should return 401 for unauthorized access
+Test 159   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > POST /api/payment-methods > should return 400 for validation errors
+Test 160   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > PUT /api/payment-methods/:id > should update an existing payment method (admin only)
+Test 161   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > PUT /api/payment-methods/:id > should return 401 for unauthorized access
+Test 162   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > PUT /api/payment-methods/:id > should return 404 for non-existent payment method
+Test 163   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > PUT /api/payment-methods/:id > should return 400 for validation errors
+Test 164   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > DELETE /api/payment-methods/:id > should soft-delete a payment method (admin only)
+Test 165   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > DELETE /api/payment-methods/:id > should return 401 for unauthorized access
+Test 166   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > DELETE /api/payment-methods/:id > should return 404 for non-existent payment method
+Test 167   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > PATCH /api/payment-methods/:id/reactivate > should reactivate a payment method (admin only)
+Test 168   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > PATCH /api/payment-methods/:id/reactivate > should return 401 for unauthorized access
+Test 169   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > PATCH /api/payment-methods/:id/reactivate > should return 404 for non-existent payment method
+Test 170   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > PATCH /api/payment-methods/:id/display-order > should update payment method display order (admin only)
+Test 171   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > PATCH /api/payment-methods/:id/display-order > should return 401 for unauthorized access
+Test 172   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > PATCH /api/payment-methods/:id/display-order > should return 404 for non-existent payment method
+Test 173   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > PATCH /api/payment-methods/:id/display-order > should return 400 for invalid order parameter
+Test 174   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > Response Structure Consistency > should return consistent response structure for all endpoints
+Test 175   	 FAIL  api/__tests__/integration/paymentMethodController.int.test.js > Payment Method Controller API > HTTP Status Codes > should return correct HTTP status codes for all operations
+Test 176   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > GET /api/products > should get all products with filters
+Test 177   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > GET /api/products > should handle featured filter correctly
+Test 178   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > GET /api/products > should handle search query parameter
+Test 179   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > GET /api/products > should handle pagination parameters
+Test 180   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > GET /api/products > should handle includeInactive parameter for admin
+Test 181   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > GET /api/products/:id > should get product by ID
+Test 182   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > GET /api/products/:id > should return 404 for non-existent product
+Test 183   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > GET /api/products/:id > should return 400 for invalid ID
+Test 184   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > GET /api/products/sku/:sku > should get product by SKU
+Test 185   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > GET /api/products/sku/:sku > should return 404 for non-existent SKU
+Test 186   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > GET /api/products/carousel > should get carousel products
+Test 187   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > GET /api/products/with-occasions > should get products with occasions
+Test 188   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > GET /api/products/with-occasions > should handle pagination parameters
+Test 189   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > GET /api/products/occasion/:occasionId > should get products by occasion
+Test 190   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > GET /api/products/occasion/:occasionId > should return 404 for non-existent occasion
+Test 191   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > GET /api/products/occasion/:occasionId > should handle limit parameter
+Test 192   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > POST /api/products > should create a new product (admin only)
+Test 193   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > POST /api/products > should return 401 for unauthorized access
+Test 194   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > POST /api/products > should return 400 for validation errors
+Test 195   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > PUT /api/products/:id > should update an existing product (admin only)
+Test 196   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > PUT /api/products/:id > should return 401 for unauthorized access
+Test 197   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > PUT /api/products/:id > should return 404 for non-existent product
+Test 198   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > PUT /api/products/:id > should return 400 for validation errors
+Test 199   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > DELETE /api/products/:id > should soft-delete a product (admin only)
+Test 200   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > DELETE /api/products/:id > should return 401 for unauthorized access
+Test 201   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > DELETE /api/products/:id > should return 404 for non-existent product
+Test 202   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > PATCH /api/products/:id/reactivate > should reactivate a product (admin only)
+Test 203   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > PATCH /api/products/:id/reactivate > should return 401 for unauthorized access
+Test 204   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > PATCH /api/products/:id/reactivate > should return 404 for non-existent product
+Test 205   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > Response Structure Consistency > should return consistent response structure for all endpoints
+Test 206   	 FAIL  api/__tests__/integration/productController.int.test.js > Product Controller API > HTTP Status Codes > should return correct HTTP status codes for all operations
+Test 207   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > GET /api/product-images > should get all product images with filters
+Test 208   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > GET /api/product-images > should handle product_id filter correctly
+Test 209   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > GET /api/product-images > should handle pagination parameters
+Test 210   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > GET /api/product-images/:id > should get product image by ID
+Test 211   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > GET /api/product-images/:id > should return 404 for non-existent product image
+Test 212   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > GET /api/product-images/:id > should return 400 for invalid ID
+Test 213   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > GET /api/product-images/product/:productId > should get product images by product ID
+Test 214   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > GET /api/product-images/product/:productId > should return 404 for non-existent product
+Test 215   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > POST /api/product-images > should create a new product image (admin only)
+Test 216   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > POST /api/product-images > should return 401 for unauthorized access
+Test 217   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > POST /api/product-images > should return 400 for validation errors
+Test 218   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > POST /api/product-images > should return 404 for non-existent product
+Test 219   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > PUT /api/product-images/:id > should update an existing product image (admin only)
+Test 220   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > PUT /api/product-images/:id > should return 401 for unauthorized access
+Test 221   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > PUT /api/product-images/:id > should return 404 for non-existent product image
+Test 222   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > PUT /api/product-images/:id > should return 400 for validation errors
+Test 223   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > DELETE /api/product-images/:id > should soft-delete a product image (admin only)
+Test 224   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > DELETE /api/product-images/:id > should return 401 for unauthorized access
+Test 225   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > DELETE /api/product-images/:id > should return 404 for non-existent product image
+Test 226   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > PATCH /api/product-images/:id/reactivate > should reactivate a product image (admin only)
+Test 227   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > PATCH /api/product-images/:id/reactivate > should return 401 for unauthorized access
+Test 228   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > PATCH /api/product-images/:id/reactivate > should return 404 for non-existent product image
+Test 229   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > Response Structure Consistency > should return consistent response structure for all endpoints
+Test 230   	 FAIL  api/__tests__/integration/productImageController.int.test.js > Product Image Controller API > HTTP Status Codes > should return correct HTTP status codes for all operations
+Test 231   	 FAIL  api/controllers/__tests__/userController.test.js > getAllUsers > should get all users with default filters
+Test 232   	 FAIL  api/controllers/__tests__/userController.test.js > getAllUsers > should get all users with search filter
+Test 233   	 FAIL  api/controllers/__tests__/userController.test.js > getAllUsers > should get all users with role filter
+Test 234   	 FAIL  api/controllers/__tests__/userController.test.js > getAllUsers > should include inactive users for admin
+Test 235   	 FAIL  api/controllers/__tests__/userController.test.js > getAllUsers > should handle pagination parameters
+Test 236   	 FAIL  tests/unit/client/dom-ready-DRUD-new.test.js > DOM Ready Utility - DRUD Enhanced > onDOMReady > when readyState is 'complete' > DRUD-003-complete: should execute callback immediately using queueMicrotask
+Test 237   	 FAIL  tests/unit/client/dom-ready-DRUD-new.test.js > DOM Ready Utility - DRUD Enhanced > onDOMReady > when readyState is 'interactive' > DRUD-003-interactive: should execute callback immediately using queueMicrotask
+Test 238   	 FAIL  tests/unit/client/dom-ready-DRUD-new.test.js > DOM Ready Utility - DRUD Enhanced > onDOMReady > DRUD-004: should handle multiple callbacks correctly
+Test 239   	 FAIL  tests/unit/client/dom-ready-DRUD-new.test.js > DOM Ready Utility - DRUD Enhanced > onWindowLoad > DRUD-008: should execute callback immediately when window is already loaded
+Test 240   	 FAIL  tests/unit/client/dom-ready-DRUD-new.test.js > DOM Ready Utility - DRUD Enhanced > initSequence > DRUD-009: should execute callbacks in sequence
+Test 241   	 FAIL  tests/unit/client/dom-ready-DRUD-new.test.js > DOM Ready Utility - DRUD Enhanced > initSequence > DRUD-010: should handle non-function callbacks gracefully
+Test 242   	 FAIL  tests/unit/client/dom-ready-DRUD-new.test.js > DOM Ready Utility - DRUD Enhanced > initSequence > DRUD-011: should reject on callback error
+Test 243   	 FAIL  tests/unit/client/dom-ready-DRUD-new.test.js > DOM Ready Utility - DRUD Enhanced > initSequence > DRUD-012: should work without callbacks
+Test 244   	 FAIL  tests/unit/client/dom-ready-DRUD-new.test.js > DOM Ready Utility - DRUD Enhanced > waitForElement > DRUD-015: should wait for element using MutationObserver
+Test 245   	 FAIL  tests/unit/client/dom-ready-DRUD-new.test.js > DOM Ready Utility - DRUD Enhanced > waitForElement > DRUD-017: should use default timeout of 5000ms
+Test 246   	 FAIL  tests/unit/client/dom-ready-DRUD-new.test.js > DOM Ready Utility - DRUD Enhanced > safeQuerySelector > DRUD-018: should query selector after DOM is ready
+Test 247   	 FAIL  tests/unit/client/dom-ready-DRUD-new.test.js > DOM Ready Utility - DRUD Enhanced > safeQuerySelector > DRUD-019: should return null when element not found
+Test 248   	 FAIL  tests/unit/client/dom-ready-DRUD-new.test.js > DOM Ready Utility - DRUD Enhanced > safeQuerySelectorAll > DRUD-020: should query all selectors after DOM is ready
+Test 249   	 FAIL  tests/unit/client/dom-ready-DRUD-new.test.js > DOM Ready Utility - DRUD Enhanced > safeQuerySelectorAll > DRUD-021: should return empty NodeList when no elements found

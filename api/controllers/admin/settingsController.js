@@ -1,14 +1,17 @@
 /**
  * Admin Settings Controller
  * Handles HTTP logic for admin settings operations
+ *
+ * Uses centralized structured logging
  */
 
 import sharp from 'sharp'
 import fs from 'fs/promises'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { log as logger } from '../../utils/logger.js'
 import * as settingsService from '../../services/settingsService.js'
-import { asyncHandler } from '../../middleware/errorHandler.js'
+import { asyncHandler } from '../../middleware/error/errorHandler.js'
 import { BadRequestError, DatabaseError } from '../../errors/AppError.js'
 
 // Get __dirname equivalent in ES modules
@@ -87,28 +90,41 @@ export const uploadSettingImage = asyncHandler(async (req, res) => {
     // Step 1: Delete existing .bak file (if exists)
     try {
       await fs.unlink(backupPath)
-      console.log(`✓ Deleted existing backup: ${backupPath}`)
+      logger.info('Deleted existing backup', { backupPath })
     } catch (error) {
       // Ignore if .bak doesn't exist
       if (error.code !== 'ENOENT') {
-        console.warn('Warning deleting .bak:', error.message)
+        logger.warn('Warning deleting .bak', {
+          backupPath,
+          error: error.message
+        })
       }
     }
 
     // Step 2: Rename existing image to .bak (if exists)
     try {
       await fs.rename(targetPath, backupPath)
-      console.log(`✓ Renamed existing image to: ${backupPath}`)
+      logger.info('Renamed existing image to backup', {
+        targetPath,
+        backupPath
+      })
     } catch (error) {
       // Ignore if original doesn't exist (first upload)
       if (error.code !== 'ENOENT') {
-        console.warn('Warning renaming existing image:', error.message)
+        logger.warn('Warning renaming existing image', {
+          targetPath,
+          backupPath,
+          error: error.message
+        })
       }
     }
 
     // Step 3: Write new processed image
     await fs.writeFile(targetPath, processedBuffer)
-    console.log(`✓ Saved new image: ${targetPath}`)
+    logger.info('Saved new image', {
+      targetPath,
+      sizeKB: (processedBuffer.length / 1024).toFixed(2)
+    })
 
     // Save local path to settings (for reference)
     const localUrl = `/images/${targetFilename}`
@@ -120,7 +136,10 @@ export const uploadSettingImage = asyncHandler(async (req, res) => {
       message: `Imagen procesada y guardada exitosamente en local (${(processedBuffer.length / 1024).toFixed(2)} KB)`
     })
   } catch (error) {
-    console.error('Error saving image to local filesystem:', error)
+    logger.error('Error saving image to local filesystem', error, {
+      targetPath,
+      operation: 'saveImage'
+    })
     throw new DatabaseError('INSERT', 'settings', error, { operation: 'saveImage' })
   }
 })

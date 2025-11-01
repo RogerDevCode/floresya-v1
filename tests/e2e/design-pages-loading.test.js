@@ -302,6 +302,12 @@ test.describe('Design Pages Responsive Behavior', () => {
         if (gridStyles.display === 'grid') {
           console.log(`   Grid template: ${gridStyles.gridTemplateColumns}`)
         }
+
+        // Verify grid fits within viewport
+        const gridBox = await galleryGrid.boundingBox()
+        if (gridBox) {
+          expect(gridBox.width).toBeLessThanOrEqual(viewport.width)
+        }
       }
 
       // Check design cards
@@ -317,14 +323,31 @@ test.describe('Design Pages Responsive Behavior', () => {
         expect(cardBounds.width).toBeGreaterThan(0)
         expect(cardBounds.height).toBeGreaterThan(0)
 
-        // On mobile, cards should stack
+        // Verify card fits in viewport
+        expect(cardBounds.width).toBeLessThanOrEqual(viewport.width)
+
+        // On mobile, cards should stack or use minimal columns
         if (viewport.width <= 768) {
           console.log('   Checking mobile card layout...')
-          await galleryGrid.evaluate(el => {
-            const style = getComputedStyle(el)
-            return style.gridTemplateColumns.includes('1fr') || style.display === 'block'
-          })
-          // Note: This might be flexible depending on design
+
+          // Check for mobile-friendly layout
+          const layoutCheck = await page.evaluate(_width => {
+            const grid = document.querySelector('.design-grid, .gallery-grid')
+            if (!grid) {
+              return false
+            }
+
+            const style = getComputedStyle(grid)
+            const template = style.gridTemplateColumns
+
+            // Mobile should have 1-2 columns max
+            const columns = template.split(' ').length
+            return columns <= 2
+          }, viewport.width)
+
+          if (layoutCheck) {
+            console.log('   ✅ Mobile layout uses appropriate column count')
+          }
         }
       }
 
@@ -334,14 +357,53 @@ test.describe('Design Pages Responsive Behavior', () => {
 
       // On mobile, check mobile menu
       if (viewport.width <= 768) {
-        const mobileMenuToggle = await page.locator('.mobile-menu-toggle, #mobile-menu-btn').first()
+        const mobileMenuToggle = await page
+          .locator('.mobile-menu-toggle, #mobile-menu-btn, .hamburger-menu')
+          .first()
         if (await mobileMenuToggle.isVisible()) {
           console.log('   ✅ Mobile menu toggle found')
+
+          // Test mobile menu functionality
+          await mobileMenuToggle.click()
+          await page.waitForTimeout(300)
+
+          const mobileMenu = page.locator('.mobile-menu, .mobile-nav')
+          if (await mobileMenu.isVisible()) {
+            console.log('   ✅ Mobile menu opens correctly')
+          }
         }
       }
 
+      // Verify no horizontal overflow
+      const hasOverflow = await page.evaluate(() => {
+        return document.documentElement.scrollWidth > document.documentElement.clientWidth + 20
+      })
+      expect(hasOverflow).toBe(false)
+
       console.log(`✅ Design gallery responsive correctly on ${viewport.name}`)
     })
+  })
+
+  test('should maintain functionality across viewports', async ({ page }) => {
+    // Test that interactions work on mobile
+    await page.setViewportSize({ width: 375, height: 667 })
+    await page.goto('/pages/disenos.html')
+    await page.waitForTimeout(2000)
+
+    // Click on a design card
+    const designCard = page.locator('.design-card, .gallery-item').first()
+    if (await designCard.isVisible()) {
+      await designCard.click()
+      await page.waitForTimeout(500)
+
+      // Check if we navigated to detail page
+      const currentUrl = page.url()
+      const isDetailPage = currentUrl.includes('diseno-') || currentUrl.includes('design-')
+
+      if (isDetailPage) {
+        console.log('✅ Navigation to detail page works on mobile')
+      }
+    }
   })
 })
 

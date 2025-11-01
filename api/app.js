@@ -1,46 +1,45 @@
 /**
  * Main Express Application
  * Configures middleware, routes, and error handling
+ *
+ * Uses centralized configuration from configLoader
  */
 
 import express from 'express'
 import swaggerUi from 'swagger-ui-express'
+import config from './config/configLoader.js'
 import { swaggerSpec } from './config/swagger.js'
 import {
   configureCors,
   configureHelmet,
   configureSanitize,
   xssProtection,
-  rateLimiter
-} from './middleware/security.js'
+  rateLimiterSimple
+} from './middleware/security/index.js'
 import { requestLoggingMiddleware } from './utils/logger.js'
-import { errorHandler } from './middleware/errorHandler.js'
+import { errorHandler } from './middleware/error/index.js'
 import {
   withDatabaseCircuitBreaker,
-  circuitBreakerHealthCheck
-} from './middleware/circuitBreaker.js'
-import {
+  circuitBreakerHealthCheck,
   metricsMiddleware,
   getMetricsReport,
   getRealtimeMetrics
-} from './monitoring/metricsCollector.js'
+} from './middleware/performance/index.js'
 import {
   comprehensiveHealthCheck,
   getRecoveryStatus,
   forceRecovery,
   updateRecoveryConfig
 } from './recovery/autoRecovery.js'
-import { standardResponse } from './middleware/responseStandard.js'
-import { initializeOpenApiValidator } from './middleware/openapiValidator.js'
+import { standardResponse, initializeOpenApiValidator } from './middleware/api/index.js'
 import { createDivergenceDetectionMiddleware } from './contract/divergenceDetector.js'
 import { createDocumentationComplianceMiddleware } from './contract/documentationSync.js'
 import {
   configureSecureSession,
   sessionSecurityHeaders,
   validateSession
-} from './middleware/sessionSecurity.js'
+} from './middleware/auth/index.js'
 import { NotFoundError } from './errors/AppError.js'
-import { cacheMiddleware } from './middleware/cache.js'
 
 // Import routes
 import productRoutes from './routes/productRoutes.js'
@@ -122,9 +121,9 @@ app.use(sessionSecurityHeaders)
 // More generous limits to support multiple simultaneous requests (carousel, occasions, products, etc.)
 app.use(
   '/api',
-  rateLimiter({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: process.env.NODE_ENV === 'production' ? 500 : 1000 // 500 prod, 1000 dev requests per window
+  rateLimiterSimple({
+    windowMs: config.security.rateLimit.windowMs,
+    max: config.security.rateLimit.maxRequests
   })
 )
 
@@ -158,7 +157,7 @@ try {
 // Serve static files from public directory with custom cache control
 // In development: no cache for JS/CSS to facilitate hot reloading
 // In production: aggressive caching for immutable assets
-const isDevelopment = process.env.NODE_ENV !== 'production'
+const isDevelopment = config.IS_DEVELOPMENT
 
 app.use(
   express.static('public', {

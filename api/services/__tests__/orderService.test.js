@@ -8,63 +8,6 @@ import * as orderService from '../orderService.js'
 import { NotFoundError, BadRequestError } from '../../errors/AppError.js'
 
 // Mock Supabase client
-vi.mock('../supabaseClient.js', () => ({
-  supabase: {
-    from: vi.fn(() => ({
-      select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      single: vi.fn(),
-      order: vi.fn().mockReturnThis(),
-      insert: vi.fn().mockReturnThis(),
-      update: vi.fn().mockReturnThis(),
-      delete: vi.fn().mockReturnThis(),
-      gte: vi.fn().mockReturnThis(),
-      lte: vi.fn().mockReturnThis(),
-      limit: vi.fn().mockReturnThis(),
-      range: vi.fn().mockReturnThis(),
-      or: vi.fn().mockReturnThis()
-    })),
-    rpc: vi.fn()
-  },
-  DB_SCHEMA: {
-    orders: {
-      table: 'orders',
-      pk: 'id',
-      indexes: ['user_id', 'status', 'created_at', 'customer_email'],
-      filters: ['status', 'user_id', 'customer_email'],
-      sorts: ['created_at'],
-      search: ['customer_name_normalized', 'customer_email_normalized'],
-      enums: {
-        status: ['pending', 'verified', 'preparing', 'shipped', 'delivered', 'cancelled']
-      },
-      columns: [
-        'id',
-        'user_id',
-        'customer_email',
-        'customer_name',
-        'customer_phone',
-        'delivery_address',
-        'delivery_date',
-        'delivery_time_slot',
-        'delivery_notes',
-        'status',
-        'total_amount_usd',
-        'total_amount_ves',
-        'currency_rate',
-        'notes',
-        'admin_notes',
-        'created_at',
-        'updated_at'
-      ]
-    },
-    products: {
-      table: 'products',
-      pk: 'id',
-      indexes: ['sku', 'active', 'featured', 'carousel_order'],
-      columns: ['id', 'name', 'stock', 'active']
-    }
-  }
-}))
 
 describe('orderService', () => {
   let mockSupabaseQuery
@@ -76,6 +19,9 @@ describe('orderService', () => {
     mockSupabaseQuery = {
       select: vi.fn().mockReturnThis(),
       eq: vi.fn().mockReturnThis(),
+      neq: vi.fn().mockReturnThis(),
+      not: vi.fn().mockReturnThis(),
+      in: vi.fn().mockReturnThis(),
       single: vi.fn(),
       order: vi.fn().mockReturnThis(),
       insert: vi.fn().mockReturnThis(),
@@ -85,6 +31,7 @@ describe('orderService', () => {
       gte: vi.fn().mockReturnThis(),
       lte: vi.fn().mockReturnThis(),
       limit: vi.fn().mockReturnThis(),
+      offset: vi.fn().mockReturnThis(),
       range: vi.fn().mockReturnThis()
     }
   })
@@ -109,7 +56,7 @@ describe('orderService', () => {
       })
 
       const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
+      vi.mocked(supabase.from).mockReturnValueOnce(mockSupabaseQuery)
 
       const result = await orderService.getOrderById(123)
 
@@ -130,7 +77,7 @@ describe('orderService', () => {
       })
 
       const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
+      vi.mocked(supabase.from).mockReturnValueOnce(mockSupabaseQuery)
 
       await expect(orderService.getOrderById(999)).rejects.toThrow(NotFoundError)
     })
@@ -149,7 +96,7 @@ describe('orderService', () => {
       })
 
       const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
+      vi.mocked(supabase.from).mockReturnValueOnce(mockSupabaseQuery)
 
       const result = await orderService.getAllOrders()
 
@@ -161,6 +108,7 @@ describe('orderService', () => {
       const mockOrders = [{ id: 1, customer_name: 'Customer 1', status: 'pending' }]
 
       mockSupabaseQuery.eq.mockReturnValueOnce({
+        neq: vi.fn().mockReturnThis(),
         order: vi.fn().mockResolvedValueOnce({
           data: mockOrders,
           error: null
@@ -168,7 +116,7 @@ describe('orderService', () => {
       })
 
       const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
+      vi.mocked(supabase.from).mockReturnValueOnce(mockSupabaseQuery)
 
       const filters = { status: 'pending' }
       await orderService.getAllOrders(filters)
@@ -205,24 +153,22 @@ describe('orderService', () => {
 
       // Mock the product lookup
       const { supabase } = await import('../supabaseClient.js')
-      supabase.from = vi
-        .fn()
-        .mockReturnValueOnce({
-          select: vi.fn().mockReturnValueOnce({
-            eq: vi.fn().mockReturnValueOnce({
-              single: vi.fn().mockResolvedValueOnce({
-                data: { id: 1, name: 'Test Product', stock: 10, active: true },
-                error: null
-              })
+      supabase.from = vi.fn().mockReturnValueOnce({
+        select: vi.fn().mockReturnValueOnce({
+          eq: vi.fn().mockReturnValueOnce({
+            single: vi.fn().mockResolvedValueOnce({
+              data: { id: 1, name: 'Test Product', stock: 10, active: true },
+              error: null
             })
           })
         })
-        .mockReturnValueOnce({
-          rpc: vi.fn().mockResolvedValueOnce({
-            data: createdOrder,
-            error: null
-          })
-        })
+      })
+
+      // Mock the rpc call for order creation
+      supabase.rpc = vi.fn().mockResolvedValueOnce({
+        data: createdOrder,
+        error: null
+      })
 
       const result = await orderService.createOrderWithItems(newOrder, orderItems)
 

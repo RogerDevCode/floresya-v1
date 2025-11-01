@@ -115,3 +115,96 @@ export const USER_ROLES = {
   USER: 'user',
   ADMIN: 'admin'
 }
+
+/**
+ * Permission-based Access Control (RBAC)
+ * Permissions are more granular than roles
+ * Users can have multiple permissions
+ */
+export const PERMISSIONS = {
+  // User management
+  USER_READ: 'user:read',
+  USER_CREATE: 'user:create',
+  USER_UPDATE: 'user:update',
+  USER_DELETE: 'user:delete',
+
+  // Product management
+  PRODUCT_READ: 'product:read',
+  PRODUCT_CREATE: 'product:create',
+  PRODUCT_UPDATE: 'product:update',
+  PRODUCT_DELETE: 'product:delete',
+
+  // Order management
+  ORDER_READ: 'order:read',
+  ORDER_CREATE: 'order:create',
+  ORDER_UPDATE: 'order:update',
+  ORDER_DELETE: 'order:delete',
+
+  // Payment management
+  PAYMENT_READ: 'payment:read',
+  PAYMENT_CREATE: 'payment:create',
+  PAYMENT_UPDATE: 'payment:update',
+  PAYMENT_DELETE: 'payment:delete',
+
+  // Settings management
+  SETTINGS_READ: 'settings:read',
+  SETTINGS_UPDATE: 'settings:update',
+
+  // Occasion management
+  OCCASION_READ: 'occasion:read',
+  OCCASION_CREATE: 'occasion:create',
+  OCCASION_UPDATE: 'occasion:update',
+  OCCASION_DELETE: 'occasion:delete',
+
+  // System administration
+  SYSTEM_ADMIN: 'system:admin',
+  MIGRATION_RUN: 'migration:run'
+}
+
+/**
+ * Role to Permission Mapping
+ * Maps roles to their default permissions
+ */
+export const ROLE_PERMISSIONS = {
+  [USER_ROLES.USER]: [
+    PERMISSIONS.USER_READ,
+    PERMISSIONS.PRODUCT_READ,
+    PERMISSIONS.ORDER_READ,
+    PERMISSIONS.ORDER_CREATE,
+    PERMISSIONS.PAYMENT_READ,
+    PERMISSIONS.PAYMENT_CREATE
+  ],
+  [USER_ROLES.ADMIN]: [
+    // All user permissions
+    PERMISSIONS.USER_READ,
+    PERMISSIONS.USER_CREATE,
+    PERMISSIONS.USER_UPDATE,
+    PERMISSIONS.USER_DELETE,
+
+    PERMISSIONS.PRODUCT_READ,
+    PERMISSIONS.PRODUCT_CREATE,
+    PERMISSIONS.PRODUCT_UPDATE,
+    PERMISSIONS.PRODUCT_DELETE,
+
+    PERMISSIONS.ORDER_READ,
+    PERMISSIONS.ORDER_CREATE,
+    PERMISSIONS.ORDER_UPDATE,
+    PERMISSIONS.ORDER_DELETE,
+
+    PERMISSIONS.PAYMENT_READ,
+    PERMISSIONS.PAYMENT_CREATE,
+    PERMISSIONS.PAYMENT_UPDATE,
+    PERMISSIONS.PAYMENT_DELETE,
+
+    PERMISSIONS.SETTINGS_READ,
+    PERMISSIONS.SETTINGS_UPDATE,
+
+    PERMISSIONS.OCCASION_READ,
+    PERMISSIONS.OCCASION_CREATE,
+    PERMISSIONS.OCCASION_UPDATE,
+    PERMISSIONS.OCCASION_DELETE,
+
+    PERMISSIONS.SYSTEM_ADMIN,
+    PERMISSIONS.MIGRATION_RUN
+  ]
+}

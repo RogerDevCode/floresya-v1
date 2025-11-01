@@ -16,81 +16,20 @@ import {
 } from '../errors/AppError.js'
 import { sanitizeOrderData, sanitizeOrderItemData } from '../utils/sanitize.js'
 import { PAGINATION } from '../config/constants.js'
+import { withErrorMapping } from '../middleware/error/index.js'
+import { validateOrder, validateId } from '../utils/validation.js'
 
 const TABLE = DB_SCHEMA.orders.table
 const VALID_STATUSES = DB_SCHEMA.orders.enums.status
 const SEARCH_COLUMNS = DB_SCHEMA.orders.search
 
 /**
- * Validate order data (ENTERPRISE FAIL-FAST)
- * @param {Object} data - Order data to validate
- * @param {string} [data.customer_email] - Customer email address (required for creation)
- * @param {string} [data.customer_name] - Customer name (required for creation)
- * @param {string} [data.delivery_address] - Delivery address (required for creation)
- * @param {number} [data.total_amount_usd] - Total amount in USD
- * @param {string} [data.status] - Order status (must be valid enum value)
- * @param {boolean} isUpdate - Whether this is for an update operation (default: false)
- * @throws {ValidationError} With detailed field-level validation errors
- * @example
- * // For creation
- * validateOrderData({
- *   customer_email: 'customer@example.com',
- *   customer_name: 'Juan Pérez',
- *   delivery_address: 'Calle 123',
- *   total_amount_usd: 45.99
- * }, false)
- *
- * // For update
- * validateOrderData({
- *   total_amount_usd: 50.99
- * }, true)
+ * Validate order ID (ENTERPRISE FAIL-FAST)
+ * @param {number} id - Order ID to validate
+ * @param {string} operation - Operation name for error context
  */
-function validateOrderData(data, isUpdate = false) {
-  if (!isUpdate) {
-    if (
-      !data.customer_email ||
-      typeof data.customer_email !== 'string' ||
-      !data.customer_email.includes('@')
-    ) {
-      throw new ValidationError('Order validation failed', {
-        customer_email: 'must be valid email'
-      })
-    }
-    if (!data.customer_name || typeof data.customer_name !== 'string') {
-      throw new ValidationError('Order validation failed', {
-        customer_name: 'must be a non-empty string'
-      })
-    }
-    if (!data.delivery_address || typeof data.delivery_address !== 'string') {
-      throw new ValidationError('Order validation failed', {
-        delivery_address: 'must be a non-empty string'
-      })
-    }
-  }
-
-  // For non-update or when total_amount_usd is provided during update
-  if (!isUpdate || data.total_amount_usd !== undefined) {
-    // Convert string amounts to numbers if needed
-    let totalAmountUsd = data.total_amount_usd
-    if (typeof totalAmountUsd === 'string') {
-      totalAmountUsd = parseFloat(totalAmountUsd)
-    }
-
-    if (
-      totalAmountUsd !== undefined &&
-      (!totalAmountUsd || typeof totalAmountUsd !== 'number' || totalAmountUsd <= 0)
-    ) {
-      throw new ValidationError('Order validation failed', {
-        total_amount_usd: 'must be a positive number'
-      })
-    }
-  }
-
-  if (data.status !== undefined && !VALID_STATUSES.includes(data.status)) {
-    throw new ValidationError('Order validation failed', {
-      status: `must be one of ${VALID_STATUSES.join(', ')}`
-    })
-  }
+function _validateOrderId(id, operation = 'operation') {
+  validateId(id, 'Order', operation)
 }
 
 /**
@@ -110,8 +49,8 @@ function validateOrderData(data, isUpdate = false) {
  * @throws {NotFoundError} When no orders are found
  * @throws {DatabaseError} When database query fails
  */
-export async function getAllOrders(filters = {}, includeInactive = false) {
-  try {
+export const getAllOrders = withErrorMapping(
+  async (filters = {}, includeInactive = false) => {
     let query = supabase.from(TABLE).select(`
       *,
       order_items (
@@ -169,18 +108,18 @@ export async function getAllOrders(filters = {}, includeInactive = false) {
     const { data, error } = await query
 
     if (error) {
-      throw new DatabaseError('SELECT', TABLE, error)
+      // Map Supabase error automatically
+      throw error
     }
     if (!data) {
       throw new NotFoundError('Orders')
     }
 
     return data
-  } catch (error) {
-    console.error('getAllOrders failed:', error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get order by ID with items and product details
@@ -293,7 +232,7 @@ export async function getOrdersByUser(userId, filters = {}) {
  */
 export async function createOrderWithItems(orderData, orderItems) {
   try {
-    validateOrderData(orderData, false)
+    validateOrder(orderData, VALID_STATUSES, false)
 
     if (!Array.isArray(orderItems) || orderItems.length === 0) {
       throw new ValidationError('Order validation failed', {
@@ -463,10 +402,13 @@ export async function createOrderWithItems(orderData, orderItems) {
     })
 
     // Use atomic stored function (SSOT: DB_FUNCTIONS.createOrderWithItems)
-    const { data, error } = await supabase.rpc('create_order_with_items', {
+    const result = await supabase.rpc('create_order_with_items', {
       order_data: orderPayload,
       order_items: itemsPayload
     })
+
+    const data = result?.data ?? result
+    const error = result?.error
 
     if (error) {
       throw new DatabaseError('RPC', 'create_order_with_items', error, {
@@ -578,7 +520,7 @@ export async function updateOrder(id, updates) {
       throw new BadRequestError('No updates provided', { orderId: id })
     }
 
-    validateOrderData(updates, true)
+    validateOrder(updates, VALID_STATUSES, true)
 
     const allowedFields = [
       'delivery_address',

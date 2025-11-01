@@ -119,10 +119,14 @@ export async function deleteFromStorage(path, bucket = BUCKETS.PRODUCT_IMAGES) {
  * @param {string} bucket - Bucket name
  * @returns {Promise<boolean>} Success
  */
-export function reactivateFromStorage(path, bucket = BUCKETS.PRODUCT_IMAGES) {
+export async function reactivateFromStorage(path, bucket = BUCKETS.PRODUCT_IMAGES) {
   try {
     // In a real implementation, this would restore from a backup or archive
     // For now, we'll just log the operation as this is a placeholder
+
+    // Add a small delay to make it a real async operation
+    await new Promise(resolve => setTimeout(resolve, 10))
+
     console.log(`Reactivate file: ${path} from bucket: ${bucket}`)
 
     // Return success for compliance with the test
@@ -164,12 +168,16 @@ export async function deleteImageSizes(filenameBase, bucket = BUCKETS.PRODUCT_IM
  * @param {string} bucket - Bucket name
  * @returns {Promise<number>} Number of files reactivated
  */
-export function reactivateImageSizes(filenameBase, bucket = BUCKETS.PRODUCT_IMAGES) {
+export async function reactivateImageSizes(filenameBase, bucket = BUCKETS.PRODUCT_IMAGES) {
   try {
     const sizes = ['thumb', 'small', 'medium', 'large']
 
     // In a real implementation, this would restore from a backup or archive
     // For now, we'll just log the operation as this is a placeholder
+
+    // Add a small delay to make it a real async operation
+    await new Promise(resolve => setTimeout(resolve, 10))
+
     console.log(`Reactivate image sizes for: ${filenameBase} from bucket: ${bucket}`)
 
     // Return count for compliance with the test

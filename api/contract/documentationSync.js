@@ -2,11 +2,14 @@
  * Documentation Synchronization System
  * Ensures API documentation is always in sync with implementation
  * Automatically detects and reports discrepancies between code and docs
+ *
+ * Uses centralized configuration from configLoader
  */
 
 import fs from 'fs/promises'
 import path from 'path'
 import yaml from 'js-yaml'
+import config from '../config/configLoader.js'
 import { ConfigurationError } from '../errors/AppError.js'
 
 /**
@@ -324,7 +327,7 @@ export async function runDocumentationSynchronization() {
 export function createDocumentationComplianceMiddleware() {
   return async (req, res, next) => {
     // Only run in development to avoid performance impact in production
-    if (process.env.NODE_ENV !== 'development') {
+    if (!config.IS_DEVELOPMENT) {
       return next()
     }
 

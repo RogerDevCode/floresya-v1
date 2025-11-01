@@ -5,7 +5,7 @@
  */
 
 import * as productImageService from '../services/productImageService.js'
-import { asyncHandler } from '../middleware/errorHandler.js'
+import { asyncHandler } from '../middleware/error/index.js'
 import { processImage, generateFilename } from '../utils/imageProcessor.js'
 import { uploadImageSizes } from '../services/supabaseStorageService.js'
 import { BadRequestError } from '../errors/AppError.js'
@@ -40,7 +40,16 @@ const getStatusCode = operation => {
     upload: 201,
     primary: 200
   }
-  return statusCodes[operation] || 200
+
+  // Fail-fast: Validate operation
+  if (!statusCodes[operation]) {
+    throw new BadRequestError(`Invalid operation: ${operation}`, {
+      operation,
+      validOperations: Object.keys(statusCodes)
+    })
+  }
+
+  return statusCodes[operation]
 }
 
 /**
@@ -58,7 +67,16 @@ const getSuccessMessage = (operation, entity = 'Product image') => {
     primary: 'Primary image set successfully',
     retrieve: `${entity} retrieved successfully`
   }
-  return messages[operation] || `${entity} operation completed successfully`
+
+  // Fail-fast: Validate operation
+  if (!messages[operation]) {
+    throw new BadRequestError(`Invalid operation: ${operation}`, {
+      operation,
+      validOperations: Object.keys(messages)
+    })
+  }
+
+  return messages[operation]
 }
 
 /**
@@ -207,11 +225,14 @@ export const createProductImages = asyncHandler(async (req, res) => {
       throw new BadRequestError('images must be a non-empty array')
     }
 
+    // Fail-fast: Explicit validation for is_primary
+    const validatedIsPrimary = typeof is_primary === 'boolean' ? is_primary : false
+
     const createdImages = await productImageService.createProductImagesAtomic(
       productId,
       image_index,
       images,
-      is_primary || false
+      validatedIsPrimary
     )
 
     const response = createResponse(createdImages, getSuccessMessage('create'))

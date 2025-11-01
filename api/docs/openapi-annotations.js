@@ -24,11 +24,266 @@
  *         message: { type: string, example: "Operation completed successfully" }
  *     ErrorResponse:
  *       type: object
+ *       description: RFC 7807 compliant error response with FloresYa extensions
+ *       required:
+ *         - success
+ *         - error
+ *         - code
+ *         - message
  *       properties:
- *         success: { type: boolean, example: false }
- *         error: { type: string, example: "Error message" }
- *         message: { type: string, example: "Operation failed" }
- *         details: { type: array, items: { type: string }, description: "Validation errors (if applicable)" }
+ *         success:
+ *           type: boolean
+ *           example: false
+ *           description: Always false for error responses
+ *         error:
+ *           type: string
+ *           example: "ValidationError"
+ *           description: Human-readable error class name
+ *         code:
+ *           type: integer
+ *           example: 1001
+ *           description: Numeric error code from ERROR_CODES
+ *         category:
+ *           type: string
+ *           enum: [validation, authentication, not_found, business, server]
+ *           example: validation
+ *           description: Error category for grouping
+ *         message:
+ *           type: string
+ *           example: "Validation failed. Please check your input."
+ *           description: User-friendly error message (FloresYa extension)
+ *         type:
+ *           type: string
+ *           format: uri
+ *           example: "https://api.floresya.com/errors/validation/validationfailed"
+ *           description: RFC 7807 - URI reference identifying the problem type
+ *         title:
+ *           type: string
+ *           example: "Validation Failed"
+ *           description: RFC 7807 - Short, human-readable summary
+ *         status:
+ *           type: integer
+ *           example: 400
+ *           description: RFC 7807 - HTTP status code
+ *         detail:
+ *           type: string
+ *           example: "Request validation failed"
+ *           description: RFC 7807 - Detailed explanation of the error (same as message)
+ *         instance:
+ *           type: string
+ *           example: "/errors/req_123456789"
+ *           description: RFC 7807 - URI reference identifying this specific occurrence
+ *         timestamp:
+ *           type: string
+ *           format: date-time
+ *           example: "2025-10-31T15:10:00.000Z"
+ *           description: ISO 8601 timestamp when error occurred
+ *         path:
+ *           type: string
+ *           example: "/api/products"
+ *           description: Request path that caused the error
+ *         requestId:
+ *           type: string
+ *           example: "req_123456789"
+ *           description: Unique request identifier for tracking
+ *         details:
+ *           type: object
+ *           description: Additional context about the error (for operational errors)
+ *           example:
+ *             field: "email"
+ *             value: "invalid-email"
+ *         errors:
+ *           type: object
+ *           description: Field-specific validation errors (for validation errors only)
+ *           example:
+ *             email: ["Must be a valid email address"]
+ *             password: ["Must be at least 8 characters"]
+ *     ErrorCode:
+ *       type: object
+ *       description: Individual error code with metadata
+ *       properties:
+ *         code:
+ *           type: integer
+ *           example: 1001
+ *           description: Numeric error code
+ *         name:
+ *           type: string
+ *           example: "VALIDATION_FAILED"
+ *           description: Error code name constant
+ *         category:
+ *           type: string
+ *           enum: [validation, authentication, not_found, business, server]
+ *           example: validation
+ *           description: Error category
+ *         httpStatus:
+ *           type: integer
+ *           example: 400
+ *           description: HTTP status code mapping
+ *         description:
+ *           type: string
+ *           example: "Request validation failed"
+ *           description: Error code description
+ *     ErrorCodeList:
+ *       type: array
+ *       description: Complete list of error codes
+ *       items:
+ *         $ref: '#/components/schemas/ErrorCode'
+ *       example:
+ *         - code: 1001
+ *           name: "VALIDATION_FAILED"
+ *           category: "validation"
+ *           httpStatus: 400
+ *           description: "Request validation failed"
+ *         - code: 2001
+ *           name: "UNAUTHORIZED"
+ *           category: "authentication"
+ *           httpStatus: 401
+ *           description: "Authentication required"
+ *         - code: 3001
+ *           name: "RESOURCE_NOT_FOUND"
+ *           category: "not_found"
+ *           httpStatus: 404
+ *           description: "Requested resource not found"
+ *     ValidationErrorResponse:
+ *       allOf:
+ *         - $ref: '#/components/schemas/ErrorResponse'
+ *         - type: object
+ *           properties:
+ *             code:
+ *               example: 1001
+ *             category:
+ *               example: validation
+ *             status:
+ *               example: 400
+ *             errors:
+ *               type: object
+ *               description: Field-specific validation errors
+ *               example:
+ *                 email: ["Must be a valid email address"]
+ *                 password: ["Must be at least 8 characters"]
+ *                 name: ["Must be at least 2 characters"]
+ *           example:
+ *             success: false
+ *             error: "ValidationError"
+ *             code: 1001
+ *             category: "validation"
+ *             type: "https://api.floresya.com/errors/validation/validationfailed"
+ *             title: "Validation Failed"
+ *             status: 400
+ *             detail: "Request validation failed"
+ *             message: "Validation failed. Please check your input."
+ *             timestamp: "2025-10-31T15:10:00.000Z"
+ *             path: "/api/products"
+ *             errors:
+ *               email: ["Must be a valid email address"]
+ *               password: ["Must be at least 8 characters"]
+ *     NotFoundErrorResponse:
+ *       allOf:
+ *         - $ref: '#/components/schemas/ErrorResponse'
+ *         - type: object
+ *           properties:
+ *             code:
+ *               example: 3001
+ *             category:
+ *               example: not_found
+ *             status:
+ *               example: 404
+ *             details:
+ *               type: object
+ *               properties:
+ *                 resource:
+ *                   type: string
+ *                   example: "Product"
+ *                 id:
+ *                   type: integer
+ *                   example: 123
+ *           example:
+ *             success: false
+ *             error: "NotFoundError"
+ *             code: 3001
+ *             category: "not_found"
+ *             type: "https://api.floresya.com/errors/not_found/notfound"
+ *             title: "Resource Not Found"
+ *             status: 404
+ *             detail: "Product with ID 123 not found"
+ *             message: "The requested product was not found."
+ *             timestamp: "2025-10-31T15:10:00.000Z"
+ *             path: "/api/products/123"
+ *             details:
+ *               resource: "Product"
+ *               id: 123
+ *     AuthErrorResponse:
+ *       allOf:
+ *         - $ref: '#/components/schemas/ErrorResponse'
+ *         - type: object
+ *           properties:
+ *             code:
+ *               example: 2001
+ *             category:
+ *               example: authentication
+ *             status:
+ *               example: 401
+ *           example:
+ *             success: false
+ *             error: "UnauthorizedError"
+ *             code: 2001
+ *             category: "authentication"
+ *             type: "https://api.floresya.com/errors/authentication/unauthorized"
+ *             title: "Unauthorized"
+ *             status: 401
+ *             detail: "Invalid or expired token"
+ *             message: "Please log in to continue."
+ *             timestamp: "2025-10-31T15:10:00.000Z"
+ *             path: "/api/admin/products"
+ *     ConflictErrorResponse:
+ *       allOf:
+ *         - $ref: '#/components/schemas/ErrorResponse'
+ *         - type: object
+ *           properties:
+ *             code:
+ *               example: 4006
+ *             category:
+ *               example: business
+ *             status:
+ *               example: 409
+ *           example:
+ *             success: false
+ *             error: "ConflictError"
+ *             code: 4006
+ *             category: "business"
+ *             type: "https://api.floresya.com/errors/business/conflict"
+ *             title: "Conflict"
+ *             status: 409
+ *             detail: "Product with SKU already exists"
+ *             message: "This operation conflicts with existing data."
+ *             timestamp: "2025-10-31T15:10:00.000Z"
+ *             path: "/api/products"
+ *             details:
+ *               field: "sku"
+ *               value: "ROSE-RED-001"
+ *     ServerErrorResponse:
+ *       allOf:
+ *         - $ref: '#/components/schemas/ErrorResponse'
+ *         - type: object
+ *           properties:
+ *             code:
+ *               example: 5001
+ *             category:
+ *               example: server
+ *             status:
+ *               example: 500
+ *           example:
+ *             success: false
+ *             error: "InternalServerError"
+ *             code: 5001
+ *             category: "server"
+ *             type: "https://api.floresya.com/errors/server/internalerror"
+ *             title: "Internal Server Error"
+ *             status: 500
+ *             detail: "Database connection failed"
+ *             message: "An unexpected error occurred. Please try again later."
+ *             timestamp: "2025-10-31T15:10:00.000Z"
+ *             path: "/api/products"
  *     user:
  *       type: object
  *       properties:
@@ -207,6 +462,44 @@
  *       content:
  *         application/json:
  *           schema: { $ref: '#/components/schemas/ErrorResponse' }
+ *           examples:
+ *             database_error:
+ *               summary: Database connection error
+ *               value:
+ *                 success: false
+ *                 error: "DatabaseError"
+ *                 code: 5002
+ *                 category: "server"
+ *                 type: "https://api.floresya.com/errors/server/databaseerror"
+ *                 title: "Database Error"
+ *                 status: 500
+ *                 detail: "Connection to database failed"
+ *                 message: "A database error occurred. Please try again."
+ *     ValidationErrorDetailed:
+ *       description: Validation failed with field-specific errors
+ *       content:
+ *         application/json:
+ *           schema: { $ref: '#/components/schemas/ValidationErrorResponse' }
+ *     NotFoundErrorDetailed:
+ *       description: Resource not found
+ *       content:
+ *         application/json:
+ *           schema: { $ref: '#/components/schemas/NotFoundErrorResponse' }
+ *     AuthErrorDetailed:
+ *       description: Authentication required
+ *       content:
+ *         application/json:
+ *           schema: { $ref: '#/components/schemas/AuthErrorResponse' }
+ *     ConflictErrorDetailed:
+ *       description: Conflict with existing data
+ *       content:
+ *         application/json:
+ *           schema: { $ref: '#/components/schemas/ConflictErrorResponse' }
+ *     ServerErrorDetailed:
+ *       description: Server error
+ *       content:
+ *         application/json:
+ *           schema: { $ref: '#/components/schemas/ServerErrorResponse' }
  *   parameters:
  *     IdParam:
  *       name: id
@@ -224,6 +517,59 @@
  *       in: query
  *       schema: { type: integer, minimum: 0, default: 0 }
  *       description: Number of items to skip
+ */
+
+// ==================== SYSTEM ENDPOINTS ====================
+
+/**
+ * @swagger
+ * /api/errors:
+ *   get:
+ *     tags: [System]
+ *     summary: Get all error codes
+ *     description: Returns complete list of ERROR_CODES with descriptions and categories
+ *     responses:
+ *       200:
+ *         description: List of all error codes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: integer
+ *                       example: 34
+ *                     categories:
+ *                       type: object
+ *                       properties:
+ *                         validation:
+ *                           type: integer
+ *                           example: 10
+ *                         authentication:
+ *                           type: integer
+ *                           example: 7
+ *                         not_found:
+ *                           type: integer
+ *                           example: 5
+ *                         business:
+ *                           type: integer
+ *                           example: 6
+ *                         server:
+ *                           type: integer
+ *                           example: 6
+ *                     codes:
+ *                       $ref: '#/components/schemas/ErrorCodeList'
+ *                 message:
+ *                   type: string
+ *                   example: "Error codes retrieved successfully"
+ *       500:
+ *         $ref: '#/components/responses/ServerErrorDetailed'
  */
 
 // ==================== PRODUCTS ====================
@@ -771,6 +1117,117 @@
  *         $ref: '#/components/responses/ForbiddenError'
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
+ */
+
+/**
+ * @swagger
+ * /api/products/{id}/occasions:
+ *   get:
+ *     tags: [Products]
+ *     summary: Get occasions for a product
+ *     description: Admin only - Get all occasions associated with a product
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     responses:
+ *       200:
+ *         description: Product occasions retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { type: array, items: { $ref: '#/components/schemas/occasion' } }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+
+/**
+ * @swagger
+ * /api/products/{id}/occasions:
+ *   put:
+ *     tags: [Products]
+ *     summary: Replace product occasions
+ *     description: Admin only - Atomically replace all occasions for a product (transactional)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [occasion_ids]
+ *             properties:
+ *               occasion_ids:
+ *                 type: array
+ *                 items: { type: integer, minimum: 1 }
+ *                 description: Array of occasion IDs to associate with the product
+ *     responses:
+ *       200:
+ *         description: Product occasions updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/product' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ */
+
+/**
+ * @swagger
+ * /api/products/{id}/occasions/{occasionId}:
+ *   post:
+ *     tags: [Products]
+ *     summary: Link occasion to product
+ *     description: Admin only - Link a single occasion to a product
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - $ref: '#/components/parameters/IdParam'
+ *       - name: occasionId
+ *         in: path
+ *         required: true
+ *         schema: { type: integer, minimum: 1 }
+ *         description: Occasion ID to link
+ *     responses:
+ *       200:
+ *         description: Occasion linked to product successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { $ref: '#/components/schemas/product' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
  */
 
 /**
@@ -1508,53 +1965,6 @@
  *         $ref: '#/components/responses/ValidationError'
  */
 
-/**
- * @swagger
- * /api/payments:
- *   get:
- *     tags: [Payments]
- *     summary: Get all payments with filters
- *     description: Admin only - Returns paginated list of payments with optional filters (uses indexed columns)
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - $ref: '#/components/parameters/LimitParam'
- *       - $ref: '#/components/parameters/OffsetParam'
- *       - name: status
- *         in: query
- *         schema:
- *           type: string
- *           enum: [pending, completed, failed, refunded, partially_refunded]
- *         description: Filter by payment status (uses idx_payments_status)
- *       - name: order_id
- *         in: query
- *         schema: { type: integer }
- *         description: Filter by order ID (uses idx_payments_order_id)
- *       - name: payment_method_id
- *         in: query
- *         schema: { type: integer }
- *         description: Filter by payment method (uses idx_payments_payment_method_id)
- *       - name: user_id
- *         in: query
- *         schema: { type: integer }
- *         description: Filter by user ID (uses idx_payments_user_id)
- *     responses:
- *       200:
- *         description: Payments retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/SuccessResponse'
- *                 - type: object
- *                   properties:
- *                     data: { type: array, items: { $ref: '#/components/schemas/payment' } }
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       403:
- *         $ref: '#/components/responses/ForbiddenError'
- */
-
 // ==================== OCCASIONS ====================
 
 /**
@@ -2215,6 +2625,122 @@
  *         $ref: '#/components/responses/ValidationError'
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
+ */
+
+// ==================== MIGRATIONS ====================
+
+/**
+ * @swagger
+ * /api/migrations/add-is-active-to-settings:
+ *   post:
+ *     tags: [Migrations]
+ *     summary: Add is_active column to settings table
+ *     description: Admin only - Migration endpoint to add is_active column to settings table
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Migration completed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data: { type: object, description: "Migration result" }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+
+// ==================== ADMIN SETTINGS ====================
+
+/**
+ * @swagger
+ * /api/admin/settings/image:
+ *   post:
+ *     tags: [Admin Settings]
+ *     summary: Upload setting image
+ *     description: Admin only - Upload and save image for a specific setting
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required: [image]
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file to upload
+ *     responses:
+ *       200:
+ *         description: Image uploaded successfully
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/SuccessResponse' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ */
+
+/**
+ * @swagger
+ * /api/admin/settings/bcv-price:
+ *   post:
+ *     tags: [Admin Settings]
+ *     summary: Save BCV USD rate
+ *     description: Admin only - Save BCV USD exchange rate
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [rate]
+ *             properties:
+ *               rate: { type: number, minimum: 0 }
+ *     responses:
+ *       200:
+ *         description: BCV rate saved successfully
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/SuccessResponse' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ */
+
+/**
+ * @swagger
+ * /api/admin/settings/business-rules:
+ *   get:
+ *     tags: [Admin Settings]
+ *     summary: Get business rules status
+ *     description: Admin only - Get business rules engine status and configuration
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Business rules status retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/SuccessResponse' }
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
  */
 
 /**

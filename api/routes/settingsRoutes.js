@@ -5,8 +5,8 @@
 
 import express from 'express'
 import * as settingsController from '../controllers/settingsController.js'
-import { authenticate, authorize } from '../middleware/auth.js'
-import { validate } from '../middleware/validate.js'
+import { authenticate, authorize } from '../middleware/auth/index.js'
+import { validate } from '../middleware/validation/index.js'
 
 const router = express.Router()
 

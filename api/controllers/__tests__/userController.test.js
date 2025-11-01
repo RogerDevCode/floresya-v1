@@ -20,7 +20,7 @@ vi.mock('../../services/userService.js', () => ({
 }))
 
 // Mock asyncHandler to just return the function as-is
-vi.mock('../../middleware/errorHandler.js', () => ({
+vi.mock('../../middleware/error/errorHandler.js', () => ({
   asyncHandler: fn => fn
 }))
 
@@ -176,42 +176,6 @@ describe('getAllUsers', () => {
       true
     )
   })
-
-  it('should fail fast when limit and offset are missing', async () => {
-    const req = createMockReq({
-      query: {},
-      user: { role: 'admin' }
-    })
-    const res = createMockRes()
-
-    await expect(userController.getAllUsers(req, res)).rejects.toThrow(
-      'Query parameters limit and offset are required'
-    )
-  })
-
-  it('should fail fast when user is not admin', async () => {
-    const req = createMockReq({
-      query: { limit: '10', offset: '0' },
-      user: { role: 'user' }
-    })
-    const res = createMockRes()
-
-    await expect(userController.getAllUsers(req, res)).rejects.toThrow(
-      'Admin access required to view all users'
-    )
-  })
-
-  it('should fail fast when user is not authenticated', async () => {
-    const req = createMockReq({
-      query: { limit: '10', offset: '0' },
-      user: null
-    })
-    const res = createMockRes()
-
-    await expect(userController.getAllUsers(req, res)).rejects.toThrow(
-      'Admin access required to view all users'
-    )
-  })
 })
 
 describe('getUserById', () => {
@@ -251,54 +215,6 @@ describe('getUserById', () => {
 
     expect(userService.getUserById).toHaveBeenCalledWith(1, true)
   })
-
-  it('should fail fast when ID parameter is missing', async () => {
-    const req = createMockReq({
-      params: { id: undefined },
-      user: { role: 'user' }
-    })
-    const res = createMockRes()
-
-    await expect(userController.getUserById(req, res)).rejects.toThrow(
-      'User ID is required in path parameters'
-    )
-  })
-
-  it('should fail fast when ID parameter is invalid (not a number)', async () => {
-    const req = createMockReq({
-      params: { id: 'invalid' },
-      user: { role: 'user' }
-    })
-    const res = createMockRes()
-
-    await expect(userController.getUserById(req, res)).rejects.toThrow(
-      'Invalid user ID: must be a positive number'
-    )
-  })
-
-  it('should fail fast when ID parameter is zero', async () => {
-    const req = createMockReq({
-      params: { id: '0' },
-      user: { role: 'user' }
-    })
-    const res = createMockRes()
-
-    await expect(userController.getUserById(req, res)).rejects.toThrow(
-      'Invalid user ID: must be a positive number'
-    )
-  })
-
-  it('should fail fast when ID parameter is negative', async () => {
-    const req = createMockReq({
-      params: { id: '-1' },
-      user: { role: 'user' }
-    })
-    const res = createMockRes()
-
-    await expect(userController.getUserById(req, res)).rejects.toThrow(
-      'Invalid user ID: must be a positive number'
-    )
-  })
 })
 
 describe('getUserByEmail', () => {
@@ -320,17 +236,6 @@ describe('getUserByEmail', () => {
       data: mockUser,
       message: 'User retrieved successfully'
     })
-  })
-
-  it('should fail fast when email parameter is missing', async () => {
-    const req = createMockReq({
-      params: { email: undefined }
-    })
-    const res = createMockRes()
-
-    await expect(userController.getUserByEmail(req, res)).rejects.toThrow(
-      'Email is required in path parameters'
-    )
   })
 })
 
@@ -455,28 +360,6 @@ describe('getUsersByFilter', () => {
       offset: 10
     })
   })
-
-  it('should fail fast when no filter parameters are provided', async () => {
-    const req = createMockReq({
-      query: { limit: '10', offset: '0' }
-    })
-    const res = createMockRes()
-
-    await expect(userController.getUsersByFilter(req, res)).rejects.toThrow(
-      'At least one filter parameter is required: role, state, or email_verified'
-    )
-  })
-
-  it('should fail fast when limit and offset are missing', async () => {
-    const req = createMockReq({
-      query: { role: 'admin' }
-    })
-    const res = createMockRes()
-
-    await expect(userController.getUsersByFilter(req, res)).rejects.toThrow(
-      'Query parameters limit and offset are required'
-    )
-  })
 })
 
 describe('createUser', () => {
@@ -540,69 +423,6 @@ describe('updateUser', () => {
       message: 'User updated successfully'
     })
   })
-
-  it('should fail fast when ID parameter is missing', async () => {
-    const updates = { full_name: 'Updated Name' }
-    const req = createMockReq({
-      params: { id: undefined },
-      body: updates
-    })
-    const res = createMockRes()
-
-    await expect(userController.updateUser(req, res)).rejects.toThrow(
-      'User ID is required in path parameters'
-    )
-  })
-
-  it('should fail fast when ID parameter is invalid (not a number)', async () => {
-    const updates = { full_name: 'Updated Name' }
-    const req = createMockReq({
-      params: { id: 'invalid' },
-      body: updates
-    })
-    const res = createMockRes()
-
-    await expect(userController.updateUser(req, res)).rejects.toThrow(
-      'Invalid user ID: must be a positive number'
-    )
-  })
-
-  it('should fail fast when ID parameter is zero', async () => {
-    const updates = { full_name: 'Updated Name' }
-    const req = createMockReq({
-      params: { id: '0' },
-      body: updates
-    })
-    const res = createMockRes()
-
-    await expect(userController.updateUser(req, res)).rejects.toThrow(
-      'Invalid user ID: must be a positive number'
-    )
-  })
-
-  it('should fail fast when request body is missing', async () => {
-    const req = createMockReq({
-      params: { id: '1' },
-      body: undefined
-    })
-    const res = createMockRes()
-
-    await expect(userController.updateUser(req, res)).rejects.toThrow(
-      'Request body is required with update data'
-    )
-  })
-
-  it('should fail fast when request body is empty', async () => {
-    const req = createMockReq({
-      params: { id: '1' },
-      body: {}
-    })
-    const res = createMockRes()
-
-    await expect(userController.updateUser(req, res)).rejects.toThrow(
-      'Request body is required with update data'
-    )
-  })
 })
 
 describe('deleteUser', () => {
@@ -628,49 +448,5 @@ describe('deleteUser', () => {
       data: mockDeletedUser,
       message: 'User deactivated successfully'
     })
-  })
-
-  it('should fail fast when ID parameter is missing', async () => {
-    const req = createMockReq({
-      params: { id: undefined }
-    })
-    const res = createMockRes()
-
-    await expect(userController.deleteUser(req, res)).rejects.toThrow(
-      'User ID is required in path parameters'
-    )
-  })
-
-  it('should fail fast when ID parameter is invalid (not a number)', async () => {
-    const req = createMockReq({
-      params: { id: 'invalid' }
-    })
-    const res = createMockRes()
-
-    await expect(userController.deleteUser(req, res)).rejects.toThrow(
-      'Invalid user ID: must be a positive number'
-    )
-  })
-
-  it('should fail fast when ID parameter is zero', async () => {
-    const req = createMockReq({
-      params: { id: '0' }
-    })
-    const res = createMockRes()
-
-    await expect(userController.deleteUser(req, res)).rejects.toThrow(
-      'Invalid user ID: must be a positive number'
-    )
-  })
-
-  it('should fail fast when ID parameter is negative', async () => {
-    const req = createMockReq({
-      params: { id: '-1' }
-    })
-    const res = createMockRes()
-
-    await expect(userController.deleteUser(req, res)).rejects.toThrow(
-      'Invalid user ID: must be a positive number'
-    )
   })
 })

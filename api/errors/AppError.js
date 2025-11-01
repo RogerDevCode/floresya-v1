@@ -3,7 +3,8 @@
  * Extends Error with enterprise-grade metadata for fail-fast error handling
  *
  * Error Metadata:
- * - code: Machine-readable error code (UPPER_SNAKE_CASE)
+ * - code: Numeric error code from ERROR_CODES (machine-readable)
+ * - error: Human-readable error name (ValidationError, etc.)
  * - statusCode: HTTP status code
  * - isOperational: true = expected error (user/business), false = programming error
  * - context: Additional context (table, operation, values, etc)
@@ -12,12 +13,14 @@
  * - severity: Error severity level
  */
 
+import { ERROR_CODES, getErrorCategory } from '../config/errorCodes.js'
+
 class AppError extends Error {
   /**
    * @param {string} message - Technical error message (for logs)
    * @param {Object} options - Error options
    * @param {number} options.statusCode - HTTP status code (default: 500)
-   * @param {string} options.code - Machine-readable error code
+   * @param {number} options.code - Numeric error code from ERROR_CODES
    * @param {boolean} options.isOperational - Operational vs programming error (default: true)
    * @param {Object} options.context - Additional context metadata
    * @param {string} options.userMessage - User-friendly message (optional)
@@ -30,7 +33,7 @@ class AppError extends Error {
     this.statusCode = options.statusCode || 500
     this.status = `${this.statusCode}`.startsWith('4') ? 'fail' : 'error'
     this.isOperational = options.isOperational !== undefined ? options.isOperational : true
-    this.code = options.code || 'INTERNAL_ERROR'
+    this.code = options.code || ERROR_CODES.INTERNAL_SERVER_ERROR
     this.context = options.context || {}
     this.userMessage = options.userMessage || 'An error occurred. Please try again.'
     this.timestamp = new Date().toISOString()
@@ -40,20 +43,84 @@ class AppError extends Error {
   }
 
   /**
-   * Serialize error for API response
+   * Serialize error for API response (RFC 7807 compliant)
    * @param {boolean} includeStack - Include stack trace (only in development)
-   * @returns {Object} Serialized error
+   * @returns {Object} Serialized error (RFC 7807 + FloresYa extensions)
    */
   toJSON(includeStack = false) {
-    return {
+    const baseResponse = {
       success: false,
-      error: this.name,
-      code: this.code,
+      // FloresYa extensions
+      error: this.name, // Human-readable: "ValidationError"
+      code: this.code, // Machine-readable: 1001
+      category: getErrorCategory(this.code), // 'validation', 'auth', etc.
+      // User-friendly message (FloresYa extension + RFC 7807 compatibility)
       message: this.userMessage,
-      details: this.isOperational ? this.context : undefined,
+      // RFC 7807 standard fields
+      type: this.getTypeUrl(),
+      title: this.getTitle(),
+      status: this.statusCode,
+      detail: this.userMessage, // RFC 7807 requires 'detail'
+      instance: this.getInstanceUrl(),
+      // Additional metadata
       timestamp: this.timestamp,
+      path: this.context?.path,
+      requestId: this.context?.requestId,
+      // Context details (include if context exists, regardless of isOperational)
+      ...(this.context && { details: this.context }),
+      // Development-only fields
       ...(includeStack && { stack: this.stack })
     }
+
+    // Remove undefined values
+    Object.keys(baseResponse).forEach(key => {
+      if (baseResponse[key] === undefined) {
+        delete baseResponse[key]
+      }
+    })
+
+    return baseResponse
+  }
+
+  /**
+   * Get RFC 7807 type URL
+   * @returns {string} Type URL
+   */
+  getTypeUrl() {
+    const baseUrl = 'https://api.floresya.com/errors'
+    const category = getErrorCategory(this.code)
+    const errorName = this.name.replace('Error', '').toLowerCase()
+    return `${baseUrl}/${category}/${errorName}`
+  }
+
+  /**
+   * Get RFC 7807 title
+   * @returns {string} Human-readable title
+   */
+  getTitle() {
+    const titles = {
+      ValidationError: 'Validation Failed',
+      BadRequestError: 'Bad Request',
+      UnauthorizedError: 'Unauthorized',
+      ForbiddenError: 'Forbidden',
+      NotFoundError: 'Resource Not Found',
+      ConflictError: 'Conflict',
+      InternalServerError: 'Internal Server Error',
+      DatabaseError: 'Database Error',
+      ServiceUnavailableError: 'Service Unavailable'
+    }
+    return titles[this.name] || this.name
+  }
+
+  /**
+   * Get RFC 7807 instance URL
+   * @returns {string} Instance identifier
+   */
+  getInstanceUrl() {
+    if (this.context.requestId) {
+      return `/errors/${this.context.requestId}`
+    }
+    return `/errors/${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
   }
 }
 
@@ -61,11 +128,23 @@ class AppError extends Error {
  * HTTP 4xx Client Errors
  */
 
+class PayloadTooLargeError extends AppError {
+  constructor(message, context = {}) {
+    super(message, {
+      statusCode: 413,
+      code: ERROR_CODES.VALUE_OUT_OF_RANGE,
+      context,
+      userMessage: 'The requested resource is too large to process.',
+      severity: 'low'
+    })
+  }
+}
+
 class BadRequestError extends AppError {
   constructor(message, context = {}) {
     super(message, {
       statusCode: 400,
-      code: 'BAD_REQUEST',
+      code: ERROR_CODES.INVALID_INPUT,
       context,
       userMessage: 'Invalid request. Please check your input.',
       severity: 'low'
@@ -77,7 +156,7 @@ class UnauthorizedError extends AppError {
   constructor(message = 'Authentication required', context = {}) {
     super(message, {
       statusCode: 401,
-      code: 'UNAUTHORIZED',
+      code: ERROR_CODES.UNAUTHORIZED,
       context,
       userMessage: 'Please log in to continue.',
       severity: 'medium'
@@ -89,7 +168,7 @@ class ForbiddenError extends AppError {
   constructor(message = 'Access denied', context = {}) {
     super(message, {
       statusCode: 403,
-      code: 'FORBIDDEN',
+      code: ERROR_CODES.FORBIDDEN,
       context,
       userMessage: 'You do not have permission to access this resource.',
       severity: 'medium'
@@ -102,7 +181,7 @@ class NotFoundError extends AppError {
     const message = `${resource} with ID ${id} not found`
     super(message, {
       statusCode: 404,
-      code: 'RESOURCE_NOT_FOUND',
+      code: ERROR_CODES.RESOURCE_NOT_FOUND,
       context: { resource, id, ...context },
       userMessage: `The requested ${resource.toLowerCase()} was not found.`,
       severity: 'low'
@@ -114,7 +193,7 @@ class ConflictError extends AppError {
   constructor(message, context = {}) {
     super(message, {
       statusCode: 409,
-      code: 'RESOURCE_CONFLICT',
+      code: ERROR_CODES.RESOURCE_CONFLICT,
       context,
       userMessage: 'This operation conflicts with existing data.',
       severity: 'medium'
@@ -126,32 +205,12 @@ class ValidationError extends AppError {
   constructor(message, validationErrors = {}) {
     super(message, {
       statusCode: 400,
-      code: 'VALIDATION_FAILED',
+      code: ERROR_CODES.VALIDATION_FAILED,
       context: { validationErrors },
       userMessage: 'Validation failed. Please check your input.',
       severity: 'low'
     })
-  }
-
-  /**
-   * Override toJSON to return 'ValidationError' for API consistency (following PascalCase standard)
-   */
-  toJSON(includeStack = false) {
-    console.log('🔍 DEBUG: ValidationError.toJSON called', {
-      className: this.constructor.name,
-      shouldReturn: 'ValidationError',
-      currentBehavior: 'Returning ValidationError for consistency'
-    })
-
-    return {
-      success: false,
-      error: 'ValidationError', // Following PascalCase standard for consistency
-      code: this.code,
-      message: this.userMessage,
-      details: this.isOperational ? this.context : undefined,
-      timestamp: this.timestamp,
-      ...(includeStack && { stack: this.stack })
-    }
+    this.name = 'ValidationError'
   }
 }
 
@@ -163,7 +222,7 @@ class InternalServerError extends AppError {
   constructor(message, context = {}) {
     super(message, {
       statusCode: 500,
-      code: 'INTERNAL_ERROR',
+      code: ERROR_CODES.INTERNAL_SERVER_ERROR,
       isOperational: false,
       context,
       userMessage: 'An unexpected error occurred. Please try again later.',
@@ -176,7 +235,7 @@ class ServiceUnavailableError extends AppError {
   constructor(service, context = {}) {
     super(`Service ${service} is currently unavailable`, {
       statusCode: 503,
-      code: 'SERVICE_UNAVAILABLE',
+      code: ERROR_CODES.SERVICE_UNAVAILABLE,
       context: { service, ...context },
       userMessage: 'Service temporarily unavailable. Please try again later.',
       severity: 'high'
@@ -193,7 +252,7 @@ class DatabaseError extends AppError {
     const message = `Database ${operation} failed on table ${table}: ${originalError.message}`
     super(message, {
       statusCode: 500,
-      code: 'DATABASE_ERROR',
+      code: ERROR_CODES.DATABASE_ERROR,
       isOperational: false,
       context: {
         operation, // 'SELECT', 'INSERT', 'UPDATE', 'DELETE'
@@ -211,7 +270,7 @@ class DatabaseConnectionError extends AppError {
   constructor(originalError, context = {}) {
     super(`Database connection failed: ${originalError.message}`, {
       statusCode: 503,
-      code: 'DATABASE_CONNECTION_FAILED',
+      code: ERROR_CODES.DATABASE_ERROR,
       isOperational: false,
       context: { originalError: originalError.message, ...context },
       userMessage: 'Database connection error. Please try again later.',
@@ -224,7 +283,7 @@ class DatabaseConstraintError extends AppError {
   constructor(constraint, table, context = {}) {
     super(`Database constraint violation: ${constraint} on table ${table}`, {
       statusCode: 409,
-      code: 'DATABASE_CONSTRAINT_VIOLATION',
+      code: ERROR_CODES.RESOURCE_CONFLICT,
       context: { constraint, table, ...context },
       userMessage: 'This operation violates a data constraint.',
       severity: 'medium'
@@ -242,7 +301,7 @@ class InsufficientStockError extends AppError {
       `Insufficient stock for product ${productId}: requested ${requested}, available ${available}`,
       {
         statusCode: 409,
-        code: 'INSUFFICIENT_STOCK',
+        code: ERROR_CODES.INSUFFICIENT_STOCK,
         context: { productId, requested, available },
         userMessage: `Only ${available} units available. Please adjust quantity.`,
         severity: 'low'
@@ -255,7 +314,7 @@ class PaymentFailedError extends AppError {
   constructor(reason, context = {}) {
     super(`Payment failed: ${reason}`, {
       statusCode: 402,
-      code: 'PAYMENT_FAILED',
+      code: ERROR_CODES.PAYMENT_FAILED,
       context: { reason, ...context },
       userMessage: 'Payment failed. Please check your payment method.',
       severity: 'high'
@@ -267,7 +326,7 @@ class OrderNotProcessableError extends AppError {
   constructor(orderId, reason, context = {}) {
     super(`Order ${orderId} cannot be processed: ${reason}`, {
       statusCode: 422,
-      code: 'ORDER_NOT_PROCESSABLE',
+      code: ERROR_CODES.ORDER_CANNOT_BE_PROCESSED,
       context: { orderId, reason, ...context },
       userMessage: `Order cannot be processed: ${reason}`,
       severity: 'medium'
@@ -279,7 +338,7 @@ class InvalidStateTransitionError extends AppError {
   constructor(entity, currentState, targetState, context = {}) {
     super(`Invalid state transition for ${entity}: ${currentState} → ${targetState}`, {
       statusCode: 409,
-      code: 'INVALID_STATE_TRANSITION',
+      code: ERROR_CODES.INVALID_STATE_TRANSITION,
       context: { entity, currentState, targetState, ...context },
       userMessage: `Cannot change ${entity} from ${currentState} to ${targetState}.`,
       severity: 'medium'
@@ -295,7 +354,7 @@ class ExternalServiceError extends AppError {
   constructor(service, operation, originalError, context = {}) {
     super(`External service ${service} failed during ${operation}: ${originalError.message}`, {
       statusCode: 502,
-      code: 'EXTERNAL_SERVICE_ERROR',
+      code: ERROR_CODES.EXTERNAL_SERVICE_ERROR,
       context: {
         service,
         operation,
@@ -312,7 +371,7 @@ class RateLimitExceededError extends AppError {
   constructor(limit, window, context = {}) {
     super(`Rate limit exceeded: ${limit} requests per ${window}`, {
       statusCode: 429,
-      code: 'RATE_LIMIT_EXCEEDED',
+      code: ERROR_CODES.NETWORK_ERROR,
       context: { limit, window, ...context },
       userMessage: 'Too many requests. Please try again later.',
       severity: 'low'
@@ -329,7 +388,7 @@ class StorageError extends AppError {
     const message = `Storage ${operation} failed on bucket ${bucket}: ${originalError.message}`
     super(message, {
       statusCode: 500,
-      code: 'STORAGE_ERROR',
+      code: ERROR_CODES.EXTERNAL_SERVICE_ERROR,
       isOperational: false,
       context: {
         operation, // 'UPLOAD', 'DELETE', 'GET_URL'
@@ -351,7 +410,7 @@ class ConfigurationError extends AppError {
   constructor(message, context = {}) {
     super(message, {
       statusCode: 500,
-      code: 'CONFIGURATION_ERROR',
+      code: ERROR_CODES.CONFIGURATION_ERROR,
       isOperational: false,
       context,
       userMessage: 'Server configuration error. Please contact support.',
@@ -368,6 +427,7 @@ export {
   AppError,
   // HTTP 4xx
   BadRequestError,
+  PayloadTooLargeError,
   UnauthorizedError,
   ForbiddenError,
   NotFoundError,
@@ -391,5 +451,7 @@ export {
   // Storage
   StorageError,
   // Configuration
-  ConfigurationError
+  ConfigurationError,
+  // Constants
+  ERROR_CODES
 }

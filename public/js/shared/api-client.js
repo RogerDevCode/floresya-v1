@@ -1,9 +1,9 @@
 /**
  * FloresYa API Client
  * Auto-generated from OpenAPI specification
- * Generated: 2025-10-18T19:00:34.132Z
+ * Generated: 2025-10-31T00:26:34.285Z
  * Spec Version: 1.0.0
- * Total Endpoints: 44
+ * Total Endpoints: 45
  *
  * IMPORTANT: This file is AUTO-GENERATED. Do not edit manually.
  * Regenerate using: npm run generate:client
@@ -29,12 +29,6 @@ class ApiClient {
       const config = {
         method: options.method || 'GET',
         headers: { ...this.defaultHeaders, ...options.headers }
-      }
-
-      // Add authentication header if token available
-      const token = localStorage.getItem('auth_token')
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`
       }
 
       if (options.body && options.method !== 'GET') {
@@ -339,6 +333,57 @@ class ApiClient {
   }
 
   /**
+   * Get occasions for a product
+   * Admin only - Get all occasions associated with a product
+   * @param {any} id - Parameter
+   * @returns {Promise<any>} API response
+   */
+  getAllOccasions(id) {
+    if (!id || id <= 0) {
+      throw new Error('Invalid id')
+    }
+
+    const endpoint = `/api/products/${id}/occasions`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Replace product occasions
+   * Admin only - Atomically replace all occasions for a product (transactional)
+   * @param {any} id - Parameter
+   * @param {any} data - Parameter
+   * @returns {Promise<any>} API response
+   */
+  updateOccasions(id, data) {
+    if (!id || id <= 0) {
+      throw new Error('Invalid id')
+    }
+
+    const endpoint = `/api/products/${id}/occasions`
+    return this.request(endpoint, { method: 'PUT', body: data })
+  }
+
+  /**
+   * Link occasion to product
+   * Admin only - Link a single occasion to a product
+   * @param {any} id - Parameter
+   * @param {any} occasionId - Parameter
+   * @param {any} data - Parameter
+   * @returns {Promise<any>} API response
+   */
+  createOccasions(id, occasionId, data) {
+    if (!id || id <= 0) {
+      throw new Error('Invalid id')
+    }
+    if (!occasionId || occasionId <= 0) {
+      throw new Error('Invalid occasionId')
+    }
+
+    const endpoint = `/api/products/${id}/occasions/${occasionId}`
+    return this.request(endpoint, { method: 'POST', body: data })
+  }
+
+  /**
    * Reactivate product
    * Admin only - Reactivates a soft-deleted product
    * @param {any} id - Parameter
@@ -627,46 +672,6 @@ class ApiClient {
   }
 
   /**
-   * Get all payments with filters
-   * Admin only - Returns paginated list of payments with optional filters (uses indexed columns)
-   * @param {any} params - Parameter
-   * @returns {Promise<any>} API response
-   */
-  getAllPayments(params = {}) {
-    const queryString = new URLSearchParams()
-    Object.entries(params || {}).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        queryString.append(key, value.toString())
-      }
-    })
-    const query = queryString.toString()
-    const queryPart = query ? '?' + query : ''
-    const endpoint = `/api/payments${queryPart}`
-    return this.request(endpoint)
-  }
-
-  /**
-   * Get all occasions
-   * Public - Returns all active occasions, sorted by display_order.
-   * @returns {Promise<any>} API response
-   */
-  getAllOccasions() {
-    const endpoint = `/api/occasions`
-    return this.request(endpoint)
-  }
-
-  /**
-   * Create new occasion
-   * Admin only - Creates a new occasion.
-   * @param {any} data - Parameter
-   * @returns {Promise<any>} API response
-   */
-  createOccasions(data) {
-    const endpoint = `/api/occasions`
-    return this.request(endpoint, { method: 'POST', body: data })
-  }
-
-  /**
    * Get occasion by ID
    * Get occasion details by its unique ID.
    * @param {any} id - Parameter
@@ -679,22 +684,6 @@ class ApiClient {
 
     const endpoint = `/api/occasions/${id}`
     return this.request(endpoint)
-  }
-
-  /**
-   * Update occasion
-   * Admin only - Updates an existing occasion.
-   * @param {any} id - Parameter
-   * @param {any} data - Parameter
-   * @returns {Promise<any>} API response
-   */
-  updateOccasions(id, data) {
-    if (!id || id <= 0) {
-      throw new Error('Invalid id')
-    }
-
-    const endpoint = `/api/occasions/${id}`
-    return this.request(endpoint, { method: 'PUT', body: data })
   }
 
   /**
@@ -1048,6 +1037,9 @@ export const api = {
   updateStock: (id, data) => apiClient.updateStock(id, data),
   deleteProductImage: (id, imageIndex) => apiClient.deleteProductImage(id, imageIndex),
   updatePrimaryImage: (id, imageIndex, data) => apiClient.updatePrimaryImage(id, imageIndex, data),
+  getAllOccasions: id => apiClient.getAllOccasions(id),
+  updateOccasions: (id, data) => apiClient.updateOccasions(id, data),
+  createOccasions: (id, occasionId, data) => apiClient.createOccasions(id, occasionId, data),
   reactivateProducts: (id, data) => apiClient.reactivateProducts(id, data),
   getAllOrders: params => apiClient.getAllOrders(params),
   createOrders: data => apiClient.createOrders(data),
@@ -1067,11 +1059,7 @@ export const api = {
   verifyUserEmail: (id, data) => apiClient.verifyUserEmail(id, data),
   getAllMethods: () => apiClient.getAllMethods(),
   confirmPayments: (id, data) => apiClient.confirmPayments(id, data),
-  getAllPayments: params => apiClient.getAllPayments(params),
-  getAllOccasions: () => apiClient.getAllOccasions(),
-  createOccasions: data => apiClient.createOccasions(data),
   getOccasionsById: id => apiClient.getOccasionsById(id),
-  updateOccasions: (id, data) => apiClient.updateOccasions(id, data),
   deleteOccasions: id => apiClient.deleteOccasions(id),
   getAllSlug: slug => apiClient.getAllSlug(slug),
   updateOccasionDisplayOrder: (id, data) => apiClient.updateOccasionDisplayOrder(id, data),

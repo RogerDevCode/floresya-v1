@@ -7,88 +7,15 @@
 
 import { supabase, DB_SCHEMA } from './supabaseClient.js'
 import {
-  ValidationError,
   NotFoundError,
   DatabaseError,
   DatabaseConstraintError,
   BadRequestError,
   InternalServerError
 } from '../errors/AppError.js'
+import { validatePaymentMethod } from '../utils/validation.js'
 
 const TABLE = DB_SCHEMA.payment_methods.table
-const VALID_TYPES = DB_SCHEMA.payment_methods.enums.type
-
-/**
- * Validate payment method data (ENTERPRISE FAIL-FAST)
- * @param {Object} data - Payment method data to validate
- * @param {string} [data.name] - Payment method name (required for creation)
- * @param {string} [data.type] - Payment method type (required for creation, must be valid enum value)
- * @param {string} [data.description] - Payment method description
- * @param {string} [data.account_info] - Account information for the payment method
- * @param {boolean} [data.is_active] - Whether the payment method is active
- * @param {number} [data.display_order] - Display order for sorting
- * @param {boolean} isUpdate - Whether this is for an update operation (default: false)
- * @throws {ValidationError} With detailed field-level validation errors
- * @example
- * // For creation
- * validatePaymentMethodData({
- *   name: 'Banco Mercantil',
- *   type: 'bank_transfer',
- *   display_order: 1
- * }, false)
- *
- * // For update
- * validatePaymentMethodData({
- *   display_order: 2
- * }, true)
- */
-function validatePaymentMethodData(data, isUpdate = false) {
-  const errors = {}
-
-  if (!isUpdate) {
-    if (!data.name || typeof data.name !== 'string' || data.name.trim() === '') {
-      errors.name = 'Name is required and must be a non-empty string'
-    }
-    if (!data.type || typeof data.type !== 'string') {
-      errors.type = 'Type is required and must be a string'
-    } else if (!VALID_TYPES.includes(data.type)) {
-      errors.type = `Type must be one of ${VALID_TYPES.join(', ')}`
-    }
-  }
-
-  if (data.name !== undefined && typeof data.name !== 'string') {
-    errors.name = 'Name must be a string'
-  }
-
-  if (data.type !== undefined && typeof data.type !== 'string') {
-    errors.type = 'Type must be a string'
-  } else if (data.type !== undefined && !VALID_TYPES.includes(data.type)) {
-    errors.type = `Type must be one of ${VALID_TYPES.join(', ')}`
-  }
-
-  if (data.description !== undefined && typeof data.description !== 'string') {
-    errors.description = 'Description must be a string'
-  }
-
-  if (data.account_info !== undefined && typeof data.account_info !== 'string') {
-    errors.account_info = 'Account info must be a string'
-  }
-
-  if (
-    data.display_order !== undefined &&
-    (typeof data.display_order !== 'number' || data.display_order < 0)
-  ) {
-    errors.display_order = 'Display order must be a non-negative number'
-  }
-
-  if (data.is_active !== undefined && typeof data.is_active !== 'boolean') {
-    errors.is_active = 'Is active must be a boolean'
-  }
-
-  if (Object.keys(errors).length > 0) {
-    throw new ValidationError('Payment method validation failed', errors)
-  }
-}
 
 /**
  * Get all payment methods with filters - returns active methods ordered by display_order
@@ -191,7 +118,7 @@ export async function getPaymentMethodById(id, includeInactive = false) {
  */
 export async function createPaymentMethod(paymentMethodData) {
   try {
-    validatePaymentMethodData(paymentMethodData, false)
+    validatePaymentMethod(paymentMethodData, false)
 
     const newPaymentMethod = {
       name: paymentMethodData.name,
@@ -264,7 +191,7 @@ export async function updatePaymentMethod(id, updates) {
       throw new BadRequestError('No updates provided', { paymentMethodId: id })
     }
 
-    validatePaymentMethodData(updates, true)
+    validatePaymentMethod(updates, true)
 
     const allowedFields = [
       'name',

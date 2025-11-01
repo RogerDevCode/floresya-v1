@@ -1,4 +1,6 @@
-# FloresYa - Arquitectura MVC para E-Commerce Unificada
+sigue las estrictamente instrucciones de CLAUDE.md
+
+    # FloresYa - Arquitectura MVC para E-Commerce Unificada
 
 ## Stack Técnico
 

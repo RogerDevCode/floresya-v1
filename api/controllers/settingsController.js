@@ -4,7 +4,7 @@
  */
 
 import * as settingsService from '../services/settingsService.js'
-import { asyncHandler } from '../middleware/errorHandler.js'
+import { asyncHandler } from '../middleware/error/index.js'
 import express from 'express'
 const router = express.Router()
 
@@ -159,6 +159,9 @@ export const getSettingValue = asyncHandler(async (req, res) => {
       message: 'Setting value retrieved successfully'
     })
   } catch (error) {
+    // Log all errors before handling
+    console.error('Error in getSettingValue:', error)
+
     // If setting not found, return null value instead of error
     if (error.message && error.message.includes('not found')) {
       res.json({

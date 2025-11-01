@@ -5,8 +5,8 @@
 
 import express from 'express'
 import * as adminSettingsController from '../../controllers/admin/settingsController.js'
-import { authenticate, authorize } from '../../middleware/auth.js'
-import { uploadSingle } from '../../middleware/uploadImage.js'
+import { authenticate, authorize } from '../../middleware/auth/index.js'
+import { uploadSingle } from '../../middleware/utilities/index.js'
 import { getBusinessRulesStatus } from '../../services/businessRules.js'
 
 const router = express.Router()

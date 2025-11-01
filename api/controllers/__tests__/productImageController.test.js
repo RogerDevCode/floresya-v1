@@ -11,12 +11,14 @@ import app from '../../app.js'
 vi.mock('../../services/productImageService.js', () => ({
   getProductImages: vi.fn((productId, filters) => {
     if (productId === 67) {
+      const imageSize = filters && filters.size ? filters.size : 'small'
+
       return Promise.resolve([
         {
           id: 1,
           product_id: 67,
           image_index: 1,
-          size: filters?.size || 'small',
+          size: imageSize,
           url: 'https://example.com/image1_small.webp',
           file_hash: 'hash1',
           mime_type: 'image/webp',
@@ -27,7 +29,7 @@ vi.mock('../../services/productImageService.js', () => ({
           id: 2,
           product_id: 67,
           image_index: 2,
-          size: filters?.size || 'small',
+          size: imageSize,
           url: 'https://example.com/image2_small.webp',
           file_hash: 'hash2',
           mime_type: 'image/webp',

@@ -434,7 +434,7 @@ test.describe('Order Lifecycle E2E Tests', () => {
   })
 
   test.describe('Admin Order Management and Status Transitions', () => {
-    test.skip('should login as admin and manage order states', async ({ page }) => {
+    test('should login as admin and manage order states', async ({ page }) => {
       // Note: This test is skipped by default as it requires admin authentication
       // Unskip and configure if admin UI is implemented
 
@@ -496,8 +496,7 @@ test.describe('Order Lifecycle E2E Tests', () => {
         }
       }
     })
-
-    test.skip('should test order status transitions via API', async ({ page }) => {
+    test('should test order status transitions via API', async ({ page }) => {
       // Note: This test demonstrates API-based status transitions
       // Requires authentication token and real order ID
 

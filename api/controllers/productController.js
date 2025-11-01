@@ -5,7 +5,8 @@
 
 import * as productService from '../services/productService.js'
 import * as carouselService from '../services/carouselService.js'
-import { asyncHandler } from '../middleware/errorHandler.js'
+import { asyncHandler } from '../middleware/error/index.js'
+import { AppError, BadRequestError } from '../errors/AppError.js'
 
 /**
  * Helper Functions
@@ -40,7 +41,16 @@ const getStatusCode = operation => {
     link: 200,
     replace: 200
   }
-  return statusCodes[operation] || 200
+
+  // Fail-fast: Validate operation
+  if (!statusCodes[operation]) {
+    throw new BadRequestError(`Invalid operation: ${operation}`, {
+      operation,
+      validOperations: Object.keys(statusCodes)
+    })
+  }
+
+  return statusCodes[operation]
 }
 
 /**
@@ -62,7 +72,16 @@ const getSuccessMessage = (operation, entity = 'Product') => {
     retrieve: `${entity} retrieved successfully`,
     occasions: 'Product occasions retrieved successfully'
   }
-  return messages[operation] || `${entity} operation completed successfully`
+
+  // Fail-fast: Validate operation
+  if (!messages[operation]) {
+    throw new BadRequestError(`Invalid operation: ${operation}`, {
+      operation,
+      validOperations: Object.keys(messages)
+    })
+  }
+
+  return messages[operation]
 }
 
 /**
@@ -111,7 +130,19 @@ export const getAllProducts = asyncHandler(async (req, res) => {
   }
 
   const includeInactive = req.user?.role === 'admin' && req.query.includeInactive === 'true'
-  const includeImageSize = req.query.imageSize || null
+
+  // Fail-fast: Validate imageSize if provided
+  let includeImageSize = null
+  if (req.query.imageSize !== undefined) {
+    const validSizes = ['small', 'medium', 'large', 'thumbnail']
+    if (!validSizes.includes(req.query.imageSize)) {
+      throw new BadRequestError(`Invalid imageSize: must be one of ${validSizes.join(', ')}`, {
+        imageSize: req.query.imageSize,
+        validSizes
+      })
+    }
+    includeImageSize = req.query.imageSize
+  }
 
   const products = await productService.getAllProducts(filters, includeInactive, includeImageSize)
 
@@ -125,7 +156,19 @@ export const getAllProducts = asyncHandler(async (req, res) => {
  */
 export const getProductById = asyncHandler(async (req, res) => {
   const productId = validateProductId(req.params.id, 'getProductById')
-  const includeImageSize = req.query.imageSize || null
+
+  // Fail-fast: Validate imageSize if provided
+  let includeImageSize = null
+  if (req.query.imageSize !== undefined) {
+    const validSizes = ['small', 'medium', 'large', 'thumbnail']
+    if (!validSizes.includes(req.query.imageSize)) {
+      throw new BadRequestError(`Invalid imageSize: must be one of ${validSizes.join(', ')}`, {
+        imageSize: req.query.imageSize,
+        validSizes
+      })
+    }
+    includeImageSize = req.query.imageSize
+  }
 
   const product = await productService.getProductById(productId, false, includeImageSize)
 
@@ -187,8 +230,22 @@ export const getCarouselProducts = asyncHandler(async (req, res) => {
  *       500: { $ref: '#/components/responses/InternalServerError' }
  */
 export const getProductsWithOccasions = asyncHandler(async (req, res) => {
-  const limit = req.query.limit || 50
-  const offset = req.query.offset || 0
+  // FAIL FAST - Explicit validation for pagination parameters
+  const limit = req.query.limit ? parseInt(req.query.limit, 10) : 50
+  if (req.query.limit && (isNaN(limit) || limit <= 0 || limit > 1000)) {
+    throw new BadRequestError('Invalid limit: must be a positive number <= 1000', {
+      limit: req.query.limit,
+      rule: 'positive number <= 1000'
+    })
+  }
+
+  const offset = req.query.offset ? parseInt(req.query.offset, 10) : 0
+  if (req.query.offset && (isNaN(offset) || offset < 0)) {
+    throw new BadRequestError('Invalid offset: must be a non-negative number', {
+      offset: req.query.offset,
+      rule: 'non-negative number'
+    })
+  }
 
   const products = await productService.getProductsWithOccasions(limit, offset)
 
@@ -233,7 +290,15 @@ export const getProductsWithOccasions = asyncHandler(async (req, res) => {
  */
 export const getProductsByOccasion = asyncHandler(async (req, res) => {
   const occasionId = req.params.occasionId
-  const limit = req.query.limit || 50
+
+  // FAIL FAST - Explicit validation for limit parameter
+  const limit = req.query.limit ? parseInt(req.query.limit, 10) : 50
+  if (req.query.limit && (isNaN(limit) || limit <= 0 || limit > 1000)) {
+    throw new BadRequestError('Invalid limit: must be a positive number <= 1000', {
+      limit: req.query.limit,
+      rule: 'positive number <= 1000'
+    })
+  }
 
   const products = await productService.getProductsByOccasion(occasionId, limit)
 

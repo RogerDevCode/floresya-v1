@@ -7,14 +7,24 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-    // Environment
-    environment: 'node', // Backend tests use node, frontend tests will use happy-dom
+    // Environment - Using happy-dom for DOM support in frontend tests
+    // Frontend components need DOM APIs (document, window, etc.)
+    environment: 'happy-dom',
 
     // Setup files
     setupFiles: ['./tests/setup.js'],
 
-    // Global test configuration - disable to avoid conflicts with Playwright
-    globals: false, // Changed to false to avoid Symbol conflicts
+    // Global test configuration - MUST be false to avoid Symbol conflicts with Playwright
+    globals: false, // Critical: Prevents global Symbol($$jest-matchers-object) conflicts
+
+    // Cache configuration - Disabled to avoid cache issues during development
+    cache: false,
+
+    // Force rerun tests when dependencies change
+    deps: {
+      // Inline can help with some module resolution issues
+      inline: []
+    },
 
     // Coverage configuration
     coverage: {
@@ -74,7 +84,11 @@ export default defineConfig({
       'tests/e2e/**', // E2E tests should be run with Playwright only
       'tests/integration/**/*.test.mjs', // Use .js files instead
       '**/*.integration.test.mjs'
-    ]
+    ],
+
+    // Improve test isolation
+    clearMocks: true,
+    restoreMocks: true
   },
 
   // Resolver configuration for ES modules

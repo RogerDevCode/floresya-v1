@@ -6,9 +6,9 @@
 
 import { logger } from '../utils/logger.js'
 import { metricsCollector } from '../monitoring/metricsCollector.js'
-import { resetCircuitBreaker, getCircuitBreakerStatus } from '../middleware/circuitBreaker.js'
+import { resetCircuitBreaker, getCircuitBreakerStatus } from '../middleware/performance/index.js'
 import { ValidationError } from '../errors/AppError.js'
-import { resetAllRateLimits } from '../middleware/rateLimit.js'
+import { resetAllRateLimits } from '../middleware/security/index.js'
 
 class AutoRecoverySystem {
   constructor() {

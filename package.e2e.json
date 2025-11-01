@@ -1,0 +1,14 @@
+{
+  "name": "floresya-v1-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "test:e2e": "playwright test --config=playwright.config.isolated.cjs",
+    "test:e2e:ui": "playwright test --config=playwright.config.isolated.cjs --ui",
+    "test:e2e:debug": "playwright test --config=playwright.config.isolated.cjs --debug"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0"
+  }
+}

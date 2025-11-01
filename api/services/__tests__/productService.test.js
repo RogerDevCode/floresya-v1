@@ -106,7 +106,7 @@ describe('productService', () => {
 
       // Mock the supabase client chain
       const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
+      vi.mocked(supabase.from).mockReturnValueOnce(mockSupabaseQuery)
 
       const result = await productService.getProductById(67)
 
@@ -128,7 +128,7 @@ describe('productService', () => {
       })
 
       const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
+      vi.mocked(supabase.from).mockReturnValueOnce(mockSupabaseQuery)
 
       await expect(productService.getProductById(999)).rejects.toThrow(NotFoundError)
     })
@@ -141,7 +141,7 @@ describe('productService', () => {
       })
 
       const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
+      vi.mocked(supabase.from).mockReturnValueOnce(mockSupabaseQuery)
 
       await expect(productService.getProductById(67)).rejects.toThrow(DatabaseError)
     })
@@ -160,7 +160,7 @@ describe('productService', () => {
       })
 
       const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
+      vi.mocked(supabase.from).mockReturnValueOnce(mockSupabaseQuery)
 
       const result = await productService.getAllProducts()
 
@@ -180,7 +180,7 @@ describe('productService', () => {
       })
 
       const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
+      vi.mocked(supabase.from).mockReturnValueOnce(mockSupabaseQuery)
 
       const result = await productService.getAllProducts({}, true)
 
@@ -197,7 +197,7 @@ describe('productService', () => {
       })
 
       const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
+      vi.mocked(supabase.from).mockReturnValueOnce(mockSupabaseQuery)
 
       const filters = { search: 'rosas' }
       await productService.getAllProducts(filters)
@@ -229,7 +229,7 @@ describe('productService', () => {
       })
 
       const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
+      vi.mocked(supabase.from).mockReturnValueOnce(mockSupabaseQuery)
 
       const result = await productService.createProduct(newProduct)
 
@@ -250,7 +250,7 @@ describe('productService', () => {
       })
 
       const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
+      vi.mocked(supabase.from).mockReturnValueOnce(mockSupabaseQuery)
 
       await expect(productService.createProduct(newProduct)).rejects.toThrow(DatabaseError)
     })
@@ -277,7 +277,7 @@ describe('productService', () => {
       })
 
       const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
+      vi.mocked(supabase.from).mockReturnValueOnce(mockSupabaseQuery)
 
       const result = await productService.updateProduct(productId, updates)
 
@@ -325,7 +325,7 @@ describe('productService', () => {
       mockSupabaseQuery.update = vi.fn().mockReturnValue(mockSupabaseQuery)
 
       const { supabase } = await import('../supabaseClient.js')
-      supabase.from.mockReturnValueOnce(mockSupabaseQuery)
+      vi.mocked(supabase.from).mockReturnValueOnce(mockSupabaseQuery)
 
       const result = await productService.deleteProduct(productId)
 

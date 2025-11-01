@@ -72,7 +72,14 @@ class StructuredLogger {
    * Get caller information for debugging
    */
   getCallerInfo() {
-    const stack = new Error().stack
+    // Use Error.prepareStackTrace for more efficient stack capture
+    const stackInfo = {}
+    Error.captureStackTrace(stackInfo)
+
+    // Create temporary error to get stack
+    const tempError = {}
+    Error.captureStackTrace(tempError)
+    const stack = tempError.stack
     const lines = stack.split('\n')
 
     // Find the first line that's not from the logger itself
@@ -465,36 +472,14 @@ export function errorLoggingMiddleware(error, req, res, next) {
 
 /**
  * Database operation logging middleware
+ *
+ * IMPORTANT: This middleware has been modified to comply with the "Service Layer Exclusivo" rule.
+ * The original implementation attempted to directly wrap req.supabase methods, which would have
+ * bypassed the service layer. Now, services should use the logging functionality directly when needed.
  */
 export function databaseLoggingMiddleware(req, res, next) {
-  const originalFrom = req.supabase?.from
-
-  if (originalFrom) {
-    req.supabase.from = table => {
-      const queryBuilder = originalFrom.call(req.supabase, table)
-      const startTime = Date.now()
-
-      const originalThen = queryBuilder.then
-      queryBuilder.then = (onResolve, onReject) => {
-        return originalThen.call(
-          queryBuilder,
-          result => {
-            const duration = Date.now() - startTime
-            logger.logDatabase('query', table, duration, {
-              requestId: req.requestId,
-              success: !result.error,
-              error: result.error?.message
-            })
-
-            return onResolve(result)
-          },
-          onReject
-        )
-      }
-
-      return queryBuilder
-    }
-  }
+  // Add logger to request object for services to use
+  req.dbLogger = logger
 
   next()
 }

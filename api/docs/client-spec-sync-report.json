@@ -1,14 +1,36 @@
 {
-  "timestamp": "2025-10-26T19:21:27.859Z",
-  "valid": true,
-  "issues": [],
+  "timestamp": "2025-10-31T00:26:00.811Z",
+  "valid": false,
+  "issues": [
+    {
+      "type": "missing_method",
+      "severity": "error",
+      "message": "Endpoint GET /api/occasions has no corresponding client method",
+      "endpoint": "/api/occasions",
+      "method": "get"
+    },
+    {
+      "type": "missing_method",
+      "severity": "error",
+      "message": "Endpoint POST /api/occasions has no corresponding client method",
+      "endpoint": "/api/occasions",
+      "method": "post"
+    },
+    {
+      "type": "missing_method",
+      "severity": "error",
+      "message": "Endpoint PUT /api/occasions/{id} has no corresponding client method",
+      "endpoint": "/api/occasions/{id}",
+      "method": "put"
+    }
+  ],
   "warnings": [],
   "summary": {
-    "specEndpoints": 63,
-    "clientMethods": 63,
-    "coverage": 100,
+    "specEndpoints": 65,
+    "clientMethods": 62,
+    "coverage": 95.38,
     "orphanedEndpoints": [],
-    "missingMethods": [],
+    "missingMethods": ["GET /api/occasions", "POST /api/occasions", "PUT /api/occasions/{id}"],
     "extraMethods": [],
     "orphanedMethods": []
   }

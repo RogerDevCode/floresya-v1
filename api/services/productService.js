@@ -19,96 +19,19 @@ import {
 import { buildSearchCondition } from '../utils/normalize.js'
 import { sanitizeProductData } from '../utils/sanitize.js'
 import { PAGINATION, CAROUSEL } from '../config/constants.js'
+import { withErrorMapping } from '../middleware/error/index.js'
+import { validateProduct, validateId } from '../utils/validation.js'
 
 const TABLE = DB_SCHEMA.products.table
 const SEARCH_COLUMNS = DB_SCHEMA.products.search
 
 /**
- * Validate product data (ENTERPRISE FAIL-FAST)
- * @param {Object} data - Product data to validate
- * @param {string} [data.name] - Product name
- * @param {number} [data.price_usd] - Price in USD
- * @param {number} [data.price_ves] - Price in VES
- * @param {number} [data.stock] - Available stock
- * @param {string} [data.sku] - Product SKU
- * @param {number} [data.carousel_order] - Carousel display order
- * @param {boolean} isUpdate - Whether this is for an update operation (default: false)
- * @throws {ValidationError} With detailed field-level validation errors
- * @example
- * // For creation
- * validateProductData({
- *   name: 'Rosas Rojas',
- *   price_usd: 25.99,
- *   stock: 10
- * }, false)
- *
- * // For update
- * validateProductData({
- *   price_usd: 29.99
- * }, true)
+ * Validate product ID (ENTERPRISE FAIL-FAST)
+ * @param {number} id - Product ID to validate
+ * @param {string} operation - Operation name for error context
  */
-function validateProductData(data, isUpdate = false) {
-  const errors = {}
-
-  // Required fields for creation
-  if (!isUpdate) {
-    if (!data.name || typeof data.name !== 'string' || data.name.trim() === '') {
-      errors.name = 'Name is required and must be a non-empty string'
-    }
-    if (!data.price_usd || typeof data.price_usd !== 'number' || data.price_usd <= 0) {
-      errors.price_usd = 'Price USD is required and must be a positive number'
-    }
-  }
-
-  // Optional/update fields
-  if (data.name !== undefined) {
-    if (typeof data.name !== 'string' || data.name.trim() === '') {
-      errors.name = 'Name must be a non-empty string'
-    } else if (data.name.length > 255) {
-      errors.name = 'Name must not exceed 255 characters'
-    }
-  }
-
-  if (data.price_usd !== undefined) {
-    if (typeof data.price_usd !== 'number' || data.price_usd <= 0) {
-      errors.price_usd = 'Price USD must be a positive number'
-    }
-  }
-
-  if (data.price_ves !== undefined && data.price_ves !== null) {
-    if (typeof data.price_ves !== 'number' || data.price_ves < 0) {
-      errors.price_ves = 'Price VES must be a non-negative number'
-    }
-  }
-
-  if (data.stock !== undefined) {
-    if (typeof data.stock !== 'number' || data.stock < 0 || !Number.isInteger(data.stock)) {
-      errors.stock = 'Stock must be a non-negative integer'
-    }
-  }
-
-  if (data.carousel_order !== undefined && data.carousel_order !== null) {
-    if (
-      typeof data.carousel_order !== 'number' ||
-      data.carousel_order < 0 ||
-      !Number.isInteger(data.carousel_order)
-    ) {
-      errors.carousel_order = 'Carousel order must be a non-negative integer'
-    }
-  }
-
-  if (data.sku !== undefined && data.sku !== null) {
-    if (typeof data.sku !== 'string' || data.sku.trim() === '') {
-      errors.sku = 'SKU must be a non-empty string'
-    } else if (data.sku.length > 50) {
-      errors.sku = 'SKU must not exceed 50 characters'
-    }
-  }
-
-  // Throw if validation errors exist
-  if (Object.keys(errors).length > 0) {
-    throw new ValidationError('Product validation failed', errors)
-  }
+function _validateProductId(id, operation = 'operation') {
+  validateId(id, 'Product', operation)
 }
 
 /**
@@ -126,12 +49,8 @@ function validateProductData(data, isUpdate = false) {
  * @returns {Object[]} - Array of products
  * @throws {DatabaseError} When database query fails
  */
-export async function getAllProducts(
-  filters = {},
-  includeInactive = false,
-  includeImageSize = null
-) {
-  try {
+export const getAllProducts = withErrorMapping(
+  async (filters = {}, includeInactive = false, includeImageSize = null) => {
     // If filtering by occasion slug, first resolve it to occasion_id
     let occasionId = null
     if (filters.occasion) {
@@ -203,7 +122,8 @@ export async function getAllProducts(
 
     if (filters.offset) {
       console.log(`🔧 Applying offset: ${filters.offset}`)
-      query = query.range(filters.offset, filters.offset + (filters.limit || 50) - 1)
+      const limit = filters.limit !== undefined ? filters.limit : 50
+      query = query.range(filters.offset, filters.offset + limit - 1)
     }
 
     console.log(`🔍 Query filters:`, { ...filters, occasionId, includeInactive, includeImageSize })
@@ -211,7 +131,8 @@ export async function getAllProducts(
     const { data: products, error } = await query
 
     if (error) {
-      throw new DatabaseError('SELECT', TABLE, error, { filters, includeInactive })
+      // Map Supabase error automatically
+      throw error
     }
     if (!products || products.length === 0) {
       console.log('No products found for filters:', filters)
@@ -231,11 +152,10 @@ export async function getAllProducts(
     // Use the new specialized service function to get products with requested image size
     const { getProductsBatchWithImageSize } = await import('./productImageService.js')
     return await getProductsBatchWithImageSize(productIds, includeImageSize)
-  } catch (error) {
-    console.error('getAllProducts failed:', error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get product by ID
@@ -247,8 +167,9 @@ export async function getAllProducts(
  * @throws {NotFoundError} When product is not found
  * @throws {DatabaseError} When database query fails
  */
-export async function getProductById(id, includeInactive = false, includeImageSize = null) {
-  try {
+export const getProductById = withErrorMapping(
+  async (id, includeInactive = false, includeImageSize = null) => {
+    // Fail-fast: Validate ID
     if (!id || typeof id !== 'number' || id <= 0) {
       throw new BadRequestError('Invalid product ID: must be a positive number', { productId: id })
     }
@@ -263,10 +184,8 @@ export async function getProductById(id, includeInactive = false, includeImageSi
     const { data, error } = await query.single()
 
     if (error) {
-      if (error.code === 'PGRST116' || error.message?.includes('Row not found')) {
-        throw new NotFoundError('Product', id, { includeInactive })
-      }
-      throw new DatabaseError('SELECT', TABLE, error, { productId: id })
+      // Map Supabase error automatically (PGRST116 -> NotFoundError, etc.)
+      throw error
     }
 
     if (!data) {
@@ -281,16 +200,10 @@ export async function getProductById(id, includeInactive = false, includeImageSi
     // Use the new specialized service function to get product with specific image size
     const { getProductWithImageSize } = await import('./productImageService.js')
     return await getProductWithImageSize(id, includeImageSize)
-  } catch (error) {
-    // Re-throw AppError instances as-is (fail-fast)
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    // Wrap unexpected errors
-    console.error(`getProductById(${id}) failed:`, error)
-    throw new DatabaseError('SELECT', TABLE, error, { productId: id })
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get product by SKU (indexed column)
@@ -358,7 +271,7 @@ export async function getProductsWithOccasions(limit = 50, offset = 0) {
       )
       .eq('active', true)
       .order('created_at', { ascending: false })
-      .limit(limit || PAGINATION.DEFAULT_LIMIT)
+      .limit(limit !== undefined ? limit : PAGINATION.DEFAULT_LIMIT)
       .range(offset, offset + limit - 1)
 
     if (error) {
@@ -398,7 +311,7 @@ export async function getProductsByOccasion(occasionId, limit = 50) {
       .eq('product_occasions.occasion_id', occasionId)
       .eq('active', true)
       .order('created_at', { ascending: false })
-      .limit(limit || PAGINATION.DEFAULT_LIMIT)
+      .limit(limit !== undefined ? limit : PAGINATION.DEFAULT_LIMIT)
 
     if (error) {
       throw new DatabaseError('SELECT', TABLE, error, { occasionId })
@@ -471,7 +384,7 @@ export async function getCarouselProducts() {
  */
 export async function createProduct(productData) {
   try {
-    validateProductData(productData, false)
+    validateProduct(productData, false)
 
     // Sanitize data before database operations
     const sanitizedData = sanitizeProductData(productData, false)
@@ -551,7 +464,7 @@ export async function createProduct(productData) {
  */
 export async function createProductWithOccasions(productData, occasionIds = []) {
   try {
-    validateProductData(productData, false)
+    validateProduct(productData, false)
 
     if (!Array.isArray(occasionIds)) {
       throw new BadRequestError('Invalid occasionIds: must be an array', { occasionIds })
@@ -618,7 +531,7 @@ export async function updateProduct(id, updates) {
       throw new BadRequestError('No updates provided', { productId: id })
     }
 
-    validateProductData(updates, true)
+    validateProduct(updates, true)
 
     // Sanitize data before database operations
     const sanitizedData = sanitizeProductData(updates, true)

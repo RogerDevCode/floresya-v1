@@ -600,8 +600,16 @@ test.describe('Users Management Page', () => {
       await expect(page.locator('#users-table-body')).toBeVisible()
 
       // Check filters stack vertically on mobile
-      const filterContainer = page.locator('.flex-col.lg\\:flex-row')
+      const filterContainer = page.locator('.flex-col.lg\\:flex-row, .filters-container')
       await expect(filterContainer).toBeVisible()
+
+      // Verify no horizontal overflow
+      const hasHorizontalScroll = await page.evaluate(() => {
+        return document.documentElement.scrollWidth > document.documentElement.clientWidth
+      })
+      expect(hasHorizontalScroll).toBe(false)
+
+      console.log('✅ Mobile layout renders correctly')
     })
 
     test('should show mobile navigation', async ({ page }) => {
@@ -609,8 +617,39 @@ test.describe('Users Management Page', () => {
       await page.setViewportSize({ width: 375, height: 667 })
 
       // Check hamburger menu is visible
-      const hamburgerMenu = page.locator('#admin-sidebar-toggle')
+      const hamburgerMenu = page.locator('#admin-sidebar-toggle, .mobile-menu-toggle')
       await expect(hamburgerMenu).toBeVisible()
+
+      // Test hamburger menu functionality
+      await hamburgerMenu.click()
+      await page.waitForTimeout(300)
+
+      // Sidebar should toggle
+      const sidebar = page.locator('#admin-sidebar')
+      if (await sidebar.isVisible()) {
+        // Toggle again
+        await hamburgerMenu.click()
+        await page.waitForTimeout(300)
+        console.log('✅ Mobile navigation works correctly')
+      }
+    })
+
+    test('should handle touch interactions on mobile', async ({ page }) => {
+      await page.setViewportSize({ width: 375, height: 667 })
+
+      // Test scrolling
+      await page.evaluate(() => {
+        window.scrollTo(0, document.body.scrollHeight)
+      })
+      await page.waitForTimeout(300)
+
+      await page.evaluate(() => {
+        window.scrollTo(0, 0)
+      })
+      await page.waitForTimeout(300)
+
+      // Verify page is still functional
+      await expect(page.locator('#users-view')).toBeVisible()
     })
   })
 

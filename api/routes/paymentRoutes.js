@@ -6,10 +6,9 @@
 
 import express from 'express'
 import * as paymentController from '../controllers/paymentController.js'
-import { authenticate } from '../middleware/auth.js'
-import { validate, validateId } from '../middleware/validate.js'
-import { paymentConfirmSchema } from '../middleware/schemas.js'
-import { rateLimitCritical } from '../middleware/rateLimit.js'
+import { authenticate } from '../middleware/auth/index.js'
+import { validate, validateId, paymentConfirmSchema } from '../middleware/validation/index.js'
+import { rateLimitCritical } from '../middleware/security/index.js'
 
 const router = express.Router()
 

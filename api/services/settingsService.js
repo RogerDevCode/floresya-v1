@@ -7,63 +7,26 @@
  */
 
 import { supabase, DB_SCHEMA } from './supabaseClient.js'
+import { withErrorMapping } from '../middleware/error/index.js'
 import {
-  ValidationError,
   NotFoundError,
   DatabaseError,
   DatabaseConstraintError,
   BadRequestError,
   InternalServerError
 } from '../errors/AppError.js'
+import { validateSetting } from '../utils/validation.js'
 
 const TABLE = DB_SCHEMA.settings.table
 
 /**
- * Validate setting data (ENTERPRISE FAIL-FAST)
- * @param {Object} data - Setting data to validate
- * @param {string} [data.key] - Setting key (required for creation, must be non-empty string)
- * @param {string} [data.value] - Setting value
- * @param {string} [data.description] - Setting description
- * @param {string} [data.type] - Setting type (string, number, boolean, json)
- * @param {boolean} [data.is_public] - Whether setting is publicly accessible
- * @param {boolean} isUpdate - Whether this is for an update operation (default: false)
- * @throws {ValidationError} With detailed field-level validation errors
- * @example
- * // For creation
- * validateSettingData({
- *   key: 'DELIVERY_COST_USD',
- *   value: '7.00',
- *   type: 'number',
- *   description: 'Default delivery cost in USD'
- * }, false)
- *
- * // For update
- * validateSettingData({
- *   value: '8.00'
- * }, true)
+ * Validate setting ID (ENTERPRISE FAIL-FAST)
+ * @param {string} key - Setting key to validate
+ * @param {string} operation - Operation name for error context
  */
-function validateSettingData(data, isUpdate = false) {
-  const errors = {}
-
-  if (!isUpdate) {
-    if (!data.key || typeof data.key !== 'string') {
-      errors.key = 'Key is required and must be a non-empty string'
-    }
-  }
-
-  if (data.key !== undefined && (typeof data.key !== 'string' || data.key.trim() === '')) {
-    errors.key = 'Key must be a non-empty string'
-  }
-
-  if (data.type !== undefined) {
-    const validTypes = ['string', 'number', 'boolean', 'json']
-    if (!validTypes.includes(data.type)) {
-      errors.type = `Type must be one of ${validTypes.join(', ')}`
-    }
-  }
-
-  if (Object.keys(errors).length > 0) {
-    throw new ValidationError('Setting validation failed', errors)
+function _validateSettingId(key, operation = 'operation') {
+  if (!key || typeof key !== 'string') {
+    throw new BadRequestError(`Invalid setting key: must be a string`, { key, operation })
   }
 }
 
@@ -75,9 +38,14 @@ function validateSettingData(data, isUpdate = false) {
  * @throws {NotFoundError} When no settings are found
  * @throws {DatabaseError} When database query fails
  */
-export async function getAllSettings(publicOnly = false, _includeInactive = false) {
+export async function getAllSettings(publicOnly = false, includeInactive = false) {
   try {
     let query = supabase.from(TABLE).select('*')
+
+    // Apply activity filter explicitly for test compliance
+    if (!includeInactive) {
+      query = query.eq('is_active', true)
+    }
 
     // Filter for public settings if requested
     if (publicOnly) {
@@ -133,7 +101,12 @@ export async function getSettingById(key, includeInactive = false) {
       throw new BadRequestError('Invalid key: must be a string', { key })
     }
 
-    const query = supabase.from(TABLE).select('*').eq('key', key)
+    let query = supabase.from(TABLE).select('*').eq('key', key)
+
+    // Apply activity filter explicitly for test compliance
+    if (!includeInactive) {
+      query = query.eq('is_active', true)
+    }
 
     const { data, error } = await query.single()
 
@@ -162,8 +135,8 @@ export async function getSettingById(key, includeInactive = false) {
  * @throws {NotFoundError} When setting with key is not found
  * @throws {DatabaseError} When database query fails
  */
-export async function getSettingByKey(key) {
-  try {
+export const getSettingByKey = withErrorMapping(
+  async key => {
     if (!key || typeof key !== 'string') {
       throw new BadRequestError('Invalid key: must be a string', { key })
     }
@@ -171,24 +144,18 @@ export async function getSettingByKey(key) {
     const { data, error } = await supabase.from(TABLE).select('*').eq('key', key).single()
 
     if (error) {
-      if (error.code === 'PGRST116') {
-        throw new NotFoundError('Setting', key, { key })
-      }
-      throw new DatabaseError('SELECT', TABLE, error, { key })
+      // Map Supabase error automatically
+      throw error
     }
     if (!data) {
       throw new NotFoundError('Setting', key, { key })
     }
 
     return data
-  } catch (error) {
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    console.error(`getSettingByKey(${key}) failed:`, error)
-    throw new DatabaseError('SELECT', TABLE, error, { key })
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get setting value (typed) - automatically parses value based on setting type
@@ -237,7 +204,7 @@ export async function getSettingValue(key) {
  */
 export async function createSetting(settingData) {
   try {
-    validateSettingData(settingData, false)
+    validateSetting(settingData, false)
 
     const newSetting = {
       key: settingData.key,
@@ -304,7 +271,7 @@ export async function updateSetting(key, updates) {
       throw new BadRequestError('No updates provided', { key })
     }
 
-    validateSettingData(updates, true)
+    validateSetting(updates, true)
 
     const allowedFields = ['value', 'description', 'type', 'is_public']
     const sanitized = {}
@@ -474,8 +441,8 @@ export async function getSettingsByKeys(keys) {
  * const settings = await getSettingsMap()
  * // Returns: { DELIVERY_COST_USD: 7.0, bcv_usd_rate: 40.0, MAINTENANCE_MODE: false }
  */
-export async function getSettingsMap(publicOnly = false) {
-  try {
+export const getSettingsMap = withErrorMapping(
+  async (publicOnly = false) => {
     const settings = await getAllSettings(publicOnly)
 
     const map = {}
@@ -497,8 +464,7 @@ export async function getSettingsMap(publicOnly = false) {
     }
 
     return map
-  } catch (error) {
-    console.error('getSettingsMap failed:', error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)

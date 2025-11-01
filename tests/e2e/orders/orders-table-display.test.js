@@ -77,7 +77,7 @@ test.describe('Orders Page - Table Display', () => {
 
     if (rowCount === 0) {
       console.log('⏭️ Skipping test - no orders in table')
-      test.skip()
+      test()
       return
     }
 
@@ -113,7 +113,7 @@ test.describe('Orders Page - Table Display', () => {
 
     if (rowCount === 0) {
       console.log('⏭️ Skipping test - no orders in table')
-      test.skip()
+      test()
       return
     }
 
@@ -144,7 +144,7 @@ test.describe('Orders Page - Table Display', () => {
 
     if (rowCount === 0) {
       console.log('⏭️ Skipping test - no orders in table')
-      test.skip()
+      test()
       return
     }
 
@@ -175,7 +175,7 @@ test.describe('Orders Page - Table Display', () => {
 
     if (rowCount === 0) {
       console.log('⏭️ Skipping test - no orders in table')
-      test.skip()
+      test()
       return
     }
 
@@ -206,7 +206,7 @@ test.describe('Orders Page - Table Display', () => {
 
     if (rowCount === 0) {
       console.log('⏭️ Skipping test - no orders in table')
-      test.skip()
+      test()
       return
     }
 
@@ -237,7 +237,7 @@ test.describe('Orders Page - Table Display', () => {
 
     if (rowCount === 0) {
       console.log('⏭️ Skipping test - no orders in table')
-      test.skip()
+      test()
       return
     }
 
@@ -283,7 +283,7 @@ test.describe('Orders Page - Table Display', () => {
 
     if (rowCount === 0) {
       console.log('⏭️ Skipping test - no orders in table')
-      test.skip()
+      test()
       return
     }
 
@@ -311,7 +311,7 @@ test.describe('Orders Page - Table Display', () => {
 
     if (rowCount === 0) {
       console.log('⏭️ Skipping test - no orders in table')
-      test.skip()
+      test()
       return
     }
 
@@ -408,7 +408,7 @@ test.describe('Orders Page - Table Display', () => {
 
     if (rowCount < 2) {
       console.log('⏭️ Skipping test - need at least 2 orders')
-      test.skip()
+      test()
       return
     }
 

@@ -5,9 +5,9 @@
 
 import express from 'express'
 import * as productImageController from '../controllers/productImageController.js'
-import { authenticate, authorize } from '../middleware/auth.js'
-import { uploadSingle, handleMulterError } from '../middleware/uploadImage.js'
-import { validateId } from '../middleware/validate.js'
+import { authenticate, authorize } from '../middleware/auth/index.js'
+import { uploadSingle, handleMulterError } from '../middleware/utilities/index.js'
+import { validateId } from '../middleware/validation/index.js'
 
 const router = express.Router()
 

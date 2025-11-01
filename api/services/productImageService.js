@@ -16,77 +16,10 @@ import {
   InternalServerError
 } from '../errors/AppError.js'
 import { QUERY_LIMITS } from '../config/constants.js'
+import { validateProductImage } from '../utils/validation.js'
 
-const TABLE = DB_SCHEMA.product_images.table
-const VALID_SIZES = DB_SCHEMA.product_images.enums.size
-
-/**
- * Validate image data (ENTERPRISE FAIL-FAST)
- * @param {Object} data - Image data to validate
- * @param {number} [data.product_id] - Product ID (required for creation)
- * @param {number} [data.image_index] - Image index (required for creation, must be positive)
- * @param {string} [data.size] - Image size (required for creation, must be valid enum)
- * @param {string} [data.url] - Image URL (required for creation)
- * @param {string} [data.file_hash] - File hash for deduplication (required for creation)
- * @param {string} [data.mime_type] - MIME type
- * @param {boolean} [data.is_primary] - Whether this is the primary image
- * @param {boolean} isUpdate - Whether this is for an update operation (default: false)
- * @throws {ValidationError} With detailed field-level validation errors
- * @example
- * // For creation
- * validateImageData({
- *   product_id: 123,
- *   image_index: 1,
- *   size: 'medium',
- *   url: 'https://.../product_123_1.webp',
- *   file_hash: 'abc123'
- * }, false)
- *
- * // For update
- * validateImageData({
- *   url: 'https://.../new-url.webp'
- * }, true)
- */
-function validateImageData(data, isUpdate = false) {
-  if (!isUpdate) {
-    if (!data.product_id || typeof data.product_id !== 'number') {
-      throw new ValidationError('Image validation failed', { product_id: 'must be a number' })
-    }
-    if (!data.image_index || typeof data.image_index !== 'number' || data.image_index <= 0) {
-      throw new ValidationError('Image validation failed', {
-        image_index: 'must be a positive number'
-      })
-    }
-    if (!data.size || !VALID_SIZES.includes(data.size)) {
-      throw new ValidationError('Image validation failed', {
-        size: `must be one of ${VALID_SIZES.join(', ')}`
-      })
-    }
-    if (!data.url || typeof data.url !== 'string') {
-      throw new ValidationError('Image validation failed', { url: 'must be a non-empty string' })
-    }
-    if (!data.file_hash || typeof data.file_hash !== 'string') {
-      throw new ValidationError('Image validation failed', {
-        file_hash: 'must be a non-empty string'
-      })
-    }
-  }
-
-  if (data.size !== undefined && !VALID_SIZES.includes(data.size)) {
-    throw new ValidationError('Image validation failed', {
-      size: `must be one of ${VALID_SIZES.join(', ')}`
-    })
-  }
-
-  if (
-    data.image_index !== undefined &&
-    (typeof data.image_index !== 'number' || data.image_index <= 0)
-  ) {
-    throw new ValidationError('Image validation failed', {
-      image_index: 'must be a positive number'
-    })
-  }
-}
+const TABLE = DB_SCHEMA.product_images?.table || 'product_images'
+const VALID_SIZES = DB_SCHEMA.product_images?.enums?.size || ['thumb', 'small', 'medium', 'large']
 
 /**
  * Get all images for a product with optional filtering by size and primary status
@@ -255,7 +188,7 @@ export async function getImagesByHash(fileHash) {
  */
 export async function createImage(imageData) {
   try {
-    validateImageData(imageData, false)
+    validateProductImage(imageData, false)
 
     const newImage = {
       product_id: imageData.product_id,
@@ -388,7 +321,7 @@ export async function updateImage(id, updates) {
       throw new BadRequestError('No updates provided', { imageId: id })
     }
 
-    validateImageData(updates, true)
+    validateProductImage(updates, true)
 
     const allowedFields = ['url', 'file_hash', 'mime_type', 'is_primary']
     const sanitized = {}

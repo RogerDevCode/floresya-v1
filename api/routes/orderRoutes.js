@@ -5,18 +5,23 @@
 
 import express from 'express'
 import * as orderController from '../controllers/orderController.js'
-import { authenticate, authorize, checkOwnership } from '../middleware/auth.js'
-import { validate, validateId, validatePagination } from '../middleware/validate.js'
-import { sanitizeRequestData } from '../middleware/sanitize.js'
-import { advancedValidate } from '../middleware/advancedValidation.js'
+import { authenticate, authorize, checkOwnership } from '../middleware/auth/index.js'
+import {
+  validate,
+  validateId,
+  validatePagination,
+  sanitizeRequestData,
+  advancedValidate,
+  orderStatusUpdateSchema,
+  orderCreateSchema
+} from '../middleware/validation/index.js'
 import {
   protectOrderCreation,
   protectAdminOperations,
   rateLimitCritical
-} from '../middleware/rateLimit.js'
+} from '../middleware/security/index.js'
 import { validateBusinessRules } from '../services/businessRules.js'
 import { orderMetricsMiddleware } from '../monitoring/metricsCollector.js'
-import { orderStatusUpdateSchema, orderCreateSchema } from '../middleware/schemas.js'
 
 const router = express.Router()
 

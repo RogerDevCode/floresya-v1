@@ -249,7 +249,7 @@ test.describe('Orders Page - Order Detail Modal', () => {
     const emailMatch = customerInfo.match(/[\w.-]+@[\w.-]+\.\w+/)
     if (!emailMatch) {
       console.log('⏭️ Skipping - no email found to match against DB')
-      test.skip()
+      test()
       return
     }
 
@@ -266,7 +266,7 @@ test.describe('Orders Page - Order Detail Modal', () => {
 
     if (error || !orders || orders.length === 0) {
       console.log('⏭️ Skipping - order not found in database')
-      test.skip()
+      test()
       return
     }
 

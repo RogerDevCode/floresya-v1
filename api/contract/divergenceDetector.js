@@ -1,11 +1,14 @@
 /**
  * Advanced Divergence Detection System
  * Monitors and reports discrepancies between API implementation and OpenAPI specification
+ *
+ * Uses centralized configuration from configLoader
  */
 
 import fs from 'fs/promises'
 import path from 'path'
 import yaml from 'js-yaml'
+import config from '../config/configLoader.js'
 
 let openApiSpec = null
 const specPath = path.join(process.cwd(), 'api', 'docs', 'openapi-spec.yaml')
@@ -352,6 +355,11 @@ export class DivergenceDetector {
  */
 export function createDivergenceDetectionMiddleware() {
   return async (req, res, next) => {
+    // Skip divergence detection in test environment
+    if (config.IS_TEST) {
+      return next()
+    }
+
     const detector = new DivergenceDetector()
     await detector.initialize()
 

@@ -26,18 +26,54 @@ import {
  */
 export async function signUp(email, password, metadata = {}) {
   try {
-    // Validation
+    // Validation - FAIL FAST
     if (!email || typeof email !== 'string') {
-      throw new BadRequestError('Email is required', { email })
+      throw new BadRequestError('Email is required and must be a string', { email })
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      throw new BadRequestError('Invalid email format', { email })
     }
 
     if (!password || typeof password !== 'string') {
-      throw new BadRequestError('Password is required', {})
+      throw new BadRequestError('Password is required and must be a string', {})
     }
 
+    // STRONG PASSWORD POLICY
     if (password.length < 8) {
       throw new BadRequestError('Password must be at least 8 characters', {
-        passwordLength: password.length
+        passwordLength: password.length,
+        policy: 'min_length_8'
+      })
+    }
+
+    // Check for at least one uppercase letter
+    if (!/[A-Z]/.test(password)) {
+      throw new BadRequestError('Password must contain at least one uppercase letter', {
+        policy: 'require_uppercase'
+      })
+    }
+
+    // Check for at least one lowercase letter
+    if (!/[a-z]/.test(password)) {
+      throw new BadRequestError('Password must contain at least one lowercase letter', {
+        policy: 'require_lowercase'
+      })
+    }
+
+    // Check for at least one number
+    if (!/[0-9]/.test(password)) {
+      throw new BadRequestError('Password must contain at least one number', {
+        policy: 'require_number'
+      })
+    }
+
+    // Check for at least one special character
+    if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>?]/.test(password)) {
+      throw new BadRequestError('Password must contain at least one special character', {
+        policy: 'require_special_char'
       })
     }
 

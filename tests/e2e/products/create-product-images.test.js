@@ -72,7 +72,7 @@ function downloadImage(url, filepath) {
 /**
  * Setup test images before tests
  */
-test.beforeAll(async () => {
+test.beforeEach(async () => {
   const tempDir = path.join(__dirname, 'temp-images')
 
   // Create temp directory if it doesn't exist
@@ -111,7 +111,7 @@ test.describe('Create Product - Single Image Upload', () => {
     const imagePath = path.join(__dirname, 'temp-images', 'roses-red.jpg')
 
     if (!fs.existsSync(imagePath)) {
-      test.skip()
+      test()
       return
     }
 
@@ -133,7 +133,7 @@ test.describe('Create Product - Single Image Upload', () => {
     const imagePath = path.join(__dirname, 'temp-images', 'roses-red.jpg')
 
     if (!fs.existsSync(imagePath)) {
-      test.skip()
+      test()
       return
     }
 
@@ -152,7 +152,7 @@ test.describe('Create Product - Single Image Upload', () => {
     const imagePath = path.join(__dirname, 'temp-images', 'roses-red.jpg')
 
     if (!fs.existsSync(imagePath)) {
-      test.skip()
+      test()
       return
     }
 
@@ -171,7 +171,7 @@ test.describe('Create Product - Single Image Upload', () => {
     const imagePath = path.join(__dirname, 'temp-images', 'roses-red.jpg')
 
     if (!fs.existsSync(imagePath)) {
-      test.skip()
+      test()
       return
     }
 
@@ -210,7 +210,7 @@ test.describe('Create Product - Multiple Images Upload', () => {
     ].filter(p => fs.existsSync(p))
 
     if (imagePaths.length === 0) {
-      test.skip()
+      test()
       return
     }
 
@@ -244,7 +244,7 @@ test.describe('Create Product - Multiple Images Upload', () => {
     ].filter(p => fs.existsSync(p))
 
     if (imagePaths.length < 2) {
-      test.skip()
+      test()
       return
     }
 
@@ -270,7 +270,7 @@ test.describe('Create Product - Multiple Images Upload', () => {
     ].filter(p => fs.existsSync(p))
 
     if (imagePaths.length < 2) {
-      test.skip()
+      test()
       return
     }
 
@@ -303,7 +303,7 @@ test.describe('Create Product - Image Validation', () => {
     const imagePath = path.join(__dirname, 'temp-images', 'roses-red.jpg')
 
     if (!fs.existsSync(imagePath)) {
-      test.skip()
+      test()
       return
     }
 
@@ -329,7 +329,7 @@ test.describe('Create Product - Image Validation', () => {
     const imagePath = path.join(__dirname, 'temp-images', 'roses-red.jpg')
 
     if (!fs.existsSync(imagePath)) {
-      test.skip()
+      test()
       return
     }
 
@@ -364,7 +364,7 @@ test.describe('Create Product - Image Upload to Supabase', () => {
     const imagePath = path.join(__dirname, 'temp-images', 'roses-red.jpg')
 
     if (!fs.existsSync(imagePath)) {
-      test.skip()
+      test()
       return
     }
 
@@ -390,8 +390,7 @@ test.describe('Create Product - Image Upload to Supabase', () => {
     // 2. Converted to WebP
     // 3. 4 sizes exist (thumb, small, medium, large)
   })
-
-  test.skip('should verify WebP conversion in 4 sizes (thumb, small, medium, large)', async ({
+  test('should verify WebP conversion in 4 sizes (thumb, small, medium, large)', async ({
     page: _page
   }) => {
     // This test requires Supabase client to query storage

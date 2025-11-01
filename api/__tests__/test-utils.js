@@ -15,13 +15,18 @@ export const createTestUser = async () => {
   const timestamp = Date.now()
   const testUser = {
     email: `testuser${timestamp}@example.com`,
-    full_name: `Test User ${timestamp}`,
+    full_name: 'Test User',
     phone: `+569${timestamp.toString().slice(-8)}`,
-    password_hash: 'testpassword123',
-    role: 'user'
+    password_hash: 'TestPassword123!',
+    role: 'user',
+    email_verified: true
   }
 
-  const response = await request(app).post('/api/users').send(testUser)
+  const adminToken = getAdminToken()
+  const response = await request(app)
+    .post('/api/users')
+    .set('Authorization', `Bearer ${adminToken}`)
+    .send(testUser)
 
   if (response.status !== 201) {
     throw new Error(`Failed to create test user: ${response.body.error}`)

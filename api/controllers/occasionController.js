@@ -4,7 +4,8 @@
  */
 
 import * as occasionService from '../services/occasionService.js'
-import { asyncHandler } from '../middleware/errorHandler.js'
+import { asyncHandler } from '../middleware/error/index.js'
+import { BadRequestError } from '../errors/AppError.js'
 
 /**
  * Helper Functions
@@ -36,7 +37,16 @@ const getStatusCode = operation => {
     reactivate: 200,
     displayOrder: 200
   }
-  return statusCodes[operation] || 200
+
+  // Fail-fast: Validate operation
+  if (!statusCodes[operation]) {
+    throw new BadRequestError(`Invalid operation: ${operation}`, {
+      operation,
+      validOperations: Object.keys(statusCodes)
+    })
+  }
+
+  return statusCodes[operation]
 }
 
 /**
@@ -54,7 +64,16 @@ const getSuccessMessage = (operation, entity = 'Occasion') => {
     displayOrder: 'Display order updated successfully',
     retrieve: `${entity} retrieved successfully`
   }
-  return messages[operation] || `${entity} operation completed successfully`
+
+  // Fail-fast: Validate operation
+  if (!messages[operation]) {
+    throw new BadRequestError(`Invalid operation: ${operation}`, {
+      operation,
+      validOperations: Object.keys(messages)
+    })
+  }
+
+  return messages[operation]
 }
 
 /**

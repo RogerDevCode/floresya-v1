@@ -157,7 +157,7 @@ test.describe('Create Product - BCV Conversion', () => {
       expect(parseFloat(vesValue)).toBeGreaterThan(0)
     } else {
       // VES field doesn't exist, test passes
-      test.skip()
+      test()
     }
   })
 })

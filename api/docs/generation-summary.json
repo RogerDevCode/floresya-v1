@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-10-26T19:21:27.732Z",
+  "timestamp": "2025-10-31T16:30:10.137Z",
   "version": "1.0.0",
-  "endpoints": 44,
-  "schemas": 16,
+  "endpoints": 46,
+  "schemas": 23,
   "tags": 6,
   "generation": {
     "success": true,

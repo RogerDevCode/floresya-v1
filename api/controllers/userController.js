@@ -5,7 +5,7 @@
  */
 
 import * as userService from '../services/userService.js'
-import { asyncHandler } from '../middleware/errorHandler.js'
+import { asyncHandler } from '../middleware/error/index.js'
 import { BadRequestError, UnauthorizedError } from '../errors/AppError.js'
 
 /**
@@ -35,7 +35,16 @@ const getStatusCode = operation => {
     update: 200,
     delete: 200
   }
-  return statusCodes[operation] || 200
+
+  // Fail-fast: Validate operation
+  if (!statusCodes[operation]) {
+    throw new BadRequestError(`Invalid operation: ${operation}`, {
+      operation,
+      validOperations: Object.keys(statusCodes)
+    })
+  }
+
+  return statusCodes[operation]
 }
 
 /**
@@ -52,7 +61,16 @@ const getSuccessMessage = (operation, entity = 'User') => {
     retrieve: `${entity} retrieved successfully`,
     users: 'Users retrieved successfully'
   }
-  return messages[operation] || `${entity} operation completed successfully`
+
+  // Fail-fast: Validate operation
+  if (!messages[operation]) {
+    throw new BadRequestError(`Invalid operation: ${operation}`, {
+      operation,
+      validOperations: Object.keys(messages)
+    })
+  }
+
+  return messages[operation]
 }
 
 /**
@@ -70,19 +88,40 @@ export const getAllUsers = asyncHandler(async (req, res) => {
   // Optional pagination - only when provided
   if (req.query.limit !== undefined) {
     filters.limit = Number(req.query.limit)
-    filters.offset = Number(req.query.offset) || 0
+
+    // FAIL FAST - Explicit validation for offset
+    if (req.query.offset !== undefined) {
+      const offset = Number(req.query.offset)
+      if (isNaN(offset) || offset < 0) {
+        throw new BadRequestError('Invalid offset: must be a non-negative number', {
+          offset: req.query.offset,
+          rule: 'non-negative number'
+        })
+      }
+      filters.offset = offset
+    } else {
+      filters.offset = 0
+    }
   }
 
   // FAIL FAST - Explicit admin check
-  const userRole = req.user?.user_metadata?.role || req.user?.role
-  if (!req.user || userRole !== 'admin') {
+  const userRole = req.user ? req.user.user_metadata?.role || req.user.role : null
+
+  if (!req.user) {
+    throw new UnauthorizedError('Authentication required', {
+      reason: 'no_user_object'
+    })
+  }
+
+  if (userRole !== 'admin') {
     throw new UnauthorizedError('Admin access required to view all users', {
       userRole,
       requiredRole: 'admin'
     })
   }
 
-  const includeInactive = true
+  // Control includeInactive based on admin role and query param
+  const includeInactive = req.user?.role === 'admin' && req.query.includeInactive === 'true'
   const users = await userService.getAllUsers(filters, includeInactive)
 
   const response = createResponse(users, getSuccessMessage('users'))
@@ -111,8 +150,9 @@ export const getUserById = asyncHandler(async (req, res) => {
   }
 
   // FAIL FAST - Explicit admin check for inactive user access
-  const userRole = req.user?.user_metadata?.role || req.user?.role
-  const includeInactive = req.user && userRole === 'admin'
+  const userRole = req.user ? req.user.user_metadata?.role || req.user.role : null
+
+  const includeInactive = req.user !== null && userRole === 'admin'
   const user = await userService.getUserById(userId, includeInactive)
 
   const response = createResponse(user, getSuccessMessage('retrieve'))

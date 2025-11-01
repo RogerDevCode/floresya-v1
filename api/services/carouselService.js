@@ -2,11 +2,15 @@
  * Carousel Service
  * Single Responsibility: Manage carousel_order conflicts and positioning
  * SOLID: Extracted from productService to avoid bloat
+ *
+ * Uses centralized structured logging
  */
 
 import { supabase, DB_SCHEMA } from './supabaseClient.js'
-import { DatabaseError, ValidationError } from '../errors/AppError.js'
+import { ValidationError } from '../errors/AppError.js'
+import { withErrorMapping } from '../middleware/error/index.js'
 import { CAROUSEL, QUERY_LIMITS } from '../config/constants.js'
+import { log as logger } from '../utils/logger.js'
 
 const TABLE = DB_SCHEMA.products.table
 
@@ -14,8 +18,8 @@ const TABLE = DB_SCHEMA.products.table
  * Get all featured products in carousel (ordered)
  * @returns {Promise<Array>} Featured products sorted by carousel_order
  */
-export async function getCarouselProducts() {
-  try {
+export const getCarouselProducts = withErrorMapping(
+  async () => {
     const { data: products, error } = await supabase
       .from(TABLE)
       .select('*')
@@ -25,7 +29,8 @@ export async function getCarouselProducts() {
       .limit(CAROUSEL.MAX_SIZE)
 
     if (error) {
-      throw new DatabaseError('SELECT', TABLE, error)
+      // Map Supabase error automatically
+      throw error
     }
     if (!products || products.length === 0) {
       return []
@@ -45,7 +50,10 @@ export async function getCarouselProducts() {
           .maybeSingle()
 
         if (imgError) {
-          console.warn(`Failed to fetch image for product ${product.id}:`, imgError.message)
+          logger.warn('Failed to fetch image for product', {
+            productId: product.id,
+            error: imgError.message
+          })
         }
 
         return {
@@ -56,11 +64,10 @@ export async function getCarouselProducts() {
     )
 
     return productsWithImages
-  } catch (error) {
-    console.error('getCarouselProducts failed:', error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Validate carousel_order value
@@ -91,8 +98,8 @@ export function validateCarouselOrder(carouselOrder) {
  * @param {number} excludeProductId - Product ID to exclude from count (when editing)
  * @returns {Promise<boolean>}
  */
-export async function isCarouselFull(excludeProductId = null) {
-  try {
+export const isCarouselFull = withErrorMapping(
+  async (excludeProductId = null) => {
     let query = supabase
       .from(TABLE)
       .select('id', { count: 'exact', head: true })
@@ -106,14 +113,14 @@ export async function isCarouselFull(excludeProductId = null) {
     const { count, error } = await query
 
     if (error) {
-      throw new DatabaseError('COUNT', TABLE, error)
+      // Map Supabase error automatically
+      throw error
     }
     return count >= CAROUSEL.MAX_SIZE
-  } catch (error) {
-    console.error('isCarouselFull failed:', error)
-    throw error
-  }
-}
+  },
+  'COUNT',
+  TABLE
+)
 
 /**
  * Resolve carousel_order conflicts before insert/update
@@ -126,14 +133,14 @@ export async function isCarouselFull(excludeProductId = null) {
  * @param {number} excludeProductId - Product ID being created/edited (exclude from conflict check)
  * @returns {Promise<Object>} { shiftedCount, removedProducts }
  */
-export async function resolveCarouselOrderConflict(newOrder, excludeProductId = null) {
-  if (!newOrder) {
-    return { shiftedCount: 0, removedProducts: [] }
-  } // Not featured, skip
+export const resolveCarouselOrderConflict = withErrorMapping(
+  async (newOrder, excludeProductId = null) => {
+    if (!newOrder) {
+      return { shiftedCount: 0, removedProducts: [] }
+    } // Not featured, skip
 
-  validateCarouselOrder(newOrder)
+    validateCarouselOrder(newOrder)
 
-  try {
     // Get products with same or higher order (process in reverse to avoid conflicts)
     let query = supabase
       .from(TABLE)
@@ -150,13 +157,17 @@ export async function resolveCarouselOrderConflict(newOrder, excludeProductId = 
     const { data: conflicts, error } = await query
 
     if (error) {
-      throw new DatabaseError('SELECT', TABLE, error)
+      // Map Supabase error automatically
+      throw error
     }
     if (!conflicts || conflicts.length === 0) {
       return { shiftedCount: 0, removedProducts: [] }
     }
 
-    console.log(`✓ Resolving ${conflicts.length} carousel_order conflicts for position ${newOrder}`)
+    logger.info('Resolving carousel_order conflicts', {
+      conflictsCount: conflicts.length,
+      newOrder
+    })
 
     const removedProducts = []
     let shiftedCount = 0
@@ -173,13 +184,16 @@ export async function resolveCarouselOrderConflict(newOrder, excludeProductId = 
           .eq('id', product.id)
 
         if (updateError) {
-          throw new DatabaseError('UPDATE', TABLE, updateError, { productId: product.id })
+          throw updateError // Mapeo automático
         }
 
         removedProducts.push({ id: product.id, name: product.name })
-        console.log(
-          `  → Removed "${product.name}" from carousel (pos ${product.carousel_order} > 7)`
-        )
+        logger.info('Removed product from carousel', {
+          productId: product.id,
+          productName: product.name,
+          oldPosition: product.carousel_order,
+          reason: 'position exceeds max carousel size'
+        })
       } else {
         // Shift down
         const { error: updateError } = await supabase
@@ -188,22 +202,24 @@ export async function resolveCarouselOrderConflict(newOrder, excludeProductId = 
           .eq('id', product.id)
 
         if (updateError) {
-          throw new DatabaseError('UPDATE', TABLE, updateError, { productId: product.id })
+          throw updateError // Mapeo automático
         }
 
         shiftedCount++
-        console.log(
-          `  → Shifted "${product.name}" from ${product.carousel_order} to ${newCarouselOrder}`
-        )
+        logger.info('Shifted product in carousel', {
+          productId: product.id,
+          productName: product.name,
+          oldPosition: product.carousel_order,
+          newPosition: newCarouselOrder
+        })
       }
     }
 
     return { shiftedCount, removedProducts }
-  } catch (error) {
-    console.error('resolveCarouselOrderConflict failed:', error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Reorder carousel products (batch update)
@@ -212,12 +228,12 @@ export async function resolveCarouselOrderConflict(newOrder, excludeProductId = 
  * @param {Array<{productId: number, newOrder: number}>} reorderMap
  * @returns {Promise<number>} Number of products updated
  */
-export async function reorderCarousel(reorderMap) {
-  if (!Array.isArray(reorderMap) || reorderMap.length === 0) {
-    throw new ValidationError('reorderMap must be a non-empty array')
-  }
+export const reorderCarousel = withErrorMapping(
+  async reorderMap => {
+    if (!Array.isArray(reorderMap) || reorderMap.length === 0) {
+      throw new ValidationError('reorderMap must be a non-empty array')
+    }
 
-  try {
     let updatedCount = 0
 
     for (const { productId, newOrder } of reorderMap) {
@@ -231,41 +247,45 @@ export async function reorderCarousel(reorderMap) {
         .eq('active', true)
 
       if (error) {
-        throw new DatabaseError('UPDATE', TABLE, error, { productId })
+        // Map Supabase error automatically
+        throw error
       }
       updatedCount++
     }
 
-    console.log(`✓ Reordered ${updatedCount} carousel products`)
+    logger.info('Reordered carousel products', {
+      updatedCount
+    })
     return updatedCount
-  } catch (error) {
-    console.error('reorderCarousel failed:', error)
-    throw error
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Remove product from carousel
  * @param {number} productId - Product to remove
  * @returns {Promise<void>}
  */
-export async function removeFromCarousel(productId) {
-  try {
+export const removeFromCarousel = withErrorMapping(
+  async productId => {
     const { error } = await supabase
       .from(TABLE)
       .update({ featured: false, carousel_order: null })
       .eq('id', productId)
 
     if (error) {
-      throw new DatabaseError('UPDATE', TABLE, error, { productId })
+      // Map Supabase error automatically
+      throw error
     }
 
-    console.log(`✓ Removed product ${productId} from carousel`)
-  } catch (error) {
-    console.error('removeFromCarousel failed:', error)
-    throw error
-  }
-}
+    logger.info('Removed product from carousel', {
+      productId
+    })
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Get available carousel positions (1-7)
@@ -274,8 +294,8 @@ export async function removeFromCarousel(productId) {
  * @param {number} excludeProductId - Product being edited (its position is available)
  * @returns {Promise<Array<number>>} Available positions
  */
-export async function getAvailablePositions(excludeProductId = null) {
-  try {
+export const getAvailablePositions = withErrorMapping(
+  async (excludeProductId = null) => {
     const products = await getCarouselProducts()
 
     // Filter out excluded product
@@ -289,8 +309,7 @@ export async function getAvailablePositions(excludeProductId = null) {
     const available = allPositions.filter(pos => !occupiedPositions.includes(pos))
 
     return available
-  } catch (error) {
-    console.error('getAvailablePositions failed:', error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)

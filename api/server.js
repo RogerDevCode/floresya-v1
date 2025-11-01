@@ -1,31 +1,24 @@
 /**
  * Server Entry Point
  * Starts the Express server (local) or exports app (Vercel)
+ *
+ * Uses centralized configuration from configLoader
  */
 
-import dotenv from 'dotenv'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
-
-// Load environment variables from .env.local
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-dotenv.config({ path: join(__dirname, '../.env.local') })
-
+import config from './config/configLoader.js'
 import app from './app.js'
-import { logger } from './middleware/logger.js'
+import { log as logger } from './utils/logger.js'
 
-const PORT = process.env.PORT || 3000
-const NODE_ENV = process.env.NODE_ENV || 'development'
+const PORT = config.server.port
+const NODE_ENV = config.NODE_ENV
 const IS_VERCEL = process.env.VERCEL === '1'
 
 // Validate required environment variables
-const requiredEnvVars = ['SUPABASE_URL', 'SUPABASE_KEY']
-const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName])
-
-if (missingEnvVars.length > 0 && !IS_VERCEL) {
-  logger.error(`Missing required environment variables: ${missingEnvVars.join(', ')}`)
-  process.exit(1)
+if (IS_VERCEL) {
+  // In Vercel, validation happens in configLoader
+} else {
+  // In local development, configLoader already validates
+  logger.info(`Starting FloresYa API with centralized configuration`)
 }
 
 // Export app for Vercel serverless
@@ -37,6 +30,7 @@ if (!IS_VERCEL && (NODE_ENV !== 'test' || process.env.CI)) {
     logger.info(`🚀 FloresYa API running in ${NODE_ENV} mode`)
     logger.info(`🌐 Server listening on port ${PORT}`)
     logger.info(`📊 Health check: http://localhost:${PORT}/health`)
+    logger.info(`🔧 Configuration: Centralized via configLoader`)
 
     // Final confirmation message
     setTimeout(() => {
