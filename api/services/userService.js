@@ -2,9 +2,13 @@
  * User Service
  * Business logic for user operations
  * KISS implementation - simple and direct
+ *
+ * REPOSITORY PATTERN: Uses UserRepository for data access
+ * Following Service Layer Exclusive principle
  */
 
-import { supabase, DB_SCHEMA } from './supabaseClient.js'
+import { DB_SCHEMA } from './supabaseClient.js'
+import DIContainer from '../architecture/di-container.js'
 import {
   ValidationError,
   NotFoundError,
@@ -16,6 +20,14 @@ import { validateId, validateActivityFilter } from '../utils/validation.js'
 
 const TABLE = DB_SCHEMA.users.table
 const VALID_ROLES = DB_SCHEMA.users.enums.role
+
+/**
+ * Get UserRepository instance from DI Container
+ * @returns {UserRepository} Repository instance
+ */
+function getUserRepository() {
+  return DIContainer.resolve('UserRepository')
+}
 
 /**
  * Validate user ID (KISS principle)
@@ -38,18 +50,21 @@ async function withErrorHandling(operation, operationName, context = {}) {
 
 /**
  * Apply activity filter (FAIL FAST - no fallback)
+ * Note: Not currently used - kept for reference
  */
-function applyActivityFilter(query, includeInactive) {
-  validateActivityFilter(includeInactive)
+function _applyActivityFilter(query, includeDeactivated) {
+  validateActivityFilter(includeDeactivated)
 
-  if (includeInactive === true) {
+  if (includeDeactivated === true) {
     return query
   }
-  if (includeInactive === false) {
-    return query.eq('is_active', true)
+  if (includeDeactivated === false) {
+    return query.eq('active', true)
   }
   // FAIL FAST - no fallback, explicit boolean required
-  throw new BadRequestError('includeInactive must be boolean (true/false)', { includeInactive })
+  throw new BadRequestError('includeDeactivated must be boolean (true/false)', {
+    includeDeactivated
+  })
 }
 
 /**
@@ -57,66 +72,23 @@ function applyActivityFilter(query, includeInactive) {
  * - Shows ALL users by default (no pagination required)
  * - Only applies filters when explicitly provided
  */
-export function getAllUsers(filters = {}, includeInactive = false) {
+export function getAllUsers(filters = {}, includeDeactivated = false) {
   return withErrorHandling(
     async () => {
-      let query = supabase.from(TABLE).select('*')
+      const userRepository = getUserRepository()
 
-      // Apply activity filter explicitly for test compliance
-      if (!includeInactive) {
-        query = query.eq('is_active', true)
-      }
-
-      // Apply filters ONLY when explicitly provided (no default filtering)
-      if (filters.role && VALID_ROLES.includes(filters.role)) {
-        query = query.eq('role', filters.role)
-      }
-
-      if (filters.email_verified !== undefined) {
-        query = query.eq('email_verified', filters.email_verified)
-      }
-
-      // Apply search filter (simple, no regex)
-      if (filters.search) {
-        const searchTerm = filters.search
-        query = query.or(`email.ilike.%${searchTerm}%,full_name.ilike.%${searchTerm}%`)
-      }
-
-      query = query.order('created_at', { ascending: false })
-
-      // Pagination: Optional - only when limit is provided
-      if (filters.limit !== undefined) {
-        // Validate limit
-        if (typeof filters.limit !== 'number' || filters.limit <= 0 || filters.limit > 100) {
-          throw new BadRequestError('Invalid limit: must be a positive number <= 100', {
-            limit: filters.limit,
-            rule: 'positive number <= 100 required'
-          })
-        }
-
-        // Validate and sanitize offset
-        let offset = filters.offset ?? 0
-        // Convert to number if it's a string (common from query params)
-        offset = Number(offset)
-        if (isNaN(offset) || offset < 0) {
-          // Default to 0 if invalid
-          offset = 0
-        }
-
-        query = query.range(offset, offset + filters.limit - 1)
-      }
-
-      const { data, error } = await query
-
-      if (error) {
-        throw new DatabaseError('SELECT', TABLE, error, { filters })
-      }
+      // Use repository to get users with filters
+      const data = await userRepository.findAllWithFilters(filters, {
+        includeDeactivated,
+        orderBy: 'created_at',
+        ascending: false
+      })
 
       // Don't throw error if no users found - return empty array
       return data || []
     },
     'getAllUsers',
-    { filters, includeInactive }
+    { filters, includeDeactivated }
   )
 }
 
@@ -124,21 +96,16 @@ export function getAllUsers(filters = {}, includeInactive = false) {
  * Get user by ID
  */
 export const getUserById = withErrorMapping(
-  async (id, includeInactive = false) => {
+  async (id, includeDeactivated = false) => {
+    const userRepository = getUserRepository()
+
     validateUserId(id, 'getUserById')
 
-    let query = supabase.from(TABLE).select('*').eq('id', id)
-    query = applyActivityFilter(query, includeInactive)
-
-    const { data, error } = await query.single()
-
-    if (error) {
-      // Map Supabase error automatically
-      throw error
-    }
+    // Use repository to get user
+    const data = await userRepository.findById(id, includeDeactivated)
 
     if (!data) {
-      throw new NotFoundError('User', id, { includeInactive })
+      throw new NotFoundError('User', id, { includeDeactivated })
     }
 
     return data
@@ -150,9 +117,11 @@ export const getUserById = withErrorMapping(
 /**
  * Get user by email
  */
-export function getUserByEmail(email, includeInactive = false) {
+export function getUserByEmail(email, includeDeactivated = false) {
   return withErrorHandling(
     async () => {
+      const userRepository = getUserRepository()
+
       // FAIL FAST - Validate email parameter
       if (!email) {
         throw new BadRequestError('Email is required', { email })
@@ -171,26 +140,17 @@ export function getUserByEmail(email, includeInactive = false) {
         })
       }
 
-      let query = supabase.from(TABLE).select('*').eq('email', email)
-      query = applyActivityFilter(query, includeInactive)
-
-      const { data, error } = await query.single()
-
-      if (error) {
-        if (error.code === 'PGRST116') {
-          throw new NotFoundError('User', email, { email, includeInactive })
-        }
-        throw new DatabaseError('SELECT', TABLE, error, { email })
-      }
+      // Use repository to get user by email
+      const data = await userRepository.findByEmail(email, includeDeactivated)
 
       if (!data) {
-        throw new NotFoundError('User', email, { email, includeInactive })
+        throw new NotFoundError('User', email, { email, includeDeactivated })
       }
 
       return data
     },
     `getUserByEmail(${email})`,
-    { email, includeInactive }
+    { email, includeDeactivated }
   )
 }
 
@@ -209,7 +169,7 @@ export function getUsersByFilter(filters = {}) {
       }
 
       if (filters.state !== undefined) {
-        query = query.eq('is_active', filters.state)
+        query = query.eq('active', filters.state)
       }
 
       if (filters.email_verified !== undefined) {
@@ -278,6 +238,8 @@ export function getUsersByFilter(filters = {}) {
 export function createUser(userData) {
   return withErrorHandling(
     async () => {
+      const userRepository = getUserRepository()
+
       // Validate required fields for client registration
       if (!userData.email || typeof userData.email !== 'string') {
         throw new ValidationError('Email is required and must be a string', {
@@ -321,15 +283,12 @@ export function createUser(userData) {
         phone: userData.phone ?? null,
         role: userData.role ?? 'user',
         password_hash: userData.password_hash ?? null,
-        is_active: true,
+        active: true,
         email_verified: userData.email_verified ?? false
       }
 
-      const { data, error } = await supabase.from(TABLE).insert(newUser).select().single()
-
-      if (error) {
-        throw new DatabaseError('INSERT', TABLE, error, { email: userData.email })
-      }
+      // Use repository's create method
+      const data = await userRepository.create(newUser)
 
       return data
     },
@@ -344,6 +303,8 @@ export function createUser(userData) {
 export function updateUser(id, updates) {
   return withErrorHandling(
     async () => {
+      const userRepository = getUserRepository()
+
       validateUserId(id, 'updateUser')
 
       if (!updates || Object.keys(updates).length === 0) {
@@ -359,24 +320,8 @@ export function updateUser(id, updates) {
         })
       }
 
-      const { data, error } = await supabase
-        .from(TABLE)
-        .update(updates)
-        .eq('id', id)
-        .eq('is_active', true)
-        .select()
-        .single()
-
-      if (error) {
-        if (error.code === 'PGRST116') {
-          throw new NotFoundError('User', id, { active: true })
-        }
-        throw new DatabaseError('UPDATE', TABLE, error, { userId: id })
-      }
-
-      if (!data) {
-        throw new NotFoundError('User', id, { active: true })
-      }
+      // Use repository's update method
+      const data = await userRepository.update(id, updates)
 
       return data
     },
@@ -391,26 +336,12 @@ export function updateUser(id, updates) {
 export function deleteUser(id) {
   return withErrorHandling(
     async () => {
+      const userRepository = getUserRepository()
+
       validateUserId(id, 'deleteUser')
 
-      const { data, error } = await supabase
-        .from(TABLE)
-        .update({ is_active: false })
-        .eq('id', id)
-        .eq('is_active', true)
-        .select()
-        .single()
-
-      if (error) {
-        if (error.code === 'PGRST116') {
-          throw new NotFoundError('User', id, { active: true })
-        }
-        throw new DatabaseError('UPDATE', TABLE, error, { userId: id })
-      }
-
-      if (!data) {
-        throw new NotFoundError('User', id, { active: true })
-      }
+      // Use repository's delete method (soft-delete)
+      const data = await userRepository.delete(id)
 
       return data
     },
@@ -427,26 +358,12 @@ export function deleteUser(id) {
 export function reactivateUser(id) {
   return withErrorHandling(
     async () => {
+      const userRepository = getUserRepository()
+
       validateUserId(id, 'reactivateUser')
 
-      const { data, error } = await supabase
-        .from(TABLE)
-        .update({ is_active: true })
-        .eq('id', id)
-        .eq('is_active', false)
-        .select()
-        .single()
-
-      if (error) {
-        if (error.code === 'PGRST116') {
-          throw new NotFoundError('User', id, { active: false })
-        }
-        throw new DatabaseError('UPDATE', TABLE, error, { userId: id })
-      }
-
-      if (!data) {
-        throw new NotFoundError('User', id, { active: false })
-      }
+      // Use repository's reactivate method
+      const data = await userRepository.reactivate(id)
 
       return data
     },
@@ -463,26 +380,12 @@ export function reactivateUser(id) {
 export function verifyUserEmail(id) {
   return withErrorHandling(
     async () => {
+      const userRepository = getUserRepository()
+
       validateUserId(id, 'verifyUserEmail')
 
-      const { data, error } = await supabase
-        .from(TABLE)
-        .update({ email_verified: true })
-        .eq('id', id)
-        .eq('is_active', true)
-        .select()
-        .single()
-
-      if (error) {
-        if (error.code === 'PGRST116') {
-          throw new NotFoundError('User', id, { active: true })
-        }
-        throw new DatabaseError('UPDATE', TABLE, error, { userId: id })
-      }
-
-      if (!data) {
-        throw new NotFoundError('User', id, { active: true })
-      }
+      // Use repository's verifyEmail method
+      const data = await userRepository.verifyEmail(id)
 
       return data
     },

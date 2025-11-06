@@ -1,9 +1,9 @@
 /**
  * FloresYa API Client
  * Auto-generated from OpenAPI specification
- * Generated: 2025-10-31T00:26:34.285Z
+ * Generated: 2025-11-04T16:26:32.547Z
  * Spec Version: 1.0.0
- * Total Endpoints: 45
+ * Total Endpoints: 47
  *
  * IMPORTANT: This file is AUTO-GENERATED. Do not edit manually.
  * Regenerate using: npm run generate:client
@@ -55,6 +55,16 @@ class ApiClient {
   }
 
   // ==================== AUTO-GENERATED METHODS ====================
+
+  /**
+   * Get all error codes
+   * Returns complete list of ERROR_CODES with descriptions and categories
+   * @returns {Promise<any>} API response
+   */
+  getAllErrors() {
+    const endpoint = `/api/errors`
+    return this.request(endpoint)
+  }
 
   /**
    * Get all products with filters
@@ -338,7 +348,7 @@ class ApiClient {
    * @param {any} id - Parameter
    * @returns {Promise<any>} API response
    */
-  getAllOccasions(id) {
+  getProductOccasions(id) {
     if (!id || id <= 0) {
       throw new Error('Invalid id')
     }
@@ -354,7 +364,7 @@ class ApiClient {
    * @param {any} data - Parameter
    * @returns {Promise<any>} API response
    */
-  updateOccasions(id, data) {
+  updateProductOccasions(id, data) {
     if (!id || id <= 0) {
       throw new Error('Invalid id')
     }
@@ -371,7 +381,7 @@ class ApiClient {
    * @param {any} data - Parameter
    * @returns {Promise<any>} API response
    */
-  createOccasions(id, occasionId, data) {
+  createProductOccasion(id, occasionId, data) {
     if (!id || id <= 0) {
       throw new Error('Invalid id')
     }
@@ -585,7 +595,7 @@ class ApiClient {
 
   /**
    * Delete user (soft delete)
-   * Admin only - Soft deletes a user (sets is_active to false)
+   * Admin only - Soft deletes a user (sets active to false)
    * @param {any} id - Parameter
    * @returns {Promise<any>} API response
    */
@@ -672,6 +682,27 @@ class ApiClient {
   }
 
   /**
+   * Get all occasions
+   * Public - Returns all active occasions, sorted by display_order.
+   * @returns {Promise<any>} API response
+   */
+  getAllOccasions() {
+    const endpoint = `/api/occasions`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Create new occasion
+   * Admin only - Creates a new occasion.
+   * @param {any} data - Parameter
+   * @returns {Promise<any>} API response
+   */
+  createOccasions(data) {
+    const endpoint = `/api/occasions`
+    return this.request(endpoint, { method: 'POST', body: data })
+  }
+
+  /**
    * Get occasion by ID
    * Get occasion details by its unique ID.
    * @param {any} id - Parameter
@@ -687,8 +718,24 @@ class ApiClient {
   }
 
   /**
+   * Update occasion
+   * Admin only - Updates an existing occasion.
+   * @param {any} id - Parameter
+   * @param {any} data - Parameter
+   * @returns {Promise<any>} API response
+   */
+  updateOccasions(id, data) {
+    if (!id || id <= 0) {
+      throw new Error('Invalid id')
+    }
+
+    const endpoint = `/api/occasions/${id}`
+    return this.request(endpoint, { method: 'PUT', body: data })
+  }
+
+  /**
    * Delete occasion (soft delete)
-   * Admin only - Soft deletes an occasion by setting its `is_active` flag to false.
+   * Admin only - Soft deletes an occasion by setting its `active` flag to false.
    * @param {any} id - Parameter
    * @returns {Promise<any>} API response
    */
@@ -734,7 +781,7 @@ class ApiClient {
 
   /**
    * Reactivate occasion
-   * Admin only - Reactivates a soft-deleted occasion by setting its `is_active` flag to true.
+   * Admin only - Reactivates a soft-deleted occasion by setting its `active` flag to true.
    * @param {any} id - Parameter
    * @param {any} data - Parameter
    * @returns {Promise<any>} API response
@@ -904,6 +951,17 @@ class ApiClient {
   }
 
   /**
+   * Add active column to settings table
+   * Admin only - Migration endpoint to add active column to settings table
+   * @param {any} data - Parameter
+   * @returns {Promise<any>} API response
+   */
+  createAddisactivetosettings(data) {
+    const endpoint = `/api/migrations/add-is-active-to-settings`
+    return this.request(endpoint, { method: 'POST', body: data })
+  }
+
+  /**
    * Get payment method by ID
    * Get payment method details by its unique ID.
    * @param {any} id - Parameter
@@ -936,7 +994,7 @@ class ApiClient {
 
   /**
    * Delete payment method (soft delete)
-   * Admin only - Soft deletes a payment method by setting its `is_active` flag to false.
+   * Admin only - Soft deletes a payment method by setting its `active` flag to false.
    * @param {any} id - Parameter
    * @returns {Promise<any>} API response
    */
@@ -967,7 +1025,7 @@ class ApiClient {
 
   /**
    * Reactivate payment method
-   * Admin only - Reactivates a soft-deleted payment method by setting its `is_active` flag to true.
+   * Admin only - Reactivates a soft-deleted payment method by setting its `active` flag to true.
    * @param {any} id - Parameter
    * @param {any} data - Parameter
    * @returns {Promise<any>} API response
@@ -1020,6 +1078,7 @@ export { ApiClient }
 
 // Convenience functions for common operations
 export const api = {
+  getAllErrors: () => apiClient.getAllErrors(),
   getAllProducts: params => apiClient.getAllProducts(params),
   createProducts: data => apiClient.createProducts(data),
   getProductsById: (id, params) => apiClient.getProductsById(id, params),
@@ -1037,9 +1096,10 @@ export const api = {
   updateStock: (id, data) => apiClient.updateStock(id, data),
   deleteProductImage: (id, imageIndex) => apiClient.deleteProductImage(id, imageIndex),
   updatePrimaryImage: (id, imageIndex, data) => apiClient.updatePrimaryImage(id, imageIndex, data),
-  getAllOccasions: id => apiClient.getAllOccasions(id),
-  updateOccasions: (id, data) => apiClient.updateOccasions(id, data),
-  createOccasions: (id, occasionId, data) => apiClient.createOccasions(id, occasionId, data),
+  getProductOccasions: id => apiClient.getProductOccasions(id),
+  updateProductOccasions: (id, data) => apiClient.updateProductOccasions(id, data),
+  createProductOccasion: (id, occasionId, data) =>
+    apiClient.createProductOccasion(id, occasionId, data),
   reactivateProducts: (id, data) => apiClient.reactivateProducts(id, data),
   getAllOrders: params => apiClient.getAllOrders(params),
   createOrders: data => apiClient.createOrders(data),
@@ -1059,7 +1119,10 @@ export const api = {
   verifyUserEmail: (id, data) => apiClient.verifyUserEmail(id, data),
   getAllMethods: () => apiClient.getAllMethods(),
   confirmPayments: (id, data) => apiClient.confirmPayments(id, data),
+  getAllOccasions: () => apiClient.getAllOccasions(),
+  createOccasions: data => apiClient.createOccasions(data),
   getOccasionsById: id => apiClient.getOccasionsById(id),
+  updateOccasions: (id, data) => apiClient.updateOccasions(id, data),
   deleteOccasions: id => apiClient.deleteOccasions(id),
   getAllSlug: slug => apiClient.getAllSlug(slug),
   updateOccasionDisplayOrder: (id, data) => apiClient.updateOccasionDisplayOrder(id, data),
@@ -1077,6 +1140,7 @@ export const api = {
   getAllBusinessrules: () => apiClient.getAllBusinessrules(),
   getAllPaymentmethods: () => apiClient.getAllPaymentmethods(),
   createPaymentmethods: data => apiClient.createPaymentmethods(data),
+  createAddisactivetosettings: data => apiClient.createAddisactivetosettings(data),
   getPaymentmethodsById: id => apiClient.getPaymentmethodsById(id),
   updatePaymentmethods: (id, data) => apiClient.updatePaymentmethods(id, data),
   deletePaymentmethods: id => apiClient.deletePaymentmethods(id),

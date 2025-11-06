@@ -3,7 +3,7 @@
  * CRUD operations for product images with soft-delete pattern
  * Uses stored functions for atomic multi-image operations
  * Uses indexed columns (product_id, size, is_primary)
- * Soft-delete implementation using is_active flag (inactive images excluded by default)
+ * Soft-delete implementation using active flag (inactive images excluded by default)
  */
 
 import { supabase, DB_SCHEMA } from './supabaseClient.js'
@@ -122,13 +122,13 @@ export async function getPrimaryImage(productId) {
 /**
  * Get image by ID
  * @param {number} id - Image ID to retrieve
- * @param {boolean} includeInactive - Include inactive images (default: false, admin only)
+ * @param {boolean} includeDeactivated - Include inactive images (default: false, admin only)
  * @returns {Object} - Image object
  * @throws {BadRequestError} When ID is invalid
  * @throws {NotFoundError} When image is not found
  * @throws {DatabaseError} When database query fails
  */
-export async function getImageById(id, includeInactive = false) {
+export async function getImageById(id, includeDeactivated = false) {
   try {
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid image ID: must be a number', { imageId: id })
@@ -137,8 +137,8 @@ export async function getImageById(id, includeInactive = false) {
     let query = supabase.from(TABLE).select('*').eq('id', id)
 
     // By default, only return active images
-    if (!includeInactive) {
-      query = query.eq('is_active', true)
+    if (!includeDeactivated) {
+      query = query.eq('active', true)
     }
 
     const { data, error } = await query.single()
@@ -421,9 +421,9 @@ export async function deleteImage(id) {
 
     const { data, error } = await supabase
       .from(TABLE)
-      .update({ is_active: false })
+      .update({ active: false })
       .eq('id', id)
-      .eq('is_active', true)
+      .eq('active', true)
       .select()
       .single()
 
@@ -431,7 +431,7 @@ export async function deleteImage(id) {
       throw new DatabaseError('UPDATE', TABLE, error, { imageId: id })
     }
     if (!data) {
-      throw new NotFoundError('Image', id, { is_active: true })
+      throw new NotFoundError('Image', id, { active: true })
     }
 
     return data
@@ -457,9 +457,9 @@ export async function reactivateImage(id) {
 
     const { data, error } = await supabase
       .from(TABLE)
-      .update({ is_active: true })
+      .update({ active: true })
       .eq('id', id)
-      .eq('is_active', false)
+      .eq('active', false)
       .select()
       .single()
 
@@ -467,7 +467,7 @@ export async function reactivateImage(id) {
       throw new DatabaseError('UPDATE', TABLE, error, { imageId: id })
     }
     if (!data) {
-      throw new NotFoundError('Image', id, { is_active: false })
+      throw new NotFoundError('Image', id, { active: false })
     }
 
     return data
@@ -492,9 +492,9 @@ export async function deleteProductImagesSafe(productId) {
 
     const { data, error } = await supabase
       .from(TABLE)
-      .update({ is_active: false })
+      .update({ active: false })
       .eq('product_id', productId)
-      .eq('is_active', true)
+      .eq('active', true)
       .select()
 
     if (error) {
@@ -523,9 +523,9 @@ export async function reactivateProductImages(productId) {
 
     const { data, error } = await supabase
       .from(TABLE)
-      .update({ is_active: true })
+      .update({ active: true })
       .eq('product_id', productId)
-      .eq('is_active', false)
+      .eq('active', false)
       .select()
 
     if (error) {
@@ -587,10 +587,10 @@ export async function deleteImagesByIndex(productId, imageIndex) {
     // 4. Soft-delete from database
     const { data, error } = await supabase
       .from(TABLE)
-      .update({ is_active: false })
+      .update({ active: false })
       .eq('product_id', productId)
       .eq('image_index', imageIndex)
-      .eq('is_active', true)
+      .eq('active', true)
       .select()
 
     if (error) {
@@ -796,10 +796,10 @@ export async function deleteProductImagesBySize(productId, size) {
 
     const { data, error } = await supabase
       .from(TABLE)
-      .update({ is_active: false })
+      .update({ active: false })
       .eq('product_id', productId)
       .eq('size', size)
-      .eq('is_active', true)
+      .eq('active', true)
       .select()
 
     if (error) {

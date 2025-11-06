@@ -3,10 +3,13 @@
  * CRUD operations with atomic order creation (stored function)
  * Uses indexed columns (user_id, status, created_at)
  * Soft-delete implementation using status field (cancelled orders excluded by default)
+ *
+ * REPOSITORY PATTERN: Uses OrderRepository for data access
+ * Following Service Layer Exclusive principle
  */
 
-import { supabase, DB_SCHEMA } from './supabaseClient.js'
-import { buildSearchCondition } from '../utils/normalize.js'
+import { DB_SCHEMA, supabase } from './supabaseClient.js'
+import DIContainer from '../architecture/di-container.js'
 import {
   ValidationError,
   NotFoundError,
@@ -15,13 +18,27 @@ import {
   InternalServerError
 } from '../errors/AppError.js'
 import { sanitizeOrderData, sanitizeOrderItemData } from '../utils/sanitize.js'
-import { PAGINATION } from '../config/constants.js'
 import { withErrorMapping } from '../middleware/error/index.js'
 import { validateOrder, validateId } from '../utils/validation.js'
 
 const TABLE = DB_SCHEMA.orders.table
 const VALID_STATUSES = DB_SCHEMA.orders.enums.status
-const SEARCH_COLUMNS = DB_SCHEMA.orders.search
+
+/**
+ * Get OrderRepository instance from DI Container
+ * @returns {OrderRepository} Repository instance
+ */
+function getOrderRepository() {
+  return DIContainer.resolve('OrderRepository')
+}
+
+/**
+ * Get ProductRepository instance from DI Container
+ * @returns {ProductRepository} Repository instance
+ */
+function getProductRepository() {
+  return DIContainer.resolve('ProductRepository')
+}
 
 /**
  * Validate order ID (ENTERPRISE FAIL-FAST)
@@ -44,73 +61,18 @@ function _validateOrderId(id, operation = 'operation') {
  * @param {string} [filters.search] - Search in customer_name and customer_email (accent-insensitive)
  * @param {number} [filters.limit] - Number of items to return
  * @param {number} [filters.offset] - Number of items to skip
- * @param {boolean} includeInactive - Include cancelled orders (default: false, admin only)
+ * @param {boolean} includeDeactivated - Include cancelled orders (default: false, admin only)
  * @returns {Object[]} - Array of orders with items
  * @throws {NotFoundError} When no orders are found
  * @throws {DatabaseError} When database query fails
  */
 export const getAllOrders = withErrorMapping(
-  async (filters = {}, includeInactive = false) => {
-    let query = supabase.from(TABLE).select(`
-      *,
-      order_items (
-        id,
-        product_id,
-        product_name,
-        quantity,
-        unit_price_usd,
-        subtotal_usd
-      )
-    `)
+  async (filters = {}, includeDeactivated = false) => {
+    const orderRepository = getOrderRepository()
 
-    // Search filter (uses indexed normalized columns)
-    const searchCondition = buildSearchCondition(SEARCH_COLUMNS, filters.search)
-    if (searchCondition) {
-      query = query.or(searchCondition)
-    }
+    // Use repository to get orders with filters
+    const data = await orderRepository.findAllWithFilters(filters, { includeDeactivated })
 
-    // Indexed filters
-    if (filters.user_id) {
-      query = query.eq('user_id', filters.user_id)
-    }
-
-    if (filters.status && VALID_STATUSES.includes(filters.status)) {
-      query = query.eq('status', filters.status)
-    }
-
-    // By default, exclude cancelled orders (business rule: "venta cancelada no es venta")
-    if (!includeInactive) {
-      query = query.neq('status', 'cancelled')
-    }
-
-    // Date range filter (uses indexed created_at)
-    if (filters.date_from) {
-      query = query.gte('created_at', filters.date_from)
-    }
-
-    if (filters.date_to) {
-      query = query.lte('created_at', filters.date_to)
-    }
-
-    query = query.order('created_at', { ascending: false })
-
-    if (filters.limit) {
-      query = query.limit(filters.limit)
-    }
-
-    if (filters.offset) {
-      query = query.range(
-        filters.offset,
-        filters.offset + (filters.limit || PAGINATION.DEFAULT_LIMIT) - 1
-      )
-    }
-
-    const { data, error } = await query
-
-    if (error) {
-      // Map Supabase error automatically
-      throw error
-    }
     if (!data) {
       throw new NotFoundError('Orders')
     }
@@ -124,7 +86,7 @@ export const getAllOrders = withErrorMapping(
 /**
  * Get order by ID with items and product details
  * @param {number} id - Order ID to retrieve
- * @param {boolean} includeInactive - Include cancelled orders (default: false, admin only)
+ * @param {boolean} includeDeactivated - Include cancelled orders (default: false, admin only)
  * @returns {Object} - Order object with order_items array
  * @throws {BadRequestError} When ID is invalid
  * @throws {NotFoundError} When order is not found
@@ -132,35 +94,17 @@ export const getAllOrders = withErrorMapping(
  * @example
  * const order = await getOrderById(123)
  */
-export async function getOrderById(id, includeInactive = false) {
+export async function getOrderById(id, includeDeactivated = false) {
   try {
+    const orderRepository = getOrderRepository()
+
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid order ID: must be a number', { orderId: id })
     }
 
-    let query = supabase
-      .from(TABLE)
-      .select(
-        `
-        *,
-        order_items (*)
-      `
-      )
-      .eq('id', id)
+    // Use repository to get order
+    const data = await orderRepository.findByIdWithItems(id, includeDeactivated)
 
-    // By default, exclude cancelled orders (business rule: "venta cancelada no es venta")
-    if (!includeInactive) {
-      query = query.neq('status', 'cancelled')
-    }
-
-    const { data, error } = await query.single()
-
-    if (error) {
-      if (error.code === 'PGRST116' || error.message?.includes('Row not found')) {
-        throw new NotFoundError('Order', id)
-      }
-      throw new DatabaseError('SELECT', TABLE, error, { orderId: id })
-    }
     if (!data) {
       throw new NotFoundError('Order', id)
     }
@@ -187,35 +131,15 @@ export async function getOrderById(id, includeInactive = false) {
  */
 export async function getOrdersByUser(userId, filters = {}) {
   try {
+    const orderRepository = getOrderRepository()
+
     if (!userId || typeof userId !== 'number') {
       throw new BadRequestError('Invalid user ID: must be a number', { userId })
     }
 
-    let query = supabase
-      .from(TABLE)
-      .select(
-        `
-        *,
-        order_items (*)
-      `
-      )
-      .eq('user_id', userId)
+    // Use repository to get orders by user
+    const data = await orderRepository.findByUserId(userId, filters)
 
-    if (filters.status && VALID_STATUSES.includes(filters.status)) {
-      query = query.eq('status', filters.status)
-    }
-
-    query = query.order('created_at', { ascending: false })
-
-    if (filters.limit) {
-      query = query.limit(filters.limit)
-    }
-
-    const { data, error } = await query
-
-    if (error) {
-      throw new DatabaseError('SELECT', TABLE, error, { userId })
-    }
     if (!data) {
       throw new NotFoundError('Orders for user', userId, { userId })
     }
@@ -288,14 +212,11 @@ export async function createOrderWithItems(orderData, orderItems) {
         })
       }
 
-      // Validate stock availability
-      const { data: product, error: productError } = await supabase
-        .from('products')
-        .select('id, name, stock, active')
-        .eq('id', item.product_id)
-        .single()
+      // Validate stock availability using ProductRepository
+      const productRepository = getProductRepository()
+      const product = await productRepository.findById(item.product_id, true)
 
-      if (productError || !product) {
+      if (!product) {
         throw new NotFoundError('Product', item.product_id, { productId: item.product_id })
       }
 
@@ -512,6 +433,8 @@ export async function updateOrderStatus(orderId, newStatus, notes = null, change
  */
 export async function updateOrder(id, updates) {
   try {
+    const orderRepository = getOrderRepository()
+
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid order ID: must be a number', { orderId: id })
     }
@@ -542,19 +465,8 @@ export async function updateOrder(id, updates) {
       throw new BadRequestError('No valid fields to update', { orderId: id })
     }
 
-    const { data, error } = await supabase
-      .from(TABLE)
-      .update(sanitized)
-      .eq('id', id)
-      .select()
-      .single()
-
-    if (error) {
-      throw new DatabaseError('UPDATE', TABLE, error, { orderId: id })
-    }
-    if (!data) {
-      throw new NotFoundError('Order', id)
-    }
+    // Use repository's update method
+    const data = await orderRepository.update(id, sanitized)
 
     return data
   } catch (error) {
@@ -567,7 +479,7 @@ export async function updateOrder(id, updates) {
  * Cancel order - wrapper for updateOrderStatus that sets status to 'cancelled'
  * @param {number} orderId - Order ID to cancel
  * @param {string} [notes='Order cancelled'] - Cancellation notes
- * @param {number|null} [changedBy=null] - User ID who cancelled the order
+ * @param {number|null} [_changedBy=null] - User ID who cancelled the order (not used, kept for API compatibility)
  * @returns {Object} - Updated order with cancelled status
  * @throws {BadRequestError} When orderId is invalid
  * @throws {NotFoundError} When order is not found
@@ -575,9 +487,18 @@ export async function updateOrder(id, updates) {
  * @example
  * const order = await cancelOrder(123, 'Cliente solicitó cancelación', 456)
  */
-export async function cancelOrder(orderId, notes = 'Order cancelled', changedBy = null) {
+export async function cancelOrder(orderId, notes = 'Order cancelled', _changedBy = null) {
   try {
-    return await updateOrderStatus(orderId, 'cancelled', notes, changedBy)
+    const orderRepository = getOrderRepository()
+
+    if (!orderId || typeof orderId !== 'number') {
+      throw new BadRequestError('Invalid order ID: must be a number', { orderId })
+    }
+
+    // Use repository's cancel method
+    const data = await orderRepository.cancel(orderId, notes)
+
+    return data
   } catch (error) {
     console.error(`cancelOrder(${orderId}) failed:`, error)
     throw error
@@ -601,16 +522,10 @@ export async function getOrderStatusHistory(orderId) {
       throw new BadRequestError('Invalid order ID: must be a number', { orderId })
     }
 
-    const { data, error } = await supabase
-      .from('order_status_history')
-      .select('*')
-      .eq('order_id', orderId)
-      .order('created_at', { ascending: true })
+    const orderRepository = getOrderRepository()
+    const data = await orderRepository.findStatusHistoryByOrderId(orderId)
 
-    if (error) {
-      throw new DatabaseError('SELECT', 'order_status_history', error, { orderId })
-    }
-    if (!data) {
+    if (!data || data.length === 0) {
       throw new NotFoundError('Order status history', orderId, { orderId })
     }
 

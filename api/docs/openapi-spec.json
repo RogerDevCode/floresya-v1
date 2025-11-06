@@ -173,7 +173,7 @@
             "type": "boolean",
             "example": false
           },
-          "is_active": {
+          "active": {
             "type": "boolean",
             "example": true
           },
@@ -274,7 +274,7 @@
             "type": "integer",
             "example": 1
           },
-          "is_active": {
+          "active": {
             "type": "boolean",
             "example": true
           },
@@ -1045,7 +1045,7 @@
             "example": "0105-1234-5678-9012",
             "nullable": true
           },
-          "is_active": {
+          "active": {
             "type": "boolean",
             "example": true
           },
@@ -3523,7 +3523,7 @@
       "delete": {
         "tags": ["Users"],
         "summary": "Delete user (soft delete)",
-        "description": "Admin only - Soft deletes a user (sets is_active to false)",
+        "description": "Admin only - Soft deletes a user (sets active to false)",
         "security": [
           {
             "bearerAuth": []
@@ -4060,7 +4060,7 @@
       "delete": {
         "tags": ["Occasions"],
         "summary": "Delete occasion (soft delete)",
-        "description": "Admin only - Soft deletes an occasion by setting its `is_active` flag to false.",
+        "description": "Admin only - Soft deletes an occasion by setting its `active` flag to false.",
         "security": [
           {
             "bearerAuth": []
@@ -4222,7 +4222,7 @@
       "patch": {
         "tags": ["Occasions"],
         "summary": "Reactivate occasion",
-        "description": "Admin only - Reactivates a soft-deleted occasion by setting its `is_active` flag to true.",
+        "description": "Admin only - Reactivates a soft-deleted occasion by setting its `active` flag to true.",
         "security": [
           {
             "bearerAuth": []
@@ -4673,7 +4673,7 @@
     },
     "/api/admin/settings/image": {
       "post": {
-        "tags": ["Admin"],
+        "tags": ["Admin Settings"],
         "summary": "Upload setting image",
         "description": "Admin only - Upload and save image for a specific setting",
         "security": [
@@ -4721,7 +4721,7 @@
     },
     "/api/admin/settings/bcv-price": {
       "post": {
-        "tags": ["Admin"],
+        "tags": ["Admin Settings"],
         "summary": "Save BCV USD rate",
         "description": "Admin only - Save BCV USD exchange rate",
         "security": [
@@ -4768,7 +4768,7 @@
     },
     "/api/admin/settings/business-rules": {
       "get": {
-        "tags": ["Admin"],
+        "tags": ["Admin Settings"],
         "summary": "Get business rules status",
         "description": "Admin only - Get business rules engine status and configuration",
         "security": [
@@ -4872,7 +4872,7 @@
                   "account_info": {
                     "type": "string"
                   },
-                  "is_active": {
+                  "active": {
                     "type": "boolean"
                   },
                   "display_order": {
@@ -4909,6 +4909,52 @@
           },
           "400": {
             "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/migrations/add-is-active-to-settings": {
+      "post": {
+        "tags": ["Migrations"],
+        "summary": "Add active column to settings table",
+        "description": "Admin only - Migration endpoint to add active column to settings table",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Migration completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "description": "Migration result"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
           },
           "401": {
             "$ref": "#/components/responses/UnauthorizedError"
@@ -5002,7 +5048,7 @@
                   "account_info": {
                     "type": "string"
                   },
-                  "is_active": {
+                  "active": {
                     "type": "boolean"
                   },
                   "display_order": {
@@ -5057,7 +5103,7 @@
       "delete": {
         "tags": ["Payment Methods"],
         "summary": "Delete payment method (soft delete)",
-        "description": "Admin only - Soft deletes a payment method by setting its `is_active` flag to false.",
+        "description": "Admin only - Soft deletes a payment method by setting its `active` flag to false.",
         "security": [
           {
             "bearerAuth": []
@@ -5168,7 +5214,7 @@
       "patch": {
         "tags": ["Payment Methods"],
         "summary": "Reactivate payment method",
-        "description": "Admin only - Reactivates a soft-deleted payment method by setting its `is_active` flag to true.",
+        "description": "Admin only - Reactivates a soft-deleted payment method by setting its `active` flag to true.",
         "security": [
           {
             "bearerAuth": []

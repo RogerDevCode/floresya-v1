@@ -29,7 +29,7 @@ router.post(
     },
     description: { type: 'string', maxLength: 500 },
     account_info: { type: 'string', maxLength: 500 },
-    is_active: { type: 'boolean' },
+    active: { type: 'boolean' },
     display_order: { type: 'number', integer: true, min: 0 }
   }),
   paymentMethodController.createPaymentMethod
@@ -48,7 +48,7 @@ router.put(
     },
     description: { type: 'string', maxLength: 500 },
     account_info: { type: 'string', maxLength: 500 },
-    is_active: { type: 'boolean' },
+    active: { type: 'boolean' },
     display_order: { type: 'number', integer: true, min: 0 }
   }),
   paymentMethodController.updatePaymentMethod

@@ -66,7 +66,7 @@ function generateEndpointDocumentation() {
  *         phone: { type: string, example: "+1234567890" }
  *         role: { type: string, enum: [user, admin], example: "user" }
  *         email_verified: { type: boolean, example: false }
- *         is_active: { type: boolean, example: true }
+ *         active: { type: boolean, example: true }
  *         created_at: { type: string, format: date-time }
  *         updated_at: { type: string, format: date-time }
  *     product:
@@ -93,7 +93,7 @@ function generateEndpointDocumentation() {
  *         description: { type: string, example: "Flowers for birthdays" }
  *         slug: { type: string, example: "birthday" }
  *         display_order: { type: integer, example: 1 }
- *         is_active: { type: boolean, example: true }
+ *         active: { type: boolean, example: true }
  *         created_at: { type: string, format: date-time }
  *         updated_at: { type: string, format: date-time }
  *     productimage:

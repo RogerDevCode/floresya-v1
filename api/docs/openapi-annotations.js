@@ -293,7 +293,7 @@
  *         phone: { type: string, example: "+1234567890" }
  *         role: { type: string, enum: [user, admin], example: "user" }
  *         email_verified: { type: boolean, example: false }
- *         is_active: { type: boolean, example: true }
+ *         active: { type: boolean, example: true }
  *         created_at: { type: string, format: date-time }
  *         updated_at: { type: string, format: date-time }
  *     product:
@@ -320,7 +320,7 @@
  *         description: { type: string, example: "Flowers for birthdays" }
  *         slug: { type: string, example: "birthday" }
  *         display_order: { type: integer, example: 1 }
- *         is_active: { type: boolean, example: true }
+ *         active: { type: boolean, example: true }
  *         created_at: { type: string, format: date-time }
  *         updated_at: { type: string, format: date-time }
  *     productimage:
@@ -412,7 +412,7 @@
  *         type: { type: string, enum: [bank_transfer, mobile_payment, cash, crypto, international], example: "bank_transfer" }
  *         description: { type: string, example: "Transferencias desde Banco Mercantil", nullable: true }
  *         account_info: { type: string, example: "0105-1234-5678-9012", nullable: true }
- *         is_active: { type: boolean, example: true }
+ *         active: { type: boolean, example: true }
  *         display_order: { type: integer, example: 1 }
  *         created_at: { type: string, format: date-time }
  *         updated_at: { type: string, format: date-time }
@@ -1827,7 +1827,7 @@
  *   delete:
  *     tags: [Users]
  *     summary: Delete user (soft delete)
- *     description: Admin only - Soft deletes a user (sets is_active to false)
+ *     description: Admin only - Soft deletes a user (sets active to false)
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -2214,7 +2214,7 @@
  *   delete:
  *     tags: [Occasions]
  *     summary: Delete occasion (soft delete)
- *     description: Admin only - Soft deletes an occasion by setting its `is_active` flag to false.
+ *     description: Admin only - Soft deletes an occasion by setting its `active` flag to false.
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -2242,7 +2242,7 @@
  *   patch:
  *     tags: [Occasions]
  *     summary: Reactivate occasion
- *     description: Admin only - Reactivates a soft-deleted occasion by setting its `is_active` flag to true.
+ *     description: Admin only - Reactivates a soft-deleted occasion by setting its `active` flag to true.
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -2634,8 +2634,8 @@
  * /api/migrations/add-is-active-to-settings:
  *   post:
  *     tags: [Migrations]
- *     summary: Add is_active column to settings table
- *     description: Admin only - Migration endpoint to add is_active column to settings table
+ *     summary: Add active column to settings table
+ *     description: Admin only - Migration endpoint to add active column to settings table
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -2800,7 +2800,7 @@
  *                 type: string
  *               account_info:
  *                 type: string
- *               is_active:
+ *               active:
  *                 type: boolean
  *               display_order:
  *                 type: integer
@@ -2856,7 +2856,7 @@
  *                 type: string
  *               account_info:
  *                 type: string
- *               is_active:
+ *               active:
  *                 type: boolean
  *               display_order:
  *                 type: integer
@@ -2935,7 +2935,7 @@
  *   delete:
  *     tags: [Payment Methods]
  *     summary: Delete payment method (soft delete)
- *     description: Admin only - Soft deletes a payment method by setting its `is_active` flag to false.
+ *     description: Admin only - Soft deletes a payment method by setting its `active` flag to false.
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -2963,7 +2963,7 @@
  *   patch:
  *     tags: [Payment Methods]
  *     summary: Reactivate payment method
- *     description: Admin only - Reactivates a soft-deleted payment method by setting its `is_active` flag to true.
+ *     description: Admin only - Reactivates a soft-deleted payment method by setting its `active` flag to true.
  *     security:
  *       - bearerAuth: []
  *     parameters:

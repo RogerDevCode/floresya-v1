@@ -1,0 +1,115 @@
+
+════════════════════════════════════════════════════════════════════════════════
+[35m🧪 RUNNING ALL TESTS AND GENERATING REPORT[0m
+════════════════════════════════════════════════════════════════════════════════
+
+
+[34m▶ DOM Validation[0m
+  Pattern: tests/e2e/pages-loading-comprehensive.test.js
+  Script: scripts/run-dom-validation-tests.js
+
+[31m  ❌ FAILED[0m
+
+================================================================================
+[36m🧪 DOM VALIDATION TEST RUNNER[0m
+================================================================================
+
+[34m📄 Running: Comprehensive Pages Loading[0m
+   File: tests/e2e/pages-loading-comprehensive.test.js
+
+
+
+[34m▶ JavaScript Chain Validation[0m
+  Pattern: tests/e2e/javascript-loading-chain.test.js
+  Script: scripts/run-js-chain-validation.js
+
+[31m  ❌ FAILED[0m
+
+════════════════════════════════════════════════════════════════════════════════
+[35m🔗 JAVASCRIPT CHAIN VALIDATION TEST RUNNER[0m
+════════════════════════════════════════════════════════════════════════════════
+
+[36m📋 Tests to execute:[0m
+
+1. [34mJavaScript Loading Chain[0m
+   [33mVerifica carga secuencial de scripts, dependencias y errores[0m
+   File: tests/e2e/javascript-loading-chain.test.js
+
+2. [34mJavaScript Chain Tracker[0m
+   [33mRastrea cadena completa de dependencias de scripts[0m
+   File: tests/e2e/javascript-chain-tracker.test.js
+
+3. [34mJavaScript DOM Ready[0m
+   [33mVerifica que scripts cargan después del DOM[0m
+   File: tests/e2e/javascript-dom-ready.test.js
+
+================================================================================
+
+[34m▶ Running: JavaScript Loading Chain[0m
+  [33mVerifica carga secuencial de scripts, dependencias y errores[0m
+
+[31m❌ FAILED[0m
+
+Running 33 tests using 4 workers
+
+  ✘   2 [chromium] › tests/e2e/javascript-load
+
+
+--------------------------------------------------------------------------------
+[36mRunning individual tests for detailed analysis...[0m
+
+
+[33m▶ homepage-dom.test.js[0m
+[31m  ❌ FAILED[0m
+
+Running 33 tests using 4 workers
+
+  ✓   4 [chromium] › tests/e2e/homepage-dom.test.js:30:3 › Homepage DOM Loading › should have working mobile navigation (1.8s)
+  ✓   3 [chromium] › tests/e2e/homepage-dom.test.js:55:3 › Homepage DOM Loading › should load product grid without errors (2.2s)
+  ✓   5 [chromium] › tests/e2e/homepage-dom.test.js:98:3 › Homepage DOM Loading › should load all images with proper alt text (1.3s)
+  ✘   2 [chromium] › tests/e2e/homepage-dom.test.js:72:3 › Homepage DOM Load
+
+[33m▶ javascript-dom-ready.test.js[0m
+[31m  ❌ FAILED[0m
+
+Running 18 tests using 4 workers
+
+
+================================================================================
+📊 RENDERING PERFORMANCE
+================================================================================
+First Contentful Paint: 592.00ms
+DOM Content Loaded: 663.60ms
+Time difference: 71.60ms
+================================================================================
+
+  ✓   1 [chromium] › tests/e2e/javascript-dom-ready.test.js:115:3 › JavaScript DOM Ready Verification › shou
+
+[33m▶ static-html-validation.test.js[0m
+[31m  ❌ FAILED[0m
+
+Running 21 tests using 4 workers
+
+  ✓   2 [chromium] › tests/e2e/static-html-validation.test.js:44:3 › Static HTML Validation › should validate all pages have title (169ms)
+  ✓   1 [chromium] › tests/e2e/static-html-validation.test.js:29:3 › Static HTML Validation › should validate all pages have meta charset and viewport (342ms)
+  ✓   3 [chromium] › tests/e2e/static-html-validation.test.js:92:3 › Static HTML Validation › should validate CSS and JS files are referenced correctly (69ms)
+  ✓   4 
+
+════════════════════════════════════════════════════════════════════════════════
+[36mGENERATING REPORTS[0m
+════════════════════════════════════════════════════════════════════════════════
+
+[32m📄 HTML Report: full-test-report.html[0m
+[32m📄 Console Report: full-test-report.txt[0m
+[33m📄 Failures Report: failures-report.txt[0m
+
+════════════════════════════════════════════════════════════════════════════════
+[35m📊 FINAL SUMMARY[0m
+════════════════════════════════════════════════════════════════════════════════
+Total Tests: 5
+Passed: [32m0[0m
+Failed: [31m5[0m
+Success Rate: 0.0%
+
+[31m⚠️  REPAIRS REQUIRED: 0 issues found[0m
+

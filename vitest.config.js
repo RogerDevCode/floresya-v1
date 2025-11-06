@@ -12,7 +12,7 @@ export default defineConfig({
     environment: 'happy-dom',
 
     // Setup files
-    setupFiles: ['./tests/setup.js'],
+    setupFiles: ['./tests/setup.js', './tests/setup-global.js'],
 
     // Global test configuration - MUST be false to avoid Symbol conflicts with Playwright
     globals: false, // Critical: Prevents global Symbol($$jest-matchers-object) conflicts

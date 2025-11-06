@@ -1,0 +1,66 @@
+
+═══════════════════════════════════════════════════════════════════════════════
+                              FAILURES REPORT
+═══════════════════════════════════════════════════════════════════════════════
+
+Total Failures: 5
+
+
+1. TEST: DOM Validation
+   ERROR: spawnSync /bin/sh ETIMEDOUT
+   OUTPUT: 
+================================================================================
+[36m🧪 DOM VALIDATION TEST RUNNER[0m
+================================================================================
+
+[34m📄 Running: Comprehensive Pages Loading[0m
+   File: tests/e2e/pages-loading-comprehensive.t
+
+2. TEST: JavaScript Chain Validation
+   ERROR: Command failed: node scripts/run-js-chain-validation.js
+   OUTPUT: 
+════════════════════════════════════════════════════════════════════════════════
+[35m🔗 JAVASCRIPT CHAIN VALIDATION TEST RUNNER[0m
+════════════════════════════════════════════════════════════════════════════════
+
+[36m📋 Tests to execute:[0m
+
+1. [34mJavaScript Loading Chain[0m
+   [33mVerifica
+
+3. TEST: homepage-dom.test.js
+   ERROR: spawnSync /bin/sh ETIMEDOUT
+   OUTPUT: 
+Running 33 tests using 4 workers
+
+  ✓   4 [chromium] › tests/e2e/homepage-dom.test.js:30:3 › Homepage DOM Loading › should have working mobile navigation (1.8s)
+  ✓   3 [chromium] › tests/e2e/homepage-dom.test.js:55:3 › Homepage DOM Loading › should load product grid without errors (2.2s)
+  ✓   5 [
+
+4. TEST: javascript-dom-ready.test.js
+   ERROR: Command failed: npx playwright test "tests/e2e/javascript-dom-ready.test.js" --reporter=list
+   OUTPUT: 
+Running 18 tests using 4 workers
+
+
+================================================================================
+📊 RENDERING PERFORMANCE
+================================================================================
+First Contentful Paint: 592.00ms
+DOM Content Loaded: 663.60ms
+Time difference
+
+5. TEST: static-html-validation.test.js
+   ERROR: Command failed: npx playwright test "tests/e2e/static-html-validation.test.js" --reporter=list
+Missing CSS in demo-mcp-integration.html: /css/tailwind.css
+Missing CSS in demo-mcp-integration.html: /css/styles.css
+Missing JS in demo-mcp-integration.html: /js/demo-mcp.js
+Missing CSS in demo-mcp-standa
+   OUTPUT: 
+Running 21 tests using 4 workers
+
+  ✓   2 [chromium] › tests/e2e/static-html-validation.test.js:44:3 › Static HTML Validation › should validate all pages have title (169ms)
+  ✓   1 [chromium] › tests/e2e/static-html-validation.test.js:29:3 › Static HTML Validation › should validate all pages have m
+
+
+═══════════════════════════════════════════════════════════════════════════════

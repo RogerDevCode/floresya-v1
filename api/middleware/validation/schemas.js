@@ -7,20 +7,26 @@
 // ==================== PRODUCTS ====================
 
 export const productCreateSchema = {
-  // Product object (required)
+  // Product object (required) - Accept both nested and flattened structures
   product: {
     type: 'object',
-    required: true,
-    custom: (value, _data) => {
-      if (!value || typeof value !== 'object') {
+    required: false, // Made optional to allow flattened structure
+    custom: (value, data) => {
+      // Handle both nested {product: {...}} and flattened {...} structures
+      const productData = value || data
+
+      if (!productData || typeof productData !== 'object') {
         return 'product must be an object'
       }
-      if (!value.name || typeof value.name !== 'string') {
+
+      // Validate required fields regardless of structure
+      if (!productData.name || typeof productData.name !== 'string') {
         return 'product.name is required and must be a string'
       }
-      if (!value.price_usd || typeof value.price_usd !== 'number') {
+      if (productData.price_usd === undefined || typeof productData.price_usd !== 'number') {
         return 'product.price_usd is required and must be a number'
       }
+
       return null
     }
   },
@@ -396,7 +402,7 @@ export const occasionUpdateSchema = {
     required: false,
     pattern: /^[a-z0-9-]+$/
   },
-  is_active: {
+  active: {
     type: 'boolean',
     required: false
   },

@@ -1,7 +1,7 @@
 /**
  * TypeScript Types for FloresYa API
  * Auto-generated from OpenAPI specification
- * Generated: 2025-10-31T00:26:34.289Z
+ * Generated: 2025-11-04T16:26:32.552Z
  * Spec Version: 1.0.0
  */
 
@@ -26,10 +26,21 @@ export interface SuccessResponse {
 }
 
 export interface ErrorResponse {
-  success?: boolean
-  error?: string
-  message?: string
-  details?: Array<string>
+  success: boolean
+  error: string
+  message: string
+  details?: object
+  code: number
+  category?: 'validation' | 'authentication' | 'not_found' | 'business' | 'server'
+  type?: string
+  title?: string
+  status?: number
+  detail?: string
+  instance?: string
+  timestamp?: string
+  path?: string
+  requestId?: string
+  errors?: object
 }
 
 export interface User {
@@ -39,7 +50,7 @@ export interface User {
   phone?: string
   role?: 'user' | 'admin'
   email_verified?: boolean
-  is_active?: boolean
+  active?: boolean
   created_at?: string
   updated_at?: string
 }
@@ -66,7 +77,7 @@ export interface Occasion {
   description?: string
   slug?: string
   display_order?: number
-  is_active?: boolean
+  active?: boolean
   created_at?: string
   updated_at?: string
 }
@@ -175,13 +186,21 @@ export interface OrderCreate {
   items: Array<object>
 }
 
+export interface ErrorCode {
+  code?: number
+  name?: string
+  category?: 'validation' | 'authentication' | 'not_found' | 'business' | 'server'
+  httpStatus?: number
+  description?: string
+}
+
 export interface PaymentMethod {
   id?: number
   name?: string
   type?: 'bank_transfer' | 'mobile_payment' | 'cash' | 'crypto' | 'international'
   description?: string
   account_info?: string
-  is_active?: boolean
+  active?: boolean
   display_order?: number
   created_at?: string
   updated_at?: string

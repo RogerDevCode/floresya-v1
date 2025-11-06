@@ -14,7 +14,7 @@
  * - Respects reduced motion preferences
  *
  * @example
- * import { PullToRefresh } from './js/components/pullToRefresh.js'
+ * import { PullToRefresh } from '.'
  *
  * const pullToRefresh = new PullToRefresh({
  *   container: document.getElementById('productsContainer'),

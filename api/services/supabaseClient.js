@@ -58,7 +58,7 @@ export const DB_SCHEMA = {
       'full_name',
       'phone',
       'role',
-      'is_active',
+      'active',
       'email_verified',
       'created_at',
       'updated_at',
@@ -70,12 +70,12 @@ export const DB_SCHEMA = {
     table: 'occasions',
     pk: 'id',
     indexes: ['slug'],
-    filters: ['is_active', 'display_order'],
+    filters: ['active', 'display_order'],
     columns: [
       'id',
       'name',
       'description',
-      'is_active',
+      'active',
       'display_order',
       'created_at',
       'updated_at',
@@ -212,7 +212,7 @@ export const DB_SCHEMA = {
   payment_methods: {
     table: 'payment_methods',
     pk: 'id',
-    filters: ['is_active', 'type'],
+    filters: ['active', 'type'],
     sorts: ['display_order'],
     enums: {
       type: ['bank_transfer', 'mobile_payment', 'cash', 'crypto', 'international']
@@ -223,7 +223,7 @@ export const DB_SCHEMA = {
       'type',
       'description',
       'account_info',
-      'is_active',
+      'active',
       'display_order',
       'created_at',
       'updated_at'

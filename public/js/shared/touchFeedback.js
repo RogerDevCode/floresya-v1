@@ -15,7 +15,7 @@
  * - Touch-optimized interactions
  *
  * @example
- * import { TouchFeedback } from './js/shared/touchFeedback.js'
+ * import { TouchFeedback } from '.'
  *
  * // Initialize on an element
  * const feedback = new TouchFeedback()
@@ -445,7 +445,7 @@ export class TouchFeedback {
  * @returns {TouchFeedback} The initialized TouchFeedback instance
  *
  * @example
- * import { initTouchFeedback } from './js/shared/touchFeedback.js'
+ * import { initTouchFeedback } from '.'
  *
  * // Initialize with default settings
  * const feedback = initTouchFeedback('#my-button')
@@ -473,7 +473,7 @@ export function initTouchFeedback(element, options = {}) {
  * @returns {TouchFeedback[]} Array of initialized TouchFeedback instances
  *
  * @example
- * import { initTouchFeedbackOnAll } from './js/shared/touchFeedback.js'
+ * import { initTouchFeedbackOnAll } from '.'
  *
  * // Initialize on all buttons
  * const feedbacks = initTouchFeedbackOnAll('button', {

@@ -11,12 +11,12 @@ import { log as logger } from '../utils/logger.js'
 import { DatabaseError } from '../errors/AppError.js'
 
 /**
- * Execute migration to add is_active column to settings table
+ * Execute migration to add active column to settings table
  * @returns {Object} Migration result
  * @throws {DatabaseError} If migration fails
  */
 export async function addIsActiveToSettings() {
-  logger.info('Executing migration: Adding is_active column to settings table')
+  logger.info('Executing migration: Adding active column to settings table')
 
   try {
     // Check if column exists
@@ -24,7 +24,7 @@ export async function addIsActiveToSettings() {
       sql_query: `
         SELECT column_name
         FROM information_schema.columns
-        WHERE table_name = 'settings' AND column_name = 'is_active'
+        WHERE table_name = 'settings' AND column_name = 'active'
       `
     })
 
@@ -34,27 +34,27 @@ export async function addIsActiveToSettings() {
     }
 
     if (columnExists && columnExists.length > 0) {
-      logger.info('Column is_active already exists in settings table')
+      logger.info('Column active already exists in settings table')
       return {
         success: true,
-        message: 'Column is_active already exists in settings table',
+        message: 'Column active already exists in settings table',
         columnExisted: true
       }
     }
 
-    // Add is_active column
+    // Add active column
     const { error: addColumnError } = await supabase.rpc('execute_sql', {
       sql_query: `
         ALTER TABLE public.settings
-        ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT true;
+        ADD COLUMN IF NOT EXISTS active BOOLEAN DEFAULT true;
 
-        COMMENT ON COLUMN public.settings.is_active
+        COMMENT ON COLUMN public.settings.active
         IS 'Soft-delete flag - false means setting is deactivated';
       `
     })
 
     if (addColumnError) {
-      logger.error('Error adding is_active column', addColumnError)
+      logger.error('Error adding active column', addColumnError)
       throw new DatabaseError('ALTER_TABLE', 'settings', addColumnError)
     }
 
@@ -62,8 +62,8 @@ export async function addIsActiveToSettings() {
     const { error: updateError } = await supabase.rpc('execute_sql', {
       sql_query: `
         UPDATE public.settings
-        SET is_active = true
-        WHERE is_active IS NULL;
+        SET active = true
+        WHERE active IS NULL;
       `
     })
 
@@ -72,11 +72,11 @@ export async function addIsActiveToSettings() {
       throw new DatabaseError('UPDATE', 'settings', updateError)
     }
 
-    logger.info('Successfully added is_active column to settings table')
+    logger.info('Successfully added active column to settings table')
 
     return {
       success: true,
-      message: 'Successfully added is_active column to settings table',
+      message: 'Successfully added active column to settings table',
       columnExisted: false
     }
   } catch (error) {

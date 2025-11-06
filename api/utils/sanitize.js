@@ -72,7 +72,7 @@ export const FIELD_TYPES = {
     full_name: 'string',
     phone: 'string',
     role: 'string',
-    is_active: 'boolean',
+    active: 'boolean',
     email_verified: 'boolean'
   },
 
@@ -123,7 +123,7 @@ export const FIELD_TYPES = {
     name: 'string',
     description: 'string',
     slug: 'string',
-    is_active: 'boolean',
+    active: 'boolean',
     display_order: 'number'
   },
 
@@ -142,7 +142,7 @@ export const FIELD_TYPES = {
     type: 'string',
     description: 'string',
     account_info: 'string',
-    is_active: 'boolean',
+    active: 'boolean',
     display_order: 'number'
   },
 

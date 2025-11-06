@@ -1,296 +1,157 @@
 /**
- * Demo Scripts for MCP Integration
- * Externalized to avoid CSP issues
+ * Demo MCP Integration - FloresYa
+ * Script para demostración de funcionalidades MCP
  */
 
-// Import necessary modules
-import { mcpService } from './services/mcpService.js'
-import { FloresyaChatbot } from './components/mcp/floresyaChatbot.js'
+;(function () {
+  'use strict'
 
-/**
- * Initialize demo when DOM is loaded
- */
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('🚀 Iniciando demo de MCP Integration...')
+  /**
+   * Inicializar demo MCP
+   */
+  function initMcpDemo() {
+    console.log('🌟 Demo MCP Integration initialized')
 
-  // Initialize UI elements
-  initializeDemoControls()
+    // Crear botón de demo si no existe
+    createDemoButton()
 
-  // Auto-start MCP connection
-  setTimeout(() => {
-    if (window.MCP_CONFIG) {
-      initializeMCP()
-    } else {
-      console.log('⚠️ MCP_CONFIG no encontrado, inicialización manual requerida')
-    }
-  }, 1000)
+    // Configurar event listeners
+    setupEventListeners()
 
-  // Initialize chatbot
-  initializeChatbot()
-})
-
-/**
- * Initialize demo control buttons
- */
-function initializeDemoControls() {
-  // Connect MCP Button
-  const connectBtn = document.getElementById('connect-mcp')
-  if (connectBtn) {
-    connectBtn.addEventListener('click', initializeMCP)
+    // Mostrar mensaje de bienvenida
+    showWelcomeMessage()
   }
 
-  // Test tools buttons
-  const testButtons = document.querySelectorAll('[data-test-tool]')
-  testButtons.forEach(button => {
-    button.addEventListener('click', async e => {
-      const tool = e.target.dataset.testTool
-      await testMCPTool(tool)
+  /**
+   * Crear botón de demostración
+   */
+  function createDemoButton() {
+    const button = document.createElement('button')
+    button.id = 'mcp-demo-button'
+    button.textContent = '🚀 Demo MCP'
+    button.className = 'mcp-demo-btn'
+    button.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      z-index: 1000;
+      transition: transform 0.2s ease;
+    `
+
+    document.body.appendChild(button)
+  }
+
+  /**
+   * Configurar event listeners
+   */
+  function setupEventListeners() {
+    const button = document.getElementById('mcp-demo-button')
+    if (button) {
+      button.addEventListener('click', () => {
+        showDemoModal()
+      })
+
+      button.addEventListener('mouseover', () => {
+        button.style.transform = 'scale(1.05)'
+      })
+
+      button.addEventListener('mouseout', () => {
+        button.style.transform = 'scale(1)'
+      })
+    }
+  }
+
+  /**
+   * Mostrar modal de demostración
+   */
+  function showDemoModal() {
+    const modal = document.createElement('div')
+    modal.id = 'mcp-demo-modal'
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    `
+
+    const content = document.createElement('div')
+    content.style.cssText = `
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      max-width: 600px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    `
+
+    content.innerHTML = `
+      <h2 style="color: #667eea; margin-bottom: 20px;">🌟 Demo MCP Integration</h2>
+      <p style="color: #666; margin-bottom: 30px;">
+        Esta es una demostración de las capacidades de MCP (Model Context Protocol)
+        integradas con FloresYa.
+      </p>
+      <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <h3 style="color: #333; margin-bottom: 15px;">Características disponibles:</h3>
+        <ul style="text-align: left; color: #666; line-height: 1.8;">
+          <li>✅ Integración con shadcn/ui</li>
+          <li>✅ Componentes reactivos</li>
+          <li>✅ Gestión de estado avanzada</li>
+          <li>✅ API REST optimizada</li>
+        </ul>
+      </div>
+      <button id="close-mcp-modal" style="
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+      ">Cerrar</button>
+    `
+
+    modal.appendChild(content)
+    document.body.appendChild(modal)
+
+    // Cerrar modal
+    const closeBtn = content.querySelector('#close-mcp-modal')
+    closeBtn.addEventListener('click', () => {
+      document.body.removeChild(modal)
     })
-  })
 
-  // Update status display
-  updateStatus('ready', 'Listo para conectar con MCP')
-}
-
-/**
- * Initialize MCP connection
- */
-async function initializeMCP() {
-  try {
-    console.log('🔌 Conectando con MCP...')
-    updateStatus('connecting', 'Conectando con servidor MCP...')
-
-    const config = window.MCP_CONFIG || {
-      command: 'node',
-      args: ['mcp-server-avanzado.js']
-    }
-
-    // Initialize MCP service
-    await mcpService.initializeConnection('default', config)
-
-    console.log('✅ Conectado exitosamente con MCP')
-    updateStatus('connected', 'Conectado con MCP - Herramientas disponibles')
-
-    // Get available tools
-    const tools = await mcpService.getAvailableTools()
-    displayAvailableTools(tools)
-
-    // Enable test buttons
-    enableTestButtons()
-  } catch (error) {
-    console.error('❌ Error conectando con MCP:', error)
-    updateStatus('error', `Error: ${error.message}`)
-  }
-}
-
-/**
- * Test specific MCP tool
- */
-async function testMCPTool(toolName) {
-  try {
-    console.log(`🧪 Probando herramienta: ${toolName}`)
-
-    const button = document.querySelector(`[data-test-tool="${toolName}"]`)
-    if (button) {
-      button.disabled = true
-      button.textContent = 'Probando...'
-      button.className = 'px-4 py-2 bg-yellow-500 text-white rounded-lg'
-    }
-
-    let result
-    switch (toolName) {
-      case 'recommend_flowers':
-        result = await mcpService.executeTool('recommend_flowers', {
-          occasion: 'aniversario',
-          budget: 50,
-          recipient: 'esposa',
-          style: 'romántico'
-        })
-        break
-
-      case 'florist_chat':
-        result = await mcpService.executeTool('florist_chat', {
-          question: '¿Qué flores duran más tiempo?',
-          context: 'cuidados_flores'
-        })
-        break
-
-      case 'analyze_sentiment':
-        result = await mcpService.executeTool('analyze_sentiment', {
-          text: 'Estoy muy feliz con mi compra, las flores son hermosas'
-        })
-        break
-
-      case 'generate_content':
-        result = await mcpService.executeTool('generate_content', {
-          type: 'product_description',
-          topic: 'Ramos de rosas rojas',
-          tone: 'romántico'
-        })
-        break
-
-      case 'search_products':
-        result = await mcpService.executeTool('search_products', {
-          query: 'rosas',
-          category: 'flores',
-          limit: 5
-        })
-        break
-
-      default:
-        throw new Error(`Herramienta no reconocida: ${toolName}`)
-    }
-
-    console.log(`✅ Resultado de ${toolName}:`, result)
-    displayTestResult(toolName, result)
-
-    if (button) {
-      button.disabled = false
-      button.textContent = `✅ ${toolName}`
-      button.className = 'px-4 py-2 bg-green-500 text-white rounded-lg'
-    }
-  } catch (error) {
-    console.error(`❌ Error probando ${toolName}:`, error)
-
-    const button = document.querySelector(`[data-test-tool="${toolName}"]`)
-    if (button) {
-      button.disabled = false
-      button.textContent = `❌ ${toolName}`
-      button.className = 'px-4 py-2 bg-red-500 text-white rounded-lg'
-    }
-
-    displayTestResult(toolName, { error: error.message })
-  }
-}
-
-/**
- * Display available tools
- */
-function displayAvailableTools(tools) {
-  const toolsContainer = document.getElementById('mcp-tools')
-  if (!toolsContainer) {
-    return
+    modal.addEventListener('click', e => {
+      if (e.target === modal) {
+        document.body.removeChild(modal)
+      }
+    })
   }
 
-  const toolsList = tools
-    .map(
-      tool => `
-    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-      <h4 class="font-semibold text-white">${tool.name}</h4>
-      <p class="text-sm text-white/80">${tool.description}</p>
-    </div>
-  `
-    )
-    .join('')
-
-  toolsContainer.innerHTML = `
-    <h3 class="text-xl font-bold text-white mb-4">🛠️ Herramientas MCP Disponibles</h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      ${toolsList}
-    </div>
-  `
-}
-
-/**
- * Display test results
- */
-function displayTestResult(toolName, result) {
-  const resultsContainer = document.getElementById('test-results')
-  if (!resultsContainer) {
-    return
+  /**
+   * Mostrar mensaje de bienvenida
+   */
+  function showWelcomeMessage() {
+    console.log('🎉 ¡Demo MCP listo para usar!')
+    console.log('💡 Haz clic en el botón "🚀 Demo MCP" para ver la demostración')
   }
 
-  const resultDiv = document.createElement('div')
-  resultDiv.className = 'bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 mb-4'
-
-  const content = result.error
-    ? `<p class="text-red-300">❌ Error: ${result.error}</p>`
-    : `<pre class="text-sm text-white/90 whitespace-pre-wrap">${JSON.stringify(result, null, 2)}</pre>`
-
-  resultDiv.innerHTML = `
-    <div class="flex items-center justify-between mb-2">
-      <h4 class="font-semibold text-white">${toolName}</h4>
-      <span class="text-xs text-white/60">${new Date().toLocaleTimeString()}</span>
-    </div>
-    ${content}
-  `
-
-  resultsContainer.insertBefore(resultDiv, resultsContainer.firstChild)
-
-  // Keep only last 5 results
-  while (resultsContainer.children.length > 5) {
-    resultsContainer.removeChild(resultsContainer.lastChild)
+  // Inicializar cuando el DOM esté listo
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMcpDemo)
+  } else {
+    initMcpDemo()
   }
-}
-
-/**
- * Update status display
- */
-function updateStatus(status, message) {
-  const statusElement = document.getElementById('status-display')
-  const statusText = document.getElementById('status-text')
-
-  if (!statusElement || !statusText) {
-    return
-  }
-
-  const statusConfig = {
-    ready: { bg: 'bg-gray-500', icon: '⚪' },
-    connecting: { bg: 'bg-yellow-500', icon: '🔄' },
-    connected: { bg: 'bg-green-500', icon: '✅' },
-    error: { bg: 'bg-red-500', icon: '❌' }
-  }
-
-  const config = statusConfig[status] || statusConfig.ready
-
-  statusElement.className = `px-4 py-2 rounded-lg text-white font-semibold ${config.bg} flex items-center space-x-2`
-  statusText.textContent = `${config.icon} ${message}`
-}
-
-/**
- * Enable test buttons
- */
-function enableTestButtons() {
-  const testButtons = document.querySelectorAll('[data-test-tool]')
-  testButtons.forEach(button => {
-    button.disabled = false
-    button.className =
-      'px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors'
-  })
-}
-
-/**
- * Initialize chatbot
- */
-function initializeChatbot() {
-  try {
-    // Create chatbot container if exists
-    const chatbotContainer = document.getElementById('chatbot-container')
-    if (chatbotContainer) {
-      new FloresyaChatbot('chatbot-container')
-      console.log('🤖 Chatbot inicializado')
-    }
-  } catch (error) {
-    console.error('❌ Error inicializando chatbot:', error)
-  }
-}
-
-/**
- * Demo data and helpers
- */
-window.MCP_DEMO = {
-  testMCPTool,
-  initializeMCP,
-  updateStatus,
-
-  // Sample queries for testing
-  sampleQueries: [
-    '¿Qué flores me recomiendas para un aniversario?',
-    '¿Cómo cuido mis rosas para que duren más?',
-    '¿Tienen ramos de flores por menos de $30?',
-    '¿Cuánto tiempo tarda la entrega a domicilio?',
-    'Busca flores amarillas para el cumpleaños de mi mamá'
-  ]
-}
-
-console.log('✅ Demo scripts cargados exitosamente')
+})()

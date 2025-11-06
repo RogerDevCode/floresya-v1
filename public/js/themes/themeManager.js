@@ -24,6 +24,12 @@ export class ThemeManager {
     console.log('🎨 [ThemeManager] Initializing...')
 
     try {
+      // Wait for DOM to be ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => this.init())
+        return
+      }
+
       // Crear elemento <style> para CSS inline
       this.createStyleElement()
 
@@ -113,7 +119,8 @@ export class ThemeManager {
       // 2. Aplicar CSS inline
       this.applyThemeStyles(themeId)
 
-      // 3. Actualizar data attribute
+      // 3. Actualizar data attribute (both html and body for maximum compatibility)
+      document.documentElement.setAttribute('data-theme', themeId)
       document.body.setAttribute('data-theme', themeId)
 
       // 4. Guardar si se solicita

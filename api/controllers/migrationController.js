@@ -11,7 +11,7 @@ import * as migrationService from '../services/migrationService.js'
 import { DatabaseError } from '../errors/AppError.js'
 
 /**
- * Execute migration to add is_active column to settings table
+ * Execute migration to add active column to settings table
  * MVC Pattern: Controller calls Service, Service accesses Database
  * TEMPORARY ENDPOINT - ONLY FOR DEVELOPMENT
  */

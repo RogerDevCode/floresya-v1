@@ -4,9 +4,13 @@
  * Uses stored functions for atomic operations
  * Uses indexed columns (sku, active, featured, carousel_order)
  * ENTERPRISE FAIL-FAST: All errors use custom error classes with metadata
+ *
+ * REPOSITORY PATTERN: Uses ProductRepository for data access
+ * Following Service Layer Exclusive principle
  */
 
-import { supabase, DB_SCHEMA } from './supabaseClient.js'
+import { DB_SCHEMA, supabase } from './supabaseClient.js'
+import DIContainer from '../architecture/di-container.js'
 import {
   ValidationError,
   NotFoundError,
@@ -16,14 +20,28 @@ import {
   BadRequestError,
   InternalServerError
 } from '../errors/AppError.js'
-import { buildSearchCondition } from '../utils/normalize.js'
 import { sanitizeProductData } from '../utils/sanitize.js'
 import { PAGINATION, CAROUSEL } from '../config/constants.js'
 import { withErrorMapping } from '../middleware/error/index.js'
 import { validateProduct, validateId } from '../utils/validation.js'
 
 const TABLE = DB_SCHEMA.products.table
-const SEARCH_COLUMNS = DB_SCHEMA.products.search
+
+/**
+ * Get ProductRepository instance from DI Container
+ * @returns {ProductRepository} Repository instance
+ */
+function getProductRepository() {
+  return DIContainer.resolve('ProductRepository')
+}
+
+/**
+ * Get OccasionRepository instance from DI Container
+ * @returns {OccasionRepository} Repository instance
+ */
+function getOccasionRepository() {
+  return DIContainer.resolve('OccasionRepository')
+}
 
 /**
  * Validate product ID (ENTERPRISE FAIL-FAST)
@@ -44,24 +62,24 @@ function _validateProductId(id, operation = 'operation') {
  * @param {string} [filters.search] - Search in name and description (accent-insensitive)
  * @param {string} [filters.sortBy] - Sort field with direction
  * @param {string} [filters.occasion] - Filter by occasion slug
- * @param {boolean} includeInactive - Include inactive products (default: false, admin only)
+ * @param {boolean} includeDeactivated - Include inactive products (default: false, admin only)
  * @param {string} [includeImageSize] - Include specific image size (thumb, small, medium, large)
  * @returns {Object[]} - Array of products
  * @throws {DatabaseError} When database query fails
  */
 export const getAllProducts = withErrorMapping(
-  async (filters = {}, includeInactive = false, includeImageSize = null) => {
+  async (filters = {}, includeDeactivated = false, includeImageSize = null) => {
+    const productRepository = getProductRepository()
+
     // If filtering by occasion slug, first resolve it to occasion_id
     let occasionId = null
     if (filters.occasion) {
-      const { data: occasionData, error: occasionError } = await supabase
-        .from(DB_SCHEMA.occasions.table)
-        .select('id')
-        .eq('slug', filters.occasion)
-        .eq('is_active', true)
-        .single()
+      // Use OccasionRepository instead of direct database access
+      const occasionRepository = getOccasionRepository()
+      const occasionData = await occasionRepository.findBySlug(filters.occasion, true)
 
-      if (occasionError || !occasionData) {
+      // Fail Fast: Check for no data
+      if (!occasionData) {
         console.warn(`Occasion not found for slug: ${filters.occasion}`)
         return []
       }
@@ -70,74 +88,55 @@ export const getAllProducts = withErrorMapping(
       console.log(`🔍 Resolved occasion slug "${filters.occasion}" to ID ${occasionId}`)
     }
 
-    let query
-
-    // If filtering by occasion, join with product_occasions
-    if (occasionId) {
-      query = supabase
-        .from(TABLE)
-        .select(`*, product_occasions!inner(occasion_id)`)
-        .eq('product_occasions.occasion_id', occasionId)
-    } else {
-      query = supabase.from(TABLE).select('*')
+    // Prepare repository filters
+    const repositoryFilters = {
+      ...filters,
+      occasion: occasionId,
+      includeDeactivated
     }
 
-    // By default, only return active products
-    if (!includeInactive) {
-      query = query.eq('active', true)
-    }
+    // Prepare repository options
+    const repositoryOptions = {}
 
-    // Indexed filters
-    if (filters.featured !== undefined) {
-      query = query.eq('featured', filters.featured)
-    }
-
-    if (filters.sku) {
-      query = query.eq('sku', filters.sku)
-    }
-
-    // Text search (uses indexed normalized columns for accent-insensitive search)
-    const searchCondition = buildSearchCondition(SEARCH_COLUMNS, filters.search)
-    if (searchCondition) {
-      query = query.or(searchCondition)
-    }
-
-    // Sorting
+    // Handle sorting
     if (filters.sortBy === 'carousel_order') {
-      query = query.order('carousel_order', { ascending: true, nullsLast: true })
+      repositoryFilters.sortBy = 'carousel_order'
+      repositoryOptions.ascending = true
     } else if (filters.sortBy === 'price_asc') {
-      query = query.order('price_usd', { ascending: true })
+      repositoryFilters.sortBy = 'price'
+      repositoryOptions.ascending = true
     } else if (filters.sortBy === 'price_desc') {
-      query = query.order('price_usd', { ascending: false })
+      repositoryFilters.sortBy = 'price'
+      repositoryOptions.ascending = false
     } else if (filters.sortBy === 'name_asc') {
-      query = query.order('name', { ascending: true })
+      repositoryFilters.sortBy = 'name'
+      repositoryOptions.ascending = true
     } else {
-      query = query.order('created_at', { ascending: false })
+      repositoryFilters.sortBy = 'created_at'
+      repositoryOptions.ascending = false
     }
 
+    // Apply pagination
     if (filters.limit) {
-      console.log(`🔧 Applying limit: ${filters.limit} (type: ${typeof filters.limit})`)
-      query = query.limit(filters.limit)
+      repositoryOptions.limit = filters.limit
     }
 
     if (filters.offset) {
-      console.log(`🔧 Applying offset: ${filters.offset}`)
-      const limit = filters.limit !== undefined ? filters.limit : 50
-      query = query.range(filters.offset, filters.offset + limit - 1)
+      repositoryOptions.offset = filters.offset
     }
 
-    console.log(`🔍 Query filters:`, { ...filters, occasionId, includeInactive, includeImageSize })
+    console.log(`🔍 Query filters:`, {
+      ...filters,
+      occasionId,
+      includeDeactivated,
+      includeImageSize
+    })
 
-    const { data: products, error } = await query
-
-    if (error) {
-      // Map Supabase error automatically
-      throw error
-    }
-    if (!products || products.length === 0) {
-      console.log('No products found for filters:', filters)
-      return []
-    }
+    // Use repository to get products
+    const products = await productRepository.findAllWithFilters(
+      repositoryFilters,
+      repositoryOptions
+    )
 
     console.log(`📦 getAllProducts: Found ${products.length} products before fetching images`)
 
@@ -160,7 +159,7 @@ export const getAllProducts = withErrorMapping(
 /**
  * Get product by ID
  * @param {number} id - Product ID
- * @param {boolean} includeInactive - Include inactive products (default: false, admin only)
+ * @param {boolean} includeDeactivated - Include inactive products (default: false, admin only)
  * @param {string} [includeImageSize] - Include specific image size (thumb, small, medium, large)
  * @returns {Object} - Product object
  * @throws {BadRequestError} When ID is invalid
@@ -168,33 +167,29 @@ export const getAllProducts = withErrorMapping(
  * @throws {DatabaseError} When database query fails
  */
 export const getProductById = withErrorMapping(
-  async (id, includeInactive = false, includeImageSize = null) => {
+  async (id, includeDeactivated = false, includeImageSize = null) => {
+    const productRepository = getProductRepository()
+
     // Fail-fast: Validate ID
-    if (!id || typeof id !== 'number' || id <= 0) {
+    if (id === null || id === undefined || typeof id !== 'number' || id <= 0) {
       throw new BadRequestError('Invalid product ID: must be a positive number', { productId: id })
     }
 
-    let query = supabase.from(TABLE).select('*').eq('id', id)
-
-    // By default, only return active products
-    if (!includeInactive) {
-      query = query.eq('active', true)
-    }
-
-    const { data, error } = await query.single()
-
-    if (error) {
-      // Map Supabase error automatically (PGRST116 -> NotFoundError, etc.)
-      throw error
-    }
+    // Use repository to get product
+    const data = await productRepository.findByIdWithImages(id, includeDeactivated)
 
     if (!data) {
-      throw new NotFoundError('Product', id, { includeInactive })
+      throw new NotFoundError('Product', id, { includeDeactivated })
     }
 
     // If no image size requested, return product without additional image
     if (!includeImageSize) {
       return data
+    }
+
+    // Filter images by size if needed
+    if (data.product_images && includeImageSize) {
+      data.product_images = data.product_images.filter(img => img.size === includeImageSize)
     }
 
     // Use the new specialized service function to get product with specific image size
@@ -217,22 +212,17 @@ export const getProductById = withErrorMapping(
  */
 export async function getProductBySku(sku) {
   try {
+    const productRepository = getProductRepository()
+
     if (!sku || typeof sku !== 'string') {
       throw new BadRequestError('Invalid SKU: must be a string', { sku })
     }
 
-    const { data, error } = await supabase
-      .from(TABLE)
-      .select('*')
-      .eq('sku', sku)
-      .eq('active', true)
-      .single()
+    // Use repository to get product by SKU
+    const data = await productRepository.findBySku(sku)
 
-    if (error) {
-      if (error.code === 'PGRST116') {
-        throw new NotFoundError('Product', sku, { sku })
-      }
-      throw new DatabaseError('SELECT', TABLE, error, { sku })
+    if (!data) {
+      throw new NotFoundError('Product', sku, { sku })
     }
 
     return data
@@ -338,17 +328,11 @@ export async function getProductsByOccasion(occasionId, limit = 50) {
  */
 export async function getCarouselProducts() {
   try {
-    const { data: products, error } = await supabase
-      .from(TABLE)
-      .select('*')
-      .eq('active', true)
-      .not('carousel_order', 'is', null)
-      .order('carousel_order', { ascending: true })
-      .limit(CAROUSEL.MAX_SIZE)
+    const productRepository = getProductRepository()
 
-    if (error) {
-      throw new DatabaseError('SELECT', TABLE, error)
-    }
+    // Use repository to get featured products
+    const products = await productRepository.findFeatured(CAROUSEL.MAX_SIZE)
+
     if (!products || products.length === 0) {
       throw new NotFoundError('Carousel products')
     }
@@ -578,7 +562,7 @@ export async function updateProduct(id, updates) {
     }
 
     if (!data) {
-      throw new NotFoundError('Product', id, { includeInactive: false })
+      throw new NotFoundError('Product', id, { includeDeactivated: false })
     }
 
     return data
@@ -604,6 +588,8 @@ export async function updateProduct(id, updates) {
  */
 export async function updateCarouselOrder(productId, newOrder) {
   try {
+    const productRepository = getProductRepository()
+
     if (!productId || typeof productId !== 'number') {
       throw new BadRequestError('Invalid product ID: must be a number', { productId })
     }
@@ -612,22 +598,8 @@ export async function updateCarouselOrder(productId, newOrder) {
       throw new BadRequestError('Invalid carousel_order: must be between 0-7 or null', { newOrder })
     }
 
-    const { data, error } = await supabase
-      .from(TABLE)
-      .update({ carousel_order: newOrder })
-      .eq('id', productId)
-      .eq('active', true)
-      .select()
-      .single()
-
-    if (error) {
-      throw new DatabaseError('UPDATE', TABLE, error, { productId })
-    }
-    if (!data) {
-      throw new DatabaseError('UPDATE', TABLE, new InternalServerError('No data returned'), {
-        productId
-      })
-    }
+    // Use repository to update carousel order
+    const data = await productRepository.updateCarouselOrder(productId, newOrder)
 
     return data
   } catch (error) {
@@ -646,27 +618,14 @@ export async function updateCarouselOrder(productId, newOrder) {
  */
 export async function deleteProduct(id) {
   try {
+    const productRepository = getProductRepository()
+
     if (!id || typeof id !== 'number' || id <= 0) {
       throw new BadRequestError('Invalid product ID: must be a positive number', { productId: id })
     }
 
-    const { data, error } = await supabase
-      .from(TABLE)
-      .update({ active: false })
-      .eq('id', id)
-      .eq('active', true) // Use 'eq' instead of 'is' for boolean values in the filter
-      .select()
-      .single()
-
-    if (error) {
-      if (error.code === 'PGRST116' || error.message?.includes('Row not found')) {
-        throw new NotFoundError('Product', id, { active: true })
-      }
-      throw new DatabaseError('UPDATE', TABLE, error, { productId: id })
-    }
-    if (!data) {
-      throw new NotFoundError('Product', id, { active: true })
-    }
+    // Use repository's delete method (soft-delete)
+    const data = await productRepository.delete(id)
 
     return data
   } catch (error) {
@@ -687,24 +646,14 @@ export async function deleteProduct(id) {
  */
 export async function reactivateProduct(id) {
   try {
+    const productRepository = getProductRepository()
+
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid product ID: must be a number', { productId: id })
     }
 
-    const { data, error } = await supabase
-      .from(TABLE)
-      .update({ active: true })
-      .eq('id', id)
-      .eq('active', false)
-      .select()
-      .single()
-
-    if (error) {
-      throw new DatabaseError('UPDATE', TABLE, error, { productId: id })
-    }
-    if (!data) {
-      throw new NotFoundError('Product', id, { active: false })
-    }
+    // Use repository's reactivate method
+    const data = await productRepository.reactivate(id)
 
     return data
   } catch (error) {
@@ -726,6 +675,8 @@ export async function reactivateProduct(id) {
  */
 export async function updateStock(id, quantity) {
   try {
+    const productRepository = getProductRepository()
+
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid product ID: must be a number', { productId: id })
     }
@@ -734,20 +685,8 @@ export async function updateStock(id, quantity) {
       throw new BadRequestError('Invalid quantity: must be a non-negative number', { quantity })
     }
 
-    const { data, error } = await supabase
-      .from(TABLE)
-      .update({ stock: quantity })
-      .eq('id', id)
-      .eq('active', true)
-      .select()
-      .single()
-
-    if (error) {
-      throw new DatabaseError('UPDATE', TABLE, error, { productId: id })
-    }
-    if (!data) {
-      throw new NotFoundError('Product', id, { active: true })
-    }
+    // Use repository to update stock
+    const data = await productRepository.updateStock(id, quantity)
 
     return data
   } catch (error) {

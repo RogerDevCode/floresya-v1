@@ -14,7 +14,7 @@
  * - Performant with passive event listeners
  *
  * @example
- * import { TouchGestures } from './js/shared/touchGestures.js'
+ * import { TouchGestures } from '.'
  *
  * // Initialize on an element
  * const gestures = new TouchGestures()
@@ -356,7 +356,7 @@ export class TouchGestures {
  * @returns {TouchGestures} The initialized TouchGestures instance
  *
  * @example
- * import { initTouchGestures } from './js/shared/touchGestures.js'
+ * import { initTouchGestures } from '.'
  *
  * const gestures = initTouchGestures(document.getElementById('carousel'), {
  *   swipeThreshold: 60,

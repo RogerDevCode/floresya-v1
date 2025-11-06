@@ -1,27 +1,27 @@
 /**
  * Occasion Service
- * Full CRUD operations with soft-delete (is_active flag)
+ * Full CRUD operations with soft-delete (active flag)
  * Uses indexed slug column for SEO-friendly lookups
  * ENTERPRISE FAIL-FAST: Uses custom error classes with metadata
+ *
+ * REPOSITORY PATTERN: Uses OccasionRepository for data access
+ * Following Service Layer Exclusive principle
  */
 
-import { supabase, DB_SCHEMA } from './supabaseClient.js'
-import {
-  NotFoundError,
-  DatabaseError,
-  DatabaseConstraintError,
-  BadRequestError,
-  InternalServerError
-} from '../errors/AppError.js'
-import { withErrorMapping } from '../middleware/error/index.js'
-import { validateOccasion, validateId, validateActivityFilter } from '../utils/validation.js'
-
-// Note: validateOccasion is imported from centralized validation module
-
-const TABLE = DB_SCHEMA.occasions.table
+import DIContainer from '../architecture/di-container.js'
+import { NotFoundError, BadRequestError } from '../errors/AppError.js'
+import { validateOccasion, validateId } from '../utils/validation.js'
 
 /**
- * Validates occasion ID parameter (DRY principle)
+ * Get OccasionRepository instance from DI Container
+ * @returns {OccasionRepository} Repository instance
+ */
+function getOccasionRepository() {
+  return DIContainer.resolve('OccasionRepository')
+}
+
+/**
+ * Validates occasion ID parameter
  * @param {number} id - Occasion ID to validate
  * @param {string} operation - Operation name for error context
  * @throws {BadRequestError} When ID is invalid
@@ -31,193 +31,77 @@ function validateOccasionId(id, operation = 'operation') {
 }
 
 /**
- * Enhanced error handler with consistent logging (DRY principle)
- * @param {Function} operation - The async operation to execute
- * @param {string} operationName - Name of the operation for logging
- * @param {Object} context - Additional context for logging
- * @returns {Promise} Result of the operation
- */
-async function withErrorHandling(operation, operationName, context = {}) {
-  try {
-    return await operation()
-  } catch (error) {
-    console.error(`${operationName} failed:`, { error: error.message, context })
-    throw error
-  }
-}
-
-/**
- * Applies activity filter to query based on permissions (DRY principle)
- * @param {Object} query - Supabase query builder
- * @param {boolean} includeInactive - Whether to include inactive occasions
- * @param {boolean} [explicitFilter] - Explicit is_active filter value
- * @returns {Object} Modified query
- */
-function applyActivityFilter(query, includeInactive, explicitFilter) {
-  validateActivityFilter(includeInactive)
-
-  if (explicitFilter !== undefined && includeInactive) {
-    // Admins can see occasions based on explicit filter
-    return query.eq('is_active', explicitFilter)
-  } else if (!includeInactive) {
-    // Non-admins always see only active occasions
-    return query.eq('is_active', true)
-  }
-  // Admins with no explicit filter see all occasions
-  return query
-}
-
-/**
- * Handles database operation results consistently (DRY principle)
- * @param {Object} result - Database operation result
- * @param {string} operation - Operation type for error context
- * @param {string} table - Table name for error context
- * @param {Object} error - Database error object
- * @param {Object} context - Additional context for error
- * @throws {DatabaseError} When operation fails
- * @throws {NotFoundError} When no data is found
- */
-function handleDatabaseResult(result, operation, table, error, context = {}) {
-  if (error) {
-    if (error.code === '23505') {
-      throw new DatabaseConstraintError('unique_slug', table, {
-        ...context,
-        message: `Occasion with slug ${context.slug} already exists`
-      })
-    }
-    throw new DatabaseError(operation, table, error, context)
-  }
-  if (!result) {
-    throw new DatabaseError(operation, table, new InternalServerError('No data returned'), context)
-  }
-}
-
-/**
- * Creates standardized occasion object from input data (DRY principle)
- * @param {Object} occasionData - Raw occasion data from request
- * @returns {Object} Sanitized occasion object ready for database
- */
-function createOccasionObject(occasionData) {
-  return {
-    name: occasionData.name,
-    description: occasionData.description !== undefined ? occasionData.description : null,
-    slug: occasionData.slug,
-    display_order: occasionData.display_order !== undefined ? occasionData.display_order : 0,
-    is_active: true
-  }
-}
-
-/**
  * Get all occasions with filters - returns active occasions ordered by display_order
  * @param {Object} [filters={}] - Filter options
  * @param {number} [filters.limit] - Maximum number of occasions to return
- * @param {boolean} includeInactive - Include inactive occasions (default: false, admin only)
+ * @param {boolean} includeDeactivated - Include inactive occasions (default: false, admin only)
  * @returns {Object[]} - Array of occasions ordered by display_order
  * @throws {NotFoundError} When no occasions are found
  * @throws {DatabaseError} When database query fails
  */
-export function getAllOccasions(filters = {}, includeInactive = false) {
-  return withErrorHandling(
-    async () => {
-      let query = supabase.from(TABLE).select('*')
+export async function getAllOccasions(filters = {}, includeDeactivated = false) {
+  const occasionRepository = getOccasionRepository()
 
-      // Apply activity filter explicitly for test compliance
-      if (!includeInactive) {
-        query = query.eq('is_active', true)
-      } else if (filters.is_active !== undefined) {
-        query = query.eq('is_active', filters.is_active)
-      }
-
-      query = query.order('display_order', { ascending: true })
-
-      if (filters.limit) {
-        query = query.limit(filters.limit)
-      }
-
-      const { data, error } = await query
-
-      if (error) {
-        handleDatabaseResult(null, 'SELECT', TABLE, error, { filters })
-      }
-      if (!data) {
-        throw new NotFoundError('Occasions', null)
-      }
-
-      return data
-    },
-    'getAllOccasions',
-    { filters, includeInactive }
+  const data = await occasionRepository.findAllWithFilters(
+    { ...filters, includeDeactivated },
+    {
+      orderBy: 'display_order',
+      ascending: true,
+      limit: filters.limit
+    }
   )
+
+  if (!data || data.length === 0) {
+    throw new NotFoundError('Occasions', null)
+  }
+
+  return data
 }
 
 /**
  * Get occasion by ID
  * @param {number} id - Occasion ID to retrieve
- * @param {boolean} includeInactive - Include inactive occasions (default: false, admin only)
+ * @param {boolean} includeDeactivated - Include inactive occasions (default: false, admin only)
  * @returns {Object} - Occasion object
  * @throws {BadRequestError} When ID is invalid
  * @throws {NotFoundError} When occasion is not found
  * @throws {DatabaseError} When database query fails
  */
-export const getOccasionById = withErrorMapping(
-  async (id, includeInactive = false) => {
-    validateOccasionId(id, 'getOccasionById')
+export async function getOccasionById(id, includeDeactivated = false) {
+  validateOccasionId(id, 'getOccasionById')
 
-    let query = supabase.from(TABLE).select('*').eq('id', id)
-    query = applyActivityFilter(query, includeInactive)
+  const occasionRepository = getOccasionRepository()
+  const data = await occasionRepository.findById(id, includeDeactivated)
 
-    const { data, error } = await query.single()
+  if (!data) {
+    throw new NotFoundError('Occasion', id, { includeDeactivated })
+  }
 
-    if (error) {
-      // Map Supabase error automatically
-      throw error
-    }
-    if (!data) {
-      throw new NotFoundError('Occasion', id, { includeInactive })
-    }
-
-    return data
-  },
-  'SELECT',
-  TABLE
-)
+  return data
+}
 
 /**
  * Get occasion by slug (indexed column for SEO)
  * @param {string} slug - Occasion slug to search for
- * @param {boolean} includeInactive - Include inactive occasions (default: false, admin only)
+ * @param {boolean} includeDeactivated - Include inactive occasions (default: false, admin only)
  * @returns {Object} - Occasion object
  * @throws {BadRequestError} When slug is invalid
  * @throws {NotFoundError} When occasion with slug is not found
  * @throws {DatabaseError} When database query fails
  */
-export function getOccasionBySlug(slug, includeInactive = false) {
-  return withErrorHandling(
-    async () => {
-      if (!slug || typeof slug !== 'string') {
-        throw new BadRequestError('Invalid slug: must be a string', { slug })
-      }
+export async function getOccasionBySlug(slug, includeDeactivated = false) {
+  if (!slug || typeof slug !== 'string') {
+    throw new BadRequestError('Invalid slug: must be a string', { slug })
+  }
 
-      let query = supabase.from(TABLE).select('*').eq('slug', slug)
-      query = applyActivityFilter(query, includeInactive)
+  const occasionRepository = getOccasionRepository()
+  const data = await occasionRepository.findBySlug(slug, includeDeactivated)
 
-      const { data, error } = await query.single()
+  if (!data) {
+    throw new NotFoundError('Occasion', slug, { slug, includeDeactivated })
+  }
 
-      if (error) {
-        if (error.code === 'PGRST116') {
-          throw new NotFoundError('Occasion', slug, { slug, includeInactive })
-        }
-        handleDatabaseResult(null, 'SELECT', TABLE, error, { slug })
-      }
-      if (!data) {
-        throw new NotFoundError('Occasion', slug, { slug, includeInactive })
-      }
-
-      return data
-    },
-    `getOccasionBySlug(${slug})`,
-    { slug, includeInactive }
-  )
+  return data
 }
 
 /**
@@ -232,22 +116,21 @@ export function getOccasionBySlug(slug, includeInactive = false) {
  * @throws {DatabaseConstraintError} When occasion violates database constraints (e.g., duplicate slug)
  * @throws {DatabaseError} When database insert fails
  */
-export function createOccasion(occasionData) {
-  return withErrorHandling(
-    async () => {
-      validateOccasion(occasionData, false)
+export async function createOccasion(occasionData) {
+  validateOccasion(occasionData, false)
 
-      const newOccasion = createOccasionObject(occasionData)
+  const newOccasion = {
+    name: occasionData.name,
+    description: occasionData.description !== undefined ? occasionData.description : null,
+    slug: occasionData.slug,
+    display_order: occasionData.display_order !== undefined ? occasionData.display_order : 0,
+    active: true
+  }
 
-      const { data, error } = await supabase.from(TABLE).insert(newOccasion).select().single()
+  const occasionRepository = getOccasionRepository()
+  const data = await occasionRepository.create(newOccasion)
 
-      handleDatabaseResult(data, 'INSERT', TABLE, error, { slug: occasionData.slug })
-
-      return data
-    },
-    'createOccasion',
-    { slug: occasionData.slug }
-  )
+  return data
 }
 
 /**
@@ -265,50 +148,36 @@ export function createOccasion(occasionData) {
  * @throws {DatabaseConstraintError} When occasion violates database constraints (e.g., duplicate slug)
  * @throws {DatabaseError} When database update fails
  */
-export function updateOccasion(id, updates) {
-  return withErrorHandling(
-    async () => {
-      validateOccasionId(id, 'updateOccasion')
+export async function updateOccasion(id, updates) {
+  validateOccasionId(id, 'updateOccasion')
 
-      if (!updates || Object.keys(updates).length === 0) {
-        throw new BadRequestError('No updates provided', { occasionId: id })
-      }
+  if (!updates || Object.keys(updates).length === 0) {
+    throw new BadRequestError('No updates provided', { occasionId: id })
+  }
 
-      validateOccasion(updates, true)
+  validateOccasion(updates, true)
 
-      const allowedFields = ['name', 'description', 'slug', 'display_order']
-      const sanitized = {}
+  const allowedFields = ['name', 'description', 'slug', 'display_order']
+  const sanitized = {}
 
-      for (const key of allowedFields) {
-        if (updates[key] !== undefined) {
-          sanitized[key] = updates[key]
-        }
-      }
+  for (const key of allowedFields) {
+    if (updates[key] !== undefined) {
+      sanitized[key] = updates[key]
+    }
+  }
 
-      if (Object.keys(sanitized).length === 0) {
-        throw new BadRequestError('No valid fields to update', { occasionId: id })
-      }
+  if (Object.keys(sanitized).length === 0) {
+    throw new BadRequestError('No valid fields to update', { occasionId: id })
+  }
 
-      const { data, error } = await supabase
-        .from(TABLE)
-        .update(sanitized)
-        .eq('id', id)
-        .eq('is_active', true)
-        .select()
-        .single()
+  const occasionRepository = getOccasionRepository()
+  const data = await occasionRepository.update(id, sanitized)
 
-      if (error) {
-        handleDatabaseResult(null, 'UPDATE', TABLE, error, { occasionId: id })
-      }
-      if (!data) {
-        throw new NotFoundError('Occasion', id, { active: true })
-      }
+  if (!data) {
+    throw new NotFoundError('Occasion', id, { active: true })
+  }
 
-      return data
-    },
-    `updateOccasion(${id})`,
-    { occasionId: id }
-  )
+  return data
 }
 
 /**
@@ -319,31 +188,17 @@ export function updateOccasion(id, updates) {
  * @throws {NotFoundError} When occasion is not found or already inactive
  * @throws {DatabaseError} When database update fails
  */
-export function deleteOccasion(id) {
-  return withErrorHandling(
-    async () => {
-      validateOccasionId(id, 'deleteOccasion')
+export async function deleteOccasion(id) {
+  validateOccasionId(id, 'deleteOccasion')
 
-      const { data, error } = await supabase
-        .from(TABLE)
-        .update({ is_active: false })
-        .eq('id', id)
-        .eq('is_active', true)
-        .select()
-        .single()
+  const occasionRepository = getOccasionRepository()
+  const data = await occasionRepository.update(id, { active: false })
 
-      if (error) {
-        handleDatabaseResult(null, 'UPDATE', TABLE, error, { occasionId: id })
-      }
-      if (!data) {
-        throw new NotFoundError('Occasion', id, { active: true })
-      }
+  if (!data) {
+    throw new NotFoundError('Occasion', id, { active: true })
+  }
 
-      return data
-    },
-    `deleteOccasion(${id})`,
-    { occasionId: id }
-  )
+  return data
 }
 
 /**
@@ -354,31 +209,17 @@ export function deleteOccasion(id) {
  * @throws {NotFoundError} When occasion is not found or already active
  * @throws {DatabaseError} When database update fails
  */
-export function reactivateOccasion(id) {
-  return withErrorHandling(
-    async () => {
-      validateOccasionId(id, 'reactivateOccasion')
+export async function reactivateOccasion(id) {
+  validateOccasionId(id, 'reactivateOccasion')
 
-      const { data, error } = await supabase
-        .from(TABLE)
-        .update({ is_active: true })
-        .eq('id', id)
-        .eq('is_active', false)
-        .select()
-        .single()
+  const occasionRepository = getOccasionRepository()
+  const data = await occasionRepository.update(id, { active: true })
 
-      if (error) {
-        handleDatabaseResult(null, 'UPDATE', TABLE, error, { occasionId: id })
-      }
-      if (!data) {
-        throw new NotFoundError('Occasion', id, { active: false })
-      }
+  if (!data) {
+    throw new NotFoundError('Occasion', id, { active: false })
+  }
 
-      return data
-    },
-    `reactivateOccasion(${id})`,
-    { occasionId: id }
-  )
+  return data
 }
 
 /**
@@ -390,35 +231,21 @@ export function reactivateOccasion(id) {
  * @throws {NotFoundError} When occasion is not found or inactive
  * @throws {DatabaseError} When database update fails
  */
-export function updateDisplayOrder(id, newOrder) {
-  return withErrorHandling(
-    async () => {
-      validateOccasionId(id, 'updateDisplayOrder')
+export async function updateDisplayOrder(id, newOrder) {
+  validateOccasionId(id, 'updateDisplayOrder')
 
-      if (typeof newOrder !== 'number' || newOrder < 0) {
-        throw new BadRequestError('Invalid display_order: must be a non-negative number', {
-          newOrder
-        })
-      }
+  if (typeof newOrder !== 'number' || newOrder < 0) {
+    throw new BadRequestError('Invalid display_order: must be a non-negative number', {
+      newOrder
+    })
+  }
 
-      const { data, error } = await supabase
-        .from(TABLE)
-        .update({ display_order: newOrder })
-        .eq('id', id)
-        .eq('is_active', true)
-        .select()
-        .single()
+  const occasionRepository = getOccasionRepository()
+  const data = await occasionRepository.update(id, { display_order: newOrder })
 
-      if (error) {
-        handleDatabaseResult(null, 'UPDATE', TABLE, error, { occasionId: id })
-      }
-      if (!data) {
-        throw new NotFoundError('Occasion', id, { active: true })
-      }
+  if (!data) {
+    throw new NotFoundError('Occasion', id, { active: true })
+  }
 
-      return data
-    },
-    `updateDisplayOrder(${id})`,
-    { occasionId: id, newOrder }
-  )
+  return data
 }

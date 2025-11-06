@@ -543,8 +543,8 @@ export function validateUser(data, validRoles, isUpdate = false) {
     validateBoolean(data.email_verified, 'email_verified', { required: false })
   }
 
-  if (data.is_active !== undefined) {
-    validateBoolean(data.is_active, 'is_active', { required: false })
+  if (data.active !== undefined) {
+    validateBoolean(data.active, 'active', { required: false })
   }
 }
 
@@ -607,8 +607,8 @@ export function validateOccasion(data, isUpdate = false) {
     })
   }
 
-  if (data.is_active !== undefined) {
-    validateBoolean(data.is_active, 'is_active', { required: false })
+  if (data.active !== undefined) {
+    validateBoolean(data.active, 'active', { required: false })
   }
 }
 
@@ -668,8 +668,8 @@ export function validateSetting(data, isUpdate = false) {
     validateBoolean(data.is_public, 'is_public', { required: false })
   }
 
-  if (data.is_active !== undefined) {
-    validateBoolean(data.is_active, 'is_active', { required: false })
+  if (data.active !== undefined) {
+    validateBoolean(data.active, 'active', { required: false })
   }
 }
 
@@ -724,8 +724,8 @@ export function validatePaymentMethod(data, isUpdate = false) {
     })
   }
 
-  if (data.is_active !== undefined) {
-    validateBoolean(data.is_active, 'is_active', { required: false })
+  if (data.active !== undefined) {
+    validateBoolean(data.active, 'active', { required: false })
   }
 }
 
@@ -920,13 +920,13 @@ export function validatePaginationParams(params = {}) {
 
 /**
  * Validate activity filter parameter
- * @param {boolean} includeInactive - Include inactive flag
+ * @param {boolean} includeDeactivated - Include deactivated records flag
  * @throws {BadRequestError} When parameter is invalid
  */
-export function validateActivityFilter(includeInactive) {
-  if (includeInactive !== undefined && typeof includeInactive !== 'boolean') {
-    throw new BadRequestError('includeInactive must be a boolean', {
-      includeInactive,
+export function validateActivityFilter(includeDeactivated) {
+  if (includeDeactivated !== undefined && typeof includeDeactivated !== 'boolean') {
+    throw new BadRequestError('includeDeactivated must be a boolean', {
+      includeDeactivated,
       rule: 'boolean (true/false) required'
     })
   }

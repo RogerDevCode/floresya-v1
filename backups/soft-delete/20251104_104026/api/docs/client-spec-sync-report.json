@@ -1,0 +1,57 @@
+{
+  "timestamp": "2025-11-03T00:45:07.639Z",
+  "valid": false,
+  "issues": [
+    {
+      "type": "missing_method",
+      "severity": "error",
+      "message": "Endpoint GET /api/errors has no corresponding client method",
+      "endpoint": "/api/errors",
+      "method": "get"
+    },
+    {
+      "type": "missing_method",
+      "severity": "error",
+      "message": "Endpoint GET /api/occasions has no corresponding client method",
+      "endpoint": "/api/occasions",
+      "method": "get"
+    },
+    {
+      "type": "missing_method",
+      "severity": "error",
+      "message": "Endpoint POST /api/occasions has no corresponding client method",
+      "endpoint": "/api/occasions",
+      "method": "post"
+    },
+    {
+      "type": "missing_method",
+      "severity": "error",
+      "message": "Endpoint PUT /api/occasions/{id} has no corresponding client method",
+      "endpoint": "/api/occasions/{id}",
+      "method": "put"
+    },
+    {
+      "type": "missing_method",
+      "severity": "error",
+      "message": "Endpoint POST /api/migrations/add-is-active-to-settings has no corresponding client method",
+      "endpoint": "/api/migrations/add-is-active-to-settings",
+      "method": "post"
+    }
+  ],
+  "warnings": [],
+  "summary": {
+    "specEndpoints": 67,
+    "clientMethods": 62,
+    "coverage": 92.54,
+    "orphanedEndpoints": [],
+    "missingMethods": [
+      "GET /api/errors",
+      "GET /api/occasions",
+      "POST /api/occasions",
+      "PUT /api/occasions/{id}",
+      "POST /api/migrations/add-is-active-to-settings"
+    ],
+    "extraMethods": [],
+    "orphanedMethods": []
+  }
+}

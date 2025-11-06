@@ -21,10 +21,9 @@ import { errorHandler } from './middleware/error/index.js'
 import {
   withDatabaseCircuitBreaker,
   circuitBreakerHealthCheck,
-  metricsMiddleware,
-  getMetricsReport,
-  getRealtimeMetrics
+  cacheMiddleware
 } from './middleware/performance/index.js'
+// import { getMetricsReport, getRealtimeMetrics } from './monitoring/metricsCollector.js'
 import {
   comprehensiveHealthCheck,
   getRecoveryStatus,
@@ -51,8 +50,13 @@ import occasionRoutes from './routes/occasionRoutes.js'
 import settingsRoutes from './routes/settingsRoutes.js'
 import adminSettingsRoutes from './routes/admin/settingsRoutes.js'
 import migrationRoutes from './routes/migrationRoutes.js'
+import { initializeDIContainer } from './architecture/di-container.js'
 
 const app = express()
+
+// Initialize DI Container (MUST be first - before any route handlers)
+// This registers all repositories and services
+initializeDIContainer()
 
 // Session security (MUST be before body parsing)
 app.use(configureSecureSession())
@@ -97,9 +101,9 @@ app.get('/health', (req, res) => {
 // Circuit breaker health check
 app.get('/health/circuit-breaker', circuitBreakerHealthCheck)
 
-// Metrics endpoints
-app.get('/health/metrics', getRealtimeMetrics)
-app.get('/health/metrics/report', getMetricsReport)
+// Metrics endpoints (TODO: Fix imports)
+// app.get('/health/metrics', getRealtimeMetrics)
+// app.get('/health/metrics/report', getMetricsReport)
 
 // Recovery endpoints
 app.get('/health/recovery', getRecoveryStatus)
@@ -136,8 +140,8 @@ app.use(cacheMiddleware)
 // Circuit breaker for database operations
 app.use(withDatabaseCircuitBreaker())
 
-// Metrics collection middleware
-app.use(metricsMiddleware)
+// Metrics collection middleware (TODO: Fix metricsMiddleware import)
+// app.use(metricsMiddleware)
 
 // Standard response format middleware (antes de rutas API)
 app.use(standardResponse)
@@ -164,6 +168,27 @@ app.use(
     maxAge: isDevelopment ? 0 : '1y',
     immutable: !isDevelopment,
     setHeaders: (res, path) => {
+      // Set correct MIME types
+      if (path.endsWith('.css')) {
+        res.setHeader('Content-Type', 'text/css; charset=utf-8')
+      } else if (path.endsWith('.js')) {
+        res.setHeader('Content-Type', 'application/javascript; charset=utf-8')
+      } else if (path.endsWith('.html')) {
+        res.setHeader('Content-Type', 'text/html; charset=utf-8')
+      } else if (path.endsWith('.json')) {
+        res.setHeader('Content-Type', 'application/json; charset=utf-8')
+      } else if (path.endsWith('.svg')) {
+        res.setHeader('Content-Type', 'image/svg+xml')
+      } else if (path.endsWith('.png')) {
+        res.setHeader('Content-Type', 'image/png')
+      } else if (path.endsWith('.jpg') || path.endsWith('.jpeg')) {
+        res.setHeader('Content-Type', 'image/jpeg')
+      } else if (path.endsWith('.gif')) {
+        res.setHeader('Content-Type', 'image/gif')
+      } else if (path.endsWith('.ico')) {
+        res.setHeader('Content-Type', 'image/x-icon')
+      }
+
       if (isDevelopment) {
         // Development: no cache for JS/CSS, short cache for everything else
         if (/\.(js|css)$/i.test(path)) {
@@ -194,6 +219,17 @@ app.use(
   express.static('public/pages/admin', {
     maxAge: isDevelopment ? 0 : '1h',
     setHeaders: (res, path) => {
+      // Set correct MIME types for admin assets
+      if (path.endsWith('.css')) {
+        res.setHeader('Content-Type', 'text/css; charset=utf-8')
+      } else if (path.endsWith('.js')) {
+        res.setHeader('Content-Type', 'application/javascript; charset=utf-8')
+      } else if (path.endsWith('.html')) {
+        res.setHeader('Content-Type', 'text/html; charset=utf-8')
+      } else if (path.endsWith('.svg')) {
+        res.setHeader('Content-Type', 'image/svg+xml')
+      }
+
       if (isDevelopment) {
         // Development: no cache for HTML/JS/CSS
         if (/\.(js|css)$/i.test(path)) {

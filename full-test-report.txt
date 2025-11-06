@@ -1,0 +1,68 @@
+
+═══════════════════════════════════════════════════════════════════════════════
+                          📋 FULL TEST REPORT
+═══════════════════════════════════════════════════════════════════════════════
+
+Generated: 2025-11-05T15:13:41.112Z
+
+SUMMARY
+───────────────────────────────────────────────────────────────────────────────
+Total Tests: 5
+Passed: 0
+Failed: 5
+Success Rate: 0.0%
+
+TEST RESULTS
+───────────────────────────────────────────────────────────────────────────────
+
+
+DOM Validation
+Status: FAILED
+Error: spawnSync /bin/sh ETIMEDOUT
+
+JavaScript Chain Validation
+Status: FAILED
+Error: Command failed: node scripts/run-js-chain-validation.js
+
+homepage-dom.test.js
+Status: FAILED
+Error: spawnSync /bin/sh ETIMEDOUT
+
+javascript-dom-ready.test.js
+Status: FAILED
+Error: Command failed: npx playwright test "tests/e2e/javascript-dom-ready.test.js" --reporter=list
+
+static-html-validation.test.js
+Status: FAILED
+Error: Command failed: npx playwright test "tests/e2e/static-html-validation.test.js" --reporter=list
+Missing CSS in demo-mcp-integration.html: /css/tailwind.css
+Missing CSS in demo-mcp-integration.html: /cs
+
+
+
+FAILURES
+───────────────────────────────────────────────────────────────────────────────
+
+
+Test: DOM Validation
+Error: spawnSync /bin/sh ETIMEDOUT
+
+Test: JavaScript Chain Validation
+Error: Command failed: node scripts/run-js-chain-validation.js
+
+Test: homepage-dom.test.js
+Error: spawnSync /bin/sh ETIMEDOUT
+
+Test: javascript-dom-ready.test.js
+Error: Command failed: npx playwright test "tests/e2e/javascript-dom-ready.test.js" --reporter=list
+
+Test: static-html-validation.test.js
+Error: Command failed: npx playwright test "tests/e2e/static-html-validation.test.js" --reporter=list
+Missing CSS in demo-mcp-integration.html: /css/tailwind.css
+Missing CSS in demo-mcp-integration.html: /css/styles.css
+Missing JS in demo-mcp-integration.html: /js/demo-mcp.js
+Missing CSS in demo-mcp-standa
+
+
+
+═══════════════════════════════════════════════════════════════════════════════

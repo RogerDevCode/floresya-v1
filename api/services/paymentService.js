@@ -2,9 +2,12 @@
  * Payment Service - Venezuelan Payment Methods
  * Business logic for payment processing and order management
  * ENTERPRISE FAIL-FAST: Uses custom error classes with metadata
+ *
+ * REPOSITORY PATTERN: Uses PaymentRepository and PaymentMethodRepository for data access
+ * Following Service Layer Exclusive principle
  */
 
-import { supabase, DB_SCHEMA } from './supabaseClient.js'
+import DIContainer from '../architecture/di-container.js'
 import {
   ValidationError,
   DatabaseError,
@@ -18,9 +21,37 @@ import {
   getPaymentMethodDisplayName
 } from '../utils/validation.js'
 
-const ORDERS_TABLE = DB_SCHEMA.orders.table
-const PAYMENTS_TABLE = DB_SCHEMA.payments.table
-const PAYMENT_METHODS_TABLE = DB_SCHEMA.payment_methods.table
+/**
+ * Get PaymentMethodRepository instance from DI Container
+ * @returns {PaymentMethodRepository} Repository instance
+ */
+function getPaymentMethodRepository() {
+  return DIContainer.resolve('PaymentMethodRepository')
+}
+
+/**
+ * Get PaymentRepository instance from DI Container
+ * @returns {PaymentRepository} Repository instance
+ */
+function getPaymentRepository() {
+  return DIContainer.resolve('PaymentRepository')
+}
+
+/**
+ * Get SettingsRepository instance from DI Container
+ * @returns {SettingsRepository} Repository instance
+ */
+function getSettingsRepository() {
+  return DIContainer.resolve('SettingsRepository')
+}
+
+/**
+ * Get OrderRepository instance from DI Container
+ * @returns {OrderRepository} Repository instance
+ */
+function getOrderRepository() {
+  return DIContainer.resolve('OrderRepository')
+}
 
 /**
  * Get available payment methods for Venezuela
@@ -30,18 +61,13 @@ const PAYMENT_METHODS_TABLE = DB_SCHEMA.payment_methods.table
  */
 export async function getPaymentMethods() {
   try {
-    const { data, error } = await supabase
-      .from(PAYMENT_METHODS_TABLE)
-      .select('*')
-      .eq('is_active', true)
-      .order('display_order', { ascending: true })
+    const paymentMethodRepository = getPaymentMethodRepository()
 
-    if (error) {
-      throw new DatabaseError('SELECT', PAYMENT_METHODS_TABLE, error, {})
-    }
+    // Use repository to get active payment methods
+    const data = await paymentMethodRepository.findActive()
 
     if (!data || data.length === 0) {
-      throw new NotFoundError('Payment Methods', 'active', { is_active: true })
+      throw new NotFoundError('Payment Methods', 'active', { active: true })
     }
 
     return data
@@ -51,7 +77,7 @@ export async function getPaymentMethods() {
       throw error
     }
     console.error('getPaymentMethods failed:', error)
-    throw new DatabaseError('SELECT', PAYMENT_METHODS_TABLE, error, {})
+    throw error
   }
 }
 
@@ -134,15 +160,8 @@ export function generateOrderReference() {
  */
 export async function getDeliveryCost() {
   try {
-    const { data, error } = await supabase
-      .from('settings')
-      .select('value, type')
-      .eq('key', 'DELIVERY_COST_USD')
-      .single()
-
-    if (error) {
-      throw new DatabaseError('SELECT', 'settings', error, { key: 'DELIVERY_COST_USD' })
-    }
+    const settingsRepository = getSettingsRepository()
+    const data = await settingsRepository.findByKey('DELIVERY_COST_USD')
 
     if (!data) {
       throw new NotFoundError('Setting', 'DELIVERY_COST_USD', { key: 'DELIVERY_COST_USD' })
@@ -179,15 +198,8 @@ export async function getDeliveryCost() {
  */
 export async function getBCVRate() {
   try {
-    const { data, error } = await supabase
-      .from('settings')
-      .select('value, type')
-      .eq('key', 'bcv_usd_rate')
-      .single()
-
-    if (error) {
-      throw new DatabaseError('SELECT', 'settings', error, { key: 'bcv_usd_rate' })
-    }
+    const settingsRepository = getSettingsRepository()
+    const data = await settingsRepository.findByKey('bcv_usd_rate')
 
     if (!data) {
       throw new NotFoundError('Setting', 'bcv_usd_rate', { key: 'bcv_usd_rate' })
@@ -249,30 +261,28 @@ export async function confirmPayment(orderId, paymentData) {
       throw new ValidationError('Reference number is required', { orderId })
     }
 
-    // Get payment method details
-    const { data: method, error: methodError } = await supabase
-      .from(PAYMENT_METHODS_TABLE)
-      .select('id, name')
-      .eq('code', paymentData.payment_method)
-      .eq('is_active', true)
-      .single()
+    // Get payment method details using repository
+    const paymentMethodRepository = getPaymentMethodRepository()
+    const methods = await paymentMethodRepository.findAllWithFilters(
+      { type: paymentData.payment_method, active: true },
+      { limit: 1 }
+    )
 
-    if (methodError || !method) {
+    if (!methods || methods.length === 0) {
       throw new NotFoundError('Payment Method', paymentData.payment_method)
     }
 
-    // Get order to validate and get amount
-    const { data: order, error: orderError } = await supabase
-      .from(ORDERS_TABLE)
-      .select('total_amount_usd, total_amount_ves, currency_rate')
-      .eq('id', orderId)
-      .single()
+    const method = methods[0]
 
-    if (orderError || !order) {
+    // Get order to validate and get amount using repository
+    const orderRepository = getOrderRepository()
+    const order = await orderRepository.findByIdWithItems(orderId)
+
+    if (!order) {
       throw new NotFoundError('Order', orderId)
     }
 
-    // Create payment record
+    // Create payment record using repository
     const payment = {
       order_id: orderId,
       payment_method_id: method.id,
@@ -288,21 +298,13 @@ export async function confirmPayment(orderId, paymentData) {
       payment_date: new Date().toISOString()
     }
 
-    const { data, error } = await supabase.from(PAYMENTS_TABLE).insert(payment).select().single()
-
-    if (error) {
-      throw new DatabaseError('INSERT', PAYMENTS_TABLE, error, { orderId })
-    }
+    const paymentRepository = getPaymentRepository()
+    const data = await paymentRepository.create(payment)
 
     if (!data) {
-      throw new DatabaseError(
-        'INSERT',
-        PAYMENTS_TABLE,
-        new InternalServerError('No data returned'),
-        {
-          orderId
-        }
-      )
+      throw new DatabaseError('INSERT', 'payments', new InternalServerError('No data returned'), {
+        orderId
+      })
     }
 
     return data
@@ -311,7 +313,7 @@ export async function confirmPayment(orderId, paymentData) {
       throw error
     }
     console.error(`confirmPayment(${orderId}) failed:`, error)
-    throw new DatabaseError('INSERT', PAYMENTS_TABLE, error, { orderId })
+    throw new DatabaseError('INSERT', 'payments', error, { orderId })
   }
 }
 
@@ -332,17 +334,10 @@ export async function getOrderPayments(orderId) {
       throw new BadRequestError('Invalid order ID', { orderId })
     }
 
-    const { data, error } = await supabase
-      .from(PAYMENTS_TABLE)
-      .select('*')
-      .eq('order_id', orderId)
-      .order('created_at', { ascending: false })
+    const paymentRepository = getPaymentRepository()
+    const data = await paymentRepository.findByOrderId(orderId)
 
-    if (error) {
-      throw new DatabaseError('SELECT', PAYMENTS_TABLE, error, { orderId })
-    }
-
-    if (!data) {
+    if (!data || data.length === 0) {
       throw new NotFoundError('Payments for order', orderId)
     }
 
@@ -352,6 +347,6 @@ export async function getOrderPayments(orderId) {
       throw error
     }
     console.error(`getOrderPayments(${orderId}) failed:`, error)
-    throw new DatabaseError('SELECT', PAYMENTS_TABLE, error, { orderId })
+    throw new DatabaseError('SELECT', 'payments', error, { orderId })
   }
 }

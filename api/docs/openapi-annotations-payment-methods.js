@@ -86,7 +86,7 @@
  *                 type: string
  *               account_info:
  *                 type: string
- *               is_active:
+ *               active:
  *                 type: boolean
  *               display_order:
  *                 type: integer
@@ -142,7 +142,7 @@
  *                 type: string
  *               account_info:
  *                 type: string
- *               is_active:
+ *               active:
  *                 type: boolean
  *               display_order:
  *                 type: integer
@@ -221,7 +221,7 @@
  *   delete:
  *     tags: [Payment Methods]
  *     summary: Delete payment method (soft delete)
- *     description: Admin only - Soft deletes a payment method by setting its `is_active` flag to false.
+ *     description: Admin only - Soft deletes a payment method by setting its `active` flag to false.
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -249,7 +249,7 @@
  *   patch:
  *     tags: [Payment Methods]
  *     summary: Reactivate payment method
- *     description: Admin only - Reactivates a soft-deleted payment method by setting its `is_active` flag to true.
+ *     description: Admin only - Reactivates a soft-deleted payment method by setting its `active` flag to true.
  *     security:
  *       - bearerAuth: []
  *     parameters:

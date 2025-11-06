@@ -34,7 +34,7 @@ const fixes = [
 
   // Occasion schema
   {
-    pattern: /(is_active: \{ type: 'boolean', example: true \})/,
+    pattern: /(active: \{ type: 'boolean', example: true \})/,
     replacement:
       "$1,\n    created_at: { type: 'string', format: 'date-time', example: '2025-01-01T10:00:00Z' },\n    updated_at: { type: 'string', format: 'date-time', example: '2025-01-01T10:00:00Z' }"
   },

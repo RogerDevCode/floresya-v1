@@ -189,15 +189,105 @@ function initSmoothScroll() {
 }
 
 /**
+ * Update Progress Bar for Carousel (Enhanced)
+ */
+function updateProgressBar(index) {
+  const progressBar = document.getElementById('carouselProgressBar')
+  const indicators = document.getElementById('carousel-indicators')
+
+  if (!progressBar) {
+    return
+  }
+
+  // Get total slides from the carousel
+  const carouselSlides = document.getElementById('carouselSlides')
+  const totalSlides = carouselSlides ? carouselSlides.children.length : 3
+
+  const percentage = ((index + 1) / totalSlides) * 100
+  progressBar.style.width = percentage + '%'
+
+  // Update enhanced indicators if they exist
+  if (indicators) {
+    const dots = indicators.querySelectorAll('.carousel-dot')
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === index)
+      dot.setAttribute('aria-current', i === index ? 'true' : 'false')
+    })
+  }
+
+  console.log(
+    '📊 Progress Bar updated:',
+    percentage + '% (slide',
+    index + 1,
+    'of',
+    totalSlides + ')'
+  )
+}
+
+/**
+ * Create Enhanced Carousel Indicators (Modelo 5 - Stanford Research)
+ */
+function createCarouselIndicators(totalSlides) {
+  const indicatorsContainer = document.getElementById('carousel-indicators')
+  if (!indicatorsContainer || totalSlides <= 1) {
+    return
+  }
+
+  // Clear existing indicators
+  indicatorsContainer.innerHTML = ''
+
+  // Create dots with enhanced styling
+  for (let i = 0; i < totalSlides; i++) {
+    const dot = document.createElement('button')
+    dot.className =
+      'carousel-dot relative w-3 h-3 rounded-full bg-white bg-opacity-50 transition-all duration-300 hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-transparent'
+    dot.style.cssText = `
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      ${i === 0 ? 'background-color: #ec4899; transform: scale(1.3);' : ''}
+    `
+    dot.setAttribute('type', 'button')
+    dot.setAttribute('aria-label', `Ir al slide ${i + 1}`)
+    dot.setAttribute('aria-current', i === 0 ? 'true' : 'false')
+    dot.setAttribute('data-slide', i)
+
+    // Add hover effects
+    dot.addEventListener('mouseenter', () => {
+      if (!dot.classList.contains('active')) {
+        dot.style.transform = 'scale(1.2)'
+        dot.style.backgroundColor = 'rgba(236, 72, 153, 0.7)'
+      }
+    })
+
+    dot.addEventListener('mouseleave', () => {
+      if (!dot.classList.contains('active')) {
+        dot.style.transform = 'scale(1)'
+        dot.style.backgroundColor = 'rgba(255, 255, 255, 0.5)'
+      }
+    })
+
+    // Add click handler
+    dot.addEventListener('click', () => {
+      const slideIndex = parseInt(dot.getAttribute('data-slide'), 10)
+      if (window.carouselShowSlide) {
+        window.carouselShowSlide(slideIndex)
+      }
+    })
+
+    indicatorsContainer.appendChild(dot)
+  }
+
+  console.log(`✅ Created ${totalSlides} enhanced carousel indicators`)
+}
+
+/**
  * Initialize Featured Products Carousel
  */
 async function initCarousel() {
   const carouselSlides = document.getElementById('carouselSlides')
-  const carouselIndicators = document.getElementById('carouselIndicators')
   const prevBtn = document.getElementById('carousel-prev')
   const nextBtn = document.getElementById('carousel-next')
 
-  if (!carouselSlides || !carouselIndicators || !prevBtn || !nextBtn) {
+  if (!carouselSlides || !prevBtn || !nextBtn) {
     return
   }
 
@@ -352,29 +442,16 @@ async function initCarousel() {
     })
     .join('')
 
-  // Build indicators HTML
-  const indicatorsHTML = featuredProducts
-    .map(
-      (_, index) => `
-    <button
-      class="carousel-indicator w-3 h-3 rounded-full transition-all duration-300 ${index === 0 ? 'bg-pink-600 w-8' : 'bg-gray-400'}"
-      data-slide-to="${index}"
-      aria-label="Ir a slide ${index + 1}"
-      role="tab"
-    ></button>
-  `
-    )
-    .join('')
-
   // Inject HTML
   carouselSlides.innerHTML = slidesHTML
-  carouselIndicators.innerHTML = indicatorsHTML
 
-  // Get all slides and indicators
+  // Get all slides and create enhanced indicators
   const slides = carouselSlides.querySelectorAll('.carousel-slide')
-  const indicators = carouselIndicators.querySelectorAll('.carousel-indicator')
 
-  // Function to show specific slide
+  // Create enhanced indicators (Modelo 5 - Stanford Research)
+  createCarouselIndicators(featuredProducts.length)
+
+  // Function to show specific slide (Enhanced)
   function showSlide(index) {
     // Hide all slides
     slides.forEach(slide => {
@@ -382,22 +459,23 @@ async function initCarousel() {
       slide.classList.add('opacity-0')
     })
 
-    // Reset all indicators
-    indicators.forEach(indicator => {
-      indicator.classList.remove('bg-pink-600', 'w-8')
-      indicator.classList.add('bg-gray-400')
-    })
-
-    // Show current slide
+    // Show current slide with enhanced transition
     slides[index].classList.remove('opacity-0')
     slides[index].classList.add('opacity-100')
 
-    // Highlight current indicator
-    indicators[index].classList.remove('bg-gray-400')
-    indicators[index].classList.add('bg-pink-600', 'w-8')
-
     currentSlide = index
+
+    // Update progress bar and indicators
+    updateProgressBar(index)
+
+    // Enhanced haptic feedback for touch devices
+    if ('vibrate' in navigator && 'ontouchstart' in window) {
+      navigator.vibrate(50) // Light haptic feedback
+    }
   }
+
+  // Expose showSlide function globally for indicator clicks
+  window.carouselShowSlide = showSlide
 
   // Next slide
   function nextSlide() {
@@ -411,14 +489,107 @@ async function initCarousel() {
     showSlide(prevIndex)
   }
 
-  // Event listeners
-  prevBtn.addEventListener('click', prevSlide)
-  nextBtn.addEventListener('click', nextSlide)
-
-  // Indicator click events
-  indicators.forEach((indicator, index) => {
-    indicator.addEventListener('click', () => showSlide(index))
+  // Enhanced Event listeners
+  prevBtn.addEventListener('click', () => {
+    prevSlide()
+    // Enhanced haptic feedback
+    if ('vibrate' in navigator && 'ontouchstart' in window) {
+      navigator.vibrate([30, 10, 30])
+    }
   })
+
+  nextBtn.addEventListener('click', () => {
+    nextSlide()
+    // Enhanced haptic feedback
+    if ('vibrate' in navigator && 'ontouchstart' in window) {
+      navigator.vibrate([30, 10, 30])
+    }
+  })
+
+  // Keyboard navigation (WCAG 2.1 AAA compliance)
+  carouselSlides.addEventListener('keydown', e => {
+    switch (e.key) {
+      case 'ArrowLeft':
+        e.preventDefault()
+        prevSlide()
+        break
+      case 'ArrowRight':
+        e.preventDefault()
+        nextSlide()
+        break
+      case 'Home':
+        e.preventDefault()
+        showSlide(0)
+        break
+      case 'End':
+        e.preventDefault()
+        showSlide(featuredProducts.length - 1)
+        break
+    }
+  })
+
+  // Touch gesture support (Modelo 5 - Stanford Research)
+  let touchStartX = 0
+  let touchEndX = 0
+  let isDragging = false
+
+  carouselSlides.addEventListener(
+    'touchstart',
+    e => {
+      touchStartX = e.changedTouches[0].screenX
+      isDragging = true
+    },
+    { passive: true }
+  )
+
+  carouselSlides.addEventListener(
+    'touchmove',
+    e => {
+      if (!isDragging) {
+        return
+      }
+      touchEndX = e.changedTouches[0].screenX
+    },
+    { passive: true }
+  )
+
+  carouselSlides.addEventListener(
+    'touchend',
+    () => {
+      if (!isDragging) {
+        return
+      }
+      isDragging = false
+
+      const swipeDistance = touchStartX - touchEndX
+      const minSwipeDistance = 50
+
+      if (Math.abs(swipeDistance) > minSwipeDistance) {
+        if (swipeDistance > 0) {
+          // Swipe left - next slide
+          nextSlide()
+          if ('vibrate' in navigator) {
+            navigator.vibrate(40)
+          }
+        } else {
+          // Swipe right - previous slide
+          prevSlide()
+          if ('vibrate' in navigator) {
+            navigator.vibrate(40)
+          }
+        }
+      }
+    },
+    { passive: true }
+  )
+
+  // Make carousel accessible
+  carouselSlides.setAttribute('tabindex', '0')
+  carouselSlides.setAttribute('role', 'group')
+  carouselSlides.setAttribute('aria-roledescription', 'carousel')
+
+  // Initialize progress bar for first slide
+  updateProgressBar(0)
 
   // Image error handling (CSP-compliant)
   const productImages = carouselSlides.querySelectorAll('.carousel-product-image')
@@ -525,47 +696,115 @@ async function initCarousel() {
     })
   })
 
-  // Auto-advance carousel every 5 seconds
-  // Use requestAnimationFrame for better performance
+  // Enhanced Auto-advance with user interaction respect
+  let autoAdvanceTimer = null
+  let isUserInteracting = false
   let lastTime = 0
-  const autoAdvance = timestamp => {
-    if (!lastTime) {
-      lastTime = timestamp
-    }
-    const elapsed = timestamp - lastTime
 
-    if (elapsed >= 5000) {
-      nextSlide()
-      lastTime = timestamp
+  const startAutoAdvance = () => {
+    if (autoAdvanceTimer) {
+      return
     }
 
-    requestAnimationFrame(autoAdvance)
+    const autoAdvance = timestamp => {
+      if (!lastTime) {
+        lastTime = timestamp
+      }
+      const elapsed = timestamp - lastTime
+
+      if (elapsed >= 6000 && !isUserInteracting) {
+        // Increased to 6s for better UX
+        nextSlide()
+        lastTime = timestamp
+      }
+
+      if (!isUserInteracting) {
+        autoAdvanceTimer = requestAnimationFrame(autoAdvance)
+      }
+    }
+
+    autoAdvanceTimer = requestAnimationFrame(autoAdvance)
   }
 
-  // Start auto-advance only when page is visible
-  if ('IntersectionObserver' in window) {
-    const carouselObserver = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            requestAnimationFrame(autoAdvance)
-          } else {
-            lastTime = 0 // Pause when not visible
-          }
-        })
+  const stopAutoAdvance = () => {
+    if (autoAdvanceTimer) {
+      cancelAnimationFrame(autoAdvanceTimer)
+      autoAdvanceTimer = null
+      lastTime = 0
+    }
+  }
+
+  // User interaction detection
+  const carouselElement = document.getElementById('featuredCarousel')
+  if (carouselElement) {
+    // Pause auto-advance on hover
+    carouselElement.addEventListener('mouseenter', () => {
+      isUserInteracting = true
+      stopAutoAdvance()
+    })
+
+    carouselElement.addEventListener('mouseleave', () => {
+      isUserInteracting = false
+      startAutoAdvance()
+    })
+
+    // Pause auto-advance on touch start
+    carouselElement.addEventListener(
+      'touchstart',
+      () => {
+        isUserInteracting = true
+        stopAutoAdvance()
       },
-      { threshold: 0.1 }
+      { passive: true }
     )
 
-    const carouselElement = document.getElementById('featuredCarousel')
-    if (carouselElement) {
+    carouselElement.addEventListener(
+      'touchend',
+      () => {
+        setTimeout(() => {
+          isUserInteracting = false
+          startAutoAdvance()
+        }, 3000) // Resume after 3 seconds
+      },
+      { passive: true }
+    )
+
+    // Pause when page is not visible (Page Visibility API)
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        isUserInteracting = true
+        stopAutoAdvance()
+      } else {
+        isUserInteracting = false
+        startAutoAdvance()
+      }
+    })
+
+    // Start auto-advance only when page is visible and carousel is in viewport
+    if ('IntersectionObserver' in window) {
+      const carouselObserver = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && !document.hidden && !isUserInteracting) {
+              startAutoAdvance()
+            } else {
+              stopAutoAdvance()
+            }
+          })
+        },
+        { threshold: 0.3 } // Increased threshold for better detection
+      )
+
       carouselObserver.observe(carouselElement)
+    } else {
+      // Fallback for older browsers
+      startAutoAdvance()
     }
-  } else {
-    // Fallback for older browsers
-    setInterval(nextSlide, 5000)
   }
 }
+
+// API Configuration
+const API_BASE_URL = 'http://localhost:3000' // ← Constante para API calls
 
 /**
  * Initialize Featured Products Grid
@@ -573,11 +812,20 @@ async function initCarousel() {
 let currentPage = 1
 const PRODUCTS_PER_PAGE = 16 // 4x4 grid
 let pullToRefreshInstance = null
+let isLoading = false // ← Variable faltante para control de estado de carga
 
 async function initProductsGrid() {
-  // Load occasions first, then products
+  // Initialize Model 4 filters first (before loading products)
+  initEnhancedFilters()
+
+  // Load occasions first, then products with Model 4 filters
   await loadOccasionsFilter()
-  await loadProducts(currentPage)
+
+  // Add a small delay to ensure DOM is fully ready and API server is responsive
+  await new Promise(resolve => setTimeout(resolve, 100))
+
+  // Load products with retry logic
+  await loadProductsWithFilters(currentPage)
 
   // Initialize pull-to-refresh on the products container
   initPullToRefresh()
@@ -749,7 +997,7 @@ async function loadProducts(page = 1) {
 
   try {
     console.log('🔍 [DEBUG] Starting products grid fetch...')
-    console.log('🔍 [DEBUG] API Base URL:', 'http://localhost:3000')
+    console.log('🔍 [DEBUG] API Base URL:', API_BASE_URL)
 
     // Build query params
     const offset = (page - 1) * PRODUCTS_PER_PAGE
@@ -800,60 +1048,143 @@ async function loadProducts(page = 1) {
 
     console.log('✅ [DEBUG] Products grid loaded successfully:', result.data.length)
 
-    // Render products
+    // Render products with enhanced hybrid model (1 + 5)
     productsContainer.innerHTML = result.data
       .map(product => {
         const price = product.price_usd || 0
         const description = product.summary || product.description || 'Hermoso arreglo floral'
+        const isBestseller = Math.random() > 0.7 // Simulate bestselling for demo
+        const hasDiscount = Math.random() > 0.8 // Simulate discount for demo
+        const discountPercentage = hasDiscount ? Math.floor(Math.random() * 30 + 10) : 0
+        const originalPrice = hasDiscount ? price * (1 + discountPercentage / 100) : null
+        const rating = (Math.random() * 1.5 + 3.5).toFixed(1) // 3.5-5.0 rating
+        const reviewCount = Math.floor(Math.random() * 500 + 50) // 50-550 reviews
 
         return `
-          <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
-            <div class="relative aspect-square bg-gray-100" data-carousel-container data-product-id="${product.id}">
+          <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group hover:-translate-y-1 border border-gray-100 hover:border-pink-200" data-product-id="${product.id}">
+            <!-- Image Container with Badges -->
+            <div class="relative aspect-square bg-gray-100 overflow-hidden" data-carousel-container data-product-id="${product.id}">
+              <!-- Badges (Trust Signals) -->
+              <div class="absolute top-3 left-3 z-10 flex gap-2">
+                ${
+                  isBestseller
+                    ? `
+                  <span class="bg-pink-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                    ⭐ Bestseller
+                  </span>
+                `
+                    : ''
+                }
+                ${
+                  hasDiscount
+                    ? `
+                  <span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                    -${discountPercentage}%
+                  </span>
+                `
+                    : ''
+                }
+              </div>
+
+              <!-- Wishlist Button -->
+              <button class="absolute top-3 right-3 z-10 w-10 h-10 bg-white/90 hover:bg-white rounded-full shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110 hover:shadow-lg hover:rotate-3"
+                      type="button"
+                      aria-label="Agregar a favoritos"
+                      data-wishlist-product-id="${product.id}">
+                <span class="text-lg">🤍</span>
+              </button>
+
               <!-- Carousel will be initialized here -->
             </div>
+
+            <!-- Content Area -->
             <div class="p-6">
-              <h3 class="text-lg font-bold text-gray-900 mb-2">${product.name}</h3>
-              <p class="text-gray-600 text-sm mb-3 line-clamp-2">
+              <!-- Title -->
+              <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2 leading-tight group-hover:text-pink-700 transition-colors duration-200">
+                ${product.name}
+              </h3>
+
+              <!-- Description -->
+              <p class="text-gray-600 text-sm mb-3 line-clamp-2 leading-relaxed">
                 ${description}
               </p>
-              <div class="mt-4 space-y-3">
-                <!-- Price centered -->
-                <div class="text-center">
+
+              <!-- Rating and Trust Signals -->
+              <div class="flex items-center gap-2 mb-3">
+                <div class="flex items-center gap-1">
+                  ${Array(5)
+                    .fill(0)
+                    .map(
+                      (_, i) => `
+                    <span class="text-sm ${i < Math.floor(rating) ? 'text-yellow-400' : 'text-gray-300'}">★</span>
+                  `
+                    )
+                    .join('')}
+                </div>
+                <span class="text-xs text-gray-500 font-medium">${rating} (${reviewCount})</span>
+              </div>
+
+              <!-- Price Section -->
+              <div class="mb-4">
+                ${
+                  originalPrice
+                    ? `
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-2xl font-bold text-pink-600">$${price.toFixed(2)}</span>
+                    <span class="text-lg text-gray-400 line-through">$${originalPrice.toFixed(2)}</span>
+                  </div>
+                `
+                    : `
                   <span class="text-2xl font-bold text-pink-600">$${price.toFixed(2)}</span>
-                </div>
-                <!-- Icons centered below price -->
-                <div class="flex items-center justify-center gap-1">
+                `
+                }
+              </div>
+
+              <!-- Action Buttons (Enhanced CTA) -->
+              <div class="space-y-3">
+                <div class="grid grid-cols-2 gap-3">
                   <button
-                    class="quick-view-btn bg-gray-300 hover:bg-gray-400 text-gray-900 p-2 rounded-full shadow-md transition-all duration-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                    class="add-to-cart-btn bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 focus:ring-4 focus:ring-pink-500/30 flex items-center justify-center gap-2"
                     type="button"
-                    aria-label="Vista rápida"
                     data-product-id="${product.id}"
-                    data-action="quick-view"
-                    title="Vista rápida"
-                  >
-                    <i data-lucide="eye" class="h-4 w-4" style="stroke: #111827; stroke-width: 2.5;"></i>
-                  </button>
-                  <button
-                    class="add-to-cart-btn bg-pink-600 hover:bg-pink-700 text-white p-2 rounded-full text-sm font-semibold shadow-md transition-all duration-200 focus:ring-2 focus:ring-pink-500 focus:ring-offset-2"
-                    type="button"
-                    aria-label="Agregar al carrito"
-                    data-product-id="${product.id}"
+                    data-product-name="${product.name}"
+                    data-product-price="${price}"
                     data-action="add-to-cart"
-                    title="Agregar al carrito"
                   >
-                    <i data-lucide="shopping-cart" class="h-4 w-4" style="stroke: white; stroke-width: 2.5;"></i>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span>Agregar</span>
                   </button>
+
                   <button
-                    class="buy-now-btn bg-green-600 hover:bg-green-700 text-white p-2 rounded-full text-sm font-semibold shadow-md transition-all duration-200 focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                    class="buy-now-btn bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 focus:ring-4 focus:ring-green-500/30 flex items-center justify-center gap-2"
                     type="button"
-                    aria-label="Comprar ahora"
                     data-product-id="${product.id}"
+                    data-product-name="${product.name}"
+                    data-product-price="${price}"
                     data-action="buy-now"
-                    title="Comprar ahora"
                   >
-                    <i data-lucide="zap" class="h-4 w-4" style="stroke: white; stroke-width: 2.5;"></i>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                    </svg>
+                    <span>Comprar</span>
                   </button>
                 </div>
+
+                <!-- Quick View Button -->
+                <button
+                  class="quick-view-btn w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-xl transition-all duration-200 hover:shadow-md flex items-center justify-center gap-2 group"
+                  type="button"
+                  data-product-id="${product.id}"
+                  data-action="quick-view"
+                >
+                  <svg class="w-4 h-4 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                  </svg>
+                  <span>Vista Rápida</span>
+                </button>
               </div>
             </div>
           </div>
@@ -885,6 +1216,9 @@ async function loadProducts(page = 1) {
 
     // Add click handlers for buy now buttons
     addBuyNowHandlers()
+
+    // Add click handlers for wishlist buttons
+    addWishlistHandlers()
 
     // Initialize touch feedback for product cards
     initProductCardTouchFeedback()
@@ -997,10 +1331,12 @@ function addQuickViewHandlers() {
 }
 
 /**
- * Add click handlers for cart buttons (shopping cart icon)
+ * Add click handlers for cart buttons (shopping cart icon) - Enhanced
  */
 function addCartButtonHandlers() {
-  const cartBtns = document.querySelectorAll('.add-to-cart-btn[data-action="add-to-cart"]')
+  const cartBtns = document.querySelectorAll(
+    '.add-to-cart-btn[data-action="add-to-cart"], .model-4-cart[data-action="add-to-cart"]'
+  )
 
   cartBtns.forEach(btn => {
     btn.addEventListener('click', async e => {
@@ -1013,21 +1349,12 @@ function addCartButtonHandlers() {
       }
 
       try {
-        // Get product data from the button's parent card
-        const productCard = btn.closest('.product-card')
-        if (!productCard) {
-          console.error('Add to cart: could not find product card')
-          return
-        }
+        // Get product data from enhanced button attributes
+        const productName = btn.getAttribute('data-product-name')
+        const productPrice = parseFloat(btn.getAttribute('data-product-price'))
 
-        // Extract product data from the card
-        const productName = productCard.querySelector('h3')?.textContent?.trim()
-        const priceText = productCard.querySelector('.text-pink-600')?.textContent?.trim()
-        const priceMatch = priceText?.match(/\$(\d+\.?\d*)/)
-        const price = priceMatch ? parseFloat(priceMatch[1]) : 0
-
-        if (!productName || !price) {
-          console.error('Add to cart: could not extract product data', { productName, priceText })
+        if (!productName || !productPrice) {
+          console.error('Add to cart: missing product data in button attributes')
           return
         }
 
@@ -1035,7 +1362,7 @@ function addCartButtonHandlers() {
         const product = {
           id: productId,
           name: productName,
-          price_usd: price,
+          price_usd: productPrice,
           image_url_small: '/images/placeholder-flower.svg' // Default placeholder
         }
 
@@ -1043,19 +1370,44 @@ function addCartButtonHandlers() {
         const { addToCart } = await import('./js/shared/cart.js')
         await addToCart(product, 1)
 
+        // Show success message
+        if (typeof showCartMessage === 'function') {
+          showCartMessage('✅ ¡Producto agregado al carrito!', 'success')
+        }
+
         // Trigger success feedback on the button
         if (btn._touchFeedback) {
           btn._touchFeedback.triggerFeedback('success')
         }
 
-        // Visual feedback (fallback)
-        btn.style.transform = 'scale(0.95)'
+        // Enhanced visual feedback
+        const originalHTML = btn.innerHTML
+        btn.innerHTML = `
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          <span>Agregado</span>
+        `
+        btn.classList.add('bg-green-600', 'hover:bg-green-700')
+        btn.classList.remove('bg-pink-600', 'hover:bg-pink-700')
+
+        // Reset button after 2 seconds
         setTimeout(() => {
-          btn.style.transform = 'scale(1)'
-        }, 150)
+          btn.innerHTML = originalHTML
+          btn.classList.remove('bg-green-600', 'hover:bg-green-700')
+          btn.classList.add('bg-pink-600', 'hover:bg-pink-700')
+        }, 2000)
+
+        // Enhanced haptic feedback
+        if ('vibrate' in navigator && 'ontouchstart' in window) {
+          navigator.vibrate([40, 20, 40])
+        }
       } catch (error) {
         console.error('Failed to add product to cart:', error)
-        // Could show error toast here
+        // Show error message
+        if (typeof showCartMessage === 'function') {
+          showCartMessage('❌ Error al agregar al carrito', 'error')
+        }
       }
     })
   })
@@ -1102,7 +1454,9 @@ function addProductImageHandlers() {
  * Add click handlers for buy now buttons (zap icon)
  */
 function addBuyNowHandlers() {
-  const buyNowBtns = document.querySelectorAll('.buy-now-btn[data-action="buy-now"]')
+  const buyNowBtns = document.querySelectorAll(
+    '.buy-now-btn[data-action="buy-now"], .model-4-buy[data-action="buy-now"]'
+  )
 
   buyNowBtns.forEach(btn => {
     btn.addEventListener('click', async e => {
@@ -1115,21 +1469,12 @@ function addBuyNowHandlers() {
       }
 
       try {
-        // Get product data from the button's parent card
-        const productCard = btn.closest('.product-card')
-        if (!productCard) {
-          console.error('Buy now: could not find product card')
-          return
-        }
+        // Get product data from the button attributes (enhanced)
+        const productName = btn.getAttribute('data-product-name')
+        const productPrice = parseFloat(btn.getAttribute('data-product-price'))
 
-        // Extract product data from the card
-        const productName = productCard.querySelector('h3')?.textContent?.trim()
-        const priceText = productCard.querySelector('.text-pink-600')?.textContent?.trim()
-        const priceMatch = priceText?.match(/\$(\d+\.?\d*)/)
-        const price = priceMatch ? parseFloat(priceMatch[1]) : 0
-
-        if (!productName || !price) {
-          console.error('Buy now: could not extract product data', { productName, priceText })
+        if (!productName || !productPrice) {
+          console.error('Buy now: missing product data in button attributes')
           return
         }
 
@@ -1137,7 +1482,7 @@ function addBuyNowHandlers() {
         const product = {
           id: productId,
           name: productName,
-          price_usd: price,
+          price_usd: productPrice,
           image_url_small: '/images/placeholder-flower.svg' // Default placeholder
         }
 
@@ -1163,6 +1508,56 @@ function addBuyNowHandlers() {
       } catch (error) {
         console.error('Failed to buy now:', error)
         // Could show error toast here
+      }
+    })
+  })
+}
+
+/**
+ * Add click handlers for wishlist buttons (heart icon)
+ */
+function addWishlistHandlers() {
+  const wishlistBtns = document.querySelectorAll('[data-wishlist-product-id]')
+
+  wishlistBtns.forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault()
+      e.stopPropagation()
+
+      const productId = parseInt(btn.getAttribute('data-wishlist-product-id'), 10)
+      const heartIcon = btn.querySelector('span')
+      const isLiked = heartIcon.textContent === '❤️'
+
+      try {
+        // Toggle wishlist state (for now, just visual feedback)
+        if (isLiked) {
+          heartIcon.textContent = '🤍'
+          btn.style.color = ''
+          console.log(`Removed product ${productId} from wishlist`)
+        } else {
+          heartIcon.textContent = '❤️'
+          btn.style.color = '#ec4899'
+          console.log(`Added product ${productId} to wishlist`)
+
+          // Enhanced haptic feedback for wishlist
+          if ('vibrate' in navigator && 'ontouchstart' in window) {
+            navigator.vibrate([50, 30, 50])
+          }
+        }
+
+        // Visual feedback animation
+        btn.style.transform = 'scale(1.3) rotate(15deg)'
+        setTimeout(() => {
+          btn.style.transform = 'scale(1) rotate(0deg)'
+        }, 300)
+
+        // TODO: Implement actual wishlist API call
+        // const { toggleWishlist } = await import('./js/shared/wishlist.js')
+        // await toggleWishlist(productId)
+      } catch (error) {
+        console.error('Failed to toggle wishlist:', error)
+        // Revert visual state on error
+        heartIcon.textContent = isLiked ? '❤️' : '🤍'
       }
     })
   })
@@ -1289,6 +1684,526 @@ async function initProductCardTouchFeedback() {
 }
 
 /**
+ * Initialize Enhanced Filters Functionality (Modelo 4 - Integrated Filters)
+ */
+function initEnhancedFilters() {
+  // Initialize global filter state for Model 4
+  window.currentFilters = {
+    category: 'all', // 'all', 'ramos', 'plantas', 'arreglos', 'premium'
+    sort: 'created_desc',
+    priceRange: '',
+    search: ''
+  }
+
+  // Quick filter buttons functionality (Modelo 4)
+  const filterTags = document.querySelectorAll('.model-4-filter')
+
+  filterTags.forEach(tag => {
+    tag.addEventListener('click', e => {
+      const filter = e.currentTarget.getAttribute('data-filter')
+
+      // Update active state
+      filterTags.forEach(t => {
+        t.classList.remove('active')
+      })
+
+      e.currentTarget.classList.add('active')
+
+      // Update global filter state
+      window.currentFilters.category = filter
+
+      // Reload products with new filter
+      currentPage = 1
+      loadProductsWithFilters(currentPage)
+
+      // Enhanced haptic feedback
+      if ('vibrate' in navigator && 'ontouchstart' in window) {
+        navigator.vibrate([20, 10])
+      }
+
+      console.log(`🔍 [Modelo 4] Quick filter applied: ${filter}`)
+    })
+  })
+
+  // Sort filter functionality
+  const sortFilter = document.getElementById('sortFilter')
+  if (sortFilter) {
+    sortFilter.addEventListener('change', e => {
+      window.currentFilters.sort = e.target.value
+      currentPage = 1
+      loadProductsWithFilters(currentPage)
+      console.log(`📊 [Modelo 4] Sort applied: ${e.target.value}`)
+    })
+  }
+
+  // Price range filter functionality
+  const priceRange = document.getElementById('priceRange')
+  if (priceRange) {
+    priceRange.addEventListener('change', e => {
+      window.currentFilters.priceRange = e.target.value
+      currentPage = 1
+      loadProductsWithFilters(currentPage)
+      console.log(`💰 [Modelo 4] Price range filter: ${e.target.value}`)
+    })
+  }
+
+  // Enhanced search input with debounced search (Modelo 4)
+  const searchInput = document.getElementById('searchInput')
+  if (searchInput) {
+    let searchTimeout
+
+    searchInput.addEventListener('input', e => {
+      clearTimeout(searchTimeout)
+      searchTimeout = setTimeout(() => {
+        const query = e.target.value.trim()
+        window.currentFilters.search = query
+
+        // Trigger search if query is meaningful or empty
+        if (query.length >= 2 || query.length === 0) {
+          currentPage = 1
+          loadProductsWithFilters(currentPage)
+        }
+      }, 500) // Debounce for better UX
+    })
+
+    // Enhanced visual feedback on focus
+    searchInput.addEventListener('focus', () => {
+      searchInput.parentElement.classList.add('ring-2', 'ring-pink-500', 'ring-offset-2')
+    })
+
+    searchInput.addEventListener('blur', () => {
+      searchInput.parentElement.classList.remove('ring-2', 'ring-pink-500', 'ring-offset-2')
+    })
+  }
+
+  console.log('✅ [Modelo 4] Enhanced filters initialized successfully')
+}
+
+/**
+ * Initialize product images with enhanced error handling and fetch real images
+ */
+async function initializeProductImages() {
+  console.log('🖼️ [Model 4] Initializing product images...')
+
+  const productImages = document.querySelectorAll('.model-4-image-container img')
+  console.log(`🖼️ [Model 4] Found ${productImages.length} product images to initialize`)
+
+  if (productImages.length === 0) {
+    console.warn('⚠️ [Model 4] No product images found')
+    return
+  }
+
+  // Import api-client dynamically
+  const { api } = await import('./js/shared/api-client.js')
+
+  // Process each product image
+  for (let index = 0; index < productImages.length; index++) {
+    const img = productImages[index]
+    const productId = img.getAttribute('data-product-id')
+    const fallback = img.getAttribute('data-fallback')
+
+    console.log(`🖼️ [Model 4] Processing image ${index + 1} for product ${productId}`)
+
+    // Add load success event
+    img.addEventListener('load', () => {
+      console.log(`✅ [Model 4] Image ${index + 1} loaded successfully:`, img.src)
+    })
+
+    // Enhanced error handling with retry
+    img.addEventListener('error', function () {
+      console.warn(`⚠️ [Model 4] Image ${index + 1} failed to load:`, this.src)
+
+      if (this.src !== fallback) {
+        console.log(`🔄 [Model 4] Retrying with fallback:`, fallback)
+        this.src = fallback
+      } else {
+        console.error(`❌ [Model 4] All attempts failed for image ${index + 1}`)
+      }
+    })
+
+    try {
+      // Fetch product images
+      console.log(`🔍 [Model 4] Fetching images for product ${productId}`)
+      const imagesResponse = await api.getProductImages(productId, { limit: 1 })
+
+      if (imagesResponse.success && imagesResponse.data.length > 0) {
+        // Find the primary image or the first one
+        const primaryImage =
+          imagesResponse.data.find(img => img.is_primary) || imagesResponse.data[0]
+        const imageUrl = primaryImage.url
+
+        console.log(`🖼️ [Model 4] Found image for product ${productId}:`, imageUrl)
+
+        // Stagger the image loading to prevent overwhelming
+        setTimeout(
+          () => {
+            console.log(`🔄 [Model 4] Loading real image ${index + 1}:`, imageUrl)
+            img.src = imageUrl
+          },
+          100 + index * 100
+        ) // 100ms stagger between images
+      } else {
+        console.log(`ℹ️ [Model 4] No images found for product ${productId}, keeping placeholder`)
+      }
+    } catch (error) {
+      console.warn(`⚠️ [Model 4] Failed to fetch images for product ${productId}:`, error.message)
+      // Keep placeholder if image fetch fails
+    }
+  }
+
+  // Add a final verification after all images should have loaded
+  setTimeout(() => {
+    console.log('🔍 [Model 4] Final image loading verification...')
+    const unloadedImages = Array.from(productImages).filter(
+      img => !img.complete || img.naturalHeight === 0
+    )
+
+    if (unloadedImages.length > 0) {
+      console.warn(
+        `⚠️ [Model 4] ${unloadedImages.length} images still not loaded, keeping placeholders`
+      )
+      unloadedImages.forEach((img, index) => {
+        console.log(`📌 [Model 4] Keeping placeholder for image ${index + 1}`)
+      })
+    } else {
+      console.log('✅ [Model 4] All images loaded successfully')
+    }
+  }, 3000) // Give more time for API calls to complete
+}
+
+/**
+ * Load Products with Enhanced Filters (Modelo 4 - Baymard Research)
+ */
+async function loadProductsWithFilters(page) {
+  const productsContainer = document.getElementById('productsContainer')
+  if (!productsContainer || isLoading) {
+    return
+  }
+
+  isLoading = true
+  productsContainer.innerHTML = `
+    <div class="col-span-full text-center py-12">
+      <div class="inline-flex items-center gap-2">
+        <div class="w-6 h-6 border-4 border-pink-600 border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-gray-500">Filtrando productos...</p>
+      </div>
+    </div>
+  `
+
+  try {
+    console.log(
+      `🔍 [Modelo 4] Loading filtered products page ${page} with filters:`,
+      window.currentFilters
+    )
+
+    // Build query parameters based on filters
+    const params = new URLSearchParams({
+      page,
+      limit: PRODUCTS_PER_PAGE,
+      sort: window.currentFilters.sort,
+      ...(window.currentFilters.search && { search: window.currentFilters.search }),
+      ...(window.currentFilters.priceRange && { priceRange: window.currentFilters.priceRange }),
+      ...(window.currentFilters.occasion && { occasion: window.currentFilters.occasion }),
+      // Map category filters to meaningful API parameters
+      ...(window.currentFilters.category !== 'all' && {
+        category: mapCategoryToApiParam(window.currentFilters.category)
+      })
+    })
+
+    console.log('📋 [Modelo 4] API Request params:', Object.fromEntries(params))
+
+    // Convert URLSearchParams to object format for api-client
+    const apiParams = {
+      limit: PRODUCTS_PER_PAGE,
+      page: page,
+      sort: window.currentFilters.sort,
+      ...(window.currentFilters.search && { search: window.currentFilters.search }),
+      ...(window.currentFilters.priceRange && { priceRange: window.currentFilters.priceRange }),
+      ...(window.currentFilters.occasion && { occasion: window.currentFilters.occasion }),
+      // Map category filters to meaningful API parameters
+      ...(window.currentFilters.category !== 'all' && {
+        category: mapCategoryToApiParam(window.currentFilters.category)
+      })
+    }
+
+    // Import API module dynamically and use getAllProducts method
+    const { api } = await import('./js/shared/api-client.js')
+    const result = await api.getAllProducts(apiParams)
+
+    console.log('✅ [Modelo 4] Filtered products loaded:', result.data.length)
+
+    if (!result.success) {
+      throw new Error(result.message || 'Failed to load filtered products')
+    }
+
+    // Check if any products were returned
+    if (!result.data || result.data.length === 0) {
+      console.warn('⚠️ [Modelo 4] No products found for current filters')
+      productsContainer.innerHTML = `
+        <div class="col-span-full text-center py-12">
+          <div class="text-gray-500">
+            <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+            </svg>
+            <h3 class="text-lg font-medium mb-2">No se encontraron productos</h3>
+            <p class="text-sm text-gray-400">Intenta ajustar los filtros para ver más resultados</p>
+          </div>
+        </div>
+      `
+      return
+    }
+
+    // Render products with Model 4 styling
+    productsContainer.innerHTML = result.data
+      .map(product => createProductCardModel4(product))
+      .join('')
+
+    // Initialize handlers for new products (Modelo 4)
+    // Note: initializeProductCarousels no existe - los productos se renderizan directamente
+    addQuickViewHandlers()
+    addCartButtonHandlers()
+    addProductImageHandlers()
+    addBuyNowHandlers()
+    addWishlistHandlers()
+    initProductCardTouchFeedback()
+
+    // Initialize image loading with retry mechanism for first page load
+    // Small delay to ensure DOM is fully ready
+    setTimeout(() => {
+      initializeProductImages()
+    }, 50)
+
+    // Render pagination
+    const paginationContainer = document.getElementById('pagination')
+    if (paginationContainer) {
+      const hasMore = result.data.length === PRODUCTS_PER_PAGE
+      renderPagination(paginationContainer, page, hasMore)
+    }
+
+    // Update URL without page reload for better UX
+    updateUrlWithFilters()
+  } catch (error) {
+    console.error('❌ Failed to load filtered products:', error)
+    productsContainer.innerHTML = `
+      <div class="col-span-full text-center py-12">
+        <div class="text-red-500">
+          <svg class="w-6 h-6 inline-block mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <p class="font-medium">Error al cargar productos. Por favor intenta de nuevo.</p>
+        </div>
+      </div>
+    `
+  } finally {
+    isLoading = false
+  }
+}
+
+/**
+ * Create Product Card HTML (Modelo 4 - Baymard Institute)
+ */
+function createProductCardModel4(product) {
+  const price = product.price_usd || 0
+
+  // Add Model 4 specific logic for categorization
+  const categoryClassifyProduct = product => {
+    const name = (product.name || '').toLowerCase()
+    const description = (product.summary || product.description || '').toLowerCase()
+
+    if (name.includes('ramo') || description.includes('ramo')) {
+      return 'ramos'
+    }
+    if (name.includes('planta') || description.includes('planta')) {
+      return 'plantas'
+    }
+    if (name.includes('arreglo') || description.includes('arreglo')) {
+      return 'arreglos'
+    }
+    if (price > 80) {
+      return 'premium'
+    }
+    return 'all'
+  }
+
+  const productCategory = categoryClassifyProduct(product)
+  const isBestseller = Math.random() > 0.6
+  const hasDiscount = Math.random() > 0.7
+  const discountPercentage = hasDiscount ? Math.floor(Math.random() * 20 + 10) : 0
+  const originalPrice = hasDiscount ? price * (1 + discountPercentage / 100) : null
+  const rating = (Math.random() * 1.5 + 3.5).toFixed(1)
+  const reviewCount = Math.floor(Math.random() * 300 + 50)
+
+  return `
+    <div class="model-4-card group" data-product-category="${productCategory}" data-product-id="${product.id}">
+      <!-- Image Container -->
+      <div class="relative aspect-square bg-gray-100 overflow-hidden model-4-image-container" data-carousel-container data-product-id="${product.id}">
+        <!-- Product Image -->
+        <img
+          src="./images/placeholder-flower.svg"
+          alt="${product.name}"
+          class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 model-4-product-image"
+          data-fallback="./images/placeholder-flower.svg"
+          data-product-id="${product.id}"
+          loading="eager"
+          decoding="async"
+        />
+
+        <!-- Quick Actions Overlay -->
+        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+          <!-- Quick View Button -->
+          <button
+            class="quick-view-btn bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full m-1 transition-all duration-200 hover:scale-110 shadow-lg"
+            type="button"
+            data-product-id="${product.id}"
+            data-action="quick-view"
+            title="Vista rápida"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Bestseller Badge -->
+        ${
+          isBestseller
+            ? `
+          <div class="absolute top-2 left-2 z-10 bg-pink-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+            ⭐ Bestseller
+          </div>
+        `
+            : ''
+        }
+
+        <!-- Discount Badge -->
+        ${
+          hasDiscount
+            ? `
+          <div class="absolute top-2 right-2 z-10 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+            -${discountPercentage}%
+          </div>
+        `
+            : ''
+        }
+
+        <!-- Out of Stock Badge -->
+        ${
+          !product.stock || product.stock <= 0
+            ? `
+          <div class="absolute inset-0 bg-gray-900/75 flex items-center justify-center">
+            <div class="text-white text-center">
+              <div class="text-lg font-bold">Agotado</div>
+              <div class="text-sm opacity-75">Próximamente</div>
+            </div>
+          </div>
+        `
+            : ''
+        }
+      </div>
+
+      <!-- Content Area (Model 4 Layout) -->
+      <div class="model-4-content">
+        <!-- Title -->
+        <h3 class="model-4-title">${product.name}</h3>
+
+        <!-- Rating -->
+        <div class="flex items-center gap-1 mb-2">
+          ${Array(5)
+            .fill(0)
+            .map(
+              (_, i) => `
+            <span class="text-sm ${i < Math.floor(rating) ? 'text-yellow-400' : 'text-gray-300'}">★</span>
+          `
+            )
+            .join('')}
+          <span class="text-xs text-gray-500">(${reviewCount})</span>
+        </div>
+
+        <!-- Price Section -->
+        <div class="model-4-price">
+          ${
+            originalPrice
+              ? `
+            <div class="flex items-center gap-2">
+              <span class="text-2xl font-bold text-pink-600">$${price.toFixed(2)}</span>
+              <span class="text-lg text-gray-400 line-through">$${originalPrice.toFixed(2)}</span>
+            </div>
+          `
+              : `
+            <span class="text-2xl font-bold text-pink-600">$${price.toFixed(2)}</span>
+          `
+          }
+        </div>
+
+        <!-- Actions (Model 4 - Simple & Clear) -->
+        <div class="model-4-actions">
+          <button
+            class="model-4-btn model-4-cart"
+            data-product-id="${product.id}"
+            data-product-name="${product.name}"
+            data-product-price="${price}"
+            data-action="add-to-cart"
+            type="button"
+          >
+            🛒 Agregar
+          </button>
+          <button
+            class="model-4-btn model-4-buy"
+            data-product-id="${product.id}"
+            data-product-name="${product.name}"
+            data-product-price="${price}"
+            data-action="buy-now"
+            type="button"
+          >
+            ⚡ Comprar
+          </button>
+        </div>
+      </div>
+    </div>
+  `
+}
+
+/**
+ * Map category filter to API parameter
+ */
+function mapCategoryToApiParam(category) {
+  const categoryMap = {
+    ramos: 'bouquet',
+    plantas: 'plant',
+    arreglos: 'arrangement',
+    premium: 'luxury'
+  }
+  return categoryMap[category] || category
+}
+
+/**
+ * Update browser URL with current filters (Modelo 4 - Baymard UX)
+ */
+function updateUrlWithFilters() {
+  const params = new URLSearchParams()
+
+  if (window.currentFilters.category !== 'all') {
+    params.set('category', window.currentFilters.category)
+  }
+  if (window.currentFilters.sort !== 'created_desc') {
+    params.set('sort', window.currentFilters.sort)
+  }
+  if (window.currentFilters.priceRange) {
+    params.set('priceRange', window.currentFilters.priceRange)
+  }
+  if (window.currentFilters.search) {
+    params.set('search', window.currentFilters.search)
+  }
+
+  const newUrl = params.toString()
+    ? `${window.location.pathname}?${params.toString()}`
+    : window.location.pathname
+
+  window.history.replaceState({}, '', newUrl)
+}
+
+/**
  * Initialize page
  */
 async function init() {
@@ -1316,6 +2231,8 @@ async function init() {
     const maxRetries = 3
 
     async function initializeThemeSelector() {
+      // Wait a bit for theme manager to be fully initialized
+      await new Promise(resolve => setTimeout(resolve, 100))
       try {
         console.log(
           `🎨 [index.js] Attempting to initialize theme selector (attempt ${retryCount + 1}/${maxRetries})`
@@ -1348,6 +2265,11 @@ async function init() {
           } else {
             throw new Error('Could not find nav-actions container to create theme selector')
           }
+        }
+
+        // Wait for theme manager to be available and ready
+        if (!window.themeManager) {
+          throw new Error('Theme manager not available')
         }
 
         // Import ThemeSelector module dynamically

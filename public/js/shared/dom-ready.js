@@ -4,7 +4,7 @@
  * CSP-compliant, no inline scripts needed
  *
  * Usage:
- * import { onDOMReady } from './js/shared/dom-ready.js'
+ * import { onDOMReady } from '.'
  *
  * onDOMReady(() => {
  *   // Your initialization code here

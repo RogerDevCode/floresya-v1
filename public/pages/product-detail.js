@@ -9,7 +9,6 @@ import { addToCart, isInCart, initCartBadge, initCartEventListeners } from '/js/
 import { showToast } from '/js/components/toast.js'
 import { api } from '/js/shared/api-client.js'
 import { TouchFeedback } from '/js/shared/touchFeedback.js'
-import { initQuantityTouchFeedback } from '/js/shared/formTouchFeedback.js'
 import { loadingMessages } from '/js/components/loadingMessages.js'
 
 /**
@@ -238,8 +237,16 @@ function initQuantityControls() {
     return
   }
 
-  // Initialize touch feedback for quantity controls
-  initQuantityTouchFeedback()
+  // Initialize touch feedback for quantity controls using TouchFeedback
+  if (qtyMinus) {
+    new TouchFeedback(qtyMinus)
+  }
+  if (qtyPlus) {
+    new TouchFeedback(qtyPlus)
+  }
+  if (qtyInput) {
+    new TouchFeedback(qtyInput)
+  }
 
   qtyMinus.addEventListener('click', () => {
     const currentValue = parseInt(qtyInput.value, 10) || 1

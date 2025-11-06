@@ -14,14 +14,14 @@
  * - Accessibility compliant (44px+ touch targets)
  *
  * @example
- * import { MobileNav } from './js/components/mobileNav.js'
+ * import { MobileNav } from '.'
  *
  * // Initialize the mobile navigation
  * const mobileNav = new MobileNav()
  * mobileNav.init()
  *
  * // Or use the convenience function
- * import { initMobileNav } from './js/components/mobileNav.js'
+ * import { initMobileNav } from '.'
  * initMobileNav()
  */
 
@@ -573,7 +573,7 @@ export class MobileNav {
  * @returns {MobileNav} The initialized MobileNav instance
  *
  * @example
- * import { initMobileNav } from './js/components/mobileNav.js'
+ * import { initMobileNav } from '.'
  *
  * // Initialize with default options
  * const mobileNav = initMobileNav()

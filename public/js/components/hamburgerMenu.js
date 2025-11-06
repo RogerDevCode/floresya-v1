@@ -13,14 +13,14 @@
  * - Integration with mobile navigation components
  *
  * @example
- * import { HamburgerMenu } from './js/components/hamburgerMenu.js'
+ * import { HamburgerMenu } from '.'
  *
  * // Initialize the hamburger menu
  * const hamburgerMenu = new HamburgerMenu()
  * hamburgerMenu.init()
  *
  * // Or use the convenience function
- * import { initHamburgerMenu } from './js/components/hamburgerMenu.js'
+ * import { initHamburgerMenu } from '.'
  * const hamburgerMenu = initHamburgerMenu()
  */
 
@@ -375,7 +375,7 @@ export class HamburgerMenu {
  * @returns {HamburgerMenu} The initialized HamburgerMenu instance
  *
  * @example
- * import { initHamburgerMenu } from './js/components/hamburgerMenu.js'
+ * import { initHamburgerMenu } from '.'
  *
  * // Initialize with default options
  * const hamburgerMenu = initHamburgerMenu()

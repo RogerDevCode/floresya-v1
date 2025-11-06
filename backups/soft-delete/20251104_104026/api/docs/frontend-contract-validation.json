@@ -1,0 +1,291 @@
+{
+  "timestamp": "2025-10-08T04:08:54.787Z",
+  "summary": {
+    "totalCalls": 38,
+    "validCalls": 0,
+    "invalidCalls": 35,
+    "missingEndpoints": 6,
+    "coverage": "0.0%"
+  },
+  "details": {
+    "invalidCalls": [
+      {
+        "file": "index.js",
+        "url": "/api/products/carousel",
+        "line": 72,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "index.js",
+        "url": "/api/occasions",
+        "line": 286,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/__tests__/product-detail.test.js",
+        "url": "/api/products/67",
+        "line": 77,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/__tests__/product-detail.test.js",
+        "url": "/api/products/67/images",
+        "line": 125,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/__tests__/product-detail.test.js",
+        "url": "/api/products/999",
+        "line": 148,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/__tests__/product-detail.test.js",
+        "url": "/api/products/67",
+        "line": 77,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/__tests__/product-detail.test.js",
+        "url": "/api/products/67",
+        "line": 77,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/create-product.js",
+        "url": "/api/settings/bcv_usd_rate/value",
+        "line": 99,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/create-product.js",
+        "url": "/api/products",
+        "line": 441,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/create-product.js",
+        "url": "/api/products/${productId}/images",
+        "line": 495,
+        "method": "POST",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/dashboard.js",
+        "url": "/api/products/${product.id}/images?size=thumb",
+        "line": 65,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/dashboard.js",
+        "url": "/api/orders",
+        "line": 571,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/dashboard.js",
+        "url": "/api/occasions",
+        "line": 826,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/dashboard.js",
+        "url": "/api/products/occasion/${occasionId}",
+        "line": 902,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/dashboard.js",
+        "url": "/api/admin/settings/image",
+        "line": 1217,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/dashboard.js",
+        "url": "/api/admin/settings/image",
+        "line": 1217,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/dashboard.js",
+        "url": "/api/admin/settings/bcv-price",
+        "line": 1324,
+        "method": "POST",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/dashboard.js",
+        "url": "/api/settings/hero_image/value",
+        "line": 1366,
+        "method": "POST",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/dashboard.js",
+        "url": "/api/settings/site_logo/value",
+        "line": 1393,
+        "method": "POST",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/dashboard.js",
+        "url": "/api/settings/bcv_usd_rate/value",
+        "line": 1420,
+        "method": "POST",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/edit-product.js",
+        "url": "/api/settings/bcv_usd_rate/value",
+        "line": 102,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/edit-product.js",
+        "url": "/api/products/${productId}",
+        "line": 136,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/edit-product.js",
+        "url": "/api/products/${productId}/images",
+        "line": 192,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/edit-product.js",
+        "url": "/api/products/${productId}/images/${image.existingImageIndex}",
+        "line": 482,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/edit-product.js",
+        "url": "/api/products/${productId}",
+        "line": 136,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/edit-product.js",
+        "url": "/api/products/${productId}/images",
+        "line": 192,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/orders.js",
+        "url": "/api/orders",
+        "line": 86,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/orders.js",
+        "url": "/api/orders/${orderId}/status",
+        "line": 675,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/admin/orders.js",
+        "url": "/api/orders/${orderId}/status-history",
+        "line": 963,
+        "method": "PATCH",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/cart.js",
+        "url": "/api/settings/DELIVERY_COST_USD/value",
+        "line": 30,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/payment.js",
+        "url": "/api/settings/public",
+        "line": 84,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/payment.js",
+        "url": "/api/orders",
+        "line": 666,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/payment.js",
+        "url": "/api/products/${item.id}",
+        "line": 776,
+        "method": "POST",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/product-detail.js",
+        "url": "/api/products/${productId}",
+        "line": 40,
+        "method": "GET",
+        "type": "fetch_call"
+      },
+      {
+        "file": "pages/product-detail.js",
+        "url": "/api/products/${productId}/images",
+        "line": 67,
+        "method": "GET",
+        "type": "fetch_call"
+      }
+    ],
+    "missingEndpoints": [
+      {
+        "endpoint": "/api/users",
+        "method": "get",
+        "description": "Defined in OpenAPI but not used in frontend"
+      },
+      {
+        "endpoint": "/api/users/{id}",
+        "method": "get",
+        "description": "Defined in OpenAPI but not used in frontend"
+      },
+      {
+        "endpoint": "/api/payments",
+        "method": "get",
+        "description": "Defined in OpenAPI but not used in frontend"
+      },
+      {
+        "endpoint": "/api/payments/methods",
+        "method": "get",
+        "description": "Defined in OpenAPI but not used in frontend"
+      },
+      {
+        "endpoint": "/api/payments/{id}/confirm",
+        "method": "post",
+        "description": "Defined in OpenAPI but not used in frontend"
+      },
+      {
+        "endpoint": "/api/settings",
+        "method": "get",
+        "description": "Defined in OpenAPI but not used in frontend"
+      }
+    ]
+  }
+}

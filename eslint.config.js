@@ -168,6 +168,9 @@ export default [
       'test-product-images.js',
       'public/js/chart.min.js', // Minified chart.js file
       'public.backup.20251007_114453/', // Backup files
+      'backups/**', // All backup files
+      'backup/**', // Backup files (no 's')
+      '**/*.backup', // Generic backup files
       'test-*.js', // Test files at root
       'seed-product-occasions-api.js', // Seed scripts
       'tests/**/*.mjs', // Test files using fetch (integration tests)

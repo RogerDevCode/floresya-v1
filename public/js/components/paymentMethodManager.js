@@ -260,7 +260,7 @@ export class PaymentMethodManager {
                   ${typeLabels[paymentMethod.type] || paymentMethod.type}
                 </span>
                 ${
-                  !paymentMethod.is_active
+                  !paymentMethod.active
                     ? `
                   <span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
                     Inactivo
@@ -291,7 +291,7 @@ export class PaymentMethodManager {
               </button>
               
               ${
-                paymentMethod.is_active
+                paymentMethod.active
                   ? `
                 <button 
                   class="deactivate-payment-method-btn p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -542,7 +542,7 @@ export class PaymentMethodManager {
                 <div class="flex items-center">
                   <input
                     type="checkbox"
-                    name="is_active"
+                    name="active"
                     id="create-active-checkbox"
                     class="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
                     checked
@@ -616,7 +616,7 @@ export class PaymentMethodManager {
             display_order: formData.get('display_order')
               ? parseInt(formData.get('display_order'), 10)
               : 0,
-            is_active: formData.get('is_active') === 'on'
+            active: formData.get('active') === 'on'
           }
 
           // Create payment method
@@ -747,7 +747,7 @@ export class PaymentMethodManager {
                   <div class="flex items-center">
                     <input
                       type="checkbox"
-                      name="is_active"
+                      name="active"
                       id="edit-active-checkbox"
                       class="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
                     />
@@ -790,7 +790,7 @@ export class PaymentMethodManager {
         form.querySelector('[name="description"]').value = paymentMethod.description || ''
         form.querySelector('[name="account_info"]').value = paymentMethod.account_info || ''
         form.querySelector('[name="display_order"]').value = paymentMethod.display_order || 0
-        form.querySelector('[name="is_active"]').checked = paymentMethod.is_active || false
+        form.querySelector('[name="active"]').checked = paymentMethod.active || false
       }
 
       // Show modal
@@ -830,7 +830,7 @@ export class PaymentMethodManager {
               display_order: formData.get('display_order')
                 ? parseInt(formData.get('display_order'), 10)
                 : 0,
-              is_active: formData.get('is_active') === 'on'
+              active: formData.get('active') === 'on'
             }
 
             // Update payment method

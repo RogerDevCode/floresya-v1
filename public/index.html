@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -58,6 +58,9 @@
 
     <!-- Tailwind CSS -->
     <link rel="stylesheet" href="./css/tailwind.css" />
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="./css/themes.css" />
 
     <!-- Cuco Clock CSS -->
     <link rel="stylesheet" href="./css/components/cuco-clock.css" />
@@ -384,24 +387,28 @@
         <!-- Dynamic Carousel - populated by JavaScript -->
         <div
           id="featuredCarousel"
-          class="relative rounded-lg shadow-lg overflow-hidden bg-gray-50"
+          class="relative rounded-lg shadow-lg overflow-hidden bg-gray-50 h-[450px]"
           role="region"
           aria-roledescription="carousel"
           aria-label="Productos destacados"
         >
-          <!-- Indicators will be generated dynamically -->
+          <!-- Progress Bar - Línea Fina (Modelo 4) -->
           <div
-            class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10"
-            id="carouselIndicators"
-            role="tablist"
-            aria-label="Slides"
+            class="absolute bottom-0 left-0 w-full h-0.5 z-10"
+            id="carouselProgressContainer"
+            aria-label="Progreso del carrusel"
           >
-            <!-- Dynamic indicators -->
+            <!-- Barra de progreso activa (línea muy fina) -->
+            <div
+              id="carouselProgressBar"
+              class="h-full bg-gradient-to-r from-pink-500 to-rose-500 transition-all duration-500 ease-out"
+              style="width: 33.33%"
+            ></div>
           </div>
 
           <!-- Slides will be generated dynamically -->
           <div
-            class="relative h-[300px] bg-gray-100 flex items-center justify-center"
+            class="relative h-full bg-gray-100 flex items-center justify-center"
             id="carouselSlides"
             aria-live="polite"
           >
@@ -411,9 +418,13 @@
             </div>
           </div>
 
-          <!-- Controls -->
+          <!-- Controls (Híbrido Optimizado Modelo 1 + 5 - Apple HIG + Stanford Research) -->
           <button
-            class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110 z-10 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            class="absolute top-1/2 left-5 transform -translate-y-1/2 bg-white bg-opacity-95 hover:bg-opacity-100 rounded-full shadow-lg transition-all duration-300 ease-out hover:scale-105 hover:shadow-2xl z-10 focus:outline-none focus:ring-4 focus:ring-pink-500/30 active:scale-95 w-14 h-14 flex items-center justify-center group"
+            style="
+              border: 1px solid rgba(236, 72, 153, 0.15);
+              transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            "
             type="button"
             id="carousel-prev"
             aria-label="Producto anterior"
@@ -425,16 +436,21 @@
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="2.5"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="h-6 w-6 text-gray-700"
+              class="h-6 w-6 text-gray-700 transition-all duration-300 group-hover:text-pink-600 group-hover:scale-110"
+              style="transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)"
             >
               <path d="m15 18-6-6 6-6" />
             </svg>
           </button>
           <button
-            class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110 z-10 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            class="absolute top-1/2 right-5 transform -translate-y-1/2 bg-white bg-opacity-95 hover:bg-opacity-100 rounded-full shadow-lg transition-all duration-300 ease-out hover:scale-105 hover:shadow-2xl z-10 focus:outline-none focus:ring-4 focus:ring-pink-500/30 active:scale-95 w-14 h-14 flex items-center justify-center group"
+            style="
+              border: 1px solid rgba(236, 72, 153, 0.15);
+              transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            "
             type="button"
             id="carousel-next"
             aria-label="Producto siguiente"
@@ -446,14 +462,24 @@
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="2.5"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="h-6 w-6 text-gray-700"
+              class="h-6 w-6 text-gray-700 transition-all duration-300 group-hover:text-pink-600 group-hover:scale-110"
+              style="transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)"
             >
               <path d="m9 18 6-6-6-6" />
             </svg>
           </button>
+
+          <!-- Enhanced Indicators (Modelo 5 Optimizado - Stanford Research) -->
+          <div
+            class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center gap-2 z-10"
+            id="carousel-indicators"
+            aria-label="Indicadores del carrusel"
+          >
+            <!-- Indicators will be generated dynamically by JavaScript -->
+          </div>
         </div>
       </div>
     </section>
@@ -474,66 +500,51 @@
             <p class="text-lg text-gray-600">Nuestras flores más populares y arreglos especiales</p>
           </div>
 
-          <!-- Search and Filters -->
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 mt-16">
-            <div class="md:col-span-2">
-              <label for="searchInput" class="block text-sm font-semibold text-gray-700 mb-2">
-                Buscar productos
-              </label>
-              <div class="relative">
-                <input
-                  type="text"
-                  class="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors shadow-sm"
-                  placeholder="Buscar por nombre..."
-                  id="searchInput"
-                  aria-label="Buscar productos"
-                />
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="h-5 w-5 text-gray-400"
-                  >
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="m21 21-4.3-4.3" />
-                  </svg>
-                </div>
+          <!-- Model 4: Centered Layout Filters (Baymard Institute + Filter Integration) -->
+          <div class="bg-gray-50 rounded-xl p-6 mb-8">
+            <!-- Quick Filters (Baymard Research Pattern) -->
+            <div class="flex flex-wrap justify-center items-center gap-2 mb-6">
+              <button class="model-4-filter active" data-filter="all" id="filter-all">Todos</button>
+              <button class="model-4-filter" data-filter="ramos">Ramos</button>
+              <button class="model-4-filter" data-filter="plantas">Plantas</button>
+              <button class="model-4-filter" data-filter="arreglos">Arreglos</button>
+              <button class="model-4-filter" data-filter="premium">Premium</button>
+            </div>
+
+            <!-- Sort and Price Options (Clean Layout) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="sortFilter" class="block text-sm font-semibold text-gray-700 mb-2">
+                  Ordenar por
+                </label>
+                <select
+                  class="w-full py-3 px-4 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors bg-white"
+                  id="sortFilter"
+                  aria-label="Ordenar productos"
+                >
+                  <option value="created_desc">Más recientes</option>
+                  <option value="price_asc">Precio: Menor a mayor</option>
+                  <option value="price_desc">Precio: Mayor a menor</option>
+                  <option value="name_asc">Nombre: A-Z</option>
+                  <option value="rating_desc">Mejor valorados</option>
+                </select>
               </div>
-            </div>
-            <div>
-              <label for="occasionFilter" class="block text-sm font-semibold text-gray-700 mb-2">
-                Ocasión
-              </label>
-              <select
-                class="w-full py-3 px-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors shadow-sm bg-white"
-                id="occasionFilter"
-                aria-label="Filtrar por ocasión"
-              >
-                <option value="">Todas las ocasiones</option>
-                <!-- Options loaded dynamically from /api/occasions -->
-              </select>
-            </div>
-            <div>
-              <label for="sortFilter" class="block text-sm font-semibold text-gray-700 mb-2">
-                Ordenar por
-              </label>
-              <select
-                class="w-full py-3 px-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors shadow-sm bg-white"
-                id="sortFilter"
-                aria-label="Ordenar productos"
-              >
-                <option value="">Más recientes</option>
-                <option value="price_asc">Precio: Menor a mayor</option>
-                <option value="price_desc">Precio: Mayor a menor</option>
-                <option value="name_asc">Nombre: A-Z</option>
-              </select>
+              <div>
+                <label for="priceRange" class="block text-sm font-semibold text-gray-700 mb-2">
+                  Rango de precio
+                </label>
+                <select
+                  class="w-full py-3 px-4 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors bg-white"
+                  id="priceRange"
+                  aria-label="Filtrar por rango de precio"
+                >
+                  <option value="">Todos los precios</option>
+                  <option value="0-30">$0 - $30</option>
+                  <option value="30-60">$30 - $60</option>
+                  <option value="60-100">$60 - $100</option>
+                  <option value="100+">$100+</option>
+                </select>
+              </div>
             </div>
           </div>
 
