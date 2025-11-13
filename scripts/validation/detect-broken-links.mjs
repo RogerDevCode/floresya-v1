@@ -110,7 +110,7 @@ class BrokenLinkDetector {
   fileExists(filePath) {
     try {
       return fs.existsSync(filePath) && fs.statSync(filePath).isFile()
-    } catch (_error) {
+    } catch {
       return false
     }
   }

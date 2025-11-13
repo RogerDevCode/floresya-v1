@@ -1,0 +1,1 @@
+/home/manager/Sync/floresya-v1/QWEN.md

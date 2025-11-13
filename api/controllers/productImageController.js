@@ -129,18 +129,18 @@ export const createProductImages = asyncHandler(async (req, res) => {
 
     // Check existing images constraints
     const existingImages = await productImageService.getProductImages(productId)
+    const uniqueIndexes = new Set(existingImages.map(img => img.image_index))
+    if (uniqueIndexes.size >= 5) {
+      throw new BadRequestError(
+        `Product ${productId} already has 5 images (maximum allowed). Delete one before adding a new image.`
+      )
+    }
+
     const existingIndex = existingImages.find(img => img.image_index === imageIndex)
 
     if (existingIndex) {
       throw new BadRequestError(
         `Product ${productId} already has an image at index ${imageIndex}. Delete it first or use a different index.`
-      )
-    }
-
-    const uniqueIndexes = new Set(existingImages.map(img => img.image_index))
-    if (uniqueIndexes.size >= 5) {
-      throw new BadRequestError(
-        `Product ${productId} already has 5 images (maximum allowed). Delete one before adding a new image.`
       )
     }
 

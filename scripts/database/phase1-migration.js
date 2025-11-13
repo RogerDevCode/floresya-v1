@@ -51,7 +51,7 @@ async function executePhase1Migration() {
     console.log('⚠️  Esto puede tomar varios minutos...')
     console.log()
 
-    const { _data, error } = await supabase.rpc('exec_sql', {
+    const { error } = await supabase.rpc('exec_sql', {
       query: migrationSQL
     })
 

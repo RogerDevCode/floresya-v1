@@ -83,13 +83,13 @@ const getSuccessMessage = (operation, entity = 'Order') => {
  */
 export const getAllOrders = asyncHandler(async (req, res) => {
   const filters = {
-    user_id: req.query.user_id,
+    user_id: req.query.user_id ? parseInt(req.query.user_id, 10) : undefined,
     status: req.query.status,
     date_from: req.query.date_from,
     date_to: req.query.date_to,
     search: req.query.search,
-    limit: req.query.limit,
-    offset: req.query.offset
+    limit: req.query.limit ? parseInt(req.query.limit, 10) : undefined,
+    offset: req.query.offset ? parseInt(req.query.offset, 10) : undefined
   }
 
   const includeDeactivated = req.user?.role === 'admin'
@@ -105,7 +105,7 @@ export const getAllOrders = asyncHandler(async (req, res) => {
  */
 export const getOrderById = asyncHandler(async (req, res) => {
   const includeDeactivated = req.user?.role === 'admin'
-  const order = await orderService.getOrderById(req.params.id, includeDeactivated)
+  const order = await orderService.getOrderById(parseInt(req.params.id, 10), includeDeactivated)
 
   const response = createResponse(order, getSuccessMessage('retrieve'))
   res.json(response)
@@ -118,10 +118,10 @@ export const getOrderById = asyncHandler(async (req, res) => {
 export const getOrdersByUser = asyncHandler(async (req, res) => {
   const filters = {
     status: req.query.status,
-    limit: req.query.limit
+    limit: req.query.limit ? parseInt(req.query.limit, 10) : undefined
   }
 
-  const orders = await orderService.getOrdersByUser(req.params.userId, filters)
+  const orders = await orderService.getOrdersByUser(parseInt(req.params.userId, 10), filters)
 
   const response = createResponse(orders, getSuccessMessage('retrieve', 'User orders'))
   res.json(response)
@@ -132,7 +132,7 @@ export const getOrdersByUser = asyncHandler(async (req, res) => {
  * Get order status history
  */
 export const getOrderStatusHistory = asyncHandler(async (req, res) => {
-  const history = await orderService.getOrderStatusHistory(req.params.id)
+  const history = await orderService.getOrderStatusHistory(parseInt(req.params.id, 10))
 
   const response = createResponse(history, getSuccessMessage('history'))
   res.json(response)
@@ -156,7 +156,7 @@ export const createOrder = asyncHandler(async (req, res) => {
  * Update order
  */
 export const updateOrder = asyncHandler(async (req, res) => {
-  const order = await orderService.updateOrder(req.params.id, req.body)
+  const order = await orderService.updateOrder(parseInt(req.params.id, 10), req.body)
 
   const response = createResponse(order, getSuccessMessage('update'))
   res.json(response)
@@ -169,7 +169,12 @@ export const updateOrder = asyncHandler(async (req, res) => {
 export const updateOrderStatus = asyncHandler(async (req, res) => {
   const { status, notes } = req.body
 
-  const result = await orderService.updateOrderStatus(req.params.id, status, notes, null)
+  const result = await orderService.updateOrderStatus(
+    parseInt(req.params.id, 10),
+    status,
+    notes,
+    req.user?.id
+  )
 
   const response = createResponse(result, getSuccessMessage('status'))
   res.json(response)
@@ -182,7 +187,7 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
 export const cancelOrder = asyncHandler(async (req, res) => {
   const { notes } = req.body
 
-  const result = await orderService.cancelOrder(req.params.id, notes, req.user?.id)
+  const result = await orderService.cancelOrder(parseInt(req.params.id, 10), notes, req.user?.id)
 
   const response = createResponse(result, getSuccessMessage('cancel'))
   res.json(response)

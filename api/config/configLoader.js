@@ -10,15 +10,25 @@
 
 import { ConfigurationError } from '../errors/AppError.js'
 import dotenv from 'dotenv'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
 
-// Load environment variables from .env.local in development
+// Load environment variables from appropriate .env file based on NODE_ENV
 const IS_VERCEL = process.env.VERCEL === '1'
-if (!IS_VERCEL) {
+const IS_TEST = process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'testing'
+
+if (!IS_VERCEL && !IS_TEST) {
+  // Only load dotenv in non-test environments to avoid file system issues in tests
+  const { fileURLToPath } = await import('url')
+  const { dirname, join } = await import('path')
   const __filename = fileURLToPath(import.meta.url)
   const __dirname = dirname(__filename)
-  dotenv.config({ path: join(__dirname, '../../.env.local') })
+
+  // Select appropriate environment file
+  const nodeEnv = process.env.NODE_ENV || 'development'
+  const envFile =
+    nodeEnv === 'testing' ? '.env.testing' : nodeEnv === 'development' ? '.env' : '.env'
+
+  console.log(`📋 Loading environment from: ${envFile} (NODE_ENV: ${nodeEnv})`)
+  dotenv.config({ path: join(__dirname, `../../${envFile}`) })
 }
 
 /**
@@ -100,10 +110,16 @@ const config = {
 
   // Database Configuration
   database: {
-    url: getEnvVar('SUPABASE_URL'),
-    key: getEnvVar('SUPABASE_SERVICE_ROLE_KEY') || getEnvVar('SUPABASE_ANON_KEY'),
-    anonKey: getEnvVar('SUPABASE_ANON_KEY'),
-    serviceRoleKey: getEnvVar('SUPABASE_SERVICE_ROLE_KEY'),
+    url: getEnvVar('SUPABASE_URL', IS_TEST, IS_TEST ? 'http://localhost:54321' : null),
+    key:
+      getEnvVar('SUPABASE_SERVICE_ROLE_KEY', IS_TEST, IS_TEST ? 'test-key' : null) ||
+      getEnvVar('SUPABASE_ANON_KEY', IS_TEST, IS_TEST ? 'test-anon-key' : null),
+    anonKey: getEnvVar('SUPABASE_ANON_KEY', IS_TEST, IS_TEST ? 'test-anon-key' : null),
+    serviceRoleKey: getEnvVar(
+      'SUPABASE_SERVICE_ROLE_KEY',
+      IS_TEST,
+      IS_TEST ? 'test-service-key' : null
+    ),
     options: {
       auth: {
         autoRefreshToken: false,
@@ -144,7 +160,7 @@ const config = {
   // Security Configuration
   security: {
     jwt: {
-      secret: getEnvVar('JWT_SECRET', false), // Optional for development
+      secret: getEnvVar('JWT_SECRET', IS_TEST, IS_TEST ? 'test-jwt-secret' : null), // Required for security
       expiryTime: process.env.JWT_EXPIRY || '7d',
       refreshExpiryTime: process.env.JWT_REFRESH_EXPIRY || '30d'
     },
@@ -153,12 +169,22 @@ const config = {
     },
     rateLimit: {
       windowMs: parseInteger(process.env.RATE_LIMIT_WINDOW, 15 * 60 * 1000, 60 * 1000), // 15 minutes
-      maxRequests: parseInteger(process.env.RATE_LIMIT_MAX, 100, 10, 1000),
+      maxRequests: parseInteger(
+        process.env.RATE_LIMIT_MAX,
+        100,
+        10,
+        process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'testing' ? 1000 : 1000
+      ),
       message: 'Too many requests from this IP, please try again later.'
     },
     session: {
-      secret: getEnvVar('SESSION_SECRET', false), // Optional
+      secret: getEnvVar('SESSION_SECRET', IS_TEST, IS_TEST ? 'test-session-secret' : null), // Required for security
       maxAge: parseInteger(process.env.SESSION_MAX_AGE, 24 * 60 * 60 * 1000, 60 * 60 * 1000) // 24 hours
+    },
+    csp: {
+      enabled: parseBoolean(process.env.CSP_ENABLED, true),
+      reportOnly: parseBoolean(process.env.CSP_REPORT_ONLY, false),
+      reportUri: process.env.CSP_REPORT_URI || null
     }
   },
 
@@ -176,7 +202,7 @@ const config = {
     }
   },
 
-  // Cache Configuration
+  // Cache Configuration (removed - no longer using Redis)
   cache: {
     defaultTtl: parseInteger(process.env.CACHE_DEFAULT_TTL, 300, 60), // 5 minutes
     maxKeys: parseInteger(process.env.CACHE_MAX_KEYS, 1000, 100)
@@ -236,23 +262,25 @@ const config = {
 function validateConfig() {
   const errors = []
 
-  // Check required database configuration
-  if (!config.database.url) {
-    errors.push('SUPABASE_URL is required')
-  }
+  // Check required database configuration (skip in test environment)
+  if (!IS_TEST) {
+    if (!config.database.url) {
+      errors.push('SUPABASE_URL is required')
+    }
 
-  if (!config.database.key) {
-    errors.push('SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY is required')
+    if (!config.database.key) {
+      errors.push('SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY is required')
+    }
   }
 
   // Check security configuration
-  if (config.IS_PRODUCTION) {
+  if (!IS_TEST) {
     if (!config.security.jwt.secret) {
-      errors.push('JWT_SECRET is required in production')
+      errors.push('JWT_SECRET is required')
     }
 
     if (!config.security.session.secret) {
-      errors.push('SESSION_SECRET is required in production')
+      errors.push('SESSION_SECRET is required')
     }
   }
 
@@ -285,6 +313,11 @@ Object.freeze(config)
 Object.freeze(config.database)
 Object.freeze(config.server)
 Object.freeze(config.security)
+Object.freeze(config.security.jwt)
+Object.freeze(config.security.bcrypt)
+Object.freeze(config.security.rateLimit)
+Object.freeze(config.security.session)
+Object.freeze(config.security.csp)
 Object.freeze(config.upload)
 Object.freeze(config.cache)
 Object.freeze(config.monitoring)

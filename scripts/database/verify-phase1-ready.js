@@ -53,7 +53,8 @@ async function verifyPhase1Readiness() {
         message: `Encontrado: ${file.path}`,
         critical: file.critical
       })
-    } catch (_error) {
+    } catch (error) {
+      console.error('Error:', error)
       allReady = false
       checks.push({
         name: file.name,
@@ -110,7 +111,7 @@ async function verifyPhase1Readiness() {
       message: `${(sqlContent.length / 1024).toFixed(2)} KB, ${lineCount} líneas`,
       critical: false
     })
-  } catch (_error) {
+  } catch (error) {
     allReady = false
     checks.push({
       name: 'Verificación de contenido SQL',

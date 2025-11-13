@@ -7,20 +7,12 @@
 
 import { writeFileSync } from 'fs'
 import { join, dirname } from 'path'
-import { fileURLToPath } from 'url'
+import { fileURLToPath } from 'node:url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-// Import templates (these would need to be adapted for Node.js environment)
-import {
-  generateProductEndpoint as _generateProductEndpoint,
-  generateOrderEndpoint as _generateOrderEndpoint,
-  generateUserEndpoint as _generateUserEndpoint,
-  generatePaymentEndpoint as _generatePaymentEndpoint,
-  generateOccasionEndpoint as _generateOccasionEndpoint,
-  generateSettingsEndpoint as _generateSettingsEndpoint
-} from './doc-templates.js'
+// Template imports removed - documentation generated directly as strings
 
 /**
  * Generates complete endpoint documentation using templates

@@ -108,6 +108,13 @@ const rateLimiter = new MemoryRateLimiter()
  * Rate limiting configuration for different endpoints
  */
 const RATE_LIMITS = {
+  // General endpoints (public API, no specific rate limit type)
+  general: {
+    maxRequests: 10000, // 10000 requests per minute (development/testing)
+    windowMs: 60 * 1000, // 1 minute window
+    skipSuccessfulRequests: false
+  },
+
   // Public endpoints (more restrictive)
   order_create: {
     maxRequests: 1000, // 1000 requests per minute (increased for e2e testing)

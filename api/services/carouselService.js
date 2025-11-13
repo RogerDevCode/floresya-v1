@@ -20,49 +20,85 @@ const TABLE = DB_SCHEMA.products.table
  */
 export const getCarouselProducts = withErrorMapping(
   async () => {
+    logger.info('Fetching carousel products')
+
+    // Get all featured and active products, ordered by creation date (newest first)
     const { data: products, error } = await supabase
       .from(TABLE)
       .select('*')
       .eq('featured', true)
       .eq('active', true)
-      .order('carousel_order', { ascending: true })
+      .order('created_at', { ascending: false })
       .limit(CAROUSEL.MAX_SIZE)
 
     if (error) {
+      logger.error('Error fetching products from database', { error: error.message })
       // Map Supabase error automatically
       throw error
     }
+
+    logger.info('Products query result', { count: products?.length || 0 })
+
     if (!products || products.length === 0) {
+      logger.info('No featured products found')
       return []
     }
 
     // Fetch small image for each product (first image, image_index=1)
     const IMAGES_TABLE = DB_SCHEMA.product_images.table
-    const productsWithImages = await Promise.all(
-      products.map(async product => {
-        const { data: images, error: imgError } = await supabase
-          .from(IMAGES_TABLE)
-          .select('url')
-          .eq('product_id', product.id)
-          .eq('size', 'small')
-          .order('image_index', { ascending: true })
-          .limit(QUERY_LIMITS.SINGLE_RECORD)
-          .maybeSingle()
+    logger.info('Fetching images for products', { productCount: products.length })
 
-        if (imgError) {
-          logger.warn('Failed to fetch image for product', {
+    let productsWithImages = []
+
+    try {
+      const productsWithImagesPromises = products.map(async product => {
+        try {
+          const { data: images, error: imgError } = await supabase
+            .from(IMAGES_TABLE)
+            .select('url')
+            .eq('product_id', product.id)
+            .eq('size', 'small')
+            .order('image_index', { ascending: true })
+            .limit(QUERY_LIMITS.SINGLE_RECORD)
+            .maybeSingle()
+
+          if (imgError) {
+            logger.warn('Failed to fetch image for product', {
+              productId: product.id,
+              error: imgError.message
+            })
+          }
+
+          return {
+            ...product,
+            image_url_small: images?.url || null
+          }
+        } catch (imgErr) {
+          logger.error('Error fetching image for product', {
             productId: product.id,
-            error: imgError.message
+            error: imgErr.message
           })
-        }
-
-        return {
-          ...product,
-          image_url_small: images?.url || null
+          return {
+            ...product,
+            image_url_small: null
+          }
         }
       })
-    )
 
+      productsWithImages = await Promise.all(productsWithImagesPromises)
+      logger.info('Successfully processed products with images', {
+        count: productsWithImages.length
+      })
+    } catch (allErr) {
+      logger.error('Error in Promise.all for image fetching', { error: allErr.message })
+      // Fallback: return products without images
+      productsWithImages = products.map(product => ({
+        ...product,
+        image_url_small: null
+      }))
+    }
+
+    logger.info('Carousel products prepared', { count: productsWithImages.length })
     return productsWithImages
   },
   'SELECT',

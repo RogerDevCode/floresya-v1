@@ -11,7 +11,9 @@ import path from 'path'
 import yaml from 'js-yaml'
 import config from '../config/configLoader.js'
 import { BadRequestError, ValidationError } from '../errors/AppError.js'
+import { fileURLToPath } from 'node:url'
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 let openApiSpec = null
 
 /**
@@ -19,7 +21,7 @@ let openApiSpec = null
  */
 async function loadOpenApiSpec() {
   if (!openApiSpec) {
-    const specPath = path.join(process.cwd(), 'api', 'docs', 'openapi-spec.yaml')
+    const specPath = path.join(__dirname, '..', 'docs', 'openapi-spec.yaml')
     const specContent = await fs.readFile(specPath, 'utf8')
     openApiSpec = yaml.load(specContent)
   }

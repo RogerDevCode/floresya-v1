@@ -403,7 +403,12 @@ export class ValidatorService {
     try {
       new URL(url)
       return true
-    } catch (_error) {
+    } catch (error) {
+      console.error('[ValidatorService] URL validation failed:', {
+        url,
+        error: error.message,
+        stack: error.stack
+      })
       throw new ValidationError('Invalid URL format', {
         field: 'url',
         received: url,

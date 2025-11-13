@@ -30,68 +30,6 @@ async function fetchOccasions() {
 }
 
 // OLD Mock data (kept for reference, will be replaced by API)
-const _oldMockData = [
-  {
-    id: 16,
-    name: 'Cumpleaños',
-    description: 'Celebra un cumpleaños especial',
-    slug: 'cumpleanos',
-    is_active: true,
-    display_order: 0,
-    created_at: '2025-09-25T05:04:48.026907+00:00',
-    updated_at: '2025-09-25T05:04:48.026907+00:00',
-    icon: 'gift',
-    color: '#db2777'
-  },
-  {
-    id: 17,
-    name: 'Aniversario',
-    description: 'Conmemora un aniversario importante',
-    slug: 'aniversario',
-    is_active: true,
-    display_order: 0,
-    created_at: '2025-09-25T05:04:48.026907+00:00',
-    updated_at: '2025-09-25T05:04:48.026907+00:00',
-    icon: 'heart',
-    color: '#10b981'
-  },
-  {
-    id: 18,
-    name: 'San Valentín',
-    description: 'Expresa tu amor en el día de los enamorados',
-    slug: 'san-valentin',
-    is_active: true,
-    display_order: 0,
-    created_at: '2025-09-25T05:04:48.026907+00:00',
-    updated_at: '2025-09-25T05:04:48.026907+00:00',
-    icon: 'heart',
-    color: '#ef4444'
-  },
-  {
-    id: 19,
-    name: 'Día de la Madre',
-    description: 'Honra a mamá en su día especial',
-    slug: 'dia-de-la-madre',
-    is_active: true,
-    display_order: 0,
-    created_at: '2025-09-25T05:04:48.026907+00:00',
-    updated_at: '2025-09-25T05:04:48.026907+00:00',
-    icon: 'flower',
-    color: '#8b5cf6'
-  },
-  {
-    id: 20,
-    name: 'Graduación',
-    description: 'Felicita por un logro académico',
-    slug: 'graduacion',
-    is_active: false, // Inactive for demonstration
-    display_order: 0,
-    created_at: '2025-09-25T05:04:48.026907+00:00',
-    updated_at: '2025-09-25T05:04:48.026907+00:00',
-    icon: 'graduation-cap',
-    color: '#f59e0b'
-  }
-]
 
 /**
  * Initialize occasions management

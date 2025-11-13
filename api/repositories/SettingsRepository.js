@@ -4,10 +4,10 @@
  * Extiende BaseRepository con operaciones específicas de settings
  */
 
-import { BaseRepository } from './BaseRepository.js'
+import { BaseRepositoryWithErrorHandling } from './BaseRepository.errors.js'
 import { DB_SCHEMA } from '../services/supabaseClient.js'
 
-export class SettingsRepository extends BaseRepository {
+export class SettingsRepository extends BaseRepositoryWithErrorHandling {
   constructor(supabaseClient) {
     super(supabaseClient, DB_SCHEMA.settings.table)
   }
@@ -76,6 +76,30 @@ export class SettingsRepository extends BaseRepository {
     })
 
     return settingsMap
+  }
+
+  /**
+   * Actualizar configuración por clave
+   * @param {string} key - Clave de configuración
+   * @param {Object} updates - Datos a actualizar
+   * @returns {Promise<Object>} Configuración actualizada
+   */
+  async updateByKey(key, updates) {
+    const { data, error } = await this.supabase
+      .from(this.table)
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString()
+      })
+      .eq('key', key)
+      .select()
+      .single()
+
+    if (error) {
+      throw this.handleError(error, 'updateByKey', { key, updates })
+    }
+
+    return data
   }
 
   /**

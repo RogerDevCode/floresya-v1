@@ -677,7 +677,7 @@ export async function getProductWithImageSize(productId, size) {
 
     // Get the specific image
     // Try to get the image but don't fail if it doesn't exist
-    const { data: image, error: _imageError } = await supabase
+    const { data: image } = await supabase
       .from(DB_SCHEMA.product_images.table)
       .select('url')
       .eq('product_id', productId)
@@ -721,6 +721,10 @@ export async function getProductsBatchWithImageSize(productIds, size) {
       }
     }
 
+    console.log(
+      `🔍 [DEBUG] getProductsBatchWithImageSize - Fetching ${productIds.length} products with ${size} images`
+    )
+
     // Get products
     const { data: products, error: productError } = await supabase
       .from(DB_SCHEMA.products.table)
@@ -735,6 +739,8 @@ export async function getProductsBatchWithImageSize(productIds, size) {
       throw new NotFoundError('Products', null, { productIds })
     }
 
+    console.log(`🔍 [DEBUG] getProductsBatchWithImageSize - Found ${products.length} products`)
+
     // Find unique product IDs to compare with requested IDs
     const retrievedProductIds = products.map(p => p.id)
     const missingIds = productIds.filter(id => !retrievedProductIds.includes(id))
@@ -747,7 +753,8 @@ export async function getProductsBatchWithImageSize(productIds, size) {
     }
 
     // Get images for the specific size for all products
-    const { data: images, error: imageError } = await supabase
+    let images
+    const { data: initialImages, error: imageError } = await supabase
       .from(TABLE)
       .select('*')
       .in('product_id', productIds)
@@ -758,20 +765,57 @@ export async function getProductsBatchWithImageSize(productIds, size) {
       throw new DatabaseError('SELECT', TABLE, imageError, { productIds, size })
     }
 
+    images = initialImages
+
+    console.log(
+      `🔍 [DEBUG] getProductsBatchWithImageSize - Found ${images?.length || 0} images for size ${size}`
+    )
+
+    // Fallback to 'large' size if 'small' not found (graceful handling for missing small images)
+    if (size === 'small' && (!images || images.length === 0)) {
+      console.log(
+        `🔍 [DEBUG] getProductsBatchWithImageSize - No small images found, falling back to large`
+      )
+      const { data: fallbackImages, error: fallbackError } = await supabase
+        .from(TABLE)
+        .select('*')
+        .in('product_id', productIds)
+        .eq('size', 'large')
+        .order('image_index', { ascending: true })
+
+      if (fallbackError) {
+        throw new DatabaseError('SELECT', TABLE, fallbackError, { productIds, size: 'large' })
+      }
+
+      images = fallbackImages || []
+      console.log(
+        `🔍 [DEBUG] getProductsBatchWithImageSize - Fallback found ${images?.length || 0} large images`
+      )
+    }
+
     // Create a map for quick lookup
     const imageMap = new Map()
     for (const img of images || []) {
       imageMap.set(img.product_id, img)
+      console.log(`🔍 [DEBUG] Image for product ${img.product_id}: ${img.url}`)
     }
 
     // Attach the appropriate image to each product
-    return products.map(product => {
+    const productsWithImages = products.map(product => {
       const image = imageMap.get(product.id)
-      return {
+      const result = {
         ...product,
         [`image_url_${size}`]: image?.url || null
       }
+
+      console.log(
+        `🔍 [DEBUG] Product ${product.id} (${product.name}) - image_url_${size}: ${result[`image_url_${size}`] || 'NULL'}`
+      )
+
+      return result
     })
+
+    return productsWithImages
   } catch (error) {
     console.error(
       `getProductsBatchWithImageSize(${productIds.length} products, ${size}) failed:`,

@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - NODE_ENV=development
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    command: npm start
+
+  cypress:
+    image: cypress/included:13.17.0
+    depends_on:
+      - app
+    environment:
+      - CYPRESS_baseUrl=http://app:3001
+    volumes:
+      - ./tests:/tests
+      - ./cypress:/cypress
+      - ./cypress.config.js:/cypress.config.js
+      - ./public:/public
+    working_dir: /tests/e2e
+    entrypoint: ["tail", "-f", "/dev/null"]

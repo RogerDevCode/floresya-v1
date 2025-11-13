@@ -7,17 +7,11 @@
  * Uses centralized configuration from configLoader
  */
 
-import { join as _join, dirname } from 'path'
-import { fileURLToPath } from 'url'
 import config from '../../config/configLoader.js'
 import {
   DivergenceDetector,
   createDivergenceDetectionMiddleware
 } from '../../contract/divergenceDetector.js'
-
-// Get __dirname equivalent for ES modules
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
 
 /**
  * Safe OpenAPI Contract System

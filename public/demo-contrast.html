@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demostración de Contraste - FloresYa</title>
+    <link rel="stylesheet" href="./css/themes.css" />
+    <link rel="stylesheet" href="./css/themes-granular.css" />
+    <link rel="stylesheet" href="./css/styles.css" />
+
+    <style>
+      /* Estilos para la demostración */
+      .demo-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .theme-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .theme-card {
+        border: 1px solid var(--theme-border);
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        background: var(--theme-bg-primary);
+        color: var(--theme-text-primary);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .theme-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px var(--theme-shadow);
+      }
+
+      .theme-name {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .theme-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .theme-description {
+        font-size: 0.875rem;
+        color: var(--theme-text-secondary);
+      }
+
+      .theme-category {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        border-radius: 9999px;
+        background: var(--theme-bg-secondary);
+        color: var(--theme-text-secondary);
+        margin-top: 1rem;
+      }
+
+      .validate-section {
+        margin-top: 3rem;
+        padding: 2rem;
+        border: 2px solid var(--theme-border);
+        border-radius: 0.5rem;
+        background: var(--theme-bg-primary);
+      }
+
+      .validate-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .validate-button {
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        border: 2px solid var(--theme-primary);
+        background: var(--theme-primary);
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .validate-button:hover {
+        background: var(--theme-primary-dark);
+      }
+
+      .contrast-report {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        border: 1px solid var(--theme-border);
+        border-radius: 0.5rem;
+        background: var(--theme-bg-secondary);
+        font-family: monospace;
+        white-space: pre-wrap;
+        overflow-x: auto;
+      }
+
+      .sample-elements {
+        margin-top: 2rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .sample-card {
+        border: 1px solid var(--theme-border);
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        background: var(--theme-bg-primary);
+        color: var(--theme-text-primary);
+      }
+
+      .sample-card h3 {
+        margin-top: 0;
+      }
+
+      .sample-form {
+        margin-top: 1.5rem;
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid var(--theme-border);
+        border-radius: 0.25rem;
+        background: var(--theme-bg-primary);
+        color: var(--theme-text-primary);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="demo-container">
+      <h1>Demostración de Temas y Contraste</h1>
+      <p>
+        Esta página permite probar todos los temas disponibles y verificar que el contraste cumple
+        con los estándares WCAG 2.1.
+      </p>
+
+      <h2>Selecciona un Tema</h2>
+      <div id="theme-grid" class="theme-grid"></div>
+
+      <div class="validate-section">
+        <h2 class="validate-title">Validador de Contraste</h2>
+        <p>
+          Haz clic en el botón para verificar que todos los elementos de la página cumplen con los
+          estándares WCAG 2.1 AA.
+        </p>
+        <button id="validate-btn" class="validate-button">Validar Contraste</button>
+        <div id="contrast-report" class="contrast-report" style="display: none"></div>
+      </div>
+
+      <h2>Elementos de Muestra</h2>
+      <div class="sample-elements">
+        <div class="sample-card">
+          <h3>Tarjeta de Producto</h3>
+          <p>
+            Hermoso ramo de rosas rojas para San Valentín. Perfecto para expresar amor y pasión.
+          </p>
+          <p><strong>Precio: $35.00</strong></p>
+          <button
+            class="btn-primary"
+            style="
+              padding: 0.5rem 1rem;
+              border: none;
+              border-radius: 0.25rem;
+              background: var(--theme-primary);
+              color: white;
+              cursor: pointer;
+            "
+          >
+            Añadir al Carrito
+          </button>
+        </div>
+
+        <div class="sample-card">
+          <h3>Formulario de Contacto</h3>
+          <form class="sample-form">
+            <div class="form-group">
+              <label class="form-label" for="name">Nombre</label>
+              <input class="form-input" type="text" id="name" placeholder="Tu nombre" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="email">Email</label>
+              <input class="form-input" type="email" id="email" placeholder="tu@email.com" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="message">Mensaje</label>
+              <textarea
+                class="form-input"
+                id="message"
+                rows="3"
+                placeholder="Tu mensaje"
+              ></textarea>
+            </div>
+            <button
+              class="btn-primary"
+              type="button"
+              style="
+                padding: 0.5rem 1rem;
+                border: none;
+                border-radius: 0.25rem;
+                background: var(--theme-primary);
+                color: white;
+                cursor: pointer;
+              "
+            >
+              Enviar
+            </button>
+          </form>
+        </div>
+
+        <div class="sample-card">
+          <h3>Testimonio</h3>
+          <p>
+            <em
+              >"Excelente servicio y flores de muy buena calidad. La entrega fue rápida y el ramo
+              llegó perfecto."</em
+            >
+          </p>
+          <p><strong>- María González</strong></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="./js/themes/themeDefinitions.js"></script>
+    <script type="module" src="./js/themes/contrastEnhancer.js"></script>
+    <script type="module" src="./js/themes/advancedThemeManager.js"></script>
+    <script type="module" src="./js/validate-contrast.js"></script>
+
+    <script type="module">
+      import { themes } from './js/themes/themeDefinitions.js'
+      import { advancedThemeManager } from './js/themes/advancedThemeManager.js'
+      import { runValidation } from './js/validate-contrast.js'
+
+      // Cargar los temas en la grid
+      const themeGrid = document.getElementById('theme-grid')
+
+      Object.values(themes).forEach(theme => {
+        const themeCard = document.createElement('div')
+        themeCard.className = 'theme-card'
+        themeCard.innerHTML = `
+        <div class="theme-icon">${theme.icon}</div>
+        <div class="theme-name">${theme.name}</div>
+        <div class="theme-description">${theme.description}</div>
+        <span class="theme-category">${theme.category}</span>
+      `
+
+        themeCard.addEventListener('click', () => {
+          advancedThemeManager.applyTheme(theme.id, true)
+          console.log('Cambiando a tema:', theme.name)
+        })
+
+        themeGrid.appendChild(themeCard)
+      })
+
+      // Botón de validación
+      document.getElementById('validate-btn').addEventListener('click', () => {
+        runValidation()
+
+        // Mostrar el reporte
+        const report = document.getElementById('contrast-report')
+        report.style.display = 'block'
+      })
+
+      // Inicializar
+      advancedThemeManager.init()
+    </script>
+  </body>
+</html>

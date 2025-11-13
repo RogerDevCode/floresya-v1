@@ -137,10 +137,12 @@ async function verifyMigrationResults() {
     console.log('='.repeat(70))
 
     // Contar constraints
-    const { data: _totalConstraints } = await supabase
+    const { count } = await supabase
       .from('information_schema.table_constraints')
       .select('constraint_type', { count: 'exact' })
       .eq('table_schema', 'public')
+
+    void count // Used for query structure verification
 
     console.log()
     console.log('Migración Fase 1: ✅ COMPLETADA')

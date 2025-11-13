@@ -6,12 +6,6 @@
 
 import fs from 'fs'
 
-const _testFiles = [
-  '/home/manager/Sync/floresya-v1/tests/unit/repositories/OrderRepository.test.js',
-  '/home/manager/Sync/floresya-v1/tests/unit/repositories/ProductRepository.test.js',
-  '/home/manager/Sync/floresya-v1/tests/unit/repositories/UserRepository.test.js'
-]
-
 const importLine = `import { setupOrderRepositoryMock, setupProductRepositoryMock, setupUserRepositoryMock } from '../../utils/repository-mocks.js'\n\n`
 const setupCode = `
 beforeEach(() => {

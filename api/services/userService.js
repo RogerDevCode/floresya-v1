@@ -9,14 +9,17 @@
 
 import { DB_SCHEMA } from './supabaseClient.js'
 import DIContainer from '../architecture/di-container.js'
-import {
-  ValidationError,
-  NotFoundError,
-  DatabaseError,
-  BadRequestError
-} from '../errors/AppError.js'
+import { ValidationError, NotFoundError, BadRequestError } from '../errors/AppError.js'
 import { withErrorMapping } from '../middleware/error/index.js'
-import { validateId, validateActivityFilter } from '../utils/validation.js'
+import { validateId } from '../utils/validation.js'
+
+/**
+ * Get Logger instance from DI Container
+ * @returns {Object} Logger instance
+ */
+function getLogger() {
+  return DIContainer.resolve('Logger')
+}
 
 const TABLE = DB_SCHEMA.users.table
 const VALID_ROLES = DB_SCHEMA.users.enums.role
@@ -43,7 +46,8 @@ async function withErrorHandling(operation, operationName, context = {}) {
   try {
     return await operation()
   } catch (error) {
-    console.error(`${operationName} failed:`, { error: error.message, context })
+    const logger = getLogger()
+    logger.error(`${operationName} failed:`, error, context)
     throw error
   }
 }
@@ -52,20 +56,6 @@ async function withErrorHandling(operation, operationName, context = {}) {
  * Apply activity filter (FAIL FAST - no fallback)
  * Note: Not currently used - kept for reference
  */
-function _applyActivityFilter(query, includeDeactivated) {
-  validateActivityFilter(includeDeactivated)
-
-  if (includeDeactivated === true) {
-    return query
-  }
-  if (includeDeactivated === false) {
-    return query.eq('active', true)
-  }
-  // FAIL FAST - no fallback, explicit boolean required
-  throw new BadRequestError('includeDeactivated must be boolean (true/false)', {
-    includeDeactivated
-  })
-}
 
 /**
  * Get all users with simple filters (KISS principle)
@@ -161,20 +151,7 @@ export function getUserByEmail(email, includeDeactivated = false) {
 export function getUsersByFilter(filters = {}) {
   return withErrorHandling(
     async () => {
-      let query = supabase.from(TABLE).select('*')
-
-      // Apply all filters intelligently
-      if (filters.role && VALID_ROLES.includes(filters.role)) {
-        query = query.eq('role', filters.role)
-      }
-
-      if (filters.state !== undefined) {
-        query = query.eq('active', filters.state)
-      }
-
-      if (filters.email_verified !== undefined) {
-        query = query.eq('email_verified', filters.email_verified)
-      }
+      const userRepository = getUserRepository()
 
       // FAIL FAST - Require at least one filter
       if (!filters.role && filters.state === undefined && filters.email_verified === undefined) {
@@ -186,8 +163,6 @@ export function getUsersByFilter(filters = {}) {
           }
         )
       }
-
-      query = query.order('created_at', { ascending: false })
 
       // FAIL FAST - Require explicit pagination parameters
       if (filters.limit === undefined || filters.offset === undefined) {
@@ -213,13 +188,25 @@ export function getUsersByFilter(filters = {}) {
         })
       }
 
-      query = query.range(filters.offset, filters.offset + filters.limit - 1)
-
-      const { data, error } = await query
-
-      if (error) {
-        throw new DatabaseError('SELECT', TABLE, error, { filters })
+      // Prepare repository filters
+      const repositoryFilters = {}
+      if (filters.role && VALID_ROLES.includes(filters.role)) {
+        repositoryFilters.role = filters.role
       }
+      if (filters.state !== undefined) {
+        repositoryFilters.active = filters.state
+      }
+      if (filters.email_verified !== undefined) {
+        repositoryFilters.email_verified = filters.email_verified
+      }
+
+      // Use repository to get users with filters
+      const data = await userRepository.findAll(repositoryFilters, {
+        limit: filters.limit,
+        offset: filters.offset,
+        orderBy: 'created_at',
+        ascending: false
+      })
 
       if (!data) {
         throw new NotFoundError('Users', null)

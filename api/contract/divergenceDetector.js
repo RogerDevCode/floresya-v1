@@ -9,9 +9,12 @@ import fs from 'fs/promises'
 import path from 'path'
 import yaml from 'js-yaml'
 import config from '../config/configLoader.js'
+import { fileURLToPath } from 'node:url'
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const API_DIR = path.join(__dirname, '..')
 let openApiSpec = null
-const specPath = path.join(process.cwd(), 'api', 'docs', 'openapi-spec.yaml')
+const specPath = path.join(API_DIR, 'docs', 'openapi-spec.yaml')
 
 /**
  * Load OpenAPI specification
@@ -26,12 +29,41 @@ async function loadOpenApiSpec() {
 
 /**
  * Extract operation spec for a given path and method
+ * Resolves path parameters by matching against defined paths in the spec
  */
 function getOperationSpec(path, method) {
-  if (!openApiSpec) {
+  if (!openApiSpec || !openApiSpec.paths) {
     return null
   }
-  return openApiSpec.paths?.[path]?.[method.toLowerCase()]
+
+  const methodLower = method.toLowerCase()
+
+  // First try exact match (for paths without parameters)
+  if (openApiSpec.paths[path]?.[methodLower]) {
+    return openApiSpec.paths[path][methodLower]
+  }
+
+  // Try to match by resolving path parameters
+  // For example: /api/products/83/images should match /api/products/{id}/images
+  for (const specPath of Object.keys(openApiSpec.paths)) {
+    if (specPath.includes('{')) {
+      // Convert spec path to regex pattern
+      // Escape regex special chars: . * + ? ^ $ { } ( ) | [ ] \
+      const regexPattern = specPath
+        .replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // Escape special chars
+        .replace(/\\{([^}]+)\\}/g, '([^/]+)') // Replace \{param\} with ([^/]+)
+
+      const regex = new RegExp(`^${regexPattern}$`)
+      if (regex.test(path)) {
+        // Found a match, return the operation
+        if (openApiSpec.paths[specPath]?.[methodLower]) {
+          return openApiSpec.paths[specPath][methodLower]
+        }
+      }
+    }
+  }
+
+  return null
 }
 
 /**

@@ -1,539 +1,457 @@
-/**
- * Auth Middleware - Granular Unit Tests
- * Security-Critical Layer Testing
- *
- * Coverage Target: 95%
- * Speed Target: < 10ms per test
- */
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import {
-  authenticate as requireAuth,
-  authorize as requireAdmin,
-  optionalAuth,
-  _checkOwnership
-} from '../../../api/middleware/auth/auth.js'
-
-// Mock Supabase
-const mockSupabase = {
-  auth: {
-    getUser: vi.fn()
-  }
-}
-
-// Mock Request/Response
-const createMockRequest = (overrides = {}) => ({
-  headers: {},
-  cookies: {},
-  ...overrides
+// Use vi.hoisted to properly handle variable references for mocking
+const { mockIsDev, mockGetUserRole } = vi.hoisted(() => {
+  const mockIsDev = vi.fn(() => true)
+  const mockGetUserRole = vi.fn(() => 'user')
+  return { mockIsDev, mockGetUserRole }
 })
 
-const createMockResponse = () => {
-  const res = {
-    status: vi.fn().mockReturnThis(),
-    json: vi.fn().mockReturnThis(),
-    locals: {}
+// Mock all dependencies first with proper hoisting
+vi.mock('../../../api/services/authService.index.js', () => ({
+  getUser: vi.fn()
+}))
+
+vi.mock('../../../api/utils/logger.js', () => ({
+  log: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    debug: vi.fn()
   }
-  return res
-}
+}))
 
-const next = vi.fn()
+vi.mock('../../../api/config/constants.js', () => ({
+  ROLE_PERMISSIONS: {
+    admin: ['read', 'write', 'delete'],
+    user: ['read']
+  }
+}))
 
-describe('AuthMiddleware - Granular Tests', () => {
-  let req, res
+vi.mock('../../../api/config/configLoader.js', () => ({
+  default: {
+    IS_DEVELOPMENT: true
+  }
+}))
+
+vi.mock('../../../api/config/swagger.js', () => ({
+  swaggerSpec: {},
+  loadSwaggerSpec: vi.fn(() => ({}))
+}))
+
+// Mock auth helpers using the hoisted variables
+vi.mock('../../../api/middleware/auth/auth.helpers.js', () => ({
+  get IS_DEV() {
+    return mockIsDev()
+  },
+  get DEV_MOCK_USER() {
+    return {
+      id: '00000000-0000-0000-0000-000000000001',
+      email: 'dev@floresya.local',
+      user_metadata: {
+        full_name: 'Developer User',
+        phone: '+584141234567',
+        role: 'admin'
+      },
+      email_confirmed_at: expect.any(String),
+      created_at: expect.any(String)
+    }
+  },
+  getUserRole: mockGetUserRole
+}))
+
+// Now import the functions we need to test
+import {
+  authenticate,
+  authorize,
+  authorizeByPermission,
+  requireEmailVerified,
+  optionalAuth,
+  checkOwnership
+} from '../../../api/middleware/auth/auth.middleware.js'
+
+import { getUser } from '../../../api/services/authService.index.js'
+import { UnauthorizedError, ForbiddenError } from '../../../api/errors/AppError.js'
+import { log as logger } from '../../../api/utils/logger.js'
+
+describe('Authentication Middleware', () => {
+  let mockReq, mockRes, mockNext
 
   beforeEach(() => {
-    req = createMockRequest()
-    res = createMockResponse()
+    mockReq = {
+      headers: {},
+      path: '/test',
+      method: 'GET',
+      ip: '127.0.0.1'
+    }
+    mockRes = {}
+    mockNext = vi.fn()
+
+    // Reset all mocks
     vi.clearAllMocks()
+
+    // Reset auth helpers to default (dev mode)
+    mockIsDev.mockReturnValue(true)
+    mockGetUserRole.mockReturnValue('user')
+    getUser.mockResolvedValue({ id: 'test-user', email: 'test@example.com' })
+
+    // Set NODE_ENV to development for dev mode tests
+    process.env.NODE_ENV = 'development'
   })
 
-  // ============================================
-  // REQUIRE AUTH TESTS
-  // ============================================
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
 
-  describe('requireAuth()', () => {
-    it('should allow request with valid Bearer token', async () => {
-      // Arrange
-      const token = 'valid-jwt-token'
-      const mockUser = {
-        id: '123e4567-e89b-12d3-a456-426614174000',
-        email: 'test@example.com',
-        role: 'user'
-      }
-
-      req.headers.authorization = `Bearer ${token}`
-      mockSupabase.auth.getUser.mockResolvedValue({ data: { user: mockUser }, error: null })
-
-      // Act
-      await requireAuth(req, res, next)
-
-      // Assert
-      expect(mockSupabase.auth.getUser).toHaveBeenCalledWith(token)
-      expect(req.user).toEqual(mockUser)
-      expect(res.locals.user).toEqual(mockUser)
-      expect(next).toHaveBeenCalled()
-      expect(res.status).not.toHaveBeenCalled()
-    })
-
-    it('should allow request with valid cookie token', async () => {
-      // Arrange
-      const token = 'valid-cookie-token'
-      const mockUser = {
-        id: '123e4567-e89b-12d3-a456-426614174000',
-        email: 'test@example.com',
-        role: 'user'
-      }
-
-      req.cookies.token = token
-      mockSupabase.auth.getUser.mockResolvedValue({ data: { user: mockUser }, error: null })
-
-      // Act
-      await requireAuth(req, res, next)
-
-      // Assert
-      expect(mockSupabase.auth.getUser).toHaveBeenCalledWith(token)
-      expect(req.user).toEqual(mockUser)
-      expect(next).toHaveBeenCalled()
-    })
-
-    it('should reject request without Authorization header', async () => {
-      // Arrange
-      // No authorization header set
-
-      // Act
-      await requireAuth(req, res, next)
-
-      // Assert
-      expect(res.status).toHaveBeenCalledWith(401)
-      expect(res.json).toHaveBeenCalledWith({
-        success: false,
-        error: {
-          code: 'UNAUTHORIZED',
-          message: 'Authorization header required'
-        }
+  describe('authenticate', () => {
+    describe('development mode', () => {
+      beforeEach(() => {
+        mockIsDev.mockReturnValue(true)
+        process.env.NODE_ENV = 'development'
       })
-      expect(next).not.toHaveBeenCalled()
-    })
 
-    it('should reject request with invalid Authorization format', async () => {
-      // Arrange
-      req.headers.authorization = 'InvalidFormat token'
+      it('should auto-inject mock user and call next', async () => {
+        await authenticate(mockReq, mockRes, mockNext)
 
-      // Act
-      await requireAuth(req, res, next)
-
-      // Assert
-      expect(res.status).toHaveBeenCalledWith(401)
-      expect(res.json).toHaveBeenCalledWith({
-        success: false,
-        error: {
-          code: 'UNAUTHORIZED',
-          message: 'Invalid authorization format'
-        }
+        expect(mockReq.user).toEqual({
+          id: '00000000-0000-0000-0000-000000000001',
+          email: 'dev@floresya.local',
+          user_metadata: {
+            full_name: 'Developer User',
+            phone: '+584141234567',
+            role: 'admin'
+          },
+          email_confirmed_at: expect.any(String),
+          created_at: expect.any(String)
+        })
+        expect(mockReq.token).toBe('dev-mock-token')
+        expect(mockNext).toHaveBeenCalled()
+        expect(logger.info).toHaveBeenCalledWith('🔓 DEV MODE: Auto-authenticated', {
+          email: 'dev@floresya.local',
+          role: 'admin'
+        })
       })
     })
 
-    it('should reject request with expired token', async () => {
-      // Arrange
-      const token = 'expired-token'
-      req.headers.authorization = `Bearer ${token}`
-      mockSupabase.auth.getUser.mockResolvedValue({
-        data: { user: null },
-        error: { message: 'JWT expired' }
+    describe('production mode', () => {
+      beforeEach(() => {
+        mockIsDev.mockReturnValue(false)
       })
 
-      // Act
-      await requireAuth(req, res, next)
+      it('should throw UnauthorizedError when no auth header', async () => {
+        await authenticate(mockReq, mockRes, mockNext)
 
-      // Assert
-      expect(res.status).toHaveBeenCalledWith(401)
-      expect(res.json).toHaveBeenCalledWith({
-        success: false,
-        error: {
-          code: 'UNAUTHORIZED',
-          message: 'Token expired'
-        }
-      })
-    })
-
-    it('should reject request with invalid token', async () => {
-      // Arrange
-      const token = 'invalid-token'
-      req.headers.authorization = `Bearer ${token}`
-      mockSupabase.auth.getUser.mockResolvedValue({
-        data: { user: null },
-        error: { message: 'Invalid token' }
+        expect(mockNext).toHaveBeenCalledWith(expect.any(UnauthorizedError))
+        expect(logger.warn).toHaveBeenCalledWith('Authentication failed: No token provided', {
+          path: mockReq.path,
+          method: mockReq.method,
+          ip: mockReq.ip
+        })
       })
 
-      // Act
-      await requireAuth(req, res, next)
+      it('should throw UnauthorizedError when invalid auth header', async () => {
+        mockReq.headers.authorization = 'Invalid'
 
-      // Assert
-      expect(res.status).toHaveBeenCalledWith(401)
-      expect(res.json).toHaveBeenCalledWith({
-        success: false,
-        error: {
-          code: 'UNAUTHORIZED',
-          message: 'Invalid token'
-        }
-      })
-    })
+        await authenticate(mockReq, mockRes, mockNext)
 
-    it('should reject request when no user in response', async () => {
-      // Arrange
-      const token = 'valid-token'
-      req.headers.authorization = `Bearer ${token}`
-      mockSupabase.auth.getUser.mockResolvedValue({
-        data: { user: null },
-        error: null
+        expect(mockNext).toHaveBeenCalledWith(expect.any(UnauthorizedError))
       })
 
-      // Act
-      await requireAuth(req, res, next)
+      it('should authenticate successfully with valid token', async () => {
+        const mockUser = { id: 'user-id', email: 'user@example.com' }
+        mockReq.headers.authorization = 'Bearer valid-token'
+        getUser.mockResolvedValue(mockUser)
 
-      // Assert
-      expect(res.status).toHaveBeenCalledWith(401)
-      expect(res.json).toHaveBeenCalledWith({
-        success: false,
-        error: {
-          code: 'UNAUTHORIZED',
-          message: 'User not found'
-        }
+        await authenticate(mockReq, mockRes, mockNext)
+
+        expect(getUser).toHaveBeenCalledWith('valid-token')
+        expect(mockReq.user).toEqual(mockUser)
+        expect(mockReq.token).toBe('valid-token')
+        expect(mockNext).toHaveBeenCalled()
+        expect(logger.info).toHaveBeenCalledWith('User authenticated successfully', {
+          userId: mockUser.id,
+          email: mockUser.email,
+          role: 'user',
+          path: mockReq.path
+        })
       })
-    })
 
-    it('should prefer Authorization header over cookie', async () => {
-      // Arrange
-      const headerToken = 'header-token'
-      const cookieToken = 'cookie-token'
-      const mockUser = { id: '123e4567-e89b-12d3-a456-426614174000', email: 'test@example.com' }
+      it('should handle authentication failure', async () => {
+        mockReq.headers.authorization = 'Bearer invalid-token'
+        const error = new Error('Invalid token')
+        getUser.mockRejectedValue(error)
 
-      req.headers.authorization = `Bearer ${headerToken}`
-      req.cookies.token = cookieToken
-      mockSupabase.auth.getUser.mockResolvedValue({ data: { user: mockUser }, error: null })
+        await authenticate(mockReq, mockRes, mockNext)
 
-      // Act
-      await requireAuth(req, res, next)
-
-      // Assert
-      expect(mockSupabase.auth.getUser).toHaveBeenCalledWith(headerToken)
-      expect(mockSupabase.auth.getUser).not.toHaveBeenCalledWith(cookieToken)
-    })
-
-    it('should fall back to cookie when Authorization not present', async () => {
-      // Arrange
-      const cookieToken = 'cookie-token'
-      const mockUser = { id: '123e4567-e89b-12d3-a456-426614174000', email: 'test@example.com' }
-
-      req.cookies.token = cookieToken
-      mockSupabase.auth.getUser.mockResolvedValue({ data: { user: mockUser }, error: null })
-
-      // Act
-      await requireAuth(req, res, next)
-
-      // Assert
-      expect(mockSupabase.auth.getUser).toHaveBeenCalledWith(cookieToken)
-      expect(req.user).toEqual(mockUser)
-    })
-
-    it('should handle database errors gracefully', async () => {
-      // Arrange
-      const token = 'valid-token'
-      req.headers.authorization = `Bearer ${token}`
-      mockSupabase.auth.getUser.mockRejectedValue(new Error('Database error'))
-
-      // Act
-      await requireAuth(req, res, next)
-
-      // Assert
-      expect(res.status).toHaveBeenCalledWith(500)
-      expect(res.json).toHaveBeenCalledWith({
-        success: false,
-        error: {
-          code: 'INTERNAL_ERROR',
-          message: 'Authentication service error'
-        }
+        expect(mockNext).toHaveBeenCalledWith(error)
+        expect(logger.warn).toHaveBeenCalledWith('Authentication failed', {
+          error: error.message,
+          path: mockReq.path,
+          method: mockReq.method,
+          ip: mockReq.ip
+        })
       })
-    })
-
-    it('should store user in res.locals for downstream access', async () => {
-      // Arrange
-      const token = 'valid-token'
-      const mockUser = {
-        id: '123e4567-e89b-12d3-a456-426614174000',
-        email: 'test@example.com',
-        role: 'admin'
-      }
-
-      req.headers.authorization = `Bearer ${token}`
-      mockSupabase.auth.getUser.mockResolvedValue({ data: { user: mockUser }, error: null })
-
-      // Act
-      await requireAuth(req, res, next)
-
-      // Assert
-      expect(res.locals.user).toBe(mockUser)
-      expect(res.locals.user.id).toBe('123e4567-e89b-12d3-a456-426614174000')
-      expect(res.locals.user.email).toBe('test@example.com')
-      expect(res.locals.user.role).toBe('admin')
     })
   })
 
-  // ============================================
-  // REQUIRE ADMIN TESTS
-  // ============================================
+  describe('authorize', () => {
+    it('should throw UnauthorizedError when no user', () => {
+      const middleware = authorize('admin')
 
-  describe('requireAdmin()', () => {
-    it('should allow request with admin user', async () => {
-      // Arrange
-      const token = 'valid-token'
-      const mockUser = {
-        id: '123e4567-e89b-12d3-a456-426614174000',
-        email: 'admin@example.com',
-        role: 'admin'
-      }
+      middleware(mockReq, mockRes, mockNext)
 
-      req.headers.authorization = `Bearer ${token}`
-      req.user = mockUser
-      mockSupabase.auth.getUser.mockResolvedValue({ data: { user: mockUser }, error: null })
-
-      // Act
-      await requireAdmin(req, res, next)
-
-      // Assert
-      expect(next).toHaveBeenCalled()
-      expect(res.status).not.toHaveBeenCalled()
+      expect(mockNext).toHaveBeenCalledWith(expect.any(UnauthorizedError))
     })
 
-    it('should reject request with non-admin user', async () => {
-      // Arrange
-      const token = 'valid-token'
-      const mockUser = {
-        id: '123e4567-e89b-12d3-a456-426614174000',
-        email: 'user@example.com',
-        role: 'user'
-      }
+    it('should call next when user has allowed role', () => {
+      mockReq.user = { id: 'user-id', email: 'user@example.com' }
+      mockGetUserRole.mockReturnValue('admin')
+      const middleware = authorize('admin')
 
-      req.headers.authorization = `Bearer ${token}`
-      req.user = mockUser
-      mockSupabase.auth.getUser.mockResolvedValue({ data: { user: mockUser }, error: null })
+      middleware(mockReq, mockRes, mockNext)
 
-      // Act
-      await requireAdmin(req, res, next)
-
-      // Assert
-      expect(res.status).toHaveBeenCalledWith(403)
-      expect(res.json).toHaveBeenCalledWith({
-        success: false,
-        error: {
-          code: 'FORBIDDEN',
-          message: 'Admin access required'
-        }
-      })
-      expect(next).not.toHaveBeenCalled()
-    })
-
-    it('should reject request when user has no role', async () => {
-      // Arrange
-      const token = 'valid-token'
-      const mockUser = { id: '123e4567-e89b-12d3-a456-426614174000', email: 'user@example.com' }
-
-      req.headers.authorization = `Bearer ${token}`
-      req.user = mockUser
-      mockSupabase.auth.getUser.mockResolvedValue({ data: { user: mockUser }, error: null })
-
-      // Act
-      await requireAdmin(req, res, next)
-
-      // Assert
-      expect(res.status).toHaveBeenCalledWith(403)
-      expect(res.json).toHaveBeenCalledWith({
-        success: false,
-        error: {
-          code: 'FORBIDDEN',
-          message: 'Admin access required'
-        }
+      expect(mockNext).toHaveBeenCalled()
+      expect(logger.info).toHaveBeenCalledWith('Authorization granted (role-based)', {
+        userId: mockReq.user.id,
+        role: 'admin',
+        path: mockReq.path
       })
     })
 
-    it('should reject request when role is lowercase admin', async () => {
-      // Arrange
-      const token = 'valid-token'
-      const mockUser = {
-        id: '123e4567-e89b-12d3-a456-426614174000',
-        email: 'admin@example.com',
-        role: 'admin'
-      }
+    it('should throw ForbiddenError when user lacks required role', () => {
+      mockReq.user = { id: 'user-id', email: 'user@example.com' }
+      mockGetUserRole.mockReturnValue('user')
+      const middleware = authorize('admin')
 
-      req.headers.authorization = `Bearer ${token}`
-      req.user = mockUser
-      mockSupabase.auth.getUser.mockResolvedValue({ data: { user: mockUser }, error: null })
+      middleware(mockReq, mockRes, mockNext)
 
-      // Act
-      await requireAdmin(req, res, next)
-
-      // Assert
-      expect(next).toHaveBeenCalled()
-    })
-
-    it('should reject request when role is mixed case Admin', async () => {
-      // Arrange
-      const token = 'valid-token'
-      const mockUser = {
-        id: '123e4567-e89b-12d3-a456-426614174000',
-        email: 'admin@example.com',
-        role: 'Admin'
-      }
-
-      req.headers.authorization = `Bearer ${token}`
-      req.user = mockUser
-      mockSupabase.auth.getUser.mockResolvedValue({ data: { user: mockUser }, error: null })
-
-      // Act
-      await requireAdmin(req, res, next)
-
-      // Assert
-      expect(res.status).toHaveBeenCalledWith(403)
-    })
-
-    it('should check user metadata for role', async () => {
-      // Arrange
-      const token = 'valid-token'
-      const mockUser = {
-        id: '123e4567-e89b-12d3-a456-426614174000',
-        email: 'admin@example.com',
-        user_metadata: { role: 'admin' }
-      }
-
-      req.headers.authorization = `Bearer ${token}`
-      req.user = mockUser
-      mockSupabase.auth.getUser.mockResolvedValue({ data: { user: mockUser }, error: null })
-
-      // Act
-      await requireAdmin(req, res, next)
-
-      // Assert
-      expect(next).toHaveBeenCalled()
-    })
-
-    it('should prioritize user_metadata.role over role field', async () => {
-      // Arrange
-      const token = 'valid-token'
-      const mockUser = {
-        id: '123e4567-e89b-12d3-a456-426614174000',
-        email: 'admin@example.com',
+      expect(mockNext).toHaveBeenCalledWith(expect.any(ForbiddenError))
+      expect(logger.warn).toHaveBeenCalledWith('Access denied - insufficient role', {
+        userId: mockReq.user.id,
+        email: mockReq.user.email,
         role: 'user',
-        user_metadata: { role: 'admin' }
-      }
+        requiredRoles: ['admin'],
+        path: mockReq.path,
+        method: mockReq.method
+      })
+    })
 
-      req.headers.authorization = `Bearer ${token}`
-      req.user = mockUser
-      mockSupabase.auth.getUser.mockResolvedValue({ data: { user: mockUser }, error: null })
+    it('should handle array of allowed roles', () => {
+      mockReq.user = { id: 'user-id', email: 'user@example.com' }
+      mockGetUserRole.mockReturnValue('moderator')
+      const middleware = authorize(['admin', 'moderator'])
 
-      // Act
-      await requireAdmin(req, res, next)
+      middleware(mockReq, mockRes, mockNext)
 
-      // Assert
-      expect(next).toHaveBeenCalled()
+      expect(mockNext).toHaveBeenCalled()
     })
   })
 
-  // ============================================
-  // OPTIONAL AUTH TESTS
-  // ============================================
+  describe('authorizeByPermission', () => {
+    it('should throw UnauthorizedError when no user', () => {
+      const middleware = authorizeByPermission('write')
 
-  describe('optionalAuth()', () => {
-    it('should attach user when token is valid', async () => {
-      // Arrange
-      const token = 'valid-token'
-      const mockUser = { id: '123e4567-e89b-12d3-a456-426614174000', email: 'test@example.com' }
+      middleware(mockReq, mockRes, mockNext)
 
-      req.headers.authorization = `Bearer ${token}`
-      mockSupabase.auth.getUser.mockResolvedValue({ data: { user: mockUser }, error: null })
-
-      // Act
-      await optionalAuth(req, res, next)
-
-      // Assert
-      expect(req.user).toEqual(mockUser)
-      expect(res.locals.user).toEqual(mockUser)
-      expect(next).toHaveBeenCalled()
+      expect(mockNext).toHaveBeenCalledWith(expect.any(UnauthorizedError))
     })
 
-    it('should continue without user when no token', async () => {
-      // Arrange
-      // No authorization header
+    it('should call next when user has required permission', () => {
+      mockReq.user = { id: 'user-id', email: 'user@example.com' }
+      mockGetUserRole.mockReturnValue('admin')
+      const middleware = authorizeByPermission('write')
 
-      // Act
-      await optionalAuth(req, res, next)
+      middleware(mockReq, mockRes, mockNext)
 
-      // Assert
-      expect(req.user).toBeUndefined()
-      expect(next).toHaveBeenCalled()
-      expect(res.status).not.toHaveBeenCalled()
+      expect(mockNext).toHaveBeenCalled()
     })
 
-    it('should continue without user when token is invalid', async () => {
-      // Arrange
-      const token = 'invalid-token'
-      req.headers.authorization = `Bearer ${token}`
-      mockSupabase.auth.getUser.mockResolvedValue({
-        data: { user: null },
-        error: { message: 'Invalid token' }
+    it('should throw ForbiddenError when user lacks permission', () => {
+      mockReq.user = { id: 'user-id', email: 'user@example.com' }
+      mockGetUserRole.mockReturnValue('user')
+      const middleware = authorizeByPermission('write')
+
+      middleware(mockReq, mockRes, mockNext)
+
+      expect(mockNext).toHaveBeenCalledWith(expect.any(ForbiddenError))
+    })
+
+    it('should handle array of required permissions', () => {
+      mockReq.user = { id: 'user-id', email: 'user@example.com' }
+      mockGetUserRole.mockReturnValue('admin')
+      const middleware = authorizeByPermission(['read', 'write'])
+
+      middleware(mockReq, mockRes, mockNext)
+
+      expect(mockNext).toHaveBeenCalled()
+    })
+  })
+
+  describe('requireEmailVerified', () => {
+    describe('development mode', () => {
+      beforeEach(() => {
+        mockIsDev.mockReturnValue(true)
       })
 
-      // Act
-      await optionalAuth(req, res, next)
+      it('should call next without checking email', () => {
+        requireEmailVerified(mockReq, mockRes, mockNext)
 
-      // Assert
-      expect(req.user).toBeUndefined()
-      expect(next).toHaveBeenCalled()
-      expect(res.status).not.toHaveBeenCalled()
+        expect(mockNext).toHaveBeenCalled()
+      })
     })
 
-    it('should continue without user when token is expired', async () => {
-      // Arrange
-      const token = 'expired-token'
-      req.headers.authorization = `Bearer ${token}`
-      mockSupabase.auth.getUser.mockResolvedValue({
-        data: { user: null },
-        error: { message: 'JWT expired' }
+    describe('production mode', () => {
+      beforeEach(() => {
+        mockIsDev.mockReturnValue(false)
+        process.env.NODE_ENV = 'test'
       })
 
-      // Act
-      await optionalAuth(req, res, next)
+      it('should throw UnauthorizedError when no user', () => {
+        requireEmailVerified(mockReq, mockRes, mockNext)
 
-      // Assert
-      expect(req.user).toBeUndefined()
-      expect(next).toHaveBeenCalled()
-    })
+        expect(mockNext).toHaveBeenCalledWith(expect.any(UnauthorizedError))
+      })
 
-    it('should handle database errors gracefully', async () => {
-      // Arrange
-      const token = 'valid-token'
-      req.headers.authorization = `Bearer ${token}`
-      mockSupabase.auth.getUser.mockRejectedValue(new Error('Database error'))
+      it('should throw ForbiddenError when email not verified', () => {
+        mockReq.user = { id: 'user-id', email: 'user@example.com' }
 
-      // Act
-      await optionalAuth(req, res, next)
+        requireEmailVerified(mockReq, mockRes, mockNext)
 
-      // Assert
-      expect(req.user).toBeUndefined()
-      expect(next).toHaveBeenCalled()
-      expect(res.status).not.toHaveBeenCalled()
+        expect(mockNext).toHaveBeenCalledWith(expect.any(ForbiddenError))
+      })
+
+      it('should call next when email is verified', () => {
+        mockReq.user = {
+          id: 'user-id',
+          email: 'user@example.com',
+          email_confirmed_at: '2023-01-01T00:00:00Z'
+        }
+
+        requireEmailVerified(mockReq, mockRes, mockNext)
+
+        expect(mockNext).toHaveBeenCalled()
+      })
     })
   })
 
-  // ============================================
-  // SESSION VALIDATION TESTS
-  // ============================================
+  describe('optionalAuth', () => {
+    describe('development mode', () => {
+      beforeEach(() => {
+        mockIsDev.mockReturnValue(true)
+      })
 
-  // NOTE: validateSession function does not exist in auth.js
-  // Skipping these tests until function is implemented
-  /*
-  describe('validateSession()', () => {
-    // Tests would go here
+      it('should inject mock user and call next', () => {
+        optionalAuth(mockReq, mockRes, mockNext)
+
+        expect(mockReq.user).toEqual({
+          id: '00000000-0000-0000-0000-000000000001',
+          email: 'dev@floresya.local',
+          user_metadata: {
+            full_name: 'Developer User',
+            phone: '+584141234567',
+            role: 'admin'
+          },
+          email_confirmed_at: expect.any(String),
+          created_at: expect.any(String)
+        })
+        expect(mockReq.token).toBe('dev-mock-token')
+        expect(mockNext).toHaveBeenCalled()
+      })
+    })
+
+    describe('production mode', () => {
+      beforeEach(() => {
+        mockIsDev.mockReturnValue(false)
+      })
+
+      it('should call next when no auth header', async () => {
+        await new Promise(resolve => {
+          mockNext.mockImplementation(resolve)
+          optionalAuth(mockReq, mockRes, mockNext)
+        })
+
+        expect(mockNext).toHaveBeenCalled()
+        expect(mockReq.user).toBeUndefined()
+      })
+
+      it('should authenticate when valid token provided', async () => {
+        const mockUser = { id: 'user-id', email: 'user@example.com' }
+        mockReq.headers.authorization = 'Bearer valid-token'
+        getUser.mockResolvedValue(mockUser)
+
+        await new Promise(resolve => {
+          mockNext.mockImplementation(resolve)
+          optionalAuth(mockReq, mockRes, mockNext)
+        })
+
+        expect(mockReq.user).toEqual(mockUser)
+        expect(mockReq.token).toBe('valid-token')
+        expect(mockNext).toHaveBeenCalled()
+      })
+
+      it('should silently fail when token is invalid', async () => {
+        mockReq.headers.authorization = 'Bearer invalid-token'
+        getUser.mockRejectedValue(new Error('Invalid token'))
+
+        await new Promise(resolve => {
+          mockNext.mockImplementation(resolve)
+          optionalAuth(mockReq, mockRes, mockNext)
+        })
+
+        expect(mockReq.user).toBeUndefined()
+        expect(mockNext).toHaveBeenCalled()
+        expect(logger.debug).toHaveBeenCalledWith('Optional auth failed')
+      })
+    })
   })
-  */
+
+  describe('checkOwnership', () => {
+    const getOwnerId = req => req.params.id
+
+    it('should throw UnauthorizedError when no user', () => {
+      const middleware = checkOwnership(getOwnerId)
+
+      middleware(mockReq, mockRes, mockNext)
+
+      expect(mockNext).toHaveBeenCalledWith(expect.any(UnauthorizedError))
+    })
+
+    it('should call next for admin user', () => {
+      mockReq.user = { id: 'admin-id', user_metadata: { role: 'admin' } }
+      mockReq.params = { id: 'different-id' }
+      const middleware = checkOwnership(getOwnerId)
+
+      middleware(mockReq, mockRes, mockNext)
+
+      expect(mockNext).toHaveBeenCalled()
+      expect(logger.info).toHaveBeenCalledWith('Ownership check bypassed (admin)', {
+        userId: mockReq.user.id,
+        path: mockReq.path
+      })
+    })
+
+    it('should call next when user owns resource', () => {
+      mockReq.user = { id: 'user-id' }
+      mockReq.params = { id: 'user-id' }
+      const middleware = checkOwnership(getOwnerId)
+
+      middleware(mockReq, mockRes, mockNext)
+
+      expect(mockNext).toHaveBeenCalled()
+    })
+
+    it('should throw ForbiddenError when user does not own resource', () => {
+      mockReq.user = { id: 'user-id' }
+      mockReq.params = { id: 'different-id' }
+      const middleware = checkOwnership(getOwnerId)
+
+      middleware(mockReq, mockRes, mockNext)
+
+      expect(mockNext).toHaveBeenCalledWith(expect.any(ForbiddenError))
+      expect(logger.warn).toHaveBeenCalledWith('Ownership check failed', {
+        userId: mockReq.user.id,
+        resourceOwnerId: 'different-id',
+        path: mockReq.path
+      })
+    })
+  })
 })

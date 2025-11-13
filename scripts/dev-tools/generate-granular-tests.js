@@ -12,7 +12,6 @@ import path from 'path'
 const REPO_DIR = 'api/repositories'
 const SERVICE_DIR = 'api/services'
 const CONTROLLER_DIR = 'api/controllers'
-const _MIDDLEWARE_DIR = 'api/middleware'
 const OUTPUT_DIR = 'tests/unit'
 
 const TEMPLATES = {

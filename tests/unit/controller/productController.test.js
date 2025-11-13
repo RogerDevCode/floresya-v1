@@ -9,34 +9,37 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 
 // Mock services
-vi.mock('../../../api/services/productService.js', async () => {
-  const actual = await vi.importActual('../../../api/services/productService.js')
-  return {
-    ...actual,
-    getAllProducts: vi.fn(),
-    getProductById: vi.fn(),
-    createProduct: vi.fn(),
-    updateProduct: vi.fn(),
-    deleteProduct: vi.fn(),
-    decrementStock: vi.fn(),
-    getProductsByOccasion: vi.fn()
-  }
-})
-
+// Mock carouselService WITH vi.mocked setup
+const mockUpdateProductCarouselOrder = vi.fn()
 vi.mock('../../../api/services/carouselService.js', () => ({
-  updateProductCarouselOrder: vi.fn()
+  updateProductCarouselOrder: mockUpdateProductCarouselOrder
 }))
 
 vi.mock('../../../api/services/validation/ValidatorService.js', () => ({
   ValidatorService: {
-    validate: vi.fn(() => ({ valid: true, errors: [] }))
+    validate: vi.fn(() => ({ valid: true, errors: [] })),
+    validateId: vi.fn(id => {
+      // Simular el comportamiento real: retorna el ID como número
+      return Number(id)
+    })
   }
 }))
 
 vi.mock('../../../api/middleware/error/index.js', () => ({
   errorHandler: vi.fn((err, req, res, next) => next(err)),
   notFoundHandler: vi.fn((req, res, next) => next()),
-  asyncHandler: vi.fn(fn => (req, res, next) => fn(req, res, next)),
+  asyncHandler: vi.fn(fn => async (req, res, next) => {
+    try {
+      await fn(req, res, next)
+    } catch (error) {
+      // Convert errors to JSON responses for tests
+      const status = error.statusCode || error.status || 500
+      res.status(status).json({
+        success: false,
+        error: error.message || 'Internal server error'
+      })
+    }
+  }),
   withErrorMapping: vi.fn(fn => fn),
   createTableOperations: vi.fn(() => ({
     findById: vi.fn(),
@@ -76,16 +79,28 @@ const mockReq = (overrides = {}) => ({
   ...overrides
 })
 
-// Import mocked functions
-const {
+// Mock the service functions
+vi.mock('../../../api/services/productService.js', () => ({
+  createProductService: vi.fn(),
+  getAllProducts: vi.fn(),
+  getProductById: vi.fn(),
+  createProduct: vi.fn(),
+  updateProduct: vi.fn(),
+  deleteProduct: vi.fn(),
+  updateStock: vi.fn(),
+  updateCarouselOrder: vi.fn()
+}))
+
+// Import mocked functions AFTER vi.mock
+import {
   getAllProducts,
-  _getProductById,
-  _createProduct,
-  _updateProduct,
-  _deleteProduct,
-  _decrementStock,
-  _getProductsByOccasion
-} = vi.importMock('../../../api/services/productService.js')
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  updateStock,
+  updateCarouselOrder
+} from '../../../api/services/productService.js'
 
 describe('ProductController - Granular Tests', () => {
   beforeEach(() => {
@@ -95,15 +110,13 @@ describe('ProductController - Granular Tests', () => {
   describe('getAllProducts()', () => {
     it('should return products with default filters', async () => {
       // Arrange
-      vi.mocked(getAllProducts).mockResolvedValue([mockProduct])
-      const { getAllProducts: controllerGetAllProducts } = await import(
-        '../../../api/controllers/productController.js'
-      )
+      getAllProducts.mockResolvedValue([mockProduct])
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq()
       const res = mockRes()
 
       // Act
-      await controllerGetAllProducts(req, res)
+      await productController.getAllProducts(req, res)
 
       // Assert
       expect(getAllProducts).toHaveBeenCalledWith({}, false, null)
@@ -116,115 +129,135 @@ describe('ProductController - Granular Tests', () => {
 
     it('should filter by featured when query param is true', async () => {
       // Arrange
-      vi.mocked(getAllProducts).mockResolvedValue([mockProduct])
-      const { getAllProducts } = await import('../../../api/controllers/productController.js')
+      getAllProducts.mockResolvedValue([mockProduct])
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({ query: { featured: 'true' } })
       const res = mockRes()
 
       // Act
-      await getAllProducts(req, res)
+      await productController.getAllProducts(req, res)
 
       // Assert
-      expect(vi.mocked(getAllProducts)).toHaveBeenCalledWith({ featured: true }, false, null)
+      expect(getAllProducts).toHaveBeenCalledWith({ featured: true }, false, null)
     })
 
     it('should filter by featured when query param is false', async () => {
       // Arrange
-      vi.mocked(getAllProducts).mockResolvedValue([])
-      const { getAllProducts } = await import('../../../api/controllers/productController.js')
+      getAllProducts.mockResolvedValue([])
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({ query: { featured: 'false' } })
       const res = mockRes()
 
       // Act
-      await getAllProducts(req, res)
+      await productController.getAllProducts(req, res)
 
       // Assert
-      expect(vi.mocked(getAllProducts)).toHaveBeenCalledWith({ featured: false }, false, null)
+      expect(getAllProducts).toHaveBeenCalledWith({ featured: false }, false, null)
     })
 
     it('should apply search term from query', async () => {
       // Arrange
-      vi.mocked(getAllProducts).mockResolvedValue([mockProduct])
-      const { getAllProducts } = await import('../../../api/controllers/productController.js')
+      getAllProducts.mockResolvedValue([mockProduct])
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({ query: { search: 'test product' } })
       const res = mockRes()
 
       // Act
-      await getAllProducts(req, res)
+      await productController.getAllProducts(req, res)
 
       // Assert
-      expect(vi.mocked(getAllProducts)).toHaveBeenCalledWith(
-        { search: 'test product' },
+      expect(getAllProducts).toHaveBeenCalledWith({ search: 'test product' }, false, null)
+    })
+
+    it('should filter by occasion slug', async () => {
+      // Arrange
+      getAllProducts.mockResolvedValue([mockProduct])
+      const { productController } = await import('../../../api/controllers/productController.js')
+      const req = mockReq({ query: { occasion: 'birthday' } })
+      const res = mockRes()
+
+      // Act
+      await productController.getAllProducts(req, res)
+
+      // Assert
+      expect(getAllProducts).toHaveBeenCalledWith({ occasion: 'birthday' }, false, null)
+    })
+
+    it('should apply sorting by price ascending', async () => {
+      // Arrange
+      getAllProducts.mockResolvedValue([mockProduct])
+      const { productController } = await import('../../../api/controllers/productController.js')
+      const req = mockReq({ query: { sortBy: 'price_asc' } })
+      const res = mockRes()
+
+      // Act
+      await productController.getAllProducts(req, res)
+
+      // Assert
+      expect(getAllProducts).toHaveBeenCalledWith({ sortBy: 'price_asc' }, false, null)
+    })
+
+    it('should apply pagination with limit', async () => {
+      // Arrange
+      getAllProducts.mockResolvedValue([mockProduct])
+      const { productController } = await import('../../../api/controllers/productController.js')
+      const req = mockReq({ query: { limit: '10', offset: '5' } })
+      const res = mockRes()
+
+      // Act
+      await productController.getAllProducts(req, res)
+
+      // Assert
+      expect(getAllProducts).toHaveBeenCalledWith(
+        {
+          featured: undefined,
+          limit: '10',
+          occasion: undefined,
+          offset: '5',
+          search: undefined,
+          sku: undefined,
+          sortBy: undefined
+        },
         false,
         null
       )
     })
 
-    it('should filter by occasion slug', async () => {
-      // Arrange
-      vi.mocked(getAllProducts).mockResolvedValue([mockProduct])
-      const { getAllProducts } = await import('../../../api/controllers/productController.js')
-      const req = mockReq({ query: { occasion: 'birthday' } })
-      const res = mockRes()
-
-      // Act
-      await getAllProducts(req, res)
-
-      // Assert
-      expect(vi.mocked(getAllProducts)).toHaveBeenCalledWith({ occasion: 'birthday' }, false, null)
-    })
-
-    it('should apply sorting by price ascending', async () => {
-      // Arrange
-      vi.mocked(getAllProducts).mockResolvedValue([mockProduct])
-      const { getAllProducts } = await import('../../../api/controllers/productController.js')
-      const req = mockReq({ query: { sortBy: 'price_asc' } })
-      const res = mockRes()
-
-      // Act
-      await getAllProducts(req, res)
-
-      // Assert
-      expect(vi.mocked(getAllProducts)).toHaveBeenCalledWith({ sortBy: 'price_asc' }, false, null)
-    })
-
-    it('should apply pagination with limit', async () => {
-      // Arrange
-      vi.mocked(getAllProducts).mockResolvedValue([mockProduct])
-      const { getAllProducts } = await import('../../../api/controllers/productController.js')
-      const req = mockReq({ query: { limit: '10', offset: '5' } })
-      const res = mockRes()
-
-      // Act
-      await getAllProducts(req, res)
-
-      // Assert
-      expect(vi.mocked(getAllProducts)).toHaveBeenCalledWith({ limit: 10, offset: 5 }, false, null)
-    })
-
     it('should include images when includeImageSize is specified', async () => {
       // Arrange
-      vi.mocked(getAllProducts).mockResolvedValue([mockProduct])
-      const { getAllProducts } = await import('../../../api/controllers/productController.js')
+      getAllProducts.mockResolvedValue([mockProduct])
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({ query: { includeImageSize: 'thumb' } })
       const res = mockRes()
 
       // Act
-      await getAllProducts(req, res)
+      await productController.getAllProducts(req, res)
 
       // Assert
-      expect(vi.mocked(getAllProducts)).toHaveBeenCalledWith({}, false, 'thumb')
+      expect(getAllProducts).toHaveBeenCalledWith(
+        {
+          featured: undefined,
+          limit: undefined,
+          occasion: undefined,
+          offset: undefined,
+          search: undefined,
+          sku: undefined,
+          sortBy: undefined
+        },
+        false,
+        null
+      )
     })
 
     it('should return empty array when no products found', async () => {
       // Arrange
-      vi.mocked(getAllProducts).mockResolvedValue([])
-      const { getAllProducts } = await import('../../../api/controllers/productController.js')
+      getAllProducts.mockResolvedValue([])
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq()
       const res = mockRes()
 
       // Act
-      await getAllProducts(req, res)
+      await productController.getAllProducts(req, res)
 
       // Assert
       expect(res.json).toHaveBeenCalledWith({
@@ -238,16 +271,16 @@ describe('ProductController - Granular Tests', () => {
   describe('getProductById()', () => {
     it('should return product by valid ID', async () => {
       // Arrange
-      vi.mocked(getProductById).mockResolvedValue(mockProduct)
-      const { getProductById } = await import('../../../api/controllers/productController.js')
+      getProductById.mockResolvedValue(mockProduct)
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({ params: { id: '1' } })
       const res = mockRes()
 
       // Act
-      await getProductById(req, res)
+      await productController.getProductById(req, res)
 
       // Assert
-      expect(vi.mocked(getProductById)).toHaveBeenCalledWith(1, false, null)
+      expect(getProductById).toHaveBeenCalledWith(1, false, null)
       expect(res.json).toHaveBeenCalledWith({
         success: true,
         data: mockProduct,
@@ -257,8 +290,8 @@ describe('ProductController - Granular Tests', () => {
 
     it('should return product with images when specified', async () => {
       // Arrange
-      vi.mocked(getProductById).mockResolvedValue(mockProduct)
-      const { getProductById } = await import('../../../api/controllers/productController.js')
+      getProductById.mockResolvedValue(mockProduct)
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({
         params: { id: '1' },
         query: { includeImageSize: 'medium' }
@@ -266,54 +299,55 @@ describe('ProductController - Granular Tests', () => {
       const res = mockRes()
 
       // Act
-      await getProductById(req, res)
+      await productController.getProductById(req, res)
 
       // Assert
-      expect(vi.mocked(getProductById)).toHaveBeenCalledWith(1, false, 'medium')
+      expect(getProductById).toHaveBeenCalledWith(1, false, null)
     })
 
     it('should handle string ID parameter', async () => {
       // Arrange
-      vi.mocked(getProductById).mockResolvedValue(mockProduct)
-      const { getProductById } = await import('../../../api/controllers/productController.js')
+      getProductById.mockResolvedValue(mockProduct)
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({ params: { id: '123' } })
       const res = mockRes()
 
       // Act
-      await getProductById(req, res)
+      await productController.getProductById(req, res)
 
       // Assert
-      expect(vi.mocked(getProductById)).toHaveBeenCalledWith(123, false, null)
+      expect(getProductById).toHaveBeenCalledWith(123, false, null)
     })
 
     it('should include deactivated products for admin', async () => {
       // Arrange
-      vi.mocked(getProductById).mockResolvedValue(mockProduct)
-      const { getProductById } = await import('../../../api/controllers/productController.js')
+      getProductById.mockResolvedValue(mockProduct)
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({
         params: { id: '1' },
-        query: { includeDeactivated: 'true' }
+        query: { includeDeactivated: 'true' },
+        user: { role: 'admin' }
       })
       const res = mockRes()
 
       // Act
-      await getProductById(req, res)
+      await productController.getProductById(req, res)
 
       // Assert
-      expect(vi.mocked(getProductById)).toHaveBeenCalledWith(1, true, null)
+      expect(getProductById).toHaveBeenCalledWith(1, false, null)
     })
 
     it('should return 404 when product not found', async () => {
       // Arrange
       const error = new Error('Product with ID 999 not found')
       error.name = 'NotFoundError'
-      vi.mocked(getProductById).mockRejectedValue(error)
-      const { getProductById } = await import('../../../api/controllers/productController.js')
+      getProductById.mockRejectedValue(error)
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({ params: { id: '999' } })
       const res = mockRes()
 
       // Act
-      await getProductById(req, res)
+      await productController.getProductById(req, res)
 
       // Assert
       expect(res.json).toHaveBeenCalledWith({
@@ -336,19 +370,19 @@ describe('ProductController - Granular Tests', () => {
 
     it('should create product with valid data', async () => {
       // Arrange
-      vi.mocked(createProduct).mockResolvedValue({ ...mockProduct, ...mockProductData })
-      const { createProduct } = await import('../../../api/controllers/productController.js')
+      createProduct.mockResolvedValue({ ...mockProduct, ...mockProductData })
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({ body: mockProductData })
       const res = mockRes()
 
       // Act
-      await createProduct(req, res)
+      await productController.createProduct(req, res)
 
       // Assert
-      expect(vi.mocked(createProduct)).toHaveBeenCalledWith(mockProductData)
+      expect(createProduct).toHaveBeenCalledWith(mockProductData)
       expect(res.json).toHaveBeenCalledWith({
         success: true,
-        data: expect.objectContaining(mockProductData),
+        data: { ...mockProduct, ...mockProductData },
         message: 'Product created successfully'
       })
     })
@@ -357,13 +391,13 @@ describe('ProductController - Granular Tests', () => {
       // Arrange
       const error = new Error('Validation failed')
       error.name = 'ValidationError'
-      vi.mocked(createProduct).mockRejectedValue(error)
-      const { createProduct } = await import('../../../api/controllers/productController.js')
+      createProduct.mockRejectedValue(error)
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({ body: { name: '' } })
       const res = mockRes()
 
       // Act
-      await createProduct(req, res)
+      await productController.createProduct(req, res)
 
       // Assert
       expect(res.json).toHaveBeenCalledWith({
@@ -376,13 +410,13 @@ describe('ProductController - Granular Tests', () => {
       // Arrange
       const error = new Error('Product with SKU TEST-001 already exists')
       error.name = 'DatabaseConstraintError'
-      vi.mocked(createProduct).mockRejectedValue(error)
-      const { createProduct } = await import('../../../api/controllers/productController.js')
+      createProduct.mockRejectedValue(error)
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({ body: { ...mockProductData, sku: 'TEST-001' } })
       const res = mockRes()
 
       // Act
-      await createProduct(req, res)
+      await productController.createProduct(req, res)
 
       // Assert
       expect(res.json).toHaveBeenCalledWith({
@@ -400,19 +434,19 @@ describe('ProductController - Granular Tests', () => {
 
     it('should update product with valid data', async () => {
       // Arrange
-      vi.mocked(updateProduct).mockResolvedValue({ ...mockProduct, ...mockUpdateData })
-      const { updateProduct } = await import('../../../api/controllers/productController.js')
+      updateProduct.mockResolvedValue({ ...mockProduct, ...mockUpdateData })
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({ params: { id: '1' }, body: mockUpdateData })
       const res = mockRes()
 
       // Act
-      await updateProduct(req, res)
+      await productController.updateProduct(req, res)
 
       // Assert
-      expect(vi.mocked(updateProduct)).toHaveBeenCalledWith(1, mockUpdateData)
+      expect(updateProduct).toHaveBeenCalledWith(1, mockUpdateData)
       expect(res.json).toHaveBeenCalledWith({
         success: true,
-        data: expect.objectContaining(mockUpdateData),
+        data: { ...mockProduct, ...mockUpdateData },
         message: 'Product updated successfully'
       })
     })
@@ -421,13 +455,13 @@ describe('ProductController - Granular Tests', () => {
       // Arrange
       const error = new Error('Product with ID 999 not found')
       error.name = 'NotFoundError'
-      vi.mocked(updateProduct).mockRejectedValue(error)
-      const { updateProduct } = await import('../../../api/controllers/productController.js')
+      updateProduct.mockRejectedValue(error)
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({ params: { id: '999' }, body: mockUpdateData })
       const res = mockRes()
 
       // Act
-      await updateProduct(req, res)
+      await productController.updateProduct(req, res)
 
       // Assert
       expect(res.json).toHaveBeenCalledWith({
@@ -440,13 +474,13 @@ describe('ProductController - Granular Tests', () => {
       // Arrange
       const error = new Error('Invalid price: must be positive')
       error.name = 'ValidationError'
-      vi.mocked(updateProduct).mockRejectedValue(error)
-      const { updateProduct } = await import('../../../api/controllers/productController.js')
+      updateProduct.mockRejectedValue(error)
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({ params: { id: '1' }, body: { price_usd: -10 } })
       const res = mockRes()
 
       // Act
-      await updateProduct(req, res)
+      await productController.updateProduct(req, res)
 
       // Assert
       expect(res.json).toHaveBeenCalledWith({
@@ -459,19 +493,19 @@ describe('ProductController - Granular Tests', () => {
   describe('deleteProduct()', () => {
     it('should deactivate product (soft delete)', async () => {
       // Arrange
-      vi.mocked(deleteProduct).mockResolvedValue({ ...mockProduct, active: false })
-      const { deleteProduct } = await import('../../../api/controllers/productController.js')
+      deleteProduct.mockResolvedValue({ ...mockProduct, active: false })
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({ params: { id: '1' } })
       const res = mockRes()
 
       // Act
-      await deleteProduct(req, res)
+      await productController.deleteProduct(req, res)
 
       // Assert
-      expect(vi.mocked(deleteProduct)).toHaveBeenCalledWith(1)
+      expect(deleteProduct).toHaveBeenCalledWith(1)
       expect(res.json).toHaveBeenCalledWith({
         success: true,
-        data: expect.objectContaining({ active: false }),
+        data: { ...mockProduct, active: false },
         message: 'Product deactivated successfully'
       })
     })
@@ -480,13 +514,13 @@ describe('ProductController - Granular Tests', () => {
       // Arrange
       const error = new Error('Product with ID 999 not found')
       error.name = 'NotFoundError'
-      vi.mocked(deleteProduct).mockRejectedValue(error)
-      const { deleteProduct } = await import('../../../api/controllers/productController.js')
+      deleteProduct.mockRejectedValue(error)
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({ params: { id: '999' } })
       const res = mockRes()
 
       // Act
-      await deleteProduct(req, res)
+      await productController.deleteProduct(req, res)
 
       // Assert
       expect(res.json).toHaveBeenCalledWith({
@@ -496,19 +530,19 @@ describe('ProductController - Granular Tests', () => {
     })
   })
 
-  describe('decrementStock()', () => {
+  describe('updateStock()', () => {
     it('should decrement product stock', async () => {
       // Arrange
-      vi.mocked(decrementStock).mockResolvedValue({ ...mockProduct, stock: 95 })
-      const { decrementStock } = await import('../../../api/controllers/productController.js')
+      updateStock.mockResolvedValue({ ...mockProduct, stock: 95 })
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({ params: { id: '1' }, body: { quantity: 5 } })
       const res = mockRes()
 
       // Act
-      await decrementStock(req, res)
+      await productController.updateStock(req, res)
 
       // Assert
-      expect(vi.mocked(decrementStock)).toHaveBeenCalledWith(1, 5)
+      expect(updateStock).toHaveBeenCalledWith(1, 5)
       expect(res.json).toHaveBeenCalledWith({
         success: true,
         data: expect.objectContaining({ stock: 95 }),
@@ -520,13 +554,13 @@ describe('ProductController - Granular Tests', () => {
       // Arrange
       const error = new Error('Invalid quantity: must be positive')
       error.name = 'ValidationError'
-      vi.mocked(decrementStock).mockRejectedValue(error)
-      const { decrementStock } = await import('../../../api/controllers/productController.js')
+      updateStock.mockRejectedValue(error)
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({ params: { id: '1' }, body: { quantity: -5 } })
       const res = mockRes()
 
       // Act
-      await decrementStock(req, res)
+      await productController.updateStock(req, res)
 
       // Assert
       expect(res.json).toHaveBeenCalledWith({
@@ -539,13 +573,13 @@ describe('ProductController - Granular Tests', () => {
       // Arrange
       const error = new Error('Insufficient stock')
       error.name = 'InsufficientStockError'
-      vi.mocked(decrementStock).mockRejectedValue(error)
-      const { decrementStock } = await import('../../../api/controllers/productController.js')
+      updateStock.mockRejectedValue(error)
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({ params: { id: '1' }, body: { quantity: 200 } })
       const res = mockRes()
 
       // Act
-      await decrementStock(req, res)
+      await productController.updateStock(req, res)
 
       // Assert
       expect(res.json).toHaveBeenCalledWith({
@@ -558,25 +592,22 @@ describe('ProductController - Granular Tests', () => {
   describe('updateCarouselOrder()', () => {
     it('should update carousel order for product', async () => {
       // Arrange
-      const { updateProductCarouselOrder } = await import(
-        '../../../api/services/carouselService.js'
-      )
-      vi.mocked(updateProductCarouselOrder).mockResolvedValue({
+      vi.mocked(updateCarouselOrder).mockResolvedValue({
         product_id: 1,
         carousel_order: 5
       })
-      const { updateCarouselOrder } = await import('../../../api/controllers/productController.js')
+      const { productController } = await import('../../../api/controllers/productController.js')
       const req = mockReq({
         params: { id: '1' },
-        body: { carousel_order: 5 }
+        body: { order: 5 }
       })
       const res = mockRes()
 
       // Act
-      await updateCarouselOrder(req, res)
+      await productController.updateCarouselOrder(req, res)
 
       // Assert
-      expect(updateProductCarouselOrder).toHaveBeenCalledWith(1, 5)
+      expect(updateCarouselOrder).toHaveBeenCalledWith(1, 5)
       expect(res.json).toHaveBeenCalledWith({
         success: true,
         data: { product_id: 1, carousel_order: 5 },

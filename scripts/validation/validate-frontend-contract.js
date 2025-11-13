@@ -29,7 +29,8 @@ async function validateFrontendContract() {
     try {
       await fs.access(apiClientPath)
       console.log('✅ Generated API client found')
-    } catch (_error) {
+    } catch (error) {
+      console.error('Error:', error)
       throw new Error('Generated API client not found. Run: npm run generate:client')
     }
 

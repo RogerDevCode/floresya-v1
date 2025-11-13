@@ -29,7 +29,6 @@ console.log(`${COLORS.cyan}║   Performance-First CSS Pipeline       ║${COLOR
 console.log(`${COLORS.cyan}╚════════════════════════════════════════╝${COLORS.reset}\n`)
 
 // Directories
-const _INPUT_DIR = './src/css'
 const OUTPUT_DIR = './public/css'
 const PUBLIC_DIR = './public'
 

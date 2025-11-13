@@ -21,9 +21,9 @@ export class OrderRepository extends BaseRepository {
    */
   async findAllWithFilters(filters = {}, options = {}) {
     let query = this.supabase.from(this.table).select(`
-        *,
-        users!inner(*),
-        order_items(*)
+        id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized,
+        users!inner(id, email, full_name, phone, role, active, email_verified, created_at, updated_at),
+        order_items(id, order_id, product_id, product_name, product_summary, unit_price_usd, unit_price_ves, quantity, subtotal_usd, subtotal_ves, created_at, updated_at)
       `)
 
     // Aplicar filtros específicos
@@ -91,11 +91,11 @@ export class OrderRepository extends BaseRepository {
       .from(this.table)
       .select(
         `
-        *,
-        users(*),
+        id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized,
+        users(id, email, full_name, phone, role, active, email_verified, created_at, updated_at),
         order_items(
-          *,
-          products(*)
+          id, order_id, product_id, product_name, product_summary, unit_price_usd, unit_price_ves, quantity, subtotal_usd, subtotal_ves, created_at, updated_at,
+          products(id, name, summary, description, price_usd, price_ves, stock, sku, active, featured, carousel_order, created_at, updated_at)
         )
       `
       )
@@ -128,8 +128,8 @@ export class OrderRepository extends BaseRepository {
       .from(this.table)
       .select(
         `
-        *,
-        order_items(*)
+        id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized,
+        order_items(id, order_id, product_id, product_name, product_summary, unit_price_usd, unit_price_ves, quantity, subtotal_usd, subtotal_ves, created_at, updated_at)
       `
       )
       .eq('user_id', userId)
@@ -231,7 +231,12 @@ export class OrderRepository extends BaseRepository {
    * @returns {Promise<Array>} Lista de pedidos
    */
   async findByStatus(status, includeInactive = false) {
-    const query = this.supabase.from(this.table).select('*, users(*)').eq('status', status)
+    const query = this.supabase
+      .from(this.table)
+      .select(
+        'id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized, users(id, email, full_name, phone, role, active, email_verified, created_at, updated_at)'
+      )
+      .eq('status', status)
 
     if (!includeInactive) {
       // No active column in orders table - use status filtering instead
@@ -255,7 +260,9 @@ export class OrderRepository extends BaseRepository {
   async findByPaymentStatus(paymentStatus, includeInactive = false) {
     const query = this.supabase
       .from(this.table)
-      .select('*, users(*)')
+      .select(
+        'id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized, users(id, email, full_name, phone, role, active, email_verified, created_at, updated_at)'
+      )
       .eq('payment_status', paymentStatus)
 
     if (!includeInactive) {
@@ -322,7 +329,9 @@ export class OrderRepository extends BaseRepository {
   async findByDateRange(dateFrom, dateTo, options = {}) {
     let query = this.supabase
       .from(this.table)
-      .select('*, users(*), order_items(*)')
+      .select(
+        'id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized, users(id, email, full_name, phone, role, active, email_verified, created_at, updated_at), order_items(id, order_id, product_id, product_name, product_summary, unit_price_usd, unit_price_ves, quantity, subtotal_usd, subtotal_ves, created_at, updated_at)'
+      )
       .gte('created_at', dateFrom)
       .lte('created_at', dateTo)
 
@@ -375,9 +384,9 @@ export class OrderRepository extends BaseRepository {
       .from(this.table)
       .select(
         `
-        *,
+        id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized,
         users!inner(email, full_name),
-        order_items(*)
+        order_items(id, order_id, product_id, product_name, product_summary, unit_price_usd, unit_price_ves, quantity, subtotal_usd, subtotal_ves, created_at, updated_at)
       `
       )
       .or(
@@ -433,7 +442,7 @@ export class OrderRepository extends BaseRepository {
   async findStatusHistoryByOrderId(orderId) {
     const { data, error } = await this.supabase
       .from(DB_SCHEMA.order_status_history.table)
-      .select('*')
+      .select('id, order_id, old_status, new_status, notes, changed_by, created_at')
       .eq('order_id', orderId)
       .order('created_at', { ascending: true })
 

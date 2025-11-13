@@ -20,17 +20,6 @@ import { validateSetting } from '../utils/validation.js'
 const TABLE = DB_SCHEMA.settings.table
 
 /**
- * Validate setting ID (ENTERPRISE FAIL-FAST)
- * @param {string} key - Setting key to validate
- * @param {string} operation - Operation name for error context
- */
-function _validateSettingId(key, operation = 'operation') {
-  if (!key || typeof key !== 'string') {
-    throw new BadRequestError(`Invalid setting key: must be a string`, { key, operation })
-  }
-}
-
-/**
  * Get all settings - optionally filter for public settings only
  * @param {boolean} [publicOnly=false] - Whether to return only public settings
  * @param {boolean} includeDeactivated - Include inactive settings (default: false, admin only)

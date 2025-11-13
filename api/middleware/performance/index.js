@@ -1,10 +1,11 @@
 /**
  * Performance & Reliability Middleware
  *
- * Contains caching and circuit breaker middleware
+ * Contains circuit breaker and monitoring middleware
+ * (Cache middleware removed - Redis functionality eliminated)
  *
  * @category Middleware
  */
 
-export * from './cache.js'
 export * from './circuitBreaker.js'
+export * from './performanceMonitor.js'

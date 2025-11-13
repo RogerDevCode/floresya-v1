@@ -63,7 +63,6 @@ function fixOpenAPIYaml() {
   const lines = content.split('\n')
   const newLines = []
   let removedCount = 0
-  const _skippedSections = ['example:', 'type:', 'description:', 'nullable:']
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
@@ -198,7 +197,7 @@ function main() {
   console.log('')
   console.log('─'.repeat(60))
 
-  const _verified = verifyFixes()
+  verifyFixes()
 
   console.log('')
   console.log('═'.repeat(60))

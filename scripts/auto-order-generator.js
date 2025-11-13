@@ -362,7 +362,8 @@ async function generateRandomOrder() {
     let bcvRate = 36.45 // Valor por defecto
     try {
       bcvRate = await getBCVRate()
-    } catch (_error) {
+    } catch (error) {
+      console.error('Error:', error)
       logger.info(`No se pudo obtener tasa BCV, usando valor por defecto: ${bcvRate}`, 'warning')
     }
 
@@ -390,7 +391,8 @@ async function generateRandomOrder() {
     let paymentMethods
     try {
       paymentMethods = await getPaymentMethods()
-    } catch (_error) {
+    } catch (error) {
+      console.error('Error:', error)
       logger.info('No se pudieron obtener métodos de pago, usando métodos genéricos', 'warning')
       paymentMethods = [
         { type: 'bank_transfer', name: 'Transferencia Bancaria' },
@@ -492,7 +494,7 @@ async function runGenerator() {
   logger.info('========================================')
 
   let orderCount = 0
-  let _errorCount = 0
+  let errorCount = 0
   let lastStatsUpdate = Date.now()
 
   // Bucle principal
@@ -525,7 +527,7 @@ async function runGenerator() {
 
       // Generar orden
       logger.info('--- Iniciando ciclo de generación ---')
-      const _order = await generateRandomOrder()
+      await generateRandomOrder()
       orderCount++
 
       // Estadísticas cada 10 órdenes o cada 5 minutos
@@ -545,8 +547,7 @@ async function runGenerator() {
 
       logger.info(`✓ Orden #${orderCount} generada exitosamente`)
     } catch (error) {
-      _errorCount++
-      logger.error(`❌ Error en ciclo: ${error.message}`)
+      logger.error(`❌ Error en ciclo (error #${++errorCount}): ${error.message}`)
       logger.error(`Stack trace: ${error.stack}`)
 
       // Esperar antes del siguiente intento

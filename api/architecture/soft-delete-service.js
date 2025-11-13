@@ -12,6 +12,7 @@
  */
 
 import { NotFoundError, DatabaseError, BadRequestError } from '../errors/AppError.js'
+import { logger } from '../utils/logger.js'
 
 /**
  * SoftDeleteService
@@ -85,7 +86,7 @@ export class SoftDeleteService {
         })
       }
 
-      console.log(`[SOFT DELETE] ${this.tableName} ID ${id} deleted by user ${deletedBy}`, {
+      logger.info(`[SOFT DELETE] ${this.tableName} ID ${id} deleted by user ${deletedBy}`, {
         reason,
         ip: ipAddress,
         timestamp: updateData.deleted_at
@@ -93,7 +94,7 @@ export class SoftDeleteService {
 
       return data
     } catch (error) {
-      console.error(`Soft delete failed for ${this.tableName} ID ${id}:`, error)
+      logger.error(`Soft delete failed for ${this.tableName} ID ${id}:`, error)
       throw error
     }
   }
@@ -156,11 +157,11 @@ export class SoftDeleteService {
         })
       }
 
-      console.log(`[REACTIVATE] ${this.tableName} ID ${id} reactivated by user ${reactivatedBy}`)
+      logger.info(`[REACTIVATE] ${this.tableName} ID ${id} reactivated by user ${reactivatedBy}`)
 
       return data
     } catch (error) {
-      console.error(`Reactivate failed for ${this.tableName} ID ${id}:`, error)
+      logger.error(`Reactivate failed for ${this.tableName} ID ${id}:`, error)
       throw error
     }
   }
@@ -223,7 +224,7 @@ export class SoftDeleteService {
       throw new DatabaseError('HARD_DELETE', this.tableName, deleteError)
     }
 
-    console.log(`[HARD DELETE] ${records.length} records deleted from ${this.tableName}`)
+    logger.info(`[HARD DELETE] ${records.length} records deleted from ${this.tableName}`)
 
     return records.length
   }

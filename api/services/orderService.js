@@ -19,7 +19,7 @@ import {
 } from '../errors/AppError.js'
 import { sanitizeOrderData, sanitizeOrderItemData } from '../utils/sanitize.js'
 import { withErrorMapping } from '../middleware/error/index.js'
-import { validateOrder, validateId } from '../utils/validation.js'
+import { validateOrder } from '../utils/validation.js'
 
 const TABLE = DB_SCHEMA.orders.table
 const VALID_STATUSES = DB_SCHEMA.orders.enums.status
@@ -38,15 +38,6 @@ function getOrderRepository() {
  */
 function getProductRepository() {
   return DIContainer.resolve('ProductRepository')
-}
-
-/**
- * Validate order ID (ENTERPRISE FAIL-FAST)
- * @param {number} id - Order ID to validate
- * @param {string} operation - Operation name for error context
- */
-function _validateOrderId(id, operation = 'operation') {
-  validateId(id, 'Order', operation)
 }
 
 /**

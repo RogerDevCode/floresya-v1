@@ -508,7 +508,8 @@ async function validateContractCompliance() {
       await fs.access(jsonPath)
       await fs.access(yamlPath)
       console.log('✅ Generated specification files exist')
-    } catch (_error) {
+    } catch (error) {
+      console.error('Error:', error)
       throw new Error('Generated specification files not found')
     }
 
@@ -557,12 +558,13 @@ async function validateContractCompliance() {
 async function main() {
   try {
     // Generate OpenAPI specification
-    const _summary = await generateOpenApiSpec()
+    const specSummary = await generateOpenApiSpec()
 
     // Validate contract compliance
     const validation = await validateContractCompliance()
 
     // Exit with appropriate code
+    void specSummary // Used for logging if needed
     if (validation.valid) {
       console.log('\n🎯 OpenAPI automation completed successfully!')
       process.exit(0)

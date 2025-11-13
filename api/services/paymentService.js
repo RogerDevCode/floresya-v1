@@ -15,11 +15,7 @@ import {
   BadRequestError,
   InternalServerError
 } from '../errors/AppError.js'
-import {
-  validateEmail,
-  validateVenezuelanPhone,
-  getPaymentMethodDisplayName
-} from '../utils/validation.js'
+import { validateEmail, validateVenezuelanPhone } from '../utils/validation.js'
 
 /**
  * Get PaymentMethodRepository instance from DI Container
@@ -82,23 +78,6 @@ export async function getPaymentMethods() {
 }
 
 /**
- * Get payment method display name (private utility function)
- * @param {string} method - Payment method code
- * @returns {string} - Localized display name
- * @example
- * _getPaymentMethodDisplayName('cash') // Returns: 'Efectivo'
- */
-function _getPaymentMethodDisplayName(method) {
-  try {
-    return getPaymentMethodDisplayName(method)
-  } catch (_error) {
-    // Fallback for backward compatibility (should not happen in normal flow)
-    console.warn('Invalid payment method in _getPaymentMethodDisplayName:', method)
-    return method
-  }
-}
-
-/**
  * Validate Venezuelan phone number format (FAIL-FAST version)
  * @param {string} phone - Phone number to validate
  * @returns {boolean} - True if phone number is valid Venezuelan format
@@ -112,7 +91,8 @@ export function isValidVenezuelanPhone(phone) {
   try {
     validateVenezuelanPhone(phone)
     return true
-  } catch (_error) {
+  } catch (error) {
+    console.error(error)
     return false
   }
 }
@@ -130,7 +110,8 @@ export function isValidEmail(email) {
   try {
     validateEmail(email)
     return true
-  } catch (_error) {
+  } catch (error) {
+    console.error(error)
     return false
   }
 }

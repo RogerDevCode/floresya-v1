@@ -32,7 +32,17 @@ vi.mock('../../../api/services/settingsService.js', () => ({
 vi.mock('../../../api/middleware/error/index.js', () => ({
   errorHandler: vi.fn((err, req, res, next) => next(err)),
   notFoundHandler: vi.fn((req, res, next) => next()),
-  asyncHandler: vi.fn(fn => (req, res, next) => fn(req, res, next)),
+  asyncHandler: vi.fn(fn => async (req, res, next) => {
+    try {
+      await fn(req, res, next)
+    } catch (error) {
+      const status = error.statusCode || error.status || 500
+      res.status(status).json({
+        success: false,
+        error: error.message || 'Internal server error'
+      })
+    }
+  }),
   withErrorMapping: vi.fn(fn => fn),
   createTableOperations: vi.fn(() => ({
     findById: vi.fn(),
@@ -65,6 +75,7 @@ const mockReq = (overrides = {}) => ({
   query: {},
   params: {},
   body: {},
+  user: { id: 1, role: 'admin' },
   ...overrides
 })
 
@@ -85,7 +96,10 @@ describe('UserController - Granular Tests', () => {
       await getAllUsers(req, res)
 
       // Assert
-      expect(mockUserService.getAllUsers).toHaveBeenCalledWith({}, false)
+      expect(mockUserService.getAllUsers).toHaveBeenCalledWith(
+        { email_verified: undefined, role: undefined, search: undefined },
+        true
+      )
       expect(res.json).toHaveBeenCalledWith({
         success: true,
         data: [mockUser],
@@ -104,7 +118,10 @@ describe('UserController - Granular Tests', () => {
       await getAllUsers(req, res)
 
       // Assert
-      expect(mockUserService.getAllUsers).toHaveBeenCalledWith({ role: 'admin' }, false)
+      expect(mockUserService.getAllUsers).toHaveBeenCalledWith(
+        { email_verified: undefined, role: 'admin', search: undefined },
+        true
+      )
     })
 
     it('should include deactivated users for admin', async () => {
@@ -132,7 +149,10 @@ describe('UserController - Granular Tests', () => {
       await getAllUsers(req, res)
 
       // Assert
-      expect(mockUserService.getAllUsers).toHaveBeenCalledWith({ search: 'test user' }, false)
+      expect(mockUserService.getAllUsers).toHaveBeenCalledWith(
+        { email_verified: undefined, role: undefined, search: 'test user' },
+        true
+      )
     })
 
     it('should apply pagination', async () => {
@@ -146,7 +166,10 @@ describe('UserController - Granular Tests', () => {
       await getAllUsers(req, res)
 
       // Assert
-      expect(mockUserService.getAllUsers).toHaveBeenCalledWith({ limit: 10, offset: 5 }, false)
+      expect(mockUserService.getAllUsers).toHaveBeenCalledWith(
+        { email_verified: undefined, limit: 10, offset: 5, role: undefined, search: undefined },
+        true
+      )
     })
 
     it('should return empty array when no users found', async () => {
@@ -180,7 +203,7 @@ describe('UserController - Granular Tests', () => {
       await getUserById(req, res)
 
       // Assert
-      expect(mockUserService.getUserById).toHaveBeenCalledWith(1, false)
+      expect(mockUserService.getUserById).toHaveBeenCalledWith(1, true)
       expect(res.json).toHaveBeenCalledWith({
         success: true,
         data: mockUser,
@@ -232,7 +255,7 @@ describe('UserController - Granular Tests', () => {
       await getUserById(req, res)
 
       // Assert
-      expect(mockUserService.getUserById).toHaveBeenCalledWith(123, false)
+      expect(mockUserService.getUserById).toHaveBeenCalledWith(123, true)
     })
   })
 
@@ -345,6 +368,46 @@ describe('UserController - Granular Tests', () => {
         error: 'User with ID 999 not found'
       })
     })
+
+    describe('when updating user role', () => {
+      it('should update user role', async () => {
+        // Arrange
+        mockUserService.updateUser.mockResolvedValue({ ...mockUser, role: 'admin' })
+        const { updateUser } = await import('../../../api/controllers/userController.js')
+        const req = mockReq({ params: { id: '1' }, body: { role: 'admin' } })
+        const res = mockRes()
+
+        // Act
+        await updateUser(req, res)
+
+        // Assert
+        expect(mockUserService.updateUser).toHaveBeenCalledWith(1, { role: 'admin' })
+        expect(res.json).toHaveBeenCalledWith({
+          success: true,
+          data: expect.objectContaining({ role: 'admin' }),
+          message: 'User updated successfully'
+        })
+      })
+
+      it('should return 400 for invalid role', async () => {
+        // Arrange
+        const error = new Error('Invalid role: must be customer, admin, or moderator')
+        error.name = 'ValidationError'
+        mockUserService.updateUser.mockRejectedValue(error)
+        const { updateUser } = await import('../../../api/controllers/userController.js')
+        const req = mockReq({ params: { id: '1' }, body: { role: 'invalid' } })
+        const res = mockRes()
+
+        // Act
+        await updateUser(req, res)
+
+        // Assert
+        expect(res.json).toHaveBeenCalledWith({
+          success: false,
+          error: 'Invalid role: must be customer, admin, or moderator'
+        })
+      })
+    })
   })
 
   describe('deleteUser()', () => {
@@ -383,46 +446,6 @@ describe('UserController - Granular Tests', () => {
       expect(res.json).toHaveBeenCalledWith({
         success: false,
         error: 'User with ID 999 not found'
-      })
-    })
-  })
-
-  describe('updateUserRole()', () => {
-    it('should update user role', async () => {
-      // Arrange
-      mockUserService.updateUserRole.mockResolvedValue({ ...mockUser, role: 'admin' })
-      const { updateUserRole } = await import('../../../api/controllers/userController.js')
-      const req = mockReq({ params: { id: '1' }, body: { role: 'admin' } })
-      const res = mockRes()
-
-      // Act
-      await updateUserRole(req, res)
-
-      // Assert
-      expect(mockUserService.updateUserRole).toHaveBeenCalledWith(1, 'admin')
-      expect(res.json).toHaveBeenCalledWith({
-        success: true,
-        data: expect.objectContaining({ role: 'admin' }),
-        message: 'User updated successfully'
-      })
-    })
-
-    it('should return 400 for invalid role', async () => {
-      // Arrange
-      const error = new Error('Invalid role: must be customer, admin, or moderator')
-      error.name = 'ValidationError'
-      mockUserService.updateUserRole.mockRejectedValue(error)
-      const { updateUserRole } = await import('../../../api/controllers/userController.js')
-      const req = mockReq({ params: { id: '1' }, body: { role: 'invalid' } })
-      const res = mockRes()
-
-      // Act
-      await updateUserRole(req, res)
-
-      // Assert
-      expect(res.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Invalid role: must be customer, admin, or moderator'
       })
     })
   })

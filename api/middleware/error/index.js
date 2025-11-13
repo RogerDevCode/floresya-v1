@@ -7,4 +7,4 @@
  */
 
 export * from './errorHandler.js'
-export * from './supabaseErrorMapper.js'
+export * from './supabaseErrorMapper.index.js'

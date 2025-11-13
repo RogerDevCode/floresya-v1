@@ -13,7 +13,7 @@
 import config from '../../config/configLoader.js'
 import { log } from '../../utils/logger.js'
 import { AppError, InternalServerError } from '../../errors/AppError.js'
-import { mapSupabaseError } from './supabaseErrorMapper.js'
+import { mapSupabaseError } from './supabaseErrorMapper.index.js'
 
 /**
  * Error handler middleware

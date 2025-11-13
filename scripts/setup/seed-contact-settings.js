@@ -325,7 +325,7 @@ async function seedContactSettings() {
 
   for (const setting of contactSettings) {
     try {
-      const { data: _data, error } = await supabase
+      const { error } = await supabase
         .from('settings')
         .upsert(setting, { onConflict: 'key' })
         .select()

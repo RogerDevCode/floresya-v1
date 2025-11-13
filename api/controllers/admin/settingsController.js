@@ -8,9 +8,9 @@
 import sharp from 'sharp'
 import fs from 'fs/promises'
 import path from 'path'
-import { fileURLToPath } from 'url'
+import { fileURLToPath } from 'node:url'
 import { log as logger } from '../../utils/logger.js'
-import * as settingsService from '../../services/settingsService.js'
+import * as settingsService from '../../services/settingsService.index.js'
 import { asyncHandler } from '../../middleware/error/errorHandler.js'
 import { BadRequestError, DatabaseError } from '../../errors/AppError.js'
 

@@ -14,16 +14,22 @@ import {
   configureHelmet,
   configureSanitize,
   xssProtection,
-  rateLimiterSimple
+  rateLimiterSimple,
+  adminAuditLogger
 } from './middleware/security/index.js'
 import { requestLoggingMiddleware } from './utils/logger.js'
 import { errorHandler } from './middleware/error/index.js'
 import {
   withDatabaseCircuitBreaker,
-  circuitBreakerHealthCheck,
-  cacheMiddleware
+  circuitBreakerHealthCheck
 } from './middleware/performance/index.js'
-// import { getMetricsReport, getRealtimeMetrics } from './monitoring/metricsCollector.js'
+import { metricsMiddleware } from './monitoring/metricsCollector.js'
+// Conditional import for profiling middleware (not needed in tests)
+let profilingMiddleware = null
+if (process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
+  const { profilingMiddleware: pm } = await import('./monitoring/clinicIntegration.js')
+  profilingMiddleware = pm
+}
 import {
   comprehensiveHealthCheck,
   getRecoveryStatus,
@@ -36,11 +42,20 @@ import { createDocumentationComplianceMiddleware } from './contract/documentatio
 import {
   configureSecureSession,
   sessionSecurityHeaders,
-  validateSession
+  validateSession,
+  csrfToken,
+  validateCsrf
 } from './middleware/auth/index.js'
 import { NotFoundError } from './errors/AppError.js'
+import { initializeDIContainer } from './architecture/di-container.js'
 
-// Import routes
+const app = express()
+
+// Initialize DI Container (MUST be first - before any route handlers)
+// This registers all repositories and services
+initializeDIContainer()
+
+// Import routes after DI container initialization
 import productRoutes from './routes/productRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
 import userRoutes from './routes/userRoutes.js'
@@ -50,20 +65,16 @@ import occasionRoutes from './routes/occasionRoutes.js'
 import settingsRoutes from './routes/settingsRoutes.js'
 import adminSettingsRoutes from './routes/admin/settingsRoutes.js'
 import migrationRoutes from './routes/migrationRoutes.js'
-import { initializeDIContainer } from './architecture/di-container.js'
-
-const app = express()
-
-// Initialize DI Container (MUST be first - before any route handlers)
-// This registers all repositories and services
-initializeDIContainer()
+import healthRoutes from './routes/healthRoutes.js'
 
 // Session security (MUST be before body parsing)
 app.use(configureSecureSession())
+// CSRF token generation (after session)
+app.use(csrfToken)
 // Note: sessionSecurityHeaders will be applied after Helmet to override its values
 app.use(validateSession)
 
-// Body parsing (MUST be before routes)
+// Body parsing (MUST be before CSRF validation)
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
@@ -135,13 +146,22 @@ app.use(
 app.use(requestLoggingMiddleware)
 
 // Cache headers (HTTP caching - replaces Service Worker)
-app.use(cacheMiddleware)
+// Note: Cache middleware removed - Redis functionality eliminated
 
 // Circuit breaker for database operations
 app.use(withDatabaseCircuitBreaker())
 
-// Metrics collection middleware (TODO: Fix metricsMiddleware import)
-// app.use(metricsMiddleware)
+// Metrics collection middleware
+app.use(metricsMiddleware)
+
+// Profiling middleware (conditional profiling based on health)
+// Skip in test environment
+if (process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
+  app.use(profilingMiddleware)
+}
+
+// CSRF validation for state-changing operations
+app.use(validateCsrf)
 
 // Standard response format middleware (antes de rutas API)
 app.use(standardResponse)
@@ -247,6 +267,12 @@ app.use(
     }
   })
 )
+
+// Health check routes (before API routes for monitoring)
+app.use('/health', healthRoutes)
+
+// Admin audit logging (before admin routes)
+app.use(adminAuditLogger)
 
 // API routes
 app.use('/api/products', productRoutes)

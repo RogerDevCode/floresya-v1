@@ -6,6 +6,7 @@
 
 import { InternalServerError } from '../errors/AppError.js'
 import { supabase } from '../services/supabaseClient.js'
+import { logger } from '../utils/logger.js'
 import { createProductRepository } from '../repositories/ProductRepository.js'
 import { createUserRepository } from '../repositories/UserRepository.js'
 import { createOrderRepository } from '../repositories/OrderRepository.js'
@@ -100,6 +101,9 @@ class DIContainer {
  * Call this once in app initialization
  */
 export function initializeDIContainer() {
+  // Register logger as singleton
+  DIContainer.registerInstance('Logger', logger)
+
   // Register database client as singleton
   DIContainer.registerInstance('SupabaseClient', supabase)
 

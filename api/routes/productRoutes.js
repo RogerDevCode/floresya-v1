@@ -22,7 +22,7 @@ const router = express.Router()
 // Public routes
 router.get('/', validatePagination, productController.getAllProducts)
 router.get('/carousel', productController.getCarouselProducts)
-router.get('/with-occasions', validatePagination, productController.getProductsWithOccasions)
+router.get('/with-occasions', productController.getProductsWithOccasions)
 router.get(
   '/occasion/:occasionId',
   validateId('occasionId'),
@@ -42,10 +42,9 @@ router.post(
   '/',
   authenticate,
   authorize('admin'),
-  validate(productCreateSchema), // From schemas.js - matches OpenAPI exactly
+  validate(productCreateSchema),
   productController.createProduct
 )
-
 router.post(
   '/with-occasions',
   authenticate,
@@ -56,35 +55,28 @@ router.post(
   }),
   productController.createProductWithOccasions
 )
-
 router.put(
   '/:id',
   authenticate,
   authorize('admin'),
   validateId(),
-  validate(productUpdateSchema), // From schemas.js - matches OpenAPI exactly
+  validate(productUpdateSchema),
   productController.updateProduct
 )
-
 router.patch(
   '/:id/carousel-order',
   authenticate,
   authorize('admin'),
   validateId(),
-  validate({
-    order: { type: 'number', integer: true, min: 0 }
-  }),
+  validate({ order: { type: 'number', integer: true, min: 0 } }),
   productController.updateCarouselOrder
 )
-
 router.patch(
   '/:id/stock',
   authenticate,
   authorize('admin'),
   validateId(),
-  validate({
-    quantity: { type: 'number', required: true, integer: true, min: 0 }
-  }),
+  validate({ quantity: { type: 'number', required: true, integer: true, min: 0 } }),
   productController.updateStock
 )
 
@@ -94,10 +86,9 @@ router.post(
   authenticate,
   authorize('admin'),
   validateId(),
-  uploadSingle, // Multer middleware for file upload
+  uploadSingle,
   productImageController.createProductImages
 )
-
 router.delete(
   '/:id/images/:imageIndex',
   authenticate,
@@ -105,7 +96,6 @@ router.delete(
   validateId(),
   productImageController.deleteImagesByIndex
 )
-
 router.patch(
   '/:id/images/primary/:imageIndex',
   authenticate,
@@ -113,7 +103,6 @@ router.patch(
   validateId(),
   productImageController.setPrimaryImage
 )
-
 router.delete(
   '/:id',
   authenticate,
@@ -121,7 +110,6 @@ router.delete(
   validateId(),
   productController.deleteProduct
 )
-
 router.patch(
   '/:id/reactivate',
   authenticate,
@@ -138,8 +126,6 @@ router.get(
   validateId(),
   productController.getProductOccasions
 )
-
-// Link a single occasion to a product
 router.post(
   '/:id/occasions/:occasionId',
   authenticate,
@@ -148,16 +134,12 @@ router.post(
   validateId('occasionId'),
   productController.linkProductOccasion
 )
-
-// Replace product occasions (TRANSACTIONAL)
 router.put(
   '/:id/occasions',
   authenticate,
   authorize('admin'),
   validateId(),
-  validate({
-    occasion_ids: { type: 'array', required: true, items: 'number' }
-  }),
+  validate({ occasion_ids: { type: 'array', required: true, items: 'number' } }),
   productController.replaceProductOccasions
 )
 

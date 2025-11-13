@@ -6,8 +6,8 @@
  * @category Middleware
  */
 
-export * from './validate.js'
-export * from './schemas.js'
+export * from './validate.index.js'
+export * from './schemas.index.js'
 export * from './sanitize.js'
 export * from './globalSanitize.js'
-export * from './advancedValidation.js'
+export * from './advancedValidation.index.js'

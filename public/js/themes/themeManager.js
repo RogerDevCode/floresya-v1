@@ -7,6 +7,10 @@
 
 import { themes, DEFAULT_THEME, THEME_STORAGE_KEY } from './themeDefinitions.js'
 import { themeStyles } from './themeStyles.js'
+import { enhancePageContrastWithFixes } from './enhancedContrastSystem.js'
+
+// Use the enhanced contrast function
+const enhancePageContrast = enhancePageContrastWithFixes
 
 /**
  * Theme Manager Class - Gestor Central de Temas
@@ -142,8 +146,14 @@ export class ThemeManager {
         })
       )
 
-      // 7. Adjust contrast for inputs after theme change
-      this.adjustInputContrastIfNeeded()
+      // 7. Auto-adjust contrast for all page elements (WCAG 2.1 AA+)
+      setTimeout(() => {
+        // Usar el nuevo enhancer que es más completo
+        const adjusted = enhancePageContrast(5.0)
+        if (adjusted > 0) {
+          console.log(`✨ [ThemeManager] Enhanced contrast for ${adjusted} elements`)
+        }
+      }, 50)
 
       console.log('✅ [ThemeManager] Theme applied:', theme.name)
       return true
@@ -307,6 +317,19 @@ export const themeManager = new ThemeManager()
 // Función de inicialización para compatibilidad
 export const initThemeManager = () => {
   themeManager.init()
+}
+
+// Auto-inicializar si está en el navegador
+if (typeof window !== 'undefined') {
+  // Esperar a que el DOM esté listo
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      themeManager.init()
+    })
+  } else {
+    // DOM ya está listo
+    themeManager.init()
+  }
 }
 
 // Export por defecto

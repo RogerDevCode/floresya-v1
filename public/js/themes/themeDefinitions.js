@@ -1,37 +1,295 @@
 /**
  * FloresYa - Definiciones de Temas
  * Cada tema define sus colores mediante variables CSS
+ * Expansión granular para heredar del tema global
  * Siguiendo CLAUDE.md: KISS, fail-fast, const usage, ES6 modules
  */
+
+import { calculateOptimalTextColor, adjustColorBrightness } from './colorUtils.js'
+
+/**
+ * Extiende un tema base con todas las variables granulares calculadas
+ * @param {Object} baseTheme - Tema base con variables fundamentales
+ * @returns {Object} Tema completo con variables granulares
+ */
+function expandThemeWithGranularVars(baseTheme) {
+  const variables = { ...baseTheme.variables }
+  const primaryBg = variables['--theme-bg-primary'] || '#ffffff'
+  const secondaryBg = variables['--theme-bg-secondary'] || '#f8fafc'
+  const primary = variables['--theme-primary'] || '#ec4899'
+  const primaryDark = variables['--theme-primary-dark'] || '#db2777'
+  const secondary = variables['--theme-secondary'] || '#10b981'
+  const textPrimary = variables['--theme-text-primary'] || '#111827'
+  const textSecondary = variables['--theme-text-secondary'] || '#374151'
+
+  // ==================== VARIABLES GRANULARES - NAVEGACIÓN ====================
+  variables['--nav-bg-primary'] = `var(--theme-bg-primary, ${primaryBg})`
+  variables['--nav-bg-glass'] =
+    `rgba(${parseInt(primaryBg.slice(1, 3), 16)}, ${parseInt(primaryBg.slice(3, 5), 16)}, ${parseInt(primaryBg.slice(5, 7), 16)}, 0.95)`
+  variables['--nav-bg-dark'] = variables['--theme-bg-tertiary'] || '#334155'
+
+  // Asegurar contraste WCAG AAA (7.0) para texto de navegación
+  variables['--nav-text-primary'] = calculateOptimalTextColor(
+    primaryBg,
+    [textPrimary],
+    7.0 // AAA para máxima legibilidad en elementos de navegación
+  )
+  variables['--nav-text-secondary'] = calculateOptimalTextColor(
+    primaryBg,
+    [textSecondary],
+    4.5 // AA para texto secundario
+  )
+  variables['--nav-border'] = variables['--theme-border-light'] || '#e5e7eb'
+  variables['--nav-shadow'] = variables['--theme-shadow'] || 'rgba(0, 0, 0, 0.1)'
+  variables['--nav-height'] = '4rem'
+
+  // ==================== VARIABLES GRANULARES - BREADCRUMB ====================
+  variables['--breadcrumb-bg'] = `var(--theme-bg-primary, ${primaryBg})`
+  variables['--breadcrumb-text'] = calculateOptimalTextColor(
+    primaryBg,
+    [textSecondary],
+    4.5 // AA para texto secundario
+  )
+  variables['--breadcrumb-text-active'] = calculateOptimalTextColor(
+    primaryBg,
+    [variables['--theme-primary'] || primary],
+    7.0 // AAA para elementos activos
+  )
+  variables['--breadcrumb-border'] = variables['--theme-border-light'] || '#e5e7eb'
+
+  // ==================== VARIABLES GRANULARES - HERO ====================
+  variables['--hero-bg-primary'] =
+    `linear-gradient(135deg, ${adjustColorBrightness(primaryBg, 5)} 0%, ${adjustColorBrightness(secondaryBg, 5)} 100%)`
+  variables['--hero-bg-gradient'] =
+    `linear-gradient(135deg, ${adjustColorBrightness(primary, -20)} 0%, ${adjustColorBrightness(secondary, -20)} 100%)`
+
+  // Asegurar contraste WCAG AAA (7.0) para texto principal del hero
+  variables['--hero-text-primary'] = calculateOptimalTextColor(
+    variables['--hero-bg-gradient'] || primaryBg,
+    ['#ffffff', '#f9fafb'],
+    7.0 // AAA para máxima legibilidad en titulares
+  )
+  variables['--hero-text-secondary'] = calculateOptimalTextColor(
+    variables['--hero-bg-gradient'] || primaryBg,
+    ['#e5e7eb', '#d1d5db'],
+    4.5 // AA para texto secundario
+  )
+  variables['--hero-text-dark'] = variables['--theme-text-primary'] || textPrimary
+  variables['--hero-overlay'] = 'rgba(0, 0, 0, 0.3)'
+  variables['--hero-shadow'] = '0 20px 60px rgba(0, 0, 0, 0.1)'
+
+  // ==================== VARIABLES GRANULARES - CAROUSEL ====================
+  variables['--carousel-bg'] = `var(--theme-bg-primary, ${primaryBg})`
+  variables['--carousel-bg-light'] = primaryBg
+  variables['--carousel-bg-dark'] = variables['--theme-bg-tertiary'] || '#1f2937'
+  variables['--carousel-border'] = variables['--theme-border-light'] || '#e5e7eb'
+  variables['--carousel-shadow'] = 'var(--theme-shadow, rgba(0, 0, 0, 0.1))'
+  variables['--carousel-control-bg'] = calculateOptimalTextColor(
+    primaryBg,
+    ['rgba(255, 255, 255, 0.95)', 'rgba(0, 0, 0, 0.7)'],
+    3
+  )
+  variables['--carousel-indicator-active'] = variables['--theme-primary'] || primary
+
+  // ==================== VARIABLES GRANULARES - PRODUCTOS ====================
+  variables['--products-bg'] = `var(--theme-bg-primary, ${primaryBg})`
+  variables['--products-bg-secondary'] = `var(--theme-bg-secondary, ${secondaryBg})`
+  variables['--products-border'] = variables['--theme-border-light'] || '#e5e7eb'
+  variables['--products-card-bg'] = `var(--theme-bg-primary, ${primaryBg})`
+  variables['--products-card-border'] = variables['--theme-border-light'] || '#e5e7eb'
+  variables['--products-card-hover'] = variables['--theme-primary'] || primary
+
+  // ==================== VARIABLES GRANULARES - PRODUCT DETAIL ====================
+  variables['--product-detail-bg'] = `var(--theme-bg-primary, ${primaryBg})`
+  variables['--product-detail-bg-secondary'] = `var(--theme-bg-secondary, ${secondaryBg})`
+  variables['--product-detail-border'] = variables['--theme-border-light'] || '#e5e7eb'
+  variables['--product-detail-shadow'] = '0 4px 6px rgba(0, 0, 0, 0.1)'
+  variables['--product-detail-image-bg'] = '#ffffff'
+  variables['--product-detail-price-bg'] =
+    `linear-gradient(135deg, ${adjustColorBrightness(primary, 40)} 0%, ${adjustColorBrightness(secondary, 40)} 100%)`
+  variables['--product-detail-badge-bg'] = calculateOptimalTextColor(
+    secondaryBg,
+    [`${adjustColorBrightness(secondary, 30)}`, `${adjustColorBrightness(secondary, -30)}`],
+    3
+  )
+  variables['--product-detail-badge-text'] = calculateOptimalTextColor(
+    variables['--product-detail-badge-bg'],
+    ['#059669', '#ffffff'],
+    4.5
+  )
+
+  // ==================== VARIABLES GRANULARES - CARRITO ====================
+  variables['--cart-bg-primary'] = calculateOptimalTextColor(
+    primaryBg,
+    [`rgba(255, 255, 255, 0.95)`, `rgba(0, 0, 0, 0.8)`],
+    3
+  )
+  variables['--cart-bg-overlay'] =
+    `linear-gradient(135deg, ${adjustColorBrightness(primary, 40)} 0%, ${adjustColorBrightness(secondary, 40)} 100%)`
+  variables['--cart-bg-card'] = calculateOptimalTextColor(
+    primaryBg,
+    [`rgba(255, 255, 255, 0.95)`, `rgba(30, 41, 59, 0.95)`],
+    3
+  )
+  variables['--cart-border'] = calculateOptimalTextColor(
+    primaryBg,
+    ['rgba(255, 255, 255, 0.2)', 'rgba(255, 255, 255, 0.3)'],
+    2
+  )
+  variables['--cart-border-light'] = calculateOptimalTextColor(
+    primaryBg,
+    ['rgba(255, 255, 255, 0.3)', 'rgba(255, 255, 255, 0.4)'],
+    2
+  )
+  variables['--cart-backdrop-blur'] = 'blur(12px)'
+  variables['--cart-shadow'] = '0 8px 32px rgba(0, 0, 0, 0.1)'
+  variables['--cart-shadow-premium'] = `0 20px 60px ${adjustColorBrightness(primary, -40)} 0.3`
+
+  // ==================== VARIABLES GRANULARES - FORMULARIOS ====================
+  variables['--form-bg'] = `var(--theme-bg-primary, ${primaryBg})`
+  variables['--form-bg-filled'] = `var(--theme-bg-secondary, ${secondaryBg})`
+  variables['--form-bg-premium'] =
+    `linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, ${adjustColorBrightness(secondaryBg, 5)} 0.95)`.replace(
+      secondaryBg,
+      `var(--theme-bg-secondary, ${secondaryBg})`
+    )
+  variables['--form-border'] = variables['--theme-border-light'] || '#e5e7eb'
+  variables['--form-border-focus'] = variables['--theme-primary'] || primary
+  variables['--form-text'] = variables['--theme-text-primary'] || textPrimary
+  variables['--form-placeholder'] = variables['--theme-text-tertiary'] || '#9ca3af'
+  variables['--form-shadow'] = '0 4px 12px rgba(0, 0, 0, 0.1)'
+  variables['--form-shadow-focus'] = `0 8px 24px ${adjustColorBrightness(primary, 0)} 0.2`
+
+  // ==================== VARIABLES GRANULARES - BOTONES ====================
+  variables['--btn-bg-primary'] = variables['--theme-primary'] || primary
+  variables['--btn-bg-primary-hover'] = variables['--theme-primary-hover'] || primaryDark
+  variables['--btn-bg-secondary'] = `var(--theme-bg-secondary, ${secondaryBg})`
+  variables['--btn-bg-success'] = '#10b981'
+  variables['--btn-bg-warning'] = '#f59e0b'
+
+  // Asegurar contraste WCAG AAA (7.0) para texto de botones críticos
+  variables['--btn-text-primary'] = calculateOptimalTextColor(
+    variables['--btn-bg-primary'],
+    ['#ffffff', '#000000'],
+    7.0 // AAA para máxima legibilidad en elementos interactivos
+  )
+  variables['--btn-text-secondary'] = variables['--theme-text-primary'] || textPrimary
+  variables['--btn-border'] = variables['--theme-border-light'] || '#e5e7eb'
+  variables['--btn-shadow'] = '0 4px 12px rgba(0, 0, 0, 0.1)'
+  variables['--btn-shadow-hover'] = '0 8px 24px rgba(0, 0, 0, 0.15)'
+
+  // ==================== VARIABLES GRANULARES - ENLACES ====================
+  variables['--link-color'] = variables['--theme-primary'] || primary
+  variables['--link-color-visited'] = adjustColorBrightness(
+    variables['--theme-primary'] || primary,
+    -15
+  )
+  variables['--link-color-hover'] = adjustColorBrightness(
+    variables['--theme-primary'] || primary,
+    15
+  )
+
+  // Asegurar contraste WCAG AAA (7.0) para texto de enlaces
+  variables['--link-text-color'] = calculateOptimalTextColor(
+    primaryBg,
+    [variables['--theme-primary'] || primary],
+    7.0 // AAA para máxima legibilidad en texto con enlaces
+  )
+
+  // ==================== VARIABLES GRANULARES - FORMULARIOS ====================
+  variables['--form-text'] = variables['--theme-text-primary'] || textPrimary
+  variables['--form-placeholder'] = variables['--theme-text-tertiary'] || '#9ca3af'
+  variables['--form-border'] = variables['--theme-border-light'] || '#e5e7eb'
+  variables['--form-border-focus'] = variables['--theme-primary'] || primary
+  variables['--form-text-focus'] = calculateOptimalTextColor(
+    primaryBg,
+    [textPrimary],
+    7.0 // AAA para máxima legibilidad en elementos de formulario
+  )
+
+  // ==================== VARIABLES GRANULARES - TESTIMONIOS ====================
+  variables['--testimonial-bg'] = `var(--theme-bg-primary, ${primaryBg})`
+  variables['--testimonial-border'] = variables['--theme-border-light'] || '#e5e7eb'
+  variables['--testimonial-shadow'] = 'var(--theme-shadow, rgba(0, 0, 0, 0.1))'
+  variables['--testimonial-pink'] = '#ec4899'
+  variables['--testimonial-green'] = '#10b981'
+  variables['--testimonial-yellow'] = '#f59e0b'
+  // Gradientes diferenciados para cada testimonial
+  variables['--testimonial-pink-gradient'] =
+    `linear-gradient(135deg, ${adjustColorBrightness(variables['--testimonial-pink'], 35)} 0%, ${adjustColorBrightness(variables['--testimonial-pink'], 15)} 100%)`
+  variables['--testimonial-green-gradient'] =
+    `linear-gradient(135deg, ${adjustColorBrightness(variables['--testimonial-green'], 35)} 0%, ${adjustColorBrightness(variables['--testimonial-green'], 15)} 100%)`
+  variables['--testimonial-yellow-gradient'] =
+    `linear-gradient(135deg, ${adjustColorBrightness(variables['--testimonial-yellow'], 35)} 0%, ${adjustColorBrightness(variables['--testimonial-yellow'], 15)} 100%)`
+
+  // ==================== VARIABLES GRANULARES - FEATURES ====================
+  variables['--features-bg'] = `var(--theme-bg-secondary, ${secondaryBg})`
+  variables['--features-card-bg'] = `var(--theme-bg-primary, ${primaryBg})`
+  variables['--features-border'] = variables['--theme-border-light'] || '#e5e7eb'
+  variables['--features-icon-primary'] = variables['--theme-primary'] || primary
+  variables['--features-icon-secondary'] = variables['--theme-secondary'] || secondary
+  variables['--features-shadow'] = 'var(--theme-shadow, rgba(0, 0, 0, 0.1))'
+
+  // ==================== VARIABLES GRANULARES - FOOTER ====================
+  variables['--footer-bg'] = variables['--theme-bg-tertiary'] || '#1f2937'
+  variables['--footer-bg-light'] = `var(--theme-bg-secondary, ${secondaryBg})`
+  // Gradiente dinámico del footer basado en el tema
+  variables['--footer-gradient'] =
+    `linear-gradient(135deg, ${adjustColorBrightness(variables['--theme-bg-tertiary'] || '#1f2937', -10)} 0%, ${adjustColorBrightness(variables['--theme-bg-tertiary'] || '#1f2937', -5)} 50%, ${variables['--theme-primary'] || primary} 100%)`
+
+  // Asegurar contraste WCAG AAA (7.0) para texto principal del footer
+  variables['--footer-text'] = calculateOptimalTextColor(
+    variables['--footer-bg'],
+    ['#ffffff', '#d1d5db'],
+    7.0 // AAA para máxima legibilidad en el pie de página
+  )
+  variables['--footer-text-light'] = calculateOptimalTextColor(
+    variables['--footer-bg'],
+    ['rgba(255, 255, 255, 0.8)', 'rgba(255, 255, 255, 0.6)'],
+    4.5 // AA para texto secundario
+  )
+  variables['--footer-text-muted'] = calculateOptimalTextColor(
+    variables['--footer-bg'],
+    ['rgba(255, 255, 255, 0.7)', 'rgba(255, 255, 255, 0.5)'],
+    3.0 // A para texto terciario
+  )
+  variables['--footer-border'] = calculateOptimalTextColor(
+    variables['--footer-bg'],
+    ['rgba(255, 255, 255, 0.2)', 'rgba(255, 255, 255, 0.1)'],
+    1.5 // A para bordes
+  )
+
+  return { ...baseTheme, variables }
+}
 
 export const themes = {
   light: {
     id: 'light',
     name: 'Claro',
-    description: 'Tema claro clásico',
+    description: 'Tema claro clásico - Minimalismo Escandinavo',
     icon: '☀️',
     category: 'basic',
     variables: {
-      '--theme-primary': '#ec4899',
-      '--theme-primary-dark': '#db2777',
-      '--theme-primary-light': '#f9a8d4',
-      '--theme-primary-hover': '#be185d',
-      '--theme-secondary': '#10b981',
-      '--theme-secondary-dark': '#059669',
-      '--theme-secondary-light': '#6ee7b7',
-      '--theme-accent': '#f59e0b',
-      '--theme-accent-dark': '#d97706',
-      '--theme-accent-light': '#fbbf24',
+      '--theme-primary': '#00796B',
+      '--theme-primary-dark': '#004D40',
+      '--theme-primary-light': '#4DB6AC',
+      '--theme-primary-hover': '#00695C',
+      '--theme-secondary': '#00BFA5',
+      '--theme-secondary-dark': '#009688',
+      '--theme-secondary-light': '#4DB6AC',
+      '--theme-accent': '#FF6B6B',
+      '--theme-accent-dark': '#E57373',
+      '--theme-accent-light': '#FF8A80',
       '--theme-bg-primary': '#ffffff',
-      '--theme-bg-secondary': '#f8fafc',
-      '--theme-bg-tertiary': '#f1f5f9',
-      '--theme-text-primary': '#111827',
-      '--theme-text-secondary': '#374151',
-      '--theme-text-tertiary': '#6b7280',
+      '--theme-bg-secondary': '#F5F5F5',
+      '--theme-bg-tertiary': '#EEEEEE',
+      '--theme-text-primary': '#212121',
+      '--theme-text-secondary': '#757575',
+      '--theme-text-tertiary': '#BDBDBD',
       '--theme-text-inverted': '#ffffff',
-      '--theme-border-light': '#e5e7eb',
-      '--theme-border-medium': '#d1d5db',
-      '--theme-border-dark': '#9ca3af',
+      '--theme-border-light': '#E0E0E0',
+      '--theme-border-medium': '#EEEEEE',
+      '--theme-border-dark': '#BDBDBD',
       '--theme-text-on-primary': '#ffffff',
       '--theme-text-on-secondary': '#ffffff',
       '--theme-text-on-accent': '#ffffff',
@@ -43,44 +301,44 @@ export const themes = {
       '--theme-text-on-footer': '#f9fafb',
       '--theme-text-muted': '#6b7280',
       '--theme-text-subtle': '#9ca3af',
-      '--navbar-bg': 'rgba(255, 255, 255, 0.95)',
+      '--navbar-bg': 'rgba(255, 255, 255, 0.98)',
       '--navbar-text': '#374151',
-      '--navbar-text-hover': '#db2777',
+      '--navbar-text-hover': '#00796B',
       '--navbar-border': '#e5e7eb',
       '--navbar-shadow': '0 2px 12px rgba(0, 0, 0, 0.08)',
-      '--navbar-brand-color': '#db2777',
+      '--navbar-brand-color': '#00796B',
       '--navbar-icon-color': '#6b7280',
-      '--navbar-icon-hover': '#db2777',
-      '--hero-bg-start': '#fdf2f8',
-      '--hero-bg-end': '#fce7f3',
+      '--navbar-icon-hover': '#00796B',
+      '--hero-bg-start': '#f5f5f5',
+      '--hero-bg-end': '#eeeeee',
       '--hero-title-color': '#111827',
       '--hero-subtitle-color': '#374151',
-      '--hero-accent-color': '#db2777',
+      '--hero-accent-color': '#00796B',
       '--card-bg': '#ffffff',
       '--card-border': '#e5e7eb',
       '--card-shadow': '0 4px 6px rgba(0, 0, 0, 0.05)',
       '--card-shadow-hover': '0 20px 25px rgba(0, 0, 0, 0.1)',
       '--card-title-color': '#111827',
       '--card-text-color': '#374151',
-      '--card-price-color': '#be185d',
+      '--card-price-color': '#00796B',
       '--card-text-on-bg': '#111827',
       '--card-text-on-overlay': '#ffffff',
       '--card-text-on-badge': '#ffffff',
-      '--btn-primary-bg': '#db2777',
-      '--btn-primary-hover': '#be185d',
+      '--btn-primary-bg': '#00796B',
+      '--btn-primary-hover': '#004D40',
       '--btn-primary-text': '#ffffff',
       '--btn-secondary-bg': 'transparent',
-      '--btn-secondary-border': '#db2777',
-      '--btn-secondary-text': '#db2777',
-      '--footer-bg': '#111827',
-      '--footer-text': '#d1d5db',
-      '--footer-heading': '#f9a8d4',
-      '--footer-link-hover': '#f9a8d4',
+      '--btn-secondary-border': '#00796B',
+      '--btn-secondary-text': '#00796B',
+      '--footer-bg': '#004D40',
+      '--footer-text': '#d1fae5',
+      '--footer-heading': '#4DB6AC',
+      '--footer-link-hover': '#00BFA5',
       '--carousel-bg': '#ffffff',
-      '--carousel-nav-bg': 'rgba(0, 0, 0, 0.7)',
-      '--carousel-nav-hover': 'rgba(0, 0, 0, 0.85)',
+      '--carousel-nav-bg': 'rgba(0, 121, 107, 0.8)',
+      '--carousel-nav-hover': 'rgba(0, 121, 107, 0.9)',
       '--carousel-indicator-inactive': 'rgba(0, 0, 0, 0.3)',
-      '--carousel-indicator-active': '#111827',
+      '--carousel-indicator-active': '#00796B',
       '--carousel-text-on-bg': '#111827',
       '--carousel-text-on-nav': '#ffffff',
       '--carousel-text-on-indicator': '#ffffff'
@@ -94,10 +352,10 @@ export const themes = {
     icon: '🌙',
     category: 'basic',
     variables: {
-      '--theme-primary': '#f472b6',
-      '--theme-primary-dark': '#ec4899',
-      '--theme-primary-light': '#fbcfe8',
-      '--theme-primary-hover': '#db2777',
+      '--theme-primary': '#1976D2',
+      '--theme-primary-dark': '#1565C0',
+      '--theme-primary-light': '#42A5F5',
+      '--theme-primary-hover': '#0D47A1',
       '--theme-bg-primary': '#0f172a',
       '--theme-bg-secondary': '#1e293b',
       '--theme-bg-tertiary': '#334155',
@@ -110,39 +368,39 @@ export const themes = {
       '--theme-border-dark': '#94a3b8',
       '--navbar-bg': 'rgba(15, 23, 42, 0.95)',
       '--navbar-text': '#f8fafc',
-      '--navbar-text-hover': '#f472b6',
+      '--navbar-text-hover': '#42A5F5',
       '--navbar-border': '#334155',
       '--navbar-shadow': '0 2px 12px rgba(0, 0, 0, 0.3)',
-      '--navbar-brand-color': '#f472b6',
+      '--navbar-brand-color': '#42A5F5',
       '--navbar-icon-color': '#cbd5e1',
-      '--navbar-icon-hover': '#f472b6',
+      '--navbar-icon-hover': '#42A5F5',
       '--hero-bg-start': '#1e293b',
       '--hero-bg-end': '#334155',
       '--hero-title-color': '#f8fafc',
       '--hero-subtitle-color': '#e2e8f0',
-      '--hero-accent-color': '#f472b6',
+      '--hero-accent-color': '#1976D2',
       '--card-bg': '#1e293b',
       '--card-border': '#475569',
-      '--card-shadow': '0 4px 12px rgba(0, 0, 0, 0.3), 0 0 20px rgba(244, 114, 182, 0.1)',
-      '--card-shadow-hover': '0 8px 20px rgba(0, 0, 0, 0.4), 0 0 30px rgba(244, 114, 182, 0.15)',
+      '--card-shadow': '0 4px 12px rgba(0, 0, 0, 0.3), 0 0 20px rgba(25, 118, 210, 0.1)',
+      '--card-shadow-hover': '0 8px 20px rgba(0, 0, 0, 0.4), 0 0 30px rgba(25, 118, 210, 0.15)',
       '--card-title-color': '#f8fafc',
       '--card-text-color': '#e2e8f0',
-      '--card-price-color': '#fbbf24',
-      '--btn-primary-bg': '#f472b6',
-      '--btn-primary-hover': '#ec4899',
-      '--btn-primary-text': '#0f172a',
+      '--card-price-color': '#42A5F5',
+      '--btn-primary-bg': '#1976D2',
+      '--btn-primary-hover': '#1565C0',
+      '--btn-primary-text': '#ffffff',
       '--btn-secondary-bg': 'transparent',
-      '--btn-secondary-border': '#f472b6',
-      '--btn-secondary-text': '#f472b6',
+      '--btn-secondary-border': '#1976D2',
+      '--btn-secondary-text': '#42A5F5',
       '--footer-bg': '#020617',
       '--footer-text': '#cbd5e1',
-      '--footer-heading': '#f472b6',
-      '--footer-link-hover': '#fbcfe8',
+      '--footer-heading': '#42A5F5',
+      '--footer-link-hover': '#64B5F6',
       '--carousel-bg': '#1e293b',
-      '--carousel-nav-bg': 'rgba(248, 250, 252, 0.15)',
-      '--carousel-nav-hover': 'rgba(248, 250, 252, 0.25)',
+      '--carousel-nav-bg': 'rgba(25, 118, 210, 0.8)',
+      '--carousel-nav-hover': 'rgba(25, 118, 210, 0.9)',
       '--carousel-indicator-inactive': 'rgba(248, 250, 252, 0.4)',
-      '--carousel-indicator-active': '#f8fafc'
+      '--carousel-indicator-active': '#42A5F5'
     }
   },
 
@@ -475,9 +733,9 @@ export const themes = {
     icon: '🦇',
     category: 'premium',
     variables: {
-      '--theme-primary': '#9876aa',
-      '--theme-primary-dark': '#7e5d99',
-      '--theme-primary-light': '#b39ddb',
+      '--theme-primary': '#7e5d99',
+      '--theme-primary-dark': '#6d28d9',
+      '--theme-primary-light': '#a78bfa',
       '--theme-secondary': '#cc7832',
       '--theme-secondary-dark': '#b8661f',
       '--theme-secondary-light': '#d89555',
@@ -614,34 +872,34 @@ export const themes = {
       '--theme-accent-dark': '#ca8a04',
       '--theme-accent-light': '#fde047',
       '--theme-bg-primary': '#fffbeb',
-      '--theme-bg-secondary': '#fef3c7',
+      '--theme-bg-secondary': '#fef9c3',
       '--theme-bg-tertiary': '#fde68a',
-      '--theme-text-primary': '#78350f',
-      '--theme-text-secondary': '#92400e',
-      '--theme-text-tertiary': '#b45309',
+      '--theme-text-primary': '#7c2d12',
+      '--theme-text-secondary': '#7c2d12',
+      '--theme-text-tertiary': '#92400e',
       '--theme-text-inverted': '#ffffff',
       '--theme-border-light': '#fcd34d',
       '--theme-border-medium': '#fbbf24',
       '--theme-border-dark': '#f59e0b',
       '--navbar-bg': 'rgba(255, 255, 255, 0.98)',
-      '--navbar-text': '#92400e',
+      '--navbar-text': '#7c2d12',
       '--navbar-text-hover': '#d97706',
       '--navbar-border': '#fcd34d',
       '--navbar-shadow': '0 2px 12px rgba(120, 53, 15, 0.08)',
       '--navbar-brand-color': '#d97706',
-      '--navbar-icon-color': '#b45309',
+      '--navbar-icon-color': '#7c2d12',
       '--navbar-icon-hover': '#fb923c',
       '--hero-bg-start': '#fffbeb',
-      '--hero-bg-end': '#fef3c7',
-      '--hero-title-color': '#78350f',
-      '--hero-subtitle-color': '#92400e',
+      '--hero-bg-end': '#fef9c3',
+      '--hero-title-color': '#7c2d12',
+      '--hero-subtitle-color': '#7c2d12',
       '--hero-accent-color': '#d97706',
       '--card-bg': '#ffffff',
       '--card-border': '#fcd34d',
       '--card-shadow': '0 4px 6px rgba(120, 53, 15, 0.08)',
       '--card-shadow-hover': '0 20px 25px rgba(120, 53, 15, 0.15)',
-      '--card-title-color': '#78350f',
-      '--card-text-color': '#92400e',
+      '--card-title-color': '#7c2d12',
+      '--card-text-color': '#7c2d12',
       '--card-price-color': '#f97316',
       '--btn-primary-bg': '#d97706',
       '--btn-primary-hover': '#b45309',
@@ -649,7 +907,7 @@ export const themes = {
       '--btn-secondary-bg': 'transparent',
       '--btn-secondary-border': '#d97706',
       '--btn-secondary-text': '#d97706',
-      '--footer-bg': '#78350f',
+      '--footer-bg': '#7c2d12',
       '--footer-text': '#fef3c7',
       '--footer-heading': '#fbbf24',
       '--footer-link-hover': '#fde68a',
@@ -657,7 +915,7 @@ export const themes = {
       '--carousel-nav-bg': 'rgba(120, 53, 15, 0.8)',
       '--carousel-nav-hover': 'rgba(120, 53, 15, 0.9)',
       '--carousel-indicator-inactive': 'rgba(120, 53, 15, 0.4)',
-      '--carousel-indicator-active': '#78350f'
+      '--carousel-indicator-active': '#7c2d12'
     }
   },
 
@@ -792,8 +1050,8 @@ export const themes = {
 
   neonCyberpunk: {
     id: 'neonCyberpunk',
-    name: 'Neon Cyberpunk',
-    description: 'Futuro cyberpunk con neón vibrante y grid digital',
+    name: 'Neon Cyberpunk Mejorado',
+    description: 'Futuro cyberpunk con neón vibrante y contraste AAA garantizado',
     icon: '🌃💜',
     category: 'premium',
     variables: {
@@ -809,48 +1067,48 @@ export const themes = {
       '--theme-bg-primary': '#0a0a0a',
       '--theme-bg-secondary': '#1a1a1a',
       '--theme-bg-tertiary': '#2a2a2a',
-      '--theme-text-primary': '#ffffff',
-      '--theme-text-secondary': '#cccccc',
-      '--theme-text-tertiary': '#999999',
+      '--theme-text-primary': '#ffffff', // MANTENIDO: contraste perfecto con fondo negro
+      '--theme-text-secondary': '#f1f5f9', // CAMBIADO: mucho más claro para mejor contraste
+      '--theme-text-tertiary': '#cbd5e1', // CAMBIADO: mejor contraste que #999999
       '--theme-text-inverted': '#0a0a0a',
-      '--theme-border-light': '#ff006e',
-      '--theme-border-medium': '#ff1a7f',
-      '--theme-border-dark': '#ff3399',
-      '--navbar-bg': 'rgba(10, 10, 10, 0.95)',
-      '--navbar-text': '#ffffff',
-      '--navbar-text-hover': '#00f5ff',
-      '--navbar-border': '#ff006e',
-      '--navbar-shadow': '0 2px 20px rgba(255, 0, 110, 0.4)',
-      '--navbar-brand-color': '#ff006e',
-      '--navbar-icon-color': '#cccccc',
-      '--navbar-icon-hover': '#00f5ff',
-      '--hero-bg-start': '#0a0a0a',
-      '--hero-bg-end': '#1a1a1a',
-      '--hero-title-color': '#ffffff',
-      '--hero-subtitle-color': '#cccccc',
-      '--hero-accent-color': '#ff006e',
-      '--card-bg': '#1a1a1a',
-      '--card-border': '#ff006e',
-      '--card-shadow': '0 4px 15px rgba(255, 0, 110, 0.4), 0 0 25px rgba(255, 0, 110, 0.2)',
-      '--card-shadow-hover': '0 8px 25px rgba(255, 0, 110, 0.6), 0 0 35px rgba(255, 0, 110, 0.3)',
-      '--card-title-color': '#ffffff',
-      '--card-text-color': '#cccccc',
-      '--card-price-color': '#ffb700',
-      '--btn-primary-bg': '#ff006e',
-      '--btn-primary-hover': '#d4006a',
-      '--btn-primary-text': '#ffffff',
-      '--btn-secondary-bg': 'transparent',
-      '--btn-secondary-border': '#00f5ff',
-      '--btn-secondary-text': '#00f5ff',
-      '--footer-bg': '#000000',
-      '--footer-text': '#cccccc',
-      '--footer-heading': '#ff006e',
-      '--footer-link-hover': '#00f5ff',
-      '--carousel-bg': '#1a1a1a',
-      '--carousel-nav-bg': 'rgba(255, 0, 110, 0.8)',
-      '--carousel-nav-hover': 'rgba(0, 245, 255, 0.9)',
-      '--carousel-indicator-inactive': 'rgba(255, 255, 255, 0.3)',
-      '--carousel-indicator-active': '#ff006e'
+      '--theme-border-light': '#6d28d9', // CAMBIADO: morado oscuro para mejor contraste
+      '--theme-border-medium': '#8b5cf6', // CAMBIADO: morado medio para mejor contraste
+      '--theme-border-dark': '#a78bfa', // CAMBIADO: morado claro para mejor contraste
+      '--navbar-bg': 'rgba(10, 10, 10, 0.98)', // AUMENTADO: opacidad para mejor contraste
+      '--navbar-text': '#f8fafc', // CAMBIADO: mucho más claro para contraste
+      '--navbar-text-hover': '#00f5ff', // MANTENIDO: color neón para hover
+      '--navbar-border': '#4c1d95', // CAMBIADO: morado oscuro para borde
+      '--navbar-shadow': '0 2px 20px rgba(76, 29, 149, 0.4)', // AJUSTADO: sombra con color de contraste
+      '--navbar-brand-color': '#00f5ff', // MANTENIDO: color neón para marca
+      '--navbar-icon-color': '#e2e8f0', // CAMBIADO: iconos más claros
+      '--navbar-icon-hover': '#00f5ff', // MANTENIDO: hover en color neón
+      '--hero-bg-start': 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)', // MEJORADO: gradiente para contraste
+      '--hero-bg-end': 'linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%)',
+      '--hero-title-color': '#ffffff', // MANTENIDO: blanco puro para contraste
+      '--hero-subtitle-color': '#f1f5f9', // CAMBIADO: mucho más claro
+      '--hero-accent-color': '#00f5ff', // MANTENIDO: color neón para acentos
+      '--card-bg': '#1a1a1a', // MANTENIDO: contraste con texto
+      '--card-border': '#6d28d9', // CAMBIADO: borde morado para mejor contraste
+      '--card-shadow': '0 4px 15px rgba(76, 29, 149, 0.4), 0 0 25px rgba(109, 40, 217, 0.2)', // AJUSTADO: sombra con mejor contraste
+      '--card-shadow-hover': '0 8px 25px rgba(76, 29, 149, 0.6), 0 0 35px rgba(109, 40, 217, 0.3)',
+      '--card-title-color': '#ffffff', // MANTENIDO: blanco puro para contraste
+      '--card-text-color': '#e2e8f0', // CAMBIADO: texto más claro
+      '--card-price-color': '#00f5ff', // CAMBIADO: color neón para precios
+      '--btn-primary-bg': '#ff006e', // MANTENIDO: botón primario neón
+      '--btn-primary-hover': '#ff1a7f', // CAMBIADO: hover más claro para mejor contraste
+      '--btn-primary-text': '#ffffff', // MANTENIDO: texto blanco para contraste
+      '--btn-secondary-bg': 'rgba(0, 245, 255, 0.1)', // AJUSTADO: fondo transparente con tono
+      '--btn-secondary-border': '#00f5ff', // MANTENIDO: borde en color neón
+      '--btn-secondary-text': '#00f5ff', // MANTENIDO: texto en color neón
+      '--footer-bg': '#0f0908', // MANTENIDO: fondo oscuro
+      '--footer-text': '#e2e8f0', // CAMBIADO: texto más claro para footer
+      '--footer-heading': '#00f5ff', // CAMBIADO: títulos en color neón
+      '--footer-link-hover': '#60a5fa', // CAMBIADO: links con mejor contraste
+      '--carousel-bg': '#1a1a1a', // MANTENIDO: fondo oscuro para carousel
+      '--carousel-nav-bg': 'rgba(109, 40, 217, 0.8)', // CAMBIADO: nav con mejor contraste
+      '--carousel-nav-hover': 'rgba(0, 245, 255, 0.9)', // MANTENIDO: hover en color neón
+      '--carousel-indicator-inactive': 'rgba(226, 232, 240, 0.3)', // CAMBIADO: indicadores más claros
+      '--carousel-indicator-active': '#00f5ff' // CAMBIADO: indicador activo en color neón
     }
   },
 
@@ -1303,6 +1561,21 @@ export const themes = {
     }
   }
 }
+
+// Aplicar expansión granular a todos los temas
+const expandedThemes = {}
+Object.entries(themes).forEach(([key, theme]) => {
+  expandedThemes[key] = expandThemeWithGranularVars(theme)
+})
+
+// Reemplazar con temas expandidos
+Object.keys(themes).forEach(key => {
+  delete themes[key]
+})
+Object.assign(themes, expandedThemes)
+
+// Exportar la función para que otros módulos puedan usarla
+export { expandThemeWithGranularVars }
 
 export const DEFAULT_THEME = 'light'
 export const THEME_STORAGE_KEY = 'floresya-theme-preference'

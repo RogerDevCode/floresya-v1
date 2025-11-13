@@ -9,6 +9,7 @@
 import { createClient } from '@supabase/supabase-js'
 import config from '../config/configLoader.js'
 import { ConfigurationError } from '../errors/AppError.js'
+import { createMonitoredSupabaseClient } from '../monitoring/databaseMonitor.js'
 
 const supabaseUrl = config.database.url
 const supabaseKey = config.database.key
@@ -36,7 +37,16 @@ if (!supabaseUrl || !supabaseKey) {
  * Configuration from centralized configLoader
  * @type {import('@supabase/supabase-js').SupabaseClient}
  */
-export const supabase = createClient(supabaseUrl, supabaseKey, config.database.options)
+const rawSupabaseClient = createClient(supabaseUrl, supabaseKey, config.database.options)
+
+/**
+ * Monitored Supabase client with performance tracking
+ * All database operations are automatically monitored for slow queries and performance
+ */
+export const supabase =
+  process.env.NODE_ENV === 'test'
+    ? rawSupabaseClient
+    : createMonitoredSupabaseClient(rawSupabaseClient)
 
 /**
  * Database schema metadata for query optimization

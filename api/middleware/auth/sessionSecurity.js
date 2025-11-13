@@ -1,11 +1,13 @@
 /**
  * Session Security Middleware
  * Configures secure session management with httpOnly, secure, and sameSite cookies
+ * Includes CSRF token validation for state-changing operations
  *
  * Uses centralized configuration from configLoader
  */
 
 import session from 'express-session'
+import crypto from 'crypto'
 import config from '../../config/configLoader.js'
 
 /**
@@ -55,6 +57,70 @@ export function sessionSecurityHeaders(req, res, next) {
       'gyroscope=(), ' +
       'accelerometer=()'
   )
+
+  next()
+}
+
+/**
+ * Generate CSRF token
+ */
+function generateCsrfToken() {
+  return crypto.randomBytes(32).toString('hex')
+}
+
+/**
+ * CSRF token middleware - generates and stores token in session
+ */
+export function csrfToken(req, res, next) {
+  if (!req.session.csrfToken) {
+    req.session.csrfToken = generateCsrfToken()
+  }
+
+  // Make token available to templates/forms (if using server-side rendering)
+  res.locals.csrfToken = req.session.csrfToken
+
+  next()
+}
+
+/**
+ * CSRF validation middleware for state-changing operations
+ */
+export function validateCsrf(req, res, next) {
+  // Only validate for state-changing methods
+  const stateChangingMethods = ['POST', 'PUT', 'DELETE', 'PATCH']
+  if (!stateChangingMethods.includes(req.method)) {
+    return next()
+  }
+
+  // Skip CSRF validation for API endpoints that use JWT (Authorization header)
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+    return next()
+  }
+
+  // Skip for public read-only endpoints
+  const publicReadEndpoints = ['/api/products', '/api/occasions', '/api-docs', '/health']
+  if (publicReadEndpoints.some(endpoint => req.path.startsWith(endpoint))) {
+    return next()
+  }
+
+  // Get token from header or body
+  const token = req.headers['x-csrf-token'] || req.body?._csrf
+
+  if (!token) {
+    return res.status(403).json({
+      success: false,
+      error: 'CSRF token missing',
+      message: 'CSRF token is required for this operation'
+    })
+  }
+
+  if (!req.session.csrfToken || token !== req.session.csrfToken) {
+    return res.status(403).json({
+      success: false,
+      error: 'CSRF token invalid',
+      message: 'Invalid or expired CSRF token'
+    })
+  }
 
   next()
 }

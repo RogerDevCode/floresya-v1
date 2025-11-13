@@ -11,15 +11,19 @@ import path from 'path'
 import yaml from 'js-yaml'
 import config from '../config/configLoader.js'
 import { ConfigurationError } from '../errors/AppError.js'
+import { fileURLToPath } from 'node:url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const API_DIR = path.join(__dirname, '..')
 
 /**
  * Documentation Synchronizer class
  */
 export class DocumentationSynchronizer {
   constructor() {
-    this.specPath = path.join(process.cwd(), 'api', 'docs', 'openapi-spec.yaml')
-    this.annotationsPath = path.join(process.cwd(), 'api', 'docs', 'openapi-annotations.js')
-    this.routesDir = path.join(process.cwd(), 'api', 'routes')
+    this.specPath = path.join(API_DIR, 'docs', 'openapi-spec.yaml')
+    this.annotationsPath = path.join(API_DIR, 'docs', 'openapi-annotations.js')
+    this.routesDir = path.join(API_DIR, 'routes')
     this.spec = null
   }
 

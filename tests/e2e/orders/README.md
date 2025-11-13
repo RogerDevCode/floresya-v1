@@ -401,7 +401,7 @@ test.describe('Orders Page - [Feature Name]', () => {
    ```javascript
    if (rowCount === 0) {
      console.log('⏭️ Skipping test - no data')
-     test.skip()
+     it.skip()
    }
    ```
 

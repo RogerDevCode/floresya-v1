@@ -126,9 +126,6 @@ const addresses = [
 // Payment methods
 const paymentMethods = ['bank_transfer', 'zelle', 'paypal', 'cash', 'pago_movil', 'binance']
 
-// Order statuses (from DB_SCHEMA.orders.enums.status)
-const _orderStatuses = ['pending', 'verified', 'preparing', 'shipped', 'delivered', 'cancelled']
-
 // USD to VES exchange rate
 const USD_TO_VES = 36.45
 
@@ -437,7 +434,6 @@ async function seedOrders() {
 
       // Generate order (complete schema from supabase_schema.sql)
       const address = randomItem(addresses)
-      const _addressParts = address.split(', ')
       const deliveryDateOffset = randomInt(1, 7) // 1-7 days from order date
       const deliveryDate = new Date(orderDate)
       deliveryDate.setDate(deliveryDate.getDate() + deliveryDateOffset)

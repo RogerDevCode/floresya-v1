@@ -165,13 +165,11 @@ export class TouchFeedback {
 
       // Skip if not a touch device and reduced motion is preferred
       if (!this.isTouchDevice && this.options.respectReducedMotion) {
-        console.log('TouchFeedback: Skipping initialization on non-touch device')
         return
       }
 
       // Skip if reduced motion is preferred
       if (this.isReducedMotion && this.options.respectReducedMotion) {
-        console.log('TouchFeedback: Skipping initialization due to reduced motion preference')
         return
       }
 
@@ -492,6 +490,75 @@ export function initTouchFeedbackOnAll(selector, options = {}) {
   })
 
   return feedbacks
+}
+
+/**
+ * Initialize touch feedback for form elements
+ * Specifically designed for form inputs, selects, and buttons
+ * @param {string} container - CSS selector for form container (optional, defaults to document)
+ * @returns {void}
+ *
+ * @example
+ * import { initFormTouchFeedback } from '.'
+ *
+ * // Initialize on all forms
+ * initFormTouchFeedback()
+ *
+ * // Initialize on specific form
+ * initFormTouchFeedback('#contact-form')
+ */
+export function initFormTouchFeedback(container = document) {
+  const formElement = typeof container === 'string' ? document.querySelector(container) : container
+
+  if (!formElement) {
+    console.warn('Form element not found for touch feedback initialization')
+    return
+  }
+
+  // Initialize on form inputs
+  const inputs = formElement.querySelectorAll('input, select, textarea')
+  inputs.forEach(input => {
+    initTouchFeedback(input, {
+      type: 'ripple',
+      haptic: 'light',
+      duration: 200
+    })
+  })
+
+  // Initialize on form buttons
+  const buttons = formElement.querySelectorAll('button')
+  buttons.forEach(button => {
+    initTouchFeedback(button, {
+      type: 'ripple',
+      haptic: 'medium',
+      duration: 300
+    })
+  })
+}
+
+/**
+ * Trigger visual validation feedback for form elements
+ * @param {HTMLElement|string} element - Element or selector to show feedback on
+ * @param {string} type - Type of feedback ('success', 'error', 'warning')
+ * @returns {void}
+ */
+export function triggerFormValidationFeedback(element, type = 'error') {
+  const formElement = typeof element === 'string' ? document.querySelector(element) : element
+
+  if (!formElement) {
+    console.warn('Form element not found for validation feedback')
+    return
+  }
+
+  // Create temporary feedback
+  const feedback = new TouchFeedback({
+    type: type === 'success' ? 'highlight' : 'ripple',
+    haptic: type === 'success' ? 'success' : 'error',
+    duration: 400
+  })
+
+  feedback.init(formElement)
+  feedback.triggerFeedback(type)
 }
 
 // Export default for convenience

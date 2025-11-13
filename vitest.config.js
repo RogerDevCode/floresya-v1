@@ -14,17 +14,18 @@ export default defineConfig({
     // Setup files
     setupFiles: ['./tests/setup.js', './tests/setup-global.js'],
 
+    // Mock clinic globally to prevent import issues
+    server: {
+      deps: {
+        inline: ['clinic']
+      }
+    },
+
     // Global test configuration - MUST be false to avoid Symbol conflicts with Playwright
     globals: false, // Critical: Prevents global Symbol($$jest-matchers-object) conflicts
 
     // Cache configuration - Disabled to avoid cache issues during development
     cache: false,
-
-    // Force rerun tests when dependencies change
-    deps: {
-      // Inline can help with some module resolution issues
-      inline: []
-    },
 
     // Coverage configuration
     coverage: {
@@ -49,10 +50,10 @@ export default defineConfig({
       include: ['api/**/*.js', 'public/**/*.js'],
       thresholds: {
         global: {
-          branches: 60,
-          functions: 60,
-          lines: 60,
-          statements: 60
+          branches: 80,
+          functions: 80,
+          lines: 80,
+          statements: 80
         }
       }
     },
@@ -96,7 +97,13 @@ export default defineConfig({
     alias: {
       '@': './',
       '@api': './api',
-      '@public': './public'
+      '@public': './public',
+      clinic: './clinic.js'
     }
+  },
+
+  // Optimize deps to prevent clinic import issues
+  optimizeDeps: {
+    exclude: ['clinic']
   }
 })

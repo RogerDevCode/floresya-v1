@@ -20,7 +20,12 @@ export class UserRepository extends BaseRepository {
    * @returns {Promise<Object|null>} Usuario encontrado
    */
   async findByEmail(email, includeInactive = false) {
-    let query = this.supabase.from(this.table).select('*').eq('email', email)
+    let query = this.supabase
+      .from(this.table)
+      .select(
+        'id, email, password_hash, full_name, phone, role, active, email_verified, created_at, updated_at, full_name_normalized, email_normalized'
+      )
+      .eq('email', email)
 
     if (!includeInactive) {
       query = query.eq('active', true)
@@ -45,7 +50,11 @@ export class UserRepository extends BaseRepository {
    * @returns {Promise<Array>} Lista de usuarios
    */
   async findAllWithFilters(filters = {}, options = {}) {
-    let query = this.supabase.from(this.table).select('*')
+    let query = this.supabase
+      .from(this.table)
+      .select(
+        'id, email, password_hash, full_name, phone, role, active, email_verified, created_at, updated_at, full_name_normalized, email_normalized'
+      )
 
     // Aplicar filtros específicos
     if (filters.role) {
@@ -91,7 +100,11 @@ export class UserRepository extends BaseRepository {
    * @returns {Promise<Array>} Lista de usuarios
    */
   async findByFilter(filters) {
-    let query = this.supabase.from(this.table).select('*')
+    let query = this.supabase
+      .from(this.table)
+      .select(
+        'id, email, password_hash, full_name, phone, role, active, email_verified, created_at, updated_at, full_name_normalized, email_normalized'
+      )
 
     // Aplicar filtros
     if (filters.role) {
@@ -217,7 +230,12 @@ export class UserRepository extends BaseRepository {
    * @returns {Promise<Array>} Lista de usuarios
    */
   async findByRole(role, includeInactive = false) {
-    let query = this.supabase.from(this.table).select('*').eq('role', role)
+    let query = this.supabase
+      .from(this.table)
+      .select(
+        'id, email, password_hash, full_name, phone, role, active, email_verified, created_at, updated_at, full_name_normalized, email_normalized'
+      )
+      .eq('role', role)
 
     if (!includeInactive) {
       query = query.eq('active', true)
@@ -239,7 +257,12 @@ export class UserRepository extends BaseRepository {
    * @returns {Promise<Array>} Lista de usuarios
    */
   async findByEmailVerificationStatus(verified, includeInactive = false) {
-    let query = this.supabase.from(this.table).select('*').eq('email_verified', verified)
+    let query = this.supabase
+      .from(this.table)
+      .select(
+        'id, email, password_hash, full_name, phone, role, active, email_verified, created_at, updated_at, full_name_normalized, email_normalized'
+      )
+      .eq('email_verified', verified)
 
     if (!includeInactive) {
       query = query.eq('active', true)
@@ -264,7 +287,9 @@ export class UserRepository extends BaseRepository {
   async searchUsers(searchTerm, includeInactive = false, limit = 50) {
     let query = this.supabase
       .from(this.table)
-      .select('*')
+      .select(
+        'id, email, password_hash, full_name, phone, role, active, email_verified, created_at, updated_at, full_name_normalized, email_normalized'
+      )
       .or(`email.ilike.%${searchTerm}%,full_name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%`)
 
     if (!includeInactive) {

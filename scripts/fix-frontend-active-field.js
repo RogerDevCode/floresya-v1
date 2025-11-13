@@ -51,7 +51,6 @@ function fixApiTypes() {
 
   // Replace TypeScript type definitions
   const oldPattern = /(\s+)is_active\?: boolean/g
-  const _newPattern = '$1active?: boolean'
 
   content = content.replace(oldPattern, match => {
     changes++

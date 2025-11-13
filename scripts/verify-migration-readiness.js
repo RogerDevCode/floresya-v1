@@ -99,7 +99,8 @@ try {
   } else {
     log.warning('  └─ No is_active references found (already migrated?)')
   }
-} catch (_error) {
+} catch (error) {
+  console.error('Error:', error)
   log.info('  └─ No is_active references found')
 }
 
@@ -111,7 +112,8 @@ try {
     stdio: 'pipe'
   })
   log.success('ESLint is clean')
-} catch (_error) {
+} catch (error) {
+  console.error('Error:', error)
   log.warning('ESLint has issues (fix before migration)')
   allGood = false
 }
@@ -124,7 +126,8 @@ try {
     stdio: 'pipe'
   })
   log.success('Functional tests pass')
-} catch (_error) {
+} catch (error) {
+  console.error('Error:', error)
   log.warning('Functional tests have failures (review before migration)')
 }
 

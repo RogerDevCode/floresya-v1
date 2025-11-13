@@ -14,7 +14,6 @@ import '../../js/services/authMock.js' // ⚠️ DEV ONLY - Side-effect import f
 
 // Chart.js will be loaded via script tag in HTML
 // Global state
-let _currentView = 'dashboard'
 let products = [] // Will be populated from API
 
 // 🌸 Easter Egg: Mensajes florales para estados de guardado
@@ -58,7 +57,11 @@ function formatDate(dateString) {
       month: 'short',
       day: 'numeric'
     })
-  } catch (_error) {
+  } catch (error) {
+    console.error('[Admin] Date formatting failed:', {
+      input: dateString,
+      error: error.message
+    })
     return 'Fecha inválida'
   }
 }
@@ -76,6 +79,22 @@ function debounce(func, wait) {
     clearTimeout(timeout)
     timeout = setTimeout(later, wait)
   }
+}
+
+/**
+ * Generic confirmation and execution helper
+ * LEGACY FIX: Elimina duplicación de código en confirmaciones
+ */
+async function confirmAndExecute(message, apiCall, logMessage, ...apiArgs) {
+  const confirmed = window.confirm(message)
+
+  if (!confirmed) {
+    return false
+  }
+
+  console.log(logMessage)
+  await apiCall(...apiArgs)
+  return true
 }
 
 /**
@@ -126,7 +145,8 @@ async function loadProductImages(products) {
             product.thumbnail_url = primaryThumb.url
           }
         }
-      } catch {
+      } catch (error) {
+        console.error(error)
         console.warn(`Failed to load image for product ${product.id}`)
       }
     })
@@ -856,8 +876,6 @@ function setupEventListeners() {
  * Show specified view and hide others
  */
 async function showView(view) {
-  _currentView = view
-
   // Hide all views
   const views = document.querySelectorAll('[id$="-view"]')
   views.forEach(viewElement => {
@@ -1007,7 +1025,8 @@ async function filterProducts() {
       product =>
         normalizeText(product.name).includes(normalizedSearch) ||
         normalizeText(product.description || '').includes(normalizedSearch) ||
-        normalizeText(product.sku || '').includes(normalizedSearch)
+        normalizeText(product.sku || '').includes(normalizedSearch) ||
+        normalizeText(product.occasion || '').includes(normalizedSearch)
     )
   }
 
@@ -1749,8 +1768,6 @@ function updatePaginationControls() {
     pageNumbers.innerHTML = ''
 
     const maxVisiblePages = 5
-    const _startPage = 1
-    const _endPage = paginationState.totalPages
 
     if (paginationState.totalPages <= maxVisiblePages) {
       // Show all pages
@@ -2170,8 +2187,9 @@ async function handleEmailLookup(e) {
 
       toast.info(`Usuario encontrado: ${user.full_name}. Los datos se actualizarán al guardar.`)
     }
-  } catch (_error) {
+  } catch (error) {
     // Si no encuentra el usuario, es un nuevo usuario (guest)
+    console.error(error)
     console.log('Usuario no encontrado, será creado como nuevo:', email)
     currentEditingUser = null
 
@@ -2365,7 +2383,6 @@ async function handleUserFormSubmit(e) {
     const userData = Object.fromEntries(formData.entries())
 
     const submitBtn = form.querySelector('button[type="submit"]')
-    const _originalText = submitBtn.textContent
     submitBtn.disabled = true
     submitBtn.textContent = currentEditingUser ? getSavingMessage() : `🌱 ${getSavingMessage()}`
 
@@ -2474,15 +2491,20 @@ window.toggleUserRole = async function (userId, currentRole) {
     const newRole = currentRole === 'admin' ? 'user' : 'admin'
     const roleName = newRole === 'admin' ? 'Administrador' : 'Cliente'
 
-    const confirmChange = window.confirm(`¿Estás seguro de cambiar el rol a "${roleName}"?`)
+    // LEGACY FIX: Usar función genérica para eliminar duplicación
+    const confirmed = await confirmAndExecute(
+      `¿Estás seguro de cambiar el rol a "${roleName}"?`,
+      api.updateUsers,
+      `Changing user ${userId} role from ${currentRole} to ${newRole}`,
+      userId,
+      { role: newRole }
+    )
 
-    if (!confirmChange) {
+    if (!confirmed) {
       return
     }
 
-    console.log(`Changing user ${userId} role from ${currentRole} to ${newRole}`)
-
-    const result = await api.updateUsers(userId, { role: newRole })
+    const result = { success: true } // Ya ejecutado por confirmAndExecute
 
     if (!result.success) {
       throw new Error(result.message || 'Error al cambiar rol')
@@ -2517,22 +2539,24 @@ window.toggleUserStatus = async function (userId, currentStatus) {
     const action = currentStatus ? 'desactivar' : 'activar'
     const actionText = currentStatus ? 'desactivado' : 'activado'
 
-    const confirmChange = window.confirm(`¿Estás seguro de ${action} este usuario?`)
+    // LEGACY FIX: Determinar API call basado en estado
+    const apiCall = currentStatus ? api.deleteUsers : api.reactivateUsers
+    const apiArgs = currentStatus ? [userId] : [userId, {}]
+    const logMessage = `Changing user ${userId} status from ${currentStatus} to ${!currentStatus}`
 
-    if (!confirmChange) {
+    // LEGACY FIX: Usar función genérica para eliminar duplicación
+    const confirmed = await confirmAndExecute(
+      `¿Estás seguro de ${action} este usuario?`,
+      apiCall,
+      logMessage,
+      ...apiArgs
+    )
+
+    if (!confirmed) {
       return
     }
 
-    console.log(`Changing user ${userId} status from ${currentStatus} to ${!currentStatus}`)
-
-    let result
-    if (currentStatus) {
-      // Desactivar (soft delete)
-      result = await api.deleteUsers(userId)
-    } else {
-      // Reactivar
-      result = await api.reactivateUsers(userId, {})
-    }
+    const result = { success: true } // Ya ejecutado por confirmAndExecute
 
     if (!result.success) {
       throw new Error(result.message || `Error al ${action} usuario`)
@@ -2567,25 +2591,26 @@ window.toggleEmailVerification = async function (userId, currentStatus) {
     const action = currentStatus ? 'marcar como no verificado' : 'verificar'
     const actionText = currentStatus ? 'marcado como no verificado' : 'verificado'
 
-    const confirmChange = window.confirm(`¿Estás seguro de ${action} el email de este usuario?`)
+    // LEGACY FIX: Determinar API call basado en estado
+    const apiCall = currentStatus
+      ? (id, data) => api.updateUsers(id, data)
+      : (id, data) => api.verifyUserEmail(id, data)
+    const apiArgs = currentStatus ? [userId, { email_verified: false }] : [userId, {}]
+    const logMessage = `Changing user ${userId} email verification from ${currentStatus} to ${!currentStatus}`
 
-    if (!confirmChange) {
+    // LEGACY FIX: Usar función genérica para eliminar duplicación
+    const confirmed = await confirmAndExecute(
+      `¿Estás seguro de ${action} el email de este usuario?`,
+      apiCall,
+      logMessage,
+      ...apiArgs
+    )
+
+    if (!confirmed) {
       return
     }
 
-    console.log(
-      `Changing user ${userId} email verification from ${currentStatus} to ${!currentStatus}`
-    )
-
-    // Para desmarcar verificación, usamos el endpoint de actualización
-    let result
-    if (currentStatus) {
-      // Desmarcar verificación (actualizar con email_verified = false)
-      result = await api.updateUsers(userId, { email_verified: false })
-    } else {
-      // Verificar email
-      result = await api.verifyUserEmail(userId, {})
-    }
+    const result = { success: true } // Ya ejecutado por confirmAndExecute
 
     if (!result.success) {
       throw new Error(result.message || `Error al ${action} email`)

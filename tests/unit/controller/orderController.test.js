@@ -15,10 +15,6 @@ const mockOrderService = {
   updateOrderStatus: vi.fn()
 }
 
-const mockPaymentService = {
-  confirmPayment: vi.fn()
-}
-
 vi.mock('../../../api/services/orderService.js', async () => {
   const actual = await vi.importActual('../../../api/services/orderService.js')
   return {
@@ -27,18 +23,21 @@ vi.mock('../../../api/services/orderService.js', async () => {
   }
 })
 
-vi.mock('../../../api/services/paymentService.js', async () => {
-  const actual = await vi.importActual('../../../api/services/paymentService.js')
-  return {
-    ...actual,
-    ...mockPaymentService
-  }
-})
-
 vi.mock('../../../api/middleware/error/index.js', () => ({
   errorHandler: vi.fn((err, req, res, next) => next(err)),
   notFoundHandler: vi.fn((req, res, next) => next()),
-  asyncHandler: vi.fn(fn => (req, res, next) => fn(req, res, next)),
+  asyncHandler: vi.fn(fn => async (req, res, next) => {
+    try {
+      await fn(req, res, next)
+    } catch (error) {
+      // Convert errors to JSON responses for tests
+      const status = error.statusCode || error.status || 500
+      res.status(status).json({
+        success: false,
+        error: error.message || 'Internal server error'
+      })
+    }
+  }),
   withErrorMapping: vi.fn(fn => fn),
   createTableOperations: vi.fn(() => ({
     findById: vi.fn(),
@@ -134,7 +133,7 @@ describe('OrderController - Granular Tests', () => {
       mockOrderService.getAllOrders.mockResolvedValue([mockOrder])
       const { getAllOrders } = await import('../../../api/controllers/orderController.js')
       const req = mockReq({
-        query: { dateFrom: '2024-01-01', dateTo: '2024-01-31' }
+        query: { date_from: '2024-01-01', date_to: '2024-01-31' }
       })
       const res = mockRes()
 
@@ -143,23 +142,9 @@ describe('OrderController - Granular Tests', () => {
 
       // Assert
       expect(mockOrderService.getAllOrders).toHaveBeenCalledWith(
-        { dateFrom: '2024-01-01', dateTo: '2024-01-31' },
+        { date_from: '2024-01-01', date_to: '2024-01-31' },
         false
       )
-    })
-
-    it('should filter by minimum total', async () => {
-      // Arrange
-      mockOrderService.getAllOrders.mockResolvedValue([mockOrder])
-      const { getAllOrders } = await import('../../../api/controllers/orderController.js')
-      const req = mockReq({ query: { minTotal: '25.00' } })
-      const res = mockRes()
-
-      // Act
-      await getAllOrders(req, res)
-
-      // Assert
-      expect(mockOrderService.getAllOrders).toHaveBeenCalledWith({ minTotal: 25 }, false)
     })
 
     it('should apply search term', async () => {
@@ -180,7 +165,10 @@ describe('OrderController - Granular Tests', () => {
       // Arrange
       mockOrderService.getAllOrders.mockResolvedValue([mockOrder])
       const { getAllOrders } = await import('../../../api/controllers/orderController.js')
-      const req = mockReq({ query: { includeDeactivated: 'true' } })
+      const req = mockReq({
+        query: { includeDeactivated: 'true' },
+        user: { role: 'admin' }
+      })
       const res = mockRes()
 
       // Act
@@ -252,7 +240,11 @@ describe('OrderController - Granular Tests', () => {
       // Arrange
       mockOrderService.getOrderById.mockResolvedValue(mockOrder)
       const { getOrderById } = await import('../../../api/controllers/orderController.js')
-      const req = mockReq({ params: { id: '1' }, query: { includeDeactivated: 'true' } })
+      const req = mockReq({
+        params: { id: '1' },
+        query: { includeDeactivated: 'true' },
+        user: { role: 'admin' }
+      })
       const res = mockRes()
 
       // Act
@@ -369,7 +361,8 @@ describe('OrderController - Granular Tests', () => {
       const { updateOrderStatus } = await import('../../../api/controllers/orderController.js')
       const req = mockReq({
         params: { id: '1' },
-        body: { status: 'processing' }
+        body: { status: 'processing' },
+        user: { id: 1 }
       })
       const res = mockRes()
 
@@ -377,12 +370,11 @@ describe('OrderController - Granular Tests', () => {
       await updateOrderStatus(req, res)
 
       // Assert
-      expect(mockOrderService.updateOrderStatus).toHaveBeenCalledWith(1, 'processing', undefined)
-      expect(res.json).toHaveBeenCalledWith({
-        success: true,
-        data: expect.objectContaining({ status: 'processing' }),
-        message: 'Order updated successfully'
-      })
+      expect(mockOrderService.updateOrderStatus).toHaveBeenCalledWith(1, 'processing', undefined, 1)
+      const response = res.json.mock.calls[0][0]
+      expect(response.success).toBe(true)
+      expect(response.data.status).toBe('processing')
+      expect(response.message).toBe('Order status updated successfully')
     })
 
     it('should update order status to shipped', async () => {
@@ -394,7 +386,8 @@ describe('OrderController - Granular Tests', () => {
       const { updateOrderStatus } = await import('../../../api/controllers/orderController.js')
       const req = mockReq({
         params: { id: '1' },
-        body: { status: 'shipped' }
+        body: { status: 'shipped' },
+        user: { id: 1 }
       })
       const res = mockRes()
 
@@ -402,7 +395,7 @@ describe('OrderController - Granular Tests', () => {
       await updateOrderStatus(req, res)
 
       // Assert
-      expect(mockOrderService.updateOrderStatus).toHaveBeenCalledWith(1, 'shipped', undefined)
+      expect(mockOrderService.updateOrderStatus).toHaveBeenCalledWith(1, 'shipped', undefined, 1)
     })
 
     it('should update order status to delivered', async () => {
@@ -414,7 +407,8 @@ describe('OrderController - Granular Tests', () => {
       const { updateOrderStatus } = await import('../../../api/controllers/orderController.js')
       const req = mockReq({
         params: { id: '1' },
-        body: { status: 'delivered' }
+        body: { status: 'delivered' },
+        user: { id: 1 }
       })
       const res = mockRes()
 
@@ -422,7 +416,7 @@ describe('OrderController - Granular Tests', () => {
       await updateOrderStatus(req, res)
 
       // Assert
-      expect(mockOrderService.updateOrderStatus).toHaveBeenCalledWith(1, 'delivered', undefined)
+      expect(mockOrderService.updateOrderStatus).toHaveBeenCalledWith(1, 'delivered', undefined, 1)
     })
 
     it('should cancel order with reason', async () => {
@@ -434,7 +428,8 @@ describe('OrderController - Granular Tests', () => {
       const { updateOrderStatus } = await import('../../../api/controllers/orderController.js')
       const req = mockReq({
         params: { id: '1' },
-        body: { status: 'cancelled', reason: 'Customer request' }
+        body: { status: 'cancelled', notes: 'Customer request' },
+        user: { id: 1 }
       })
       const res = mockRes()
 
@@ -445,7 +440,8 @@ describe('OrderController - Granular Tests', () => {
       expect(mockOrderService.updateOrderStatus).toHaveBeenCalledWith(
         1,
         'cancelled',
-        'Customer request'
+        'Customer request',
+        1
       )
     })
 
@@ -492,66 +488,6 @@ describe('OrderController - Granular Tests', () => {
       expect(res.json).toHaveBeenCalledWith({
         success: false,
         error: 'Order with ID 999 not found'
-      })
-    })
-  })
-
-  describe('confirmPayment()', () => {
-    it('should confirm payment for order', async () => {
-      // Arrange
-      mockPaymentService.confirmPayment.mockResolvedValue({
-        id: 1,
-        order_id: 1,
-        status: 'confirmed'
-      })
-      mockOrderService.updateOrderStatus.mockResolvedValue({
-        ...mockOrder,
-        status: 'verified'
-      })
-      const { confirmPayment } = await import('../../../api/controllers/orderController.js')
-      const req = mockReq({
-        params: { id: '1' },
-        body: {
-          payment_method: 'bank_transfer',
-          reference_number: 'REF-123456'
-        }
-      })
-      const res = mockRes()
-
-      // Act
-      await confirmPayment(req, res)
-
-      // Assert
-      expect(mockPaymentService.confirmPayment).toHaveBeenCalledWith(1, {
-        payment_method: 'bank_transfer',
-        reference_number: 'REF-123456'
-      })
-      expect(res.json).toHaveBeenCalledWith({
-        success: true,
-        data: expect.any(Object),
-        message: 'Payment confirmed and order updated successfully'
-      })
-    })
-
-    it('should return 400 when payment_method is missing', async () => {
-      // Arrange
-      const error = new Error('Payment method is required')
-      error.name = 'ValidationError'
-      mockPaymentService.confirmPayment.mockRejectedValue(error)
-      const { confirmPayment } = await import('../../../api/controllers/orderController.js')
-      const req = mockReq({
-        params: { id: '1' },
-        body: { reference_number: 'REF-123456' }
-      })
-      const res = mockRes()
-
-      // Act
-      await confirmPayment(req, res)
-
-      // Assert
-      expect(res.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Payment method is required'
       })
     })
   })

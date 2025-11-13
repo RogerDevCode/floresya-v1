@@ -42,16 +42,14 @@ async function validateSQLSyntax() {
     })
 
     // 2. Verificar que no hay END; duplicados en funciones
-    const functionPattern = /CREATE\s+OR\s+REPLACE\s+FUNCTION/i
-    let _match
-    let _functionCount = 0
+    const functionPattern = /CREATE\s+OR\s+REPLACE\s+FUNCTION/gi
+    const functions = sqlContent.match(functionPattern)
+    // const functionCount = functions ? functions.length : 0 // Not currently used
 
-    while ((_match = functionPattern.exec(sqlContent)) !== null) {
-      _functionCount++
-    }
-
-    const endInFunctionPattern = /CREATE\s+OR\s+REPLACE\s+FUNCTION[^*]*\$\$[^$]*END;\s*\$\$/
+    const endInFunctionPattern = /CREATE\s+OR\s+REPLACE\s+FUNCTION[^]*?\$\$[^$]*?END;\s*\$\$/gi
     const hasEndInFunction = endInFunctionPattern.test(sqlContent)
+
+    void functions // Use to avoid unused variable warning
 
     checks.push({
       name: 'Funciones sin END; duplicado',

@@ -2,10 +2,10 @@
  * Base Repository
  * Proporciona operaciones CRUD comunes para todas las entidades
  * Implementa el patrón Repository para abstraer acceso a datos
- *
-import { NotFoundError, ConflictError } from "../errors/AppError.js"
  * @abstract
  */
+
+import { NotFoundError, ConflictError } from '../errors/AppError.js'
 
 export class BaseRepository {
   /**
@@ -96,7 +96,6 @@ export class BaseRepository {
 
     // Aplicar ordenamiento
     const orderBy = options.orderBy || 'created_at'
-    const _orderDirection = options.ascending ? 'asc' : 'desc'
     query = query.order(orderBy, { ascending: options.ascending || false })
 
     // Aplicar límites

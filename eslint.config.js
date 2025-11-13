@@ -33,14 +33,7 @@ export default [
       'no-useless-return': 'warn',
       'require-await': 'warn',
       'no-implicit-globals': 'error',
-      'no-unused-vars': [
-        'error',
-        {
-          argsIgnorePattern: '^_',
-          varsIgnorePattern: '^_',
-          caughtErrorsIgnorePattern: '^_'
-        }
-      ]
+      'no-unused-vars': ['error', { vars: 'all', args: 'none', ignoreRestSiblings: false }]
     }
   },
   {
@@ -74,7 +67,8 @@ export default [
     },
     rules: {
       'no-undef': 'off', // Disable no-undef for test globals
-      'no-restricted-globals': 'off' // Allow fetch in tests and backend
+      'no-restricted-globals': 'off', // Allow fetch in tests and backend
+      'require-await': 'off' // Allow async functions without await in tests
     }
   },
   {

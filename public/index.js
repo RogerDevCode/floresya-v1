@@ -4,6 +4,48 @@
  * Implementación con carga dinámica de módulos usando el patrón solicitado
  */
 
+// Helper to reduce console noise in production
+const shouldLogDebug = () => {
+  // Always log in development, reduce in production
+  return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+}
+
+const log = {
+  debug: (...args) => {
+    if (shouldLogDebug()) {
+      console.debug(...args)
+    }
+  },
+  info: (...args) => {
+    if (shouldLogDebug()) {
+      console.info(...args)
+    }
+  },
+  success: (...args) => {
+    if (shouldLogDebug()) {
+      console.log('✅', ...args)
+    }
+  },
+  error: (...args) => {
+    console.error('❌', ...args)
+  },
+  warn: (...args) => {
+    console.warn('⚠️', ...args)
+  }
+}
+
+// Track active event listeners to prevent memory leaks
+const eventListenerTracker = {
+  quickView: new WeakMap(),
+  cart: new WeakMap(),
+  productImage: new WeakMap(),
+  buyNow: new WeakMap(),
+  wishlist: new WeakMap(),
+
+  // Track touch feedback instances
+  touchFeedbackInstances: new Set()
+}
+
 /**
  * Show cart notification message
  * @param {string} message - Message to display
@@ -68,7 +110,7 @@ function showCartMessage(message, type = 'success') {
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    console.log('🚀 [index.js] Starting dynamic module loading...')
+    log.info('Starting dynamic module loading...')
 
     // Cargar módulos dinámicamente usando el patrón solicitado
     await Promise.all([
@@ -85,16 +127,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Nota: Los módulos se cargan dinámicamente dentro de cada función que los necesita
 
-    console.log('✅ [index.js] All modules loaded successfully')
+    log.success('All modules loaded successfully')
 
     // Ejecutar inicialización con módulos cargados dinámicamente
     await init()
 
     // Try to load cuco clock module separately (optional)
-    console.log('🔍 [CUCO DEBUG] About to import cuco clock module...')
+    log.debug('About to import cuco clock module...')
     import('./js/components/cucoClock.js')
       .then(() => {
-        console.log('✅ [index.js] Cuco clock module loaded successfully')
+        log.success('Cuco clock module loaded successfully')
 
         // Set up event listener when DOM is ready
         if (document.readyState === 'loading') {
@@ -104,38 +146,34 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       })
       .catch(error => {
-        console.warn(
-          '⚠️ [index.js] Cuco clock module failed to load, fallback will be used:',
-          error.message
-        )
+        log.debug('Cuco clock module failed to load, fallback will be used:', error.message)
       })
 
     // Function to set up the cuco clock button event listener
     function setupCucoClockButton() {
       const cucoButton = document.getElementById('cuco-clock-toggle')
       if (cucoButton) {
-        console.log('🔍 [CUCO DEBUG] Adding click listener to cuco toggle button...')
+        log.debug('Adding click listener to cuco toggle button...')
         cucoButton.addEventListener('click', e => {
           e.preventDefault()
           e.stopPropagation()
-          console.log('🔍 [CUCO DEBUG] cuco button clicked!')
 
           if (window.cucoClock) {
             window.cucoClock.toggleClock()
-            console.log('🔍 [CUCO DEBUG] window.cucoClock.toggleClock() called')
+            log.debug('window.cucoClock.toggleClock() called')
           } else {
-            console.warn('🔍 [CUCO DEBUG] window.cucoClock not available')
+            log.warn('window.cucoClock not available')
           }
         })
-        console.log('✅ Cuco clock toggle event listener added successfully')
+        log.success('Cuco clock toggle event listener added successfully')
       } else {
-        console.error('❌ Could not find cuco toggle button in DOM')
+        log.error('Could not find cuco toggle button in DOM')
       }
     }
 
-    console.log('✅ [index.js] Dynamic module system initialization complete')
+    log.success('Dynamic module system initialization complete')
   } catch (error) {
-    console.error('❌ [index.js] Failed to load modules:', error)
+    log.error('Failed to load modules:', error)
     throw error
   }
 })
@@ -214,14 +252,6 @@ function updateProgressBar(index) {
       dot.setAttribute('aria-current', i === index ? 'true' : 'false')
     })
   }
-
-  console.log(
-    '📊 Progress Bar updated:',
-    percentage + '% (slide',
-    index + 1,
-    'of',
-    totalSlides + ')'
-  )
 }
 
 /**
@@ -229,15 +259,18 @@ function updateProgressBar(index) {
  */
 function createCarouselIndicators(totalSlides) {
   const indicatorsContainer = document.getElementById('carousel-indicators')
-  if (!indicatorsContainer || totalSlides <= 1) {
+  if (!indicatorsContainer) {
     return
   }
+
+  // Always create at least one indicator for accessibility, even with 0 or 1 slide
+  const slidesCount = Math.max(totalSlides, 1)
 
   // Clear existing indicators
   indicatorsContainer.innerHTML = ''
 
   // Create dots with enhanced styling
-  for (let i = 0; i < totalSlides; i++) {
+  for (let i = 0; i < slidesCount; i++) {
     const dot = document.createElement('button')
     dot.className =
       'carousel-dot relative w-3 h-3 rounded-full bg-white bg-opacity-50 transition-all duration-300 hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-transparent'
@@ -275,8 +308,6 @@ function createCarouselIndicators(totalSlides) {
 
     indicatorsContainer.appendChild(dot)
   }
-
-  console.log(`✅ Created ${totalSlides} enhanced carousel indicators`)
 }
 
 /**
@@ -294,55 +325,25 @@ async function initCarousel() {
   // Fetch featured products from API
   let featuredProducts = []
   try {
-    console.log('🔍 [DEBUG] Starting carousel products fetch...')
-    console.log('🔍 [DEBUG] Current hostname:', window.location.hostname)
-
     // Import API module dynamically
     const { api } = await import('./js/shared/api-client.js')
-    console.log('🔍 [DEBUG] API instance available:', !!api)
 
     const result = await api.getAllCarouselProducts()
 
-    console.log('🎠 [DEBUG] Carousel API Response:', {
-      success: result.success,
-      totalProducts: result.data?.length || 0,
-      firstProduct: result.data?.[0],
-      fullResponse: result
-    })
-
     if (result.success && result.data && result.data.length > 0) {
-      // Filter: Only products WITH images (exclude products without image_url_small)
-      featuredProducts = result.data.filter(p => p.image_url_small)
-
-      console.log(
-        '🖼️ [DEBUG] Product Images Filter:',
-        featuredProducts.map(p => ({
-          id: p.id,
-          name: p.name,
-          image_url_small: p.image_url_small,
-          hasImage: !!p.image_url_small
-        }))
-      )
+      // Use all featured products - carousel handles placeholders for products without images
+      featuredProducts = result.data
 
       if (featuredProducts.length === 0) {
-        console.error('❌ [DEBUG] No carousel products with images found')
-        throw new Error('No carousel products with images found')
+        log.error('No carousel products found in response')
+        throw new Error('No carousel products found')
       }
-
-      console.log('✅ [DEBUG] Carousel products loaded successfully:', featuredProducts.length)
     } else {
-      console.error('❌ [DEBUG] No carousel products found in response')
+      log.error('No carousel products found in response')
       throw new Error('No carousel products found')
     }
   } catch (error) {
-    console.error('❌ [DEBUG] Failed to load carousel products:', error)
-    console.error('❌ [DEBUG] Error details:', {
-      message: error.message,
-      stack: error.stack,
-      name: error.name,
-      hostname: window.location.hostname,
-      apiAvailable: typeof api !== 'undefined'
-    })
+    log.error('Failed to load carousel products:', error)
 
     // More informative error message
     const errorMsg =
@@ -379,6 +380,13 @@ async function initCarousel() {
       const imageUrl = product.image_url_small || './images/placeholder-flower.svg'
       const price = product.price_usd || 0
       const description = product.description || 'Hermoso arreglo floral'
+
+      // DEBUG: Log image URL information
+      log.debug(`Carousel slide ${index + 1} - Product ${product.id} (${product.name}):`, {
+        hasImageUrlSmall: !!product.image_url_small,
+        imageUrl: imageUrl,
+        isPlaceholder: imageUrl === './images/placeholder-flower.svg'
+      })
 
       return `
     <div class="carousel-slide ${index === 0 ? 'active' : ''} absolute inset-0 transition-opacity duration-500 ${index === 0 ? 'opacity-100' : 'opacity-0'}" data-slide="${index}" data-product-id="${product.id}">
@@ -816,10 +824,7 @@ let isLoading = false // ← Variable faltante para control de estado de carga
 
 async function initProductsGrid() {
   // Initialize Model 4 filters first (before loading products)
-  initEnhancedFilters()
-
-  // Load occasions first, then products with Model 4 filters
-  await loadOccasionsFilter()
+  await initEnhancedFilters()
 
   // Add a small delay to ensure DOM is fully ready and API server is responsive
   await new Promise(resolve => setTimeout(resolve, 100))
@@ -830,35 +835,8 @@ async function initProductsGrid() {
   // Initialize pull-to-refresh on the products container
   initPullToRefresh()
 
-  // Search functionality
-  const searchInput = document.getElementById('searchInput')
-  const occasionFilter = document.getElementById('occasionFilter')
-  const sortFilter = document.getElementById('sortFilter')
-
-  if (searchInput) {
-    let searchTimeout
-    searchInput.addEventListener('input', () => {
-      clearTimeout(searchTimeout)
-      searchTimeout = setTimeout(() => {
-        currentPage = 1
-        loadProducts(currentPage)
-      }, 500)
-    })
-  }
-
-  if (occasionFilter) {
-    occasionFilter.addEventListener('change', () => {
-      currentPage = 1
-      loadProducts(currentPage)
-    })
-  }
-
-  if (sortFilter) {
-    sortFilter.addEventListener('change', () => {
-      currentPage = 1
-      loadProducts(currentPage)
-    })
-  }
+  // Search, occasion, and sort functionality - handled in initEnhancedFilters
+  // These filters are properly implemented there with global state management
 }
 
 /**
@@ -944,40 +922,230 @@ function showToast(message, type = 'info') {
 }
 
 /**
- * Load occasions from API and populate filter dropdown
+ * Load occasions from API and populate filter buttons
  */
 async function loadOccasionsFilter() {
+  console.log('[DEBUG] loadOccasionsFilter() called')
+  const quickFilters = document.getElementById('quickFilters')
   const occasionFilter = document.getElementById('occasionFilter')
-  if (!occasionFilter) {
+  if (!quickFilters) {
+    console.error('[DEBUG] #quickFilters element not found!')
+    return
+  }
+  console.log('[DEBUG] #quickFilters found:', quickFilters)
+
+  let occasions = []
+  let isApiSuccess = false
+
+  try {
+    // Try to load from API
+    const { api } = await import('./js/shared/api-client.js')
+    console.log('[DEBUG] API module imported')
+    const result = await api.getAllOccasions()
+    console.log('[DEBUG] API result:', result)
+
+    if (result.success && result.data && result.data.length > 0) {
+      occasions = result.data
+      isApiSuccess = true
+      console.log(`✅ [DEBUG] Loaded ${occasions.length} occasions from API`)
+    } else {
+      console.warn('⚠️ [DEBUG] API returned no valid data, using fallback')
+    }
+  } catch (error) {
+    console.error('❌ [DEBUG] API call failed:', error.message)
+
+    // Mostrar notificación amigable al usuario
+    showCartMessage(
+      '⚠️ No se pudieron cargar los filtros de ocasiones. Usando opciones básicas.',
+      'info'
+    )
+
+    // Usar fallback de ocasiones básicas para no romper la funcionalidad
+    occasions = [
+      { id: 1, name: 'Amor', slug: 'amor', active: true },
+      { id: 2, name: 'Cumpleaños', slug: 'cumpleanos', active: true },
+      { id: 3, name: 'Aniversario', slug: 'aniversario', active: true },
+      { id: 4, name: 'Gracias', slug: 'gracias', active: true }
+    ]
+    isApiSuccess = true // Consideramos exitoso el fallback
+    console.log('🔄 [DEBUG] Using fallback occasions data')
+  }
+
+  // Verify we have data
+  if (!isApiSuccess || occasions.length === 0) {
+    console.error('❌ [CRITICAL] No occasions data available')
+
+    // Mostrar error crítico al usuario
+    showCartMessage(
+      '❌ Error crítico: No hay filtros disponibles. Por favor recarga la página.',
+      'error'
+    )
+
+    // Deshabilitar filtros y mostrar mensaje
+    quickFilters.innerHTML = `
+      <div class="text-center py-4 px-4 bg-red-50 border border-red-200 rounded-lg">
+        <p class="text-red-700 font-medium">No se pueden cargar los filtros en este momento.</p>
+        <button onclick="location.reload()" class="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors">
+          Recargar página
+        </button>
+      </div>
+    `
     return
   }
 
-  try {
-    // Import API module dynamically
-    const { api } = await import('./js/shared/api-client.js')
-    const result = await api.getAllOccasions()
+  console.log(`[DEBUG] Processing ${occasions.length} occasions for buttons`)
 
-    if (!result.success || !result.data) {
-      console.error('Failed to load occasions:', result)
+  // Remove any existing occasion filter buttons (except "Todos")
+  const existingButtons = quickFilters.querySelectorAll('.model-4-filter[data-occasion]')
+  existingButtons.forEach(btn => btn.remove())
+  console.log(`[DEBUG] Removed ${existingButtons.length} existing occasion buttons`)
+
+  // Add dynamic occasion filter buttons after "Todos"
+  const todosButton = document.getElementById('filter-all')
+  let buttonCount = 0
+
+  occasions.forEach(occasion => {
+    // Only show active occasions
+    if (!occasion.active) {
       return
     }
 
-    // Clear existing options except "Todas las ocasiones"
-    occasionFilter.innerHTML = '<option value="">Todas las ocasiones</option>'
+    // Filter out test/development data and unauthorized occasions
+    const isTestData =
+      occasion.slug.includes('test_') ||
+      occasion.slug.includes('status-test-occasion-') ||
+      occasion.name.includes('Test') ||
+      occasion.slug.includes('unauthorized')
 
-    // Add dynamic options from API
-    result.data.forEach(occasion => {
-      const option = document.createElement('option')
-      option.value = occasion.slug
-      option.textContent = occasion.name
-      occasionFilter.appendChild(option)
+    if (isTestData) {
+      console.log(`[DEBUG] Skipping test data: ${occasion.name}`)
+      return
+    }
+
+    const button = document.createElement('button')
+    button.className = 'model-4-filter'
+    button.setAttribute('data-filter', occasion.slug)
+    button.setAttribute('data-occasion', occasion.slug)
+    button.textContent = occasion.name
+    button.id = `filter-${occasion.slug}`
+
+    // Mejorar accesibilidad con atributos ARIA
+    button.setAttribute('role', 'button')
+    button.setAttribute('aria-pressed', 'false')
+    button.setAttribute('aria-describedby', `filter-${occasion.slug}-desc`)
+
+    // Crear descripción para screen readers
+    const descSpan = document.createElement('span')
+    descSpan.id = `filter-${occasion.slug}-desc`
+    descSpan.className = 'sr-only'
+    descSpan.textContent = `Filtrar productos por ocasión: ${occasion.name}`
+
+    // Add keyboard event listener for accessibility
+    button.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        console.log(
+          `[DEBUG] Occasion button activated via keyboard: ${occasion.name} (${occasion.slug})`
+        )
+        handleOccasionFilterClick(e, occasion.slug)
+      }
     })
 
-    console.info(`✓ Loaded ${result.data.length} occasions from API`)
-  } catch (error) {
-    console.error('❌ Failed to load occasions:', error)
-    throw error
+    // Add click event listener
+    button.addEventListener('click', e => {
+      console.log(`[DEBUG] Occasion button clicked: ${occasion.name} (${occasion.slug})`)
+      handleOccasionFilterClick(e, occasion.slug)
+    })
+
+    // Insert after "Todos" button
+    if (todosButton) {
+      todosButton.insertAdjacentElement('afterend', button)
+      todosButton.insertAdjacentElement('afterend', descSpan)
+    } else {
+      quickFilters.appendChild(button)
+      quickFilters.appendChild(descSpan)
+    }
+    buttonCount++
+    console.log(`[DEBUG] Created button: ${occasion.name} (${occasion.slug})`)
+  })
+
+  // Also update the hidden dropdown for backend compatibility
+  if (occasionFilter) {
+    occasionFilter.innerHTML = '<option value="">Todas las ocasiones</option>'
+    occasions.forEach(occasion => {
+      if (occasion.active) {
+        // Filter out test data
+        const isTestData =
+          occasion.slug.includes('test_') ||
+          occasion.slug.includes('status-test-occasion-') ||
+          occasion.name.includes('Test') ||
+          occasion.slug.includes('unauthorized')
+
+        if (!isTestData) {
+          const option = document.createElement('option')
+          option.value = occasion.slug
+          option.textContent = occasion.name
+          occasionFilter.appendChild(option)
+        }
+      }
+    })
   }
+
+  console.log(`✅ [DEBUG] Created ${buttonCount} occasion filter buttons`)
+}
+
+/**
+ * Handle occasion filter button click
+ */
+function handleOccasionFilterClick(event, occasionSlug) {
+  console.log(`[DEBUG] handleOccasionFilterClick called with: ${occasionSlug}`)
+
+  // Update active state
+  const filterTags = document.querySelectorAll('.model-4-filter')
+  console.log(`[DEBUG] Found ${filterTags.length} filter buttons to process`)
+
+  // Remove 'active' from ALL buttons
+  filterTags.forEach((tag, _index) => {
+    tag.classList.remove('active')
+    // Actualizar estado ARIA para todos los botones
+    tag.setAttribute('aria-pressed', 'false')
+  })
+
+  // DEBUG: Check state immediately after removing 'active'
+  const afterRemove = document.querySelectorAll('.model-4-filter.active')
+  console.log(`[DEBUG] After remove 'active': ${afterRemove.length} buttons still have 'active'`)
+  if (afterRemove.length > 0) {
+    afterRemove.forEach(btn => {
+      console.log(`[DEBUG] Still active: ${btn.id}`)
+    })
+  }
+
+  event.currentTarget.classList.add('active')
+  // Actualizar estado ARIA para el botón activo
+  event.currentTarget.setAttribute('aria-pressed', 'true')
+
+  // Verify only one button is active
+  const activeButtons = document.querySelectorAll('.model-4-filter.active')
+  console.log(`[DEBUG] After update: ${activeButtons.length} button(s) with 'active' class`)
+  if (activeButtons.length > 1) {
+    console.warn(`[WARN] Multiple buttons are active! This should not happen.`)
+  }
+
+  // Update global filter state
+  window.currentFilters.occasion = occasionSlug
+
+  console.log(`[DEBUG] Updated filters:`, window.currentFilters)
+
+  // Reload products with new filter
+  currentPage = 1
+  loadProductsWithFilters(currentPage)
+
+  // Enhanced haptic feedback
+  if ('vibrate' in navigator && 'ontouchstart' in window) {
+    navigator.vibrate([20, 10])
+  }
+
+  log.debug(`Occasion filter applied: ${occasionSlug}`)
 }
 
 async function loadProducts(page = 1) {
@@ -1312,10 +1480,23 @@ function renderPagination(container, currentPage, hasMore) {
  * Add click handlers for quick-view buttons (eye icon)
  */
 function addQuickViewHandlers() {
+  // Remove existing listeners to prevent duplicates
+  const existingQuickViewBtns = document.querySelectorAll(
+    '.quick-view-btn[data-action="quick-view"]'
+  )
+  existingQuickViewBtns.forEach(btn => {
+    const existingHandler = eventListenerTracker.quickView.get(btn)
+    if (existingHandler) {
+      btn.removeEventListener('click', existingHandler)
+      eventListenerTracker.quickView.delete(btn)
+    }
+  })
+
+  // Add new listeners
   const quickViewBtns = document.querySelectorAll('.quick-view-btn[data-action="quick-view"]')
 
   quickViewBtns.forEach(btn => {
-    btn.addEventListener('click', e => {
+    const handler = e => {
       e.preventDefault()
       const productId = btn.getAttribute('data-product-id')
 
@@ -1326,7 +1507,10 @@ function addQuickViewHandlers() {
 
       // Navigate to product detail page
       window.location.href = `/pages/product-detail.html?id=${productId}`
-    })
+    }
+
+    btn.addEventListener('click', handler)
+    eventListenerTracker.quickView.set(btn, handler)
   })
 }
 
@@ -1334,12 +1518,26 @@ function addQuickViewHandlers() {
  * Add click handlers for cart buttons (shopping cart icon) - Enhanced
  */
 function addCartButtonHandlers() {
+  // Remove existing listeners to prevent duplicates
+  const existingCartBtns = document.querySelectorAll(
+    '.add-to-cart-btn[data-action="add-to-cart"], .model-4-cart[data-action="add-to-cart"]'
+  )
+
+  existingCartBtns.forEach(btn => {
+    const existingHandler = eventListenerTracker.cart.get(btn)
+    if (existingHandler) {
+      btn.removeEventListener('click', existingHandler)
+      eventListenerTracker.cart.delete(btn)
+    }
+  })
+
+  // Add new listeners
   const cartBtns = document.querySelectorAll(
     '.add-to-cart-btn[data-action="add-to-cart"], .model-4-cart[data-action="add-to-cart"]'
   )
 
   cartBtns.forEach(btn => {
-    btn.addEventListener('click', async e => {
+    const handler = async e => {
       e.preventDefault()
       const productId = parseInt(btn.getAttribute('data-product-id'), 10)
 
@@ -1409,7 +1607,10 @@ function addCartButtonHandlers() {
           showCartMessage('❌ Error al agregar al carrito', 'error')
         }
       }
-    })
+    }
+
+    btn.addEventListener('click', handler)
+    eventListenerTracker.cart.set(btn, handler)
   })
 }
 
@@ -1431,15 +1632,25 @@ function addProductImageHandlers() {
       return
     }
 
-    // Add click handler to the entire carousel container (which contains the images)
-    carouselContainer.addEventListener('click', e => {
+    // Remove existing listener to prevent duplicates
+    const existingHandler = eventListenerTracker.productImage.get(carouselContainer)
+    if (existingHandler) {
+      carouselContainer.removeEventListener('click', existingHandler)
+      eventListenerTracker.productImage.delete(carouselContainer)
+    }
+
+    // Add new click handler
+    const handler = e => {
       // Only handle clicks on images, not on other elements
       if (e.target.tagName.toLowerCase() === 'img') {
         e.preventDefault()
         // Navigate to product detail page
         window.location.href = `/pages/product-detail.html?id=${productId}`
       }
-    })
+    }
+
+    carouselContainer.addEventListener('click', handler)
+    eventListenerTracker.productImage.set(carouselContainer, handler)
 
     // Make images look clickable
     const images = carouselContainer.querySelectorAll('img')
@@ -1454,12 +1665,26 @@ function addProductImageHandlers() {
  * Add click handlers for buy now buttons (zap icon)
  */
 function addBuyNowHandlers() {
+  // Remove existing listeners to prevent duplicates
+  const existingBuyNowBtns = document.querySelectorAll(
+    '.buy-now-btn[data-action="buy-now"], .model-4-buy[data-action="buy-now"]'
+  )
+
+  existingBuyNowBtns.forEach(btn => {
+    const existingHandler = eventListenerTracker.buyNow.get(btn)
+    if (existingHandler) {
+      btn.removeEventListener('click', existingHandler)
+      eventListenerTracker.buyNow.delete(btn)
+    }
+  })
+
+  // Add new listeners
   const buyNowBtns = document.querySelectorAll(
     '.buy-now-btn[data-action="buy-now"], .model-4-buy[data-action="buy-now"]'
   )
 
   buyNowBtns.forEach(btn => {
-    btn.addEventListener('click', async e => {
+    const handler = async e => {
       e.preventDefault()
       const productId = parseInt(btn.getAttribute('data-product-id'), 10)
 
@@ -1509,7 +1734,10 @@ function addBuyNowHandlers() {
         console.error('Failed to buy now:', error)
         // Could show error toast here
       }
-    })
+    }
+
+    btn.addEventListener('click', handler)
+    eventListenerTracker.buyNow.set(btn, handler)
   })
 }
 
@@ -1517,10 +1745,22 @@ function addBuyNowHandlers() {
  * Add click handlers for wishlist buttons (heart icon)
  */
 function addWishlistHandlers() {
+  // Remove existing listeners to prevent duplicates
+  const existingWishlistBtns = document.querySelectorAll('[data-wishlist-product-id]')
+
+  existingWishlistBtns.forEach(btn => {
+    const existingHandler = eventListenerTracker.wishlist.get(btn)
+    if (existingHandler) {
+      btn.removeEventListener('click', existingHandler)
+      eventListenerTracker.wishlist.delete(btn)
+    }
+  })
+
+  // Add new listeners
   const wishlistBtns = document.querySelectorAll('[data-wishlist-product-id]')
 
   wishlistBtns.forEach(btn => {
-    btn.addEventListener('click', e => {
+    const handler = e => {
       e.preventDefault()
       e.stopPropagation()
 
@@ -1556,10 +1796,13 @@ function addWishlistHandlers() {
         // await toggleWishlist(productId)
       } catch (error) {
         console.error('Failed to toggle wishlist:', error)
-        // Revert visual state on error
+        // Revert visual feedback on error
         heartIcon.textContent = isLiked ? '❤️' : '🤍'
       }
-    })
+    }
+
+    btn.addEventListener('click', handler)
+    eventListenerTracker.wishlist.set(btn, handler)
   })
 }
 
@@ -1567,6 +1810,16 @@ function addWishlistHandlers() {
  * Initialize touch feedback for product cards and their interactive elements
  */
 async function initProductCardTouchFeedback() {
+  // Clean up existing touch feedback instances first
+  const existingInstances = eventListenerTracker.touchFeedbackInstances
+  for (const instance of existingInstances) {
+    if (instance.destroy) {
+      instance.destroy()
+    }
+  }
+  // Clear the set of tracked instances
+  existingInstances.clear()
+
   // Import TouchFeedback module dynamically
   const { TouchFeedback } = await import('./js/shared/touchFeedback.js')
 
@@ -1581,6 +1834,7 @@ async function initProductCardTouchFeedback() {
       duration: 150
     })
     cardFeedback.init(card)
+    eventListenerTracker.touchFeedbackInstances.add(cardFeedback)
 
     // Add ripple feedback to quick view buttons
     const quickViewBtn = card.querySelector('.quick-view-btn')
@@ -1592,6 +1846,7 @@ async function initProductCardTouchFeedback() {
         duration: 300
       })
       quickViewFeedback.init(quickViewBtn)
+      eventListenerTracker.touchFeedbackInstances.add(quickViewFeedback)
     }
 
     // Add ripple feedback to add to cart buttons
@@ -1604,6 +1859,7 @@ async function initProductCardTouchFeedback() {
         duration: 300
       })
       cartFeedback.init(addToCartBtn)
+      eventListenerTracker.touchFeedbackInstances.add(cartFeedback)
     }
 
     // Add ripple feedback to buy now buttons
@@ -1616,6 +1872,7 @@ async function initProductCardTouchFeedback() {
         duration: 300
       })
       buyNowFeedback.init(buyNowBtn)
+      eventListenerTracker.touchFeedbackInstances.add(buyNowFeedback)
     }
 
     // Add scale feedback to carousel container
@@ -1628,6 +1885,7 @@ async function initProductCardTouchFeedback() {
         duration: 150
       })
       carouselFeedback.init(carouselContainer)
+      eventListenerTracker.touchFeedbackInstances.add(carouselFeedback)
     }
   })
 
@@ -1641,6 +1899,7 @@ async function initProductCardTouchFeedback() {
       duration: 150
     })
     feedback.init(btn)
+    eventListenerTracker.touchFeedbackInstances.add(feedback)
   })
 
   // Initialize touch feedback for filter and sort controls
@@ -1654,6 +1913,7 @@ async function initProductCardTouchFeedback() {
       duration: 200
     })
     feedback.init(searchInput)
+    eventListenerTracker.touchFeedbackInstances.add(feedback)
   }
 
   const occasionFilter = document.getElementById('occasionFilter')
@@ -1666,6 +1926,7 @@ async function initProductCardTouchFeedback() {
       duration: 200
     })
     feedback.init(occasionFilter)
+    eventListenerTracker.touchFeedbackInstances.add(feedback)
   }
 
   const sortFilter = document.getElementById('sortFilter')
@@ -1678,52 +1939,99 @@ async function initProductCardTouchFeedback() {
       duration: 200
     })
     feedback.init(sortFilter)
+    eventListenerTracker.touchFeedbackInstances.add(feedback)
   }
 
   console.log('✅ Touch feedback initialized for product cards')
 }
 
 /**
- * Initialize Enhanced Filters Functionality (Modelo 4 - Integrated Filters)
+ * Clean up all event listeners and resources to prevent memory leaks
  */
-function initEnhancedFilters() {
-  // Initialize global filter state for Model 4
+function cleanupEventListeners() {
+  // Remove quick view handlers
+  const existingQuickViewBtns = document.querySelectorAll(
+    '.quick-view-btn[data-action="quick-view"]'
+  )
+  existingQuickViewBtns.forEach(btn => {
+    const existingHandler = eventListenerTracker.quickView.get(btn)
+    if (existingHandler) {
+      btn.removeEventListener('click', existingHandler)
+      eventListenerTracker.quickView.delete(btn)
+    }
+  })
+
+  // Remove cart handlers
+  const existingCartBtns = document.querySelectorAll(
+    '.add-to-cart-btn[data-action="add-to-cart"], .model-4-cart[data-action="add-to-cart"]'
+  )
+  existingCartBtns.forEach(btn => {
+    const existingHandler = eventListenerTracker.cart.get(btn)
+    if (existingHandler) {
+      btn.removeEventListener('click', existingHandler)
+      eventListenerTracker.cart.delete(btn)
+    }
+  })
+
+  // Remove buy now handlers
+  const existingBuyNowBtns = document.querySelectorAll(
+    '.buy-now-btn[data-action="buy-now"], .model-4-buy[data-action="buy-now"]'
+  )
+  existingBuyNowBtns.forEach(btn => {
+    const existingHandler = eventListenerTracker.buyNow.get(btn)
+    if (existingHandler) {
+      btn.removeEventListener('click', existingHandler)
+      eventListenerTracker.buyNow.delete(btn)
+    }
+  })
+
+  // Remove wishlist handlers
+  const existingWishlistBtns = document.querySelectorAll('[data-wishlist-product-id]')
+  existingWishlistBtns.forEach(btn => {
+    const existingHandler = eventListenerTracker.wishlist.get(btn)
+    if (existingHandler) {
+      btn.removeEventListener('click', existingHandler)
+      eventListenerTracker.wishlist.delete(btn)
+    }
+  })
+
+  // Clean up touch feedback instances
+  const existingInstances = eventListenerTracker.touchFeedbackInstances
+  for (const instance of existingInstances) {
+    if (instance.destroy) {
+      instance.destroy()
+    }
+  }
+  existingInstances.clear()
+
+  // Remove product image handlers
+  const productCards = document.querySelectorAll('.product-card')
+  productCards.forEach(card => {
+    const carouselContainer = card.querySelector('[data-carousel-container]')
+    if (carouselContainer) {
+      const existingHandler = eventListenerTracker.productImage.get(carouselContainer)
+      if (existingHandler) {
+        carouselContainer.removeEventListener('click', existingHandler)
+        eventListenerTracker.productImage.delete(carouselContainer)
+      }
+    }
+  })
+}
+
+/**
+ * Initialize Enhanced Filters Functionality (Occasion Filters Only)
+ */
+async function initEnhancedFilters() {
+  // Initialize global filter state (occasions only)
   window.currentFilters = {
-    category: 'all', // 'all', 'ramos', 'plantas', 'arreglos', 'premium'
     sort: 'created_desc',
     priceRange: '',
-    search: ''
+    search: '',
+    occasion: ''
   }
 
-  // Quick filter buttons functionality (Modelo 4)
-  const filterTags = document.querySelectorAll('.model-4-filter')
-
-  filterTags.forEach(tag => {
-    tag.addEventListener('click', e => {
-      const filter = e.currentTarget.getAttribute('data-filter')
-
-      // Update active state
-      filterTags.forEach(t => {
-        t.classList.remove('active')
-      })
-
-      e.currentTarget.classList.add('active')
-
-      // Update global filter state
-      window.currentFilters.category = filter
-
-      // Reload products with new filter
-      currentPage = 1
-      loadProductsWithFilters(currentPage)
-
-      // Enhanced haptic feedback
-      if ('vibrate' in navigator && 'ontouchstart' in window) {
-        navigator.vibrate([20, 10])
-      }
-
-      console.log(`🔍 [Modelo 4] Quick filter applied: ${filter}`)
-    })
-  })
+  // Load occasions filter buttons from API
+  await loadOccasionsFilter()
 
   // Sort filter functionality
   const sortFilter = document.getElementById('sortFilter')
@@ -1732,7 +2040,7 @@ function initEnhancedFilters() {
       window.currentFilters.sort = e.target.value
       currentPage = 1
       loadProductsWithFilters(currentPage)
-      console.log(`📊 [Modelo 4] Sort applied: ${e.target.value}`)
+      console.log(`📊 [Occasion Filters] Sort applied: ${e.target.value}`)
     })
   }
 
@@ -1743,11 +2051,11 @@ function initEnhancedFilters() {
       window.currentFilters.priceRange = e.target.value
       currentPage = 1
       loadProductsWithFilters(currentPage)
-      console.log(`💰 [Modelo 4] Price range filter: ${e.target.value}`)
+      console.log(`💰 [Occasion Filters] Price range filter: ${e.target.value}`)
     })
   }
 
-  // Enhanced search input with debounced search (Modelo 4)
+  // Enhanced search input with debounced search
   const searchInput = document.getElementById('searchInput')
   if (searchInput) {
     let searchTimeout
@@ -1776,7 +2084,7 @@ function initEnhancedFilters() {
     })
   }
 
-  console.log('✅ [Modelo 4] Enhanced filters initialized successfully')
+  console.log('✅ [Occasion Filters] Initialized successfully')
 }
 
 /**
@@ -1872,15 +2180,83 @@ async function initializeProductImages() {
 }
 
 /**
- * Load Products with Enhanced Filters (Modelo 4 - Baymard Research)
+ * Get human-readable description of sort option
+ * @param {string} sortOption - Sort option value
+ * @returns {string} Human-readable sort description
  */
+function getSortDescription(sortOption) {
+  const sortDescriptions = {
+    created_desc: 'más recientes',
+    price_asc: 'precio menor a mayor',
+    price_desc: 'precio mayor a menor',
+    name_asc: 'nombre A a Z',
+    rating_desc: 'mejor valorados'
+  }
+  return sortDescriptions[sortOption] || 'más recientes'
+}
+
+/**
+ * Load Products with Enhanced Filters (Occasion Filters)
+ */
+let currentRequestAbortController = null
+
 async function loadProductsWithFilters(page) {
   const productsContainer = document.getElementById('productsContainer')
   if (!productsContainer || isLoading) {
     return
   }
 
+  // Cancel any previous request to prevent race conditions
+  if (currentRequestAbortController) {
+    currentRequestAbortController.abort()
+  }
+
+  // Create a new AbortController for this request
+  currentRequestAbortController = new AbortController()
+
   isLoading = true
+
+  // Mostrar estado de carga en los filtros
+  const filterButtons = document.querySelectorAll('.model-4-filter')
+  const searchInput = document.getElementById('searchInput')
+  const sortFilter = document.getElementById('sortFilter')
+  const priceRange = document.getElementById('priceRange')
+
+  // Deshabilitar filtros durante la carga
+  filterButtons.forEach(btn => {
+    btn.disabled = true
+    btn.classList.add('opacity-50', 'cursor-not-allowed')
+  })
+
+  if (searchInput) {
+    searchInput.disabled = true
+    searchInput.classList.add('opacity-50', 'cursor-not-allowed')
+  }
+
+  if (sortFilter) {
+    sortFilter.disabled = true
+    sortFilter.classList.add('opacity-50', 'cursor-not-allowed')
+  }
+
+  if (priceRange) {
+    priceRange.disabled = true
+    priceRange.classList.add('opacity-50', 'cursor-not-allowed')
+  }
+
+  // Create ARIA live region if it doesn't exist
+  let loadingAnnouncement = document.getElementById('filter-loading-announcement')
+  if (!loadingAnnouncement) {
+    loadingAnnouncement = document.createElement('div')
+    loadingAnnouncement.id = 'filter-loading-announcement'
+    loadingAnnouncement.setAttribute('aria-live', 'polite')
+    loadingAnnouncement.setAttribute('aria-atomic', 'true')
+    loadingAnnouncement.className = 'sr-only'
+    document.body.appendChild(loadingAnnouncement)
+  }
+
+  // Announce loading to screen readers
+  loadingAnnouncement.textContent = `Filtrando productos por ${window.currentFilters.occasion || 'todos'}, ordenando por ${getSortDescription(window.currentFilters.sort)}, ${window.currentFilters.search ? `buscando "${window.currentFilters.search}"` : ''}${window.currentFilters.priceRange ? `, rango de precio ${window.currentFilters.priceRange}` : ''}`
+
   productsContainer.innerHTML = `
     <div class="col-span-full text-center py-12">
       <div class="inline-flex items-center gap-2">
@@ -1896,18 +2272,29 @@ async function loadProductsWithFilters(page) {
       window.currentFilters
     )
 
+    // Transform priceRange to price_min/price_max for backend compatibility
+    let priceParams = {}
+    if (window.currentFilters.priceRange) {
+      const priceRange = window.currentFilters.priceRange
+      if (priceRange === '0-30') {
+        priceParams = { price_min: 0, price_max: 30 }
+      } else if (priceRange === '30-60') {
+        priceParams = { price_min: 30, price_max: 60 }
+      } else if (priceRange === '60-100') {
+        priceParams = { price_min: 60, price_max: 100 }
+      } else if (priceRange === '100+') {
+        priceParams = { price_min: 100 }
+      }
+    }
+
     // Build query parameters based on filters
     const params = new URLSearchParams({
       page,
       limit: PRODUCTS_PER_PAGE,
       sort: window.currentFilters.sort,
       ...(window.currentFilters.search && { search: window.currentFilters.search }),
-      ...(window.currentFilters.priceRange && { priceRange: window.currentFilters.priceRange }),
-      ...(window.currentFilters.occasion && { occasion: window.currentFilters.occasion }),
-      // Map category filters to meaningful API parameters
-      ...(window.currentFilters.category !== 'all' && {
-        category: mapCategoryToApiParam(window.currentFilters.category)
-      })
+      ...priceParams,
+      ...(window.currentFilters.occasion && { occasion: window.currentFilters.occasion })
     })
 
     console.log('📋 [Modelo 4] API Request params:', Object.fromEntries(params))
@@ -1918,17 +2305,21 @@ async function loadProductsWithFilters(page) {
       page: page,
       sort: window.currentFilters.sort,
       ...(window.currentFilters.search && { search: window.currentFilters.search }),
-      ...(window.currentFilters.priceRange && { priceRange: window.currentFilters.priceRange }),
-      ...(window.currentFilters.occasion && { occasion: window.currentFilters.occasion }),
-      // Map category filters to meaningful API parameters
-      ...(window.currentFilters.category !== 'all' && {
-        category: mapCategoryToApiParam(window.currentFilters.category)
-      })
+      ...priceParams,
+      ...(window.currentFilters.occasion && { occasion: window.currentFilters.occasion })
     }
 
     // Import API module dynamically and use getAllProducts method
     const { api } = await import('./js/shared/api-client.js')
-    const result = await api.getAllProducts(apiParams)
+    const result = await api.getAllProducts(apiParams, {
+      signal: currentRequestAbortController.signal
+    })
+
+    // Only proceed if this request hasn't been cancelled
+    if (currentRequestAbortController.signal.aborted) {
+      console.log('Request was cancelled, not updating UI')
+      return
+    }
 
     console.log('✅ [Modelo 4] Filtered products loaded:', result.data.length)
 
@@ -1938,64 +2329,123 @@ async function loadProductsWithFilters(page) {
 
     // Check if any products were returned
     if (!result.data || result.data.length === 0) {
-      console.warn('⚠️ [Modelo 4] No products found for current filters')
-      productsContainer.innerHTML = `
-        <div class="col-span-full text-center py-12">
-          <div class="text-gray-500">
-            <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-            </svg>
-            <h3 class="text-lg font-medium mb-2">No se encontraron productos</h3>
-            <p class="text-sm text-gray-400">Intenta ajustar los filtros para ver más resultados</p>
+      // Only update UI if this request wasn't cancelled
+      if (!currentRequestAbortController.signal.aborted) {
+        console.warn('⚠️ [Modelo 4] No products found for current filters')
+        productsContainer.innerHTML = `
+          <div class="col-span-full text-center py-12">
+            <div class="text-gray-500">
+              <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+              </svg>
+              <h3 class="text-lg font-medium mb-2">No se encontraron productos</h3>
+              <p class="text-sm text-gray-400">Intenta ajustar los filtros para ver más resultados</p>
+            </div>
           </div>
-        </div>
-      `
+        `
+
+        // Announce no results to screen readers
+        const loadingAnnouncement = document.getElementById('filter-loading-announcement')
+        if (loadingAnnouncement) {
+          loadingAnnouncement.textContent = 'No se encontraron productos con los filtros actuales'
+        }
+      }
       return
     }
 
-    // Render products with Model 4 styling
-    productsContainer.innerHTML = result.data
-      .map(product => createProductCardModel4(product))
-      .join('')
+    // Only update UI if this request wasn't cancelled
+    if (!currentRequestAbortController.signal.aborted) {
+      // Render products with Model 4 styling
+      productsContainer.innerHTML = result.data
+        .map(product => createProductCardModel4(product))
+        .join('')
 
-    // Initialize handlers for new products (Modelo 4)
-    // Note: initializeProductCarousels no existe - los productos se renderizan directamente
-    addQuickViewHandlers()
-    addCartButtonHandlers()
-    addProductImageHandlers()
-    addBuyNowHandlers()
-    addWishlistHandlers()
-    initProductCardTouchFeedback()
+      // Initialize handlers for new products (Modelo 4)
+      // Note: initializeProductCarousels no existe - los productos se renderizan directamente
+      addQuickViewHandlers()
+      addCartButtonHandlers()
+      addProductImageHandlers()
+      addBuyNowHandlers()
+      addWishlistHandlers()
+      initProductCardTouchFeedback()
 
-    // Initialize image loading with retry mechanism for first page load
-    // Small delay to ensure DOM is fully ready
-    setTimeout(() => {
-      initializeProductImages()
-    }, 50)
+      // Initialize image loading with retry mechanism for first page load
+      // Small delay to ensure DOM is fully ready
+      setTimeout(() => {
+        initializeProductImages()
+      }, 50)
 
-    // Render pagination
-    const paginationContainer = document.getElementById('pagination')
-    if (paginationContainer) {
-      const hasMore = result.data.length === PRODUCTS_PER_PAGE
-      renderPagination(paginationContainer, page, hasMore)
-    }
+      // Render pagination
+      const paginationContainer = document.getElementById('pagination')
+      if (paginationContainer) {
+        const hasMore = result.data.length === PRODUCTS_PER_PAGE
+        renderPagination(paginationContainer, page, hasMore)
+      }
 
-    // Update URL without page reload for better UX
-    updateUrlWithFilters()
+      // Update URL without page reload for better UX
+      updateUrlWithFilters()
+
+      // Announce results to screen readers and move focus for accessibility
+      const loadingAnnouncement = document.getElementById('filter-loading-announcement')
+      if (loadingAnnouncement) {
+        loadingAnnouncement.textContent = `Se han cargado ${result.data.length} productos filtrados correctamente`
+      }
+
+      // Move focus to the products container for screen reader users
+      productsContainer.setAttribute('tabindex', '-1')
+      productsContainer.focus()
+      // Remove tabindex after focus to prevent it from being focusable in normal tab order
+      setTimeout(() => {
+        productsContainer.removeAttribute('tabindex')
+      }, 100)
+    } // Close the if (!currentRequestAbortController.signal.aborted) block
   } catch (error) {
-    console.error('❌ Failed to load filtered products:', error)
-    productsContainer.innerHTML = `
-      <div class="col-span-full text-center py-12">
-        <div class="text-red-500">
-          <svg class="w-6 h-6 inline-block mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <p class="font-medium">Error al cargar productos. Por favor intenta de nuevo.</p>
+    // Only show error if it's not due to cancellation
+    if (error.name !== 'AbortError') {
+      console.error('❌ Failed to load filtered products:', error)
+      productsContainer.innerHTML = `
+        <div class="col-span-full text-center py-12">
+          <div class="text-red-500">
+            <svg class="w-6 h-6 inline-block mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <p class="font-medium">Error al cargar productos. Por favor intenta de nuevo.</p>
+          </div>
         </div>
-      </div>
-    `
+      `
+
+      // Announce error to screen readers
+      const loadingAnnouncement = document.getElementById('filter-loading-announcement')
+      if (loadingAnnouncement) {
+        loadingAnnouncement.textContent =
+          'Error al cargar los productos filtrados. Por favor intenta de nuevo.'
+      }
+    } else {
+      console.log('Request was cancelled (AbortError)')
+    }
   } finally {
     isLoading = false
+
+    // Restaurar estado de los filtros
+    filterButtons.forEach(btn => {
+      btn.disabled = false
+      btn.classList.remove('opacity-50', 'cursor-not-allowed')
+    })
+
+    if (searchInput) {
+      searchInput.disabled = false
+      searchInput.classList.remove('opacity-50', 'cursor-not-allowed')
+    }
+
+    if (sortFilter) {
+      sortFilter.disabled = false
+      sortFilter.classList.remove('opacity-50', 'cursor-not-allowed')
+    }
+
+    if (priceRange) {
+      priceRange.disabled = false
+      priceRange.classList.remove('opacity-50', 'cursor-not-allowed')
+    }
   }
 }
 
@@ -2165,26 +2615,13 @@ function createProductCardModel4(product) {
 }
 
 /**
- * Map category filter to API parameter
- */
-function mapCategoryToApiParam(category) {
-  const categoryMap = {
-    ramos: 'bouquet',
-    plantas: 'plant',
-    arreglos: 'arrangement',
-    premium: 'luxury'
-  }
-  return categoryMap[category] || category
-}
-
-/**
- * Update browser URL with current filters (Modelo 4 - Baymard UX)
+ * Update browser URL with current filters (Occasion Filters)
  */
 function updateUrlWithFilters() {
   const params = new URLSearchParams()
 
-  if (window.currentFilters.category !== 'all') {
-    params.set('category', window.currentFilters.category)
+  if (window.currentFilters.occasion) {
+    params.set('occasion', window.currentFilters.occasion)
   }
   if (window.currentFilters.sort !== 'created_desc') {
     params.set('sort', window.currentFilters.sort)
@@ -2208,21 +2645,18 @@ function updateUrlWithFilters() {
  */
 async function init() {
   try {
-    console.log('🚀 [index.js] Starting initialization...')
-    console.log('🔍 [index.js] Checking dependencies...')
-
     // Initialize Theme Manager (must be first to apply theme before UI loads)
     try {
       // Import theme manager module dynamically
       const { themeManager } = await import('./js/themes/themeManager.js')
       themeManager.init()
-      console.log('✅ [index.js] Theme manager initialized')
+      log.success('Theme manager initialized')
 
       // Expose themeManager globally for debug scripts
       window.themeManager = themeManager
-      console.log('✅ [index.js] Theme manager exposed to global window object')
+      log.debug('Theme manager exposed to global window object')
     } catch (error) {
-      console.error('❌ [index.js] Theme manager initialization failed:', error)
+      log.error('Theme manager initialization failed:', error)
       // Continue with default theme
     }
 
@@ -2234,16 +2668,12 @@ async function init() {
       // Wait a bit for theme manager to be fully initialized
       await new Promise(resolve => setTimeout(resolve, 100))
       try {
-        console.log(
-          `🎨 [index.js] Attempting to initialize theme selector (attempt ${retryCount + 1}/${maxRetries})`
-        )
-
         // Check if container exists
         let themeSelectorContainer = document.getElementById('theme-selector-container')
 
         // Create container dynamically if it doesn't exist
         if (!themeSelectorContainer) {
-          console.warn('⚠️ [index.js] Theme selector container not found, creating dynamically...')
+          log.warn('Theme selector container not found, creating dynamically...')
 
           // Find the nav-actions container to insert the theme selector
           const navActions = document.querySelector('.nav-actions')
@@ -2260,8 +2690,6 @@ async function init() {
               // Fallback: append to nav-actions
               navActions.appendChild(themeSelectorContainer)
             }
-
-            console.log('✅ [index.js] Theme selector container created dynamically')
           } else {
             throw new Error('Could not find nav-actions container to create theme selector')
           }
@@ -2277,20 +2705,17 @@ async function init() {
         const ThemeSelectorClass = ThemeSelectorModule.default || ThemeSelectorModule
         const themeSelector = new ThemeSelectorClass('theme-selector-container')
         window.themeSelectorInstance = themeSelector
-        console.log('✅ [index.js] Theme selector initialized successfully')
+        log.success('Theme selector initialized successfully')
         return true
       } catch (error) {
-        console.error('❌ [index.js] Theme selector initialization failed:', error)
+        log.error('Theme selector initialization failed:', error)
 
         // Retry logic
         retryCount++
         if (retryCount < maxRetries) {
-          console.log(
-            `🔄 [index.js] Retrying theme selector initialization in ${retryCount * 200}ms...`
-          )
           setTimeout(initializeThemeSelector, retryCount * 200)
         } else {
-          console.error('❌ [index.js] Max retries reached for theme selector initialization')
+          log.error('Max retries reached for theme selector initialization')
 
           // Create fallback theme selector
           createFallbackThemeSelector()
@@ -2301,8 +2726,6 @@ async function init() {
 
     function createFallbackThemeSelector() {
       try {
-        console.log('🔄 [index.js] Creating fallback theme selector...')
-
         const navActions = document.querySelector('.nav-actions')
         if (navActions) {
           const fallbackContainer = document.createElement('div')
@@ -2342,11 +2765,9 @@ async function init() {
           }
 
           // Icons are now static SVG - no need to initialize
-
-          console.log('✅ [index.js] Fallback theme selector created')
         }
       } catch (error) {
-        console.error('❌ [index.js] Failed to create fallback theme selector:', error)
+        log.error('Failed to create fallback theme selector:', error)
       }
     }
 
@@ -2354,9 +2775,6 @@ async function init() {
     initializeThemeSelector()
 
     // Icons are now static SVG - no need to initialize
-    console.log('✅ [index.js] Icons initialized - using static SVG system')
-    console.log('🔍 [Icon System Debug] Static SVG icons are embedded in HTML')
-    console.log('🔍 [Icon System Debug] No runtime icon initialization required')
 
     // Initialize cart functionality
     // Import cart module dynamically
@@ -2366,20 +2784,20 @@ async function init() {
     initCartBadge()
     initCartEventListeners()
     initCartTouchFeedback()
-    console.log('✅ [index.js] Cart initialized')
+    log.success('Cart initialized')
 
     // Initialize mobile navigation with new components
     initMobileNavigation()
-    console.log('✅ [index.js] Mobile navigation initialized')
+    log.success('Mobile navigation initialized')
 
     initSmoothScroll()
-    console.log('✅ [index.js] Smooth scroll initialized')
+    log.success('Smooth scroll initialized')
 
     initCarousel()
-    console.log('✅ [index.js] Carousel initializing...')
+    log.debug('Carousel initializing...')
 
-    initProductsGrid()
-    console.log('✅ [index.js] Products grid initializing...')
+    await initProductsGrid()
+    log.debug('Products grid initializing...')
 
     // Store pullToRefreshInstance globally for potential access
     window.pullToRefreshInstance = pullToRefreshInstance
@@ -2388,27 +2806,24 @@ async function init() {
     document.documentElement.classList.add('loaded')
 
     // Final verification
-    console.log('🔍 [index.js] Final verification:')
-    console.log(
+    log.debug('Final verification:')
+    log.debug(
       '- Theme selector container exists:',
       !!document.getElementById('theme-selector-container')
     )
-    console.log('- Theme manager initialized:', !!window.themeManager)
-    console.log('- Theme selector instance:', !!window.themeSelectorInstance)
-    console.log('- Current theme:', document.documentElement.getAttribute('data-theme'))
+    log.debug('- Theme manager initialized:', !!window.themeManager)
+    log.debug('- Theme selector instance:', !!window.themeSelectorInstance)
+    log.debug('- Current theme:', document.documentElement.getAttribute('data-theme'))
 
     // Run debug check if available
     if (window.themeDebug) {
-      console.log('🔍 [index.js] Running theme debug check...')
+      log.debug('Running theme debug check...')
       window.themeDebug.runDiagnosis()
     }
 
-    console.log('✅ [index.js] Page fully initialized')
-    console.log('🎯 [Icon System Migration] Complete - All createIcons() calls removed')
-    console.log('🎯 [Icon System Migration] Using static SVG icons from /public/images/lucide/')
-    console.log('🎯 [Icon System Migration] No runtime icon initialization required')
+    log.success('Page fully initialized')
   } catch (error) {
-    console.error('❌ [index.js] Initialization failed:', error)
+    log.error('Initialization failed:', error)
 
     // Emit error event for potential error tracking
     window.dispatchEvent(
@@ -2420,11 +2835,27 @@ async function init() {
     // Try to continue with basic functionality
     try {
       document.documentElement.classList.add('loaded')
-      console.warn('⚠️ [index.js] Continuing with basic functionality')
+      log.warn('Continuing with basic functionality')
     } catch (fallbackError) {
-      console.error('❌ [index.js] Even fallback failed:', fallbackError)
+      log.error('Even fallback failed:', fallbackError)
     }
   }
 }
 
 // Dynamic module loading system is already set up above with DOMContentLoaded
+
+// Clean up resources when page unloads to prevent memory leaks
+window.addEventListener('beforeunload', cleanupEventListeners)
+
+// Load final contrast fixes to ensure AAA compliance
+try {
+  import('./js/themes/finalContrastFixes.js')
+    .then(() => {
+      log.debug('Final contrast fixes loaded successfully')
+    })
+    .catch(err => {
+      log.warn('Final contrast fixes could not load:', err)
+    })
+} catch (error) {
+  log.warn('Final contrast fixes import failed:', error)
+}

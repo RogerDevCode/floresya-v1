@@ -5,8 +5,6 @@
  */
 
 import { performance } from 'perf_hooks'
-import { createRequire } from 'module'
-const _require = createRequire(import.meta.url)
 import http from 'http'
 
 const STRESS_CONFIG = {

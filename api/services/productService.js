@@ -9,21 +9,20 @@
  * Following Service Layer Exclusive principle
  */
 
-import { DB_SCHEMA, supabase } from './supabaseClient.js'
+import { DB_SCHEMA } from './supabaseClient.js'
 import DIContainer from '../architecture/di-container.js'
 import {
   ValidationError,
   NotFoundError,
   DatabaseError,
   DatabaseConstraintError,
-  InsufficientStockError,
   BadRequestError,
   InternalServerError
 } from '../errors/AppError.js'
 import { sanitizeProductData } from '../utils/sanitize.js'
-import { PAGINATION, CAROUSEL } from '../config/constants.js'
+import { CAROUSEL } from '../config/constants.js'
 import { withErrorMapping } from '../middleware/error/index.js'
-import { validateProduct, validateId } from '../utils/validation.js'
+import { validateProduct } from '../utils/validation.js'
 
 const TABLE = DB_SCHEMA.products.table
 
@@ -41,15 +40,6 @@ function getProductRepository() {
  */
 function getOccasionRepository() {
   return DIContainer.resolve('OccasionRepository')
-}
-
-/**
- * Validate product ID (ENTERPRISE FAIL-FAST)
- * @param {number} id - Product ID to validate
- * @param {string} operation - Operation name for error context
- */
-function _validateProductId(id, operation = 'operation') {
-  validateId(id, 'Product', operation)
 }
 
 /**
@@ -91,7 +81,7 @@ export const getAllProducts = withErrorMapping(
     // Prepare repository filters
     const repositoryFilters = {
       ...filters,
-      occasion: occasionId,
+      occasionId: occasionId,
       includeDeactivated
     }
 
@@ -132,23 +122,23 @@ export const getAllProducts = withErrorMapping(
       includeImageSize
     })
 
-    // Use repository to get products
+    // Get products directly from database
     const products = await productRepository.findAllWithFilters(
       repositoryFilters,
       repositoryOptions
     )
 
-    console.log(`📦 getAllProducts: Found ${products.length} products before fetching images`)
+    console.log(`📦 getAllProducts: Found ${products.length} products from database`)
 
-    // If no image size requested, return products without images (to maintain current behavior)
+    // If no image size requested, return products
     if (!includeImageSize) {
       return products
     }
 
-    // Extract product IDs for batch processing to avoid N+1 problem
+    // If images needed, use batch service
     const productIds = products.map(p => p.id)
 
-    // Use the new specialized service function to get products with requested image size
+    // Use the specialized service function to get products with requested image size
     const { getProductsBatchWithImageSize } = await import('./productImageService.js')
     return await getProductsBatchWithImageSize(productIds, includeImageSize)
   },
@@ -175,14 +165,14 @@ export const getProductById = withErrorMapping(
       throw new BadRequestError('Invalid product ID: must be a positive number', { productId: id })
     }
 
-    // Use repository to get product
+    // Get product directly from database
     const data = await productRepository.findByIdWithImages(id, includeDeactivated)
 
     if (!data) {
       throw new NotFoundError('Product', id, { includeDeactivated })
     }
 
-    // If no image size requested, return product without additional image
+    // If no image size requested, return product
     if (!includeImageSize) {
       return data
     }
@@ -192,7 +182,7 @@ export const getProductById = withErrorMapping(
       data.product_images = data.product_images.filter(img => img.size === includeImageSize)
     }
 
-    // Use the new specialized service function to get product with specific image size
+    // Use the specialized service function to get product with specific image size
     const { getProductWithImageSize } = await import('./productImageService.js')
     return await getProductWithImageSize(id, includeImageSize)
   },
@@ -233,7 +223,7 @@ export async function getProductBySku(sku) {
 }
 
 /**
- * Get products with occasions (using join query instead of stored function)
+ * Get products with occasions (using repository pattern - OPTIMIZED: Single JOIN query)
  * @param {number} [limit=50] - Maximum number of products to return
  * @param {number} [offset=0] - Number of products to skip
  * @returns {Object[]} - Array of products with their associated occasions
@@ -244,34 +234,19 @@ export async function getProductBySku(sku) {
  */
 export async function getProductsWithOccasions(limit = 50, offset = 0) {
   try {
-    const { data, error } = await supabase
-      .from(TABLE)
-      .select(
-        `
-        *,
-        product_occasions (
-          occasion_id,
-          occasions (
-            id,
-            name,
-            slug
-          )
-        )
-      `
-      )
-      .eq('active', true)
-      .order('created_at', { ascending: false })
-      .limit(limit !== undefined ? limit : PAGINATION.DEFAULT_LIMIT)
-      .range(offset, offset + limit - 1)
+    const productRepository = getProductRepository()
 
-    if (error) {
-      throw new DatabaseError('SELECT', TABLE, error)
-    }
-    if (!data) {
+    // OPTIMIZED: Use single JOIN query instead of N+1 pattern
+    const productsWithOccasions = await productRepository.findAllWithOccasions(
+      { includeDeactivated: false },
+      { limit, offset, ascending: false }
+    )
+
+    if (productsWithOccasions.length === 0) {
       throw new NotFoundError('Products')
     }
 
-    return data
+    return productsWithOccasions
   } catch (error) {
     console.error('getProductsWithOccasions failed:', error)
     throw error
@@ -279,7 +254,7 @@ export async function getProductsWithOccasions(limit = 50, offset = 0) {
 }
 
 /**
- * Get products by occasion ID (using join query instead of stored function)
+ * Get products by occasion ID (using repository pattern)
  * @param {number} occasionId - Occasion ID to filter products by
  * @param {number} [limit=50] - Maximum number of products to return
  * @returns {Object[]} - Array of products for the specified occasion
@@ -295,22 +270,11 @@ export async function getProductsByOccasion(occasionId, limit = 50) {
       throw new BadRequestError('Invalid occasion ID: must be a number', { occasionId })
     }
 
-    const { data, error } = await supabase
-      .from(TABLE)
-      .select(`*, product_occasions!inner(occasion_id)`)
-      .eq('product_occasions.occasion_id', occasionId)
-      .eq('active', true)
-      .order('created_at', { ascending: false })
-      .limit(limit !== undefined ? limit : PAGINATION.DEFAULT_LIMIT)
+    // Use repository pattern instead of direct Supabase access
+    const repository = getProductRepository()
+    const products = await repository.findByOccasion(occasionId, limit)
 
-    if (error) {
-      throw new DatabaseError('SELECT', TABLE, error, { occasionId })
-    }
-    if (!data) {
-      throw new NotFoundError('Products for occasion', occasionId, { occasionId })
-    }
-
-    return data
+    return products
   } catch (error) {
     console.error(`getProductsByOccasion(${occasionId}) failed:`, error)
     throw error
@@ -330,8 +294,19 @@ export async function getCarouselProducts() {
   try {
     const productRepository = getProductRepository()
 
-    // Use repository to get featured products
+    // Get featured products directly from database
     const products = await productRepository.findFeatured(CAROUSEL.MAX_SIZE)
+
+    console.log('🔍 [DEBUG] getCarouselProducts - Featured products from database:', {
+      count: products?.length || 0,
+      products:
+        products?.map(p => ({
+          id: p.id,
+          name: p.name,
+          featured: p.featured,
+          carousel_order: p.carousel_order
+        })) || []
+    })
 
     if (!products || products.length === 0) {
       throw new NotFoundError('Carousel products')
@@ -340,9 +315,22 @@ export async function getCarouselProducts() {
     // Extract product IDs for batch processing to avoid N+1 problem
     const productIds = products.map(p => p.id)
 
-    // Use the new specialized service function to get products with small images (300x300px)
+    // Use the specialized service function to get products with small images (300x300px)
     const { getProductsBatchWithImageSize } = await import('./productImageService.js')
-    return await getProductsBatchWithImageSize(productIds, 'small')
+    const productsWithImages = await getProductsBatchWithImageSize(productIds, 'small')
+
+    console.log('🔍 [DEBUG] getCarouselProducts - Products with images:', {
+      count: productsWithImages?.length || 0,
+      products:
+        productsWithImages?.map(p => ({
+          id: p.id,
+          name: p.name,
+          hasImageUrlSmall: !!p.image_url_small,
+          imageUrlSmall: p.image_url_small
+        })) || []
+    })
+
+    return productsWithImages
   } catch (error) {
     console.error('getCarouselProducts failed:', error)
     throw error
@@ -368,10 +356,22 @@ export async function getCarouselProducts() {
  */
 export async function createProduct(productData) {
   try {
+    const productRepository = getProductRepository()
     validateProduct(productData, false)
 
     // Sanitize data before database operations
     const sanitizedData = sanitizeProductData(productData, false)
+
+    // Check SKU uniqueness if SKU is provided
+    if (sanitizedData.sku) {
+      const existing = await productRepository.findBySku(sanitizedData.sku)
+      if (existing) {
+        throw new DatabaseConstraintError('unique_sku', TABLE, {
+          sku: sanitizedData.sku,
+          message: `Product with SKU ${sanitizedData.sku} already exists`
+        })
+      }
+    }
 
     const newProduct = {
       name: sanitizedData.name,
@@ -387,35 +387,21 @@ export async function createProduct(productData) {
         sanitizedData.carousel_order !== undefined ? sanitizedData.carousel_order : null
     }
 
-    const { data, error } = await supabase.from(TABLE).insert(newProduct).select().single()
-
-    if (error) {
-      // PostgreSQL unique constraint violation (duplicate SKU)
-      if (error.code === '23505') {
-        throw new DatabaseConstraintError('unique_sku', TABLE, {
-          sku: productData.sku,
-          message: `Product with SKU ${productData.sku} already exists`
-        })
-      }
-      throw new DatabaseError('INSERT', TABLE, error, { productData: newProduct })
-    }
-
-    if (!data) {
-      throw new DatabaseError(
-        'INSERT',
-        TABLE,
-        new InternalServerError('No data returned after insert'),
-        {
-          productData: newProduct
-        }
-      )
-    }
+    // Use repository pattern instead of direct Supabase access
+    const data = await productRepository.create(newProduct)
 
     return data
   } catch (error) {
     // Re-throw AppError instances as-is (fail-fast)
     if (error.name && error.name.includes('Error')) {
       throw error
+    }
+    // Handle database constraint violations
+    if (error.code === '23505') {
+      throw new DatabaseConstraintError('unique_constraint', TABLE, {
+        productData,
+        originalError: error.message
+      })
     }
     console.error('createProduct failed:', error)
     throw new DatabaseError('INSERT', TABLE, error, { productData })
@@ -448,29 +434,24 @@ export async function createProduct(productData) {
  */
 export async function createProductWithOccasions(productData, occasionIds = []) {
   try {
+    const productRepository = getProductRepository()
     validateProduct(productData, false)
 
     if (!Array.isArray(occasionIds)) {
       throw new BadRequestError('Invalid occasionIds: must be an array', { occasionIds })
     }
 
-    // Step 1: Create product
+    // Step 1: Create product using repository
     const product = await createProduct(productData)
 
     // Step 2: Create product_occasions entries if occasionIds provided
     if (occasionIds.length > 0) {
-      const occasionEntries = occasionIds.map(occasionId => ({
-        product_id: product.id,
-        occasion_id: occasionId
-      }))
-
-      const { error: occasionError } = await supabase
-        .from('product_occasions')
-        .insert(occasionEntries)
-
-      if (occasionError) {
-        // Rollback: delete product
-        await supabase.from(TABLE).delete().eq('id', product.id)
+      try {
+        // Use repository to replace occasions (handles transaction)
+        await productRepository.replaceOccasions(product.id, occasionIds)
+      } catch (occasionError) {
+        // Rollback: delete product using repository
+        await productRepository.delete(product.id)
         throw new DatabaseError('INSERT', 'product_occasions', occasionError, {
           productId: product.id,
           occasionIds
@@ -506,7 +487,10 @@ export async function createProductWithOccasions(productData, occasionIds = []) 
  * @throws {DatabaseError} When database update fails
  */
 export async function updateProduct(id, updates) {
+  let sanitizedData = {}
   try {
+    const productRepository = getProductRepository()
+
     if (!id || typeof id !== 'number' || id <= 0) {
       throw new BadRequestError('Invalid product ID: must be a positive number', { productId: id })
     }
@@ -518,7 +502,7 @@ export async function updateProduct(id, updates) {
     validateProduct(updates, true)
 
     // Sanitize data before database operations
-    const sanitizedData = sanitizeProductData(updates, true)
+    sanitizedData = sanitizeProductData(updates, true)
 
     const allowedFields = [
       'name',
@@ -543,32 +527,36 @@ export async function updateProduct(id, updates) {
       throw new BadRequestError('No valid fields to update', { productId: id })
     }
 
-    const { data, error } = await supabase
-      .from(TABLE)
-      .update(sanitized)
-      .eq('id', id)
-      .eq('active', true)
-      .select()
-      .single()
-
-    if (error) {
-      if (error.code === '23505') {
+    // Check for SKU uniqueness if SKU is being updated
+    if (sanitized.sku) {
+      const existingProduct = await productRepository.findBySku(sanitized.sku)
+      if (existingProduct && existingProduct.id !== id) {
         throw new DatabaseConstraintError('unique_sku', TABLE, {
-          sku: updates.sku,
-          message: `Product with SKU ${updates.sku} already exists`
+          sku: sanitized.sku,
+          message: `Product with SKU ${sanitized.sku} already exists`
         })
       }
-      throw new DatabaseError('UPDATE', TABLE, error, { productId: id })
     }
 
-    if (!data) {
-      throw new NotFoundError('Product', id, { includeDeactivated: false })
-    }
+    // Use repository for update
+    const data = await productRepository.update(id, sanitized)
 
     return data
   } catch (error) {
+    // Re-throw AppError instances as-is (fail-fast)
+    if (error.name && error.name.includes('Error')) {
+      throw error
+    }
+    // Handle database constraint violations
+    if (error.code === '23505') {
+      throw new DatabaseConstraintError('unique_constraint', TABLE, {
+        productId: id,
+        updates: sanitizedData,
+        originalError: error.message
+      })
+    }
     console.error(`updateProduct(${id}) failed:`, error)
-    throw error
+    throw new DatabaseError('UPDATE', TABLE, error, { productId: id, updates: sanitizedData })
   }
 }
 
@@ -710,6 +698,8 @@ export async function updateStock(id, quantity) {
  */
 export async function decrementStock(id, quantity) {
   try {
+    const productRepository = getProductRepository()
+
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid product ID: must be a number', { productId: id })
     }
@@ -718,17 +708,8 @@ export async function decrementStock(id, quantity) {
       throw new BadRequestError('Invalid quantity: must be a positive number', { quantity })
     }
 
-    // Get current stock (may throw NotFoundError)
-    const product = await getProductById(id)
-
-    // ENTERPRISE FAIL-FAST: Insufficient stock = specific business error
-    if (product.stock < quantity) {
-      throw new InsufficientStockError(id, quantity, product.stock)
-    }
-
-    const newStock = product.stock - quantity
-
-    return await updateStock(id, newStock)
+    // Use repository to decrement stock (handles validation internally)
+    return await productRepository.decrementStock(id, quantity)
   } catch (error) {
     // Re-throw AppError instances as-is (fail-fast)
     if (error.name && error.name.includes('Error')) {
@@ -769,27 +750,9 @@ export async function replaceProductOccasions(productId, occasionIds = []) {
 
     console.log(`Replacing occasions for product ${productId}:`, occasionIds)
 
-    // Call PostgreSQL stored function (TRANSACTIONAL)
-    const { data, error } = await supabase.rpc('replace_product_occasions', {
-      p_product_id: productId,
-      p_occasion_ids: occasionIds
-    })
-
-    if (error) {
-      // Check for specific error types
-      if (error.message && error.message.includes('not found')) {
-        throw new NotFoundError('Product', productId)
-      }
-      if (error.message && error.message.includes('invalid or inactive')) {
-        throw new ValidationError('One or more occasion IDs are invalid or inactive', {
-          occasionIds
-        })
-      }
-      throw new DatabaseError('RPC', 'replace_product_occasions', error, {
-        productId,
-        occasionIds
-      })
-    }
+    // Use repository pattern instead of direct supabase access
+    const productRepository = getProductRepository()
+    const data = await productRepository.replaceProductOccasions(productId, occasionIds)
 
     console.log(`✓ Occasions replaced for product ${productId}:`, data)
     return data
@@ -805,3 +768,6 @@ export async function replaceProductOccasions(productId, occasionIds = []) {
     })
   }
 }
+
+// Alias for tests compatibility
+export const decrementProductStock = decrementStock

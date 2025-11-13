@@ -11,10 +11,7 @@ import {
   initCartEventListeners
 } from '../js/shared/cart.js'
 import { api } from '../js/shared/api-client.js'
-import {
-  initFormTouchFeedback,
-  triggerFormValidationFeedback as _triggerFormValidationFeedback
-} from '../js/shared/formTouchFeedback.js'
+import { initFormTouchFeedback } from '../js/shared/touchFeedback.js'
 
 // Global state
 let cartItems = []
@@ -762,51 +759,6 @@ function showSuccessMessage(orderData) {
 function isValidEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   return emailRegex.test(email)
-}
-
-/**
- * Validate cart items exist in backend (Future use - currently not called)
- * TODO: Integrate this validation in handlePayment() before creating order
- */
-async function _validateCartItems(items) {
-  try {
-    console.log(
-      'Validating cart items:',
-      items.map(item => ({ id: item.id, name: item.name }))
-    )
-
-    // Check if all items have valid IDs
-    const invalidItems = []
-    for (const item of items) {
-      if (!item.id || isNaN(parseInt(item.id, 10))) {
-        invalidItems.push(`"${item.name}" (ID inválido)`)
-        continue
-      }
-
-      // Try to fetch the product from backend to verify it exists
-      try {
-        const _result = await api.getProductsById(item.id)
-        // If we get here, the product exists
-      } catch (error) {
-        if (error.message && error.message.includes('404')) {
-          invalidItems.push(`"${item.name}" (producto no encontrado)`)
-        } else {
-          console.warn(`Error checking product ${item.id}:`, error.message)
-          // For other errors, we'll assume the product exists and let the order creation fail
-        }
-      }
-    }
-
-    const isValid = invalidItems.length === 0
-    return {
-      valid: isValid,
-      invalidItems: invalidItems
-    }
-  } catch (error) {
-    console.error('Error validating cart items:', error)
-    // If validation fails, assume items are valid to not block the order
-    return { valid: true, invalidItems: [] }
-  }
 }
 
 /**

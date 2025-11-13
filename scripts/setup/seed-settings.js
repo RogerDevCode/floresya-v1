@@ -58,10 +58,7 @@ async function seedSettings() {
       }
 
       // Insert new setting
-      const { data: _data, error: insertError } = await supabase
-        .from('settings')
-        .insert(setting)
-        .select()
+      const { error: insertError } = await supabase.from('settings').insert(setting).select()
 
       if (insertError) {
         throw new Error(`Error inserting setting ${setting.key}: ${insertError.message}`)

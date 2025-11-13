@@ -6,5 +6,5 @@
  * @category Middleware
  */
 
-export * from './auth.js'
+export * from './auth.middleware.js'
 export * from './sessionSecurity.js'

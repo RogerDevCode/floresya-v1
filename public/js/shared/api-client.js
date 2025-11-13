@@ -31,6 +31,11 @@ class ApiClient {
         headers: { ...this.defaultHeaders, ...options.headers }
       }
 
+      // Add signal if provided for request cancellation
+      if (options.signal) {
+        config.signal = options.signal
+      }
+
       if (options.body && options.method !== 'GET') {
         config.body = JSON.stringify(options.body)
       }
@@ -1070,8 +1075,8 @@ class ApiClient {
   }
 }
 
-// Export singleton instance
-export const apiClient = new ApiClient()
+// Export singleton instance with correct base URL
+export const apiClient = new ApiClient('http://localhost:3000')
 
 // Export class for custom instances
 export { ApiClient }

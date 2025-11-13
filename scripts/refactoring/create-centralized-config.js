@@ -508,12 +508,11 @@ If any required value is missing, the application will fail to start.
 /**
  * Update auto-order-generator to use centralized config
  */
-function updateAutoOrderGenerator(_configManager) {
+function updateAutoOrderGenerator() {
   const sourceFile = path.join(PROJECT_ROOT, 'scripts', 'auto-order-generator.js')
   let content = fs.readFileSync(sourceFile, 'utf-8')
 
   // Add config manager import
-  const _importLine = `import configManager from '../config/config-manager.js'\n`
   content = content.replace(
     "import logger from './shared/logger.js'",
     "import logger from './shared/logger.js'\nimport configManager from '../config/config-manager.js'"

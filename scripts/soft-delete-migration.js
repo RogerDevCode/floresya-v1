@@ -121,7 +121,7 @@ class SoftDeleteMigration {
 
       // Run full migration
       await this.runFullMigration()
-    } catch (_error) {
+    } catch (error) {
       log.error(`Migration failed: ${error.message}`)
       console.error(error)
       process.exit(1)
@@ -287,7 +287,7 @@ class SoftDeleteMigration {
     try {
       execSync(`bash ${refactorScript}`, { cwd: PROJECT_ROOT, stdio: 'inherit' })
       log.success('Code refactoring complete')
-    } catch (_error) {
+    } catch (error) {
       log.error('Code refactoring failed')
       throw error
     }
@@ -387,7 +387,8 @@ class SoftDeleteMigration {
       } else {
         log.success('No remaining is_active references found')
       }
-    } catch (_error) {
+    } catch (error) {
+      console.error('Error:', error)
       log.success('No remaining is_active references found')
     }
   }
@@ -403,7 +404,7 @@ class SoftDeleteMigration {
     try {
       execSync('npm run lint', { cwd: PROJECT_ROOT, stdio: 'inherit' })
       log.success('ESLint passed')
-    } catch (_error) {
+    } catch (error) {
       log.error('ESLint failed')
       throw error
     }
@@ -413,7 +414,8 @@ class SoftDeleteMigration {
     try {
       execSync('npm run test:unit', { cwd: PROJECT_ROOT, stdio: 'inherit' })
       log.success('Unit tests passed')
-    } catch (_error) {
+    } catch (error) {
+      console.error('Error:', error)
       log.warning('Unit tests failed - review failures')
     }
 
@@ -425,7 +427,8 @@ class SoftDeleteMigration {
         stdio: 'inherit'
       })
       log.success('Functional tests passed')
-    } catch (_error) {
+    } catch (error) {
+      console.error('Error:', error)
       log.warning('Functional tests failed - review failures')
     }
 

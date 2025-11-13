@@ -62,6 +62,9 @@
     <!-- Theme CSS -->
     <link rel="stylesheet" href="./css/themes.css" />
 
+    <!-- Theme Granular CSS (EXPANDE temas existentes) -->
+    <link rel="stylesheet" href="./css/themes-granular.css" />
+
     <!-- Cuco Clock CSS -->
     <link rel="stylesheet" href="./css/components/cuco-clock.css" />
 
@@ -77,7 +80,7 @@
     <!-- Las secciones se agregarán aquí progresivamente -->
 
     <!-- Navigation -->
-    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+    <nav class="navbar theme-nav-glass" role="navigation" aria-label="Navegación principal">
       <div class="container">
         <div class="navbar-content">
           <!-- Logo -->
@@ -233,7 +236,7 @@
 
     <!-- Hero Section -->
     <section
-      class="hero-section relative overflow-hidden"
+      class="hero-section theme-hero-gradient animate-gradient relative overflow-hidden min-h-[min(55vh,520px)]"
       role="banner"
       aria-labelledby="hero-title"
     >
@@ -375,7 +378,11 @@
     </section>
 
     <!-- Featured Products Carousel -->
-    <section class="py-12 bg-white" role="region" aria-labelledby="carousel-title">
+    <section
+      class="py-12 lg:py-16 theme-carousel-premium theme-panel-white"
+      role="region"
+      aria-labelledby="carousel-title"
+    >
       <div class="container mx-auto px-4">
         <div class="text-center mb-8">
           <h3 id="carousel-title" class="text-2xl lg:text-3xl font-bold text-pink-600 mb-2">
@@ -387,10 +394,11 @@
         <!-- Dynamic Carousel - populated by JavaScript -->
         <div
           id="featuredCarousel"
-          class="relative rounded-lg shadow-lg overflow-hidden bg-gray-50 h-[450px]"
+          class="relative rounded-lg shadow-lg overflow-hidden bg-gray-50 h-[clamp(300px,45vh,450px)]"
           role="region"
           aria-roledescription="carousel"
           aria-label="Productos destacados"
+          tabindex="0"
         >
           <!-- Progress Bar - Línea Fina (Modelo 4) -->
           <div
@@ -408,7 +416,7 @@
 
           <!-- Slides will be generated dynamically -->
           <div
-            class="relative h-full bg-gray-100 flex items-center justify-center"
+            class="relative h-full theme-panel-light flex items-center justify-center"
             id="carouselSlides"
             aria-live="polite"
           >
@@ -488,7 +496,7 @@
     <main id="main-content">
       <section
         id="productos"
-        class="py-12 products-section"
+        class="py-12 lg:py-16 products-section theme-products-cards"
         role="main"
         aria-label="Sección de productos destacados"
       >
@@ -501,26 +509,91 @@
           </div>
 
           <!-- Model 4: Centered Layout Filters (Baymard Institute + Filter Integration) -->
-          <div class="bg-gray-50 rounded-xl p-6 mb-8">
+          <div
+            class="theme-panel-light rounded-xl p-6 mb-8"
+            role="region"
+            aria-labelledby="filters-heading"
+          >
+            <h2 id="filters-heading" class="sr-only">Filtros de productos</h2>
+
             <!-- Quick Filters (Baymard Research Pattern) -->
-            <div class="flex flex-wrap justify-center items-center gap-2 mb-6">
-              <button class="model-4-filter active" data-filter="all" id="filter-all">Todos</button>
-              <button class="model-4-filter" data-filter="ramos">Ramos</button>
-              <button class="model-4-filter" data-filter="plantas">Plantas</button>
-              <button class="model-4-filter" data-filter="arreglos">Arreglos</button>
-              <button class="model-4-filter" data-filter="premium">Premium</button>
+            <div class="mb-6">
+              <h3 class="text-sm font-semibold text-gray-700 mb-3">Filtrar por ocasión</h3>
+              <div
+                class="flex flex-wrap justify-center items-center gap-2"
+                id="quickFilters"
+                role="group"
+                aria-label="Filtros rápidos de ocasiones"
+              >
+                <button
+                  class="model-4-filter active"
+                  data-filter="all"
+                  id="filter-all"
+                  role="button"
+                  aria-pressed="true"
+                  aria-describedby="filter-all-desc"
+                >
+                  Todos
+                </button>
+                <span id="filter-all-desc" class="sr-only">Mostrar todos los productos</span>
+                <!-- Dynamic occasion filters will be loaded here -->
+              </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="mb-6">
+              <label
+                for="searchInput"
+                class="block text-sm font-semibold text-gray-700 mb-2"
+                id="search-label"
+              >
+                Buscar productos
+              </label>
+              <div class="relative">
+                <input
+                  type="text"
+                  id="searchInput"
+                  class="w-full py-3 px-4 pl-10 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors theme-panel-white"
+                  placeholder="Buscar por nombre..."
+                  aria-labelledby="search-label"
+                  aria-describedby="search-help"
+                />
+                <svg
+                  class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m21 21-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0"
+                  />
+                </svg>
+                <span id="search-help" class="sr-only">
+                  Escribe para buscar productos por nombre o descripción
+                </span>
+              </div>
             </div>
 
             <!-- Sort and Price Options (Clean Layout) -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label for="sortFilter" class="block text-sm font-semibold text-gray-700 mb-2">
+                <label
+                  for="sortFilter"
+                  class="block text-sm font-semibold text-gray-700 mb-2"
+                  id="sort-label"
+                >
                   Ordenar por
                 </label>
                 <select
-                  class="w-full py-3 px-4 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors bg-white"
+                  class="w-full py-3 px-4 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors theme-panel-white"
                   id="sortFilter"
-                  aria-label="Ordenar productos"
+                  aria-labelledby="sort-label"
+                  aria-describedby="sort-help"
                 >
                   <option value="created_desc">Más recientes</option>
                   <option value="price_asc">Precio: Menor a mayor</option>
@@ -528,15 +601,21 @@
                   <option value="name_asc">Nombre: A-Z</option>
                   <option value="rating_desc">Mejor valorados</option>
                 </select>
+                <span id="sort-help" class="sr-only"> Selecciona cómo ordenar los productos </span>
               </div>
               <div>
-                <label for="priceRange" class="block text-sm font-semibold text-gray-700 mb-2">
+                <label
+                  for="priceRange"
+                  class="block text-sm font-semibold text-gray-700 mb-2"
+                  id="price-label"
+                >
                   Rango de precio
                 </label>
                 <select
-                  class="w-full py-3 px-4 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors bg-white"
+                  class="w-full py-3 px-4 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors theme-panel-white"
                   id="priceRange"
-                  aria-label="Filtrar por rango de precio"
+                  aria-labelledby="price-label"
+                  aria-describedby="price-help"
                 >
                   <option value="">Todos los precios</option>
                   <option value="0-30">$0 - $30</option>
@@ -544,8 +623,19 @@
                   <option value="60-100">$60 - $100</option>
                   <option value="100+">$100+</option>
                 </select>
+                <span id="price-help" class="sr-only"> Filtra productos por rango de precio </span>
               </div>
             </div>
+
+            <!-- Occasions Filter Dropdown (Hidden, for backend compatibility) -->
+            <select
+              id="occasionFilter"
+              class="hidden"
+              aria-label="Filtrar por ocasión"
+              aria-hidden="true"
+            >
+              <option value="">Todas las ocasiones</option>
+            </select>
           </div>
 
           <!-- Products Grid (dynamically loaded) -->
@@ -570,7 +660,7 @@
     </main>
 
     <!-- Testimonials Section -->
-    <section class="testimonials-section">
+    <section class="testimonials-section theme-testimonials-card py-12 lg:py-16">
       <div class="container mx-auto px-4">
         <div class="text-center mb-12">
           <h2 class="text-3xl font-bold text-gray-900 mb-4">Lo que dicen nuestros clientes</h2>
@@ -601,7 +691,7 @@
     </section>
 
     <!-- Features Section -->
-    <section class="features-section py-16 bg-gray-50">
+    <section class="features-section theme-features py-16 theme-panel-light">
       <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 text-center">
           <!-- Feature 1 -->
@@ -719,7 +809,7 @@
     </section>
 
     <!-- Special CTA Section -->
-    <section class="special-cta-section text-white text-center">
+    <section class="special-cta-section text-white text-center py-12 lg:py-16">
       <div class="container mx-auto px-6">
         <div class="text-center mb-12">
           <h2 class="text-3xl font-bold text-white mb-4">¿Buscas algo especial?</h2>
@@ -731,7 +821,7 @@
           <!-- FloresYa Novias -->
           <a href="#novias" class="block cta-card" aria-label="Conocer más sobre FloresYa Novias">
             <div
-              class="bg-white rounded-lg shadow-lg p-8 h-full flex flex-col items-center justify-center text-center hover:shadow-xl transition-shadow"
+              class="theme-cta-card rounded-lg p-6 min-h-[280px] h-full flex flex-col items-center justify-center text-center"
             >
               <svg
                 style="stroke-width: 2"
@@ -760,7 +850,7 @@
           <!-- Entrega Express -->
           <div class="cta-card">
             <div
-              class="bg-white rounded-lg shadow-lg p-8 h-full flex flex-col items-center justify-center text-center hover:shadow-xl transition-shadow"
+              class="theme-cta-card rounded-lg p-6 min-h-[280px] h-full flex flex-col items-center justify-center text-center"
             >
               <svg
                 style="stroke-width: 2"
@@ -791,7 +881,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="footer-section bg-gray-900 text-white py-12">
+    <footer class="footer-section theme-footer-solid bg-gray-900 text-white py-12">
       <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           <!-- Brand -->
@@ -820,14 +910,14 @@
               </svg>
               <span class="text-xl font-bold">FloresYa</span>
             </div>
-            <p class="text-gray-300">
+            <p class="text-gray-200">
               Tu floristería en línea de confianza. Llevamos la belleza de las flores directamente a
               tu hogar.
             </p>
             <div class="flex space-x-4">
               <a
                 href="https://facebook.com"
-                class="text-gray-300 hover:text-white transition-colors"
+                class="text-gray-200 hover:text-white transition-colors"
                 aria-label="Facebook"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -849,7 +939,7 @@
               </a>
               <a
                 href="https://instagram.com"
-                class="text-gray-300 hover:text-white transition-colors"
+                class="text-gray-200 hover:text-white transition-colors"
                 aria-label="Instagram"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -873,7 +963,7 @@
               </a>
               <a
                 href="https://twitter.com"
-                class="text-gray-300 hover:text-white transition-colors"
+                class="text-gray-200 hover:text-white transition-colors"
                 aria-label="Twitter"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -900,7 +990,7 @@
           <!-- Products -->
           <div class="space-y-6">
             <h6 class="font-bold text-lg">Productos</h6>
-            <ul class="space-y-3 text-gray-300">
+            <ul class="space-y-3 text-gray-200">
               <li><a href="#" class="hover:text-white transition-colors">Rosas</a></li>
               <li><a href="#" class="hover:text-white transition-colors">Bouquets</a></li>
               <li><a href="#" class="hover:text-white transition-colors">Plantas</a></li>
@@ -910,7 +1000,7 @@
           <!-- Occasions -->
           <div class="space-y-6">
             <h6 class="font-bold text-lg">Ocasiones</h6>
-            <ul class="space-y-3 text-gray-300">
+            <ul class="space-y-3 text-gray-200">
               <li><a href="#" class="hover:text-white transition-colors">Amor</a></li>
               <li><a href="#" class="hover:text-white transition-colors">Cumpleaños</a></li>
               <li><a href="#" class="hover:text-white transition-colors">Aniversarios</a></li>
@@ -920,7 +1010,7 @@
           <!-- Contact -->
           <div class="space-y-6">
             <h6 class="font-bold text-lg">Contacto</h6>
-            <div class="space-y-3 text-gray-300">
+            <div class="space-y-3 text-gray-200">
               <p class="flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -1022,6 +1112,18 @@
 
     <!-- 🎊 Easter Egg: Sistema de confeti festivo -->
     <script type="module" src="./js/components/festiveConfetti.js"></script>
+
+    <!-- 🎨 Sistema de Temas Granulares (Fase 2) -->
+    <script type="module" src="./js/themes/themeManager.js"></script>
+    <script type="module" src="./js/themes/granularThemesDemo.js"></script>
+    <script type="module" src="./js/themes/themeSelectorUI.js"></script>
+
+    <!-- Mejoras de contraste automático -->
+    <script type="module" src="./js/themes/contrastEnhancer.js"></script>
+    <script type="module" src="./js/themes/advancedThemeManager.js"></script>
+
+    <!-- Validador de contraste en aplicación real -->
+    <script type="module" src="./js/validate-contrast.js"></script>
 
     <!-- Main application script -->
     <script type="module" src="./index.js"></script>

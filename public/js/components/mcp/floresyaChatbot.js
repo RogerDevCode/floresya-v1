@@ -183,8 +183,8 @@ export class FloresyaChatbot {
       // Procesar mensaje con MCP
       const response = await this.processMessageWithMCP(message)
       this.addMessage(response, 'assistant')
-    } catch (_error) {
-      console.error('Error processing message:', _error)
+    } catch (error) {
+      console.error('Error processing message:', error)
       this.addMessage(
         'Lo siento, estoy teniendo dificultades para responder. Por favor, intenta de nuevo.',
         'assistant'
@@ -244,7 +244,12 @@ export class FloresyaChatbot {
       })
 
       return result.content[0].text
-    } catch (_error) {
+    } catch (error) {
+      console.error('[Chatbot] getProductRecommendations failed:', {
+        message: message.substring(0, 100),
+        error: error.message,
+        stack: error.stack
+      })
       return 'Para darte la mejor recomendación, cuéntame: ¿Para qué ocasión son las flores? ¿Cuál es tu presupuesto aproximado? ¿Quién las recibirá?'
     }
   }
@@ -257,7 +262,12 @@ export class FloresyaChatbot {
       })
 
       return result.content[0].text
-    } catch (_error) {
+    } catch (error) {
+      console.error('[Chatbot] getCareAdvice failed:', {
+        message: message.substring(0, 100),
+        error: error.message,
+        stack: error.stack
+      })
       return 'Para mantener tus flores frescas más tiempo: corta los tallos en diagonal, cambia el agua cada 2 días, y mantenlas alejadas del sol directo y frutas. ¿Necesitas consejos para algún tipo de flor específica?'
     }
   }
@@ -269,7 +279,12 @@ export class FloresyaChatbot {
       })
 
       return result.content[0].text
-    } catch (_error) {
+    } catch (error) {
+      console.error('[Chatbot] getProductInfo failed:', {
+        message: message.substring(0, 100),
+        error: error.message,
+        stack: error.stack
+      })
       return 'Puedo ayudarte a encontrar productos y sus precios. ¿Qué tipo de flores estás buscando? Tienes en mente algún presupuesto específico?'
     }
   }
@@ -281,7 +296,12 @@ export class FloresyaChatbot {
       })
 
       return result.content[0].text
-    } catch (_error) {
+    } catch (error) {
+      console.error('[Chatbot] searchProducts failed:', {
+        message: message.substring(0, 100),
+        error: error.message,
+        stack: error.stack
+      })
       return 'Déjame buscar en nuestro catálogo. ¿Qué tipo de flores o arreglos te interesan?'
     }
   }
@@ -294,7 +314,12 @@ export class FloresyaChatbot {
       })
 
       return result.content[0].text
-    } catch (_error) {
+    } catch (error) {
+      console.error('[Chatbot] getFloristAdvice failed:', {
+        message: message.substring(0, 100),
+        error: error.message,
+        stack: error.stack
+      })
       return 'Como experta en flores, puedo ayudarte a encontrar el regalo perfecto. ¿Tienes alguna ocasión especial en mente o te gustaría ver nuestras opciones más populares?'
     }
   }

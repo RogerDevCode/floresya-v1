@@ -2,12 +2,23 @@ name: FloresYa CI/CD Pipeline
 
 permissions:
   contents: read
+  security-events: write
+  pull-requests: write
 
 on:
   push:
     branches: [ main, develop ]
   pull_request:
     branches: [ main ]
+
+env:
+  NODE_VERSION: '20.x'
+  COVERAGE_THRESHOLD: 80
+  SMTP_HOST: ${{ secrets.SMTP_HOST }}
+  SMTP_PORT: ${{ secrets.SMTP_PORT }}
+  SMTP_USER: ${{ secrets.SMTP_USER }}
+  SMTP_PASS: ${{ secrets.SMTP_PASS }}
+  EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
 
 jobs:
   lint-and-format:
@@ -21,7 +32,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20.x'
+        node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
 
     - name: Install dependencies
@@ -33,8 +44,14 @@ jobs:
     - name: Check Prettier formatting
       run: npm run format:check
 
-  unit-tests:
-    name: Unit Tests
+    - name: Validate OpenAPI spec
+      run: npm run generate:openapi
+
+    - name: Validate API client sync
+      run: npm run validate:client:sync
+
+  test-coverage:
+    name: Unit & Integration Tests with Coverage
     runs-on: ubuntu-latest
     needs: lint-and-format
 
@@ -45,7 +62,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20.x'
+        node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
 
     - name: Install dependencies
@@ -66,7 +83,41 @@ jobs:
       env:
         NODE_ENV: test
 
-    - name: Upload coverage reports
+    - name: Check coverage tools
+      run: |
+        echo "🔍 Checking coverage tools..."
+        which jq || echo "❌ jq not found"
+        which bc || echo "❌ bc not found"
+        [ -f coverage/coverage-summary.json ] && echo "✅ coverage-summary.json exists" || echo "❌ coverage-summary.json missing"
+
+    - name: Check coverage thresholds
+      run: |
+        # Extract coverage percentages from coverage summary
+        COVERAGE_JSON=$(cat coverage/coverage-summary.json)
+        LINES=$(echo $COVERAGE_JSON | jq -r '.total.lines.pct')
+        FUNCTIONS=$(echo $COVERAGE_JSON | jq -r '.total.functions.pct')
+        BRANCHES=$(echo $COVERAGE_JSON | jq -r '.total.branches.pct')
+        STATEMENTS=$(echo $COVERAGE_JSON | jq -r '.total.statements.pct')
+
+        echo "Coverage Report:"
+        echo "Lines: $LINES%"
+        echo "Functions: $FUNCTIONS%"
+        echo "Branches: $BRANCHES%"
+        echo "Statements: $STATEMENTS%"
+
+        # Check if all metrics meet the 80% threshold
+        if (( $(echo "$LINES < $COVERAGE_THRESHOLD" | bc -l) )) || \
+           (( $(echo "$FUNCTIONS < $COVERAGE_THRESHOLD" | bc -l) )) || \
+           (( $(echo "$BRANCHES < $COVERAGE_THRESHOLD" | bc -l) )) || \
+           (( $(echo "$STATEMENTS < $COVERAGE_THRESHOLD" | bc -l) )); then
+          echo "❌ Coverage requirement not met. Minimum ${COVERAGE_THRESHOLD}% required."
+          echo "Current coverage: Lines=$LINES%, Functions=$FUNCTIONS%, Branches=$BRANCHES%, Statements=$STATEMENTS%"
+          exit 1
+        else
+          echo "✅ All coverage metrics meet the ${COVERAGE_THRESHOLD}% requirement"
+        fi
+
+    - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4
       if: always()
       with:
@@ -74,8 +125,16 @@ jobs:
         fail_ci_if_error: false
         token: ${{ secrets.CODECOV_TOKEN }}
 
+    - name: Upload coverage HTML report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-report-${{ github.run_number }}
+        path: coverage/
+        retention-days: 30
+
   security-scan:
-    name: Security Scan
+    name: Security Scanning
     runs-on: ubuntu-latest
     needs: lint-and-format
 
@@ -86,25 +145,90 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20.x'
+        node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
+
+    - name: Check required tools and secrets
+      run: |
+        echo "🔍 Checking required tools..."
+        which jq || echo "❌ jq not found"
+        which bc || echo "❌ bc not found"
+
+        echo "🔍 Checking secrets..."
+        [ -n "${{ secrets.SNYK_TOKEN }}" ] && echo "✅ SNYK_TOKEN is set" || echo "❌ SNYK_TOKEN is missing"
+        [ -n "${{ secrets.CODECOV_TOKEN }}" ] && echo "✅ CODECOV_TOKEN is set" || echo "❌ CODECOV_TOKEN is missing"
 
     - name: Install dependencies
       run: npm ci
 
-    - name: Run npm audit
-      run: npm audit --audit-level=moderate
-      continue-on-error: true
+    - name: Run npm audit (moderate level)
+      run: npm audit --audit-level=moderate --json > npm-audit-results.json || true
 
-    - name: Check for known vulnerabilities
+    - name: Check npm audit results
       run: |
-        echo "Checking for critical vulnerabilities..."
-        npm audit --audit-level=critical || echo "⚠️ Found vulnerabilities, but continuing..."
+        if [ -f npm-audit-results.json ]; then
+          VULNERABILITIES=$(cat npm-audit-results.json | jq -r '.metadata.vulnerabilities.total // 0')
+          if [ "$VULNERABILITIES" -gt 0 ]; then
+            echo "⚠️ Found $VULNERABILITIES vulnerabilities"
+            cat npm-audit-results.json | jq '.metadata.vulnerabilities'
+            # Don't fail CI for moderate vulnerabilities, just warn
+            if [ "$VULNERABILITIES" -gt 10 ]; then
+              echo "❌ Too many vulnerabilities found ($VULNERABILITIES). Failing build."
+              exit 1
+            fi
+          else
+            echo "✅ No vulnerabilities found"
+          fi
+        fi
 
-  build:
-    name: Build & Validate
+    - name: Run Snyk to check for vulnerabilities
+      uses: snyk/actions/node@master
+      if: always()
+      continue-on-error: true
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: --severity-threshold=medium --json > snyk-results.json || true
+
+    - name: Check Snyk results
+      if: always()
+      run: |
+        if [ -f snyk-results.json ]; then
+          HIGH_VULNS=$(cat snyk-results.json | jq -r '.vulnerabilities[] | select(.severity == "high") | .id' | wc -l)
+          MEDIUM_VULNS=$(cat snyk-results.json | jq -r '.vulnerabilities[] | select(.severity == "medium") | .id' | wc -l)
+
+          echo "Snyk Security Scan Results:"
+          echo "High severity: $HIGH_VULNS"
+          echo "Medium severity: $MEDIUM_VULNS"
+
+          if [ "$HIGH_VULNS" -gt 0 ]; then
+            echo "❌ High severity vulnerabilities found. Failing build."
+            cat snyk-results.json | jq '.vulnerabilities[] | select(.severity == "high") | {id, title, severity, packageName}'
+            exit 1
+          elif [ "$MEDIUM_VULNS" -gt 5 ]; then
+            echo "❌ Too many medium severity vulnerabilities ($MEDIUM_VULNS). Failing build."
+            exit 1
+          else
+            echo "✅ Security scan passed"
+          fi
+        else
+          echo "⚠️ Snyk scan did not produce results file"
+        fi
+
+    - name: Upload security scan results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: security-scan-results-${{ github.run_number }}
+        path: |
+          npm-audit-results.json
+          snyk-results.json
+        retention-days: 30
+
+  performance-test:
+    name: Performance Testing & Benchmarking
     runs-on: ubuntu-latest
-    needs: [lint-and-format, unit-tests, security-scan]
+    needs: [lint-and-format, test-coverage]
 
     steps:
     - name: Checkout code
@@ -113,61 +237,46 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20.x'
+        node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
 
     - name: Install dependencies
       run: npm ci
+
+    - name: Install Clinic.js globally
+      run: npm install -g clinic
+
+    - name: Check performance test secrets
+      run: |
+        echo "🔍 Checking performance test secrets..."
+        [ -n "${{ secrets.SUPABASE_URL }}" ] && echo "✅ SUPABASE_URL is set" || echo "❌ SUPABASE_URL is missing"
+        [ -n "${{ secrets.SUPABASE_KEY }}" ] && echo "✅ SUPABASE_KEY is set" || echo "❌ SUPABASE_KEY is missing"
+        [ -n "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" ] && echo "✅ SUPABASE_SERVICE_ROLE_KEY is set" || echo "❌ SUPABASE_SERVICE_ROLE_KEY is missing"
 
     - name: Build CSS
       run: npm run build:css
 
-    - name: Validate OpenAPI spec
-      run: npm run generate:openapi
-
-    - name: Validate API client sync
-      run: npm run validate:client:sync
-
-    - name: Check build artifacts
+    - name: Check integration test secrets
       run: |
-        ls -la public/css/tailwind.css
-        echo "✅ Build artifacts generated successfully"
-
-  integration-tests:
-    name: Integration & E2E Tests
-    runs-on: ubuntu-latest
-    needs: [build]
-    timeout-minutes: 15
-    # Only run if secrets are configured
-    if: always()
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'npm'
-
-    - name: Install dependencies
-      run: npm ci
-
-    - name: Install Playwright browsers
-      run: npx playwright install --with-deps chromium
+        echo "🔍 Checking integration test secrets..."
+        [ -n "${{ secrets.SUPABASE_URL }}" ] && echo "✅ SUPABASE_URL is set" || echo "❌ SUPABASE_URL is missing"
+        [ -n "${{ secrets.SUPABASE_KEY }}" ] && echo "✅ SUPABASE_KEY is set" || echo "❌ SUPABASE_KEY is missing"
+        [ -n "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" ] && echo "✅ SUPABASE_SERVICE_ROLE_KEY is set" || echo "❌ SUPABASE_SERVICE_ROLE_KEY is missing"
+        [ -n "${{ secrets.CYPRESS_RECORD_KEY }}" ] && echo "✅ CYPRESS_RECORD_KEY is set" || echo "❌ CYPRESS_RECORD_KEY is missing"
 
     - name: Create .env.local file
       run: |
         echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env.local
         echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> .env.local
         echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env.local
+        echo "SMTP_HOST=${{ secrets.SMTP_HOST }}" >> .env.local
+        echo "SMTP_PORT=${{ secrets.SMTP_PORT }}" >> .env.local
+        echo "SMTP_USER=${{ secrets.SMTP_USER }}" >> .env.local
+        echo "SMTP_PASS=${{ secrets.SMTP_PASS }}" >> .env.local
+        echo "EMAIL_FROM=${{ secrets.EMAIL_FROM }}" >> .env.local
         echo "NODE_ENV=test" >> .env.local
         echo "PORT=3000" >> .env.local
         echo "BASE_URL=http://localhost:3000" >> .env.local
-
-    - name: Build CSS
-      run: npm run build:css
 
     - name: Seed test data
       run: |
@@ -178,15 +287,14 @@ jobs:
         SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
         SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
-    - name: Start application in background
+    - name: Start application for performance testing
       run: |
-        echo "🚀 Starting application in background..."
+        echo "🚀 Starting application for performance testing..."
         npm start > server.log 2>&1 &
         SERVER_PID=$!
         echo "Server PID: $SERVER_PID"
         echo "Waiting for server to start..."
-        
-        # Wait with increased timeout and better logging
+
         for i in {1..12}; do
           echo "⏳ Attempt $i/12: Checking if server is ready..."
           if curl -f http://localhost:3000/health > /dev/null 2>&1; then
@@ -202,18 +310,11 @@ jobs:
           sleep 10
         done
 
-    - name: Run API integration tests
-      run: npm run test
+    - name: Run automated performance benchmarks
+      run: |
+        echo "🏃 Running comprehensive performance benchmarks..."
+        npm run benchmark:ci
       env:
-        NODE_ENV: test
-        BASE_URL: http://localhost:3000
-        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-        SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-
-    - name: Run E2E tests (CI optimized)
-      run: npm run test:e2e:ci
-      env:
-        CI: true
         NODE_ENV: test
         BASE_URL: http://localhost:3000
         SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -221,12 +322,289 @@ jobs:
         SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       continue-on-error: true
 
-    - name: Upload Playwright report
+    - name: Check for performance regressions
+      run: |
+        echo "🔍 Checking for performance regressions..."
+
+        # Check if benchmark results exist
+        if [ -f "benchmark-results/benchmark-*.json" ]; then
+          echo "✅ Benchmark results found"
+
+          # Check for regression indicators in the results
+          LATEST_BENCHMARK=$(ls -t benchmark-results/benchmark-*.json | head -1)
+          echo "📊 Analyzing benchmark results: $LATEST_BENCHMARK"
+
+          # Extract regression information
+          REGRESSIONS=$(cat "$LATEST_BENCHMARK" | jq -r '.regressions // [] | length')
+
+          if [ "$REGRESSIONS" -gt 0 ]; then
+            echo "⚠️ PERFORMANCE REGRESSIONS DETECTED: $REGRESSIONS regression(s) found"
+
+            # Show regression details
+            cat "$LATEST_BENCHMARK" | jq -r '.regressions[] | "❌ \(.benchmark) - \(.metric): degraded by \(.degradation)%"'
+
+            # Create GitHub issue for regressions
+            if [ "$REGRESSIONS" -gt 0 ]; then
+              echo "🚨 Creating GitHub issue for performance regressions..."
+              gh issue create \
+                --title "🚨 Performance Regression Detected" \
+                --body "Performance benchmarks detected $REGRESSIONS regression(s) exceeding the 10% threshold. Check workflow artifacts for detailed benchmark report. Run: ${{ github.run_id }}, Commit: ${{ github.sha }}" \
+                --label "performance,regression,urgent"
+            fi
+
+            # Fail the build for significant regressions
+            exit 1
+          else
+            echo "✅ No performance regressions detected"
+          fi
+        else
+          echo "⚠️ No benchmark results found"
+        fi
+
+    - name: Run legacy performance profiling
+      run: |
+        echo "🔬 Running legacy performance profiling..."
+        npm run profile:auto
+      continue-on-error: true
+
+    - name: Generate performance report
+      run: |
+        echo "📊 Generating performance report..."
+        npm run profile:report
+      continue-on-error: true
+
+    - name: Basic health check validation
+      run: |
+        echo "🏥 Running basic health check validation..."
+        # Basic performance checks
+        RESPONSE_TIME=$(curl -o /dev/null -s -w "%{time_total}" http://localhost:3000/health)
+        if (( $(echo "$RESPONSE_TIME > 2.0" | bc -l) )); then
+          echo "❌ Health check response time too slow: ${RESPONSE_TIME}s (max 2.0s)"
+          exit 1
+        else
+          echo "✅ Health check response time: ${RESPONSE_TIME}s"
+        fi
+
+    - name: Upload performance reports
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: playwright-report-${{ github.run_number }}
-        path: playwright-report/
+        name: performance-report-${{ github.run_number }}
+        path: |
+          .clinic/
+          performance-report.json
+          server.log
+          benchmark-results/
+        retention-days: 30
+
+  build-and-validate:
+    name: Build & Deployment Readiness
+    runs-on: ubuntu-latest
+    needs: [lint-and-format, test-coverage, security-scan, performance-test]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build CSS
+      run: npm run build:css
+
+    - name: Validate build artifacts
+      run: |
+        echo "🔍 Validating build artifacts..."
+        ls -la public/css/tailwind.css
+        if [ ! -f "public/css/tailwind.css" ]; then
+          echo "❌ CSS build failed - tailwind.css not found"
+          exit 1
+        fi
+        echo "✅ Build artifacts validated"
+
+    - name: Generate code review checklist
+      run: npm run code-review
+
+    - name: Run contract validation
+      run: npm run validate:full
+
+    - name: Check deployment readiness
+      run: |
+        echo "🚀 Checking deployment readiness..."
+
+        # Check for required environment variables
+        REQUIRED_VARS=("SUPABASE_URL" "SUPABASE_KEY")
+        MISSING_VARS=()
+
+        for var in "${REQUIRED_VARS[@]}"; do
+          if [ -z "${!var}" ]; then
+            MISSING_VARS+=("$var")
+          fi
+        done
+
+        if [ ${#MISSING_VARS[@]} -gt 0 ]; then
+          echo "❌ Missing required environment variables: ${MISSING_VARS[*]}"
+          exit 1
+        fi
+
+        # Check package.json integrity
+        if ! npm ls --depth=0 > /dev/null 2>&1; then
+          echo "❌ Package dependencies have issues"
+          exit 1
+        fi
+
+        # Check for critical files
+        CRITICAL_FILES=("package.json" "api/server.js" "api/app.js" "public/index.html")
+        for file in "${CRITICAL_FILES[@]}"; do
+          if [ ! -f "$file" ]; then
+            echo "❌ Critical file missing: $file"
+            exit 1
+          fi
+        done
+
+        echo "✅ Deployment readiness checks passed"
+
+    - name: Create deployment artifact
+      run: |
+        echo "📦 Creating deployment artifact..."
+        mkdir -p dist
+        cp -r api/ dist/
+        cp -r public/ dist/
+        cp package.json dist/
+        cp package-lock.json dist/
+        echo "✅ Deployment artifact created"
+
+    - name: Upload deployment artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: deployment-artifact-${{ github.run_number }}
+        path: dist/
+        retention-days: 7
+
+    - name: Upload code review report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: code-review-report-${{ github.run_number }}
+        path: code-review-report.json
+        retention-days: 30
+
+  integration-tests:
+    name: Integration & E2E Tests
+    runs-on: ubuntu-latest
+    needs: [build-and-validate]
+    timeout-minutes: 15
+    if: always()
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build CSS
+      run: npm run build:css
+
+    - name: Create .env.local file
+      run: |
+        echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env.local
+        echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> .env.local
+        echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env.local
+        echo "SMTP_HOST=${{ secrets.SMTP_HOST }}" >> .env.local
+        echo "SMTP_PORT=${{ secrets.SMTP_PORT }}" >> .env.local
+        echo "SMTP_USER=${{ secrets.SMTP_USER }}" >> .env.local
+        echo "SMTP_PASS=${{ secrets.SMTP_PASS }}" >> .env.local
+        echo "EMAIL_FROM=${{ secrets.EMAIL_FROM }}" >> .env.local
+        echo "NODE_ENV=test" >> .env.local
+        echo "PORT=3001" >> .env.local
+        echo "BASE_URL=http://localhost:3001" >> .env.local
+
+    - name: Seed test data
+      run: |
+        echo "🌱 Seeding test data..."
+        npm run seed:test
+      env:
+        NODE_ENV: test
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+    - name: Start Docker services
+      run: |
+        echo "🐳 Starting Docker services..."
+        SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+        SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} \
+        SUPABASE_KEY=${{ secrets.SUPABASE_KEY }} \
+        SMTP_HOST=${{ secrets.SMTP_HOST }} \
+        SMTP_PORT=${{ secrets.SMTP_PORT }} \
+        SMTP_USER=${{ secrets.SMTP_USER }} \
+        SMTP_PASS=${{ secrets.SMTP_PASS }} \
+        EMAIL_FROM=${{ secrets.EMAIL_FROM }} \
+        NODE_ENV=test \
+        PORT=3001 \
+        BASE_URL=http://localhost:3001 \
+        docker compose up -d app
+        echo "Waiting for app service to be ready..."
+        for i in {1..12}; do
+          echo "⏳ Attempt $i/12: Checking if app is ready..."
+          if docker compose exec -T app curl -f http://localhost:3001/health > /dev/null 2>&1; then
+            echo "✅ App service is ready!"
+            break
+          fi
+          if [ $i -eq 12 ]; then
+            echo "❌ App service failed to start after 2 minutes"
+            docker compose logs app
+            exit 1
+          fi
+          sleep 10
+        done
+
+    - name: Run unit tests
+      run: npm run test:unit
+      env:
+        NODE_ENV: test
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+
+    - name: Run integration tests
+      run: npm run test:integration
+      env:
+        NODE_ENV: test
+        BASE_URL: http://localhost:3001
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+
+    - name: Run E2E tests (Docker Cypress)
+      run: |
+        echo "🧪 Running E2E tests with Docker Cypress..."
+        docker compose run --rm cypress npx cypress run --config-file /cypress.config.js --record --parallel
+      env:
+        CI: true
+        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+        NODE_ENV: test
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      continue-on-error: true
+
+    - name: Upload Cypress report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: cypress-report-${{ github.run_number }}
+        path: cypress/videos/
         retention-days: 30
 
     - name: Upload test results
@@ -248,7 +626,7 @@ jobs:
   deploy-preview:
     name: Deploy Preview (Vercel)
     runs-on: ubuntu-latest
-    needs: [build, integration-tests]
+    needs: [build-and-validate, integration-tests]
     if: github.event_name == 'pull_request'
 
     steps:
@@ -266,7 +644,7 @@ jobs:
   deploy-production:
     name: Deploy to Production
     runs-on: ubuntu-latest
-    needs: [build, integration-tests]
+    needs: [build-and-validate, integration-tests]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
@@ -276,7 +654,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20.x'
+        node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
 
     - name: Install dependencies
