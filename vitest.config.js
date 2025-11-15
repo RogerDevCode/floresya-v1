@@ -11,8 +11,8 @@ export default defineConfig({
     // Frontend components need DOM APIs (document, window, etc.)
     environment: 'happy-dom',
 
-    // Setup files
-    setupFiles: ['./tests/setup.js', './tests/setup-global.js'],
+    // Setup files - commented out since tests directory was deleted
+    // setupFiles: ['./tests/setup.js', './tests/setup-global.js'],
 
     // Mock clinic globally to prevent import issues
     server: {
