@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Enhanced OpenAPI Validator Middleware
  * Validates requests and responses against OpenAPI specification
  * Provides automatic contract enforcement between frontend and backend

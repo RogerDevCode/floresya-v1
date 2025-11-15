@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Middleware de Respuesta Estándar
  * Asegura formato consistente: { success, data, message, error }
  * Basado en especificaciones de QWEN.md y CLAUDE.md

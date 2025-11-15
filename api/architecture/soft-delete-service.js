@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Soft Delete Service
  * Implements secure soft-delete with full audit trail
  * Follows data security and compliance best practices

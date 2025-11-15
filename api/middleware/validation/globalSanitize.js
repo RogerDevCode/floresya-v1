@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Global Data Sanitization Middleware
  * Applies sanitization to all incoming requests
  * Prevents null/undefined/NaN issues at the application level

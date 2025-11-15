@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Supabase Client Configuration
  * Single source of truth for database connection
  * Only import this in services/* files

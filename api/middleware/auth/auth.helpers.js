@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Authentication Middleware - Helpers & Constants
  * LEGACY: Modularized from auth.js (Phase 6)
  */

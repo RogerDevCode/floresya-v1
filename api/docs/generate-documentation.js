@@ -1,3 +1,7 @@
+/**
+ * Procesado por B
+ */
+
 #!/usr/bin/env node
 
 /**

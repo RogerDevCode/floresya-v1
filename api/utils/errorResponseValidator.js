@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Error Response Validator
  * Validates that error responses comply with RFC 7807 + FloresYa standards
  */

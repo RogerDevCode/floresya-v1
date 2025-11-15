@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Data Sanitization Middleware
  * Converts null/undefined values based on PostgreSQL column types
  * Applied before validation to ensure data consistency

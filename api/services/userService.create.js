@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * User Service - Create Operations
  * Handles user creation operations
  * LEGACY: Modularizado desde userService.js (WEEK 4)

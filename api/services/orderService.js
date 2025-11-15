@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Order Service
  * CRUD operations with atomic order creation (stored function)
  * Uses indexed columns (user_id, status, created_at)

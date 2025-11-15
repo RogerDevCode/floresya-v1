@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Centralized Error Handler Middleware (ENTERPRISE-GRADE)
  * - Catches all errors and formats consistent responses
  * - Uses error.toJSON() for serialization

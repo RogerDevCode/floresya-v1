@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Base Repository - Error Handling
  * Provides standardized error handling for repository operations
  * LEGACY: Modularizado desde BaseRepository.js (WEEK 4)

@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Supabase Error Mapper - Error Code Mappings
  * Converts Supabase/PostgreSQL error codes to appropriate AppError instances
  * LEGACY: Modularized from supabaseErrorMapper.js (Phase 6)

@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Vercel Serverless Function Entry Point
  * Exports the Express app for Vercel deployment
  */

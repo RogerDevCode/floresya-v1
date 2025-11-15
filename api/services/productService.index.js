@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Product Service Index
  * Main export point for modular productService functionality
  * Follows the same pattern as other modular services

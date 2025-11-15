@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Documentation Templates for OpenAPI Annotations
  * Reusable template functions for generating consistent documentation
  */

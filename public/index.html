@@ -1104,6 +1104,9 @@
     </footer>
 
     <!-- Scripts al final (ES6 Modules) -->
+    <!-- 🎨 Sistema de Temas (debe cargar antes del debug) -->
+    <script type="module" src="./js/themes/themeManager.js"></script>
+
     <!-- Debug script (non-module for immediate execution) -->
     <script type="module" src="./js/debug-theme.js"></script>
 
@@ -1114,7 +1117,6 @@
     <script type="module" src="./js/components/festiveConfetti.js"></script>
 
     <!-- 🎨 Sistema de Temas Granulares (Fase 2) -->
-    <script type="module" src="./js/themes/themeManager.js"></script>
     <script type="module" src="./js/themes/granularThemesDemo.js"></script>
     <script type="module" src="./js/themes/themeSelectorUI.js"></script>
 

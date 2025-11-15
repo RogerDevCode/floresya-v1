@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Product Repository
  * Gestiona el acceso a datos de productos
  * Extiende BaseRepository con operaciones específicas de productos

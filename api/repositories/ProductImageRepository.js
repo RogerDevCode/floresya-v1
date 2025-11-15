@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Product Image Repository
  * Gestiona el acceso a datos de imágenes de productos
  * Extiende BaseRepository con operaciones específicas de imágenes

@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * User Service - Delete Operations
  * Handles user soft-delete and reactivation operations
  * LEGACY: Modularizado desde userService.js (WEEK 4)

@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Base Repository - Query Operations
  * Handles existence checks and counting operations
  * LEGACY: Modularizado desde BaseRepository.js (WEEK 4)

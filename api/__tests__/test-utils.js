@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Comprehensive Test Utilities for Supabase Mocking
  * Provides complete mocking strategy for database operations, auth, and storage
  * Supports both unit tests (with DI container) and integration tests

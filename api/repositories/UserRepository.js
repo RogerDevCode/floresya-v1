@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * User Repository
  * Gestiona el acceso a datos de usuarios
  * Extiende BaseRepository con operaciones específicas de usuarios

@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Application Constants (SSOT)
  * Centralized configuration for limits, defaults, and business rules
  * IMPORTANT: These are business rules and technical constraints, not magic numbers

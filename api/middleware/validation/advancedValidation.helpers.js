@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Advanced Validation - Helper Constants & Patterns
  * LEGACY: Modularized from advancedValidation.js (Phase 6)
  */

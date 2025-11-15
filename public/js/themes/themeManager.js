@@ -25,7 +25,12 @@ export class ThemeManager {
    * Inicializa el sistema de temas
    */
   init() {
-    console.log('🎨 [ThemeManager] Initializing...')
+    // Increment global initialization counter
+    if (typeof window !== 'undefined') {
+      window.themeSystemInitCount = (window.themeSystemInitCount || 0) + 1
+    }
+
+    console.log(`🎨 [ThemeManager] Initializing... (init #${window.themeSystemInitCount})`)
 
     try {
       // Wait for DOM to be ready
@@ -314,9 +319,17 @@ export class ThemeManager {
 // Instancia global singleton
 export const themeManager = new ThemeManager()
 
+// Bandera para prevenir inicializaciones múltiples
+let isInitialized = false
+
 // Función de inicialización para compatibilidad
 export const initThemeManager = () => {
-  themeManager.init()
+  if (!isInitialized) {
+    isInitialized = true
+    themeManager.init()
+  } else {
+    console.log('🎨 [ThemeManager] Already initialized, skipping...')
+  }
 }
 
 // Auto-inicializar si está en el navegador
@@ -324,11 +337,11 @@ if (typeof window !== 'undefined') {
   // Esperar a que el DOM esté listo
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-      themeManager.init()
+      initThemeManager()
     })
   } else {
     // DOM ya está listo
-    themeManager.init()
+    initThemeManager()
   }
 }
 

@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Order Repository
  * Gestiona el acceso a datos de pedidos
  * Extiende BaseRepository con operaciones específicas de pedidos

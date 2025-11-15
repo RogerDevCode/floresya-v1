@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Health Check Routes
  * Comprehensive health monitoring endpoints for system observability
  */

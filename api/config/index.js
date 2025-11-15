@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Configuration Index
  * Centralized exports for all configuration files
  *

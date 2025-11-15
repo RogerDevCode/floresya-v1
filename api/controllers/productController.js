@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Product Controller
  * Handles HTTP logic for product operations
  * Extends BaseController for common functionality

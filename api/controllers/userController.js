@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * User Controller
  * Handles HTTP logic for user operations
  * Delegates business logic to service layer

@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Order Service - Helper Functions & Shared Imports
  * LEGACY: Modularizado desde orderService.js (WEEK 3)
  *

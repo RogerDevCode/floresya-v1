@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Validation Schemas - Barrel Export
  * Re-exports all schemas from modular files
  * LEGACY: Maintain backward compatibility after modularization (Phase 6)

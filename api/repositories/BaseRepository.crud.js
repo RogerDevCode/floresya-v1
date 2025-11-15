@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Base Repository - CRUD Operations
  * Handles basic Create, Read, Update operations
  * LEGACY: Modularizado desde BaseRepository.js (WEEK 4)

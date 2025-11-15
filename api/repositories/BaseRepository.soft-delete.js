@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Base Repository - Soft Delete Operations
  * Handles soft-delete and reactivation operations
  * LEGACY: Modularizado desde BaseRepository.js (WEEK 4)

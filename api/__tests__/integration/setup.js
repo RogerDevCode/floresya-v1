@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Integration Test Setup
  * Configures Supabase mocking and app initialization for integration tests
  * Ensures proper isolation between tests

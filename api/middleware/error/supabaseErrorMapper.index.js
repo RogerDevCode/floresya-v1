@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Supabase Error Mapper - Barrel Export
  * Re-exports all error mapping functions from modular files
  * LEGACY: Maintain backward compatibility after modularization (Phase 6)

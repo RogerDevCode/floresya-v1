@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Payment Controller
  * Handles HTTP logic for payment operations
  */

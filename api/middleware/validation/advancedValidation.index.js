@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Advanced Validation - Barrel Export
  * Re-exports all validation functions from modular files
  * LEGACY: Maintain backward compatibility after modularization (Phase 6)

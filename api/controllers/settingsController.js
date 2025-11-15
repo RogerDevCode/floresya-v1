@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Settings Controller
  * Handles HTTP logic for settings operations
  */

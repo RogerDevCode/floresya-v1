@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Migration Controller
  * MVC Pattern: Controller → Service → Database
  * Temporary endpoint for database migrations - ONLY FOR DEVELOPMENT USE

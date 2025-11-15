@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Occasion Repository
  * Gestiona el acceso a datos de ocasiones
  * Extiende BaseRepository con operaciones específicas de ocasiones

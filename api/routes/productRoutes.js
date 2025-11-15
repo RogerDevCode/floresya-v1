@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Product Routes
  * Defines routes for product operations
  * Uses centralized validation schemas from api/middleware/schemas.js

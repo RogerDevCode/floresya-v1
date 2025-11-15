@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * User Service - Verification Operations
  * Handles user verification operations
  * LEGACY: Modularizado desde userService.js (WEEK 4)

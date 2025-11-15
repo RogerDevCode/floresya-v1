@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Monitoring Routes
  * Comprehensive health check and monitoring endpoints
  */

@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * OpenAPI JSDoc Annotations
  * Centralized documentation for all API endpoints
  * This file is scanned by swagger-jsdoc to generate OpenAPI spec

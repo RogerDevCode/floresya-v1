@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Image Processing Utilities
  * Uses Sharp for high-performance image resizing and optimization
  */

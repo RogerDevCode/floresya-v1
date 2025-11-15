@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Security Middleware
  * CORS, Helmet, and Input Sanitization
  * Uses centralized configuration

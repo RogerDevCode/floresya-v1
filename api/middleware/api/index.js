@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * API-Specific Middleware
  *
  * Contains OpenAPI validation and response formatting middleware

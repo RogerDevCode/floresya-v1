@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Product Image Controller
  * Handles HTTP logic for product image operations
  * Delegates business logic to productImageService

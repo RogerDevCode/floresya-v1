@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Occasion Service - Read Operations
  * Handles all occasion retrieval operations
  * LEGACY: Modularizado desde occasionService.js (PHASE 5)

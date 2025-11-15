@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Session Security Middleware
  * Configures secure session management with httpOnly, secure, and sameSite cookies
  * Includes CSRF token validation for state-changing operations

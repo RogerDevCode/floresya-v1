@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Auth Service - Helper Functions & Shared Imports
  * LEGACY: Modularizado desde authService.js (PHASE 6)
  */

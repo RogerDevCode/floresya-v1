@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Order Service - Read Operations
  * Handles all order retrieval operations
  * LEGACY: Modularizado desde orderService.js (WEEK 3)

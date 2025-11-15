@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Middleware Logger - Uses Centralized Logging System
  * Re-exports the centralized logger from utils/logger.js
  * Ensures consistent logging across all middleware

@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Centralized Validation Utilities
  * Consolidates all validation logic across services
  * Ensures consistent validation behavior and eliminates code duplication

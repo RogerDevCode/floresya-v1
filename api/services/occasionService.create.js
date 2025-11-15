@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Occasion Service - Create Operations
  * Handles occasion creation
  * LEGACY: Modularizado desde occasionService.js (PHASE 5)

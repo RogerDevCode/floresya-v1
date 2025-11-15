@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Business Rules Engine
  * Centralized system for complex business logic validation
  * Extensible rule system for orders, products, and payments

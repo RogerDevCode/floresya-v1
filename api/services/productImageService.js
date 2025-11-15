@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Product Image Service
  * CRUD operations for product images with soft-delete pattern
  * Uses stored functions for atomic multi-image operations

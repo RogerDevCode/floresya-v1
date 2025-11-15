@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Response Formatter
  * Single Responsibility: Format API responses consistently
  * Follows OpenAPI and FloresYa response standards

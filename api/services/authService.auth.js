@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Auth Service - Authentication Operations
  * Handles sign up, sign in, sign out operations
  * LEGACY: Modularizado desde authService.js (PHASE 6)

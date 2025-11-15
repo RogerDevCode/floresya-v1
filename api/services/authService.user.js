@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Auth Service - User Operations
  * Handles user retrieval, password reset, password update
  * LEGACY: Modularizado desde authService.js (PHASE 6)

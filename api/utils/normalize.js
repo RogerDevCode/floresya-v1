@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Text normalization utilities for accent-insensitive search
  * Matches the PostgreSQL GENERATED column logic
  */

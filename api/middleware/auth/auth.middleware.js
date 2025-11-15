@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Authentication Middleware - Main Middleware Functions
  * LEGACY: Modularized from auth.js (Phase 6)
  */

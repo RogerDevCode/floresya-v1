@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Centralized Configuration Loader
  * Loads and validates all environment variables and configuration settings
  * Ensures application starts with valid configuration

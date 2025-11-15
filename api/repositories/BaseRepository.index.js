@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Base Repository - Barrel Export
  * Re-exports all modular repository components
  * LEGACY: Maintain backward compatibility after modularization (WEEK 4)

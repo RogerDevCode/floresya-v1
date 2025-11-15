@@ -1,0 +1,3 @@
+lee el archivo ../claude.md, y luego mejora el mock ../tests/mocks/authMock.js, para que se comporte de manera mas realista, 
+verifica los cambios propuestos con las sugerencias de la documentacion de Supabase, puedes revisar el cliente supabase llamado 
+../api/services/supabaseClient.js para que tengas mejores referencias, el archivo resultado SOLO llamalo rev.js

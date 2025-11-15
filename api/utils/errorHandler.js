@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Centralized Error Handling Utility
  * Provides consistent error logging and rethrowing patterns
  * Reduces code duplication across services and controllers

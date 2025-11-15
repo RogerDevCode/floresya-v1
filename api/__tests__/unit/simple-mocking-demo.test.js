@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Simple Supabase Mocking Demo
  * Demonstrates the core mocking utilities without complex imports
  */

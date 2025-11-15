@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Supabase Storage Utilities
  * Handles file uploads to Supabase Storage buckets
  * Soft-delete implementation for storage operations

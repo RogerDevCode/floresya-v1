@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Occasion Service - Delete Operations
  * Handles occasion deletion and reactivation
  * LEGACY: Modularizado desde occasionService.js (PHASE 5)

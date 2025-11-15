@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Carousel Service
  * Single Responsibility: Manage carousel_order conflicts and positioning
  * SOLID: Extracted from productService to avoid bloat

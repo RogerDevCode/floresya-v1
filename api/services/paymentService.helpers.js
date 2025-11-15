@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Payment Service - Helper Functions & Shared Imports
  * LEGACY: Modularizado desde paymentService.js (PHASE 5)
  */

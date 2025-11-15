@@ -12,6 +12,11 @@ fi
 # Store commit message
 COMMIT_MESSAGE="$1"
 
+# Ensure commit message follows conventional commit format
+if [[ ! "$COMMIT_MESSAGE" =~ ^[a-z]+(\([a-z]+\))?: ]]; then
+  COMMIT_MESSAGE="chore: $COMMIT_MESSAGE"
+fi
+
 # Check Git status
 echo "📊 Checking Git status..."
 STATUS=$(git status --porcelain)

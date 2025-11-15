@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Comprehensive Supabase Mocking Utilities
  * Core mocking functions without integration test dependencies
  * Safe to import in unit tests without triggering app initialization

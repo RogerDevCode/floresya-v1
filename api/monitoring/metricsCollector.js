@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Enhanced Metrics Collector
  * Collects and analyzes system metrics for monitoring and health checks
  * Includes CPU monitoring to ensure ≤50% overhead as per CLAUDE.md

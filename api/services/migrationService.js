@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Migration Service
  * Handles database schema migrations
  * Service Layer Exclusivo: Only service that can access supabaseClient

@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Data Sanitization Utilities
  * Ensures data integrity before database operations
  * Converts null/undefined/NaN values to appropriate defaults based on field type

@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Auth Service - Session Operations
  * Handles token refresh, session management
  * LEGACY: Modularizado desde authService.js (PHASE 6)

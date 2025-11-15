@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Base Repository
  * Proporciona operaciones CRUD comunes para todas las entidades
  * Implementa el patrón Repository para abstraer acceso a datos

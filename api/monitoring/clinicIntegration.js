@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Clinic.js Integration for Runtime Profiling
  * Provides automated profiling capabilities with CPU and memory monitoring
  * Ensures profiling overhead stays within CLAUDE.md limits (≤50% CPU)

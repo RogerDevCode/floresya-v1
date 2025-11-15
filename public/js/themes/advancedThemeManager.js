@@ -31,7 +31,12 @@ export class AdvancedThemeManager {
    * Inicializa el gestor avanzado de temas
    */
   init() {
-    console.log('🎨 [AdvancedThemeManager] Initializing...')
+    // Increment global initialization counter
+    if (typeof window !== 'undefined') {
+      window.themeSystemInitCount = (window.themeSystemInitCount || 0) + 1
+    }
+
+    console.log(`🎨 [AdvancedThemeManager] Initializing... (init #${window.themeSystemInitCount})`)
 
     try {
       // Esperar a que el DOM esté listo
@@ -279,9 +284,17 @@ export class AdvancedThemeManager {
 // Instancia global singleton
 export const advancedThemeManager = new AdvancedThemeManager()
 
+// Bandera para prevenir inicializaciones múltiples
+let isAdvancedInitialized = false
+
 // Función de inicialización para compatibilidad
 export const initAdvancedThemeManager = () => {
-  advancedThemeManager.init()
+  if (!isAdvancedInitialized) {
+    isAdvancedInitialized = true
+    advancedThemeManager.init()
+  } else {
+    console.log('🎨 [AdvancedThemeManager] Already initialized, skipping...')
+  }
 }
 
 // Auto-inicializar si está en el navegador
@@ -289,11 +302,11 @@ if (typeof window !== 'undefined') {
   // Esperar a que el DOM esté listo
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-      advancedThemeManager.init()
+      initAdvancedThemeManager()
     })
   } else {
     // DOM ya está listo
-    advancedThemeManager.init()
+    initAdvancedThemeManager()
   }
 }
 

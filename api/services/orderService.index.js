@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Order Service - Barrel Export
  * Re-exports all functions from modular services
  * LEGACY: Maintain backward compatibility after modularization (WEEK 3)

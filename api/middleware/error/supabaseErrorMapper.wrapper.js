@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Supabase Error Mapper - Wrapper Functions
  * Wrapper functions for database operations with automatic error mapping
  * LEGACY: Modularized from supabaseErrorMapper.js (Phase 6)

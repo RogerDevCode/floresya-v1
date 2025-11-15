@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Payment Service - Venezuelan Payment Methods
  * Business logic for payment processing and order management
  * ENTERPRISE FAIL-FAST: Uses custom error classes with metadata

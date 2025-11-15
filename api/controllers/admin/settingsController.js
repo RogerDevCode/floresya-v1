@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Admin Settings Controller
  * Handles HTTP logic for admin settings operations
  *

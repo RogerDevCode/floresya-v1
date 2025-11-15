@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Middleware Index - Centralized Exports
  *
  * Organized into logical categories for better maintainability and clarity.

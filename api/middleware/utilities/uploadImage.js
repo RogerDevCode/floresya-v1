@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Image Upload Middleware
  * Handles multipart/form-data file uploads with Multer
  */

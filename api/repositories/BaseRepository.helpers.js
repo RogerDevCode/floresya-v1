@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Base Repository - Helper Functions & Constructor
  * Provides common CRUD operations for all entities
  * LEGACY: Modularizado desde BaseRepository.js (WEEK 4)

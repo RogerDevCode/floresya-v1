@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Settings Repository
  * Gestiona el acceso a datos de configuraciones
  * Extiende BaseRepository con operaciones específicas de settings

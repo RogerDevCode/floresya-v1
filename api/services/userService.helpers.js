@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * User Service - Helper Functions & Shared Imports
  * LEGACY: Modularizado desde userService.js (WEEK 4)
  *

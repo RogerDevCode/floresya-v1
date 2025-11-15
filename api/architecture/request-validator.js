@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Request Validator
  * Single Responsibility: Validate request parameters
  * Follows Fail Fast principle from CLAUDE.md

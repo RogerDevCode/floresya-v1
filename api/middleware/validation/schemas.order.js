@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Validation Schemas - Orders
  * Based on OpenAPI 3.1 specifications in api/docs/openapi-annotations.js
  * LEGACY: Modularized from schemas.js (Phase 6)

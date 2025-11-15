@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Base Application Error
  * Extends Error with enterprise-grade metadata for fail-fast error handling
  *

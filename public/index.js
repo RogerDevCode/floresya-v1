@@ -2645,18 +2645,17 @@ function updateUrlWithFilters() {
  */
 async function init() {
   try {
-    // Initialize Theme Manager (must be first to apply theme before UI loads)
+    // Theme Manager is auto-initialized when imported, just expose it globally for debug scripts
     try {
-      // Import theme manager module dynamically
+      // Import theme manager module dynamically (it auto-initializes)
       const { themeManager } = await import('./js/themes/themeManager.js')
-      themeManager.init()
-      log.success('Theme manager initialized')
 
       // Expose themeManager globally for debug scripts
       window.themeManager = themeManager
-      log.debug('Theme manager exposed to global window object')
+      log.success('Theme manager exposed globally')
+      log.debug('Theme manager auto-initialized when imported')
     } catch (error) {
-      log.error('Theme manager initialization failed:', error)
+      log.error('Theme manager import failed:', error)
       // Continue with default theme
     }
 

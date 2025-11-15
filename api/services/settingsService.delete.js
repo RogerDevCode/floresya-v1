@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Settings Service - Delete Operations
  * Handles settings deletion and reactivation
  * LEGACY: Modularizado desde settingsService.js (PHASE 5)

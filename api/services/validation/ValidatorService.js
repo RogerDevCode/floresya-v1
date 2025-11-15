@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Validator Service - Centralized Validation
  * Eliminates code duplication and ensures consistency
  * Follows KISS and DRY principles from CLAUDE.md

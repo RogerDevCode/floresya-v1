@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Payment Method Repository
  * Gestiona el acceso a datos de métodos de pago
  * Extiende BaseRepository con operaciones específicas de métodos de pago

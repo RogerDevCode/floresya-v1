@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Occasion Service - Helper Functions & Shared Imports
  * LEGACY: Modularizado desde occasionService.js (PHASE 5)
  */

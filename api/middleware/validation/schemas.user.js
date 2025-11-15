@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Validation Schemas - Users
  * Based on OpenAPI 3.1 specifications in api/docs/openapi-annotations.js
  * LEGACY: Modularized from schemas.js (Phase 6)

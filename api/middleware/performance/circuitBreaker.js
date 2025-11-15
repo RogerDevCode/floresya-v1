@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Circuit Breaker Middleware
  * Protects against cascading failures when database is down
  * Implements CLOSED → OPEN → HALF_OPEN state transitions

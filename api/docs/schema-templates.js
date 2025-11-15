@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Centralized Schema Templates for OpenAPI Documentation
  * Reusable schema definitions following DRY and KISS principles
  */

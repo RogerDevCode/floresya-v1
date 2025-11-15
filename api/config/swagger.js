@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * OpenAPI 3.1 Configuration
  * Auto-generates API documentation from JSDoc comments
  */

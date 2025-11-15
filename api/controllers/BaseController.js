@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Base Controller Class
  * Provides common functionality for all controllers
  * Eliminates duplication of helper functions across controllers

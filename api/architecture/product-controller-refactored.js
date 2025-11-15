@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Product Controller - REFACTORED
  * Implements Clean Architecture and SOLID Principles
  *

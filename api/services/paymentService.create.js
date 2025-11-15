@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Payment Service - Create Operations
  * Handles payment creation and confirmation
  * LEGACY: Modularizado desde paymentService.js (PHASE 5)

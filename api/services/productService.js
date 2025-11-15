@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Product Service
  * Full CRUD operations with soft-delete (active flag)
  * Uses stored functions for atomic operations

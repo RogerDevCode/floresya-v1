@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Payment Service - Read Operations
  * Handles all payment retrieval operations
  * LEGACY: Modularizado desde paymentService.js (PHASE 5)

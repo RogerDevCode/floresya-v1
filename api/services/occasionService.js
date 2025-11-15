@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Occasion Service
  * Full CRUD operations with soft-delete (active flag)
  * Uses indexed slug column for SEO-friendly lookups

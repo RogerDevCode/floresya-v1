@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Server Entry Point
  * Starts the Express server (local) or exports app (Vercel)
  *

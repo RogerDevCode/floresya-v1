@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * User Service - Read Operations
  * Handles all user retrieval operations
  * LEGACY: Modularizado desde userService.js (WEEK 4)

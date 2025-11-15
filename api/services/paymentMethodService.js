@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Payment Method Service
  * Full CRUD operations for payment method management in Venezuela
  * Uses indexed columns for optimized queries

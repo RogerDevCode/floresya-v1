@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * ERROR CODES - Fuente de Verdad Centralizada
  * Basado en estándares de la industria (RFC 7807, JSON:API, Microsoft, Google)
  *

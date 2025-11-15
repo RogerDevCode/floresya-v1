@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Payment Service - Validation & Utilities
  * Handles validation and utility functions
  * LEGACY: Modularizado desde paymentService.js (PHASE 5)

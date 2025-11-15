@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * User Service - Update Operations
  * Handles user update operations
  * LEGACY: Modularizado desde userService.js (WEEK 4)

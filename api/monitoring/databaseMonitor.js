@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Database Query Monitoring Middleware
  * Intercepts and monitors Supabase/PostgreSQL queries for performance tracking
  * Integrates with metricsCollector for slow query logging and performance analysis

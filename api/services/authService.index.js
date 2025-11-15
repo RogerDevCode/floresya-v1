@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Auth Service - Barrel Export
  * Re-exports all functions from modular services
  * LEGACY: Maintain backward compatibility after modularization (PHASE 6)

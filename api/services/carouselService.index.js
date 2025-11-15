@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Carousel Service Index
  * Main export point for modular carouselService functionality
  */

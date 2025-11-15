@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Authentication Service - DUAL-MODE
  * - Development: Bypassed (auto-inject mock user in middleware)
  * - Production: Real Supabase Auth with JWT verification

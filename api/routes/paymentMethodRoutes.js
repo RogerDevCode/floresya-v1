@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Payment Method Routes
  * Defines routes for payment method operations
  * Uses centralized validation schemas from api/middleware/schemas.js

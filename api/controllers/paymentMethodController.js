@@ -1,4 +1,8 @@
 /**
+ * Procesado por B
+ */
+
+/**
  * Payment Method Controller
  * Handles HTTP logic for payment method operations
  * Delegates business logic to paymentMethodService

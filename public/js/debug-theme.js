@@ -19,7 +19,8 @@ import { onDOMReady } from './shared/dom-ready.js'
       preload: null,
       manager: null,
       selector: null,
-      container: null
+      container: null,
+      initializationCount: 0
     },
     dom: {
       ready: document.readyState,
@@ -35,6 +36,11 @@ import { onDOMReady } from './shared/dom-ready.js'
     },
     errors: [],
     warnings: []
+  }
+
+  // Initialize global theme system counter if not exists
+  if (typeof window.themeSystemInitCount === 'undefined') {
+    window.themeSystemInitCount = 0
   }
 
   // Check DOM readiness
@@ -67,10 +73,16 @@ import { onDOMReady } from './shared/dom-ready.js'
           availableThemes: window.themeManager.getAvailableThemes().length,
           hasStyleElement: !!document.getElementById('theme-dynamic-styles')
         }
+        console.log(
+          `🔍 [Theme System Diagnostics] themeManager found at check time - Current theme: ${window.themeManager.getCurrentTheme()}`
+        )
       } catch (error) {
         debugInfo.errors.push(`themeManager error: ${error.message}`)
       }
     } else {
+      console.log(
+        '🔍 [Theme System Diagnostics] themeManager still not available during dependency check'
+      )
       debugInfo.errors.push('themeManager is not available')
     }
 
@@ -309,12 +321,17 @@ import { onDOMReady } from './shared/dom-ready.js'
   // Run diagnosis with retry mechanism for themeManager
   function runDiagnosisWithRetry(maxRetries = 5, retryDelay = 200) {
     let retryCount = 0
+    const startTime = performance.now()
 
     function attemptDiagnosis() {
       checkDOMState()
 
-      // Check if themeManager is available
-      if (typeof window.themeManager !== 'undefined') {
+      // Check if themeManager is available AND initialized
+      if (typeof window.themeManager !== 'undefined' && window.themeManager.currentTheme) {
+        const elapsedTime = performance.now() - startTime
+        console.log(
+          `✅ [Theme System Diagnostics] themeManager fully initialized after ${retryCount} retries (${elapsedTime.toFixed(2)}ms)`
+        )
         // themeManager is available, run full diagnosis
         checkDependencies()
         checkThemePreload()
@@ -331,13 +348,14 @@ import { onDOMReady } from './shared/dom-ready.js'
         retryCount++
         if (retryCount < maxRetries) {
           console.warn(
-            `⚠️ [Theme System Diagnostics] themeManager not available, retrying (${retryCount}/${maxRetries})...`
+            `⚠️ [Theme System Diagnostics] themeManager not fully initialized, retrying (${retryCount}/${maxRetries})...`
           )
           setTimeout(attemptDiagnosis, retryDelay * retryCount)
         } else {
           // Give up, run diagnosis without themeManager
+          const elapsedTime = performance.now() - startTime
           console.error(
-            '❌ [Theme System Diagnostics] themeManager not available after retries, proceeding without it'
+            `❌ [Theme System Diagnostics] themeManager not available after ${maxRetries} retries (${elapsedTime.toFixed(2)}ms), proceeding without it`
           )
           checkDependencies()
           checkThemePreload()
@@ -358,8 +376,14 @@ import { onDOMReady } from './shared/dom-ready.js'
 
   // Finalize diagnosis and display results
   function finalizeDiagnosis() {
+    // Update initialization count
+    debugInfo.themeSystem.initializationCount = window.themeSystemInitCount || 0
+
     console.group('🔧 [Theme System Diagnostics] Results')
     console.log('Diagnostic Info:', debugInfo)
+    console.log(
+      `📊 [Theme System Diagnostics] Total theme system initializations: ${debugInfo.themeSystem.initializationCount}`
+    )
 
     if (debugInfo.errors.length > 0) {
       console.error('Errors found:', debugInfo.errors)
