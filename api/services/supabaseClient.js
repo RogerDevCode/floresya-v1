@@ -15,6 +15,19 @@ import config from '../config/configLoader.js'
 import { ConfigurationError } from '../errors/AppError.js'
 import { createMonitoredSupabaseClient } from '../monitoring/databaseMonitor.js'
 
+// Import mock for testing
+let createSupabaseClientMock = null
+if (process.env.NODE_ENV === 'test') {
+  try {
+    const { createSupabaseClientMock: mockFn } = await import(
+      '../../refinery/test/supabase-client/mocks/mocks.js'
+    )
+    createSupabaseClientMock = mockFn
+  } catch (error) {
+    console.warn('Mock not available, using real client for tests', error.message)
+  }
+}
+
 const supabaseUrl = config.database.url
 const supabaseKey = config.database.key
 
@@ -41,7 +54,10 @@ if (!supabaseUrl || !supabaseKey) {
  * Configuration from centralized configLoader
  * @type {import('@supabase/supabase-js').SupabaseClient}
  */
-const rawSupabaseClient = createClient(supabaseUrl, supabaseKey, config.database.options)
+const rawSupabaseClient =
+  process.env.NODE_ENV === 'test' && createSupabaseClientMock
+    ? createSupabaseClientMock({ url: supabaseUrl, anonKey: supabaseKey })
+    : createClient(supabaseUrl, supabaseKey, config.database.options)
 
 /**
  * Monitored Supabase client with performance tracking

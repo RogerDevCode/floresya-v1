@@ -7,7 +7,7 @@
 
 set -euo pipefail
 
-INSTRUCCIONES="instructions.txt"
+INSTRUCCIONES="/home/manager/Sync/floresya-v1/refinery/instructions.txt"
 
 # Colores solo para nuestro propio feedback
 RED='\033[0;31m'
@@ -48,3 +48,8 @@ fi
 # clave Kimi sk-XsTKnsgvu5jibffJtkEaOHizmToWgHdLkMQZP1YBy2Rco3JR
 # 5. Importante: retransmitir el código de salida original
 exit $EXIT_CODE
+
+curl https://api.moonshot.cn/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer sk-XsTKnsgvu5jibffJtkEaOHizmToWgHdLkMQZP1YBy2Rco3JR" \
+  -d '{"model": "moonshot-v1-8k", "messages": [{"role": "user", "content": "Hola"}]}'

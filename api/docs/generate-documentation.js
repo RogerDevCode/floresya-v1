@@ -1,8 +1,8 @@
+#!/usr/bin/env node
+
 /**
  * Procesado por B
  */
-
-#!/usr/bin/env node
 
 /**
  * Documentation Generator for OpenAPI Annotations

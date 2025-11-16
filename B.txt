@@ -1,4 +1,0 @@
-Lee el archivo CLAUDE.md, y luego procesa el archivo JavaScript pasado como parametro.
-Lee el código y agrega en el encabezado la expresión "Procesado por B".
-Crealo si no existe, si ya existe, no modifiques nada más.
-Devuelve el código actualizado o sin cambios.
