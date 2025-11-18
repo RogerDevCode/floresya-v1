@@ -8,6 +8,9 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 
+// Import cart and payment specific commands
+import './commands/cart-payment.js'
+
 // Custom command for authentication
 Cypress.Commands.add('login', (email, password) => {
   cy.session([email, password], () => {

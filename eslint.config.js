@@ -48,12 +48,14 @@ export default [
       'seed-*.js',
       'api/**/*.js',
       'scripts/**/*.js',
-      'run-*.js'
+      'run-*.js',
+      'cypress/**/*.js'
     ],
     languageOptions: {
       globals: {
         ...globals.node,
         ...globals.jest,
+        ...globals.mocha,
         describe: 'readonly',
         test: 'readonly',
         it: 'readonly',
@@ -62,7 +64,9 @@ export default [
         afterEach: 'readonly',
         beforeAll: 'readonly',
         afterAll: 'readonly',
-        jest: 'readonly'
+        jest: 'readonly',
+        cy: 'readonly',
+        Cypress: 'readonly'
       }
     },
     rules: {

@@ -150,7 +150,7 @@ export class UserRepository extends BaseRepository {
       .maybeSingle()
 
     if (existingUser && existingUser.active) {
-      throw new ConflictError('User with this email already exists', { email })
+      throw new ConflictError('User with this email already exists', { email: userData.email })
     }
 
     // Si existe pero está inactivo, reactivar

@@ -85,6 +85,7 @@ function sanitizeObject(obj) {
         .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
         .replace(/javascript:/gi, '')
         .replace(/on\w+\s*=/gi, '')
+        .replace(/on\w+=/gi, '')
         .trim()
     } else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       sanitized[key] = sanitizeObject(value)
@@ -186,7 +187,7 @@ function isPublicRoute(path) {
   const publicRoutes = ['/', '/index', '/products', '/carousel', '/contact', '/cart', '/payment']
 
   return (
-    publicRoutes.some(route => path.startsWith(route)) ||
+    publicRoutes.some(route => path === route || path.startsWith(route + '/')) ||
     path.match(/\.(js|css|png|jpg|jpeg|gif|ico|svg|webp)$/)
   )
 }
@@ -230,7 +231,7 @@ const rateLimiter = {
 }
 
 export function ipRateLimit(req, res, next) {
-  const ip = req.ip || req.connection.remoteAddress
+  const ip = req.ip || req.connection?.remoteAddress || 'unknown'
   const now = Date.now()
 
   if (!rateLimiter.requests.has(ip)) {

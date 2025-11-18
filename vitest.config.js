@@ -4,8 +4,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    setupFiles: ['./refinery/test/setup.js'],
-    include: ['refinery/test/**/*.test.js'],
+    setupFiles: ['./test/setup.js'],
+    include: ['test/**/*.test.js', 'api/controllers/__tests__/**/*.test.js'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
@@ -14,7 +14,7 @@ export default defineConfig({
         'dist/',
         'cypress/',
         '*.config.js',
-        'refinery/test/supabase-client/mocks/'
+        'test/supabase-client/mocks/'
       ]
     },
     testTimeout: 10000,

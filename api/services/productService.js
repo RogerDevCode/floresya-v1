@@ -92,30 +92,30 @@ export const getAllProducts = withErrorMapping(
     // Prepare repository options
     const repositoryOptions = {}
 
-    // Handle sorting
+    // Handle sorting - pass orderBy in options as expected by repository
     if (filters.sortBy === 'carousel_order') {
-      repositoryFilters.sortBy = 'carousel_order'
+      repositoryOptions.orderBy = 'carousel_order'
       repositoryOptions.ascending = true
     } else if (filters.sortBy === 'price_asc') {
-      repositoryFilters.sortBy = 'price'
+      repositoryOptions.orderBy = 'price'
       repositoryOptions.ascending = true
     } else if (filters.sortBy === 'price_desc') {
-      repositoryFilters.sortBy = 'price'
+      repositoryOptions.orderBy = 'price'
       repositoryOptions.ascending = false
     } else if (filters.sortBy === 'name_asc') {
-      repositoryFilters.sortBy = 'name'
+      repositoryOptions.orderBy = 'name'
       repositoryOptions.ascending = true
     } else {
-      repositoryFilters.sortBy = 'created_at'
+      repositoryOptions.orderBy = 'created_at'
       repositoryOptions.ascending = false
     }
 
     // Apply pagination
-    if (filters.limit) {
+    if (filters.limit !== undefined) {
       repositoryOptions.limit = filters.limit
     }
 
-    if (filters.offset) {
+    if (filters.offset !== undefined) {
       repositoryOptions.offset = filters.offset
     }
 

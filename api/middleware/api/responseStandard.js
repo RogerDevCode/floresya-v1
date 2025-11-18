@@ -23,13 +23,24 @@ export function standardResponse(req, res, next) {
       return originalJson.call(this, data)
     }
 
+    // Handle null/undefined data
+    if (data == null) {
+      const isSuccess = res.statusCode >= 200 && res.statusCode < 300
+      const standardFormat = {
+        success: isSuccess,
+        data: null,
+        message: isSuccess ? 'Success' : 'Error occurred'
+      }
+      return originalJson.call(this, standardFormat)
+    }
+
     // Convertir formato legacy a estándar
     const isSuccess = res.statusCode >= 200 && res.statusCode < 300
     const standardFormat = {
       success: isSuccess,
-      data: data.data || data,
-      message: data.message || (isSuccess ? 'Success' : 'Error occurred'),
-      ...(data.error && { error: data.error })
+      data: (data && typeof data === 'object' && 'data' in data) ? data.data : data,
+      message: (data && typeof data === 'object' && 'message' in data) ? data.message : (isSuccess ? 'Success' : 'Error occurred'),
+      ...(data && typeof data === 'object' && data.error && { error: data.error })
     }
 
     return originalJson.call(this, standardFormat)

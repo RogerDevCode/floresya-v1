@@ -174,18 +174,18 @@ export function sanitizeOrderItems(items) {
  */
 export function sanitizeRequestData(req, res, next) {
   try {
-    // Sanitize order data if present
-    if (req.body.order) {
-      req.body.order = sanitizeOrderData(req.body.order)
-    }
-
-    // Sanitize order items if present
-    if (req.body.items) {
-      req.body.items = sanitizeOrderItems(req.body.items)
-    }
-
     // Also sanitize at the top level for other endpoints
     if (req.body && typeof req.body === 'object') {
+      // Sanitize order data if present
+      if (req.body.order) {
+        req.body.order = sanitizeOrderData(req.body.order)
+      }
+
+      // Sanitize order items if present
+      if (req.body.items) {
+        req.body.items = sanitizeOrderItems(req.body.items)
+      }
+
       // Apply general sanitization for common fields that might not be in order/items
       for (const [key, value] of Object.entries(req.body)) {
         // Skip order and items as they're already sanitized above

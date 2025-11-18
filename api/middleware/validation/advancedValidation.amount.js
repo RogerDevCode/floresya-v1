@@ -17,23 +17,41 @@ export function validateAmount(amount, fieldName = 'monto') {
     return `${fieldName} es requerido`
   }
 
-  const numValue = typeof amount === 'string' ? parseFloat(amount) : amount
+  // Check if it's a valid string number
+  let numValue
+  if (typeof amount === 'string') {
+    // Check for empty string first
+    if (amount.trim() === '') {
+      return `${fieldName} debe ser un número válido`
+    }
 
-  if (isNaN(numValue)) {
+    numValue = parseFloat(amount)
+  } else {
+    numValue = amount
+  }
+
+  // Check if it's a valid number
+  if (typeof numValue !== 'number' || isNaN(numValue) || !isFinite(numValue)) {
     return `${fieldName} debe ser un número válido`
   }
 
+  // Check for reasonable decimal places (max 2) BEFORE checking business limits
+  // Handle floating point precision correctly by checking if the numeric value
+  // would have more than 2 decimal places when rounded to 2
+  const roundedTo2Decimals = Math.round(numValue * 100) / 100
+  const hasMoreThan2Decimals = numValue !== roundedTo2Decimals
+
+  if (hasMoreThan2Decimals) {
+    return `${fieldName} no puede tener más de 2 decimales`
+  }
+
+  // Check business limits validation
   if (numValue < BUSINESS_LIMITS.minOrderAmount) {
     return `${fieldName} debe ser al menos $${BUSINESS_LIMITS.minOrderAmount}`
   }
 
   if (numValue > BUSINESS_LIMITS.maxOrderAmount) {
     return `${fieldName} no puede exceder $${BUSINESS_LIMITS.maxOrderAmount}`
-  }
-
-  // Check for reasonable decimal places (max 2)
-  if (numValue !== Math.round(numValue * 100) / 100) {
-    return `${fieldName} no puede tener más de 2 decimales`
   }
 
   return null
@@ -43,21 +61,22 @@ export function validateAmount(amount, fieldName = 'monto') {
  * Advanced text length validation with specific limits
  */
 export function validateTextLength(text, fieldName, minLength = 1, maxLength = 255) {
-  if (!text || typeof text !== 'string') {
+  if (text === null || text === undefined || typeof text !== 'string') {
     return `${fieldName} es requerido`
   }
 
+  // Check for length first before whitespace validation
   if (text.length < minLength) {
     return `${fieldName} debe tener al menos ${minLength} caracteres`
   }
 
-  if (text.length > maxLength) {
-    return `${fieldName} no puede exceder ${maxLength} caracteres`
-  }
-
-  // Check for suspicious content
+  // Check for whitespace-only strings only after length validation
   if (text.trim().length === 0) {
     return `${fieldName} no puede estar vacío`
+  }
+
+  if (text.length > maxLength) {
+    return `${fieldName} no puede exceder ${maxLength} caracteres`
   }
 
   return null
@@ -67,14 +86,27 @@ export function validateTextLength(text, fieldName, minLength = 1, maxLength = 2
  * Advanced address validation for Venezuelan context
  */
 export function validateVenezuelanAddress(address) {
-  const error = validateTextLength(address, 'Dirección', 5, BUSINESS_LIMITS.maxAddressLength)
-  if (error) {
-    return error
+  if (address === null || address === undefined || typeof address !== 'string') {
+    return 'Dirección es requerido'
   }
 
-  // Basic validation - just ensure it's not empty or whitespace
-  if (address.trim().length === 0) {
+  // Check length first for truly empty string, but not for whitespace-only strings
+  // Empty string ('') vs whitespace-only string ('   ') - different error priorities
+  if (address === '') {
+    return 'Dirección debe tener al menos 5 caracteres'
+  } else if (address.trim().length === 0) {
+    // Whitespace-only string should get whitespace error
     return 'Dirección no puede estar vacía'
+  }
+
+  // Then check length requirements for actual content
+  if (address.length < 5) {
+    return 'Dirección debe tener al menos 5 caracteres'
+  }
+
+  // Check max length
+  if (address.length > BUSINESS_LIMITS.maxAddressLength) {
+    return 'Dirección no puede exceder ' + BUSINESS_LIMITS.maxAddressLength + ' caracteres'
   }
 
   return null

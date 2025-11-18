@@ -2231,83 +2231,16 @@ function setupDeleteModalEvents() {
  * Open create user modal
  */
 function openCreateUserModal() {
-  currentEditingUser = null
-
-  const modal = document.getElementById('user-modal')
-  const title = document.getElementById('user-modal-title')
-  const submitText = document.getElementById('user-form-submit-text')
-  const passwordSection = document.getElementById('password-section')
-  const resetSection = document.getElementById('password-reset-section')
-  const form = document.getElementById('user-form')
-
-  if (title) {
-    title.textContent = 'Crear Nuevo Usuario'
-  }
-  if (submitText) {
-    submitText.textContent = 'Crear Usuario'
-  }
-  if (passwordSection) {
-    passwordSection.classList.remove('hidden')
-  }
-  if (resetSection) {
-    resetSection.classList.add('hidden')
-  }
-
-  if (form) {
-    form.reset()
-  }
-
-  if (modal) {
-    modal.classList.remove('hidden')
-  }
+  // Redirect to user form page for creating new user
+  window.location.href = './user-form.html?mode=create'
 }
 
 /**
  * Open edit user modal
  */
 function editUser(userId) {
-  try {
-    const user = users.find(u => u.id === userId)
-    if (!user) {
-      throw new Error('Usuario no encontrado')
-    }
-
-    currentEditingUser = user
-
-    const modal = document.getElementById('user-modal')
-    const title = document.getElementById('user-modal-title')
-    const submitText = document.getElementById('user-form-submit-text')
-    const passwordSection = document.getElementById('password-section')
-    const resetSection = document.getElementById('password-reset-section')
-    const form = document.getElementById('user-form')
-
-    if (title) {
-      title.textContent = 'Editar Usuario'
-    }
-    if (submitText) {
-      submitText.textContent = 'Guardar Cambios'
-    }
-    if (passwordSection) {
-      passwordSection.classList.add('hidden')
-    }
-    if (resetSection) {
-      resetSection.classList.remove('hidden')
-    }
-
-    if (form) {
-      form.email.value = user.email || ''
-      form.full_name.value = user.full_name || ''
-      form.phone.value = user.phone || ''
-      form.role.value = user.role || 'user'
-    }
-
-    if (modal) {
-      modal.classList.remove('hidden')
-    }
-  } catch (error) {
-    console.error('Error loading user for edit:', error)
-    toast.error('Error al cargar usuario: ' + error.message)
-  }
+  // Redirect to user form page for editing
+  window.location.href = `./user-form.html?mode=edit&id=${userId}`
 }
 
 /**
@@ -2536,30 +2469,26 @@ window.toggleUserStatus = async function (userId, currentStatus) {
       return
     }
 
-    const action = currentStatus ? 'desactivar' : 'activar'
-    const actionText = currentStatus ? 'desactivado' : 'activado'
+    // Si es desactivación, redirigir a página de confirmación
+    if (currentStatus === true) {
+      window.location.href = `./user-delete-confirm.html?id=${userId}`
+      return
+    }
 
-    // LEGACY FIX: Determinar API call basado en estado
-    const apiCall = currentStatus ? api.deleteUsers : api.reactivateUsers
-    const apiArgs = currentStatus ? [userId] : [userId, {}]
-    const logMessage = `Changing user ${userId} status from ${currentStatus} to ${!currentStatus}`
+    // Si es reactivación, ejecutar directamente
+    const action = 'activar'
+    const actionText = 'activado'
 
-    // LEGACY FIX: Usar función genérica para eliminar duplicación
     const confirmed = await confirmAndExecute(
       `¿Estás seguro de ${action} este usuario?`,
-      apiCall,
-      logMessage,
-      ...apiArgs
+      api.reactivateUsers,
+      `Reactivating user ${userId}`,
+      userId,
+      {}
     )
 
     if (!confirmed) {
       return
-    }
-
-    const result = { success: true } // Ya ejecutado por confirmAndExecute
-
-    if (!result.success) {
-      throw new Error(result.message || `Error al ${action} usuario`)
     }
 
     toast.success(`Usuario ${actionText} correctamente`)

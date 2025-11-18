@@ -115,17 +115,19 @@ export const getCarouselProducts = withErrorMapping(
  * @throws {ValidationError} If invalid
  */
 export function validateCarouselOrder(carouselOrder) {
-  if (!carouselOrder) {
+  // null/undefined is valid (not featured)
+  if (carouselOrder === null || carouselOrder === undefined) {
     return
-  } // null/undefined is valid (not featured)
+  }
 
   if (
     typeof carouselOrder !== 'number' ||
+    !Number.isInteger(carouselOrder) ||
     carouselOrder < CAROUSEL.MIN_POSITION ||
     carouselOrder > CAROUSEL.MAX_POSITION
   ) {
     throw new ValidationError(
-      `carousel_order must be between ${CAROUSEL.MIN_POSITION}-${CAROUSEL.MAX_POSITION}`,
+      `carousel_order must be an integer between ${CAROUSEL.MIN_POSITION}-${CAROUSEL.MAX_POSITION}`,
       {
         carouselOrder
       }
