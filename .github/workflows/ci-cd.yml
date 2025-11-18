@@ -109,7 +109,7 @@ jobs:
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4
-      if: always() && secrets.CODECOV_TOKEN != ''
+      if: ${{ always() }}
       continue-on-error: true
       with:
         file: ./coverage/lcov.info
@@ -167,7 +167,6 @@ jobs:
 
     - name: Run Snyk scan
       uses: snyk/actions/node@master
-      if: secrets.SNYK_TOKEN != ''
       continue-on-error: true
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
