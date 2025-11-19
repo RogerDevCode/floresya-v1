@@ -24,7 +24,7 @@ export function standardResponse(req, res, next) {
     }
 
     // Handle null/undefined data
-    if (data == null) {
+    if (data === null || data === undefined) {
       const isSuccess = res.statusCode >= 200 && res.statusCode < 300
       const standardFormat = {
         success: isSuccess,

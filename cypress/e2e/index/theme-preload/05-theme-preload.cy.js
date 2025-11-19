@@ -59,9 +59,6 @@ describe('🎨 Theme Preload Functionality', () => {
     it('✅ should prevent FOUC (Flash of Unstyled Content)', () => {
       cy.log('Testing FOUC prevention...')
 
-      // Measure time from navigation start to theme application
-      const startTime = Date.now()
-
       cy.visit('/', {
         onBeforeLoad: win => {
           // Track when theme is applied
@@ -148,7 +145,7 @@ describe('🎨 Theme Preload Functionality', () => {
                     src: value,
                     timestamp: win.performance.now()
                   })
-                  return originalSrc.set.call(this, value)
+                  originalSrc.set.call(this, value)
                 }
               })
             }
@@ -176,7 +173,7 @@ describe('🎨 Theme Preload Functionality', () => {
                     href: value,
                     timestamp: win.performance.now()
                   })
-                  return originalHref.set.call(this, value)
+                  originalHref.set.call(this, value)
                 }
               })
             }
@@ -398,7 +395,6 @@ describe('🎨 Theme Preload Functionality', () => {
         // Try to trigger theme changes that might cause errors
         try {
           const html = win.document.documentElement
-          const originalTheme = html.getAttribute('data-theme')
 
           // Test setting invalid theme (should fallback gracefully)
           html.setAttribute('data-theme', 'invalid-theme')

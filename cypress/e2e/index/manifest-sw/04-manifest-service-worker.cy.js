@@ -253,7 +253,6 @@ describe('📱 Manifest & Service Worker Configuration', () => {
         }
 
         // Check for HSTS preparation (meta tag)
-        const hstsMeta = win.document.querySelector('meta[http-equiv="strict-transport-security"]')
         if (!isLocalhost) {
           // In production, HSTS should be set via headers, but meta tag is a good fallback
           cy.log('HSTS configuration would be verified in production environment')

@@ -490,13 +490,6 @@ describe('Performance E2E', () => {
   })
 
   test('should handle large datasets efficiently', () => {
-    // Create a large dataset for testing
-    const largeDataset = Array.from({ length: 1000 }, (_, i) => ({
-      name: `Product ${i}`,
-      price: Math.random() * 100,
-      category: `category-${i % 10}`
-    }))
-
     // Test pagination with large dataset
     cy.visit('/products')
 

@@ -59,7 +59,7 @@ const BACKUP_DIR = path.join(PROJECT_ROOT, 'public/pages/admin/.backup-' + Date.
  * Generate standardized navbar HTML
  */
 function generateNavbar(config) {
-  const { breadcrumbs = [], pageName = '', hasSidebar = false } = config
+  const { breadcrumbs = [], hasSidebar = false } = config
 
   const breadcrumbsHTML = breadcrumbs
     .map(

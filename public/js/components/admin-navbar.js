@@ -54,7 +54,7 @@ class AdminNavbar {
    */
   updateThemeButton() {
     const btn = document.getElementById('theme-toggle-btn')
-    if (!btn) return
+    if (!btn) {return}
 
     const isDark = this.theme === 'dark'
     btn.innerHTML = isDark
@@ -115,7 +115,7 @@ class AdminNavbar {
    */
   displayUserInfo() {
     const userDisplay = document.getElementById('admin-user-display')
-    if (!userDisplay) return
+    if (!userDisplay) {return}
 
     const user = JSON.parse(localStorage.getItem('user') || '{}')
     if (user.full_name) {
@@ -126,7 +126,7 @@ class AdminNavbar {
   /**
    * Load notifications
    */
-  async loadNotifications() {
+  loadNotifications() {
     // Placeholder for API call
     this.notifications = [
       // { id: 1, type: 'info', message: 'Nueva orden recibida', time: '5 min' },
@@ -140,7 +140,7 @@ class AdminNavbar {
    */
   updateNotificationBadge() {
     const badge = document.getElementById('notification-badge')
-    if (!badge) return
+    if (!badge) {return}
 
     const count = this.notifications.length
     if (count > 0) {
@@ -156,7 +156,7 @@ class AdminNavbar {
    */
   toggleNotifications() {
     const panel = document.getElementById('notifications-panel')
-    if (!panel) return
+    if (!panel) {return}
 
     panel.classList.toggle('hidden')
     this.renderNotifications()
@@ -167,7 +167,7 @@ class AdminNavbar {
    */
   renderNotifications() {
     const container = document.getElementById('notifications-list')
-    if (!container) return
+    if (!container) {return}
 
     if (this.notifications.length === 0) {
       container.innerHTML = `

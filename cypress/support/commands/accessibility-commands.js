@@ -94,7 +94,6 @@ Cypress.Commands.add('verifyColorContrast', () => {
     cy.get(selector).each($el => {
       const computedStyle = getComputedStyle($el[0])
       const color = computedStyle.color
-      const backgroundColor = computedStyle.backgroundColor
 
       // Basic check that colors are defined
       expect(color).to.not.equal('rgba(0, 0, 0, 0)')

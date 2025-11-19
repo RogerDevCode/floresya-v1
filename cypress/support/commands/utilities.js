@@ -54,7 +54,7 @@ Cypress.Commands.add('shouldBe', { prevSubject: true }, (subject, condition, mes
 
 // Wait for element to be ready with timeout
 Cypress.Commands.add('waitForElement', (selector, options = {}) => {
-  const { timeout = 10000, interval = 500, state = 'visible' } = options
+  const { timeout = 10000, state = 'visible' } = options
 
   cy.testLog(`Waiting for element: ${selector}`)
 

@@ -262,7 +262,7 @@ describe('🏗️ HTML Structure Integrity', () => {
             const structuredData = JSON.parse(jsonLd)
             expect(structuredData['@context']).to.equal('https://schema.org')
             expect(structuredData['@type']).to.exist
-          } catch (error) {
+          } catch {
             cy.log('Invalid JSON-LD structured data', 'error')
             throw new Error('Invalid JSON-LD structured data')
           }
