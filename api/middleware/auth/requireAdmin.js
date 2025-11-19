@@ -4,8 +4,8 @@
  * @module middleware/auth/requireAdmin
  */
 
-import { ForbiddenError } from '../errors/AppError.js'
-import { logger } from '../../config/logger.js'
+import { ForbiddenError } from '../../errors/AppError.js'
+import { log as logger } from '../../utils/logger.js'
 
 /**
  * Middleware to require admin role

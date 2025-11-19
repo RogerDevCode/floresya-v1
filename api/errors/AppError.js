@@ -162,7 +162,7 @@ class UnauthorizedError extends AppError {
       statusCode: 401,
       code: ERROR_CODES.UNAUTHORIZED,
       context,
-      userMessage: 'Please log in to continue.',
+      userMessage: context.userMessage || message || 'Please log in to continue.',
       severity: 'medium'
     })
   }
@@ -174,7 +174,7 @@ class ForbiddenError extends AppError {
       statusCode: 403,
       code: ERROR_CODES.FORBIDDEN,
       context,
-      userMessage: 'You do not have permission to access this resource.',
+      userMessage: context.userMessage || message || 'You do not have permission to access this resource.',
       severity: 'medium'
     })
   }
