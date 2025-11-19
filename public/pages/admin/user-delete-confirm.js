@@ -49,7 +49,7 @@ function displayAdminInfo() {
  */
 async function loadUserData(userId) {
   try {
-    const result = await api.getUserById(userId)
+    const result = await api.getUsersById(userId)
 
     if (result.success && result.data) {
       userToDelete = result.data
@@ -115,7 +115,7 @@ async function handleConfirmDelete() {
     `
 
     // Call API to delete (deactivate) user
-    const result = await api.deleteUser(userToDelete.id)
+    const result = await api.deleteUsers(userToDelete.id)
 
     if (result.success) {
       toast.success(

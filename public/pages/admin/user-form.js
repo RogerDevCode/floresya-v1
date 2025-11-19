@@ -46,7 +46,7 @@ function displayAdminInfo() {
  */
 async function loadUserForEdit(userId) {
   try {
-    const result = await api.getUserById(userId)
+    const result = await api.getUsersById(userId)
 
     if (result.success && result.data) {
       const user = result.data
@@ -172,13 +172,13 @@ async function handleFormSubmit(e) {
 
     if (currentEditingUser && currentEditingUser.id) {
       // Update existing user
-      result = await api.updateUser(currentEditingUser.id, userData)
+      result = await api.updateUsers(currentEditingUser.id, userData)
       if (result.success) {
         toast.success('Usuario actualizado exitosamente')
       }
     } else {
       // Create new user
-      result = await api.createUser(userData)
+      result = await api.createUsers(userData)
       if (result.success) {
         toast.success('Usuario creado exitosamente')
       }
