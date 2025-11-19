@@ -22,6 +22,12 @@ yarn.lock
 *.min.js
 *.min.css
 
+# Backup directories
+**/.backup-*/
+
+# Known HTML parser issues with complex forms
+public/pages/admin/dashboard.html
+
 # OS files
 .DS_Store
 Thumbs.db

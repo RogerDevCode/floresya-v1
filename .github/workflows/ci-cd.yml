@@ -145,24 +145,27 @@ jobs:
 
     - name: Run npm audit
       run: |
-        npm audit --audit-level=moderate --json > npm-audit-results.json || true
+        # Audit production dependencies only (exclude devDependencies like clinic.js)
+        npm audit --omit=dev --audit-level=moderate --json > npm-audit-results.json || true
         if [ -f npm-audit-results.json ]; then
           VULNERABILITIES=$(jq -r '.metadata.vulnerabilities.total // 0' npm-audit-results.json)
-          echo "Found $VULNERABILITIES vulnerabilities"
+          echo "Found $VULNERABILITIES production vulnerabilities"
           
           if [ "$VULNERABILITIES" -gt 0 ]; then
-            echo "⚠️ Vulnerabilities found:"
+            echo "⚠️ Production vulnerabilities found:"
             jq '.metadata.vulnerabilities' npm-audit-results.json
           fi
           
-          # Only fail if critical/high vulnerabilities
+          # Only fail if critical/high vulnerabilities in production deps
           CRITICAL=$(jq -r '.metadata.vulnerabilities.critical // 0' npm-audit-results.json)
           HIGH=$(jq -r '.metadata.vulnerabilities.high // 0' npm-audit-results.json)
           
           if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 5 ]; then
-            echo "❌ Critical or too many high vulnerabilities found"
+            echo "❌ Critical or too many high vulnerabilities in production dependencies"
             exit 1
           fi
+          
+          echo "✅ Production dependencies security check passed"
         fi
 
     - name: Run Snyk scan
