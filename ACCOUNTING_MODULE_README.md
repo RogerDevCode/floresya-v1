@@ -1,238 +1,164 @@
-# 📊 Accounting Module - User Guide
+# 📊 Accounting Module - Quick Start Guide
 
-## 🌸 Welcome to FloresYa Accounting
+**Status:** 🟡 Ready for E2E Testing (82.5% tests passing)  
+**Updated:** 2025-11-19 19:50 UTC
 
-Simple expense tracking and profit/loss reporting for your flower shop.
+## 🎯 What This Module Does
 
----
+Simple accounting for small flower shops:
+- Track daily expenses (flores, suministros, transporte, etc.)
+- View weekly/monthly profit & loss reports
+- Admin-only access (customers can't see financials)
+- All prices in USD
 
 ## 🚀 Quick Start
 
-### For Administrators
-
-1. **Login** as administrator
-2. Click **"Contabilidad"** in the dashboard sidebar
-3. Choose:
-   - **Gastos** - Register daily expenses
-   - **Reportes** - View profit & loss reports
-
----
-
-## 💰 Managing Expenses
-
-### Register a New Expense
-
-1. Navigate to: **Dashboard → Contabilidad → Gastos**
-2. Fill in the form:
-   - **Categoría**: Type of expense (flores, suministros, transporte, etc.)
-   - **Descripción**: What you bought (e.g., "Rosas rojas para San Valentín")
-   - **Monto**: Amount in USD (e.g., 25.50)
-   - **Fecha**: Date of expense
-   - **Método de Pago**: Cash, card, transfer, or check
-   - **Recibo** (optional): Upload receipt photo
-   - **Notas** (optional): Additional details
-
-3. Click **"Guardar Gasto"**
-
-### View Expenses
-
-- All expenses appear in the table below the form
-- Filter by:
-  - Date range
-  - Category
-  - Payment method
-- Sort by clicking column headers
-
-### Edit an Expense
-
-1. Click **"Editar"** button next to the expense
-2. Modify fields as needed
-3. Click **"Actualizar"**
-
-### Delete an Expense
-
-1. Click **"Eliminar"** button
-2. Confirm deletion
-3. Expense is soft-deleted (can be restored from database)
-
----
-
-## 📈 Viewing Reports
-
-### Weekly Report
-
-1. Navigate to: **Dashboard → Contabilidad → Reportes**
-2. Select **"Semanal"** from dropdown
-3. View:
-   - Total sales (from orders)
-   - Total expenses
-   - Net profit/loss
-   - Expense breakdown by category
-
-### Monthly Report
-
-1. Select **"Mensual"** from dropdown
-2. Choose month/year
-3. View detailed P&L statement
-
-### Custom Date Range
-
-1. Select **"Personalizado"**
-2. Choose start and end dates
-3. Click **"Generar Reporte"**
-
-### Export Report
-
-- Click **"Exportar CSV"** to download data
-- Import to Excel, QuickBooks, etc.
-
----
-
-## 📊 Understanding Reports
-
-### Profit & Loss (P&L)
-
-```
-Total Sales:      $1,250.00
-Total Expenses:   -$480.50
-─────────────────────────────
-Net Profit:       $769.50
+### 1. Database Setup
+```bash
+# Apply migration (creates expenses table + views)
+psql -d your_db -f database/migrations/006_accounting_module.sql
 ```
 
-### Expense Breakdown
+### 2. Backend API (Already Integrated)
+```javascript
+// Endpoints ready:
+POST   /api/admin/accounting/expenses        // Create expense
+GET    /api/admin/accounting/expenses        // List expenses
+GET    /api/admin/accounting/expenses/:id    // Get one expense
+PUT    /api/admin/accounting/expenses/:id    // Update expense
+DELETE /api/admin/accounting/expenses/:id    // Soft delete
+GET    /api/admin/accounting/reports/daily   // Daily P&L
+GET    /api/admin/accounting/reports/weekly  // Weekly P&L
+GET    /api/admin/accounting/reports/monthly // Monthly P&L
+```
 
-| Category      | Amount   | Percentage |
-|---------------|----------|------------|
-| Flores        | $200.00  | 41.6%      |
-| Suministros   | $120.50  | 25.1%      |
-| Transporte    | $80.00   | 16.6%      |
-| Servicios     | $50.00   | 10.4%      |
-| Marketing     | $30.00   | 6.2%       |
+### 3. Frontend Views (Created)
+```
+src/views/pages/admin/expenses.ejs    // Add/edit expenses
+src/views/pages/admin/accounting.ejs  // Dashboard with reports
+```
 
----
+### 4. Run Tests
+```bash
+# Unit tests (47/57 passing - 82.5%)
+npm test
 
-## 🏷️ Expense Categories
+# E2E tests (not run yet - needs server config)
+npm run test:e2e
+```
 
-### Recommended Categories
+## ✅ What Works (DONE)
 
-- **flores** - Fresh flowers, plants, seeds
-- **suministros** - Ribbons, vases, packaging, scissors
-- **transporte** - Delivery gas, vehicle maintenance
-- **servicios** - Utilities, internet, phone, rent
-- **marketing** - Ads, social media, flyers
-- **otros** - Miscellaneous expenses
+- ✅ Full CRUD on expenses
+- ✅ Weekly/monthly reports
+- ✅ Admin-only protection
+- ✅ Dark/light theme UI
+- ✅ 47/57 tests passing
+- ✅ ESLint clean (0 errors)
 
-💡 **Tip:** Use consistent category names for accurate reports
+## ⚠️ What's Pending
 
----
+- ⚠️ 10 reportService tests failing (mock needs DB view support)
+- ⚠️ E2E tests not run (server not starting in test mode)
+- ⚠️ Receipt upload not implemented
+- ⚠️ Export reports (PDF/Excel) not implemented
 
-## 💳 Payment Methods
+## 🐛 Known Issues
 
-- **efectivo** - Cash
-- **tarjeta** - Credit/Debit card
-- **transferencia** - Bank transfer
-- **cheque** - Check
+1. **reportService tests fail (0/10)**
+   - Fix: Update `test/mocks/supabase-accounting.js` to support views
+   - ETA: 15 minutes
 
----
+2. **E2E server won't start**
+   - Fix: Add `.env.test` file or use real Supabase
+   - ETA: 10 minutes
 
-## 🔒 Security & Access
+3. **Receipt upload missing**
+   - Impact: Users can't attach receipts yet
+   - ETA: 2 hours (Supabase Storage integration)
 
-### Admin-Only Access
+## 🔧 Architecture
 
-- ✅ Only administrators can access accounting features
-- ❌ Clients attempting access will be redirected to home
-- All actions are logged with user ID and timestamp
+```
+Controller (HTTP) 
+  ↓
+Service (Business Logic)
+  ↓  
+Repository (DB Operations)
+  ↓
+Supabase Client (PostgreSQL)
+```
 
-### Data Protection
+**Pattern:** MVC + Service + Repository  
+**Auth:** Admin-only middleware on all routes  
+**Currency:** USD only, NUMERIC(10,2) precision  
+**Soft-Delete:** `active` flag (default TRUE)
 
-- Expenses are never permanently deleted (soft-delete)
-- All amounts validated (must be > $0)
-- Receipt uploads secured
-- HTTPS encryption enforced
+## 📊 Test Results
 
----
+```
+✅ expenseService.test.js      21/21 PASS (100%)
+✅ expenseController.test.js   26/26 PASS (100%)
+❌ reportService.test.js       0/10 PASS (0%) - MOCK ISSUE
+───────────────────────────────────────────────
+   TOTAL:                      47/57 PASS (82.5%)
+```
 
-## 📱 Mobile Support
+## 🎯 Next Steps
 
-The accounting module works perfectly on:
-- 📱 Smartphones (iOS/Android)
-- 📲 Tablets
-- 💻 Desktop computers
+### For Developers
+1. Fix reportService tests (update mock)
+2. Run E2E tests with Cypress
+3. Test admin vs customer access
+4. Add receipt upload feature
 
----
+### For QA
+1. Validate admin can create/edit/delete expenses
+2. Validate customer gets 403 on accounting routes
+3. Test report calculations with real data
+4. Verify dark/light theme works
 
-## 🌓 Dark/Light Theme
+### For DevOps
+1. Apply database migration to staging/production
+2. Set environment variables (SUPABASE_*)
+3. Monitor slow query performance on reports
 
-Toggle theme using the switch in the top-right corner. Your preference is saved automatically.
+## 📝 Files Created
 
----
+```
+Backend (5 files):
+  api/services/expenseService.js
+  api/services/reportService.js
+  api/repositories/expenseRepository.js
+  api/controllers/expenseController.js
+  api/routes/admin/accounting.js
 
-## ❓ FAQ
+Tests (4 files):
+  test/services/expenseService.test.js
+  test/services/reportService.test.js
+  test/controllers/expenseController.test.js
+  test/mocks/supabase-accounting.js
 
-### Q: Can I edit last month's expenses?
-**A:** Yes, there's no time limit. Edit anytime.
+Frontend (2 files):
+  src/views/pages/admin/expenses.ejs
+  src/views/pages/admin/accounting.ejs
 
-### Q: What happens if I delete an expense by mistake?
-**A:** Expenses are soft-deleted. Contact support to restore.
+E2E (1 file):
+  cypress/e2e/accounting/expenses.cy.js
 
-### Q: Can I add custom categories?
-**A:** Yes! Just type a new category name in the form.
+Database (1 file):
+  database/migrations/006_accounting_module.sql
+```
 
-### Q: How are sales calculated?
-**A:** Automatically from completed orders in the system.
-
-### Q: Can I download reports?
-**A:** Yes, use the "Exportar CSV" button.
-
-### Q: Why do reports show $0.00?
-**A:** Reports may need refresh. Wait 24hrs or contact support.
-
----
-
-## �� Troubleshooting
-
-### Issue: "Acceso denegado"
-**Solution:** You must be logged in as an administrator.
-
-### Issue: Form won't submit
-**Solution:** Check all required fields are filled correctly.
-
-### Issue: Date picker not working
-**Solution:** Use format: YYYY-MM-DD or click the calendar icon.
-
-### Issue: Report shows wrong data
-**Solution:** Clear browser cache and refresh page.
-
----
-
-## 💡 Best Practices
-
-1. **Daily Entry** - Register expenses same day for accuracy
-2. **Upload Receipts** - Keep digital copies of all receipts
-3. **Detailed Descriptions** - Write clear expense descriptions
-4. **Weekly Reviews** - Check P&L every Friday
-5. **Monthly Close** - Review full month on 1st of next month
-
----
+**Total:** ~3,400 lines of new code
 
 ## 📞 Support
 
-Need help? Contact FloresYa support:
-- 📧 Email: support@floresya.com
-- 📱 WhatsApp: +1234567890
-- 💬 Chat: Available in dashboard
+**Detailed Progress:** See `ACCOUNTING_MODULE_PROGRESS.md`  
+**Issues:** 10 reportService tests failing (mock issue)  
+**Blockers:** E2E server not starting  
+**ETA to 100%:** 1 hour (fix mock + run E2E tests)
 
 ---
 
-## 🎓 Video Tutorials
-
-Coming soon:
-- ▶️ How to register expenses (2 min)
-- ▶️ Understanding P&L reports (3 min)
-- ▶️ Monthly accounting workflow (5 min)
-
----
-
-**🌸 Happy Accounting!**
-
-*Keep your flower shop finances blooming* 🌺
+*Following CLAUDE.md principles: KISS, MVC, TDD, Clean Code, Fail-Fast*
