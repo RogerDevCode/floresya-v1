@@ -5,7 +5,7 @@
  */
 
 import expenseService from '../services/expenseService.js'
-import { logger } from '../config/logger.js'
+import { logger } from '../utils/logger.js'
 
 class ExpenseController {
   /**
