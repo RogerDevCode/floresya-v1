@@ -68,6 +68,16 @@ export default defineConfig({
           return null
         },
 
+        'db:seed:admin'() {
+          console.log('Seeding admin user...')
+          return null
+        },
+
+        'db:seed:customer'() {
+          console.log('Seeding customer user...')
+          return null
+        },
+
         'db:reset'() {
           // Reset database for tests
           console.log('Resetting test database...')

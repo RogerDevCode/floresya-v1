@@ -59,12 +59,13 @@
   - In-memory data store for expenses
   - Proper error scenarios (RLS, validation, etc.)
 
-- [x] **E2E Tests (Cypress)** - CREATED (Not Yet Run)
-  - `cypress/e2e/accounting/expenses.cy.js` - Expense CRUD flows
-  - `cypress/e2e/accounting/reports.cy.js` - Dashboard & reports
-  - RBAC testing: Admin vs Client access
+- [x] **E2E Tests (Cypress)** - CREATED ✅
+  - `cypress/e2e/accounting-admin.cy.js` - Admin access & CRUD
+  - `cypress/e2e/accounting-customer.cy.js` - Customer restrictions
+  - RBAC testing: Admin vs Customer access
   - Dark/Light theme validation
   - Responsive design tests (mobile, tablet, desktop)
+  - **Status**: Ready to run (needs live server)
 
 ### 4. Authorization & Security ✅
 - [x] **Middleware**: `isAdmin` enforced on all accounting routes
