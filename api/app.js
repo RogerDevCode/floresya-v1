@@ -70,6 +70,7 @@ import settingsRoutes from './routes/settingsRoutes.js'
 import adminSettingsRoutes from './routes/admin/settingsRoutes.js'
 import migrationRoutes from './routes/migrationRoutes.js'
 import healthRoutes from './routes/healthRoutes.js'
+import accountingRoutes from './routes/accounting.routes.js'
 
 // Session security (MUST be before body parsing)
 app.use(configureSecureSession())
@@ -288,6 +289,7 @@ app.use('/api/occasions', occasionRoutes)
 app.use('/api/settings', settingsRoutes)
 app.use('/api/admin/settings', adminSettingsRoutes)
 app.use('/api/migrations', migrationRoutes)
+app.use('/api/accounting', accountingRoutes)
 
 // 404 handler (MUST be after all routes)
 app.use((req, res, next) => {
