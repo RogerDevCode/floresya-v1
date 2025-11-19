@@ -4,7 +4,7 @@
  * @module services/reportService
  */
 
-import { supabaseClient } from '../config/supabase.js'
+import { supabaseClient } from './supabaseClient.js'
 import expenseRepository from '../repositories/expenseRepository.js'
 import { logger } from '../utils/logger.js'
 import { AppError } from '../errors/AppError.js'
