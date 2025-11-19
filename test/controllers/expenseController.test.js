@@ -6,7 +6,7 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import expenseController from '../../api/controllers/expenseController.js'
-import { ValidationError, NotFoundError } from '../../api/errors/AppError.js'
+import { NotFoundError } from '../../api/errors/AppError.js'
 import {
   resetAccountingData,
   seedAccountingData,
@@ -33,12 +33,12 @@ vi.mock('../../api/services/expenseService.js', () => ({
     createExpense: vi.fn(async (data, userId) => {
       const expenseData = { ...data, created_by: userId }
       const result = await createExpense(expenseData)
-      if (result.error) throw result.error
+      if (result.error) {throw result.error}
       return result.data
     }),
     getExpenseById: vi.fn(async (id) => {
       const result = await findExpenseById(id)
-      if (!result.data) throw new NotFoundError('Expense not found')
+      if (!result.data) {throw new NotFoundError('Expense not found')}
       return result.data
     }),
     getExpenses: vi.fn(async (filters) => {
@@ -47,24 +47,24 @@ vi.mock('../../api/services/expenseService.js', () => ({
         queryFilters.gte_expense_date = filters.startDate.toISOString().split('T')[0]
         queryFilters.lte_expense_date = filters.endDate.toISOString().split('T')[0]
       }
-      if (filters.category) queryFilters.eq_category = filters.category
+      if (filters.category) {queryFilters.eq_category = filters.category}
 
       const options = {}
-      if (filters.limit) options.limit = parseInt(filters.limit)
-      if (filters.offset) options.offset = parseInt(filters.offset)
+      if (filters.limit) {options.limit = parseInt(filters.limit)}
+      if (filters.offset) {options.offset = parseInt(filters.offset)}
 
       const result = await findExpenses(queryFilters, options)
       return result.data
     }),
     updateExpense: vi.fn(async (id, updates) => {
       const result = await updateExpense(id, updates)
-      if (result.error) throw result.error
-      if (!result.data) throw new NotFoundError('Expense not found')
+      if (result.error) {throw result.error}
+      if (!result.data) {throw new NotFoundError('Expense not found')}
       return result.data
     }),
     deleteExpense: vi.fn(async (id) => {
       const result = await deleteExpense(id)
-      if (!result.data) throw new NotFoundError('Expense not found')
+      if (!result.data) {throw new NotFoundError('Expense not found')}
       return result.data
     }),
     getExpensesByCategory: vi.fn(async (startDate, endDate) => {

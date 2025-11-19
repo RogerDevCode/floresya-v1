@@ -5,8 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import expenseService from '../../api/services/expenseService.js'
-import { EXPENSE_CATEGORIES, PAYMENT_METHODS } from '../../api/services/expenseService.js'
+import expenseService, { EXPENSE_CATEGORIES, PAYMENT_METHODS } from '../../api/services/expenseService.js'
 import { ValidationError, NotFoundError } from '../../api/errors/AppError.js'
 import {
   resetAccountingData,
@@ -33,7 +32,7 @@ vi.mock('../../api/repositories/expenseRepository.js', () => ({
   default: {
     create: vi.fn(async (data) => {
       const result = await createExpense(data)
-      if (result.error) throw result.error
+      if (result.error) {throw result.error}
       return result.data
     }),
     findById: vi.fn(async (id) => {
@@ -42,16 +41,16 @@ vi.mock('../../api/repositories/expenseRepository.js', () => ({
     }),
     findMany: vi.fn(async (filters) => {
       const options = {}
-      if (filters.limit) options.limit = filters.limit
-      if (filters.offset) options.offset = filters.offset
+      if (filters.limit) {options.limit = filters.limit}
+      if (filters.offset) {options.offset = filters.offset}
       if (filters.orderBy) {
         options.orderBy = filters.orderBy[0]?.column
         options.ascending = filters.orderBy[0]?.ascending !== false
       }
 
       const queryFilters = {}
-      if (filters.category) queryFilters.eq_category = filters.category
-      if (filters.active !== undefined) queryFilters.active = filters.active
+      if (filters.category) {queryFilters.eq_category = filters.category}
+      if (filters.active !== undefined) {queryFilters.active = filters.active}
 
       const result = await findExpenses(queryFilters, options)
       return result.data
@@ -61,17 +60,17 @@ vi.mock('../../api/repositories/expenseRepository.js', () => ({
         gte_expense_date: startDate,
         lte_expense_date: endDate
       }
-      if (options.category) filters.eq_category = options.category
+      if (options.category) {filters.eq_category = options.category}
 
       const queryOptions = {}
-      if (options.limit) queryOptions.limit = options.limit
+      if (options.limit) {queryOptions.limit = options.limit}
 
       const result = await findExpenses(filters, queryOptions)
       return result.data
     }),
     update: vi.fn(async (id, updates) => {
       const result = await updateExpense(id, updates)
-      if (result.error) throw result.error
+      if (result.error) {throw result.error}
       return result.data
     }),
     delete: vi.fn(async (id) => {

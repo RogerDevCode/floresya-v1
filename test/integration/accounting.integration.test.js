@@ -4,7 +4,7 @@
  * Target: 100% coverage, 0 errors
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import {
   resetAccountingData,
   seedAccountingData,

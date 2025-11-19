@@ -9,7 +9,6 @@ import { POSTGRESQL_ERROR_CODES, AppError } from '../supabase-client/mocks/mocks
 let expensesData = []
 let ordersData = []
 let nextExpenseId = 1
-let nextOrderId = 1
 
 /**
  * Reset all data (for test isolation)
@@ -18,7 +17,7 @@ export const resetAccountingData = () => {
   expensesData = []
   ordersData = []
   nextExpenseId = 1
-  nextOrderId = 1
+  // nextOrderId = 1 // Reserved for future use
 }
 
 /**
@@ -103,7 +102,7 @@ export const seedAccountingData = () => {
   ]
 
   nextExpenseId = 4
-  nextOrderId = 4
+  // nextOrderId = 4 // Reserved for future use
 }
 
 /**
@@ -171,14 +170,14 @@ const applyFilters = (data, filters = {}) => {
  * Apply order
  */
 const applyOrder = (data, orderBy, ascending = true) => {
-  if (!orderBy) return data
+  if (!orderBy) {return data}
 
   return [...data].sort((a, b) => {
     const aVal = a[orderBy]
     const bVal = b[orderBy]
     
-    if (aVal < bVal) return ascending ? -1 : 1
-    if (aVal > bVal) return ascending ? 1 : -1
+    if (aVal < bVal) {return ascending ? -1 : 1}
+    if (aVal > bVal) {return ascending ? 1 : -1}
     return 0
   })
 }
@@ -205,7 +204,7 @@ const applyPagination = (data, limit, offset = 0) => {
 /**
  * Create expense
  */
-export const createExpense = async (data) => {
+export const createExpense = (data) => {
   try {
     validateExpense(data)
 
@@ -234,7 +233,7 @@ export const createExpense = async (data) => {
 /**
  * Find expenses
  */
-export const findExpenses = async (filters = {}, options = {}) => {
+export const findExpenses = (filters = {}, options = {}) => {
   try {
     let result = applyFilters(expensesData, filters)
     
@@ -253,7 +252,7 @@ export const findExpenses = async (filters = {}, options = {}) => {
 /**
  * Find expense by ID
  */
-export const findExpenseById = async (id) => {
+export const findExpenseById = (id) => {
   try {
     const expense = expensesData.find(e => e.id === parseInt(id) && e.active)
     return { data: expense || null, error: null }
@@ -265,7 +264,7 @@ export const findExpenseById = async (id) => {
 /**
  * Update expense
  */
-export const updateExpense = async (id, updates) => {
+export const updateExpense = (id, updates) => {
   try {
     const index = expensesData.findIndex(e => e.id === parseInt(id))
     
@@ -294,7 +293,7 @@ export const updateExpense = async (id, updates) => {
 /**
  * Delete expense (soft delete)
  */
-export const deleteExpense = async (id) => {
+export const deleteExpense = (id) => {
   try {
     const index = expensesData.findIndex(e => e.id === parseInt(id))
     
@@ -317,7 +316,7 @@ export const deleteExpense = async (id) => {
 /**
  * Find orders (for reports)
  */
-export const findOrders = async (filters = {}) => {
+export const findOrders = (filters = {}) => {
   try {
     let result = [...ordersData]
 

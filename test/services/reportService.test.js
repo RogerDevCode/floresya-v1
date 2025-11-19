@@ -6,7 +6,6 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import reportService from '../../api/services/reportService.js'
-import { AppError } from '../../api/errors/AppError.js'
 import {
   resetAccountingData,
   seedAccountingData,

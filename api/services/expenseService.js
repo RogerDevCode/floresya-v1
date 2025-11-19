@@ -5,7 +5,7 @@
  */
 
 import expenseRepository from '../repositories/expenseRepository.js'
-import { AppError, NotFoundError, ValidationError } from '../errors/AppError.js'
+import { NotFoundError, ValidationError } from '../errors/AppError.js'
 import { logger } from '../utils/logger.js'
 
 /**
