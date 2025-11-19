@@ -93,35 +93,26 @@
 
 ## 🟡 IN PROGRESS
 
-### 8. Frontend Views (Next Step) 🎯
-- [ ] **Create** `src/views/dashboard/categories.ejs` ✨ NEW
-  - Category management UI (list, create, edit, delete)
-  - Color picker + icon selector
-  - Cannot delete default categories (disabled UI)
-  - Dark/Light theme support
-  
-- [ ] **Create** `src/views/dashboard/expenses.ejs`
-  - Expense list table with filters (category, date range)
-  - Create/Edit expense form (modal or inline)
-  - Delete confirmation (soft-delete)
-  - Show inactive toggle
+### 8. Frontend Views (Ready for Testing) 🎯
+- [x] **Updated** `public/pages/admin/expenses.html` ✅
+  - Receipt upload input (images/PDF, max 5MB)
+  - File preview with filename display
+  - Remove file button
+  - Current receipt link display in edit mode
+  - Receipt column in expenses table
   - Dark/Light theme support
   - Data attributes for Cypress: `[data-cy=...]`
-
-- [ ] **Create** `src/views/dashboard/accounting.ejs`
-  - Key metrics cards: Total Sales, Total Expenses, Profit/Loss, Margin
-  - Period selector: Weekly / Monthly / Custom
-  - Sales vs Expenses chart (Chart.js)
-  - Expenses by category breakdown table
-  - Export buttons: PDF, CSV, Excel
-  - Quick actions: Register Expense, View All
-  - Dark/Light theme support
-  - Data attributes for Cypress
-
-- [ ] **Update Dashboard Navigation**
-  - Add "Contabilidad" link in sidebar (admin-only visibility)
-  - Display username in menubar/header
-  - Ensure theme toggle works across all pages
+  
+- [x] **Updated** `public/pages/admin/expenses.js` ✅
+  - FormData submission for multipart uploads
+  - File size validation (max 5MB)
+  - Receipt preview handlers
+  - Display receipt links in table
+  - Updated API endpoints to `/api/accounting/expenses`
+  - ESLint clean
+  
+- [ ] **Test manually**: Run `npm start` and verify receipt upload works
+- [ ] **E2E Tests**: Run Cypress tests to validate full flow
 
 ---
 
@@ -133,7 +124,9 @@
 - [x] Controller integration (CREATE/UPDATE/DELETE)
 - [x] Routes updated with multipart support
 - [x] Tests: 9/9 passing (100% coverage)
-- [ ] **Frontend**: File input + preview in expenses.ejs (NEXT)
+- [x] **Frontend**: File input + preview in expenses.html ✅ NEW
+- [x] **Frontend**: Receipt display in expenses table ✅ NEW
+- [x] **Frontend**: FormData upload implementation ✅ NEW
 
 ### 7. Expense Categories Management ✅ COMPLETED
 - [x] Database migration (`007_expense_categories.sql`)
