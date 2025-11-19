@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Reportes Contables - FloresYa" />
+    <title>Reportes Contables - FloresYa Admin</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../css/styles.css" />
+    <link rel="stylesheet" href="../../css/tailwind.css" />
+    <link rel="stylesheet" href="../../css/admin-theme.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../../images/favicon.ico" />
+  </head>
+  <body class="font-sans antialiased admin-page" data-page="accounting-reports">
+    <!-- Navbar Estandarizado -->
+    <nav
+      class="navbar bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm shadow-md fixed top-0 left-0 right-0 z-50"
+      role="navigation"
+    >
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+          <!-- Left Section -->
+          <div class="flex items-center gap-3">
+            <button
+              id="admin-sidebar-toggle"
+              class="md:hidden text-gray-600 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors p-2"
+              title="Toggle menu"
+              aria-label="Toggle sidebar"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
+                <line x1="4" x2="20" y1="12" y2="12" />
+                <line x1="4" x2="20" y1="6" y2="6" />
+                <line x1="4" x2="20" y1="18" y2="18" />
+              </svg>
+            </button>
+            <button
+              id="back-btn"
+              class="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+              title="Volver al Dashboard"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m12 19-7-7 7-7" />
+                <path d="M19 12H5" />
+              </svg>
+              <span class="hidden sm:inline text-sm font-medium">Dashboard</span>
+            </button>
+          </div>
+
+          <!-- Center Section -->
+          <div class="flex items-center space-x-3">
+            <a href="../../index.html" class="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+              <img src="../../images/logoFloresYa.jpeg" alt="Logo FloresYa Admin" class="h-10 w-10 rounded-full ring-2 ring-pink-200 dark:ring-pink-800" />
+              <span class="text-xl font-bold text-pink-600 dark:text-pink-400 hidden md:block">Reportes</span>
+            </a>
+
+            <nav class="hidden lg:flex items-center text-sm" aria-label="Breadcrumb">
+              <ol class="flex items-center space-x-2">
+                <li>
+                  <a href="./dashboard.html" class="text-gray-500 dark:text-gray-400 hover:text-pink-600 dark:hover:text-pink-400 transition-colors">Dashboard</a>
+                </li>
+                <li><span class="text-gray-400 dark:text-gray-600">/</span></li>
+                <li><span class="text-gray-900 dark:text-gray-100 font-medium">Reportes</span></li>
+              </ol>
+            </nav>
+          </div>
+
+          <!-- Right Section -->
+          <div class="flex items-center space-x-2">
+            <div id="user-info" class="hidden sm:flex items-center space-x-2 px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-pink-600 dark:text-pink-400">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <span id="user-name" class="text-sm font-medium text-gray-700 dark:text-gray-300">Admin</span>
+            </div>
+
+            <button
+              id="theme-toggle-btn"
+              class="p-2 text-gray-600 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              title="Cambiar tema"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            </button>
+
+            <button
+              id="logout-btn"
+              class="p-2 text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              title="Cerrar sesión"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" x2="9" y1="12" y2="12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="flex min-h-screen pt-16 bg-gray-50 dark:bg-gray-900">
+      <!-- Sidebar -->
+      <aside
+        id="admin-sidebar"
+        class="admin-sidebar w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 fixed left-0 top-16 bottom-0 overflow-y-auto transition-transform duration-300 z-40 -translate-x-full md:translate-x-0"
+      >
+        <nav class="p-4 space-y-1">
+          <a href="./dashboard.html" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-pink-50 dark:hover:bg-pink-900/20 hover:text-pink-600 dark:hover:text-pink-400 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1" /><rect width="7" height="5" x="14" y="3" rx="1" /><rect width="7" height="9" x="14" y="12" rx="1" /><rect width="7" height="5" x="3" y="16" rx="1" /></svg>
+            <span class="font-medium">Dashboard</span>
+          </a>
+          
+          <a href="./expenses.html" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-pink-50 dark:hover:bg-pink-900/20 hover:text-pink-600 dark:hover:text-pink-400 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 18V6" /></svg>
+            <span class="font-medium">Gastos</span>
+          </a>
+
+          <a href="./accounting-reports.html" class="sidebar-link active flex items-center space-x-3 px-4 py-3 rounded-lg bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="20" y2="10" /><line x1="18" x2="18" y1="20" y2="4" /><line x1="6" x2="6" y1="20" y2="16" /></svg>
+            <span class="font-medium">Reportes</span>
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 md:ml-64 p-6">
+        <div class="max-w-7xl mx-auto">
+          <!-- Header -->
+          <div class="mb-6">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Reportes Contables</h1>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Análisis financiero de ventas y gastos</p>
+          </div>
+
+          <!-- Period Selector -->
+          <div class="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="report-start-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fecha Inicio</label>
+                  <input
+                    type="date"
+                    id="report-start-date"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label for="report-end-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fecha Fin</label>
+                  <input
+                    type="date"
+                    id="report-end-date"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button
+                  id="generate-report-btn"
+                  class="px-6 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors shadow-lg"
+                >
+                  Generar Reporte
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Summary Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <!-- Total Sales -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Ventas Totales</p>
+                  <p id="total-sales" class="mt-2 text-3xl font-bold text-green-600 dark:text-green-400">$0.00</p>
+                </div>
+                <div class="p-3 bg-green-100 dark:bg-green-900/30 rounded-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-green-600 dark:text-green-400">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                  </svg>
+                </div>
+              </div>
+              <p id="total-orders" class="mt-2 text-xs text-gray-500 dark:text-gray-400">0 órdenes</p>
+            </div>
+
+            <!-- Total Expenses -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Gastos Totales</p>
+                  <p id="total-expenses" class="mt-2 text-3xl font-bold text-red-600 dark:text-red-400">$0.00</p>
+                </div>
+                <div class="p-3 bg-red-100 dark:bg-red-900/30 rounded-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-red-600 dark:text-red-400">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" />
+                    <path d="M12 18V6" />
+                  </svg>
+                </div>
+              </div>
+              <p id="total-expense-count" class="mt-2 text-xs text-gray-500 dark:text-gray-400">0 gastos</p>
+            </div>
+
+            <!-- Net Profit -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Ganancia Neta</p>
+                  <p id="net-profit" class="mt-2 text-3xl font-bold text-blue-600 dark:text-blue-400">$0.00</p>
+                </div>
+                <div class="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-blue-600 dark:text-blue-400">
+                    <line x1="12" x2="12" y1="20" y2="10" />
+                    <line x1="18" x2="18" y1="20" y2="4" />
+                    <line x1="6" x2="6" y1="20" y2="16" />
+                  </svg>
+                </div>
+              </div>
+              <p id="profit-margin" class="mt-2 text-xs text-gray-500 dark:text-gray-400">0% margen</p>
+            </div>
+          </div>
+
+          <!-- Detailed Tables -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Sales Breakdown -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+              <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Desglose de Ventas</h3>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full">
+                  <thead class="bg-gray-50 dark:bg-gray-700">
+                    <tr>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Fecha</th>
+                      <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Órdenes</th>
+                      <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Total (USD)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="sales-breakdown" class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <!-- Dynamic content -->
+                  </tbody>
+                </table>
+              </div>
+              <div id="sales-empty" class="hidden p-8 text-center text-gray-500 dark:text-gray-400">
+                No hay datos de ventas para el período seleccionado
+              </div>
+            </div>
+
+            <!-- Expenses Breakdown -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+              <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Desglose de Gastos</h3>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full">
+                  <thead class="bg-gray-50 dark:bg-gray-700">
+                    <tr>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Categoría</th>
+                      <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Cantidad</th>
+                      <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Total (USD)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="expenses-breakdown" class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <!-- Dynamic content -->
+                  </tbody>
+                </table>
+              </div>
+              <div id="expenses-empty" class="hidden p-8 text-center text-gray-500 dark:text-gray-400">
+                No hay datos de gastos para el período seleccionado
+              </div>
+            </div>
+          </div>
+
+          <!-- Loading State -->
+          <div id="loading-state" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-8 flex flex-col items-center">
+              <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600"></div>
+              <p class="mt-4 text-gray-900 dark:text-gray-100 font-medium">Generando reporte...</p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="./accounting-reports.js"></script>
+  </body>
+</html>
