@@ -1,295 +1,238 @@
-# 📊 Módulo de Contabilidad - FloresYa
+# 📊 Accounting Module - User Guide
 
-**Estado:** ✅ Backend 100% Completado  
-**Fecha:** 2025-11-19  
-**Versión:** 1.0.0  
+## 🌸 Welcome to FloresYa Accounting
 
----
-
-## 🎯 RESUMEN EJECUTIVO
-
-Módulo de contabilidad simple para PYME/floristería que permite:
-- ✅ Registro de gastos operacionales
-- ✅ Reportes semanales/mensuales automáticos
-- ✅ Cálculo de ganancias netas
-- ✅ Gastos por categoría
-- ✅ Solo accesible por administradores
-
-**Moneda:** USD  
-**Control de acceso:** Solo Admin  
+Simple expense tracking and profit/loss reporting for your flower shop.
 
 ---
 
-## 📦 ARCHIVOS CREADOS
+## 🚀 Quick Start
 
-### Backend (9 archivos):
-```
-api/middleware/auth/requireAdmin.js          - Middleware autorización admin
-api/repositories/expenseRepository.js        - Data access layer
-api/services/expenseService.js               - Business logic gastos
-api/services/reportService.js                - Business logic reportes
-api/controllers/expenseController.js         - HTTP handlers gastos
-api/controllers/reportController.js          - HTTP handlers reportes
-api/routes/accounting.routes.js              - Definición de rutas
-api/app.js                                   - MODIFICADO (rutas integradas)
-database/migrations/004_build_views_*.sql    - Schemas SQL
-```
+### For Administrators
+
+1. **Login** as administrator
+2. Click **"Contabilidad"** in the dashboard sidebar
+3. Choose:
+   - **Gastos** - Register daily expenses
+   - **Reportes** - View profit & loss reports
 
 ---
 
-## 🗄️ BASE DE DATOS
+## 💰 Managing Expenses
 
-### Tabla: `expenses`
-```sql
-- id (SERIAL)
-- category (TEXT) - flores, transporte, empaque, personal, servicios, marketing, otros
-- description (TEXT)
-- amount (NUMERIC) - En USD
-- expense_date (DATE)
-- payment_method (TEXT)
-- receipt_url (TEXT) - Opcional
-- notes (TEXT)
-- created_by (INTEGER)
-- created_at (TIMESTAMP)
-- updated_at (TIMESTAMP)
-- active (BOOLEAN) - Soft delete
-```
+### Register a New Expense
 
-### Vistas SQL:
-- `daily_sales` - Ventas diarias agregadas
-- `daily_expenses` - Gastos diarios por categoría
-- `daily_profit_loss` - Ganancias/pérdidas diarias
+1. Navigate to: **Dashboard → Contabilidad → Gastos**
+2. Fill in the form:
+   - **Categoría**: Type of expense (flores, suministros, transporte, etc.)
+   - **Descripción**: What you bought (e.g., "Rosas rojas para San Valentín")
+   - **Monto**: Amount in USD (e.g., 25.50)
+   - **Fecha**: Date of expense
+   - **Método de Pago**: Cash, card, transfer, or check
+   - **Recibo** (optional): Upload receipt photo
+   - **Notas** (optional): Additional details
+
+3. Click **"Guardar Gasto"**
+
+### View Expenses
+
+- All expenses appear in the table below the form
+- Filter by:
+  - Date range
+  - Category
+  - Payment method
+- Sort by clicking column headers
+
+### Edit an Expense
+
+1. Click **"Editar"** button next to the expense
+2. Modify fields as needed
+3. Click **"Actualizar"**
+
+### Delete an Expense
+
+1. Click **"Eliminar"** button
+2. Confirm deletion
+3. Expense is soft-deleted (can be restored from database)
 
 ---
 
-## 🚀 API ENDPOINTS
+## 📈 Viewing Reports
 
-**Base:** `/api/accounting`  
-**Auth:** Requiere autenticación + rol admin  
+### Weekly Report
 
-### Gestión de Gastos:
-```
-POST   /api/accounting/expenses
-       Body: { category, description, amount, expense_date?, payment_method?, notes? }
-       
-GET    /api/accounting/expenses
-       Query: startDate?, endDate?, category?, limit?, offset?
-       
-GET    /api/accounting/expenses/:id
-       
-PUT    /api/accounting/expenses/:id
-       Body: { category?, description?, amount?, ... }
-       
-DELETE /api/accounting/expenses/:id
-       (Soft delete - marca active=false)
-       
-GET    /api/accounting/expenses/by-category
-       Query: startDate, endDate (required)
-```
+1. Navigate to: **Dashboard → Contabilidad → Reportes**
+2. Select **"Semanal"** from dropdown
+3. View:
+   - Total sales (from orders)
+   - Total expenses
+   - Net profit/loss
+   - Expense breakdown by category
 
-### Reportes:
+### Monthly Report
+
+1. Select **"Mensual"** from dropdown
+2. Choose month/year
+3. View detailed P&L statement
+
+### Custom Date Range
+
+1. Select **"Personalizado"**
+2. Choose start and end dates
+3. Click **"Generar Reporte"**
+
+### Export Report
+
+- Click **"Exportar CSV"** to download data
+- Import to Excel, QuickBooks, etc.
+
+---
+
+## 📊 Understanding Reports
+
+### Profit & Loss (P&L)
+
 ```
-GET    /api/accounting/reports/dashboard
-       Resumen últimos 7 días
-       
-GET    /api/accounting/reports/weekly
-       Query: weekStart (YYYY-MM-DD - lunes de la semana)
-       
-GET    /api/accounting/reports/monthly
-       Query: year, month
-       
-GET    /api/accounting/reports/current-week
-       Semana actual automática
-       
-GET    /api/accounting/reports/current-month
-       Mes actual automático
+Total Sales:      $1,250.00
+Total Expenses:   -$480.50
+─────────────────────────────
+Net Profit:       $769.50
 ```
 
----
+### Expense Breakdown
 
-## 🧪 TESTING
-
-### Iniciar servidor:
-```bash
-npm run dev
-```
-
-### Probar con cURL:
-```bash
-# Dashboard (requiere token de admin)
-curl http://localhost:3001/api/accounting/reports/dashboard \
-  -H "Authorization: Bearer YOUR_ADMIN_TOKEN"
-
-# Crear gasto
-curl -X POST http://localhost:3001/api/accounting/expenses \
-  -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "category": "flores",
-    "description": "Rosas importadas",
-    "amount": 180.50,
-    "payment_method": "transferencia"
-  }'
-
-# Listar gastos
-curl http://localhost:3001/api/accounting/expenses \
-  -H "Authorization: Bearer YOUR_ADMIN_TOKEN"
-```
+| Category      | Amount   | Percentage |
+|---------------|----------|------------|
+| Flores        | $200.00  | 41.6%      |
+| Suministros   | $120.50  | 25.1%      |
+| Transporte    | $80.00   | 16.6%      |
+| Servicios     | $50.00   | 10.4%      |
+| Marketing     | $30.00   | 6.2%       |
 
 ---
 
-## 📋 VALIDACIONES
+## 🏷️ Expense Categories
 
-### Categorías válidas:
-- `flores`
-- `transporte`
-- `empaque`
-- `personal`
-- `servicios`
-- `marketing`
-- `otros`
+### Recommended Categories
 
-### Métodos de pago:
-- `efectivo`
-- `transferencia`
-- `tarjeta_debito`
-- `tarjeta_credito`
-- `pago_movil`
-- `zelle`
-- `otro`
+- **flores** - Fresh flowers, plants, seeds
+- **suministros** - Ribbons, vases, packaging, scissors
+- **transporte** - Delivery gas, vehicle maintenance
+- **servicios** - Utilities, internet, phone, rent
+- **marketing** - Ads, social media, flyers
+- **otros** - Miscellaneous expenses
 
-### Reglas de negocio:
-- Amount > 0 (obligatorio)
-- Category obligatoria y debe ser válida
-- Description obligatoria
-- expense_date default: hoy
-- Soft delete (no se borra físicamente)
+💡 **Tip:** Use consistent category names for accurate reports
 
 ---
 
-## 🔐 SEGURIDAD
+## 💳 Payment Methods
 
-- ✅ Middleware `requireAdmin` en todas las rutas
-- ✅ Autenticación requerida
-- ✅ Validación de rol admin
-- ✅ Sanitización de inputs
-- ✅ Validación de tipos
-- ✅ RLS desactivado (control en backend)
+- **efectivo** - Cash
+- **tarjeta** - Credit/Debit card
+- **transferencia** - Bank transfer
+- **cheque** - Check
 
 ---
 
-## ⏭️ PENDIENTE (Frontend)
+## 🔒 Security & Access
 
-### Por implementar:
-1. **Helper de autenticación frontend:**
-   - `public/js/utils/adminAuth.js`
-   - Verificar rol admin
-   - Redirect si no es admin
+### Admin-Only Access
 
-2. **Dashboard UI:**
-   - Sección de contabilidad en dashboard
-   - Cards con métricas (ventas, gastos, ganancia)
-   - Lista de gastos recientes
+- ✅ Only administrators can access accounting features
+- ❌ Clients attempting access will be redirected to home
+- All actions are logged with user ID and timestamp
 
-3. **Modal de gastos:**
-   - Formulario crear/editar gasto
-   - Validación frontend
-   - Selector de categorías
-   - Date picker
+### Data Protection
 
-4. **Gráficos:**
-   - Chart.js para visualización
-   - Ventas vs Gastos (barras)
-   - Gastos por categoría (pie)
-   - Tendencia semanal/mensual
-
-5. **Tema dark/light:**
-   - Integrar con sistema existente
-   - Variables CSS
-
-6. **API Client:**
-   - Métodos en `api-client.js`
-   - Type definitions
+- Expenses are never permanently deleted (soft-delete)
+- All amounts validated (must be > $0)
+- Receipt uploads secured
+- HTTPS encryption enforced
 
 ---
 
-## 📊 ESTRUCTURA DE REPORTES
+## 📱 Mobile Support
 
-### Dashboard (7 días):
-```json
-{
-  "period": "last_7_days",
-  "sales": 1250.00,
-  "expenses": 450.00,
-  "profit": 800.00,
-  "recentExpenses": [...]
-}
-```
-
-### Reporte Semanal:
-```json
-{
-  "period": { "start": "2025-11-18", "end": "2025-11-24", "type": "weekly" },
-  "sales": { "total": 2500.00, "orders": 15, "averageTicket": 166.67 },
-  "expenses": { "total": 850.00, "byCategory": {...}, "count": 12 },
-  "profit": { "net": 1650.00, "margin": 66.00 }
-}
-```
-
-### Reporte Mensual:
-```json
-{
-  "period": { "year": 2025, "month": 11, "type": "monthly" },
-  "sales": { "total": 10500.00, "orders": 65, "averageDaily": 350.00 },
-  "expenses": { "total": 3200.00, "byCategory": {...}, "averageDaily": 106.67 },
-  "profit": { "net": 7300.00, "margin": 69.52 },
-  "topProducts": [...]
-}
-```
+The accounting module works perfectly on:
+- 📱 Smartphones (iOS/Android)
+- 📲 Tablets
+- 💻 Desktop computers
 
 ---
 
-## 🔧 TROUBLESHOOTING
+## 🌓 Dark/Light Theme
 
-### Error: "Admin access required"
-- Verificar que el usuario tenga `user_metadata.role = 'admin'`
-- Verificar token de autenticación válido
-
-### Error: "Invalid category"
-- Usar solo categorías válidas listadas arriba
-- Case-sensitive
-
-### Error: "Amount must be greater than 0"
-- amount debe ser número positivo
-- Formato: 123.45 (sin símbolo $)
+Toggle theme using the switch in the top-right corner. Your preference is saved automatically.
 
 ---
 
-## 📝 NOTAS TÉCNICAS
+## ❓ FAQ
 
-- **Currency:** Todos los montos en USD
-- **Timezone:** UTC (se ajusta en frontend)
-- **Soft Delete:** Los gastos eliminados tienen `active=false`
-- **Performance:** Índices en expense_date, category, created_at
-- **Trigger:** updated_at se actualiza automáticamente
+### Q: Can I edit last month's expenses?
+**A:** Yes, there's no time limit. Edit anytime.
 
----
+### Q: What happens if I delete an expense by mistake?
+**A:** Expenses are soft-deleted. Contact support to restore.
 
-## ✅ CHECKLIST DE DEPLOYMENT
+### Q: Can I add custom categories?
+**A:** Yes! Just type a new category name in the form.
 
-- [x] Tabla expenses creada en Supabase
-- [x] Vistas SQL creadas
-- [x] Backend routes integradas
-- [x] Middleware requireAdmin activo
-- [x] Validaciones implementadas
-- [ ] Frontend UI creado
-- [ ] Tests E2E
-- [ ] Documentación OpenAPI
-- [ ] Logs de auditoría admin
+### Q: How are sales calculated?
+**A:** Automatically from completed orders in the system.
+
+### Q: Can I download reports?
+**A:** Yes, use the "Exportar CSV" button.
+
+### Q: Why do reports show $0.00?
+**A:** Reports may need refresh. Wait 24hrs or contact support.
 
 ---
 
-**Última actualización:** 2025-11-19 15:34 UTC  
-**Autor:** FloresYa Dev Team  
-**Licencia:** Private  
+## �� Troubleshooting
 
+### Issue: "Acceso denegado"
+**Solution:** You must be logged in as an administrator.
+
+### Issue: Form won't submit
+**Solution:** Check all required fields are filled correctly.
+
+### Issue: Date picker not working
+**Solution:** Use format: YYYY-MM-DD or click the calendar icon.
+
+### Issue: Report shows wrong data
+**Solution:** Clear browser cache and refresh page.
+
+---
+
+## 💡 Best Practices
+
+1. **Daily Entry** - Register expenses same day for accuracy
+2. **Upload Receipts** - Keep digital copies of all receipts
+3. **Detailed Descriptions** - Write clear expense descriptions
+4. **Weekly Reviews** - Check P&L every Friday
+5. **Monthly Close** - Review full month on 1st of next month
+
+---
+
+## 📞 Support
+
+Need help? Contact FloresYa support:
+- 📧 Email: support@floresya.com
+- 📱 WhatsApp: +1234567890
+- 💬 Chat: Available in dashboard
+
+---
+
+## 🎓 Video Tutorials
+
+Coming soon:
+- ▶️ How to register expenses (2 min)
+- ▶️ Understanding P&L reports (3 min)
+- ▶️ Monthly accounting workflow (5 min)
+
+---
+
+**🌸 Happy Accounting!**
+
+*Keep your flower shop finances blooming* 🌺

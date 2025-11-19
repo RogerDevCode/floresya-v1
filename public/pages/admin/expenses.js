@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // ==================== ACCESS CONTROL ====================
 
-async function checkAdminAccess() {
+function checkAdminAccess() {
   try {
     const user = JSON.parse(sessionStorage.getItem('user') || '{}');
     
@@ -401,7 +401,7 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-async function handleLogout() {
+function handleLogout() {
   sessionStorage.clear();
   toast.success('Sesión cerrada');
   setTimeout(() => {
