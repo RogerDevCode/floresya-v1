@@ -4,8 +4,8 @@
  * @module repositories/expenseRepository
  */
 
-import { BaseRepository } from './baseRepository.js'
-import { logger } from '../config/logger.js'
+import { BaseRepository } from './BaseRepository.js'
+import { logger } from '../utils/logger.js'
 
 class ExpenseRepository extends BaseRepository {
   constructor() {
