@@ -6,8 +6,8 @@
 
 import { supabaseClient } from '../config/supabase.js'
 import expenseRepository from '../repositories/expenseRepository.js'
-import { logger } from '../config/logger.js'
-import { AppError } from '../middleware/errors/AppError.js'
+import { logger } from '../utils/logger.js'
+import { AppError } from '../errors/AppError.js'
 
 class ReportService {
   /**
@@ -25,7 +25,7 @@ class ReportService {
         .lte('created_at', endDate)
         .in('status', ['confirmed', 'processing', 'delivering', 'delivered'])
 
-      if (error) throw error
+      if (error) {throw error}
 
       // Group by date
       const salesByDate = {}
@@ -193,7 +193,7 @@ class ReportService {
         .lte('created_at', endDate)
         .in('status', ['confirmed', 'processing', 'delivering', 'delivered'])
 
-      if (ordersError) throw ordersError
+      if (ordersError) {throw ordersError}
 
       const orderIds = orders.map(o => o.id)
 
@@ -207,7 +207,7 @@ class ReportService {
         .select('product_name, quantity, subtotal')
         .in('order_id', orderIds)
 
-      if (itemsError) throw itemsError
+      if (itemsError) {throw itemsError}
 
       // Aggregate by product
       const productStats = items.reduce((acc, item) => {

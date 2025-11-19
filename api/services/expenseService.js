@@ -5,8 +5,8 @@
  */
 
 import expenseRepository from '../repositories/expenseRepository.js'
-import { AppError, NotFoundError, ValidationError } from '../middleware/errors/AppError.js'
-import { logger } from '../config/logger.js'
+import { AppError, NotFoundError, ValidationError } from '../errors/AppError.js'
+import { logger } from '../utils/logger.js'
 
 /**
  * Expense categories
@@ -110,6 +110,7 @@ class ExpenseService {
 
       return await expenseRepository.findMany({
         category,
+        active: true,
         limit: limit || 50,
         offset: offset || 0,
         orderBy: [{ column: 'expense_date', ascending: false }]
@@ -136,6 +137,11 @@ class ExpenseService {
       // Validate amount if provided
       if (updates.amount !== undefined && updates.amount <= 0) {
         throw new ValidationError('Amount must be greater than 0')
+      }
+
+      // Validate payment method if provided
+      if (updates.payment_method && !PAYMENT_METHODS.includes(updates.payment_method)) {
+        throw new ValidationError(`Invalid payment method. Must be one of: ${PAYMENT_METHODS.join(', ')}`)
       }
 
       const updated = await expenseRepository.update(id, updates)
