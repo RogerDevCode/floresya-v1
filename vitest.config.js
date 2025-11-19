@@ -9,12 +9,23 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
+      include: [
+        'api/**/*.js'
+      ],
       exclude: [
         'node_modules/',
         'dist/',
         'cypress/',
+        'public/',
+        'scripts/',
+        'test/',
+        'test_backup*/',
+        'config/',
         '*.config.js',
-        'test/supabase-client/mocks/'
+        'test/supabase-client/mocks/',
+        'api/docs/**',
+        'api/server.js',
+        'api/app.js'
       ]
     },
     testTimeout: 10000,
