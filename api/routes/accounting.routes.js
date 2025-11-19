@@ -9,6 +9,7 @@ import expenseController from '../controllers/expenseController.js'
 import reportController from '../controllers/reportController.js'
 import { authenticate } from '../middleware/auth/auth.middleware.js'
 import requireAdmin from '../middleware/auth/requireAdmin.js'
+import { uploadReceipt, handleReceiptUploadError } from '../middleware/utilities/uploadReceipt.js'
 
 const router = express.Router()
 
@@ -22,10 +23,10 @@ router.use(requireAdmin)
 
 /**
  * @route   POST /api/accounting/expenses
- * @desc    Create new expense
+ * @desc    Create new expense (with optional receipt upload)
  * @access  Admin only
  */
-router.post('/expenses', expenseController.create)
+router.post('/expenses', uploadReceipt, handleReceiptUploadError, expenseController.create)
 
 /**
  * @route   GET /api/accounting/expenses
@@ -52,10 +53,10 @@ router.get('/expenses/:id', expenseController.getById)
 
 /**
  * @route   PUT /api/accounting/expenses/:id
- * @desc    Update expense
+ * @desc    Update expense (with optional new receipt upload)
  * @access  Admin only
  */
-router.put('/expenses/:id', expenseController.update)
+router.put('/expenses/:id', uploadReceipt, handleReceiptUploadError, expenseController.update)
 
 /**
  * @route   DELETE /api/accounting/expenses/:id

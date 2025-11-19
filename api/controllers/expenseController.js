@@ -5,6 +5,7 @@
  */
 
 import expenseService from '../services/expenseService.js'
+import receiptStorageService from '../services/receiptStorageService.js'
 import { logger } from '../utils/logger.js'
 
 class ExpenseController {
@@ -15,7 +16,24 @@ class ExpenseController {
   async create(req, res, next) {
     try {
       const userId = req.user.id
-      const expense = await expenseService.createExpense(req.body, userId)
+      let receiptUrl = null
+
+      // Handle receipt file upload if present
+      if (req.file) {
+        receiptUrl = await receiptStorageService.uploadReceipt(
+          req.file.buffer,
+          req.file.originalname,
+          req.file.mimetype,
+          userId
+        )
+      }
+
+      const expenseData = {
+        ...req.body,
+        receipt_url: receiptUrl
+      }
+
+      const expense = await expenseService.createExpense(expenseData, userId)
 
       res.status(201).json({
         success: true,
@@ -83,7 +101,31 @@ class ExpenseController {
   async update(req, res, next) {
     try {
       const { id } = req.params
-      const expense = await expenseService.updateExpense(id, req.body)
+      const userId = req.user.id
+      const updateData = { ...req.body }
+
+      // Handle new receipt upload
+      if (req.file) {
+        // Get existing expense to delete old receipt
+        const existingExpense = await expenseService.getExpenseById(id)
+        
+        // Upload new receipt
+        const receiptUrl = await receiptStorageService.uploadReceipt(
+          req.file.buffer,
+          req.file.originalname,
+          req.file.mimetype,
+          userId
+        )
+
+        updateData.receipt_url = receiptUrl
+
+        // Delete old receipt if exists
+        if (existingExpense.receipt_url) {
+          await receiptStorageService.deleteReceipt(existingExpense.receipt_url)
+        }
+      }
+
+      const expense = await expenseService.updateExpense(id, updateData)
 
       res.json({
         success: true,
@@ -103,6 +145,15 @@ class ExpenseController {
   async delete(req, res, next) {
     try {
       const { id } = req.params
+      
+      // Get expense to delete receipt
+      const expense = await expenseService.getExpenseById(id)
+      
+      // Delete receipt if exists
+      if (expense.receipt_url) {
+        await receiptStorageService.deleteReceipt(expense.receipt_url)
+      }
+
       await expenseService.deleteExpense(id)
 
       res.json({

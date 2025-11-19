@@ -29,6 +29,13 @@
   - Error handling with AppError
   - Tested: 100% coverage
 
+- [x] **Receipt Storage** (`api/services/receiptStorageService.js`) ✅ NEW
+  - Upload receipts to Supabase Storage
+  - Support images (JPEG, PNG, WebP) and PDFs
+  - Max 5MB file size
+  - Automatic cleanup on delete
+  - Tested: 100% coverage (9/9 tests passing)
+
 - [x] **Report Service** (`api/services/reportService.js`)
   - Weekly/Monthly profit & loss calculations
   - Category breakdown with percentages
@@ -37,21 +44,30 @@
 
 - [x] **Controller Layer** (`api/controllers/expenseController.js`)
   - RESTful endpoints: GET, POST, PUT, DELETE
+  - **Receipt upload** integrated in CREATE/UPDATE ✅ NEW
   - JSON response format: `{success, data/error, message}`
   - Admin-only middleware applied
   - Tested: 100% coverage
 
-- [x] **Routes** (`api/routes/accounting.js`)
-  - `/api/expenses` - CRUD endpoints
-  - `/api/reports/profit-loss` - Financial reports
+- [x] **Middleware** (`api/middleware/utilities/uploadReceipt.js`) ✅ NEW
+  - Multer configuration for receipt files
+  - File type validation (images + PDF)
+  - 5MB size limit
+  - Error handling for upload failures
+
+- [x] **Routes** (`api/routes/accounting.routes.js`)
+  - `/api/accounting/expenses` - CRUD endpoints
+  - **Multipart form-data support** for receipts ✅ NEW
+  - `/api/accounting/reports/*` - Financial reports
   - Authentication + Admin middleware
   - Integrated into main app.js
 
 ### 3. Testing Suite ✅
-- [x] **Unit Tests** (85/85 passing - 100%)
+- [x] **Unit Tests** (94/94 passing - 100%) ✅
   - `test/repositories/expenseRepository.test.js` - 100% pass
   - `test/services/expenseService.test.js` - 100% pass
   - `test/services/reportService.test.js` - 100% pass
+  - `test/services/receiptStorageService.test.js` - 100% pass ✅ NEW (9 tests)
   - `test/controllers/expenseController.test.js` - 100% pass
 
 - [x] **Mocks**
@@ -105,7 +121,15 @@
 
 ## 📋 PENDING (Not Started)
 
-### 6. Integration Testing
+### 6. Receipt Upload Feature ✅ COMPLETED
+- [x] Backend service for Supabase Storage (`receiptStorageService.js`)
+- [x] Multer middleware (`uploadReceipt.js`)
+- [x] Controller integration (CREATE/UPDATE/DELETE)
+- [x] Routes updated with multipart support
+- [x] Tests: 9/9 passing (100% coverage)
+- [ ] **Frontend**: File input + preview in expenses.ejs (NEXT)
+
+### 7. Integration Testing
 - [ ] Run E2E tests against local server
 - [ ] Fix any UI/data mismatches
 - [ ] Verify RBAC works end-to-end
