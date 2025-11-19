@@ -106,9 +106,15 @@ describe('📋 Core DOM Loading & Initialization', () => {
         }
 
         const loadMetrics = {
-          domContentLoaded: perfData.domContentLoadedEventEnd ? perfData.domContentLoadedEventEnd - perfData.navigationStart : 0,
-          loadComplete: perfData.loadEventEnd ? perfData.loadEventEnd - perfData.navigationStart : 0,
-          domInteractive: perfData.domInteractive ? perfData.domInteractive - perfData.navigationStart : 0
+          domContentLoaded: perfData.domContentLoadedEventEnd
+            ? perfData.domContentLoadedEventEnd - perfData.navigationStart
+            : 0,
+          loadComplete: perfData.loadEventEnd
+            ? perfData.loadEventEnd - perfData.navigationStart
+            : 0,
+          domInteractive: perfData.domInteractive
+            ? perfData.domInteractive - perfData.navigationStart
+            : 0
         }
 
         cy.log('Load Performance Metrics:', loadMetrics)

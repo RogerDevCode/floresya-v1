@@ -45,7 +45,7 @@ describe('🧭 Navigation System UI', () => {
 
       // Verify navigation links
       cy.get('.nav-link').should('have.length.greaterThan', 0)
-      cy.get('.nav-link').each(($link) => {
+      cy.get('.nav-link').each($link => {
         cy.wrap($link).should('have.attr', 'href')
       })
 
@@ -178,7 +178,7 @@ describe('🧭 Navigation System UI', () => {
       cy.visit('/')
 
       // Test navigation links are interactive
-      cy.get('.nav-link').each(($link) => {
+      cy.get('.nav-link').each($link => {
         cy.wrap($link).should('have.attr', 'href')
         cy.wrap($link).should('not.have.attr', 'href', '#') // No dead links
       })

@@ -11,7 +11,7 @@ class AdminNavbar {
     this.showSidebar = options.showSidebar || false
     this.notifications = []
     this.theme = localStorage.getItem('admin-theme') || 'light'
-    
+
     this.init()
   }
 
@@ -28,7 +28,7 @@ class AdminNavbar {
   applyTheme(theme) {
     this.theme = theme
     localStorage.setItem('admin-theme', theme)
-    
+
     if (theme === 'dark') {
       document.documentElement.classList.add('dark')
       document.body.classList.add('bg-gray-900', 'text-gray-100')
@@ -54,7 +54,9 @@ class AdminNavbar {
    */
   updateThemeButton() {
     const btn = document.getElementById('theme-toggle-btn')
-    if (!btn) {return}
+    if (!btn) {
+      return
+    }
 
     const isDark = this.theme === 'dark'
     btn.innerHTML = isDark
@@ -67,7 +69,7 @@ class AdminNavbar {
       : `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
         </svg>`
-    
+
     btn.title = isDark ? 'Modo Claro' : 'Modo Oscuro'
   }
 
@@ -101,7 +103,7 @@ class AdminNavbar {
     }
 
     // Close notifications on outside click
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', e => {
       const notifPanel = document.getElementById('notifications-panel')
       const notifBtn = document.getElementById('notifications-btn')
       if (notifPanel && !notifPanel.contains(e.target) && !notifBtn?.contains(e.target)) {
@@ -115,7 +117,9 @@ class AdminNavbar {
    */
   displayUserInfo() {
     const userDisplay = document.getElementById('admin-user-display')
-    if (!userDisplay) {return}
+    if (!userDisplay) {
+      return
+    }
 
     const user = JSON.parse(localStorage.getItem('user') || '{}')
     if (user.full_name) {
@@ -140,7 +144,9 @@ class AdminNavbar {
    */
   updateNotificationBadge() {
     const badge = document.getElementById('notification-badge')
-    if (!badge) {return}
+    if (!badge) {
+      return
+    }
 
     const count = this.notifications.length
     if (count > 0) {
@@ -156,7 +162,9 @@ class AdminNavbar {
    */
   toggleNotifications() {
     const panel = document.getElementById('notifications-panel')
-    if (!panel) {return}
+    if (!panel) {
+      return
+    }
 
     panel.classList.toggle('hidden')
     this.renderNotifications()
@@ -167,7 +175,9 @@ class AdminNavbar {
    */
   renderNotifications() {
     const container = document.getElementById('notifications-list')
-    if (!container) {return}
+    if (!container) {
+      return
+    }
 
     if (this.notifications.length === 0) {
       container.innerHTML = `
@@ -182,12 +192,17 @@ class AdminNavbar {
       return
     }
 
-    container.innerHTML = this.notifications.map(notif => `
+    container.innerHTML = this.notifications
+      .map(
+        notif => `
       <div class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-700 last:border-0">
         <div class="flex items-start gap-3">
           <div class="flex-shrink-0 w-2 h-2 mt-2 rounded-full ${
-            notif.type === 'warning' ? 'bg-yellow-500' : 
-            notif.type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+            notif.type === 'warning'
+              ? 'bg-yellow-500'
+              : notif.type === 'error'
+                ? 'bg-red-500'
+                : 'bg-blue-500'
           }"></div>
           <div class="flex-1 min-w-0">
             <p class="text-sm text-gray-900 dark:text-gray-100">${notif.message}</p>
@@ -195,7 +210,9 @@ class AdminNavbar {
           </div>
         </div>
       </div>
-    `).join('')
+    `
+      )
+      .join('')
   }
 
   /**

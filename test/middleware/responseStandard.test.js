@@ -22,7 +22,7 @@ describe('Response Standard Middleware', () => {
 
     mockResponse = {
       statusCode: 200,
-      json: vi.fn(function(data) {
+      json: vi.fn(function (data) {
         return data // Return the data for inspection
       })
     }
@@ -364,7 +364,7 @@ describe('Response Standard Middleware', () => {
   describe('Method Preservation', () => {
     test('should preserve this context when calling original json', () => {
       // Arrange
-      const originalJson = vi.fn(function(data) {
+      const originalJson = vi.fn(function (data) {
         this.calledWithContext = true
         return data
       })

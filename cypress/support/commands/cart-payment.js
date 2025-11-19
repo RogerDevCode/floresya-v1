@@ -137,18 +137,26 @@ Cypress.Commands.add('selectPaymentMethod', method => {
 Cypress.Commands.add('fillPaymentDetails', (method, details = {}) => {
   switch (method) {
     case 'mobile_payment':
-      cy.get('#mobile-phone').clear().type(details.phone || '0414-1234567')
+      cy.get('#mobile-phone')
+        .clear()
+        .type(details.phone || '0414-1234567')
       cy.get('#mobile-bank').select(details.bank || 'Banesco')
       break
 
     case 'bank_transfer':
       cy.get('#bank-name').select(details.bank || 'Banesco')
-      cy.get('#account-number').clear().type(details.account || '0102 1234 5678 9012 3456')
-      cy.get('#account-holder').clear().type(details.holder || 'Juan Pérez')
+      cy.get('#account-number')
+        .clear()
+        .type(details.account || '0102 1234 5678 9012 3456')
+      cy.get('#account-holder')
+        .clear()
+        .type(details.holder || 'Juan Pérez')
       break
 
     case 'zelle':
-      cy.get('#zelle-email').clear().type(details.email || 'test@example.com')
+      cy.get('#zelle-email')
+        .clear()
+        .type(details.email || 'test@example.com')
       break
 
     case 'crypto':

@@ -1,4 +1,5 @@
 # E2E Test Specification: Index.html Complete Page Load and Component Initialization
+
 **File:** `cypress/e2e/index/complete-page-load.cy.js`  
 **Version:** 2.0  
 **Last Updated:** 2025-11-18
@@ -65,6 +66,7 @@ Phase 1: HTML Document (Markup structure)
 ### Added Coverage (34 new tests)
 
 **Phase 10: Featured Carousel Component (6 tests)**
+
 - Carousel container with ARIA roles
 - Navigation controls (prev/next buttons)
 - Slides container and progress bar
@@ -72,6 +74,7 @@ Phase 1: HTML Document (Markup structure)
 - Title and description
 
 **Phase 11: Products Section Structure (5 tests)**
+
 - Products section with proper ARIA
 - Section heading and subtitle
 - Filter panel structure
@@ -79,6 +82,7 @@ Phase 1: HTML Document (Markup structure)
 - Pagination navigation
 
 **Phase 12: Filter System Components (7 tests)**
+
 - Quick occasion filters with ARIA
 - Active "Todos" filter by default
 - Accessible search input with labels
@@ -88,6 +92,7 @@ Phase 1: HTML Document (Markup structure)
 - Search icon accessibility
 
 **Phase 13: Testimonials Section (5 tests)**
+
 - Testimonials section structure
 - Section heading
 - Exactly 3 testimonial cards
@@ -95,12 +100,14 @@ Phase 1: HTML Document (Markup structure)
 - Themed cards (pink, green, yellow)
 
 **Phase 14: Features Section (4 tests)**
+
 - Features section with theme classes
 - Exactly 4 feature cards
 - Complete card structure (icon + title + description)
 - Expected feature titles validation
 
 **Phase 15: Special CTA Section (5 tests)**
+
 - Special CTA section visibility
 - Section heading
 - FloresYa Novias card with content
@@ -108,6 +115,7 @@ Phase 1: HTML Document (Markup structure)
 - CTA card icons
 
 **Phase 16: Footer Structure (9 tests)**
+
 - Footer section with theme classes
 - 4-column grid layout
 - Brand section with logo and description
@@ -118,6 +126,7 @@ Phase 1: HTML Document (Markup structure)
 - Copyright and legal links
 
 **Phase 17: JavaScript Module Loading (5 tests)**
+
 - Theme management scripts
 - Component scripts (loading messages, confetti)
 - Main application script (index.js)
@@ -125,6 +134,7 @@ Phase 1: HTML Document (Markup structure)
 - Verify no console errors from modules
 
 **Phase 18: Renamed from Phase 10 (7 tests - enhanced)**
+
 - All critical sections rendered (expanded)
 - Core web vitals (same)
 - Zero JavaScript errors (same)
@@ -139,22 +149,23 @@ Phase 1: HTML Document (Markup structure)
 
 ### Phase 1-9: Unchanged from v1.0
 
-*(See original documentation for phases 1-9)*
+_(See original documentation for phases 1-9)_
 
 ### Phase 10: Featured Carousel Component (NEW)
 
 **Purpose:** Verify carousel structure, controls, indicators, progress bar
 
-| Test | Element | Validation |
-|------|---------|-----------|
-| Container | `#featuredCarousel` | `role="region"` + `aria-label` |
-| Previous Button | `#carousel-prev` | `aria-label="Producto anterior"` |
-| Next Button | `#carousel-next` | `aria-label="Producto siguiente"` |
-| Slides Container | `#carouselSlides` | `aria-live="polite"` |
-| Progress Bar | `#carouselProgressBar` | Present in container |
-| Indicators | `#carousel-indicators` | `aria-label="Indicadores del carrusel"` |
+| Test             | Element                | Validation                              |
+| ---------------- | ---------------------- | --------------------------------------- |
+| Container        | `#featuredCarousel`    | `role="region"` + `aria-label`          |
+| Previous Button  | `#carousel-prev`       | `aria-label="Producto anterior"`        |
+| Next Button      | `#carousel-next`       | `aria-label="Producto siguiente"`       |
+| Slides Container | `#carouselSlides`      | `aria-live="polite"`                    |
+| Progress Bar     | `#carouselProgressBar` | Present in container                    |
+| Indicators       | `#carousel-indicators` | `aria-label="Indicadores del carrusel"` |
 
 **CLAUDE.md Compliance:**
+
 - ✅ Accessibility (ARIA roles, labels)
 - ✅ Structure validation (expected elements)
 - ✅ Interactive controls present
@@ -165,15 +176,16 @@ Phase 1: HTML Document (Markup structure)
 
 **Purpose:** Validate products section, filters, container, pagination
 
-| Test | Element | Expected |
-|------|---------|----------|
-| Section | `#productos` | `role="main"` + aria-label |
-| Heading | `h2` | "Productos Destacados" |
-| Filter Panel | `#filters-heading` | `sr-only` class |
-| Container | `#productsContainer` | Grid class present |
-| Pagination | `nav[aria-label]` | Pagination navigation |
+| Test         | Element              | Expected                   |
+| ------------ | -------------------- | -------------------------- |
+| Section      | `#productos`         | `role="main"` + aria-label |
+| Heading      | `h2`                 | "Productos Destacados"     |
+| Filter Panel | `#filters-heading`   | `sr-only` class            |
+| Container    | `#productsContainer` | Grid class present         |
+| Pagination   | `nav[aria-label]`    | Pagination navigation      |
 
 **CLAUDE.md Compliance:**
+
 - ✅ Semantic HTML (main section)
 - ✅ WCAG accessibility (ARIA labels)
 - ✅ Dynamic loading structure
@@ -184,21 +196,23 @@ Phase 1: HTML Document (Markup structure)
 
 **Purpose:** Verify quick filters, search, sort, price range, occasions
 
-| Component | Test | Validation |
-|-----------|------|-----------|
-| Quick Filters | Button group | `role="group"` + aria-label |
-| "Todos" Filter | Active state | `class="active"` + `aria-pressed="true"` |
-| Search Input | Accessibility | `aria-labelledby` + `aria-describedby` |
-| Sort Dropdown | Options | 5+ options with expected values |
-| Price Range | Options | 5+ options (0-30, 30-60, etc.) |
-| Occasion Filter | Hidden | `class="hidden"` + `aria-hidden` |
-| Search Icon | SVG | `aria-hidden="true"` |
+| Component       | Test          | Validation                               |
+| --------------- | ------------- | ---------------------------------------- |
+| Quick Filters   | Button group  | `role="group"` + aria-label              |
+| "Todos" Filter  | Active state  | `class="active"` + `aria-pressed="true"` |
+| Search Input    | Accessibility | `aria-labelledby` + `aria-describedby`   |
+| Sort Dropdown   | Options       | 5+ options with expected values          |
+| Price Range     | Options       | 5+ options (0-30, 30-60, etc.)           |
+| Occasion Filter | Hidden        | `class="hidden"` + `aria-hidden`         |
+| Search Icon     | SVG           | `aria-hidden="true"`                     |
 
 **Filter Options Verified:**
+
 - Sort: `created_desc`, `price_asc`, `price_desc`, `name_asc`, `rating_desc`
 - Price: All prices, 0-30, 30-60, 60-100, 100+
 
 **CLAUDE.md Compliance:**
+
 - ✅ WCAG 2.1 AA (labels, descriptions)
 - ✅ Mobile-first (responsive filters)
 - ✅ Strict value matching (option values)
@@ -209,15 +223,16 @@ Phase 1: HTML Document (Markup structure)
 
 **Purpose:** Verify testimonials structure, cards, content
 
-| Test | Validation | Expected |
-|------|-----------|----------|
-| Section | Class check | `theme-testimonials-card` |
-| Heading | Text content | "Lo que dicen nuestros clientes" |
-| Card Count | Exact number | 3 cards |
-| Card Structure | Elements | `.testimonial-quote` + `.testimonial-author` |
-| Themed Cards | Classes | `.pink`, `.green`, `.yellow` |
+| Test           | Validation   | Expected                                     |
+| -------------- | ------------ | -------------------------------------------- |
+| Section        | Class check  | `theme-testimonials-card`                    |
+| Heading        | Text content | "Lo que dicen nuestros clientes"             |
+| Card Count     | Exact number | 3 cards                                      |
+| Card Structure | Elements     | `.testimonial-quote` + `.testimonial-author` |
+| Themed Cards   | Classes      | `.pink`, `.green`, `.yellow`                 |
 
 **CLAUDE.md Compliance:**
+
 - ✅ Exact count validation (3 cards, not "at least 3")
 - ✅ Theme system integration
 - ✅ Content structure verification
@@ -228,20 +243,22 @@ Phase 1: HTML Document (Markup structure)
 
 **Purpose:** Validate features grid, icons, content
 
-| Test | Validation | Expected |
-|------|-----------|----------|
-| Section | Classes | `theme-features` + `theme-panel-light` |
-| Card Count | Exact number | 4 cards |
-| Card Structure | Elements | Icon wrapper + icon + title + description |
-| Feature Titles | Text content | Specific titles validated |
+| Test           | Validation   | Expected                                  |
+| -------------- | ------------ | ----------------------------------------- |
+| Section        | Classes      | `theme-features` + `theme-panel-light`    |
+| Card Count     | Exact number | 4 cards                                   |
+| Card Structure | Elements     | Icon wrapper + icon + title + description |
+| Feature Titles | Text content | Specific titles validated                 |
 
 **Expected Feature Titles:**
+
 1. Flores Frescas
 2. Entrega Rápida
 3. Hechos con Amor
 4. Garantía Total
 
 **CLAUDE.md Compliance:**
+
 - ✅ Exact count (4 features)
 - ✅ Structure validation (all required elements)
 - ✅ Content verification (expected titles)
@@ -252,19 +269,21 @@ Phase 1: HTML Document (Markup structure)
 
 **Purpose:** Verify FloresYa Novias and Entrega Express cards
 
-| Component | Test | Validation |
-|-----------|------|-----------|
-| Section | Visibility | `.special-cta-section` exists |
-| Heading | Text | "¿Buscas algo especial?" |
-| Novias Card | Content | Title + description + CTA |
-| Express Card | Status | "Próximamente" button |
-| Icons | Count | At least 2 SVG icons |
+| Component    | Test       | Validation                    |
+| ------------ | ---------- | ----------------------------- |
+| Section      | Visibility | `.special-cta-section` exists |
+| Heading      | Text       | "¿Buscas algo especial?"      |
+| Novias Card  | Content    | Title + description + CTA     |
+| Express Card | Status     | "Próximamente" button         |
+| Icons        | Count      | At least 2 SVG icons          |
 
 **Card Details:**
+
 - **FloresYa Novias:** "Conocer más" button (active)
 - **Entrega Express:** "Próximamente" button (disabled state)
 
 **CLAUDE.md Compliance:**
+
 - ✅ Content validation (expected text)
 - ✅ CTA button states
 - ✅ Icon presence
@@ -275,22 +294,24 @@ Phase 1: HTML Document (Markup structure)
 
 **Purpose:** Validate footer sections, links, social media, contact info
 
-| Section | Tests | Expected |
-|---------|-------|----------|
-| Structure | Grid layout | 4 columns |
-| Brand | Logo + text | FloresYa + description |
-| Social Media | 3 links | Facebook, Instagram, Twitter |
-| Products | 4 links | Rosas, Bouquets, Plantas, Arreglos |
-| Occasions | 4 links | Amor, Cumpleaños, Aniversarios, Día de la Madre |
-| Contact | 4 items | Location, phone, email, hours |
-| Legal | 3 items | Copyright, Términos, Privacidad |
+| Section      | Tests       | Expected                                        |
+| ------------ | ----------- | ----------------------------------------------- |
+| Structure    | Grid layout | 4 columns                                       |
+| Brand        | Logo + text | FloresYa + description                          |
+| Social Media | 3 links     | Facebook, Instagram, Twitter                    |
+| Products     | 4 links     | Rosas, Bouquets, Plantas, Arreglos              |
+| Occasions    | 4 links     | Amor, Cumpleaños, Aniversarios, Día de la Madre |
+| Contact      | 4 items     | Location, phone, email, hours                   |
+| Legal        | 3 items     | Copyright, Términos, Privacidad                 |
 
 **Social Media Attributes:**
+
 - `target="_blank"`
 - `rel="noopener noreferrer"`
 - Proper ARIA labels
 
 **CLAUDE.md Compliance:**
+
 - ✅ Link security (rel attribute)
 - ✅ Accessibility (aria-label)
 - ✅ Semantic HTML (footer structure)
@@ -301,20 +322,22 @@ Phase 1: HTML Document (Markup structure)
 
 **Purpose:** Verify all script tags are present and loaded
 
-| Script Category | Files | Validation |
-|----------------|-------|-----------|
-| Theme Management | 3 files | `type="module"` |
-| Components | 2 files | loadingMessages, festiveConfetti |
-| Main App | 1 file | index.js |
-| Service Worker | 1 inline | Cleanup script |
-| Error Check | All | No console.error calls |
+| Script Category  | Files    | Validation                       |
+| ---------------- | -------- | -------------------------------- |
+| Theme Management | 3 files  | `type="module"`                  |
+| Components       | 2 files  | loadingMessages, festiveConfetti |
+| Main App         | 1 file   | index.js                         |
+| Service Worker   | 1 inline | Cleanup script                   |
+| Error Check      | All      | No console.error calls           |
 
 **Theme Scripts:**
+
 - themeManager.js
 - debug-theme.js
 - themeSelectorUI.js
 
 **CLAUDE.md Compliance:**
+
 - ✅ ES6 modules (type="module")
 - ✅ Fail fast (console error check)
 - ✅ Clean initialization
@@ -325,23 +348,25 @@ Phase 1: HTML Document (Markup structure)
 
 **Purpose:** Final validation - all systems working together
 
-| Test | Enhanced Coverage | Pass Criteria |
-|------|------------------|---------------|
-| Critical Sections | Added carousel, products, testimonials, features, CTA | All 8 sections visible |
-| Core Web Vitals | Same as v1.0 | DOM < 2s, Load < 3s |
-| Zero Errors | Same as v1.0 | No console.error |
-| User Interactions | Same as v1.0 | Mobile menu, nav links |
-| Accessibility | Same as v1.0 | ARIA maintained |
-| Viewport Visibility | NEW | All sections visible on scroll |
-| Resource Errors | NEW | No 404s or failed resources |
+| Test                | Enhanced Coverage                                     | Pass Criteria                  |
+| ------------------- | ----------------------------------------------------- | ------------------------------ |
+| Critical Sections   | Added carousel, products, testimonials, features, CTA | All 8 sections visible         |
+| Core Web Vitals     | Same as v1.0                                          | DOM < 2s, Load < 3s            |
+| Zero Errors         | Same as v1.0                                          | No console.error               |
+| User Interactions   | Same as v1.0                                          | Mobile menu, nav links         |
+| Accessibility       | Same as v1.0                                          | ARIA maintained                |
+| Viewport Visibility | NEW                                                   | All sections visible on scroll |
+| Resource Errors     | NEW                                                   | No 404s or failed resources    |
 
 **Scroll Test Sequence:**
+
 1. Products section → scroll into view
 2. Testimonials → scroll into view
 3. Features → scroll into view
 4. Footer → scroll into view
 
 **CLAUDE.md Compliance:**
+
 - ✅ 100% success rate requirement
 - ✅ All components integrated
 - ✅ No partial success (fail fast)
@@ -351,6 +376,7 @@ Phase 1: HTML Document (Markup structure)
 ## Test Execution Flow
 
 ### Setup Phase (beforeEach)
+
 ```javascript
 cy.visit('/', {
   failOnStatusCode: false,
@@ -362,6 +388,7 @@ cy.visit('/', {
 ```
 
 **Why this setup:**
+
 - Stubs console to catch runtime errors
 - Doesn't fail on non-200 status (allows testing error states)
 - No artificial waits (uses Cypress auto-wait)
@@ -370,17 +397,18 @@ cy.visit('/', {
 
 ## CLAUDE.md Compliance Matrix
 
-| Rule | Implementation | Tests |
-|------|----------------|-------|
-| 1. KISS | Simple, focused tests | All 96 |
-| 2. MVC | Frontend-only (no API calls) | All 96 |
-| 4. Fail Fast AF | Zero console.error checks | Phases 6, 17, 18 |
-| 7. SOLID + DI | No coupling to services | All phases |
-| 8. Proactive Beast Mode | Edge cases tested | All phases |
-| 10. Clean Code Jihad | Async/await only, no dead code | All 96 |
-| 11. Test Validation | Strict expected vs actual | All 96 |
+| Rule                    | Implementation                 | Tests            |
+| ----------------------- | ------------------------------ | ---------------- |
+| 1. KISS                 | Simple, focused tests          | All 96           |
+| 2. MVC                  | Frontend-only (no API calls)   | All 96           |
+| 4. Fail Fast AF         | Zero console.error checks      | Phases 6, 17, 18 |
+| 7. SOLID + DI           | No coupling to services        | All phases       |
+| 8. Proactive Beast Mode | Edge cases tested              | All phases       |
+| 10. Clean Code Jihad    | Async/await only, no dead code | All 96           |
+| 11. Test Validation     | Strict expected vs actual      | All 96           |
 
 **Strict Validation Examples:**
+
 - ✅ `expect(value).to.equal('EXACT')`
 - ✅ `should('have.attr', 'name', 'EXACT_VALUE')`
 - ✅ `should('have.length', 4)` (exact count)
@@ -392,17 +420,20 @@ cy.visit('/', {
 ## Running the Tests
 
 ### Option 1: Full E2E Suite
+
 ```bash
 npm run test:e2e
 # Runs: docker compose exec cypress npx cypress run
 ```
 
 ### Option 2: Single Spec
+
 ```bash
 npx cypress run --spec cypress/e2e/index/complete-page-load.cy.js
 ```
 
 ### Option 3: Cypress UI (Development)
+
 ```bash
 npx cypress open
 # Select "E2E Testing" → "complete-page-load.cy.js"
@@ -413,6 +444,7 @@ npx cypress open
 ## Expected Test Results
 
 ### Success Criteria (All Must Pass)
+
 - ✅ All 96 tests pass (increased from 62)
 - ✅ Zero console errors
 - ✅ Page load < 3s (LCP)
@@ -425,24 +457,27 @@ npx cypress open
 - ✅ All sections visible on scroll
 
 ### Performance Benchmarks
-| Metric | Expected | Phase |
-|--------|----------|-------|
-| DOM Content Loaded | < 2s | 18 |
-| Page Load Complete | < 3s | 18 |
-| Logo Image Load | 100% | 8 |
-| CSS Parse Time | < 500ms | 2 |
-| Theme Preload | < 100ms | 9 |
+
+| Metric             | Expected | Phase |
+| ------------------ | -------- | ----- |
+| DOM Content Loaded | < 2s     | 18    |
+| Page Load Complete | < 3s     | 18    |
+| Logo Image Load    | 100%     | 8     |
+| CSS Parse Time     | < 500ms  | 2     |
+| Theme Preload      | < 100ms  | 9     |
 
 ---
 
 ## Version 2.0 Improvements Summary
 
 ### Coverage Expansion
+
 - **Test Count:** 62 → 96 (+34 tests, +54% increase)
 - **Phases:** 10 → 18 (+8 phases, +80% increase)
 - **File Size:** 536 → 961 lines (+79% increase)
 
 ### New Sections Covered
+
 1. Featured Products Carousel (6 tests)
 2. Products Section Structure (5 tests)
 3. Complete Filter System (7 tests)
@@ -454,6 +489,7 @@ npx cypress open
 9. Enhanced Integration (2 new tests)
 
 ### Quality Improvements
+
 - ✅ ESLint compliance (cypress globals added)
 - ✅ Strict value matching (no "at least" assertions)
 - ✅ Full page coverage (nav to footer)
@@ -467,22 +503,27 @@ npx cypress open
 ### When to Update Tests
 
 ✅ **When:** Add new carousel features
+
 - Update Phase 10 tests
 - Verify carousel indicators, auto-advance
 
 ✅ **When:** Modify filter system
+
 - Update Phase 12 tests
 - Add new filter types, options
 
 ✅ **When:** Change testimonial count
+
 - Update Phase 13 assertion from 3 to new count
 - Update themed card classes
 
 ✅ **When:** Add/remove features
+
 - Update Phase 14 count from 4
 - Update expected feature titles
 
 ✅ **When:** Modify footer structure
+
 - Update Phase 16 tests
 - Adjust column count if changed
 
@@ -491,6 +532,7 @@ npx cypress open
 ## Success Metrics
 
 **100% Success Rate Requirements (CLAUDE.md):**
+
 1. ✅ All 96 tests pass (v2.0)
 2. ✅ No console errors during execution
 3. ✅ Page load time < 3 seconds
@@ -554,14 +596,15 @@ Phase 1: HTML Document (Markup structure)
 
 **Purpose:** Verify foundational HTML markup integrity
 
-| Test | Assertion | Expected Value |
-|------|-----------|-----------------|
-| Valid DOCTYPE | Body includes `<!doctype html>` | Found |
-| HTML Element | `<html lang="es" data-theme="light">` | Exact match |
-| Meta Charset | `<meta charset="UTF-8">` | Present |
-| Viewport Meta | `content="width=device-width, initial-scale=1.0"` | Exact match |
+| Test          | Assertion                                         | Expected Value |
+| ------------- | ------------------------------------------------- | -------------- |
+| Valid DOCTYPE | Body includes `<!doctype html>`                   | Found          |
+| HTML Element  | `<html lang="es" data-theme="light">`             | Exact match    |
+| Meta Charset  | `<meta charset="UTF-8">`                          | Present        |
+| Viewport Meta | `content="width=device-width, initial-scale=1.0"` | Exact match    |
 
 **CLAUDE.md Compliance:**
+
 - ✅ Strict expected value matching
 - ✅ No adapter-to-output assertions
 - ✅ Semantic HTML validation
@@ -572,21 +615,23 @@ Phase 1: HTML Document (Markup structure)
 
 **Purpose:** Ensure stylesheets load in correct order (prevent FOUC)
 
-| Test | Validation | File/Resource |
-|------|-----------|----------------|
-| Theme Preload | First in `<head>` | `./js/themes/themePreload.js` |
-| Main CSS | Loaded | `./css/styles.css` |
-| Tailwind CSS | Loaded | `./css/tailwind.css` |
-| Theme CSS | Loaded | `./css/themes.css` |
-| Granular Theme | Loaded | `./css/themes-granular.css` |
-| Component CSS | Loaded | `./css/components/cuco-clock.css` |
+| Test           | Validation        | File/Resource                     |
+| -------------- | ----------------- | --------------------------------- |
+| Theme Preload  | First in `<head>` | `./js/themes/themePreload.js`     |
+| Main CSS       | Loaded            | `./css/styles.css`                |
+| Tailwind CSS   | Loaded            | `./css/tailwind.css`              |
+| Theme CSS      | Loaded            | `./css/themes.css`                |
+| Granular Theme | Loaded            | `./css/themes-granular.css`       |
+| Component CSS  | Loaded            | `./css/components/cuco-clock.css` |
 
 **Critical Path:**
+
 1. themePreload.js → Sets initial theme
 2. CSS files → Applied in cascade
 3. Computed styles → Visible on elements
 
 **CLAUDE.md Compliance:**
+
 - ✅ Performance boundary validation (no FOUC)
 - ✅ Resource loading order enforcement
 - ✅ Computed style verification
@@ -597,23 +642,25 @@ Phase 1: HTML Document (Markup structure)
 
 **Purpose:** Validate navbar structure, accessibility, responsiveness
 
-| Test | Element | Validation |
-|------|---------|-----------|
-| Nav Element | `<nav.navbar>` | `role="navigation"` + `aria-label` |
-| Logo Image | `<img.brand-logo>` | `src="./images/logoFloresYa.jpeg"` |
-| Desktop Links | `.desktop-nav .nav-links` | `role="menubar"` + 4 links |
-| Link Targets | `href` attributes | Exact URL matches |
-| Cart Badge | `.cart-badge` | Content: "0" |
-| Mobile Menu | `#mobile-menu` | Initially `hidden` class |
-| Mobile Toggle | `#mobile-menu-btn` | `aria-expanded="false"` |
+| Test          | Element                   | Validation                         |
+| ------------- | ------------------------- | ---------------------------------- |
+| Nav Element   | `<nav.navbar>`            | `role="navigation"` + `aria-label` |
+| Logo Image    | `<img.brand-logo>`        | `src="./images/logoFloresYa.jpeg"` |
+| Desktop Links | `.desktop-nav .nav-links` | `role="menubar"` + 4 links         |
+| Link Targets  | `href` attributes         | Exact URL matches                  |
+| Cart Badge    | `.cart-badge`             | Content: "0"                       |
+| Mobile Menu   | `#mobile-menu`            | Initially `hidden` class           |
+| Mobile Toggle | `#mobile-menu-btn`        | `aria-expanded="false"`            |
 
 **Navigation Link Mapping:**
+
 - Home → `#inicio`
 - Products → `#productos`
 - Contact → `pages/contacto.html`
 - Admin → `pages/admin/dashboard.html`
 
 **CLAUDE.md Compliance:**
+
 - ✅ WCAG accessibility (ARIA roles)
 - ✅ Semantic HTML structure
 - ✅ Mobile-first design validation
@@ -624,21 +671,23 @@ Phase 1: HTML Document (Markup structure)
 
 **Purpose:** Verify hero banner and CTA components load correctly
 
-| Element | Expected Content | Status |
-|---------|-----------------|--------|
-| Hero Title | "Flores frescas para cada ocasión 🌸" | Visible |
-| Subtitle | "Ramos y arreglos florales..." | Visible |
-| Primary CTA | "Explorar Catálogo" → `#productos` | Clickable |
-| Secondary CTA | "Arreglos para Bodas" → `#bodas` | Clickable |
-| Features | At least 1 feature item | Present |
+| Element       | Expected Content                      | Status    |
+| ------------- | ------------------------------------- | --------- |
+| Hero Title    | "Flores frescas para cada ocasión 🌸" | Visible   |
+| Subtitle      | "Ramos y arreglos florales..."        | Visible   |
+| Primary CTA   | "Explorar Catálogo" → `#productos`    | Clickable |
+| Secondary CTA | "Arreglos para Bodas" → `#bodas`      | Clickable |
+| Features      | At least 1 feature item               | Present   |
 
 **Visual Validations:**
+
 - `role="banner"` present
 - `aria-labelledby="hero-title"` linked
 - `animate-gradient` class applied
 - Minimum height: min(55vh, 520px)
 
 **CLAUDE.md Compliance:**
+
 - ✅ Semantic HTML (`<section role="banner">`)
 - ✅ Accessibility attributes
 - ✅ Responsive design markers
@@ -649,13 +698,14 @@ Phase 1: HTML Document (Markup structure)
 
 **Purpose:** Validate PWA integration points
 
-| Resource | Expected | Validation |
-|----------|----------|-----------|
-| Favicon | `./images/favicon.ico` | Linked with `rel="icon"` |
-| Manifest | `./manifest.json` | Linked with `rel="manifest"` |
-| Manifest Content | Valid JSON | HTTP 200 + `name` property |
+| Resource         | Expected               | Validation                   |
+| ---------------- | ---------------------- | ---------------------------- |
+| Favicon          | `./images/favicon.ico` | Linked with `rel="icon"`     |
+| Manifest         | `./manifest.json`      | Linked with `rel="manifest"` |
+| Manifest Content | Valid JSON             | HTTP 200 + `name` property   |
 
 **CLAUDE.md Compliance:**
+
 - ✅ PWA support verified
 - ✅ Resource availability checked
 
@@ -665,14 +715,15 @@ Phase 1: HTML Document (Markup structure)
 
 **Purpose:** Verify runtime JavaScript initialization
 
-| Component | Expected State | Validation |
-|-----------|---------------|-----------| 
-| Theme Selector | Container exists | `#theme-selector-container` |
-| Cuco Clock | Button + icon | Visible, clickable |
-| Mobile Menu | Toggle functionality | Click toggles `hidden` class |
-| Console Errors | None | `console.error` not called |
+| Component      | Expected State       | Validation                   |
+| -------------- | -------------------- | ---------------------------- |
+| Theme Selector | Container exists     | `#theme-selector-container`  |
+| Cuco Clock     | Button + icon        | Visible, clickable           |
+| Mobile Menu    | Toggle functionality | Click toggles `hidden` class |
+| Console Errors | None                 | `console.error` not called   |
 
 **JavaScript Execution Sequence:**
+
 1. HTML parsed
 2. Theme preload executes
 3. DOM ready (event listeners attached)
@@ -680,6 +731,7 @@ Phase 1: HTML Document (Markup structure)
 5. Components initialize
 
 **CLAUDE.md Compliance:**
+
 - ✅ No console errors (Fail Fast)
 - ✅ Clean JS initialization
 - ✅ Event listener tracking
@@ -690,15 +742,16 @@ Phase 1: HTML Document (Markup structure)
 
 **Purpose:** Ensure WCAG 2.1 AA compliance
 
-| Standard | Element | Validation |
-|----------|---------|-----------|
-| Heading Hierarchy | `<h1>` | Exactly 1 per page |
-| Image Alt Text | All `<img>` | `alt` attribute present |
-| ARIA Labels | Navigation | `aria-label` + `aria-expanded` |
-| Semantic HTML | Structure | `<nav>`, `<section>`, `<button>` |
-| Keyboard Nav | Tab focus | `:focus` visible outline |
+| Standard          | Element     | Validation                       |
+| ----------------- | ----------- | -------------------------------- |
+| Heading Hierarchy | `<h1>`      | Exactly 1 per page               |
+| Image Alt Text    | All `<img>` | `alt` attribute present          |
+| ARIA Labels       | Navigation  | `aria-label` + `aria-expanded`   |
+| Semantic HTML     | Structure   | `<nav>`, `<section>`, `<button>` |
+| Keyboard Nav      | Tab focus   | `:focus` visible outline         |
 
 **WCAG 2.1 AA Compliance Checklist:**
+
 - ✅ 1.1.1 Non-text Content (alt text)
 - ✅ 1.3.1 Info and Relationships (semantic HTML)
 - ✅ 2.1.1 Keyboard (keyboard navigation)
@@ -706,6 +759,7 @@ Phase 1: HTML Document (Markup structure)
 - ✅ 4.1.2 Name, Role, Value (ARIA)
 
 **CLAUDE.md Compliance:**
+
 - ✅ WCAG enforcement
 - ✅ Mobile-first accessibility
 - ✅ Defense-in-depth validation
@@ -716,21 +770,23 @@ Phase 1: HTML Document (Markup structure)
 
 **Purpose:** Validate images, fonts, stylesheets load without errors
 
-| Resource Type | Test | Expected |
-|---------------|------|----------|
-| Logo Image | Load + visibility | `naturalWidth > 0` |
-| All Images | No broken links | `complete=true` |
-| CSS Files | HTTP status | 200 OK (3 files) |
-| Google Fonts | Preconnect link | Present in `<head>` |
-| Page Load Time | LCP boundary | < 3000ms |
+| Resource Type  | Test              | Expected            |
+| -------------- | ----------------- | ------------------- |
+| Logo Image     | Load + visibility | `naturalWidth > 0`  |
+| All Images     | No broken links   | `complete=true`     |
+| CSS Files      | HTTP status       | 200 OK (3 files)    |
+| Google Fonts   | Preconnect link   | Present in `<head>` |
+| Page Load Time | LCP boundary      | < 3000ms            |
 
 **Performance Boundaries (CLAUDE.md):**
+
 - Largest Contentful Paint (LCP) < 3s ✓
 - First Contentful Paint (FCP) < 1.5s (implied)
 - No broken 404s ✓
 - Images fully loaded ✓
 
 **CLAUDE.md Compliance:**
+
 - ✅ Performance boundary enforcement
 - ✅ Resource validation (no 404s)
 - ✅ LCP measurement
@@ -741,13 +797,14 @@ Phase 1: HTML Document (Markup structure)
 
 **Purpose:** Verify theme preload and CSS variable system
 
-| Test | Validation | Expected |
-|------|-----------|----------|
-| Data Attribute | `<html data-theme>` | Present with value |
-| CSS Variables | `--navbar-icon-color` | Defined on body |
-| Theme Switching | localStorage + reload | Theme persists |
+| Test            | Validation            | Expected           |
+| --------------- | --------------------- | ------------------ |
+| Data Attribute  | `<html data-theme>`   | Present with value |
+| CSS Variables   | `--navbar-icon-color` | Defined on body    |
+| Theme Switching | localStorage + reload | Theme persists     |
 
 **Theme System Flow:**
+
 ```
 themePreload.js runs
   ↓
@@ -761,6 +818,7 @@ Components styled dynamically
 ```
 
 **CLAUDE.md Compliance:**
+
 - ✅ No FOUC (Flash of Unstyled Content)
 - ✅ Clean initialization
 - ✅ CSS variable system validation
@@ -771,15 +829,16 @@ Components styled dynamically
 
 **Purpose:** Final validation - all systems working together
 
-| Test | Validation | Pass Criteria |
-|------|-----------|---------------|
-| All Elements Rendered | Critical path | nav + hero + body visible |
-| Core Web Vitals | DOM load < 2s, Full load < 3s | Timing metrics |
-| Zero JS Errors | Runtime safety | `console.error` empty |
-| User Interactions | Click functionality | Mobile menu, nav links |
-| Accessibility Maintained | After interactions | ARIA attributes intact |
+| Test                     | Validation                    | Pass Criteria             |
+| ------------------------ | ----------------------------- | ------------------------- |
+| All Elements Rendered    | Critical path                 | nav + hero + body visible |
+| Core Web Vitals          | DOM load < 2s, Full load < 3s | Timing metrics            |
+| Zero JS Errors           | Runtime safety                | `console.error` empty     |
+| User Interactions        | Click functionality           | Mobile menu, nav links    |
+| Accessibility Maintained | After interactions            | ARIA attributes intact    |
 
 **Critical Path Verification:**
+
 ```
 1. HTML loads (0-100ms)
 2. Head parsed, CSS preload starts (100-300ms)
@@ -792,6 +851,7 @@ Components styled dynamically
 ```
 
 **CLAUDE.md Compliance:**
+
 - ✅ 100% success rate validation
 - ✅ All components working together
 - ✅ No partial success (Fail Fast AF)
@@ -801,6 +861,7 @@ Components styled dynamically
 ## Test Execution Flow
 
 ### Setup Phase (beforeEach)
+
 ```javascript
 cy.visit('/', {
   failOnStatusCode: false,
@@ -812,6 +873,7 @@ cy.visit('/', {
 ```
 
 **Why this setup:**
+
 - Stubs console to catch runtime errors
 - Doesn't fail on non-200 status (allows testing error states)
 - No artificial waits (uses Cypress auto-wait)
@@ -819,22 +881,23 @@ cy.visit('/', {
 ### Test Pattern (All 62 tests)
 
 **Strict Assertion Pattern:**
+
 ```javascript
 it('should [specific behavior]', () => {
   // Setup
   cy.get('selector')
-  
-  // Assert exact expected value
-  .should('have.attr', 'name', 'EXACT_VALUE')
+
+    // Assert exact expected value
+    .should('have.attr', 'name', 'EXACT_VALUE')
     // NOT: .should('contain', 'partial')
-  .and('be.visible')
+    .and('be.visible')
     // Verify visibility
-  
-  // Verify computed properties
-  .then($el => {
-    expect($el[0].naturalWidth).to.be.greaterThan(0)
+
+    // Verify computed properties
+    .then($el => {
+      expect($el[0].naturalWidth).to.be.greaterThan(0)
       // EXACT comparison, not partial
-  })
+    })
 })
 ```
 
@@ -842,21 +905,22 @@ it('should [specific behavior]', () => {
 
 ## CLAUDE.md Compliance Matrix
 
-| Rule | Implementation | Tests |
-|------|----------------|-------|
-| 1. KISS | Simple, focused tests | All 62 |
-| 2. MVC | Frontend-only (no API calls) | All 62 |
-| 3. Service Layer Lockdown | No service testing needed | N/A |
-| 4. Fail Fast AF | Zero console.error checks | Phase 6, 10 |
-| 5. Soft-delete | Not applicable (frontend) | N/A |
-| 6. OpenAPI | Not applicable (frontend) | N/A |
-| 7. SOLID + DI | No coupling to services | All phases |
-| 8. Proactive Beast Mode | Edge cases tested | Phases 1-10 |
-| 9. JSON Spec | Not applicable (HTML) | N/A |
-| 10. Clean Code Jihad | Async/await only, no dead code | All 62 |
-| 11. Test Validation | Strict expected vs actual | All 62 |
+| Rule                      | Implementation                 | Tests       |
+| ------------------------- | ------------------------------ | ----------- |
+| 1. KISS                   | Simple, focused tests          | All 62      |
+| 2. MVC                    | Frontend-only (no API calls)   | All 62      |
+| 3. Service Layer Lockdown | No service testing needed      | N/A         |
+| 4. Fail Fast AF           | Zero console.error checks      | Phase 6, 10 |
+| 5. Soft-delete            | Not applicable (frontend)      | N/A         |
+| 6. OpenAPI                | Not applicable (frontend)      | N/A         |
+| 7. SOLID + DI             | No coupling to services        | All phases  |
+| 8. Proactive Beast Mode   | Edge cases tested              | Phases 1-10 |
+| 9. JSON Spec              | Not applicable (HTML)          | N/A         |
+| 10. Clean Code Jihad      | Async/await only, no dead code | All 62      |
+| 11. Test Validation       | Strict expected vs actual      | All 62      |
 
 **Strict Validation Examples:**
+
 - ✅ `expect(value).to.equal('EXACT')`
 - ✅ `should('have.attr', 'name', 'EXACT_VALUE')`
 - ❌ `should('include', 'PARTIAL')` (not strict)
@@ -867,17 +931,20 @@ it('should [specific behavior]', () => {
 ## Running the Tests
 
 ### Option 1: Docker (Recommended)
+
 ```bash
 npm run test:e2e
 # Runs: docker compose exec cypress npx cypress run
 ```
 
 ### Option 2: Local Cypress
+
 ```bash
 npx cypress run --spec cypress/e2e/index/complete-page-load.cy.js
 ```
 
 ### Option 3: Cypress UI (Development)
+
 ```bash
 npx cypress open
 # Select "E2E Testing" → "complete-page-load.cy.js"
@@ -888,6 +955,7 @@ npx cypress open
 ## Expected Test Results
 
 ### Success Criteria
+
 - ✅ All 62 tests pass
 - ✅ Zero console errors
 - ✅ Page load < 3s (LCP)
@@ -897,13 +965,14 @@ npx cypress open
 - ✅ Theme system loads without FOUC
 
 ### Performance Benchmarks
-| Metric | Expected | Measured |
-|--------|----------|----------|
-| DOM Content Loaded | < 2s | ? |
-| Page Load Complete | < 3s | ? |
-| Logo Image Load | 100% | ? |
-| CSS Parse Time | < 500ms | ? |
-| Theme Preload | < 100ms | ? |
+
+| Metric             | Expected | Measured |
+| ------------------ | -------- | -------- |
+| DOM Content Loaded | < 2s     | ?        |
+| Page Load Complete | < 3s     | ?        |
+| Logo Image Load    | 100%     | ?        |
+| CSS Parse Time     | < 500ms  | ?        |
+| Theme Preload      | < 100ms  | ?        |
 
 ---
 
@@ -912,18 +981,22 @@ npx cypress open
 ### Common Failures and Solutions
 
 **Failure:** "Element not found: #theme-selector-container"
+
 - **Cause:** index.js hasn't executed yet
 - **Solution:** Increase Cypress default wait (3s) or verify index.js loads
 
 **Failure:** "Timeout waiting for resources"
+
 - **Cause:** Network latency or missing resources
 - **Solution:** Check actual file paths, verify CSS URLs
 
 **Failure:** "console.error called unexpectedly"
+
 - **Cause:** JavaScript error during load
 - **Solution:** Check browser console for actual error message
 
 **Failure:** "LCP > 3s"
+
 - **Cause:** Slow resources or unoptimized images
 - **Solution:** Check image sizes, CSS loading order, network throttling
 
@@ -934,19 +1007,24 @@ npx cypress open
 ### When to Update Tests
 
 ✅ **When:** Add new components to index.html
+
 - Add corresponding test in appropriate phase
 - Update test count in summary
 
 ✅ **When:** Change CSS file names or paths
+
 - Update Phase 2 tests
 
 ✅ **When:** Modify navbar links
+
 - Update Phase 3 tests
 
 ✅ **When:** Change hero CTA buttons
+
 - Update Phase 4 tests
 
 ### Backward Compatibility
+
 - Tests are designed to be stable
 - Focus on DOM structure, not styling details
 - Avoid testing CSS colors/sizes (test structure instead)
@@ -956,6 +1034,7 @@ npx cypress open
 ## Success Metrics
 
 **100% Success Rate Requirements (CLAUDE.md):**
+
 1. ✅ All 62 tests pass
 2. ✅ No console errors during execution
 3. ✅ Page load time < 3 seconds
@@ -974,17 +1053,18 @@ npx cypress open
 ## Appendix: HTML Structure Reference
 
 ### Critical Elements (Must Exist)
+
 ```html
 <html lang="es" data-theme="light">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="./js/themes/themePreload.js"></script>
-    <link rel="stylesheet" href="./css/styles.css">
-    <link rel="stylesheet" href="./css/tailwind.css">
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./css/tailwind.css" />
     <!-- More stylesheets... -->
-    <link rel="manifest" href="./manifest.json">
-    <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="icon" type="image/x-icon" href="./images/favicon.ico" />
   </head>
   <body>
     <nav class="navbar" role="navigation" aria-label="Navegación principal">

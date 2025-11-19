@@ -20,11 +20,13 @@ test/
 ## 🚀 Ejecutar Tests
 
 ### Todos los tests
+
 ```bash
 npm test
 ```
 
 ### Tests específicos por categoría
+
 ```bash
 # Middleware
 npm test test/middleware
@@ -40,6 +42,7 @@ npm test test/integration
 ```
 
 ### Tests individuales
+
 ```bash
 npm test test/services/productService.test.js
 ```
@@ -47,6 +50,7 @@ npm test test/services/productService.test.js
 ## 📊 Categorías de Tests
 
 ### Middleware (7 tests)
+
 - `advancedValidation.amount.test.js` - Validación de montos
 - `advancedValidation.email.test.js` - Validación de emails
 - `globalSanitize.test.js` - Sanitización global
@@ -56,6 +60,7 @@ npm test test/services/productService.test.js
 - `securityAudit.test.js` - Auditoría de seguridad
 
 ### Repositories (10 tests)
+
 - `baseRepository.test.js` - Repositorio base
 - `occasionRepository.test.js` - Repositorio de ocasiones
 - `orderRepository.test.js` - Repositorio de órdenes
@@ -68,6 +73,7 @@ npm test test/services/productService.test.js
 - `setup.js` - Configuración de repositorios
 
 ### Services (14 tests)
+
 - `authService.test.js` - Autenticación
 - `carouselService.test.js` - Carrusel de imágenes
 - `migrationService.test.js` - Migraciones
@@ -84,29 +90,35 @@ npm test test/services/productService.test.js
 - `setup.js` - Configuración de servicios
 
 ### Integration (2 tests)
+
 - `cross-service-workflows.test.js` - Flujos entre servicios
 - `performance-stress-tests.test.js` - Tests de estrés
 
 ### Supabase Client (2 tests)
+
 - `supabaseClient.test.js` - Cliente de Supabase
 - `mocks/mocks.js` - Mocks para Supabase
 
 ## 🛠️ Configuración
 
 ### Setup Global
+
 El archivo `setup.js` configura el entorno de pruebas global.
 
 ### Setup por Categoría
+
 Cada categoría (repositories, services) tiene su propio `setup.js` para configuraciones específicas.
 
 ## 📋 Convenciones
 
 ### Nomenclatura
+
 - Tests unitarios: `*.test.js`
 - Mocks: `mocks/*.js`
 - Setup: `setup.js`
 
 ### Estructura de Tests
+
 ```javascript
 describe('Componente/Función', () => {
   beforeEach(() => {
@@ -127,6 +139,7 @@ describe('Componente/Función', () => {
 ## 🔍 Coverage
 
 Para generar reporte de cobertura:
+
 ```bash
 npm run test:coverage
 ```

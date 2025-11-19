@@ -488,7 +488,10 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
       // Stock should be restored (this would be handled in the actual order service)
       // Note: The actual implementation may handle stock restoration differently
       // For test purposes, we verify the cancellation was processed
-      expect(mockRepositories.OrderRepository.cancel).toHaveBeenCalledWith(1, 'Customer requested cancellation')
+      expect(mockRepositories.OrderRepository.cancel).toHaveBeenCalledWith(
+        1,
+        'Customer requested cancellation'
+      )
     })
   })
 

@@ -10,34 +10,34 @@
 
 :root {
   /* Modo Claro - Colores Florales Suaves */
-  --bg-primary: #fef5f8;        /* Rosa muy suave - fondo principal */
-  --bg-secondary: #fff9fb;      /* Rosa casi blanco - cards */
-  --bg-tertiary: #ffeef4;       /* Rosa pastel - hover states */
-  
-  --text-primary: #2d1b2e;      /* Púrpura oscuro - texto principal */
-  --text-secondary: #5a4a5e;    /* Gris-púrpura - texto secundario */
-  --text-muted: #8b7a8e;        /* Gris lavanda - texto menos importante */
-  
-  --accent-primary: #e91e8c;    /* Rosa FloresYa - acciones principales */
-  --accent-secondary: #f472b6;  /* Rosa más claro - hover */
-  --accent-tertiary: #fbbf24;   /* Amarillo dorado - acentos */
-  
-  --border-color: #f3d5e3;      /* Rosa pálido - bordes */
-  --shadow: rgba(233, 30, 140, 0.1);  /* Sombra rosa suave */
-  
+  --bg-primary: #fef5f8; /* Rosa muy suave - fondo principal */
+  --bg-secondary: #fff9fb; /* Rosa casi blanco - cards */
+  --bg-tertiary: #ffeef4; /* Rosa pastel - hover states */
+
+  --text-primary: #2d1b2e; /* Púrpura oscuro - texto principal */
+  --text-secondary: #5a4a5e; /* Gris-púrpura - texto secundario */
+  --text-muted: #8b7a8e; /* Gris lavanda - texto menos importante */
+
+  --accent-primary: #e91e8c; /* Rosa FloresYa - acciones principales */
+  --accent-secondary: #f472b6; /* Rosa más claro - hover */
+  --accent-tertiary: #fbbf24; /* Amarillo dorado - acentos */
+
+  --border-color: #f3d5e3; /* Rosa pálido - bordes */
+  --shadow: rgba(233, 30, 140, 0.1); /* Sombra rosa suave */
+
   /* Colores semánticos */
   --success-bg: #f0fdf4;
   --success-text: #166534;
   --success-border: #bbf7d0;
-  
+
   --warning-bg: #fffbeb;
   --warning-text: #92400e;
   --warning-border: #fde68a;
-  
+
   --error-bg: #fef2f2;
   --error-text: #991b1b;
   --error-border: #fecaca;
-  
+
   --info-bg: #eff6ff;
   --info-text: #1e40af;
   --info-border: #bfdbfe;
@@ -45,34 +45,34 @@
 
 .dark {
   /* Modo Oscuro - Profesional con toques florales */
-  --bg-primary: #1a1625;        /* Púrpura muy oscuro */
-  --bg-secondary: #251d30;      /* Púrpura oscuro - cards */
-  --bg-tertiary: #332841;       /* Púrpura medio - hover */
-  
-  --text-primary: #f5f3f7;      /* Casi blanco con tono lavanda */
-  --text-secondary: #d4c9de;    /* Lavanda claro */
-  --text-muted: #9b8ba8;        /* Lavanda grisáceo */
-  
-  --accent-primary: #f472b6;    /* Rosa brillante */
-  --accent-secondary: #fb7185;  /* Rosa coral */
-  --accent-tertiary: #fbbf24;   /* Dorado */
-  
-  --border-color: #3d3347;      /* Púrpura oscuro para bordes */
+  --bg-primary: #1a1625; /* Púrpura muy oscuro */
+  --bg-secondary: #251d30; /* Púrpura oscuro - cards */
+  --bg-tertiary: #332841; /* Púrpura medio - hover */
+
+  --text-primary: #f5f3f7; /* Casi blanco con tono lavanda */
+  --text-secondary: #d4c9de; /* Lavanda claro */
+  --text-muted: #9b8ba8; /* Lavanda grisáceo */
+
+  --accent-primary: #f472b6; /* Rosa brillante */
+  --accent-secondary: #fb7185; /* Rosa coral */
+  --accent-tertiary: #fbbf24; /* Dorado */
+
+  --border-color: #3d3347; /* Púrpura oscuro para bordes */
   --shadow: rgba(0, 0, 0, 0.4);
-  
+
   /* Colores semánticos oscuros */
   --success-bg: #14532d;
   --success-text: #86efac;
   --success-border: #166534;
-  
+
   --warning-bg: #713f12;
   --warning-text: #fde047;
   --warning-border: #92400e;
-  
+
   --error-bg: #7f1d1d;
   --error-text: #fca5a5;
   --error-border: #991b1b;
-  
+
   --info-bg: #1e3a8a;
   --info-text: #93c5fd;
   --info-border: #1e40af;
@@ -85,7 +85,9 @@
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 /* Navbar */
@@ -282,7 +284,10 @@ a:hover {
 
 /* Transiciones suaves */
 * {
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 /* Evitar transiciones en elementos que lo necesiten inmediato */

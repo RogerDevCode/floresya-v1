@@ -101,7 +101,7 @@ describe('Sanitize Utility Functions', () => {
       // Arrange
       const orderData = {
         customer_email: 'test@example.com',
-        total_amount_usd: 100.50,
+        total_amount_usd: 100.5,
         user_id: 123,
         notes: 'Some notes'
       }
@@ -111,7 +111,7 @@ describe('Sanitize Utility Functions', () => {
 
       // Assert
       expect(result.customer_email).toBe('test@example.com')
-      expect(result.total_amount_usd).toBe(100.50)
+      expect(result.total_amount_usd).toBe(100.5)
       expect(result.user_id).toBe(123)
       expect(result.notes).toBe('Some notes')
     })
@@ -185,24 +185,19 @@ describe('Sanitize Utility Functions', () => {
       // Assert
       expect(result).toHaveLength(2)
       expect(result[0].product_name).toBe('Product 1')
-      expect(result[0].unit_price_usd).toBe(25.50)
+      expect(result[0].unit_price_usd).toBe(25.5)
       expect(result[0].quantity).toBe(2)
       expect(result[0].id).toBe(0)
 
       expect(result[1].product_name).toBe('')
-      expect(result[1].unit_price_usd).toBe(30.00)
+      expect(result[1].unit_price_usd).toBe(30.0)
       expect(result[1].quantity).toBe(1)
       expect(result[1].id).toBe(123)
     })
 
     test('should handle non-object items gracefully', () => {
       // Arrange
-      const items = [
-        'not-an-object',
-        null,
-        { product_name: 'Valid Item', quantity: '1' },
-        123
-      ]
+      const items = ['not-an-object', null, { product_name: 'Valid Item', quantity: '1' }, 123]
 
       // Act
       const result = sanitizeOrderItems(items)
@@ -245,7 +240,7 @@ describe('Sanitize Utility Functions', () => {
       // Assert
       expect(mockNext).toHaveBeenCalled()
       expect(mockRequest.body.order.customer_email).toBe('')
-      expect(mockRequest.body.order.total_amount_usd).toBe(100.50)
+      expect(mockRequest.body.order.total_amount_usd).toBe(100.5)
       expect(mockRequest.body.order.user_id).toBe(0)
     })
 
@@ -268,7 +263,7 @@ describe('Sanitize Utility Functions', () => {
       expect(mockNext).toHaveBeenCalled()
       expect(mockRequest.body.items[0].product_name).toBe('')
       expect(mockRequest.body.items[0].quantity).toBe(2)
-      expect(mockRequest.body.items[0].unit_price_usd).toBe(25.50)
+      expect(mockRequest.body.items[0].unit_price_usd).toBe(25.5)
     })
 
     test('should sanitize top-level fields based on naming patterns', () => {
@@ -404,7 +399,7 @@ describe('Sanitize Utility Functions', () => {
 
       expect(info.total_amount_usd).toEqual({
         original: '100.50',
-        sanitized: 100.50,
+        sanitized: 100.5,
         type: 'numeric',
         wasSanitized: true
       })
@@ -488,7 +483,8 @@ describe('Sanitize Utility Functions', () => {
 
       // Assert
       expect(result.customer_email).toBe('test@example.com')
-      expect(result.custom_fields).toEqual({ // Should be preserved since not in column types
+      expect(result.custom_fields).toEqual({
+        // Should be preserved since not in column types
         preferences: null,
         settings: {
           notifications: true,

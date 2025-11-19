@@ -79,23 +79,27 @@
               <a
                 href="#"
                 class="text-gray-700 hover:text-pink-600 px-3 py-2 text-sm font-medium transition-colors"
-                >Inicio</a
               >
+                Inicio
+              </a>
               <a
                 href="#"
                 class="text-gray-700 hover:text-pink-600 px-3 py-2 text-sm font-medium transition-colors"
-                >Productos</a
               >
+                Productos
+              </a>
               <a
                 href="#"
                 class="text-gray-700 hover:text-pink-600 px-3 py-2 text-sm font-medium transition-colors"
-                >Ocasiones</a
               >
+                Ocasiones
+              </a>
               <a
                 href="#"
                 class="text-gray-700 hover:text-pink-600 px-3 py-2 text-sm font-medium transition-colors"
-                >Contacto</a
               >
+                Contacto
+              </a>
             </nav>
 
             <!-- Mobile Menu Container -->
@@ -125,23 +129,27 @@
           <a
             href="#"
             class="mobile-nav-link block px-4 py-3 text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50 transition-colors"
-            >Inicio</a
           >
+            Inicio
+          </a>
           <a
             href="#"
             class="mobile-nav-link block px-4 py-3 text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50 transition-colors"
-            >Productos</a
           >
+            Productos
+          </a>
           <a
             href="#"
             class="mobile-nav-link block px-4 py-3 text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50 transition-colors"
-            >Ocasiones</a
           >
+            Ocasiones
+          </a>
           <a
             href="#"
             class="mobile-nav-link block px-4 py-3 text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50 transition-colors"
-            >Contacto</a
           >
+            Contacto
+          </a>
         </div>
       </div>
 
@@ -226,17 +234,22 @@
             <p class="text-gray-600 mb-4">Para integrar el menú hamburguesa en tu proyecto:</p>
 
             <div class="code-snippet">
-              <span class="highlight">import</span> { HamburgerMenu }
+              <span class="highlight">import</span>
+              { HamburgerMenu }
               <span class="highlight">from</span>
               <span class="highlight">'./js/components/hamburgerMenu.js'</span>
-              <span class="highlight">import</span> { MobileNav }
+              <span class="highlight">import</span>
+              { MobileNav }
               <span class="highlight">from</span>
               <span class="highlight">'./js/components/mobileNav.js'</span>
 
               <span class="comment">// Inicializar menú hamburguesa con callback</span>
-              <span class="highlight">const</span> hamburgerMenu =
-              <span class="highlight">new</span> HamburgerMenu({ containerSelector:
-              <span class="highlight">'.hamburger-container'</span>, onToggle: (isOpen) => {
+              <span class="highlight">const</span>
+              hamburgerMenu =
+              <span class="highlight">new</span>
+              HamburgerMenu({ containerSelector:
+              <span class="highlight">'.hamburger-container'</span>
+              , onToggle: (isOpen) => {
               <span class="comment">// Sincronizar con navegación móvil</span>
               isOpen ? mobileNav.open() : mobileNav.close() } })
 
@@ -253,16 +266,15 @@
             <ul class="space-y-2 text-gray-700">
               <li class="flex items-start">
                 <span class="text-pink-500 mr-2">•</span>
-                <span
-                  >Redimensiona tu navegador a ancho de móvil o usa herramientas de
-                  desarrollador</span
-                >
+                <span>
+                  Redimensiona tu navegador a ancho de móvil o usa herramientas de desarrollador
+                </span>
               </li>
               <li class="flex items-start">
                 <span class="text-pink-500 mr-2">•</span>
-                <span
-                  >Haz clic en el ícono de hamburguesa para ver la animación de transformación</span
-                >
+                <span>
+                  Haz clic en el ícono de hamburguesa para ver la animación de transformación
+                </span>
               </li>
               <li class="flex items-start">
                 <span class="text-pink-500 mr-2">•</span>

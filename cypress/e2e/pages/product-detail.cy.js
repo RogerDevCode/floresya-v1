@@ -89,9 +89,7 @@ describe('Product Detail Page - Complete Functionality', () => {
     })
 
     it('should display logo and brand', () => {
-      cy.get('.navbar-brand')
-        .should('exist')
-        .and('have.attr', 'href', '/')
+      cy.get('.navbar-brand').should('exist').and('have.attr', 'href', '/')
 
       cy.get('.navbar-brand img')
         .should('exist')
@@ -125,7 +123,11 @@ describe('Product Detail Page - Complete Functionality', () => {
 
       // Check breadcrumb items
       cy.contains('nav[aria-label="Breadcrumb"]', 'Inicio').should('have.attr', 'href', '/')
-      cy.contains('nav[aria-label="Breadcrumb"]', 'Productos').should('have.attr', 'href', '/#productos')
+      cy.contains('nav[aria-label="Breadcrumb"]', 'Productos').should(
+        'have.attr',
+        'href',
+        '/#productos'
+      )
       cy.get('#breadcrumb-product').should('exist').and('contain', 'Producto')
     })
   })
@@ -140,7 +142,9 @@ describe('Product Detail Page - Complete Functionality', () => {
 
       cy.get('#loading-spinner .animate-spin').should('exist')
 
-      cy.get('#loading-spinner .loading-message').should('exist').and('contain', 'Cargando producto')
+      cy.get('#loading-spinner .loading-message')
+        .should('exist')
+        .and('contain', 'Cargando producto')
     })
 
     it('should have error message container', () => {
@@ -228,9 +232,7 @@ describe('Product Detail Page - Complete Functionality', () => {
     })
 
     it('should have main image with proper alt text', () => {
-      cy.get('#main-image')
-        .should('have.attr', 'alt')
-        .and('not.be.empty')
+      cy.get('#main-image').should('have.attr', 'alt').and('not.be.empty')
     })
 
     it('should have image zoom hint', () => {
@@ -371,9 +373,7 @@ describe('Product Detail Page - Complete Functionality', () => {
     })
 
     it('should have phone contact link', () => {
-      cy.contains('a', 'Llamar')
-        .should('exist')
-        .and('have.attr', 'href', 'tel:+584121234567')
+      cy.contains('a', 'Llamar').should('exist').and('have.attr', 'href', 'tel:+584121234567')
     })
   })
 
@@ -383,9 +383,7 @@ describe('Product Detail Page - Complete Functionality', () => {
    */
   describe('Phase 9: Footer', () => {
     it('should render footer section', () => {
-      cy.get('footer.footer-section')
-        .should('exist')
-        .and('have.class', 'theme-footer-solid')
+      cy.get('footer.footer-section').should('exist').and('have.class', 'theme-footer-solid')
     })
 
     it('should display FloresYa branding in footer', () => {
@@ -501,9 +499,7 @@ describe('Product Detail Page - Complete Functionality', () => {
     })
 
     it('should have back to home link on error', () => {
-      cy.get('#error-message a[href="/"]')
-        .should('be.visible')
-        .and('contain', 'Volver al inicio')
+      cy.get('#error-message a[href="/"]').should('be.visible').and('contain', 'Volver al inicio')
     })
   })
 

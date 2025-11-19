@@ -73,12 +73,14 @@ describe('Shopping Cart Page - E2E Tests', () => {
     })
 
     it('should display correct item details (name, price, quantity, image)', () => {
-      cy.get('.cart-item').first().within(() => {
-        cy.contains('Ramo de Rosas Rojas').should('exist')
-        cy.contains('$25.99').should('exist')
-        cy.contains('2').should('exist')
-        cy.get('img').should('have.attr', 'src').and('include', 'rosas-rojas')
-      })
+      cy.get('.cart-item')
+        .first()
+        .within(() => {
+          cy.contains('Ramo de Rosas Rojas').should('exist')
+          cy.contains('$25.99').should('exist')
+          cy.contains('2').should('exist')
+          cy.get('img').should('have.attr', 'src').and('include', 'rosas-rojas')
+        })
     })
 
     it('should display correct cart summary totals', () => {

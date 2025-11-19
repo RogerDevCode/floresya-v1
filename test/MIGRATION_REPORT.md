@@ -9,13 +9,13 @@
 
 ## 📊 Resumen de Migración
 
-| Métrica | Cantidad |
-|---------|----------|
-| Archivos procesados | 38 |
-| Nuevos archivos | 36 |
-| Archivos sobrescritos | 2 |
-| Archivos idénticos | 0 |
-| Conflictos resueltos | 2 |
+| Métrica               | Cantidad |
+| --------------------- | -------- |
+| Archivos procesados   | 38       |
+| Nuevos archivos       | 36       |
+| Archivos sobrescritos | 2        |
+| Archivos idénticos    | 0        |
+| Conflictos resueltos  | 2        |
 
 ---
 
@@ -113,6 +113,7 @@ rm -rf test && mv test_backup_20251118_171032 test
 ## 🔍 Tests por Categoría
 
 ### Middleware (7 archivos)
+
 - advancedValidation.amount.test.js
 - advancedValidation.email.test.js
 - globalSanitize.test.js
@@ -122,6 +123,7 @@ rm -rf test && mv test_backup_20251118_171032 test
 - securityAudit.test.js
 
 ### Repositories (10 archivos)
+
 - baseRepository.test.js
 - occasionRepository.test.js
 - orderRepository.test.js
@@ -134,6 +136,7 @@ rm -rf test && mv test_backup_20251118_171032 test
 - setup.js
 
 ### Services (14 archivos)
+
 - authService.test.js
 - carouselService.test.js
 - migrationService.test.js
@@ -150,17 +153,21 @@ rm -rf test && mv test_backup_20251118_171032 test
 - setup.js
 
 ### Integration (2 archivos)
+
 - cross-service-workflows.test.js
 - performance-stress-tests.test.js
 
 ### Controllers (1 archivo)
+
 - mocks/middlewareMocks.js
 
 ### Supabase Client (2 archivos)
+
 - supabaseClient.test.js
 - mocks/mocks.js
 
 ### Root (2 archivos)
+
 - setup.js
 - simple.test.js
 

@@ -242,10 +242,7 @@ describe('Advanced Email Validation', () => {
 
     test('should accept subdomains of common domains', () => {
       // Arrange
-      const subdomainEmails = [
-        'user@mail.gmail.com',
-        'user@sub.outlook.com'
-      ]
+      const subdomainEmails = ['user@mail.gmail.com', 'user@sub.outlook.com']
 
       // Act & Assert
       subdomainEmails.forEach(email => {
@@ -259,11 +256,7 @@ describe('Advanced Email Validation', () => {
 
     test('should handle case insensitive domain matching', () => {
       // Arrange
-      const caseEmails = [
-        'user@GMAIL.COM',
-        'user@HOTMAIL.COM',
-        'user@OUTLOOK.COM'
-      ]
+      const caseEmails = ['user@GMAIL.COM', 'user@HOTMAIL.COM', 'user@OUTLOOK.COM']
 
       // Act & Assert
       caseEmails.forEach(email => {
@@ -391,11 +384,7 @@ describe('Advanced Email Validation', () => {
 
     test('should handle potentially fake emails', () => {
       // Arrange
-      const potentiallyFakeEmails = [
-        'fake@fake.com',
-        'test@test.test',
-        'user@domain.123'
-      ]
+      const potentiallyFakeEmails = ['fake@fake.com', 'test@test.test', 'user@domain.123']
 
       // Act & Assert
       potentiallyFakeEmails.forEach(email => {
@@ -433,8 +422,12 @@ describe('Advanced Email Validation', () => {
     test('should have consistent error messages', () => {
       // Test that error messages are consistent and in Spanish
       expect(validateEmail(null)).toBe('Email es requerido')
-      expect(validateEmail('a'.repeat(255) + '@example.com')).toBe('Email es demasiado largo (máximo 254 caracteres)')
-      expect(validateEmail('a'.repeat(65) + '@example.com')).toBe('Parte local del email es demasiado larga')
+      expect(validateEmail('a'.repeat(255) + '@example.com')).toBe(
+        'Email es demasiado largo (máximo 254 caracteres)'
+      )
+      expect(validateEmail('a'.repeat(65) + '@example.com')).toBe(
+        'Parte local del email es demasiado larga'
+      )
       expect(validateEmail('invalid')).toBe('Formato de email inválido')
     })
   })

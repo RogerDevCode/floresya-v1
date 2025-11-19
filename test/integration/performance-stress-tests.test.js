@@ -96,13 +96,15 @@ describe('Performance and Stress Integration Tests', () => {
         findById: vi.fn().mockResolvedValue(defaultProduct),
         findByIdWithImages: vi.fn().mockResolvedValue({
           ...defaultProduct,
-          product_images: [{
-            id: 1,
-            product_id: 1,
-            url: 'https://example.com/image1.jpg',
-            size: 'thumb',
-            is_primary: true
-          }]
+          product_images: [
+            {
+              id: 1,
+              product_id: 1,
+              url: 'https://example.com/image1.jpg',
+              size: 'thumb',
+              is_primary: true
+            }
+          ]
         }),
         create: vi.fn(),
         update: vi.fn(),

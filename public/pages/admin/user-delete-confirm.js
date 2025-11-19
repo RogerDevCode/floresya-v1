@@ -118,7 +118,9 @@ async function handleConfirmDelete() {
     const result = await api.deleteUser(userToDelete.id)
 
     if (result.success) {
-      toast.success(`Usuario "${userToDelete.full_name || userToDelete.email}" desactivado exitosamente`)
+      toast.success(
+        `Usuario "${userToDelete.full_name || userToDelete.email}" desactivado exitosamente`
+      )
 
       // Redirect back to dashboard after short delay
       setTimeout(() => {

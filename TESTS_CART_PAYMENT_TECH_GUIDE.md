@@ -1,6 +1,7 @@
 # 🔧 Guía Técnica - Tests E2E Cart & Payment
 
 ## 📚 Índice
+
 1. [Arquitectura](#arquitectura)
 2. [Fixtures y Mocks](#fixtures-y-mocks)
 3. [Comandos Personalizados](#comandos-personalizados)
@@ -14,6 +15,7 @@
 ## 🏗️ Arquitectura
 
 ### Diseño de Tests
+
 ```
 ┌─────────────────────────────────────┐
 │         Test Spec (.cy.js)          │
@@ -48,6 +50,7 @@
 ```
 
 ### Flujo de Ejecución
+
 ```
 1. beforeEach()
    ├── cy.clearCart()
@@ -69,6 +72,7 @@
 ## 🗂️ Fixtures y Mocks
 
 ### cart-items.json
+
 ```json
 [
   {
@@ -82,9 +86,11 @@
   }
 ]
 ```
+
 **Uso**: Mock de items para carrito en tests.
 
 ### settings.json
+
 ```json
 {
   "success": true,
@@ -94,9 +100,11 @@
   ]
 }
 ```
+
 **Uso**: Mock de respuesta de `GET /api/settings/public`.
 
 ### order-response.json
+
 ```json
 {
   "success": true,
@@ -109,9 +117,11 @@
   }
 }
 ```
+
 **Uso**: Mock de respuesta de `POST /api/orders`.
 
 ### payment-confirmation.json
+
 ```json
 {
   "success": true,
@@ -123,6 +133,7 @@
   }
 }
 ```
+
 **Uso**: Mock de respuesta de `POST /api/orders/:id/payments`.
 
 ---
@@ -132,6 +143,7 @@
 ### Categorías de Comandos
 
 #### 1. Cart Management
+
 ```javascript
 cy.setupCart(items?)        // Setup carrito con items
 cy.clearCart()              // Limpiar carrito y localStorage
@@ -140,6 +152,7 @@ cy.getCartCount()           // Obtener cantidad de items
 ```
 
 #### 2. API Mocking
+
 ```javascript
 cy.mockSettings()                      // Mock GET /api/settings/public
 cy.mockCreateOrder(status?, response?) // Mock POST /api/orders
@@ -148,35 +161,41 @@ cy.mockCartPaymentApis()               // Mock todas las APIs
 ```
 
 #### 3. Form Filling
+
 ```javascript
 cy.fillCustomerForm(data?)             // Llenar formulario cliente
 cy.fillPaymentDetails(method, details) // Llenar detalles de pago
 ```
 
 #### 4. Selection
+
 ```javascript
-cy.selectDeliveryMethod(method)  // 'pickup' | 'delivery'
-cy.selectPaymentMethod(method)   // 'cash' | 'mobile_payment' | 'bank_transfer' | 'zelle' | 'crypto'
+cy.selectDeliveryMethod(method) // 'pickup' | 'delivery'
+cy.selectPaymentMethod(method) // 'cash' | 'mobile_payment' | 'bank_transfer' | 'zelle' | 'crypto'
 ```
 
 #### 5. Complete Flows
+
 ```javascript
 cy.completeCheckout(delivery, payment, customerData?)
 ```
 
 #### 6. Verification
+
 ```javascript
 cy.verifyCartSummary(items, subtotal, total)
 cy.verifyOrderConfirmation(orderId)
 ```
 
 #### 7. Waiting
+
 ```javascript
 cy.waitForCartPage()
 cy.waitForPaymentPage()
 ```
 
 ### Ejemplo de Uso Completo
+
 ```javascript
 describe('Payment Flow', () => {
   beforeEach(() => {
@@ -200,6 +219,7 @@ describe('Payment Flow', () => {
 ## 📁 Estructura de Tests
 
 ### Cart Tests Structure
+
 ```javascript
 describe('Shopping Cart Page - E2E Tests', () => {
   beforeEach(() => {
@@ -218,7 +238,7 @@ describe('Shopping Cart Page - E2E Tests', () => {
       cy.setupCart()
       cy.visit('/pages/cart.html')
     })
-    
+
     it('should display items correctly', () => {})
     it('should calculate totals', () => {})
   })
@@ -233,6 +253,7 @@ describe('Shopping Cart Page - E2E Tests', () => {
 ```
 
 ### Payment Tests Structure
+
 ```javascript
 describe('Payment Page - E2E Tests', () => {
   beforeEach(() => {
@@ -261,16 +282,18 @@ describe('Payment Page - E2E Tests', () => {
 ## 🎓 Mejores Prácticas
 
 ### 1. Usar beforeEach para setup común
+
 ```javascript
 beforeEach(() => {
-  cy.clearCart()          // Limpiar estado previo
-  cy.setupCart()          // Setup datos de prueba
+  cy.clearCart() // Limpiar estado previo
+  cy.setupCart() // Setup datos de prueba
   cy.mockCartPaymentApis() // Mock APIs
   cy.visit('/pages/cart.html')
 })
 ```
 
 ### 2. Usar afterEach para cleanup
+
 ```javascript
 afterEach(() => {
   cy.clearCart() // Limpiar después de cada test
@@ -278,6 +301,7 @@ afterEach(() => {
 ```
 
 ### 3. Usar cy.wait() para intercepts
+
 ```javascript
 cy.mockSettings()
 cy.visit('/pages/cart.html')
@@ -285,6 +309,7 @@ cy.wait('@getSettings') // Esperar que se complete la llamada
 ```
 
 ### 4. Verificar requests con assertions
+
 ```javascript
 cy.wait('@createOrder')
   .its('request.body')
@@ -296,6 +321,7 @@ cy.wait('@createOrder')
 ```
 
 ### 5. Usar comandos personalizados para reutilización
+
 ```javascript
 // ❌ Malo - repetir código
 cy.get('#customer-name').type('Juan')
@@ -307,6 +333,7 @@ cy.fillCustomerForm()
 ```
 
 ### 6. Tests independientes
+
 ```javascript
 // ❌ Malo - test depende de otro
 it('test 1', () => {
@@ -326,6 +353,7 @@ it('test 2', () => {
 ```
 
 ### 7. Descriptores claros
+
 ```javascript
 // ❌ Malo
 it('test 1', () => {})
@@ -339,23 +367,29 @@ it('should display empty cart message when cart is empty', () => {})
 ## 🐛 Debugging
 
 ### 1. Modo Interactivo
+
 ```bash
 npx cypress open
 ```
+
 Permite ver la ejecución en tiempo real.
 
 ### 2. Screenshots automáticos
+
 Cypress toma screenshots automáticamente en fallos:
+
 ```
 cypress/screenshots/cart.cy.js/
 ```
 
 ### 3. Videos de ejecución
+
 ```
 cypress/videos/cart.cy.js.mp4
 ```
 
 ### 4. Logs en consola
+
 ```javascript
 cy.wait('@createOrder').then(intercept => {
   console.log('Request:', intercept.request)
@@ -364,6 +398,7 @@ cy.wait('@createOrder').then(intercept => {
 ```
 
 ### 5. Pause en test
+
 ```javascript
 it('test', () => {
   cy.setupCart()
@@ -373,6 +408,7 @@ it('test', () => {
 ```
 
 ### 6. Debug específico
+
 ```javascript
 cy.get('#customer-name').debug()
 ```
@@ -382,6 +418,7 @@ cy.get('#customer-name').debug()
 ## 🚀 CI/CD Integration
 
 ### GitHub Actions Example
+
 ```yaml
 name: E2E Tests - Cart & Payment
 
@@ -419,6 +456,7 @@ jobs:
 ```
 
 ### Script en package.json
+
 ```json
 {
   "scripts": {
@@ -434,11 +472,13 @@ jobs:
 ## 📊 Coverage Reports
 
 ### Generar reporte
+
 ```bash
 npx nyc cypress run --spec "cypress/e2e/pages/cart.cy.js"
 ```
 
 ### Ver reporte HTML
+
 ```bash
 npx nyc report --reporter=html
 open coverage/index.html

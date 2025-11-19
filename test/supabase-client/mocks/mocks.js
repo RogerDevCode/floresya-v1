@@ -2153,8 +2153,30 @@ export const SchemaValidator = {
 export const DataGenerators = {
   // Generate realistic user data
   generateUser: (overrides = {}) => {
-    const firstNames = ['Juan', 'María', 'Carlos', 'Ana', 'Luis', 'Sofía', 'Pedro', 'Elena', 'Miguel', 'Lucía']
-    const lastNames = ['García', 'Rodríguez', 'Martínez', 'López', 'Sánchez', 'Pérez', 'Gómez', 'Díaz', 'Hernández', 'Martín']
+    const firstNames = [
+      'Juan',
+      'María',
+      'Carlos',
+      'Ana',
+      'Luis',
+      'Sofía',
+      'Pedro',
+      'Elena',
+      'Miguel',
+      'Lucía'
+    ]
+    const lastNames = [
+      'García',
+      'Rodríguez',
+      'Martínez',
+      'López',
+      'Sánchez',
+      'Pérez',
+      'Gómez',
+      'Díaz',
+      'Hernández',
+      'Martín'
+    ]
     const domains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'example.com']
 
     const firstName = firstNames[Math.floor(Math.random() * firstNames.length)]
@@ -2163,7 +2185,9 @@ export const DataGenerators = {
     const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${Math.floor(Math.random() * 999)}@${domain}`
 
     const now = new Date().toISOString()
-    const createdDate = new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString()
+    const createdDate = new Date(
+      Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000
+    ).toISOString()
 
     return {
       id: Math.floor(Math.random() * 1000000) + 1,
@@ -2185,9 +2209,18 @@ export const DataGenerators = {
   // Generate realistic product data
   generateProduct: (overrides = {}) => {
     const productNames = [
-      'Rosa Roja Elegante', 'Lirio Blanco Puro', 'Tulipán Holandés', 'Orquídea Exótica',
-      'Girasol Radiante', 'Margarita Silvestre', 'Clavel Classic', 'Dalia Vibrante',
-      'Peonía Primavera', 'Amapola Delicada', 'Azucena Fragante', 'Iris Real'
+      'Rosa Roja Elegante',
+      'Lirio Blanco Puro',
+      'Tulipán Holandés',
+      'Orquídea Exótica',
+      'Girasol Radiante',
+      'Margarita Silvestre',
+      'Clavel Classic',
+      'Dalia Vibrante',
+      'Peonía Primavera',
+      'Amapola Delicada',
+      'Azucena Fragante',
+      'Iris Real'
     ]
 
     const descriptions = [
@@ -2205,7 +2238,9 @@ export const DataGenerators = {
     const priceVES = (parseFloat(priceUSD) * (Math.random() * 1000 + 3000)).toFixed(2)
 
     const now = new Date().toISOString()
-    const createdDate = new Date(Date.now() - Math.random() * 180 * 24 * 60 * 60 * 1000).toISOString()
+    const createdDate = new Date(
+      Date.now() - Math.random() * 180 * 24 * 60 * 60 * 1000
+    ).toISOString()
 
     return {
       id: Math.floor(Math.random() * 100000) + 1,
@@ -2241,12 +2276,17 @@ export const DataGenerators = {
 
     const statuses = ['pending', 'verified', 'preparing', 'shipped', 'delivered', 'cancelled']
     const weights = [0.3, 0.2, 0.2, 0.15, 0.1, 0.05] // More likely to be pending/verified
-    const status = Math.random() < weights[0] ? statuses[0] :
-                   Math.random() < weights[0] + weights[1] ? statuses[1] :
-                   statuses[Math.floor(Math.random() * statuses.length)]
+    const status =
+      Math.random() < weights[0]
+        ? statuses[0]
+        : Math.random() < weights[0] + weights[1]
+          ? statuses[1]
+          : statuses[Math.floor(Math.random() * statuses.length)]
 
     const now = new Date().toISOString()
-    const createdDate = new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString()
+    const createdDate = new Date(
+      Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
+    ).toISOString()
 
     // Calculate total amount based on products
     let totalAmount = 0
@@ -2282,9 +2322,27 @@ export const DataGenerators = {
 
   // Generate realistic address data
   generateAddress: () => {
-    const streets = ['Av. Principal', 'Calle Secundaria', 'Blvd. Universidad', 'Callejón del Arte', 'Plaza Mayor']
-    const neighborhoods = ['Col. Centro', 'Fracc. Las Flores', 'Residencial Universitaria', 'Zona Histórica', 'Zona Norte']
-    const cities = ['Ciudad Central', 'Villa Hermosa', 'Puerto Bonito', 'Sierra Alta', 'Valle Verde']
+    const streets = [
+      'Av. Principal',
+      'Calle Secundaria',
+      'Blvd. Universidad',
+      'Callejón del Arte',
+      'Plaza Mayor'
+    ]
+    const neighborhoods = [
+      'Col. Centro',
+      'Fracc. Las Flores',
+      'Residencial Universitaria',
+      'Zona Histórica',
+      'Zona Norte'
+    ]
+    const cities = [
+      'Ciudad Central',
+      'Villa Hermosa',
+      'Puerto Bonito',
+      'Sierra Alta',
+      'Valle Verde'
+    ]
 
     const street = streets[Math.floor(Math.random() * streets.length)]
     const number = Math.floor(Math.random() * 9999) + 1
@@ -2344,9 +2402,11 @@ export const MockScenarios = {
   simulateConnectionTimeout: () => {
     return new Promise((_, reject) => {
       setTimeout(() => {
-        reject(new AppError('Connection timeout', 503, 'CONNECTION_TIMEOUT', {
-          code: POSTGRESQL_ERROR_CODES.CONNECTION_TIMEOUT
-        }))
+        reject(
+          new AppError('Connection timeout', 503, 'CONNECTION_TIMEOUT', {
+            code: POSTGRESQL_ERROR_CODES.CONNECTION_TIMEOUT
+          })
+        )
       }, 30000) // 30 second timeout
     })
   },
@@ -2355,9 +2415,11 @@ export const MockScenarios = {
   simulateConcurrencyConflict: () => {
     return new Promise((_, reject) => {
       setTimeout(() => {
-        reject(new AppError('Concurrent modification detected', 409, 'CONCURRENCY_ERROR', {
-          code: POSTGRESQL_ERROR_CODES.SERIALIZATION_FAILURE
-        }))
+        reject(
+          new AppError('Concurrent modification detected', 409, 'CONCURRENCY_ERROR', {
+            code: POSTGRESQL_ERROR_CODES.SERIALIZATION_FAILURE
+          })
+        )
       }, 100)
     })
   },
@@ -2366,21 +2428,23 @@ export const MockScenarios = {
   simulateDeadlock: () => {
     return new Promise((_, reject) => {
       setTimeout(() => {
-        reject(new AppError('Deadlock detected', 409, 'DEADLOCK_ERROR', {
-          code: POSTGRESQL_ERROR_CODES.DEADLOCK_DETECTED
-        }))
+        reject(
+          new AppError('Deadlock detected', 409, 'DEADLOCK_ERROR', {
+            code: POSTGRESQL_ERROR_CODES.DEADLOCK_DETECTED
+          })
+        )
       }, 150)
     })
   },
 
   // Simulate gradual database performance degradation
-  simulatePerformanceDegradation: async (queries) => {
+  simulatePerformanceDegradation: async queries => {
     const baseDelay = 10
     const results = []
 
     for (let i = 0; i < queries.length; i++) {
       // Gradually increase delay to simulate performance degradation
-      const delay = baseDelay + (i * 50)
+      const delay = baseDelay + i * 50
       await new Promise(resolve => setTimeout(resolve, delay))
 
       try {

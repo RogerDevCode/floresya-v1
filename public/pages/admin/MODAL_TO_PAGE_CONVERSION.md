@@ -128,16 +128,19 @@ Para cambiar estilos:
 ## 🐛 Troubleshooting
 
 **Problema**: No redirige al formulario
+
 - Verificar que `user-form.html` existe en `public/pages/admin/`
 - Revisar permisos de archivos
 - Verificar rutas relativas en `window.location.href`
 
 **Problema**: No carga datos al editar
+
 - Verificar que el parámetro `id` esté en la URL
 - Confirmar que la API `getUserById` está funcionando
 - Revisar console.log en navegador
 
 **Problema**: No vuelve al dashboard
+
 - Asegurar que `window.history.back()` se ejecute
 - Verificar que no haya errores en console que interrumpan ejecución
 

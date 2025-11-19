@@ -94,10 +94,7 @@ describe('Payment Page - E2E Tests', () => {
 
     it('should accept valid email format', () => {
       cy.get('#customer-email').type('test@example.com').blur()
-      cy.get('#customer-email')
-        .parent()
-        .find('.error-message')
-        .should('not.be.visible')
+      cy.get('#customer-email').parent().find('.error-message').should('not.be.visible')
     })
 
     it('should validate Venezuelan phone number format', () => {
@@ -107,10 +104,7 @@ describe('Payment Page - E2E Tests', () => {
 
     it('should accept valid Venezuelan phone number', () => {
       cy.get('#customer-phone').type('0414-1234567').blur()
-      cy.get('#customer-phone')
-        .parent()
-        .find('.error-message')
-        .should('not.be.visible')
+      cy.get('#customer-phone').parent().find('.error-message').should('not.be.visible')
     })
 
     it('should auto-format phone number as user types', () => {
@@ -124,13 +118,8 @@ describe('Payment Page - E2E Tests', () => {
     })
 
     it('should accept valid address', () => {
-      cy.get('#delivery-address')
-        .type('Calle Principal, Edificio Test, Piso 5, Apto 10')
-        .blur()
-      cy.get('#delivery-address')
-        .parent()
-        .find('.error-message')
-        .should('not.be.visible')
+      cy.get('#delivery-address').type('Calle Principal, Edificio Test, Piso 5, Apto 10').blur()
+      cy.get('#delivery-address').parent().find('.error-message').should('not.be.visible')
     })
 
     it('should clear error message when user starts typing', () => {
@@ -138,10 +127,7 @@ describe('Payment Page - E2E Tests', () => {
       cy.get('#customer-name').parent().find('.error-message').should('be.visible')
 
       cy.get('#customer-name').type('J')
-      cy.get('#customer-name')
-        .parent()
-        .find('.error-message')
-        .should('not.be.visible')
+      cy.get('#customer-name').parent().find('.error-message').should('not.be.visible')
     })
   })
 
@@ -348,13 +334,15 @@ describe('Payment Page - E2E Tests', () => {
     it('should complete cash payment successfully', () => {
       cy.completeCheckout('pickup', 'cash')
 
-      cy.wait('@createOrder').its('request.body').should('deep.include', {
-        order: {
-          customer_name: 'Juan Pérez',
-          customer_email: 'test@example.com',
-          status: 'pending'
-        }
-      })
+      cy.wait('@createOrder')
+        .its('request.body')
+        .should('deep.include', {
+          order: {
+            customer_name: 'Juan Pérez',
+            customer_email: 'test@example.com',
+            status: 'pending'
+          }
+        })
 
       cy.wait('@confirmPayment')
       cy.verifyOrderConfirmation(12345)
@@ -378,17 +366,13 @@ describe('Payment Page - E2E Tests', () => {
     it('should include delivery cost in total for delivery method', () => {
       cy.completeCheckout('delivery', 'cash')
 
-      cy.wait('@createOrder')
-        .its('request.body.order.total_amount_usd')
-        .should('equal', 75.48)
+      cy.wait('@createOrder').its('request.body.order.total_amount_usd').should('equal', 75.48)
     })
 
     it('should not include delivery cost for pickup method', () => {
       cy.completeCheckout('pickup', 'cash')
 
-      cy.wait('@createOrder')
-        .its('request.body.order.total_amount_usd')
-        .should('equal', 70.48)
+      cy.wait('@createOrder').its('request.body.order.total_amount_usd').should('equal', 70.48)
     })
   })
 
@@ -400,11 +384,9 @@ describe('Payment Page - E2E Tests', () => {
       cy.get('#process-payment-button').click()
 
       cy.wait('@createOrder')
-      cy.wait('@confirmPayment')
-        .its('request.body')
-        .should('deep.include', {
-          payment_method: 'mobile_payment'
-        })
+      cy.wait('@confirmPayment').its('request.body').should('deep.include', {
+        payment_method: 'mobile_payment'
+      })
 
       cy.verifyOrderConfirmation(12345)
     })
@@ -415,12 +397,10 @@ describe('Payment Page - E2E Tests', () => {
       cy.fillPaymentDetails('mobile_payment', { phone: '0414-1234567', bank: 'Banesco' })
       cy.get('#process-payment-button').click()
 
-      cy.wait('@confirmPayment')
-        .its('request.body.payment_details')
-        .should('deep.include', {
-          phone: '0414-1234567',
-          bank: 'Banesco'
-        })
+      cy.wait('@confirmPayment').its('request.body.payment_details').should('deep.include', {
+        phone: '0414-1234567',
+        bank: 'Banesco'
+      })
     })
   })
 
@@ -450,13 +430,11 @@ describe('Payment Page - E2E Tests', () => {
       })
       cy.get('#process-payment-button').click()
 
-      cy.wait('@confirmPayment')
-        .its('request.body.payment_details')
-        .should('deep.include', {
-          bank: 'Banesco',
-          account_number: '0102 1234 5678 9012 3456',
-          account_holder: 'Juan Pérez'
-        })
+      cy.wait('@confirmPayment').its('request.body.payment_details').should('deep.include', {
+        bank: 'Banesco',
+        account_number: '0102 1234 5678 9012 3456',
+        account_holder: 'Juan Pérez'
+      })
     })
   })
 
@@ -478,11 +456,9 @@ describe('Payment Page - E2E Tests', () => {
       cy.fillPaymentDetails('zelle', { email: 'test@zelle.com' })
       cy.get('#process-payment-button').click()
 
-      cy.wait('@confirmPayment')
-        .its('request.body.payment_details')
-        .should('deep.include', {
-          email: 'test@zelle.com'
-        })
+      cy.wait('@confirmPayment').its('request.body.payment_details').should('deep.include', {
+        email: 'test@zelle.com'
+      })
     })
   })
 
@@ -508,11 +484,9 @@ describe('Payment Page - E2E Tests', () => {
       })
       cy.get('#process-payment-button').click()
 
-      cy.wait('@confirmPayment')
-        .its('request.body.payment_details')
-        .should('deep.include', {
-          address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'
-        })
+      cy.wait('@confirmPayment').its('request.body.payment_details').should('deep.include', {
+        address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'
+      })
     })
   })
 

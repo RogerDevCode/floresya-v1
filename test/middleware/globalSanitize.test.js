@@ -28,7 +28,12 @@ vi.mock('../../api/utils/sanitize.js', () => {
         result[key] = fieldTypes[key] === 'number' ? 0 : ''
       } else if (typeof value === 'number' && isNaN(value)) {
         result[key] = 0
-      } else if (fieldTypes && fieldTypes[key] === 'number' && typeof value === 'string' && !isNaN(value)) {
+      } else if (
+        fieldTypes &&
+        fieldTypes[key] === 'number' &&
+        typeof value === 'string' &&
+        !isNaN(value)
+      ) {
         result[key] = Number(value)
       } else {
         result[key] = value
@@ -38,7 +43,9 @@ vi.mock('../../api/utils/sanitize.js', () => {
   })
 
   const mockSanitizeString = vi.fn((str, options = {}) => {
-    if (!str) {return str}
+    if (!str) {
+      return str
+    }
     let result = str.replace(/<script.*?<\/script>/gi, '[SANITIZED]')
     if (options.maxLength && result.length > options.maxLength) {
       result = result.substring(0, options.maxLength)
@@ -159,7 +166,7 @@ describe('Global Sanitization Middleware', () => {
         method: 'POST',
         body: {
           customer_name: 'John Doe',
-          total_amount_usd: 100.50,
+          total_amount_usd: 100.5,
           status: 'pending'
         },
         query: null,
@@ -172,7 +179,7 @@ describe('Global Sanitization Middleware', () => {
       // Assert
       expect(mockNext).toHaveBeenCalledWith()
       expect(mockRequest.body.customer_name).toBe('John Doe')
-      expect(mockRequest.body.total_amount_usd).toBe(100.50)
+      expect(mockRequest.body.total_amount_usd).toBe(100.5)
       expect(mockRequest.body.status).toBe('pending')
     })
 
@@ -305,7 +312,9 @@ describe('Global Sanitization Middleware', () => {
 
       // Override the mock for this test to throw an error
       vi.doMock('../../api/utils/sanitize.js', () => ({
-        sanitizeData: () => { throw new Error('Sanitization failed') },
+        sanitizeData: () => {
+          throw new Error('Sanitization failed')
+        },
         sanitizeString: vi.fn(),
         FIELD_TYPES: {}
       }))
@@ -367,7 +376,7 @@ describe('Global Sanitization Middleware', () => {
         body: {
           order: {
             customer_name: 'John Doe',
-            total_amount_usd: 100.50
+            total_amount_usd: 100.5
           },
           items: [
             {
@@ -416,7 +425,7 @@ describe('Global Sanitization Middleware', () => {
         body: {
           price_usd: 29.99,
           stock: 10,
-          total_amount_usd: 100.50
+          total_amount_usd: 100.5
         }
       }
 

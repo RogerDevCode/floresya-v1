@@ -78,12 +78,15 @@ describe('🎨 Theme System UI', () => {
       cy.get('.hero-section').should('have.class', 'animate-gradient')
 
       // Verify other components have theme classes - be flexible with selectors
-      cy.get('section[aria-labelledby="carousel-title"]').then(($carousel) => {
+      cy.get('section[aria-labelledby="carousel-title"]').then($carousel => {
         if ($carousel.length > 0) {
           cy.wrap($carousel).should('have.class', 'theme-carousel-premium')
         } else {
           // Try alternative carousel selectors
-          cy.get('.featured-carousel, .carousel, .main-carousel').should('have.length.greaterThan', 0)
+          cy.get('.featured-carousel, .carousel, .main-carousel').should(
+            'have.length.greaterThan',
+            0
+          )
         }
       })
       cy.get('.products-section').should('have.class', 'theme-products-cards')
@@ -93,7 +96,7 @@ describe('🎨 Theme System UI', () => {
       cy.visit('/')
 
       // Check if CSS variables are defined
-      cy.window().then((win) => {
+      cy.window().then(win => {
         const computedStyle = getComputedStyle(win.document.documentElement)
 
         // Verify theme variables exist - be more flexible
@@ -124,7 +127,7 @@ describe('🎨 Theme System UI', () => {
       cy.visit('/')
 
       // Check if theme is stored in localStorage
-      cy.window().then((win) => {
+      cy.window().then(win => {
         const savedTheme = win.localStorage.getItem('theme')
         // Theme should be saved or use default
         expect(savedTheme === 'light' || savedTheme === null).to.be.true
@@ -141,7 +144,7 @@ describe('🎨 Theme System UI', () => {
       cy.get('.hero-section').should('have.class', 'animate-gradient')
 
       // Check if CSS transitions are properly defined
-      cy.window().then((win) => {
+      cy.window().then(win => {
         const computedStyle = getComputedStyle(win.document.querySelector('.hero-section'))
         expect(computedStyle.transition).to.not.be.empty
       })
@@ -256,16 +259,15 @@ describe('🎨 Theme System UI', () => {
       cy.get('html').should('have.attr', 'data-theme', 'light')
 
       // Verify no JavaScript errors related to theme
-      cy.window().then((win) => {
+      cy.window().then(win => {
         // Check if theme-related functionality is loaded
         // The theme manager might be loaded differently, so check for any theme functionality
-        const hasThemeFunctionality = (
+        const hasThemeFunctionality =
           win.themeManager !== undefined ||
           win.themeManagerModule !== undefined ||
           typeof win.setTheme === 'function' ||
           win.document.querySelector('[data-theme]') !== null ||
           win.document.documentElement.getAttribute('data-theme') !== null
-        )
 
         expect(hasThemeFunctionality).to.be.true
       })

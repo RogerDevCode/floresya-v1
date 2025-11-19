@@ -18,7 +18,10 @@ const PAGES_CONFIG = {
     pageName: 'Gestión de Usuario'
   },
   'user-delete-confirm.html': {
-    breadcrumbs: [{ name: 'Usuarios', url: null }, { name: 'Confirmar Eliminación', url: null }],
+    breadcrumbs: [
+      { name: 'Usuarios', url: null },
+      { name: 'Confirmar Eliminación', url: null }
+    ],
     pageName: 'Confirmar Eliminación'
   },
   'dashboard.html': {
@@ -35,19 +38,31 @@ const PAGES_CONFIG = {
     pageName: 'Gestión de Órdenes'
   },
   'product-editor.html': {
-    breadcrumbs: [{ name: 'Productos', url: null }, { name: 'Editor', url: null }],
+    breadcrumbs: [
+      { name: 'Productos', url: null },
+      { name: 'Editor', url: null }
+    ],
     pageName: 'Editor de Productos'
   },
   'contact-editor.html': {
-    breadcrumbs: [{ name: 'Configuración', url: null }, { name: 'Contacto', url: null }],
+    breadcrumbs: [
+      { name: 'Configuración', url: null },
+      { name: 'Contacto', url: null }
+    ],
     pageName: 'Editor de Contacto'
   },
   'create-product.html': {
-    breadcrumbs: [{ name: 'Productos', url: null }, { name: 'Crear', url: null }],
+    breadcrumbs: [
+      { name: 'Productos', url: null },
+      { name: 'Crear', url: null }
+    ],
     pageName: 'Crear Producto'
   },
   'edit-product.html': {
-    breadcrumbs: [{ name: 'Productos', url: null }, { name: 'Editar', url: null }],
+    breadcrumbs: [
+      { name: 'Productos', url: null },
+      { name: 'Editar', url: null }
+    ],
     pageName: 'Editar Producto'
   }
 }
@@ -214,7 +229,7 @@ async function updateHTMLFile(filename, config) {
 
   // 2. Replace navbar section
   const navbarHTML = generateNavbar(config)
-  
+
   // Find existing navbar and replace
   const navStartRegex = /<!-- (?:Navbar|Navigation)(?: Estandarizado)? -->\s*<nav/
   const navEndRegex = /<\/nav>\s*(?:<!--[^>]*-->)?\s*(?:<div class="h-16"><\/div>)?/
@@ -224,12 +239,12 @@ async function updateHTMLFile(filename, config) {
     const navStart = content.search(navStartRegex)
     const afterNavStart = content.substring(navStart)
     const navEndMatch = afterNavStart.match(navEndRegex)
-    
+
     if (navEndMatch) {
       const navEnd = navStart + navEndMatch.index + navEndMatch[0].length
       const before = content.substring(0, navStart)
       const after = content.substring(navEnd)
-      
+
       content = before + navbarHTML + '\n' + after
     }
   }
@@ -237,7 +252,7 @@ async function updateHTMLFile(filename, config) {
   // 3. Add admin-navbar.js script if not present
   if (!content.includes('admin-navbar.js')) {
     const scriptTag = `    <script type="module" src="../../js/components/admin-navbar.js"></script>`
-    
+
     // Add before closing </body>
     content = content.replace('</body>', `${scriptTag}\n  </body>`)
   }
@@ -251,7 +266,7 @@ async function updateHTMLFile(filename, config) {
   // 5. Add footer if not present (before scripts)
   if (!content.includes('admin-footer.html') && !content.includes('<!-- Footer -->')) {
     const footerComment = `    <!-- Footer - Información de Contacto -->\n    <!-- TODO: Incluir componente de footer aquí -->\n`
-    content = content.replace(/\s*<script/,`\n${footerComment}\n    <script`)
+    content = content.replace(/\s*<script/, `\n${footerComment}\n    <script`)
   }
 
   return content
@@ -277,7 +292,7 @@ async function main() {
         console.log(`📄 Procesando: ${filename}`)
 
         const filepath = path.join(PAGES_DIR, filename)
-        
+
         // Check if file exists
         try {
           await fs.access(filepath)

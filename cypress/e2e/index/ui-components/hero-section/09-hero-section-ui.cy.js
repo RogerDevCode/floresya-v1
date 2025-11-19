@@ -164,7 +164,7 @@ describe('🎯 Hero Section UI', () => {
       cy.get('.hero-decoration.green').should('exist')
 
       // Verify decorations are positioned correctly (check CSS position property)
-      cy.get('.hero-decoration').each(($decoration) => {
+      cy.get('.hero-decoration').each($decoration => {
         // Check if decoration exists and has positioning
         cy.wrap($decoration).should('exist')
         cy.wrap($decoration).should('have.css', 'position')
@@ -188,7 +188,7 @@ describe('🎯 Hero Section UI', () => {
       cy.get('.hero-image').should('have.attr', 'alt')
 
       // Verify buttons have proper labels
-      cy.get('.hero-cta .btn').each(($button) => {
+      cy.get('.hero-cta .btn').each($button => {
         cy.wrap($button).should('have.attr', 'href')
       })
     })

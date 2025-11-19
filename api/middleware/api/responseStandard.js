@@ -38,8 +38,13 @@ export function standardResponse(req, res, next) {
     const isSuccess = res.statusCode >= 200 && res.statusCode < 300
     const standardFormat = {
       success: isSuccess,
-      data: (data && typeof data === 'object' && 'data' in data) ? data.data : data,
-      message: (data && typeof data === 'object' && 'message' in data) ? data.message : (isSuccess ? 'Success' : 'Error occurred'),
+      data: data && typeof data === 'object' && 'data' in data ? data.data : data,
+      message:
+        data && typeof data === 'object' && 'message' in data
+          ? data.message
+          : isSuccess
+            ? 'Success'
+            : 'Error occurred',
       ...(data && typeof data === 'object' && data.error && { error: data.error })
     }
 

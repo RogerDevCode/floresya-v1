@@ -495,9 +495,7 @@ describe('Index.html - Complete Page Load and Component Initialization', () => {
     })
 
     it('should have carousel slides container', () => {
-      cy.get('#carouselSlides')
-        .should('exist')
-        .and('have.attr', 'aria-live', 'polite')
+      cy.get('#carouselSlides').should('exist').and('have.attr', 'aria-live', 'polite')
     })
 
     it('should have progress bar element', () => {
@@ -515,9 +513,7 @@ describe('Index.html - Complete Page Load and Component Initialization', () => {
     })
 
     it('should have carousel title and description', () => {
-      cy.get('#carousel-title')
-        .should('exist')
-        .and('contain', 'Nuestras Creaciones Destacadas')
+      cy.get('#carousel-title').should('exist').and('contain', 'Nuestras Creaciones Destacadas')
 
       cy.contains('Descubre nuestros arreglos más populares').should('exist')
     })
@@ -550,9 +546,7 @@ describe('Index.html - Complete Page Load and Component Initialization', () => {
     })
 
     it('should have products container for dynamic loading', () => {
-      cy.get('#productsContainer')
-        .should('exist')
-        .and('have.class', 'grid')
+      cy.get('#productsContainer').should('exist').and('have.class', 'grid')
     })
 
     it('should have pagination navigation', () => {
@@ -590,13 +584,9 @@ describe('Index.html - Complete Page Load and Component Initialization', () => {
         .and('have.attr', 'aria-labelledby', 'search-label')
         .and('have.attr', 'aria-describedby', 'search-help')
 
-      cy.get('#search-label')
-        .should('exist')
-        .and('contain', 'Buscar productos')
+      cy.get('#search-label').should('exist').and('contain', 'Buscar productos')
 
-      cy.get('#search-help')
-        .should('exist')
-        .and('have.class', 'sr-only')
+      cy.get('#search-help').should('exist').and('have.class', 'sr-only')
     })
 
     it('should have sort filter dropdown', () => {
@@ -631,7 +621,11 @@ describe('Index.html - Complete Page Load and Component Initialization', () => {
     })
 
     it('should have search icon in search input', () => {
-      cy.get('#searchInput').parent().find('svg').should('exist').and('have.attr', 'aria-hidden', 'true')
+      cy.get('#searchInput')
+        .parent()
+        .find('svg')
+        .should('exist')
+        .and('have.attr', 'aria-hidden', 'true')
     })
   })
 
@@ -839,19 +833,13 @@ describe('Index.html - Complete Page Load and Component Initialization', () => {
 
       cy.get('script[src*="debug-theme.js"]').should('exist').and('have.attr', 'type', 'module')
 
-      cy.get('script[src*="themeSelectorUI.js"]')
-        .should('exist')
-        .and('have.attr', 'type', 'module')
+      cy.get('script[src*="themeSelectorUI.js"]').should('exist').and('have.attr', 'type', 'module')
     })
 
     it('should load component scripts', () => {
-      cy.get('script[src*="loadingMessages.js"]')
-        .should('exist')
-        .and('have.attr', 'type', 'module')
+      cy.get('script[src*="loadingMessages.js"]').should('exist').and('have.attr', 'type', 'module')
 
-      cy.get('script[src*="festiveConfetti.js"]')
-        .should('exist')
-        .and('have.attr', 'type', 'module')
+      cy.get('script[src*="festiveConfetti.js"]').should('exist').and('have.attr', 'type', 'module')
     })
 
     it('should load main application script', () => {

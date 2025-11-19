@@ -11,7 +11,7 @@
   {
     "id": 2,
     "name": "Girasoles Premium",
-    "price_usd": 18.50,
+    "price_usd": 18.5,
     "stock": 15,
     "quantity": 1,
     "image_thumb": "/images/products/girasoles-thumb.jpg",
@@ -20,7 +20,7 @@
   {
     "id": 3,
     "name": "Orquídeas Elegantes",
-    "price_usd": 45.00,
+    "price_usd": 45.0,
     "stock": 5,
     "quantity": 1,
     "image_thumb": "/images/products/orquideas-thumb.jpg",

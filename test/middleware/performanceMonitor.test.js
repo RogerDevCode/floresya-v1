@@ -73,7 +73,10 @@ describe('Performance Monitor Middleware', () => {
       finishCallback()
 
       // Assert
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('X-Response-Time', expect.stringMatching(/\d+\.\d{2}ms/))
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'X-Response-Time',
+        expect.stringMatching(/\d+\.\d{2}ms/)
+      )
     })
 
     test('should log slow requests (>500ms)', () => {
@@ -105,7 +108,10 @@ describe('Performance Monitor Middleware', () => {
       finishCallback()
 
       // Assert
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('X-Response-Time', expect.stringMatching(/\d+\.\d{2}ms/))
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'X-Response-Time',
+        expect.stringMatching(/\d+\.\d{2}ms/)
+      )
     })
 
     test('should only set headers once on finish', () => {

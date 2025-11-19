@@ -9,6 +9,7 @@ Tests E2E completos para las páginas de **Carrito de Compra** y **Pago**, con c
 ### Página de Carrito (`cart.cy.js`)
 
 #### ✅ Estado Vacío (6 tests)
+
 - Mensaje de carrito vacío
 - Botón de checkout deshabilitado
 - Sección de limpiar carrito oculta
@@ -17,6 +18,7 @@ Tests E2E completos para las páginas de **Carrito de Compra** y **Pago**, con c
 - Link a productos visible
 
 #### ✅ Carrito con Items (8 tests)
+
 - Visualización correcta de items
 - Mensaje vacío oculto
 - Botón checkout habilitado
@@ -27,6 +29,7 @@ Tests E2E completos para las páginas de **Carrito de Compra** y **Pago**, con c
 - Stock disponible mostrado
 
 #### ✅ Controles de Cantidad (6 tests)
+
 - Incrementar cantidad
 - Decrementar cantidad
 - Deshabilitar botón al mínimo (1)
@@ -35,29 +38,34 @@ Tests E2E completos para las páginas de **Carrito de Compra** y **Pago**, con c
 - Actualización de totales
 
 #### ✅ Eliminar Items (4 tests)
+
 - Confirmación antes de eliminar
 - Eliminación exitosa
 - Cancelación de eliminación
 - Actualización de resumen
 
 #### ✅ Limpiar Carrito (4 tests)
+
 - Confirmación antes de limpiar
 - Limpieza exitosa
 - Cancelación de limpieza
 - Estado vacío después de limpiar
 
 #### ✅ Métodos de Entrega (4 tests)
+
 - Pickup por defecto (gratis)
 - Costo de envío al seleccionar delivery
 - Actualización de total
 - Costo desde settings
 
 #### ✅ Navegación a Checkout (3 tests)
+
 - Redirección a payment.html
 - Almacenamiento de método de entrega
 - Almacenamiento de resumen de orden
 
 #### ✅ Otros (7 tests)
+
 - Navegación back
 - Manejo de imágenes con error
 - Diseño responsivo (mobile, tablet, desktop)
@@ -71,12 +79,14 @@ Tests E2E completos para las páginas de **Carrito de Compra** y **Pago**, con c
 ### Página de Pago (`payment.cy.js`)
 
 #### ✅ Carga y Redirección (4 tests)
+
 - Redirección si carrito vacío
 - Carga exitosa con items
 - Visualización de resumen
 - Carga de costo de entrega desde settings
 
 #### ✅ Resumen del Carrito (5 tests)
+
 - Todos los items mostrados
 - Cantidades correctas
 - Precios correctos
@@ -84,6 +94,7 @@ Tests E2E completos para las páginas de **Carrito de Compra** y **Pago**, con c
 - Totales calculados
 
 #### ✅ Validación de Formulario (11 tests)
+
 - Campos requeridos presentes
 - Validación de nombre vacío
 - Validación de email inválido
@@ -96,12 +107,14 @@ Tests E2E completos para las páginas de **Carrito de Compra** y **Pago**, con c
 - Limpieza de errores al escribir
 
 #### ✅ Métodos de Entrega (4 tests)
+
 - Pickup por defecto
 - Envío gratis para pickup
 - Costo de delivery
 - Actualización de total
 
 #### ✅ Métodos de Pago (6 tests)
+
 - Cash por defecto
 - Todos los métodos disponibles
 - Formularios ocultos por defecto
@@ -111,58 +124,70 @@ Tests E2E completos para las páginas de **Carrito de Compra** y **Pago**, con c
 - Ocultar formulario anterior
 
 #### ✅ Validación de Métodos de Pago (4 tests)
+
 - Validación campos pago móvil
 - Validación campos transferencia
 - Validación email Zelle
 - Validación dirección crypto
 
 #### ✅ Generación de Referencia (3 tests)
+
 - Mostrar referencia en formularios
 - Consistencia entre métodos
 - Formato único
 
 #### ✅ Recordar Datos (3 tests)
+
 - Guardar datos con checkbox
 - No guardar sin checkbox
 - Cargar datos guardados
 
 #### ✅ Flujo Pago Efectivo (4 tests)
+
 - Pago exitoso
 - Datos de orden correctos
 - Incluir costo delivery
 - No incluir costo pickup
 
 #### ✅ Flujo Pago Móvil (2 tests)
+
 - Pago exitoso
 - Detalles en confirmación
 
 #### ✅ Flujo Transferencia (2 tests)
+
 - Pago exitoso
 - Detalles en confirmación
 
 #### ✅ Flujo Zelle (2 tests)
+
 - Pago exitoso
 - Email en confirmación
 
 #### ✅ Flujo Crypto (2 tests)
+
 - Pago exitoso
 - Dirección en confirmación
 
 #### ✅ Manejo de Errores (4 tests)
+
 - Alert en validación fallida
 - Manejo de error de API
 - Restauración de estado del botón
 - Continuar si confirmación falla
 
 #### ✅ Estados de Carga (2 tests)
+
 - Mostrar estado procesando
 - Deshabilitar botón
 
 #### ✅ Limpieza de Carrito (2 tests)
+
 - Limpiar después de pago exitoso
 - No limpiar si falla
 
 #### ✅ Otros (4 tests)
+
 - Navegación back
 - Diseño responsivo (mobile, tablet, desktop)
 
@@ -172,14 +197,15 @@ Tests E2E completos para las páginas de **Carrito de Compra** y **Pago**, con c
 
 ## 📊 Resumen Total
 
-| Categoría | Cart | Payment | Total |
-|-----------|------|---------|-------|
-| Tests | 42 | 64 | **106** |
-| Cobertura | 100% | 100% | **100%** |
+| Categoría | Cart | Payment | Total    |
+| --------- | ---- | ------- | -------- |
+| Tests     | 42   | 64      | **106**  |
+| Cobertura | 100% | 100%    | **100%** |
 
 ## 🗂️ Archivos Creados
 
 ### Fixtures (Mocks)
+
 ```
 cypress/fixtures/
 ├── cart-items.json           # Items de ejemplo para carrito
@@ -189,12 +215,14 @@ cypress/fixtures/
 ```
 
 ### Comandos Cypress
+
 ```
 cypress/support/commands/
 └── cart-payment.js           # 20+ comandos personalizados para cart/payment
 ```
 
 ### Tests E2E
+
 ```
 cypress/e2e/pages/
 ├── cart.cy.js                # 42 tests para carrito
@@ -204,60 +232,72 @@ cypress/e2e/pages/
 ## 🚀 Ejecución de Tests
 
 ### Ejecutar todos los tests de cart y payment
+
 ```bash
 npx cypress run --spec "cypress/e2e/pages/cart.cy.js,cypress/e2e/pages/payment.cy.js"
 ```
 
 ### Ejecutar solo tests de cart
+
 ```bash
 npx cypress run --spec "cypress/e2e/pages/cart.cy.js"
 ```
 
 ### Ejecutar solo tests de payment
+
 ```bash
 npx cypress run --spec "cypress/e2e/pages/payment.cy.js"
 ```
 
 ### Modo interactivo
+
 ```bash
 npx cypress open
 ```
+
 Luego seleccionar `cart.cy.js` o `payment.cy.js`
 
 ## 🛠️ Comandos Personalizados Creados
 
 ### Manejo de Carrito
+
 - `cy.setupCart(items)` - Configurar carrito con items
 - `cy.clearCart()` - Limpiar carrito completamente
 - `cy.addToCart(item)` - Agregar item individual
 - `cy.getCartCount()` - Obtener cantidad de items
 
 ### Mocking de APIs
+
 - `cy.mockSettings()` - Mock de endpoint de settings
 - `cy.mockCreateOrder(status, response)` - Mock de creación de orden
 - `cy.mockConfirmPayment(orderId, status, response)` - Mock de confirmación de pago
 - `cy.mockCartPaymentApis()` - Mock de todas las APIs necesarias
 
 ### Formularios
+
 - `cy.fillCustomerForm(data)` - Llenar formulario de cliente
 - `cy.selectDeliveryMethod(method)` - Seleccionar método de entrega
 - `cy.selectPaymentMethod(method)` - Seleccionar método de pago
 - `cy.fillPaymentDetails(method, details)` - Llenar detalles de pago
 
 ### Flujos Completos
+
 - `cy.completeCheckout(delivery, payment, customerData)` - Completar todo el checkout
 
 ### Validaciones
+
 - `cy.verifyCartSummary(items, subtotal, total)` - Verificar resumen de carrito
 - `cy.verifyOrderConfirmation(orderId)` - Verificar página de confirmación
 
 ### Esperas
+
 - `cy.waitForCartPage()` - Esperar carga de página de carrito
 - `cy.waitForPaymentPage()` - Esperar carga de página de pago
 
 ## 📋 Checklist de Validación
 
 ### Carrito ✅
+
 - [x] Estado vacío mostrado correctamente
 - [x] Items mostrados con todos sus detalles
 - [x] Controles de cantidad funcionando
@@ -274,6 +314,7 @@ Luego seleccionar `cart.cy.js` o `payment.cy.js`
 - [x] Diseño responsivo
 
 ### Pago ✅
+
 - [x] Redirección si carrito vacío
 - [x] Resumen de carrito mostrado
 - [x] Formulario de cliente con validación
@@ -314,6 +355,7 @@ Luego seleccionar `cart.cy.js` o `payment.cy.js`
 ## 🔒 Validaciones Críticas
 
 ### Seguridad
+
 - ✅ No se permiten cantidades negativas
 - ✅ No se permite exceder stock
 - ✅ Validación de email
@@ -321,6 +363,7 @@ Luego seleccionar `cart.cy.js` o `payment.cy.js`
 - ✅ Sanitización de strings en payload
 
 ### Integridad de Datos
+
 - ✅ Cálculos de totales correctos
 - ✅ Conversión USD a VES
 - ✅ Items del carrito validados
@@ -328,6 +371,7 @@ Luego seleccionar `cart.cy.js` o `payment.cy.js`
 - ✅ Referencia única por orden
 
 ### UX
+
 - ✅ Confirmaciones antes de acciones destructivas
 - ✅ Mensajes de error claros
 - ✅ Estados de carga visibles
@@ -350,6 +394,7 @@ Luego seleccionar `cart.cy.js` o `payment.cy.js`
 ✅ **ÉXITO TOTAL: 100%**
 
 Todos los flujos críticos del carrito y pago están cubiertos con tests automatizados E2E que validan:
+
 - Funcionalidad completa
 - Casos edge
 - Validaciones

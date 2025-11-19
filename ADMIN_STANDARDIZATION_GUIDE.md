@@ -12,11 +12,13 @@
 ### 🎨 Características Implementadas
 
 #### 1. Breadcrumbs (Migas de Pan)
+
 - Navegación jerárquica visible
 - Dashboard / Sección / Página actual
 - Links clicables para navegación rápida
 
 #### 2. Tema Claro/Oscuro
+
 - **Botón en navbar** para cambiar tema
 - **Guardado en localStorage** (persiste entre sesiones)
 - **Modo Claro**: Colores florales suaves (rosa pastel, lavanda)
@@ -24,11 +26,13 @@
 - **Contraste optimizado** para todos los componentes
 
 #### 3. Notificaciones/Alertas
+
 - Badge con contador
 - Panel dropdown
 - Sistema preparado para integrar con API
 
 #### 4. Footer Informativo
+
 - Información de contacto (email, teléfono, ubicación)
 - Enlaces útiles
 - Versión del sistema
@@ -36,6 +40,7 @@
 - Copyright dinámico
 
 #### 5. Navegación Consistente
+
 - Botón "Volver" con `window.history.back()`
 - Logo clickable
 - User info visible
@@ -44,19 +49,21 @@
 ### 🎨 Paleta de Colores
 
 #### Modo Claro (Floral Suave)
+
 ```css
---bg-primary: #fef5f8;      /* Rosa muy suave */
---bg-secondary: #fff9fb;    /* Rosa casi blanco */
---text-primary: #2d1b2e;    /* Púrpura oscuro */
---accent-primary: #e91e8c;  /* Rosa FloresYa */
+--bg-primary: #fef5f8; /* Rosa muy suave */
+--bg-secondary: #fff9fb; /* Rosa casi blanco */
+--text-primary: #2d1b2e; /* Púrpura oscuro */
+--accent-primary: #e91e8c; /* Rosa FloresYa */
 ```
 
 #### Modo Oscuro (Profesional)
+
 ```css
---bg-primary: #1a1625;      /* Púrpura muy oscuro */
---bg-secondary: #251d30;    /* Púrpura oscuro */
---text-primary: #f5f3f7;    /* Casi blanco lavanda */
---accent-primary: #f472b6;  /* Rosa brillante */
+--bg-primary: #1a1625; /* Púrpura muy oscuro */
+--bg-secondary: #251d30; /* Púrpura oscuro */
+--text-primary: #f5f3f7; /* Casi blanco lavanda */
+--accent-primary: #f472b6; /* Rosa brillante */
 ```
 
 ## 🚀 CÓMO USAR EN CADA PÁGINA
@@ -68,7 +75,8 @@
   ...
   <link rel="stylesheet" href="../../css/styles.css" />
   <link rel="stylesheet" href="../../css/tailwind.css" />
-  <link rel="stylesheet" href="../../css/admin-theme.css" /> <!-- NUEVO -->
+  <link rel="stylesheet" href="../../css/admin-theme.css" />
+  <!-- NUEVO -->
   ...
 </head>
 ```
@@ -78,12 +86,17 @@
 ```html
 <body class="font-sans antialiased">
   <!-- Navbar -->
-  <nav class="navbar bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm shadow-md fixed top-0 left-0 right-0 z-50" role="navigation">
+  <nav
+    class="navbar bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm shadow-md fixed top-0 left-0 right-0 z-50"
+    role="navigation"
+  >
     <div class="container mx-auto px-4">
       <div class="flex items-center justify-between h-16">
-        
         <!-- Left: Back Button -->
-        <button id="back-btn" class="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+        <button
+          id="back-btn"
+          class="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+        >
           <svg>...</svg>
           <span class="hidden sm:inline text-sm font-medium">Volver</span>
         </button>
@@ -91,15 +104,25 @@
         <!-- Center: Logo + Breadcrumb -->
         <div class="flex items-center space-x-3">
           <a href="../../index.html" class="flex items-center space-x-2">
-            <img src="../../images/logoFloresYa.jpeg" class="h-10 w-10 rounded-full ring-2 ring-pink-200 dark:ring-pink-800" />
-            <span class="text-xl font-bold text-pink-600 dark:text-pink-400 hidden md:block">FloresYa Admin</span>
+            <img
+              src="../../images/logoFloresYa.jpeg"
+              class="h-10 w-10 rounded-full ring-2 ring-pink-200 dark:ring-pink-800"
+            />
+            <span class="text-xl font-bold text-pink-600 dark:text-pink-400 hidden md:block">
+              FloresYa Admin
+            </span>
           </a>
-          
+
           <!-- Breadcrumb Container -->
           <nav class="hidden lg:flex items-center text-sm">
             <ol id="breadcrumb-container" class="flex items-center space-x-2">
               <li>
-                <a href="./dashboard.html" class="text-gray-500 dark:text-gray-400 hover:text-pink-600">Dashboard</a>
+                <a
+                  href="./dashboard.html"
+                  class="text-gray-500 dark:text-gray-400 hover:text-pink-600"
+                >
+                  Dashboard
+                </a>
               </li>
               <!-- JS añadirá breadcrumbs aquí -->
             </ol>
@@ -109,7 +132,10 @@
         <!-- Right: Theme + Notifications + User + Logout -->
         <div class="flex items-center space-x-2">
           <!-- Theme Toggle -->
-          <button id="theme-toggle-btn" class="p-2 text-gray-600 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+          <button
+            id="theme-toggle-btn"
+            class="p-2 text-gray-600 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+          >
             <svg>...</svg>
           </button>
 
@@ -117,16 +143,29 @@
           <div class="relative">
             <button id="notifications-btn" class="relative p-2">
               <svg>...</svg>
-              <span id="notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden"></span>
+              <span
+                id="notification-badge"
+                class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden"
+              ></span>
             </button>
-            <div id="notifications-panel" class="hidden absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-xl">
+            <div
+              id="notifications-panel"
+              class="hidden absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-xl"
+            >
               <div id="notifications-list"></div>
             </div>
           </div>
 
           <!-- User Info -->
-          <div class="hidden md:flex items-center space-x-3 pl-3 border-l border-gray-200 dark:border-gray-700">
-            <span id="admin-user-display" class="text-sm font-medium text-gray-700 dark:text-gray-300">Admin</span>
+          <div
+            class="hidden md:flex items-center space-x-3 pl-3 border-l border-gray-200 dark:border-gray-700"
+          >
+            <span
+              id="admin-user-display"
+              class="text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Admin
+            </span>
           </div>
 
           <!-- Logout -->
@@ -142,9 +181,7 @@
   <div class="h-16"></div>
 
   <!-- Main Content -->
-  <main class="container mx-auto px-4 py-8 min-h-screen">
-    ...
-  </main>
+  <main class="container mx-auto px-4 py-8 min-h-screen">...</main>
 
   <!-- Footer -->
   <!-- Incluir desde public/components/admin-footer.html -->
@@ -176,9 +213,7 @@ import { AdminNavbar } from '../../js/components/admin-navbar.js'
 // Inicializar con breadcrumbs
 const navbar = new AdminNavbar({
   currentPage: 'Gestión de Usuarios',
-  breadcrumbs: [
-    { name: 'Usuarios', url: null }
-  ]
+  breadcrumbs: [{ name: 'Usuarios', url: null }]
 })
 
 // La navbar manejará automáticamente:
@@ -211,7 +246,9 @@ const navbar = new AdminNavbar({
 </button>
 
 <!-- Inputs -->
-<input class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600" />
+<input
+  class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
+/>
 ```
 
 ## 🔄 MIGRACIÓN DE PÁGINAS EXISTENTES
@@ -249,16 +286,19 @@ const navbar = new AdminNavbar({
 ## 🐛 TROUBLESHOOTING
 
 **Tema no cambia:**
+
 - Verificar que `admin-navbar.js` esté cargado
 - Revisar console del navegador
 - Confirmar que localStorage funciona
 
 **Breadcrumbs no aparecen:**
+
 - Verificar `id="breadcrumb-container"` existe
 - Confirmar configuración en `window.adminNavbarConfig`
 - Revisar que el script se ejecute después del DOM
 
 **Colores no se aplican:**
+
 - Asegurar que `admin-theme.css` se carga después de `tailwind.css`
 - Verificar clase `dark` en `<html>` o `document.documentElement`
 - Usar DevTools para inspeccionar variables CSS

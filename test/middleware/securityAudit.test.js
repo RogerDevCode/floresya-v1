@@ -61,7 +61,7 @@ describe('Security Audit Middleware', () => {
       ip: '127.0.0.1',
       secure: false,
       headers: {},
-      get: vi.fn((header) => mockRequest.headers[header.toLowerCase()]),
+      get: vi.fn(header => mockRequest.headers[header.toLowerCase()]),
       body: null,
       query: null,
       params: null
@@ -111,7 +111,10 @@ describe('Security Audit Middleware', () => {
       expect(mockResponse.setHeader).toHaveBeenCalledWith('X-Frame-Options', 'DENY')
       expect(mockResponse.setHeader).toHaveBeenCalledWith('X-Content-Type-Options', 'nosniff')
       expect(mockResponse.setHeader).toHaveBeenCalledWith('X-XSS-Protection', '1; mode=block')
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Referrer-Policy', 'strict-origin-when-cross-origin')
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Referrer-Policy',
+        'strict-origin-when-cross-origin'
+      )
       expect(mockResponse.setHeader).toHaveBeenCalledWith(
         'Content-Security-Policy',
         "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self'"
@@ -193,7 +196,7 @@ describe('Security Audit Middleware', () => {
       mockRequest.query = {
         search: '<script>alert("xss")</script>test',
         page: '1',
-        dangerousProperty: "onclick='alert(\"hack\")'"
+        dangerousProperty: 'onclick=\'alert("hack")\''
       }
 
       // Act
@@ -287,7 +290,7 @@ describe('Security Audit Middleware', () => {
     test('should detect SQL injection patterns', () => {
       // Arrange
       mockRequest.body = null
-      mockRequest.query = { search: "UNION SELECT * FROM users" }
+      mockRequest.query = { search: 'UNION SELECT * FROM users' }
       mockRequest.params = null
 
       // Act

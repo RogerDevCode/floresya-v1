@@ -1,6 +1,6 @@
 /**
  * EJEMPLOS DE USO - Comandos Personalizados Cart & Payment
- * 
+ *
  * Este archivo muestra ejemplos prácticos de cómo usar los comandos
  * personalizados creados para testing de carrito y pago.
  */
@@ -53,7 +53,7 @@ describe('Ejemplo 2: Mocking de APIs', () => {
 
     cy.visit('/pages/payment.html')
     cy.completeCheckout('pickup', 'cash')
-    
+
     cy.on('window:alert', str => {
       expect(str).to.include('Error procesando el pago')
     })
@@ -109,10 +109,7 @@ describe('Ejemplo 4: Validación de formularios', () => {
     })
 
     cy.get('#customer-email').blur()
-    cy.get('#customer-email')
-      .parent()
-      .find('.error-message')
-      .should('be.visible')
+    cy.get('#customer-email').parent().find('.error-message').should('be.visible')
   })
 
   it('validar teléfono venezolano', () => {
@@ -144,12 +141,10 @@ describe('Ejemplo 5: Métodos de pago', () => {
 
     cy.get('#process-payment-button').click()
     cy.wait('@createOrder')
-    cy.wait('@confirmPayment')
-      .its('request.body.payment_details')
-      .should('deep.include', {
-        phone: '0414-1234567',
-        bank: 'Banesco'
-      })
+    cy.wait('@confirmPayment').its('request.body.payment_details').should('deep.include', {
+      phone: '0414-1234567',
+      bank: 'Banesco'
+    })
   })
 
   it('transferencia bancaria completa', () => {
@@ -162,9 +157,7 @@ describe('Ejemplo 5: Métodos de pago', () => {
     })
 
     cy.get('#process-payment-button').click()
-    cy.wait('@confirmPayment')
-      .its('request.body.payment_details.bank')
-      .should('equal', 'Mercantil')
+    cy.wait('@confirmPayment').its('request.body.payment_details.bank').should('equal', 'Mercantil')
   })
 })
 
