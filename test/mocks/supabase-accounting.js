@@ -140,10 +140,9 @@ const validateExpense = (data) => {
 const applyFilters = (data, filters = {}) => {
   let filtered = [...data]
 
-  // Filter by active
-  if (filters.active !== undefined) {
-    filtered = filtered.filter(item => item.active === filters.active)
-  }
+  // IMPORTANT: Filter by active (default true unless explicitly false)
+  const activeFilter = filters.active !== undefined ? filters.active : true
+  filtered = filtered.filter(item => item.active === activeFilter)
 
   // Filter by date range (gte)
   if (filters.gte_expense_date) {
