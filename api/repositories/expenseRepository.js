@@ -38,7 +38,7 @@ class ExpenseRepository extends BaseRepository {
 
       const { data, error } = await query
 
-      if (error) throw error
+      if (error) {throw error}
       return data || []
     } catch (error) {
       logger.error('Error finding expenses by date range', { error, startDate, endDate })
