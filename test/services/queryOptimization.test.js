@@ -2,7 +2,7 @@
  * Query Optimization Service Tests
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { analyzeQueryPerformance } from '../../api/services/QueryOptimizationService.js'
 
 // Mock supabase

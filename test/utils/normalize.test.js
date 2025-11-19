@@ -168,7 +168,6 @@ describe('Normalize Utils', () => {
     it('should handle full search workflow', () => {
       const searchTerm = 'José García 50%'
       const normalized = normalizeSearch(searchTerm)
-      const escaped = escapeLikePattern(normalized)
       const pattern = buildLikePattern(searchTerm)
 
       expect(normalized).toBe('jose garcia 50')
