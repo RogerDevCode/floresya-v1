@@ -82,6 +82,7 @@
             <!-- Theme Toggle -->
             <button
               id="theme-toggle-btn"
+              data-cy="theme-toggle"
               class="p-2 text-gray-600 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
               title="Cambiar tema"
             >
@@ -141,6 +142,7 @@
             </div>
             <button
               id="add-expense-btn"
+              data-cy="new-expense-btn"
               class="btn-primary flex items-center space-x-2 px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-lg transition-colors shadow-lg hover:shadow-xl"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -158,6 +160,7 @@
                 <label for="filter-category" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Categoría</label>
                 <select
                   id="filter-category"
+                  data-cy="filter-category"
                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 >
                   <option value="">Todas</option>
@@ -176,6 +179,7 @@
                 <input
                   type="date"
                   id="filter-start-date"
+                  data-cy="filter-start-date"
                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 />
               </div>
@@ -185,6 +189,7 @@
                 <input
                   type="date"
                   id="filter-end-date"
+                  data-cy="filter-end-date"
                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 />
               </div>
@@ -203,7 +208,7 @@
           <!-- Expenses Table -->
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
             <div class="overflow-x-auto">
-              <table class="w-full">
+              <table class="w-full" data-cy="expenses-table">
                 <thead class="bg-gray-50 dark:bg-gray-700">
                   <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fecha</th>
@@ -222,7 +227,7 @@
             </div>
 
             <!-- Empty State -->
-            <div id="empty-state" class="hidden p-12 text-center">
+            <div id="empty-state" data-cy="empty-state" class="hidden p-12 text-center">
               <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
@@ -254,7 +259,7 @@
             </button>
           </div>
 
-          <form id="expense-form" class="space-y-4">
+          <form id="expense-form" data-cy="expense-form" class="space-y-4">
             <input type="hidden" id="expense-id" />
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -262,6 +267,7 @@
                 <label for="expense-category" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Categoría *</label>
                 <select
                   id="expense-category"
+                  data-cy="expense-category"
                   required
                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 >
@@ -281,6 +287,7 @@
                 <input
                   type="number"
                   id="expense-amount"
+                  data-cy="expense-amount"
                   step="0.01"
                   min="0"
                   required
@@ -296,6 +303,7 @@
                 <input
                   type="date"
                   id="expense-date"
+                  data-cy="expense-date"
                   required
                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 />
@@ -305,6 +313,7 @@
                 <label for="expense-payment-method" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Método de Pago *</label>
                 <select
                   id="expense-payment-method"
+                  data-cy="expense-payment-method"
                   required
                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 >
@@ -322,6 +331,7 @@
               <input
                 type="text"
                 id="expense-description"
+                data-cy="expense-description"
                 required
                 maxlength="255"
                 placeholder="Describe el gasto..."
@@ -378,6 +388,7 @@
               <button
                 type="button"
                 id="cancel-btn"
+                data-cy="expense-cancel"
                 class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
                 Cancelar
@@ -385,6 +396,7 @@
               <button
                 type="submit"
                 id="save-expense-btn"
+                data-cy="expense-submit"
                 class="px-6 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors shadow-lg"
               >
                 Guardar Gasto
