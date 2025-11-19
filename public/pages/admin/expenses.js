@@ -96,6 +96,10 @@ function initEventListeners() {
   document.getElementById('filter-end-date').addEventListener('change', handleFilterChange);
   document.getElementById('filter-reset-btn').addEventListener('click', resetFilters);
 
+  // Receipt file input
+  document.getElementById('expense-receipt').addEventListener('change', handleReceiptChange);
+  document.getElementById('receipt-remove')?.addEventListener('click', handleReceiptRemove);
+
   // Back button
   document.getElementById('back-btn').addEventListener('click', () => {
     window.location.href = './dashboard.html';
@@ -116,7 +120,7 @@ async function loadExpenses() {
     loadingState.classList.remove('hidden');
     emptyState.classList.add('hidden');
 
-    const response = await api.get('/api/admin/expenses');
+    const response = await api.get('/api/accounting/expenses');
     
     if (response.success) {
       expenses = response.data || [];
@@ -185,6 +189,15 @@ function renderExpenses() {
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
         ${formatPaymentMethod(expense.payment_method)}
       </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm">
+        ${expense.receipt_url ? `
+          <a href="${expense.receipt_url}" target="_blank" class="text-blue-600 hover:text-blue-800 dark:text-blue-400" title="Ver comprobante">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+            </svg>
+          </a>
+        ` : '<span class="text-gray-400 dark:text-gray-600">-</span>'}
+      </td>
       <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
         <button
           onclick="window.expensesController.editExpense(${expense.id})"
@@ -217,6 +230,15 @@ function openModal(expense = null) {
   const modal = document.getElementById('expense-modal');
   const modalTitle = document.getElementById('modal-title');
   const form = document.getElementById('expense-form');
+  const receiptInput = document.getElementById('expense-receipt');
+  const receiptPreview = document.getElementById('receipt-preview');
+  const receiptCurrent = document.getElementById('receipt-current');
+  const receiptLink = document.getElementById('receipt-link');
+
+  // Reset receipt UI
+  receiptInput.value = '';
+  receiptPreview.classList.add('hidden');
+  receiptCurrent.classList.add('hidden');
 
   if (expense) {
     modalTitle.textContent = 'Editar Gasto';
@@ -227,6 +249,12 @@ function openModal(expense = null) {
     document.getElementById('expense-payment-method').value = expense.payment_method;
     document.getElementById('expense-description').value = expense.description;
     document.getElementById('expense-notes').value = expense.notes || '';
+
+    // Show existing receipt link if available
+    if (expense.receipt_url) {
+      receiptLink.href = expense.receipt_url;
+      receiptCurrent.classList.remove('hidden');
+    }
   } else {
     modalTitle.textContent = 'Nuevo Gasto';
     form.reset();
@@ -251,22 +279,39 @@ function closeModal() {
 async function handleSubmit(e) {
   e.preventDefault();
 
-  const formData = {
-    category: document.getElementById('expense-category').value,
-    amount: parseFloat(document.getElementById('expense-amount').value),
-    expense_date: document.getElementById('expense-date').value,
-    payment_method: document.getElementById('expense-payment-method').value,
-    description: document.getElementById('expense-description').value.trim(),
-    notes: document.getElementById('expense-notes').value.trim() || null
-  };
+  const receiptFile = document.getElementById('expense-receipt').files[0];
 
-  // Validation
-  if (!formData.category || !formData.amount || !formData.expense_date || !formData.payment_method || !formData.description) {
+  // Validate file size (5MB max)
+  if (receiptFile && receiptFile.size > 5 * 1024 * 1024) {
+    toast.error('El archivo es muy grande. Máximo 5MB');
+    return;
+  }
+
+  // Prepare FormData for multipart upload
+  const formData = new FormData();
+  formData.append('category', document.getElementById('expense-category').value);
+  formData.append('amount', parseFloat(document.getElementById('expense-amount').value));
+  formData.append('expense_date', document.getElementById('expense-date').value);
+  formData.append('payment_method', document.getElementById('expense-payment-method').value);
+  formData.append('description', document.getElementById('expense-description').value.trim());
+  
+  const notes = document.getElementById('expense-notes').value.trim();
+  if (notes) {
+    formData.append('notes', notes);
+  }
+
+  if (receiptFile) {
+    formData.append('receipt', receiptFile);
+  }
+
+  // Basic validation
+  if (!formData.get('category') || !formData.get('amount') || !formData.get('expense_date') || 
+      !formData.get('payment_method') || !formData.get('description')) {
     toast.error('Por favor completa todos los campos requeridos');
     return;
   }
 
-  if (formData.amount <= 0) {
+  if (parseFloat(formData.get('amount')) <= 0) {
     toast.error('El monto debe ser mayor a 0');
     return;
   }
@@ -276,11 +321,29 @@ async function handleSubmit(e) {
     let response;
 
     if (expenseId) {
-      // Update
-      response = await api.put(`/api/admin/expenses/${expenseId}`, formData);
+      // Update - use fetch for FormData (multipart)
+      // eslint-disable-next-line no-restricted-globals
+      const res = await fetch(`${api.baseUrl}/api/accounting/expenses/${expenseId}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${sessionStorage.getItem('token') || ''}`
+        },
+        body: formData,
+        credentials: 'include'
+      });
+      response = await res.json();
     } else {
-      // Create
-      response = await api.post('/api/admin/expenses', formData);
+      // Create - use fetch for FormData (multipart)
+      // eslint-disable-next-line no-restricted-globals
+      const res = await fetch(`${api.baseUrl}/api/accounting/expenses`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${sessionStorage.getItem('token') || ''}`
+        },
+        body: formData,
+        credentials: 'include'
+      });
+      response = await res.json();
     }
 
     if (response.success) {
@@ -311,7 +374,7 @@ async function deleteExpense(id) {
   }
 
   try {
-    const response = await api.delete(`/api/admin/expenses/${id}`);
+    const response = await api.delete(`/api/accounting/expenses/${id}`);
     
     if (response.success) {
       toast.success('Gasto eliminado exitosamente');
@@ -347,6 +410,39 @@ function resetFilters() {
   };
   
   renderExpenses();
+}
+
+// ==================== RECEIPT HANDLING ====================
+
+function handleReceiptChange(e) {
+  const file = e.target.files[0];
+  const preview = document.getElementById('receipt-preview');
+  const filename = document.getElementById('receipt-filename');
+
+  if (!file) {
+    preview.classList.add('hidden');
+    return;
+  }
+
+  // Validate file size
+  if (file.size > 5 * 1024 * 1024) {
+    toast.error('El archivo es muy grande. Máximo 5MB');
+    e.target.value = '';
+    preview.classList.add('hidden');
+    return;
+  }
+
+  // Show preview
+  filename.textContent = file.name;
+  preview.classList.remove('hidden');
+}
+
+function handleReceiptRemove() {
+  const input = document.getElementById('expense-receipt');
+  const preview = document.getElementById('receipt-preview');
+  
+  input.value = '';
+  preview.classList.add('hidden');
 }
 
 // ==================== UTILITIES ====================

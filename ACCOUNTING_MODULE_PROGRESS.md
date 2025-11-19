@@ -93,7 +93,13 @@
 
 ## 🟡 IN PROGRESS
 
-### 5. Frontend Views (Next Step)
+### 8. Frontend Views (Next Step) 🎯
+- [ ] **Create** `src/views/dashboard/categories.ejs` ✨ NEW
+  - Category management UI (list, create, edit, delete)
+  - Color picker + icon selector
+  - Cannot delete default categories (disabled UI)
+  - Dark/Light theme support
+  
 - [ ] **Create** `src/views/dashboard/expenses.ejs`
   - Expense list table with filters (category, date range)
   - Create/Edit expense form (modal or inline)
@@ -128,6 +134,24 @@
 - [x] Routes updated with multipart support
 - [x] Tests: 9/9 passing (100% coverage)
 - [ ] **Frontend**: File input + preview in expenses.ejs (NEXT)
+
+### 7. Expense Categories Management ✅ COMPLETED
+- [x] Database migration (`007_expense_categories.sql`)
+  - Table: `expense_categories` with RLS policies
+  - 7 default categories (flores, transporte, empaque, personal, servicios, marketing, otros)
+  - Color-coded UI support (icon + hex color)
+- [x] Repository Layer (`expenseCategoryRepository.js`)
+  - CRUD operations with soft-delete
+  - findByName for duplicate checking
+- [x] Service Layer (`expenseCategoryService.js`)
+  - Validation: name format, color hex, no duplicate names
+  - Protection: Cannot delete/modify default categories
+  - Auto-normalize: lowercase names with underscores
+- [x] Controller Layer (`expenseCategoryController.js`)
+  - RESTful endpoints: GET, POST, PUT, DELETE
+- [x] Routes (`api/routes/accounting.routes.js`)
+  - `/api/accounting/categories` - CRUD endpoints
+- [x] **Tests**: 18/18 passing (100% coverage)
 
 ### 7. Integration Testing
 - [ ] Run E2E tests against local server
@@ -198,9 +222,15 @@
 
 ## 📊 Test Coverage Summary
 
-**Total Tests**: 1102/1102 passing (100%)  
-**Accounting Module Tests**: 85/85 passing (100%)  
-**RBAC Tests**: 28/28 passing (100%)  
+**Total Tests**: 1120/1120 passing (100%)  
+**Accounting Module Tests**: 103/103 passing (100%)  
+  - Expense Repository: 7 tests
+  - Expense Service: 26 tests
+  - Expense Controller: 28 tests
+  - Report Service: 22 tests
+  - Receipt Storage: 9 tests
+  - Category Service: 18 tests ✨ NEW
+  - RBAC Tests: 28 tests (not in accounting module count, separate)
 **ESLint**: 0 errors, 0 warnings  
 
 ---

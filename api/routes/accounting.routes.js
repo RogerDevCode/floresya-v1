@@ -7,6 +7,7 @@
 import express from 'express'
 import expenseController from '../controllers/expenseController.js'
 import reportController from '../controllers/reportController.js'
+import * as categoryController from '../controllers/expenseCategoryController.js'
 import { authenticate } from '../middleware/auth/auth.middleware.js'
 import requireAdmin from '../middleware/auth/requireAdmin.js'
 import { uploadReceipt, handleReceiptUploadError } from '../middleware/utilities/uploadReceipt.js'
@@ -16,6 +17,46 @@ const router = express.Router()
 // All accounting routes require authentication AND admin role
 router.use(authenticate)
 router.use(requireAdmin)
+
+// ============================================================================
+// CATEGORY ROUTES
+// ============================================================================
+
+/**
+ * @route   GET /api/accounting/categories
+ * @desc    Get all expense categories
+ * @query   includeInactive - Include inactive categories
+ * @access  Admin only
+ */
+router.get('/categories', categoryController.getAllCategories)
+
+/**
+ * @route   POST /api/accounting/categories
+ * @desc    Create new category
+ * @access  Admin only
+ */
+router.post('/categories', categoryController.createCategory)
+
+/**
+ * @route   GET /api/accounting/categories/:id
+ * @desc    Get category by ID
+ * @access  Admin only
+ */
+router.get('/categories/:id', categoryController.getCategoryById)
+
+/**
+ * @route   PUT /api/accounting/categories/:id
+ * @desc    Update category
+ * @access  Admin only
+ */
+router.put('/categories/:id', categoryController.updateCategory)
+
+/**
+ * @route   DELETE /api/accounting/categories/:id
+ * @desc    Delete category (soft delete)
+ * @access  Admin only
+ */
+router.delete('/categories/:id', categoryController.deleteCategory)
 
 // ============================================================================
 // EXPENSE ROUTES
