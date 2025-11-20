@@ -1,45 +1,55 @@
 #!/bin/bash
-# Git Push Script - Enhanced version with HTTPS support
+# Git Push Script - Flujo simple para USUARIO UNICO
 # Usage: ./gitp.sh "commit message"
 
-# Check if message was provided
+# --- Configuración ---
+# Define la rama a la que siempre quieres hacer push (ej: main, master)
+TARGET_BRANCH="main" 
+# Define el remoto (normalmente 'origin')
+REMOTE_NAME="origin"
+
+# --- Verificación de entrada ---
 if [ -z "$1" ]; then
-  echo "❌ Error: Commit message required"
-  echo "Usage: ./gitp.sh \"your commit message\""
+  echo "❌ Error: Se requiere mensaje de commit"
+  echo "Uso: ./gitp.sh \"tu mensaje de commit\""
   exit 1
 fi
 
-# Store commit message
 COMMIT_MESSAGE="$1"
 
-# Ensure commit message follows conventional commit format
+# Asegura que el mensaje siga el formato de commit convencional (opcional pero recomendado)
 if [[ ! "$COMMIT_MESSAGE" =~ ^[a-z]+(\([a-z]+\))?: ]]; then
   COMMIT_MESSAGE="chore: $COMMIT_MESSAGE"
 fi
 
-# Check Git status
-echo "📊 Checking Git status..."
-STATUS=$(git status --porcelain)
-if [ -z "$STATUS" ]; then
-  echo "✅ No changes to commit"
-  exit 0
+# --- Proceso Git ---
+
+# 1. Chequear estado para ver si hay cambios que añadir
+echo "📊 Chequeando estado de Git..."
+git add . 
+
+# Chequea si 'git add .' realmente ha preparado algo para commit (staged changes)
+if git diff --cached --quiet; then
+    echo "✅ No hay cambios nuevos que commitear."
+    exit 0
 fi
 
-# Show what changes will be committed
-echo "📝 Files to be committed:"
+echo "📝 Archivos a commitear:"
 git status --short
 
-# Execute: add, commit, push
-echo "📦 Adding changes..."
-git add . || { echo "❌ Error: git add failed"; exit 1; }
+# 2. Commitear los cambios
+echo "💾 Commiteando con mensaje: $COMMIT_MESSAGE"
+git commit -m "$COMMIT_MESSAGE" || { echo "❌ Error: git commit falló"; exit 1; }
 
-echo "💾 Committing with message: $COMMIT_MESSAGE"
-git commit -m "$COMMIT_MESSAGE" || { echo "❌ Error: git commit failed"; exit 1; }
+# 3. PUSH directo
+echo "🚀 Pushing a $REMOTE_NAME/$TARGET_BRANCH..."
 
-echo "🔄 Pulling latest changes from remote (rebase)..."
-git pull --rebase || { echo "❌ Warning: git pull failed - you may need to resolve conflicts"; }
+# Intenta hacer push. Si falla (ej. si hay cambios remotos que no tienes localmente), avisa.
+git push $REMOTE_NAME $TARGET_BRANCH || { 
+    echo "❌ Error: git push falló."
+    echo "Parece que hay cambios en GitHub que no tienes localmente."
+    echo "Por favor, ejecuta 'git pull' manualmente para resolver la situación."
+    exit 1; 
+}
 
-echo "🚀 Pushing to remote..."
-git push || { echo "❌ Error: git push failed"; exit 1; }
-
-echo "✅ Done! Commit and push completed successfully."
+echo "✅ ¡Listo! Commit y push completado exitosamente."
