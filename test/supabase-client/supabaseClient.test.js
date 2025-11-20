@@ -1327,7 +1327,7 @@ describe('Transaction Tests', () => {
       const profileResult = await profileQuery
 
       // Verify error structure
-      expect(profileResult.error).toBeDefined()
+      expect(profileResult.error).not.toBeNull()
       expect(profileResult.error.code).toBe(POSTGRESQL_ERROR_CODES.FOREIGN_KEY_VIOLATION)
       expect(profileResult.error.code).toBe('23503')
       expect(profileResult.error.message).toContain('foreign key constraint')
@@ -1482,7 +1482,7 @@ describe('Error Handling Tests', () => {
       const { data, error } = await query.select()
 
       expect(data).toBeNull()
-      expect(error).toBeDefined()
+      expect(error).not.toBeNull()
       expect(error.code).toBe(POSTGRESQL_ERROR_CODES.UNIQUE_VIOLATION)
       expect(error.message).toContain('Duplicate key value')
     })
@@ -1494,7 +1494,7 @@ describe('Error Handling Tests', () => {
       const { data, error } = await query.select()
 
       expect(data).toBeNull()
-      expect(error).toBeDefined()
+      expect(error).not.toBeNull()
       expect(error.code).toBe(POSTGRESQL_ERROR_CODES.FOREIGN_KEY_VIOLATION)
     })
 
@@ -1505,7 +1505,7 @@ describe('Error Handling Tests', () => {
       const { data, error } = await query.select()
 
       expect(data).toBeNull()
-      expect(error).toBeDefined()
+      expect(error).not.toBeNull()
       expect(error.code).toBe(POSTGRESQL_ERROR_CODES.NOT_NULL_VIOLATION)
     })
 
@@ -1516,7 +1516,7 @@ describe('Error Handling Tests', () => {
       const { data, error } = await query.select()
 
       expect(data).toBeNull()
-      expect(error).toBeDefined()
+      expect(error).not.toBeNull()
       expect(error.code).toBe(POSTGRESQL_ERROR_CODES.CHECK_VIOLATION)
     })
 
@@ -1527,7 +1527,7 @@ describe('Error Handling Tests', () => {
       const { data, error } = await query
 
       expect(data).toBeNull()
-      expect(error).toBeDefined()
+      expect(error).not.toBeNull()
       expect(error.code).toBe(POSTGRESQL_ERROR_CODES.UNDEFINED_TABLE)
     })
 
@@ -1538,7 +1538,7 @@ describe('Error Handling Tests', () => {
       const { data, error } = await query
 
       expect(data).toBeNull()
-      expect(error).toBeDefined()
+      expect(error).not.toBeNull()
       expect(error.code).toBe(POSTGRESQL_ERROR_CODES.UNDEFINED_COLUMN)
     })
 
@@ -1549,7 +1549,7 @@ describe('Error Handling Tests', () => {
       const { data, error } = await query
 
       expect(data).toBeNull()
-      expect(error).toBeDefined()
+      expect(error).not.toBeNull()
       expect(error.code).toBe(POSTGRESQL_ERROR_CODES.SYNTAX_ERROR)
     })
 
@@ -1560,7 +1560,7 @@ describe('Error Handling Tests', () => {
       const { data, error } = await query
 
       expect(data).toBeNull()
-      expect(error).toBeDefined()
+      expect(error).not.toBeNull()
       expect(error.code).toBe(POSTGRESQL_ERROR_CODES.INSUFFICIENT_PRIVILEGE)
     })
   })
@@ -1573,7 +1573,7 @@ describe('Error Handling Tests', () => {
       const { data, error } = await query
 
       expect(data).toBeNull()
-      expect(error).toBeDefined()
+      expect(error).not.toBeNull()
       expect(error.message).toContain('Connection failed')
     })
 
@@ -1584,7 +1584,7 @@ describe('Error Handling Tests', () => {
       const { data, error } = await query
 
       expect(data).toBeNull()
-      expect(error).toBeDefined()
+      expect(error).not.toBeNull()
       expect(error.message).toContain('Connection timeout')
     }, 35000) // Increase timeout to 35 seconds
 
@@ -1595,7 +1595,7 @@ describe('Error Handling Tests', () => {
       const { data, error } = await query
 
       expect(data).toBeNull()
-      expect(error).toBeDefined()
+      expect(error).not.toBeNull()
       expect(error.code).toBe(POSTGRESQL_ERROR_CODES.TOO_MANY_CONNECTIONS)
     })
   })
@@ -1613,7 +1613,7 @@ describe('Error Handling Tests', () => {
       expect(metrics.failedQueries).toBe(1)
       expect(metrics.successRate).toBe(0)
       expect(metrics.queries[0].success).toBe(false)
-      expect(metrics.queries[0].error).toBeDefined()
+      expect(metrics.queries[0].error).not.toBeNull()
     })
 
     test('should handle mixed success and failure queries', async () => {
@@ -1724,7 +1724,7 @@ describe('Data Consistency Tests', () => {
       const { data, error } = await profileQuery
 
       expect(data).toBeNull()
-      expect(error).toBeDefined()
+      expect(error).not.toBeNull()
       expect(error.code).toBe(POSTGRESQL_ERROR_CODES.FOREIGN_KEY_VIOLATION)
     })
 
@@ -1767,7 +1767,7 @@ describe('Data Consistency Tests', () => {
         const { data, error } = await query
 
         expect(data).toBeNull()
-        expect(error).toBeDefined()
+        expect(error).not.toBeNull()
         expect(error.code).toBe(POSTGRESQL_ERROR_CODES.CHECK_VIOLATION)
       }
     })
@@ -1781,7 +1781,7 @@ describe('Data Consistency Tests', () => {
       const { data: emailData, error: emailError } = await emailQuery
 
       expect(emailData).toBeNull()
-      expect(emailError).toBeDefined()
+      expect(emailError).not.toBeNull()
       expect(emailError.code).toBe(POSTGRESQL_ERROR_CODES.NOT_NULL_VIOLATION)
 
       // Test missing name
@@ -1792,7 +1792,7 @@ describe('Data Consistency Tests', () => {
       const { data: nameData, error: nameError } = await nameQuery
 
       expect(nameData).toBeNull()
-      expect(nameError).toBeDefined()
+      expect(nameError).not.toBeNull()
       expect(nameError.code).toBe(POSTGRESQL_ERROR_CODES.NOT_NULL_VIOLATION)
     })
   })
@@ -2397,7 +2397,7 @@ describe('Error Mapping Tests with Custom AppError', () => {
     expect(error.statusCode).toBe(400)
     expect(error.code).toBe('TEST_ERROR')
     expect(error.context.customField).toBe('custom value')
-    expect(error.timestamp).toBeDefined()
+    expect(error.timestamp).toEqual(expect.any(String))
     expect(error.isOperational).toBe(true)
   })
 })
@@ -2540,7 +2540,7 @@ describe('Mock Data Store Tests', () => {
       name: 'Test User'
     })
 
-    expect(newRecord.id).toBeDefined()
+    expect(newRecord.id).toEqual(expect.any(Number))
     expect(newRecord.id).toBeGreaterThan(0)
   })
 
@@ -2549,7 +2549,7 @@ describe('Mock Data Store Tests', () => {
       name: 'Updated Name'
     })
 
-    expect(updated).toBeDefined()
+    expect(updated).not.toBeNull()
     expect(updated.name).toBe('Updated Name')
     expect(updated.id).toBe(1)
   })
@@ -2557,7 +2557,7 @@ describe('Mock Data Store Tests', () => {
   test('should delete records', () => {
     const deleted = mockDataStore.deleteRecord('users', 1)
 
-    expect(deleted).toBeDefined()
+    expect(deleted).not.toBeNull()
     expect(deleted.id).toBe(1)
 
     const remaining = mockDataStore.getTable('users')
@@ -2602,7 +2602,7 @@ describe('Supabase Client Mock Advanced Features', () => {
         .upload('test.jpg', new Blob(['test content']))
 
       expect(error).toBeNull()
-      expect(data).toBeDefined()
+      expect(data).not.toBeNull()
       expect(data.path).toBe('test.jpg')
       expect(data.bucket).toBe('avatars')
     })
@@ -2624,7 +2624,7 @@ describe('Supabase Client Mock Advanced Features', () => {
       const { data, error } = await client.storage.from('avatars').remove(['test.jpg'])
 
       expect(error).toBeNull()
-      expect(data).toBeDefined()
+      expect(data).not.toBeNull()
       expect(data[0].path).toBe('test.jpg')
     })
 
@@ -2632,7 +2632,7 @@ describe('Supabase Client Mock Advanced Features', () => {
       const { data, error } = await client.storage.from('avatars').list()
 
       expect(error).toBeNull()
-      expect(data).toBeDefined()
+      expect(data).not.toBeNull()
       expect(Array.isArray(data)).toBe(true)
     })
   })
@@ -2644,8 +2644,8 @@ describe('Supabase Client Mock Advanced Features', () => {
       })
 
       expect(error).toBeNull()
-      expect(data.user).toBeDefined()
-      expect(data.session).toBeDefined()
+      expect(data.user).not.toBeNull()
+      expect(data.session).not.toBeNull()
       expect(data.user.email).toBe('newuser@example.com')
     })
 
@@ -2656,8 +2656,8 @@ describe('Supabase Client Mock Advanced Features', () => {
       })
 
       expect(error).toBeNull()
-      expect(data.user).toBeDefined()
-      expect(data.session).toBeDefined()
+      expect(data.user).not.toBeNull()
+      expect(data.session).not.toBeNull()
     })
 
     test('should handle user sign out', async () => {
@@ -2667,7 +2667,7 @@ describe('Supabase Client Mock Advanced Features', () => {
       const { data, error } = await client.auth.signOut()
 
       expect(error).toBeNull()
-      expect(data).toBeDefined()
+      expect(data).not.toBeNull()
     })
 
     test('should get current user', async () => {
@@ -2677,7 +2677,7 @@ describe('Supabase Client Mock Advanced Features', () => {
       const { data, error } = await client.auth.getCurrentUser()
 
       expect(error).toBeNull()
-      expect(data).toBeDefined()
+      expect(data).not.toBeNull()
     })
 
     test('should get current session', async () => {
@@ -2687,8 +2687,8 @@ describe('Supabase Client Mock Advanced Features', () => {
       const { data, error } = await client.auth.getSession()
 
       expect(error).toBeNull()
-      expect(data).toBeDefined()
-      expect(data.access_token).toBeDefined()
+      expect(data).not.toBeNull()
+      expect(data.access_token).toEqual(expect.any(String))
     })
   })
 })
@@ -2709,7 +2709,7 @@ describe('Cypress Integration Preparation', () => {
     const { data, error } = await client.from('users').select()
 
     expect(error).toBeNull()
-    expect(data).toBeDefined()
+    expect(data).not.toBeNull()
     expect(Array.isArray(data)).toBe(true)
   })
 
@@ -2725,7 +2725,7 @@ describe('Cypress Integration Preparation', () => {
 
     results.forEach(result => {
       expect(result.error).toBeNull()
-      expect(result.data).toBeDefined()
+      expect(result.data).not.toBeNull()
     })
   })
 
@@ -2741,8 +2741,8 @@ describe('Cypress Integration Preparation', () => {
 
     const { data: updatedUsers } = await client.from('users').select()
 
-    expect(newUser).toBeDefined()
+    expect(newUser).not.toBeNull()
     expect(updatedUsers.length).toBe(initialCount + 1)
-    expect(updatedUsers.find(u => u.email === 'state-test@example.com')).toBeDefined()
+    expect(updatedUsers.find(u => u.email === 'state-test@example.com')).not.toBeUndefined()
   })
 })
