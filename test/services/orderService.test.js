@@ -495,7 +495,7 @@ describe('Order Service - Business Logic Layer', () => {
       mockOrderRepository.findByIdWithItems.mockResolvedValue(testData.orders.pending)
 
       const result = await getOrderById(largeOrderId)
-      expect(result).toBeDefined()
+      expect(result).toEqual(testData.orders.pending)
     })
 
     test('should handle zero and negative IDs', async () => {
@@ -529,7 +529,9 @@ describe('Order Service - Business Logic Layer', () => {
       mockProductRepository.findById.mockResolvedValue(testData.products.active)
       mockSupabase.rpc.mockResolvedValue({ data: { id: 1 }, error: null })
 
-      await expect(createOrderWithItems(orderData, orderItems)).resolves.toBeDefined()
+      await expect(createOrderWithItems(orderData, orderItems)).resolves.toMatchObject({
+        id: 1
+      })
     })
 
     test('should handle special characters in customer names', async () => {
@@ -632,9 +634,9 @@ describe('Order Service - Business Logic Layer', () => {
 
       const results = await Promise.all(promises)
       expect(results).toHaveLength(3)
-      expect(results[0].id).toBeDefined()
-      expect(results[1].id).toBeDefined()
-      expect(results[2].id).toBeDefined()
+      expect(results[0].id).toEqual(expect.any(Number))
+      expect(results[1].id).toEqual(expect.any(Number))
+      expect(results[2].id).toEqual(expect.any(Number))
     })
 
     test('should validate order total calculation', async () => {
@@ -675,7 +677,9 @@ describe('Order Service - Business Logic Layer', () => {
 
       mockSupabase.rpc.mockResolvedValue({ data: { id: 1 }, error: null })
 
-      await expect(createOrderWithItems(orderData, orderItems)).resolves.toBeDefined()
+      await expect(createOrderWithItems(orderData, orderItems)).resolves.toMatchObject({
+        id: 1
+      })
       expect(mockProductRepository.findById).toHaveBeenCalledWith(1, true)
       expect(mockProductRepository.findById).toHaveBeenCalledWith(2, true)
     })

@@ -217,14 +217,14 @@ describe('Supabase Client Database Operations - Core CRUD', () => {
       // Test that we get exactly null, not undefined or false
       expect(data).toBeNull()
       expect(data).not.toBeUndefined()
-      expect(data).not.toBeTruthy()
+      expect(data).toBeNull()
     })
 
     test('should throw error with single() when no results found', async () => {
       const { data, error } = await client.from('users').select().eq('id', 999).single()
 
       expect(data).toBeNull()
-      expect(error).toBeDefined()
+      expect(error).not.toBeNull()
       expect(error.code).toBe('PGRST116') // Supabase error code for no rows
       expect(error.message).toContain('No rows returned')
     })
@@ -235,7 +235,7 @@ describe('Supabase Client Database Operations - Core CRUD', () => {
       const { data, error } = await client.from('users').select().gte('id', 1).single()
 
       expect(data).toBeNull()
-      expect(error).toBeDefined()
+      expect(error).not.toBeNull()
       expect(error.code).toBe('PGRST117') // Supabase error code for multiple rows
       expect(error.message).toContain('Multiple rows returned')
     })
@@ -506,9 +506,9 @@ describe('Supabase Client Database Operations - Core CRUD', () => {
         .single()
 
       expect(error).toBeNull()
-      expect(data).toBeDefined()
+      expect(data).not.toBeNull()
       expect(data.id).toBe(1)
-      expect(data.profiles).toBeDefined()
+      expect(data.profiles).toEqual(expect.any(Array))
       expect(Array.isArray(data.profiles)).toBe(true)
       expect(data.profiles[0].user_id).toBe(1)
     })
@@ -526,9 +526,9 @@ describe('Supabase Client Database Operations - Core CRUD', () => {
         .single()
 
       expect(error).toBeNull()
-      expect(data).toBeDefined()
+      expect(data).not.toBeNull()
       expect(data.id).toBe(1)
-      expect(data.product_images).toBeDefined()
+      expect(data.product_images).toEqual(expect.any(Array))
       expect(Array.isArray(data.product_images)).toBe(true)
       expect(data.product_images[0].product_id).toBe(1)
     })
@@ -548,8 +548,8 @@ describe('Supabase Client Database Operations - Core CRUD', () => {
         .single()
 
       expect(error).toBeNull()
-      expect(data).toBeDefined()
-      expect(data.product_occasions).toBeDefined()
+      expect(data).not.toBeNull()
+      expect(data.product_occasions).toEqual(expect.any(Array))
       expect(Array.isArray(data.product_occasions)).toBe(true)
     })
 
@@ -567,9 +567,9 @@ describe('Supabase Client Database Operations - Core CRUD', () => {
         .single()
 
       expect(error).toBeNull()
-      expect(data).toBeDefined()
-      expect(data.order_items).toBeDefined()
-      expect(data.payments).toBeDefined()
+      expect(data).not.toBeNull()
+      expect(data.order_items).toEqual(expect.any(Array))
+      expect(data.payments).not.toBeNull()
     })
   })
 
@@ -908,7 +908,7 @@ describe('Supabase Client Database Operations - Core CRUD', () => {
       const { data, error } = await query
 
       expect(data).toBeNull()
-      expect(error).toBeDefined()
+      expect(error).not.toBeNull()
       expect(error.code).toBe('23503')
       expect(error.message).toContain('foreign key constraint')
     })
@@ -924,7 +924,7 @@ describe('Supabase Client Database Operations - Core CRUD', () => {
         .like('email', '%example.com')
 
       expect(error).toBeNull()
-      expect(data).toBeDefined()
+      expect(data).not.toBeNull()
       expect(
         data.every(user => user.id >= 1 && user.id <= 2 && user.email.includes('example.com'))
       ).toBe(true)
@@ -939,7 +939,7 @@ describe('Supabase Client Database Operations - Core CRUD', () => {
         .limit(5)
 
       expect(error).toBeNull()
-      expect(data).toBeDefined()
+      expect(data).not.toBeNull()
       expect(data.length).toBeLessThanOrEqual(5)
 
       // Verify descending order
@@ -1032,7 +1032,7 @@ describe('RPC Function Tests', () => {
     const { data, error } = await client.rpc('update_order_status_with_history', updateData)
 
     expect(error).toBeNull()
-    expect(data).toBeDefined()
+    expect(data).not.toBeNull()
     expect(data).toEqual({ success: true }) // The mock implementation returns exactly this
 
     // Verify boolean and structure
@@ -1079,7 +1079,7 @@ describe('RPC Function Tests', () => {
     const { data, error } = await client.rpc('error_function', { invalid_param: true })
 
     expect(data).toBeNull()
-    expect(error).toBeDefined()
+    expect(error).not.toBeNull()
     expect(error).toMatchObject({
       code: 'XX000', // INTERNAL_ERROR code
       message: 'RPC function failed',
@@ -1919,15 +1919,15 @@ describe('Repository Pattern Tests', () => {
     test('should find record by ID', async () => {
       const user = await userRepository.findById(1)
 
-      expect(user).toBeDefined()
+      expect(user).not.toBeNull()
       expect(user.id).toBe(1)
-      expect(user.email).toBeDefined()
+      expect(user.email).toEqual(expect.any(String))
     })
 
     test('should find one record with filters', async () => {
       const user = await userRepository.findOne({ email: 'user1@example.com' })
 
-      expect(user).toBeDefined()
+      expect(user).not.toBeNull()
       expect(user.email).toBe('user1@example.com')
     })
 
@@ -1946,17 +1946,17 @@ describe('Repository Pattern Tests', () => {
 
       const user = await userRepository.create(userData)
 
-      expect(user).toBeDefined()
+      expect(user).not.toBeNull()
       expect(user.email).toBe(userData.email)
       expect(user.name).toBe(userData.name)
-      expect(user.id).toBeDefined()
+      expect(user.id).toEqual(expect.any(Number))
     })
 
     test('should update record', async () => {
       const updates = { name: 'Updated Repository User' }
       const user = await userRepository.update(1, updates)
 
-      expect(user).toBeDefined()
+      expect(user).not.toBeNull()
       expect(user.name).toBe(updates.name)
     })
 
@@ -1971,15 +1971,15 @@ describe('Repository Pattern Tests', () => {
     test('should delete record', async () => {
       const user = await userRepository.delete(1)
 
-      expect(user).toBeDefined()
+      expect(user).not.toBeNull()
       expect(user.id).toBe(1)
     })
 
     test('should soft delete record', async () => {
       const user = await userRepository.softDelete(1)
 
-      expect(user).toBeDefined()
-      expect(user.deleted_at).toBeDefined()
+      expect(user).not.toBeNull()
+      expect(user.deleted_at).not.toBeNull()
     })
 
     test('should find only active records', async () => {
@@ -1996,16 +1996,16 @@ describe('Repository Pattern Tests', () => {
     test('should find user by email', async () => {
       const user = await userRepository.findByEmail('user1@example.com')
 
-      expect(user).toBeDefined()
+      expect(user).not.toBeNull()
       expect(user.email).toBe('user1@example.com')
     })
 
     test('should find user with profile', async () => {
       const userWithProfile = await userRepository.findWithProfile(1)
 
-      expect(userWithProfile).toBeDefined()
+      expect(userWithProfile).not.toBeNull()
       expect(userWithProfile.id).toBe(1)
-      expect(userWithProfile.profiles).toBeDefined()
+      expect(userWithProfile.profiles).toEqual(expect.any(Array))
       expect(Array.isArray(userWithProfile.profiles)).toBe(true)
     })
 
@@ -2020,8 +2020,8 @@ describe('Repository Pattern Tests', () => {
 
       const result = await userRepository.createUserWithProfile(userData, profileData)
 
-      expect(result.user).toBeDefined()
-      expect(result.profile).toBeDefined()
+      expect(result.user).not.toBeNull()
+      expect(result.profile).not.toBeNull()
       expect(result.user.email).toBe(userData.email)
       expect(result.profile.bio).toBe(profileData.bio)
       expect(result.profile.user_id).toBe(result.user.id)
@@ -2032,7 +2032,7 @@ describe('Repository Pattern Tests', () => {
     test('should find profile by user ID', async () => {
       const profile = await profileRepository.findByUserId(1)
 
-      expect(profile).toBeDefined()
+      expect(profile).not.toBeNull()
       expect(profile.user_id).toBe(1)
     })
 
@@ -2040,7 +2040,7 @@ describe('Repository Pattern Tests', () => {
       const updates = { bio: 'Updated bio' }
       const profile = await profileRepository.updateByUserId(1, updates)
 
-      expect(profile).toBeDefined()
+      expect(profile).not.toBeNull()
       expect(profile.bio).toBe(updates.bio)
     })
   })
@@ -2109,9 +2109,9 @@ describe('Service Layer Integration Tests with DI Container', () => {
   test('should get user with profile through service layer', async () => {
     const result = await userService.getUserWithProfile(1)
 
-    expect(result).toBeDefined()
+    expect(result).not.toBeNull()
     expect(result.id).toBe(1)
-    expect(result.profiles).toBeDefined()
+    expect(result.profiles).toEqual(expect.any(Array))
 
     // Check performance monitoring
     const metrics = client.getPerformanceMetrics()
@@ -2130,8 +2130,8 @@ describe('Service Layer Integration Tests with DI Container', () => {
 
     const result = await userService.createUserWithProfile(userData, profileData)
 
-    expect(result.user).toBeDefined()
-    expect(result.profile).toBeDefined()
+    expect(result.user).not.toBeNull()
+    expect(result.profile).not.toBeNull()
     expect(result.user.email).toBe(userData.email)
     expect(result.profile.user_id).toBe(result.user.id)
 
@@ -2155,7 +2155,7 @@ describe('Service Layer Integration Tests with DI Container', () => {
 
     // Verify user is soft deleted
     const deletedUser = await userService.getUserWithProfile(user.id)
-    expect(deletedUser.deleted_at).toBeDefined()
+    expect(deletedUser.deleted_at).not.toBeNull()
   })
 
   test('should handle service layer errors with performance tracking', async () => {
@@ -2167,7 +2167,7 @@ describe('Service Layer Integration Tests with DI Container', () => {
       await userService.getUserWithProfile(999)
       throw new Error('Should have thrown an error')
     } catch (error) {
-      expect(error).toBeDefined()
+      expect(error).not.toBeNull()
 
       // Check that error was tracked in performance monitoring
       const metrics = client.getPerformanceMetrics()

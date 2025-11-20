@@ -86,13 +86,7 @@
           },
           "category": {
             "type": "string",
-            "enum": [
-              "validation",
-              "authentication",
-              "not_found",
-              "business",
-              "server"
-            ],
+            "enum": ["validation", "authentication", "not_found", "business", "server"],
             "example": "validation",
             "description": "Error category for grouping"
           },
@@ -142,22 +136,13 @@
             "type": "object",
             "description": "Field-specific validation errors (for validation errors only)",
             "example": {
-              "email": [
-                "Must be a valid email address"
-              ],
-              "password": [
-                "Must be at least 8 characters"
-              ]
+              "email": ["Must be a valid email address"],
+              "password": ["Must be at least 8 characters"]
             }
           }
         },
         "description": "RFC 7807 compliant error response with FloresYa extensions",
-        "required": [
-          "success",
-          "error",
-          "code",
-          "message"
-        ]
+        "required": ["success", "error", "code", "message"]
       },
       "user": {
         "type": "object",
@@ -181,10 +166,7 @@
           },
           "role": {
             "type": "string",
-            "enum": [
-              "user",
-              "admin"
-            ],
+            "enum": ["user", "admin"],
             "example": "user"
           },
           "email_verified": {
@@ -323,12 +305,7 @@
           },
           "size": {
             "type": "string",
-            "enum": [
-              "thumb",
-              "small",
-              "medium",
-              "large"
-            ],
+            "enum": ["thumb", "small", "medium", "large"],
             "example": "small"
           },
           "url": {
@@ -401,14 +378,7 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "pending",
-              "verified",
-              "preparing",
-              "shipped",
-              "delivered",
-              "cancelled"
-            ],
+            "enum": ["pending", "verified", "preparing", "shipped", "delivered", "cancelled"],
             "example": "pending"
           },
           "total_amount_usd": {
@@ -514,26 +484,12 @@
           },
           "old_status": {
             "type": "string",
-            "enum": [
-              "pending",
-              "verified",
-              "preparing",
-              "shipped",
-              "delivered",
-              "cancelled"
-            ],
+            "enum": ["pending", "verified", "preparing", "shipped", "delivered", "cancelled"],
             "example": "pending"
           },
           "new_status": {
             "type": "string",
-            "enum": [
-              "pending",
-              "verified",
-              "preparing",
-              "shipped",
-              "delivered",
-              "cancelled"
-            ],
+            "enum": ["pending", "verified", "preparing", "shipped", "delivered", "cancelled"],
             "example": "verified"
           },
           "notes": {
@@ -589,13 +545,7 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "pending",
-              "completed",
-              "failed",
-              "refunded",
-              "partially_refunded"
-            ],
+            "enum": ["pending", "completed", "failed", "refunded", "partially_refunded"],
             "example": "pending"
           },
           "created_at": {
@@ -659,20 +609,11 @@
       },
       "OrderStatusUpdate": {
         "type": "object",
-        "required": [
-          "status"
-        ],
+        "required": ["status"],
         "properties": {
           "status": {
             "type": "string",
-            "enum": [
-              "pending",
-              "verified",
-              "preparing",
-              "shipped",
-              "delivered",
-              "cancelled"
-            ],
+            "enum": ["pending", "verified", "preparing", "shipped", "delivered", "cancelled"],
             "example": "verified"
           },
           "notes": {
@@ -683,20 +624,11 @@
       },
       "PaymentConfirm": {
         "type": "object",
-        "required": [
-          "payment_method",
-          "reference_number"
-        ],
+        "required": ["payment_method", "reference_number"],
         "properties": {
           "payment_method": {
             "type": "string",
-            "enum": [
-              "cash",
-              "mobile_payment",
-              "bank_transfer",
-              "zelle",
-              "crypto"
-            ],
+            "enum": ["cash", "mobile_payment", "bank_transfer", "zelle", "crypto"],
             "example": "bank_transfer"
           },
           "reference_number": {
@@ -721,19 +653,11 @@
       },
       "OrderCreate": {
         "type": "object",
-        "required": [
-          "order",
-          "items"
-        ],
+        "required": ["order", "items"],
         "properties": {
           "order": {
             "type": "object",
-            "required": [
-              "customer_email",
-              "customer_name",
-              "delivery_address",
-              "total_amount_usd"
-            ],
+            "required": ["customer_email", "customer_name", "delivery_address", "total_amount_usd"],
             "properties": {
               "customer_email": {
                 "type": "string",
@@ -779,14 +703,7 @@
               },
               "status": {
                 "type": "string",
-                "enum": [
-                  "pending",
-                  "verified",
-                  "preparing",
-                  "shipped",
-                  "delivered",
-                  "cancelled"
-                ]
+                "enum": ["pending", "verified", "preparing", "shipped", "delivered", "cancelled"]
               },
               "notes": {
                 "type": "string",
@@ -798,12 +715,7 @@
             "type": "array",
             "items": {
               "type": "object",
-              "required": [
-                "product_id",
-                "product_name",
-                "unit_price_usd",
-                "quantity"
-              ],
+              "required": ["product_id", "product_name", "unit_price_usd", "quantity"],
               "properties": {
                 "product_id": {
                   "type": "integer",
@@ -857,13 +769,7 @@
           },
           "category": {
             "type": "string",
-            "enum": [
-              "validation",
-              "authentication",
-              "not_found",
-              "business",
-              "server"
-            ],
+            "enum": ["validation", "authentication", "not_found", "business", "server"],
             "example": "validation",
             "description": "Error category"
           },
@@ -930,15 +836,9 @@
                 "type": "object",
                 "description": "Field-specific validation errors",
                 "example": {
-                  "email": [
-                    "Must be a valid email address"
-                  ],
-                  "password": [
-                    "Must be at least 8 characters"
-                  ],
-                  "name": [
-                    "Must be at least 2 characters"
-                  ]
+                  "email": ["Must be a valid email address"],
+                  "password": ["Must be at least 8 characters"],
+                  "name": ["Must be at least 2 characters"]
                 }
               }
             },
@@ -955,12 +855,8 @@
               "timestamp": "2025-10-31T15:10:00.000Z",
               "path": "/api/products",
               "errors": {
-                "email": [
-                  "Must be a valid email address"
-                ],
-                "password": [
-                  "Must be at least 8 characters"
-                ]
+                "email": ["Must be a valid email address"],
+                "password": ["Must be at least 8 characters"]
               }
             }
           }
@@ -1136,13 +1032,7 @@
           },
           "type": {
             "type": "string",
-            "enum": [
-              "bank_transfer",
-              "mobile_payment",
-              "cash",
-              "crypto",
-              "international"
-            ],
+            "enum": ["bank_transfer", "mobile_payment", "cash", "crypto", "international"],
             "example": "bank_transfer"
           },
           "description": {
@@ -1355,9 +1245,7 @@
   "paths": {
     "/api/errors": {
       "get": {
-        "tags": [
-          "System"
-        ],
+        "tags": ["System"],
         "summary": "Get all error codes",
         "description": "Returns complete list of ERROR_CODES with descriptions and categories",
         "responses": {
@@ -1426,9 +1314,7 @@
     },
     "/api/products": {
       "get": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Get all products with filters",
         "description": "Returns paginated list of active products with optional filters (uses indexed columns for performance)",
         "parameters": [
@@ -1483,12 +1369,7 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "enum": [
-                "thumb",
-                "small",
-                "medium",
-                "large"
-              ]
+              "enum": ["thumb", "small", "medium", "large"]
             },
             "description": "Include product with specific image size"
           },
@@ -1536,9 +1417,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Create new product",
         "description": "Admin only - Creates a new product",
         "security": [
@@ -1552,16 +1431,11 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "product"
-                ],
+                "required": ["product"],
                 "properties": {
                   "product": {
                     "type": "object",
-                    "required": [
-                      "name",
-                      "price_usd"
-                    ],
+                    "required": ["name", "price_usd"],
                     "properties": {
                       "name": {
                         "type": "string",
@@ -1642,9 +1516,7 @@
     },
     "/api/products/{id}": {
       "get": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Get product by ID",
         "parameters": [
           {
@@ -1655,12 +1527,7 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "enum": [
-                "thumb",
-                "small",
-                "medium",
-                "large"
-              ]
+              "enum": ["thumb", "small", "medium", "large"]
             },
             "description": "Include product with specific image size"
           }
@@ -1697,9 +1564,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Update product",
         "description": "Admin only - Updates an existing product",
         "security": [
@@ -1803,9 +1668,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Delete product (soft delete)",
         "description": "Admin only - Soft deletes a product (sets active to false)",
         "security": [
@@ -1843,9 +1706,7 @@
     },
     "/api/products/carousel": {
       "get": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Get carousel products",
         "description": "Returns featured products for carousel display (ordered by carousel_order)",
         "responses": {
@@ -1879,9 +1740,7 @@
     },
     "/api/products/with-occasions": {
       "get": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Get products with occasions",
         "description": "Returns products with their associated occasions",
         "parameters": [
@@ -1929,9 +1788,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Create product with occasions",
         "description": "Admin only - Creates a new product with associated occasions",
         "security": [
@@ -1945,17 +1802,11 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "product",
-                  "occasionIds"
-                ],
+                "required": ["product", "occasionIds"],
                 "properties": {
                   "product": {
                     "type": "object",
-                    "required": [
-                      "name",
-                      "price_usd"
-                    ],
+                    "required": ["name", "price_usd"],
                     "properties": {
                       "name": {
                         "type": "string",
@@ -2042,9 +1893,7 @@
     },
     "/api/products/occasion/{occasionId}": {
       "get": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Get products by occasion",
         "parameters": [
           {
@@ -2098,9 +1947,7 @@
     },
     "/api/products/sku/{sku}": {
       "get": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Get product by SKU",
         "parameters": [
           {
@@ -2144,9 +1991,7 @@
     },
     "/api/products/{id}/images/primary": {
       "get": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Get primary image for product",
         "parameters": [
           {
@@ -2184,9 +2029,7 @@
     },
     "/api/products/{id}/images": {
       "get": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Get all images for product",
         "parameters": [
           {
@@ -2197,12 +2040,7 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "enum": [
-                "thumb",
-                "small",
-                "medium",
-                "large"
-              ]
+              "enum": ["thumb", "small", "medium", "large"]
             },
             "description": "Filter by image size"
           }
@@ -2239,9 +2077,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Upload product images",
         "description": "Admin only - Uploads new images for a product (creates all sizes)",
         "security": [
@@ -2260,9 +2096,7 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "image"
-                ],
+                "required": ["image"],
                 "properties": {
                   "image": {
                     "type": "string",
@@ -2318,9 +2152,7 @@
     },
     "/api/products/{id}/carousel-order": {
       "patch": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Update product carousel order",
         "description": "Admin only - Updates the carousel display order for a product",
         "security": [
@@ -2339,9 +2171,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "order"
-                ],
+                "required": ["order"],
                 "properties": {
                   "order": {
                     "type": "integer",
@@ -2389,9 +2219,7 @@
     },
     "/api/products/{id}/stock": {
       "patch": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Update product stock",
         "description": "Admin only - Updates the stock quantity for a product",
         "security": [
@@ -2410,9 +2238,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "quantity"
-                ],
+                "required": ["quantity"],
                 "properties": {
                   "quantity": {
                     "type": "integer",
@@ -2460,9 +2286,7 @@
     },
     "/api/products/{id}/images/{imageIndex}": {
       "delete": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Delete product images by index",
         "description": "Admin only - Deletes all sizes of a specific image index",
         "security": [
@@ -2510,9 +2334,7 @@
     },
     "/api/products/{id}/images/primary/{imageIndex}": {
       "patch": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Set primary image",
         "description": "Admin only - Sets a specific image index as the primary image",
         "security": [
@@ -2572,9 +2394,7 @@
     },
     "/api/products/{id}/occasions": {
       "get": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Get occasions for a product",
         "description": "Admin only - Get all occasions associated with a product",
         "security": [
@@ -2625,9 +2445,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Replace product occasions",
         "description": "Admin only - Atomically replace all occasions for a product (transactional)",
         "security": [
@@ -2646,9 +2464,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "occasion_ids"
-                ],
+                "required": ["occasion_ids"],
                 "properties": {
                   "occasion_ids": {
                     "type": "array",
@@ -2703,9 +2519,7 @@
     },
     "/api/products/{id}/occasions/{occasionId}": {
       "post": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Link occasion to product",
         "description": "Admin only - Link a single occasion to a product",
         "security": [
@@ -2768,9 +2582,7 @@
     },
     "/api/products/{id}/reactivate": {
       "patch": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Reactivate product",
         "description": "Admin only - Reactivates a soft-deleted product",
         "security": [
@@ -2820,9 +2632,7 @@
     },
     "/api/orders": {
       "get": {
-        "tags": [
-          "Orders"
-        ],
+        "tags": ["Orders"],
         "summary": "Get all orders with filters",
         "description": "Admin only - Returns paginated list of orders with optional filters (uses indexed columns for performance)",
         "security": [
@@ -2842,14 +2652,7 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "enum": [
-                "pending",
-                "verified",
-                "preparing",
-                "shipped",
-                "delivered",
-                "cancelled"
-              ]
+              "enum": ["pending", "verified", "preparing", "shipped", "delivered", "cancelled"]
             },
             "description": "Filter by order status (uses idx_orders_status)"
           },
@@ -2923,9 +2726,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Orders"
-        ],
+        "tags": ["Orders"],
         "summary": "Create new order",
         "description": "Create a new order (public endpoint for checkout process)",
         "requestBody": {
@@ -2934,10 +2735,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "order",
-                  "items"
-                ],
+                "required": ["order", "items"],
                 "properties": {
                   "order": {
                     "type": "object",
@@ -3013,12 +2811,7 @@
                     "minItems": 1,
                     "items": {
                       "type": "object",
-                      "required": [
-                        "product_id",
-                        "product_name",
-                        "unit_price_usd",
-                        "quantity"
-                      ],
+                      "required": ["product_id", "product_name", "unit_price_usd", "quantity"],
                       "properties": {
                         "product_id": {
                           "type": "integer",
@@ -3093,9 +2886,7 @@
     },
     "/api/orders/{id}": {
       "get": {
-        "tags": [
-          "Orders"
-        ],
+        "tags": ["Orders"],
         "summary": "Get order by ID",
         "description": "Get order details by ID (owner or admin only)",
         "security": [
@@ -3143,9 +2934,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Orders"
-        ],
+        "tags": ["Orders"],
         "summary": "Update order",
         "description": "Update order details (owner or admin, limited fields)",
         "security": [
@@ -3215,9 +3004,7 @@
     },
     "/api/orders/user/{userId}": {
       "get": {
-        "tags": [
-          "Orders"
-        ],
+        "tags": ["Orders"],
         "summary": "Get orders by user",
         "description": "Get all orders for a specific user (owner or admin only)",
         "security": [
@@ -3280,9 +3067,7 @@
     },
     "/api/orders/{id}/status-history": {
       "get": {
-        "tags": [
-          "Orders"
-        ],
+        "tags": ["Orders"],
         "summary": "Get order status history",
         "description": "Get the complete status change history for an order",
         "security": [
@@ -3335,9 +3120,7 @@
     },
     "/api/orders/{id}/status": {
       "patch": {
-        "tags": [
-          "Orders"
-        ],
+        "tags": ["Orders"],
         "summary": "Update order status",
         "description": "Admin only - Update order status with optional notes",
         "security": [
@@ -3397,9 +3180,7 @@
     },
     "/api/orders/{id}/cancel": {
       "patch": {
-        "tags": [
-          "Orders"
-        ],
+        "tags": ["Orders"],
         "summary": "Cancel order",
         "description": "Cancel an order (owner or admin) with optional cancellation notes",
         "security": [
@@ -3465,9 +3246,7 @@
     },
     "/api/users": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Get all users",
         "description": "Admin only - Returns paginated list of all users",
         "security": [
@@ -3487,10 +3266,7 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "enum": [
-                "user",
-                "admin"
-              ]
+              "enum": ["user", "admin"]
             },
             "description": "Filter by user role"
           },
@@ -3549,9 +3325,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Create new user",
         "description": "Create a new user account (public registration)",
         "requestBody": {
@@ -3560,10 +3334,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "email",
-                  "full_name"
-                ],
+                "required": ["email", "full_name"],
                 "properties": {
                   "email": {
                     "type": "string",
@@ -3580,10 +3351,7 @@
                   },
                   "role": {
                     "type": "string",
-                    "enum": [
-                      "user",
-                      "admin"
-                    ],
+                    "enum": ["user", "admin"],
                     "default": "user"
                   },
                   "password_hash": {
@@ -3629,9 +3397,7 @@
     },
     "/api/users/{id}": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Get user by ID",
         "description": "Get user details by ID (owner or admin only)",
         "security": [
@@ -3679,9 +3445,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Update user",
         "description": "Update user details (owner or admin only)",
         "security": [
@@ -3712,10 +3476,7 @@
                   },
                   "role": {
                     "type": "string",
-                    "enum": [
-                      "user",
-                      "admin"
-                    ]
+                    "enum": ["user", "admin"]
                   }
                 }
               }
@@ -3760,9 +3521,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Delete user (soft delete)",
         "description": "Admin only - Soft deletes a user (sets active to false)",
         "security": [
@@ -3803,9 +3562,7 @@
     },
     "/api/users/email/{email}": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Get user by email",
         "description": "Admin only - Get user details by email address",
         "security": [
@@ -3862,9 +3619,7 @@
     },
     "/api/users/{id}/reactivate": {
       "patch": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Reactivate user",
         "description": "Admin only - Reactivates a soft-deleted user",
         "security": [
@@ -3914,9 +3669,7 @@
     },
     "/api/users/{id}/verify-email": {
       "patch": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Verify user email",
         "description": "Verify user email address (owner or admin only)",
         "security": [
@@ -3966,9 +3719,7 @@
     },
     "/api/payments/methods": {
       "get": {
-        "tags": [
-          "Payments"
-        ],
+        "tags": ["Payments"],
         "summary": "Get available payment methods",
         "description": "Public - Returns available payment methods for Venezuela",
         "responses": {
@@ -4002,9 +3753,7 @@
     },
     "/api/payments/{id}/confirm": {
       "post": {
-        "tags": [
-          "Payments"
-        ],
+        "tags": ["Payments"],
         "summary": "Confirm payment for order",
         "description": "Confirm payment for an existing order (authenticated users)",
         "security": [
@@ -4064,9 +3813,7 @@
     },
     "/api/occasions": {
       "get": {
-        "tags": [
-          "Occasions"
-        ],
+        "tags": ["Occasions"],
         "summary": "Get all occasions",
         "description": "Public - Returns all active occasions, sorted by display_order.",
         "parameters": [
@@ -4109,9 +3856,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Occasions"
-        ],
+        "tags": ["Occasions"],
         "summary": "Create new occasion",
         "description": "Admin only - Creates a new occasion.",
         "security": [
@@ -4125,10 +3870,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "name",
-                  "slug"
-                ],
+                "required": ["name", "slug"],
                 "properties": {
                   "name": {
                     "type": "string",
@@ -4191,9 +3933,7 @@
     },
     "/api/occasions/{id}": {
       "get": {
-        "tags": [
-          "Occasions"
-        ],
+        "tags": ["Occasions"],
         "summary": "Get occasion by ID",
         "description": "Get occasion details by its unique ID.",
         "parameters": [
@@ -4236,9 +3976,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Occasions"
-        ],
+        "tags": ["Occasions"],
         "summary": "Update occasion",
         "description": "Admin only - Updates an existing occasion.",
         "security": [
@@ -4320,9 +4058,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Occasions"
-        ],
+        "tags": ["Occasions"],
         "summary": "Delete occasion (soft delete)",
         "description": "Admin only - Soft deletes an occasion by setting its `active` flag to false.",
         "security": [
@@ -4363,9 +4099,7 @@
     },
     "/api/occasions/slug/{slug}": {
       "get": {
-        "tags": [
-          "Occasions"
-        ],
+        "tags": ["Occasions"],
         "summary": "Get occasion by slug",
         "description": "Get occasion details by its unique slug.",
         "parameters": [
@@ -4416,9 +4150,7 @@
     },
     "/api/occasions/{id}/display-order": {
       "patch": {
-        "tags": [
-          "Occasions"
-        ],
+        "tags": ["Occasions"],
         "summary": "Update occasion display order",
         "description": "Admin only - Atomically updates the display order for an occasion.",
         "security": [
@@ -4437,9 +4169,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "order"
-                ],
+                "required": ["order"],
                 "properties": {
                   "order": {
                     "type": "integer",
@@ -4490,9 +4220,7 @@
     },
     "/api/occasions/{id}/reactivate": {
       "patch": {
-        "tags": [
-          "Occasions"
-        ],
+        "tags": ["Occasions"],
         "summary": "Reactivate occasion",
         "description": "Admin only - Reactivates a soft-deleted occasion by setting its `active` flag to true.",
         "security": [
@@ -4545,9 +4273,7 @@
     },
     "/api/settings/public": {
       "get": {
-        "tags": [
-          "Settings"
-        ],
+        "tags": ["Settings"],
         "summary": "Get public settings",
         "description": "Public - Returns public settings only",
         "responses": {
@@ -4581,9 +4307,7 @@
     },
     "/api/settings/map": {
       "get": {
-        "tags": [
-          "Settings"
-        ],
+        "tags": ["Settings"],
         "summary": "Get settings map",
         "description": "Returns settings as a key-value map",
         "responses": {
@@ -4617,9 +4341,7 @@
     },
     "/api/settings/{key}/value": {
       "get": {
-        "tags": [
-          "Settings"
-        ],
+        "tags": ["Settings"],
         "summary": "Get setting value by key",
         "description": "Get a specific setting value by its key",
         "parameters": [
@@ -4664,9 +4386,7 @@
     },
     "/api/settings": {
       "get": {
-        "tags": [
-          "Settings"
-        ],
+        "tags": ["Settings"],
         "summary": "Get all settings",
         "description": "Admin only - Returns all settings",
         "security": [
@@ -4709,9 +4429,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Settings"
-        ],
+        "tags": ["Settings"],
         "summary": "Create new setting",
         "description": "Admin only - Creates a new setting",
         "security": [
@@ -4725,10 +4443,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "key",
-                  "value"
-                ],
+                "required": ["key", "value"],
                 "properties": {
                   "key": {
                     "type": "string",
@@ -4785,9 +4500,7 @@
     },
     "/api/settings/{key}": {
       "get": {
-        "tags": [
-          "Settings"
-        ],
+        "tags": ["Settings"],
         "summary": "Get setting by key",
         "description": "Admin only - Get setting details by key",
         "security": [
@@ -4841,9 +4554,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Settings"
-        ],
+        "tags": ["Settings"],
         "summary": "Update setting",
         "description": "Admin only - Updates an existing setting",
         "security": [
@@ -4918,9 +4629,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Settings"
-        ],
+        "tags": ["Settings"],
         "summary": "Delete setting",
         "description": "Admin only - Deletes a setting",
         "security": [
@@ -4964,9 +4673,7 @@
     },
     "/api/admin/settings/image": {
       "post": {
-        "tags": [
-          "Admin Settings"
-        ],
+        "tags": ["Admin Settings"],
         "summary": "Upload setting image",
         "description": "Admin only - Upload and save image for a specific setting",
         "security": [
@@ -4980,9 +4687,7 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "image"
-                ],
+                "required": ["image"],
                 "properties": {
                   "image": {
                     "type": "string",
@@ -5016,9 +4721,7 @@
     },
     "/api/admin/settings/bcv-price": {
       "post": {
-        "tags": [
-          "Admin Settings"
-        ],
+        "tags": ["Admin Settings"],
         "summary": "Save BCV USD rate",
         "description": "Admin only - Save BCV USD exchange rate",
         "security": [
@@ -5032,9 +4735,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "rate"
-                ],
+                "required": ["rate"],
                 "properties": {
                   "rate": {
                     "type": "number",
@@ -5067,9 +4768,7 @@
     },
     "/api/admin/settings/business-rules": {
       "get": {
-        "tags": [
-          "Admin Settings"
-        ],
+        "tags": ["Admin Settings"],
         "summary": "Get business rules status",
         "description": "Admin only - Get business rules engine status and configuration",
         "security": [
@@ -5099,9 +4798,7 @@
     },
     "/api/payment-methods": {
       "get": {
-        "tags": [
-          "Payment Methods"
-        ],
+        "tags": ["Payment Methods"],
         "summary": "Get all payment methods",
         "description": "Public - Returns all active payment methods, sorted by display_order.",
         "parameters": [
@@ -5144,9 +4841,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Payment Methods"
-        ],
+        "tags": ["Payment Methods"],
         "summary": "Create new payment method",
         "description": "Admin only - Creates a new payment method.",
         "security": [
@@ -5160,10 +4855,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "name",
-                  "type"
-                ],
+                "required": ["name", "type"],
                 "properties": {
                   "name": {
                     "type": "string",
@@ -5172,13 +4864,7 @@
                   },
                   "type": {
                     "type": "string",
-                    "enum": [
-                      "bank_transfer",
-                      "mobile_payment",
-                      "cash",
-                      "crypto",
-                      "international"
-                    ]
+                    "enum": ["bank_transfer", "mobile_payment", "cash", "crypto", "international"]
                   },
                   "description": {
                     "type": "string"
@@ -5238,9 +4924,7 @@
     },
     "/api/migrations/add-is-active-to-settings": {
       "post": {
-        "tags": [
-          "Migrations"
-        ],
+        "tags": ["Migrations"],
         "summary": "Add active column to settings table",
         "description": "Admin only - Migration endpoint to add active column to settings table",
         "security": [
@@ -5286,9 +4970,7 @@
     },
     "/api/payment-methods/{id}": {
       "get": {
-        "tags": [
-          "Payment Methods"
-        ],
+        "tags": ["Payment Methods"],
         "summary": "Get payment method by ID",
         "description": "Get payment method details by its unique ID.",
         "parameters": [
@@ -5331,9 +5013,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Payment Methods"
-        ],
+        "tags": ["Payment Methods"],
         "summary": "Update payment method",
         "description": "Admin only - Updates an existing payment method.",
         "security": [
@@ -5360,13 +5040,7 @@
                   },
                   "type": {
                     "type": "string",
-                    "enum": [
-                      "bank_transfer",
-                      "mobile_payment",
-                      "cash",
-                      "crypto",
-                      "international"
-                    ]
+                    "enum": ["bank_transfer", "mobile_payment", "cash", "crypto", "international"]
                   },
                   "description": {
                     "type": "string"
@@ -5427,9 +5101,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Payment Methods"
-        ],
+        "tags": ["Payment Methods"],
         "summary": "Delete payment method (soft delete)",
         "description": "Admin only - Soft deletes a payment method by setting its `active` flag to false.",
         "security": [
@@ -5470,9 +5142,7 @@
     },
     "/api/payment-methods/{id}/display-order": {
       "patch": {
-        "tags": [
-          "Payment Methods"
-        ],
+        "tags": ["Payment Methods"],
         "summary": "Update payment method display order",
         "description": "Admin only - Atomically updates the display order for a payment method.",
         "security": [
@@ -5491,9 +5161,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "order"
-                ],
+                "required": ["order"],
                 "properties": {
                   "order": {
                     "type": "integer",
@@ -5544,9 +5212,7 @@
     },
     "/api/payment-methods/{id}/reactivate": {
       "patch": {
-        "tags": [
-          "Payment Methods"
-        ],
+        "tags": ["Payment Methods"],
         "summary": "Reactivate payment method",
         "description": "Admin only - Reactivates a soft-deleted payment method by setting its `active` flag to true.",
         "security": [
