@@ -3,58 +3,58 @@
  * Manages CRUD operations for expenses in admin panel
  */
 
-import { initAdminCommon } from '../../js/admin-common.js';
-import { toast } from '../../js/components/toast.js';
-import { api } from '../../js/shared/api-client.js';
-import { initThemeManager } from '../../js/themes/themeManager.js';
+import { initAdminCommon } from '../../js/admin-common.js'
+import { toast } from '../../js/components/toast.js'
+import { api } from '../../js/shared/api-client.js'
+import { initThemeManager } from '../../js/themes/themeManager.js'
 
 // Global state
-let expenses = [];
+let expenses = []
 let filters = {
   category: '',
   startDate: '',
   endDate: ''
-};
+}
 
 // ==================== INITIALIZATION ====================
 
 document.addEventListener('DOMContentLoaded', async () => {
   // Check admin access
-  await checkAdminAccess();
+  await checkAdminAccess()
 
   // Init theme and common admin features
-  initThemeManager();
-  initAdminCommon();
+  initThemeManager()
+  initAdminCommon()
 
   // Load user info
-  loadUserInfo();
+  loadUserInfo()
 
   // Init event listeners
-  initEventListeners();
+  initEventListeners()
 
   // Load expenses
-  await loadExpenses();
+  await loadExpenses()
 
   // Set default date to today
-  document.getElementById('expense-date').valueAsDate = new Date();
-});
+  document.getElementById('expense-date').valueAsDate = new Date()
+})
 
 // ==================== ACCESS CONTROL ====================
 
 function checkAdminAccess() {
   try {
-    const user = JSON.parse(sessionStorage.getItem('user') || '{}');
-    
+    const user = JSON.parse(sessionStorage.getItem('user') || '{}')
+
     if (!user.id || user.role !== 'admin') {
-      toast.error('Acceso denegado. Solo administradores.');
+      toast.error('Acceso denegado. Solo administradores.')
       setTimeout(() => {
-        window.location.href = '../../index.html';
-      }, 2000);
-      throw new Error('Unauthorized access');
+        window.location.href = '../../index.html'
+      }, 2000)
+      throw new Error('Unauthorized access')
     }
   } catch (error) {
-    console.error('Access check failed:', error);
-    window.location.href = '../../index.html';
+    console.error('Access check failed:', error)
+    window.location.href = '../../index.html'
   }
 }
 
@@ -62,15 +62,15 @@ function checkAdminAccess() {
 
 function loadUserInfo() {
   try {
-    const user = JSON.parse(sessionStorage.getItem('user') || '{}');
-    const userNameEl = document.getElementById('user-name');
-    
+    const user = JSON.parse(sessionStorage.getItem('user') || '{}')
+    const userNameEl = document.getElementById('user-name')
+
     if (userNameEl && user.email) {
-      const userName = user.email.split('@')[0];
-      userNameEl.textContent = userName.charAt(0).toUpperCase() + userName.slice(1);
+      const userName = user.email.split('@')[0]
+      userNameEl.textContent = userName.charAt(0).toUpperCase() + userName.slice(1)
     }
   } catch (error) {
-    console.error('Error loading user info:', error);
+    console.error('Error loading user info:', error)
   }
 }
 
@@ -78,99 +78,101 @@ function loadUserInfo() {
 
 function initEventListeners() {
   // Modal controls
-  document.getElementById('add-expense-btn').addEventListener('click', () => openModal());
-  document.getElementById('close-modal-btn').addEventListener('click', closeModal);
-  document.getElementById('cancel-btn').addEventListener('click', closeModal);
-  document.getElementById('expense-modal').addEventListener('click', (e) => {
+  document.getElementById('add-expense-btn').addEventListener('click', () => openModal())
+  document.getElementById('close-modal-btn').addEventListener('click', closeModal)
+  document.getElementById('cancel-btn').addEventListener('click', closeModal)
+  document.getElementById('expense-modal').addEventListener('click', e => {
     if (e.target.id === 'expense-modal') {
-      closeModal();
+      closeModal()
     }
-  });
+  })
 
   // Form submission
-  document.getElementById('expense-form').addEventListener('submit', handleSubmit);
+  document.getElementById('expense-form').addEventListener('submit', handleSubmit)
 
   // Filters
-  document.getElementById('filter-category').addEventListener('change', handleFilterChange);
-  document.getElementById('filter-start-date').addEventListener('change', handleFilterChange);
-  document.getElementById('filter-end-date').addEventListener('change', handleFilterChange);
-  document.getElementById('filter-reset-btn').addEventListener('click', resetFilters);
+  document.getElementById('filter-category').addEventListener('change', handleFilterChange)
+  document.getElementById('filter-start-date').addEventListener('change', handleFilterChange)
+  document.getElementById('filter-end-date').addEventListener('change', handleFilterChange)
+  document.getElementById('filter-reset-btn').addEventListener('click', resetFilters)
 
   // Receipt file input
-  document.getElementById('expense-receipt').addEventListener('change', handleReceiptChange);
-  document.getElementById('receipt-remove')?.addEventListener('click', handleReceiptRemove);
+  document.getElementById('expense-receipt').addEventListener('change', handleReceiptChange)
+  document.getElementById('receipt-remove')?.addEventListener('click', handleReceiptRemove)
 
   // Back button
   document.getElementById('back-btn').addEventListener('click', () => {
-    window.location.href = './dashboard.html';
-  });
+    window.location.href = './dashboard.html'
+  })
 
   // Logout
-  document.getElementById('logout-btn')?.addEventListener('click', handleLogout);
+  document.getElementById('logout-btn')?.addEventListener('click', handleLogout)
 }
 
 // ==================== DATA LOADING ====================
 
 async function loadExpenses() {
-  const loadingState = document.getElementById('loading-state');
-  const emptyState = document.getElementById('empty-state');
-  const tableBody = document.getElementById('expenses-table-body');
+  const loadingState = document.getElementById('loading-state')
+  const emptyState = document.getElementById('empty-state')
+  const tableBody = document.getElementById('expenses-table-body')
 
   try {
-    loadingState.classList.remove('hidden');
-    emptyState.classList.add('hidden');
+    loadingState.classList.remove('hidden')
+    emptyState.classList.add('hidden')
 
-    const response = await api.get('/api/accounting/expenses');
-    
+    const response = await api.getAllExpenses()
+
     if (response.success) {
-      expenses = response.data || [];
-      renderExpenses();
+      expenses = response.data || []
+      renderExpenses()
     } else {
-      throw new Error(response.error || 'Failed to load expenses');
+      throw new Error(response.error || 'Failed to load expenses')
     }
   } catch (error) {
-    console.error('Error loading expenses:', error);
-    toast.error('Error al cargar gastos');
-    expenses = [];
-    tableBody.innerHTML = '';
-    emptyState.classList.remove('hidden');
+    console.error('Error loading expenses:', error)
+    toast.error('Error al cargar gastos')
+    expenses = []
+    tableBody.innerHTML = ''
+    emptyState.classList.remove('hidden')
   } finally {
-    loadingState.classList.add('hidden');
+    loadingState.classList.add('hidden')
   }
 }
 
 // ==================== RENDERING ====================
 
 function renderExpenses() {
-  const tableBody = document.getElementById('expenses-table-body');
-  const emptyState = document.getElementById('empty-state');
+  const tableBody = document.getElementById('expenses-table-body')
+  const emptyState = document.getElementById('empty-state')
 
   // Apply filters
   const filteredExpenses = expenses.filter(expense => {
     if (filters.category && expense.category !== filters.category) {
-      return false;
+      return false
     }
     if (filters.startDate && expense.expense_date < filters.startDate) {
-      return false;
+      return false
     }
     if (filters.endDate && expense.expense_date > filters.endDate) {
-      return false;
+      return false
     }
-    return true;
-  });
+    return true
+  })
 
   if (filteredExpenses.length === 0) {
-    tableBody.innerHTML = '';
-    emptyState.classList.remove('hidden');
-    return;
+    tableBody.innerHTML = ''
+    emptyState.classList.remove('hidden')
+    return
   }
 
-  emptyState.classList.add('hidden');
+  emptyState.classList.add('hidden')
 
   // Sort by date (newest first)
-  filteredExpenses.sort((a, b) => new Date(b.expense_date) - new Date(a.expense_date));
+  filteredExpenses.sort((a, b) => new Date(b.expense_date) - new Date(a.expense_date))
 
-  tableBody.innerHTML = filteredExpenses.map(expense => `
+  tableBody.innerHTML = filteredExpenses
+    .map(
+      expense => `
     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
         ${formatDate(expense.expense_date)}
@@ -190,13 +192,17 @@ function renderExpenses() {
         ${formatPaymentMethod(expense.payment_method)}
       </td>
       <td class="px-6 py-4 whitespace-nowrap text-sm">
-        ${expense.receipt_url ? `
+        ${
+          expense.receipt_url
+            ? `
           <a href="${expense.receipt_url}" target="_blank" class="text-blue-600 hover:text-blue-800 dark:text-blue-400" title="Ver comprobante">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
             </svg>
           </a>
-        ` : '<span class="text-gray-400 dark:text-gray-600">-</span>'}
+        `
+            : '<span class="text-gray-400 dark:text-gray-600">-</span>'
+        }
       </td>
       <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
         <button
@@ -221,238 +227,227 @@ function renderExpenses() {
         </button>
       </td>
     </tr>
-  `).join('');
+  `
+    )
+    .join('')
 }
 
 // ==================== MODAL OPERATIONS ====================
 
 function openModal(expense = null) {
-  const modal = document.getElementById('expense-modal');
-  const modalTitle = document.getElementById('modal-title');
-  const form = document.getElementById('expense-form');
-  const receiptInput = document.getElementById('expense-receipt');
-  const receiptPreview = document.getElementById('receipt-preview');
-  const receiptCurrent = document.getElementById('receipt-current');
-  const receiptLink = document.getElementById('receipt-link');
+  const modal = document.getElementById('expense-modal')
+  const modalTitle = document.getElementById('modal-title')
+  const form = document.getElementById('expense-form')
+  const receiptInput = document.getElementById('expense-receipt')
+  const receiptPreview = document.getElementById('receipt-preview')
+  const receiptCurrent = document.getElementById('receipt-current')
+  const receiptLink = document.getElementById('receipt-link')
 
   // Reset receipt UI
-  receiptInput.value = '';
-  receiptPreview.classList.add('hidden');
-  receiptCurrent.classList.add('hidden');
+  receiptInput.value = ''
+  receiptPreview.classList.add('hidden')
+  receiptCurrent.classList.add('hidden')
 
   if (expense) {
-    modalTitle.textContent = 'Editar Gasto';
-    document.getElementById('expense-id').value = expense.id;
-    document.getElementById('expense-category').value = expense.category;
-    document.getElementById('expense-amount').value = expense.amount;
-    document.getElementById('expense-date').value = expense.expense_date;
-    document.getElementById('expense-payment-method').value = expense.payment_method;
-    document.getElementById('expense-description').value = expense.description;
-    document.getElementById('expense-notes').value = expense.notes || '';
+    modalTitle.textContent = 'Editar Gasto'
+    document.getElementById('expense-id').value = expense.id
+    document.getElementById('expense-category').value = expense.category
+    document.getElementById('expense-amount').value = expense.amount
+    document.getElementById('expense-date').value = expense.expense_date
+    document.getElementById('expense-payment-method').value = expense.payment_method
+    document.getElementById('expense-description').value = expense.description
+    document.getElementById('expense-notes').value = expense.notes || ''
 
     // Show existing receipt link if available
     if (expense.receipt_url) {
-      receiptLink.href = expense.receipt_url;
-      receiptCurrent.classList.remove('hidden');
+      receiptLink.href = expense.receipt_url
+      receiptCurrent.classList.remove('hidden')
     }
   } else {
-    modalTitle.textContent = 'Nuevo Gasto';
-    form.reset();
-    document.getElementById('expense-date').valueAsDate = new Date();
+    modalTitle.textContent = 'Nuevo Gasto'
+    form.reset()
+    document.getElementById('expense-date').valueAsDate = new Date()
   }
 
-  modal.classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
+  modal.classList.remove('hidden')
+  document.body.style.overflow = 'hidden'
 }
 
 function closeModal() {
-  const modal = document.getElementById('expense-modal');
-  const form = document.getElementById('expense-form');
-  
-  modal.classList.add('hidden');
-  document.body.style.overflow = '';
-  form.reset();
+  const modal = document.getElementById('expense-modal')
+  const form = document.getElementById('expense-form')
+
+  modal.classList.add('hidden')
+  document.body.style.overflow = ''
+  form.reset()
 }
 
 // ==================== FORM HANDLING ====================
 
 async function handleSubmit(e) {
-  e.preventDefault();
+  e.preventDefault()
 
-  const receiptFile = document.getElementById('expense-receipt').files[0];
+  const receiptFile = document.getElementById('expense-receipt').files[0]
 
   // Validate file size (5MB max)
   if (receiptFile && receiptFile.size > 5 * 1024 * 1024) {
-    toast.error('El archivo es muy grande. Máximo 5MB');
-    return;
+    toast.error('El archivo es muy grande. Máximo 5MB')
+    return
   }
 
   // Prepare FormData for multipart upload
-  const formData = new FormData();
-  formData.append('category', document.getElementById('expense-category').value);
-  formData.append('amount', parseFloat(document.getElementById('expense-amount').value));
-  formData.append('expense_date', document.getElementById('expense-date').value);
-  formData.append('payment_method', document.getElementById('expense-payment-method').value);
-  formData.append('description', document.getElementById('expense-description').value.trim());
-  
-  const notes = document.getElementById('expense-notes').value.trim();
+  const formData = new FormData()
+  formData.append('category', document.getElementById('expense-category').value)
+  formData.append('amount', parseFloat(document.getElementById('expense-amount').value))
+  formData.append('expense_date', document.getElementById('expense-date').value)
+  formData.append('payment_method', document.getElementById('expense-payment-method').value)
+  formData.append('description', document.getElementById('expense-description').value.trim())
+
+  const notes = document.getElementById('expense-notes').value.trim()
   if (notes) {
-    formData.append('notes', notes);
+    formData.append('notes', notes)
   }
 
   if (receiptFile) {
-    formData.append('receipt', receiptFile);
+    formData.append('receipt', receiptFile)
   }
 
   // Basic validation
-  if (!formData.get('category') || !formData.get('amount') || !formData.get('expense_date') || 
-      !formData.get('payment_method') || !formData.get('description')) {
-    toast.error('Por favor completa todos los campos requeridos');
-    return;
+  if (
+    !formData.get('category') ||
+    !formData.get('amount') ||
+    !formData.get('expense_date') ||
+    !formData.get('payment_method') ||
+    !formData.get('description')
+  ) {
+    toast.error('Por favor completa todos los campos requeridos')
+    return
   }
 
   if (parseFloat(formData.get('amount')) <= 0) {
-    toast.error('El monto debe ser mayor a 0');
-    return;
+    toast.error('El monto debe ser mayor a 0')
+    return
   }
 
   try {
-    const expenseId = document.getElementById('expense-id').value;
-    let response;
+    const expenseId = document.getElementById('expense-id').value
+    let response
 
     if (expenseId) {
-      // Update - use fetch for FormData (multipart)
-      // eslint-disable-next-line no-restricted-globals
-      const res = await fetch(`${api.baseUrl}/api/accounting/expenses/${expenseId}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${sessionStorage.getItem('token') || ''}`
-        },
-        body: formData,
-        credentials: 'include'
-      });
-      response = await res.json();
+      // Update - use api-client for FormData (multipart)
+      response = await api.updateExpensesWithFormData(expenseId, formData)
     } else {
-      // Create - use fetch for FormData (multipart)
-      // eslint-disable-next-line no-restricted-globals
-      const res = await fetch(`${api.baseUrl}/api/accounting/expenses`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${sessionStorage.getItem('token') || ''}`
-        },
-        body: formData,
-        credentials: 'include'
-      });
-      response = await res.json();
+      // Create - use api-client for FormData (multipart)
+      response = await api.createExpensesWithFormData(formData)
     }
 
     if (response.success) {
-      toast.success(expenseId ? 'Gasto actualizado exitosamente' : 'Gasto registrado exitosamente');
-      closeModal();
-      await loadExpenses();
+      toast.success(expenseId ? 'Gasto actualizado exitosamente' : 'Gasto registrado exitosamente')
+      closeModal()
+      await loadExpenses()
     } else {
-      throw new Error(response.error || 'Operation failed');
+      throw new Error(response.error || 'Operation failed')
     }
   } catch (error) {
-    console.error('Error saving expense:', error);
-    toast.error('Error al guardar gasto');
+    console.error('Error saving expense:', error)
+    toast.error('Error al guardar gasto')
   }
 }
 
 // ==================== EXPENSE OPERATIONS ====================
 
 function editExpense(id) {
-  const expense = expenses.find(e => e.id === id);
+  const expense = expenses.find(e => e.id === id)
   if (expense) {
-    openModal(expense);
+    openModal(expense)
   }
 }
 
 async function deleteExpense(id) {
   if (!confirm('¿Estás seguro de eliminar este gasto?')) {
-    return;
+    return
   }
 
   try {
-    const response = await api.delete(`/api/accounting/expenses/${id}`);
-    
+    const response = await api.deleteExpenses(id)
+
     if (response.success) {
-      toast.success('Gasto eliminado exitosamente');
-      await loadExpenses();
+      toast.success('Gasto eliminado exitosamente')
+      await loadExpenses()
     } else {
-      throw new Error(response.error || 'Delete failed');
+      throw new Error(response.error || 'Delete failed')
     }
   } catch (error) {
-    console.error('Error deleting expense:', error);
-    toast.error('Error al eliminar gasto');
+    console.error('Error deleting expense:', error)
+    toast.error('Error al eliminar gasto')
   }
 }
 
 // ==================== FILTERS ====================
 
 function handleFilterChange() {
-  filters.category = document.getElementById('filter-category').value;
-  filters.startDate = document.getElementById('filter-start-date').value;
-  filters.endDate = document.getElementById('filter-end-date').value;
-  
-  renderExpenses();
+  filters.category = document.getElementById('filter-category').value
+  filters.startDate = document.getElementById('filter-start-date').value
+  filters.endDate = document.getElementById('filter-end-date').value
+
+  renderExpenses()
 }
 
 function resetFilters() {
-  document.getElementById('filter-category').value = '';
-  document.getElementById('filter-start-date').value = '';
-  document.getElementById('filter-end-date').value = '';
-  
+  document.getElementById('filter-category').value = ''
+  document.getElementById('filter-start-date').value = ''
+  document.getElementById('filter-end-date').value = ''
+
   filters = {
     category: '',
     startDate: '',
     endDate: ''
-  };
-  
-  renderExpenses();
+  }
+
+  renderExpenses()
 }
 
 // ==================== RECEIPT HANDLING ====================
 
 function handleReceiptChange(e) {
-  const file = e.target.files[0];
-  const preview = document.getElementById('receipt-preview');
-  const filename = document.getElementById('receipt-filename');
+  const file = e.target.files[0]
+  const preview = document.getElementById('receipt-preview')
+  const filename = document.getElementById('receipt-filename')
 
   if (!file) {
-    preview.classList.add('hidden');
-    return;
+    preview.classList.add('hidden')
+    return
   }
 
   // Validate file size
   if (file.size > 5 * 1024 * 1024) {
-    toast.error('El archivo es muy grande. Máximo 5MB');
-    e.target.value = '';
-    preview.classList.add('hidden');
-    return;
+    toast.error('El archivo es muy grande. Máximo 5MB')
+    e.target.value = ''
+    preview.classList.add('hidden')
+    return
   }
 
   // Show preview
-  filename.textContent = file.name;
-  preview.classList.remove('hidden');
+  filename.textContent = file.name
+  preview.classList.remove('hidden')
 }
 
 function handleReceiptRemove() {
-  const input = document.getElementById('expense-receipt');
-  const preview = document.getElementById('receipt-preview');
-  
-  input.value = '';
-  preview.classList.add('hidden');
+  const input = document.getElementById('expense-receipt')
+  const preview = document.getElementById('receipt-preview')
+
+  input.value = ''
+  preview.classList.add('hidden')
 }
 
 // ==================== UTILITIES ====================
 
 function formatDate(dateString) {
   if (!dateString) {
-    return 'N/A';
+    return 'N/A'
   }
-  const date = new Date(dateString + 'T00:00:00');
-  return date.toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' });
+  const date = new Date(dateString + 'T00:00:00')
+  return date.toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' })
 }
 
 function formatCategory(category) {
@@ -464,8 +459,8 @@ function formatCategory(category) {
     salarios: 'Salarios',
     alquiler: 'Alquiler',
     otros: 'Otros'
-  };
-  return categories[category] || category;
+  }
+  return categories[category] || category
 }
 
 function formatPaymentMethod(method) {
@@ -474,8 +469,8 @@ function formatPaymentMethod(method) {
     tarjeta: 'Tarjeta',
     transferencia: 'Transferencia',
     cheque: 'Cheque'
-  };
-  return methods[method] || method;
+  }
+  return methods[method] || method
 }
 
 function getCategoryColor(category) {
@@ -487,26 +482,26 @@ function getCategoryColor(category) {
     salarios: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
     alquiler: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300',
     otros: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
-  };
-  return colors[category] || colors.otros;
+  }
+  return colors[category] || colors.otros
 }
 
 function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
+  const div = document.createElement('div')
+  div.textContent = text
+  return div.innerHTML
 }
 
 function handleLogout() {
-  sessionStorage.clear();
-  toast.success('Sesión cerrada');
+  sessionStorage.clear()
+  toast.success('Sesión cerrada')
   setTimeout(() => {
-    window.location.href = '../../index.html';
-  }, 1000);
+    window.location.href = '../../index.html'
+  }, 1000)
 }
 
 // Export controller to window for onclick handlers
 window.expensesController = {
   editExpense,
   deleteExpense
-};
+}

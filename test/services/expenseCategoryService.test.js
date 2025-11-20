@@ -19,7 +19,9 @@ vi.mock('../../api/repositories/expenseCategoryRepository.js', () => ({
   default: expenseCategoryRepository
 }))
 
-const { default: expenseCategoryService } = await import('../../api/services/expenseCategoryService.js')
+const { default: expenseCategoryService } = await import(
+  '../../api/services/expenseCategoryService.js'
+)
 
 describe('ExpenseCategoryService', () => {
   beforeEach(() => {
@@ -67,8 +69,7 @@ describe('ExpenseCategoryService', () => {
     it('should throw NotFoundError when category does not exist', async () => {
       expenseCategoryRepository.findById.mockResolvedValue(null)
 
-      await expect(expenseCategoryService.getCategoryById(999))
-        .rejects.toThrow(NotFoundError)
+      await expect(expenseCategoryService.getCategoryById(999)).rejects.toThrow(NotFoundError)
     })
   })
 
@@ -78,12 +79,15 @@ describe('ExpenseCategoryService', () => {
       expenseCategoryRepository.findByName.mockResolvedValue(null)
       expenseCategoryRepository.create.mockResolvedValue(mockCreated)
 
-      const result = await expenseCategoryService.createCategory({
-        name: 'Nueva Categoria',
-        description: 'Test',
-        icon: '🎨',
-        color: '#ff0000'
-      }, 1)
+      const result = await expenseCategoryService.createCategory(
+        {
+          name: 'Nueva Categoria',
+          description: 'Test',
+          icon: '🎨',
+          color: '#ff0000'
+        },
+        1
+      )
 
       expect(result).toEqual(mockCreated)
       expect(expenseCategoryRepository.create).toHaveBeenCalledWith({
@@ -98,29 +102,37 @@ describe('ExpenseCategoryService', () => {
     })
 
     it('should throw ValidationError when name is empty', async () => {
-      await expect(expenseCategoryService.createCategory({ name: '' }, 1))
-        .rejects.toThrow(ValidationError)
+      await expect(expenseCategoryService.createCategory({ name: '' }, 1)).rejects.toThrow(
+        ValidationError
+      )
     })
 
     it('should throw ValidationError when name contains invalid characters', async () => {
-      await expect(expenseCategoryService.createCategory({ name: 'Invalid Name!' }, 1))
-        .rejects.toThrow(ValidationError)
+      await expect(
+        expenseCategoryService.createCategory({ name: 'Invalid Name!' }, 1)
+      ).rejects.toThrow(ValidationError)
     })
 
     it('should throw ConflictError when category already exists', async () => {
       expenseCategoryRepository.findByName.mockResolvedValue({ id: 1, name: 'flores' })
 
-      await expect(expenseCategoryService.createCategory({ name: 'flores' }, 1))
-        .rejects.toThrow(ConflictError)
+      await expect(expenseCategoryService.createCategory({ name: 'flores' }, 1)).rejects.toThrow(
+        ConflictError
+      )
     })
 
     it('should throw ValidationError for invalid color format', async () => {
       expenseCategoryRepository.findByName.mockResolvedValue(null)
 
-      await expect(expenseCategoryService.createCategory({
-        name: 'test',
-        color: 'red'
-      }, 1)).rejects.toThrow(ValidationError)
+      await expect(
+        expenseCategoryService.createCategory(
+          {
+            name: 'test',
+            color: 'red'
+          },
+          1
+        )
+      ).rejects.toThrow(ValidationError)
     })
 
     it('should normalize name (lowercase and replace spaces)', async () => {
@@ -150,30 +162,32 @@ describe('ExpenseCategoryService', () => {
     it('should throw NotFoundError when category does not exist', async () => {
       expenseCategoryRepository.findById.mockResolvedValue(null)
 
-      await expect(expenseCategoryService.updateCategory(999, {}))
-        .rejects.toThrow(NotFoundError)
+      await expect(expenseCategoryService.updateCategory(999, {})).rejects.toThrow(NotFoundError)
     })
 
     it('should throw ValidationError when trying to modify default category name', async () => {
       expenseCategoryRepository.findById.mockResolvedValue({ id: 1, is_default: true })
 
-      await expect(expenseCategoryService.updateCategory(1, { name: 'new_name' }))
-        .rejects.toThrow(ValidationError)
+      await expect(expenseCategoryService.updateCategory(1, { name: 'new_name' })).rejects.toThrow(
+        ValidationError
+      )
     })
 
     it('should throw ValidationError for invalid color format', async () => {
       expenseCategoryRepository.findById.mockResolvedValue({ id: 1, is_default: false })
 
-      await expect(expenseCategoryService.updateCategory(1, { color: 'blue' }))
-        .rejects.toThrow(ValidationError)
+      await expect(expenseCategoryService.updateCategory(1, { color: 'blue' })).rejects.toThrow(
+        ValidationError
+      )
     })
 
     it('should throw ConflictError when new name already exists', async () => {
       expenseCategoryRepository.findById.mockResolvedValue({ id: 1, is_default: false })
       expenseCategoryRepository.findByName.mockResolvedValue({ id: 2, name: 'flores' })
 
-      await expect(expenseCategoryService.updateCategory(1, { name: 'flores' }))
-        .rejects.toThrow(ConflictError)
+      await expect(expenseCategoryService.updateCategory(1, { name: 'flores' })).rejects.toThrow(
+        ConflictError
+      )
     })
   })
 
@@ -192,15 +206,13 @@ describe('ExpenseCategoryService', () => {
     it('should throw NotFoundError when category does not exist', async () => {
       expenseCategoryRepository.findById.mockResolvedValue(null)
 
-      await expect(expenseCategoryService.deleteCategory(999))
-        .rejects.toThrow(NotFoundError)
+      await expect(expenseCategoryService.deleteCategory(999)).rejects.toThrow(NotFoundError)
     })
 
     it('should throw ValidationError when trying to delete default category', async () => {
       expenseCategoryRepository.findById.mockResolvedValue({ id: 1, is_default: true })
 
-      await expect(expenseCategoryService.deleteCategory(1))
-        .rejects.toThrow(ValidationError)
+      await expect(expenseCategoryService.deleteCategory(1)).rejects.toThrow(ValidationError)
     })
   })
 })

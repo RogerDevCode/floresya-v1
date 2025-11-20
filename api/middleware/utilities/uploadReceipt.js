@@ -11,13 +11,7 @@ import { BadRequestError, PayloadTooLargeError } from '../../errors/AppError.js'
  * File filter - accept images and PDFs
  */
 const receiptFilter = (req, file, cb) => {
-  const allowedMimeTypes = [
-    'image/jpeg',
-    'image/jpg',
-    'image/png',
-    'image/webp',
-    'application/pdf'
-  ]
+  const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'application/pdf']
 
   if (allowedMimeTypes.includes(file.mimetype)) {
     cb(null, true)

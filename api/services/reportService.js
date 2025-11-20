@@ -18,14 +18,16 @@ class ReportService {
    */
   async getDailySales(startDate, endDate) {
     try {
-      const { data, error } = await supabaseClient
+      const { data, error } = await supabase
         .from('orders')
         .select('created_at, total, status')
         .gte('created_at', startDate)
         .lte('created_at', endDate)
         .in('status', ['confirmed', 'processing', 'delivering', 'delivered'])
 
-      if (error) {throw error}
+      if (error) {
+        throw error
+      }
 
       // Group by date
       const salesByDate = {}
@@ -186,14 +188,16 @@ class ReportService {
   async getTopProducts(startDate, endDate, limit = 5) {
     try {
       // Get orders in date range
-      const { data: orders, error: ordersError } = await supabaseClient
+      const { data: orders, error: ordersError } = await supabase
         .from('orders')
         .select('id')
         .gte('created_at', startDate)
         .lte('created_at', endDate)
         .in('status', ['confirmed', 'processing', 'delivering', 'delivered'])
 
-      if (ordersError) {throw ordersError}
+      if (ordersError) {
+        throw ordersError
+      }
 
       const orderIds = orders.map(o => o.id)
 
@@ -202,12 +206,14 @@ class ReportService {
       }
 
       // Get order items for these orders
-      const { data: items, error: itemsError } = await supabaseClient
+      const { data: items, error: itemsError } = await supabase
         .from('order_items')
         .select('product_name, quantity, subtotal')
         .in('order_id', orderIds)
 
-      if (itemsError) {throw itemsError}
+      if (itemsError) {
+        throw itemsError
+      }
 
       // Aggregate by product
       const productStats = items.reduce((acc, item) => {

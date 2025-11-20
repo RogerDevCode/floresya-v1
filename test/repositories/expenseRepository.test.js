@@ -33,7 +33,7 @@ describe('ExpenseRepository - Data Layer', () => {
       expect(result.data.id).toBe(1)
       expect(result.data.category).toBe('flores')
       expect(result.data.description).toBe('Rosas rojas importadas')
-      expect(result.data.amount).toBe(180.50)
+      expect(result.data.amount).toBe(180.5)
     })
 
     it('should return null for non-existent ID', async () => {
@@ -43,7 +43,7 @@ describe('ExpenseRepository - Data Layer', () => {
 
     it('should return null for inactive expense', async () => {
       await deleteExpense(1)
-      
+
       const result = await findExpenseById(1)
       expect(result.data).toBeNull()
     })
@@ -81,10 +81,13 @@ describe('ExpenseRepository - Data Layer', () => {
     })
 
     it('should order by date descending', async () => {
-      const result = await findExpenses({}, {
-        orderBy: 'expense_date',
-        ascending: false
-      })
+      const result = await findExpenses(
+        {},
+        {
+          orderBy: 'expense_date',
+          ascending: false
+        }
+      )
 
       for (let i = 0; i < result.data.length - 1; i++) {
         expect(result.data[i].expense_date >= result.data[i + 1].expense_date).toBe(true)
@@ -104,7 +107,9 @@ describe('ExpenseRepository - Data Layer', () => {
 
       expect(Array.isArray(result.data)).toBe(true)
       expect(result.data.length).toBeGreaterThan(0)
-      expect(result.data.every(e => e.expense_date >= startDate && e.expense_date <= endDate)).toBe(true)
+      expect(result.data.every(e => e.expense_date >= startDate && e.expense_date <= endDate)).toBe(
+        true
+      )
     })
 
     it('should filter by category within date range', async () => {
@@ -118,10 +123,13 @@ describe('ExpenseRepository - Data Layer', () => {
     })
 
     it('should apply limit to date range query', async () => {
-      const result = await findExpenses({
-        gte_expense_date: '2025-11-15',
-        lte_expense_date: '2025-11-17'
-      }, { limit: 1 })
+      const result = await findExpenses(
+        {
+          gte_expense_date: '2025-11-15',
+          lte_expense_date: '2025-11-17'
+        },
+        { limit: 1 }
+      )
 
       expect(result.data.length).toBe(1)
     })
@@ -142,7 +150,7 @@ describe('ExpenseRepository - Data Layer', () => {
       const newExpense = {
         category: 'marketing',
         description: 'Facebook Ads',
-        amount: 100.00,
+        amount: 100.0,
         expense_date: '2025-11-18',
         payment_method: 'tarjeta_credito'
       }
@@ -153,7 +161,7 @@ describe('ExpenseRepository - Data Layer', () => {
       expect(result.data.id).toBeDefined()
       expect(result.data.category).toBe('marketing')
       expect(result.data.description).toBe('Facebook Ads')
-      expect(result.data.amount).toBe(100.00)
+      expect(result.data.amount).toBe(100.0)
       expect(result.data.active).toBe(true)
     })
 
@@ -161,7 +169,7 @@ describe('ExpenseRepository - Data Layer', () => {
       const newExpense = {
         category: 'otros',
         description: 'Test expense',
-        amount: 50.00
+        amount: 50.0
       }
 
       const result = await createExpense(newExpense)
@@ -211,7 +219,7 @@ describe('ExpenseRepository - Data Layer', () => {
     it('should update expense successfully', async () => {
       const updates = {
         description: 'Updated description',
-        amount: 200.00
+        amount: 200.0
       }
 
       const result = await updateExpense(1, updates)
@@ -219,7 +227,7 @@ describe('ExpenseRepository - Data Layer', () => {
       expect(result.data).toBeDefined()
       expect(result.data.id).toBe(1)
       expect(result.data.description).toBe('Updated description')
-      expect(result.data.amount).toBe(200.00)
+      expect(result.data.amount).toBe(200.0)
     })
 
     it('should update only specified fields', async () => {
@@ -356,7 +364,7 @@ describe('ExpenseRepository - Data Layer', () => {
       })
 
       const expectedTotal = expenses.data.reduce((sum, e) => sum + e.amount, 0)
-      expect(expectedTotal).toBeCloseTo(292.80, 2) // 180.50 + 45.00 + 67.30
+      expect(expectedTotal).toBeCloseTo(292.8, 2) // 180.50 + 45.00 + 67.30
     })
   })
 })

@@ -1,7 +1,7 @@
 /**
  * TypeScript Types for FloresYa API
  * Auto-generated from OpenAPI specification
- * Generated: 2025-11-04T16:26:32.552Z
+ * Generated: 2025-11-19T22:08:53.046Z
  * Spec Version: 1.0.0
  */
 

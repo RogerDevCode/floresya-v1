@@ -1,7 +1,7 @@
 /**
  * FloresYa API Client
  * Auto-generated from OpenAPI specification
- * Generated: 2025-11-04T16:26:32.547Z
+ * Generated: 2025-11-19T22:08:53.042Z
  * Spec Version: 1.0.0
  * Total Endpoints: 47
  *
@@ -31,13 +31,58 @@ class ApiClient {
         headers: { ...this.defaultHeaders, ...options.headers }
       }
 
+      if (options.body && options.method !== 'GET') {
+        config.body = JSON.stringify(options.body)
+      }
+
+      const response = await fetch(url, config)
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`)
+      }
+
+      const contentType = response.headers.get('content-type')
+      if (contentType && contentType.includes('application/json')) {
+        return await response.json()
+      }
+
+      return await response.text()
+    } catch (error) {
+      console.error(`API request failed: ${endpoint}`, error)
+      throw error
+    }
+  }
+
+  /**
+   * Make HTTP request with FormData (multipart/form-data)
+   * @param {string} endpoint - API endpoint
+   * @param {object} options - Fetch options
+   * @returns {Promise<any>} Response data
+   */
+  async requestWithFormData(endpoint, options = {}) {
+    try {
+      const url = this.baseUrl + endpoint
+      const config = {
+        method: options.method || 'POST',
+        credentials: 'include'
+      }
+
       // Add signal if provided for request cancellation
       if (options.signal) {
         config.signal = options.signal
       }
 
-      if (options.body && options.method !== 'GET') {
-        config.body = JSON.stringify(options.body)
+      // Set Authorization header if token exists
+      const token = sessionStorage.getItem('token')
+      if (token) {
+        config.headers = {
+          Authorization: `Bearer ${token}`
+        }
+      }
+
+      if (options.body) {
+        config.body = options.body
       }
 
       const response = await fetch(url, config)
@@ -1044,6 +1089,148 @@ class ApiClient {
     return this.request(endpoint, { method: 'PATCH', body: data })
   }
 
+  // ==================== ACCOUNTING ====================
+
+  /**
+   * Get all expenses with filters
+   * Admin only - Returns paginated list of expenses with optional filters
+   * @param {any} params - Parameter
+   * @returns {Promise<any>} API response
+   */
+  getAllExpenses(params = {}) {
+    const queryString = new URLSearchParams()
+    Object.entries(params || {}).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        queryString.append(key, value.toString())
+      }
+    })
+    const query = queryString.toString()
+    const queryPart = query ? '?' + query : ''
+    const endpoint = `/api/accounting/expenses${queryPart}`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Create new expense
+   * Admin only - Creates a new expense
+   * @param {any} data - Parameter
+   * @returns {Promise<any>} API response
+   */
+  createExpenses(data) {
+    const endpoint = `/api/accounting/expenses`
+    return this.request(endpoint, { method: 'POST', body: data })
+  }
+
+  /**
+   * Create new expense with FormData (for file uploads)
+   * Admin only - Creates a new expense with file upload support
+   * @param {any} formData - FormData object
+   * @returns {Promise<any>} API response
+   */
+  createExpensesWithFormData(formData) {
+    const endpoint = `/api/accounting/expenses`
+    return this.requestWithFormData(endpoint, { method: 'POST', body: formData })
+  }
+
+  /**
+   * Get expense by ID
+   * @param {any} id - Parameter
+   * @returns {Promise<any>} API response
+   */
+  getExpensesById(id) {
+    if (!id || id <= 0) {
+      throw new Error('Invalid id')
+    }
+
+    const endpoint = `/api/accounting/expenses/${id}`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Update expense
+   * Admin only - Updates an existing expense
+   * @param {any} id - Parameter
+   * @param {any} data - Parameter
+   * @returns {Promise<any>} API response
+   */
+  updateExpenses(id, data) {
+    if (!id || id <= 0) {
+      throw new Error('Invalid id')
+    }
+
+    const endpoint = `/api/accounting/expenses/${id}`
+    return this.request(endpoint, { method: 'PUT', body: data })
+  }
+
+  /**
+   * Update expense with FormData (for file uploads)
+   * Admin only - Updates an existing expense with file upload support
+   * @param {any} id - Parameter
+   * @param {any} formData - FormData object
+   * @returns {Promise<any>} API response
+   */
+  updateExpensesWithFormData(id, formData) {
+    if (!id || id <= 0) {
+      throw new Error('Invalid id')
+    }
+
+    const endpoint = `/api/accounting/expenses/${id}`
+    return this.requestWithFormData(endpoint, { method: 'PUT', body: formData })
+  }
+
+  /**
+   * Delete expense (soft delete)
+   * Admin only - Soft deletes an expense (sets active to false)
+   * @param {any} id - Parameter
+   * @returns {Promise<any>} API response
+   */
+  deleteExpenses(id) {
+    if (!id || id <= 0) {
+      throw new Error('Invalid id')
+    }
+
+    const endpoint = `/api/accounting/expenses/${id}`
+    return this.request(endpoint, { method: 'DELETE' })
+  }
+
+  /**
+   * Get expenses grouped by category
+   * Admin only - Get expenses grouped by category for date range
+   * @param {any} params - Parameter
+   * @returns {Promise<any>} API response
+   */
+  getExpensesByCategory(params = {}) {
+    const queryString = new URLSearchParams()
+    Object.entries(params || {}).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        queryString.append(key, value.toString())
+      }
+    })
+    const query = queryString.toString()
+    const queryPart = query ? '?' + query : ''
+    const endpoint = `/api/accounting/expenses/by-category${queryPart}`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Get accounting reports
+   * Admin only - Get accounting reports for date range
+   * @param {any} params - Parameter
+   * @returns {Promise<any>} API response
+   */
+  getAccountingReports(params = {}) {
+    const queryString = new URLSearchParams()
+    Object.entries(params || {}).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        queryString.append(key, value.toString())
+      }
+    })
+    const query = queryString.toString()
+    const queryPart = query ? '?' + query : ''
+    const endpoint = `/api/accounting/reports${queryPart}`
+    return this.request(endpoint)
+  }
+
   // ==================== UTILITIES ====================
 
   /**
@@ -1075,8 +1262,8 @@ class ApiClient {
   }
 }
 
-// Export singleton instance with correct base URL
-export const apiClient = new ApiClient('http://localhost:3000')
+// Export singleton instance
+export const apiClient = new ApiClient()
 
 // Export class for custom instances
 export { ApiClient }
@@ -1152,5 +1339,14 @@ export const api = {
   updatePaymentMethodDisplayOrder: (id, data) =>
     apiClient.updatePaymentMethodDisplayOrder(id, data),
   reactivatePaymentMethods: (id, data) => apiClient.reactivatePaymentMethods(id, data),
+  getAllExpenses: params => apiClient.getAllExpenses(params),
+  createExpenses: data => apiClient.createExpenses(data),
+  createExpensesWithFormData: formData => apiClient.createExpensesWithFormData(formData),
+  getExpensesById: id => apiClient.getExpensesById(id),
+  updateExpenses: (id, data) => apiClient.updateExpenses(id, data),
+  updateExpensesWithFormData: (id, formData) => apiClient.updateExpensesWithFormData(id, formData),
+  deleteExpenses: id => apiClient.deleteExpenses(id),
+  getExpensesByCategory: params => apiClient.getExpensesByCategory(params),
+  getAccountingReports: params => apiClient.getAccountingReports(params),
   handleError: error => apiClient.handleError(error)
 }

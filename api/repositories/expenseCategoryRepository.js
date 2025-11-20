@@ -4,7 +4,7 @@
  * @module repositories/expenseCategoryRepository
  */
 
-import supabaseClient from '../services/supabaseClient.js'
+import { supabase } from '../services/supabaseClient.js'
 import { logger } from '../utils/logger.js'
 import { DatabaseError } from '../errors/AppError.js'
 
@@ -17,10 +17,7 @@ class ExpenseCategoryRepository {
    */
   async findAll({ includeInactive = false } = {}) {
     try {
-      let query = supabaseClient
-        .from('expense_categories')
-        .select('*')
-        .order('name', { ascending: true })
+      let query = supabase.from('expense_categories').select('*').order('name', { ascending: true })
 
       if (!includeInactive) {
         query = query.eq('active', true)
@@ -28,7 +25,9 @@ class ExpenseCategoryRepository {
 
       const { data, error } = await query
 
-      if (error) throw error
+      if (error) {
+        throw error
+      }
       return data || []
     } catch (error) {
       logger.error('ExpenseCategoryRepository.findAll error:', error)
@@ -43,13 +42,15 @@ class ExpenseCategoryRepository {
    */
   async findById(id) {
     try {
-      const { data, error } = await supabaseClient
+      const { data, error } = await supabase
         .from('expense_categories')
         .select('*')
         .eq('id', id)
         .single()
 
-      if (error && error.code !== 'PGRST116') throw error
+      if (error && error.code !== 'PGRST116') {
+        throw error
+      }
       return data
     } catch (error) {
       logger.error(`ExpenseCategoryRepository.findById(${id}) error:`, error)
@@ -64,13 +65,15 @@ class ExpenseCategoryRepository {
    */
   async findByName(name) {
     try {
-      const { data, error } = await supabaseClient
+      const { data, error } = await supabase
         .from('expense_categories')
         .select('*')
         .eq('name', name)
         .single()
 
-      if (error && error.code !== 'PGRST116') throw error
+      if (error && error.code !== 'PGRST116') {
+        throw error
+      }
       return data
     } catch (error) {
       logger.error(`ExpenseCategoryRepository.findByName(${name}) error:`, error)
@@ -85,13 +88,15 @@ class ExpenseCategoryRepository {
    */
   async create(categoryData) {
     try {
-      const { data, error } = await supabaseClient
+      const { data, error } = await supabase
         .from('expense_categories')
         .insert([categoryData])
         .select()
         .single()
 
-      if (error) throw error
+      if (error) {
+        throw error
+      }
       return data
     } catch (error) {
       logger.error('ExpenseCategoryRepository.create error:', error)
@@ -107,14 +112,16 @@ class ExpenseCategoryRepository {
    */
   async update(id, updates) {
     try {
-      const { data, error } = await supabaseClient
+      const { data, error } = await supabase
         .from('expense_categories')
         .update(updates)
         .eq('id', id)
         .select()
         .single()
 
-      if (error) throw error
+      if (error) {
+        throw error
+      }
       return data
     } catch (error) {
       logger.error(`ExpenseCategoryRepository.update(${id}) error:`, error)
@@ -129,7 +136,7 @@ class ExpenseCategoryRepository {
    */
   async delete(id) {
     try {
-      const { data, error } = await supabaseClient
+      const { data, error } = await supabase
         .from('expense_categories')
         .update({ active: false })
         .eq('id', id)
@@ -137,7 +144,9 @@ class ExpenseCategoryRepository {
         .select()
         .single()
 
-      if (error) throw error
+      if (error) {
+        throw error
+      }
       return data
     } catch (error) {
       logger.error(`ExpenseCategoryRepository.delete(${id}) error:`, error)

@@ -3,13 +3,14 @@
 **Project**: FloresYa v1 - Simple Accounting Module for SMB/Florist  
 **Status**: 🟢 **95% COMPLETE** (Backend 100%, Frontend Ready, E2E Tests Pending)  
 **Date**: 2025-11-19  
-**Methodology**: TDD - Test Driven Development  
+**Methodology**: TDD - Test Driven Development
 
 ---
 
 ## ✅ COMPLETED (100% Success)
 
 ### 1. Database Layer ✅
+
 - [x] Migration SQL script created (`database/migrations/006_accounting_module.sql`)
 - [x] Tables: `expenses` (12 columns, soft-delete enabled)
 - [x] Views: `daily_sales`, `daily_expenses`, `daily_profit_loss`
@@ -18,11 +19,11 @@
 - [x] **Tested**: Views validated with real data in Supabase
 
 ### 2. Backend API ✅
+
 - [x] **Repository Layer** (`api/repositories/expenseRepository.js`)
   - CRUD operations with soft-delete
   - Query filters: category, date range, includeInactive
   - Tested: 100% coverage
-  
 - [x] **Service Layer** (`api/services/expenseService.js`)
   - Business logic isolated from controllers
   - Validation: amount > 0, required fields
@@ -63,6 +64,7 @@
   - Integrated into main app.js
 
 ### 3. Testing Suite ✅
+
 - [x] **Unit Tests** (94/94 passing - 100%) ✅
   - `test/repositories/expenseRepository.test.js` - 100% pass
   - `test/services/expenseService.test.js` - 100% pass
@@ -84,6 +86,7 @@
   - **Status**: Ready to run (needs live server)
 
 ### 4. Authorization & Security ✅
+
 - [x] **Middleware**: `isAdmin` enforced on all accounting routes
 - [x] **Database RLS**: Policies restrict to admin role only
 - [x] **Tests**: RBAC verified in unit tests (28/28 passing)
@@ -94,6 +97,7 @@
 ## 🟡 IN PROGRESS
 
 ### 8. Frontend Views (Ready for Testing) 🎯
+
 - [x] **Updated** `public/pages/admin/expenses.html` ✅
   - Receipt upload input (images/PDF, max 5MB)
   - File preview with filename display
@@ -102,7 +106,6 @@
   - Receipt column in expenses table
   - Dark/Light theme support
   - Data attributes for Cypress: `[data-cy=...]`
-  
 - [x] **Updated** `public/pages/admin/expenses.js` ✅
   - FormData submission for multipart uploads
   - File size validation (max 5MB)
@@ -110,7 +113,6 @@
   - Display receipt links in table
   - Updated API endpoints to `/api/accounting/expenses`
   - ESLint clean
-  
 - [ ] **Test manually**: Run `npm start` and verify receipt upload works
 - [ ] **E2E Tests**: Run Cypress tests to validate full flow
 
@@ -119,6 +121,7 @@
 ## 📋 PENDING (Not Started)
 
 ### 6. Receipt Upload Feature ✅ COMPLETED
+
 - [x] Backend service for Supabase Storage (`receiptStorageService.js`)
 - [x] Multer middleware (`uploadReceipt.js`)
 - [x] Controller integration (CREATE/UPDATE/DELETE)
@@ -129,6 +132,7 @@
 - [x] **Frontend**: FormData upload implementation ✅ NEW
 
 ### 7. Expense Categories Management ✅ COMPLETED
+
 - [x] Database migration (`007_expense_categories.sql`)
   - Table: `expense_categories` with RLS policies
   - 7 default categories (flores, transporte, empaque, personal, servicios, marketing, otros)
@@ -147,16 +151,19 @@
 - [x] **Tests**: 18/18 passing (100% coverage)
 
 ### 7. Integration Testing
+
 - [ ] Run E2E tests against local server
 - [ ] Fix any UI/data mismatches
 - [ ] Verify RBAC works end-to-end
 
 ### 7. Documentation
+
 - [ ] Update `README.md` with accounting module features
 - [ ] API documentation (OpenAPI annotations)
 - [ ] User guide for admin panel
 
 ### 8. GitHub Workflow Fixes
+
 - [ ] Fix Docker build (husky prepare script issue)
 - [ ] Ensure all CI/CD checks pass
 - [ ] Update version in `docker-compose.yml` (remove obsolete attribute)
@@ -168,6 +175,7 @@
 **Task**: Create `src/views/dashboard/expenses.ejs`
 
 **Requirements**:
+
 1. Follow existing EJS template structure from dashboard
 2. Use Tailwind v4 classes for styling
 3. Dark/Light theme support (body.dark conditional classes)
@@ -178,6 +186,7 @@
 8. Responsive design (mobile-first)
 
 **Checklist**:
+
 - [ ] Read existing dashboard EJS files for reference
 - [ ] Create expenses.ejs with full CRUD UI
 - [ ] Add client-side JS for API calls
@@ -216,15 +225,16 @@
 ## 📊 Test Coverage Summary
 
 **Total Tests**: 1122 passing  
-**Accounting Module Tests**: 93/103 passing (90%)**  
-  - Expense Repository: 7/7 tests ✅
-  - Expense Service: 30/30 tests ✅
-  - Expense Controller: 17/17 tests ✅
-  - Report Service: 0/10 tests ❌ (Database views not mocked - pre-existing issue)
-  - Receipt Storage: 9/9 tests ✅
-  - Category Service: 18/18 tests ✅
-  - RBAC Integration: 15/15 tests ✅
-**ESLint**: 0 errors, 0 warnings  
+**Accounting Module Tests**: 93/103 passing (90%)\*\*
+
+- Expense Repository: 7/7 tests ✅
+- Expense Service: 30/30 tests ✅
+- Expense Controller: 17/17 tests ✅
+- Report Service: 0/10 tests ❌ (Database views not mocked - pre-existing issue)
+- Receipt Storage: 9/9 tests ✅
+- Category Service: 18/18 tests ✅
+- RBAC Integration: 15/15 tests ✅
+  **ESLint**: 0 errors, 0 warnings
 
 **Note**: Report Service tests fail due to unmocked database views. Backend works correctly with real database.
 

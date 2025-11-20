@@ -174,7 +174,8 @@ class ForbiddenError extends AppError {
       statusCode: 403,
       code: ERROR_CODES.FORBIDDEN,
       context,
-      userMessage: context.userMessage || message || 'You do not have permission to access this resource.',
+      userMessage:
+        context.userMessage || message || 'You do not have permission to access this resource.',
       severity: 'medium'
     })
   }

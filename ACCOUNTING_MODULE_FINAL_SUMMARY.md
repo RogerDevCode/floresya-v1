@@ -9,6 +9,7 @@
 ## ✅ What Was Delivered
 
 ### 1. Database Layer (100% Complete)
+
 - ✅ Migration scripts:
   - `006_accounting_module.sql` - Main tables and views
   - `007_expense_categories.sql` - Category management
@@ -18,6 +19,7 @@
 - ✅ Soft-delete with `active` flag
 
 ### 2. Backend API (100% Complete)
+
 - ✅ **Repository Layer** (Expense + Category)
   - Full CRUD operations
   - Query filters (category, date range, soft-delete toggle)
@@ -45,6 +47,7 @@
   - Authentication + Admin middleware enforced
 
 ### 3. Frontend (100% Complete)
+
 - ✅ **Expenses Management** (`public/pages/admin/expenses.html`)
   - Full CRUD interface (create, read, update, delete)
   - Category filter + date range filters
@@ -61,6 +64,7 @@
   - Dark/Light theme support
 
 ### 4. Testing (90% Complete)
+
 - ✅ **Unit Tests**: 93/103 passing (90%)
   - Expense Repository: 7/7 ✅
   - Expense Service: 30/30 ✅
@@ -82,6 +86,7 @@
   - MVC + Service Layer + Repository pattern
 
 ### 5. Security & Authorization (100% Complete)
+
 - ✅ Admin-only access enforced at:
   - Middleware level (`requireAdmin`)
   - Database level (RLS policies)
@@ -90,6 +95,7 @@
 - ✅ File upload security (type + size validation)
 
 ### 6. Receipt Upload Feature (100% Complete)
+
 - ✅ Backend: Supabase Storage integration
 - ✅ Frontend: File input + preview + download
 - ✅ Supported formats: JPEG, PNG, WebP, PDF
@@ -101,6 +107,7 @@
 ## 📋 Production Readiness Checklist
 
 ### Critical (Must-Do Before Production)
+
 - [ ] **Run E2E Tests**: Execute Cypress test suite and fix failures
 - [ ] **Manual Testing**: Full workflow validation
   - [ ] Create expense with receipt
@@ -112,7 +119,7 @@
   - [ ] Dark/Light theme toggle
   - [ ] Mobile responsiveness
 
-- [ ] **Database Setup**: 
+- [ ] **Database Setup**:
   - [ ] Run migrations on production Supabase
   - [ ] Verify RLS policies active
   - [ ] Test database views return correct data
@@ -125,6 +132,7 @@
   - [ ] Test file upload/download
 
 ### Important (Recommended)
+
 - [ ] **Fix Report Service Tests**: Mock database views properly
 - [ ] **Add API Documentation**: Complete OpenAPI annotations
 - [ ] **Update README**: Add accounting module section
@@ -133,6 +141,7 @@
 - [ ] **Backup Strategy**: Document expense data backup process
 
 ### Nice-to-Have (Future Enhancements)
+
 - [ ] Receipt OCR for auto-fill
 - [ ] Multi-currency support
 - [ ] Expense approval workflow
@@ -145,6 +154,7 @@
 ## 🚀 How to Deploy
 
 ### 1. Database Migration
+
 ```bash
 # Run migrations in Supabase SQL editor
 psql -h your-project.supabase.co -U postgres -d postgres -f database/migrations/006_accounting_module.sql
@@ -152,23 +162,26 @@ psql -h your-project.supabase.co -U postgres -d postgres -f database/migrations/
 ```
 
 ### 2. Supabase Storage Setup
+
 ```sql
 -- Create receipts bucket
-INSERT INTO storage.buckets (id, name, public) 
+INSERT INTO storage.buckets (id, name, public)
 VALUES ('receipts', 'receipts', true);
 
 -- Set size limit policy
-CREATE POLICY "Limit upload size to 5MB" 
-ON storage.objects FOR INSERT 
+CREATE POLICY "Limit upload size to 5MB"
+ON storage.objects FOR INSERT
 WITH CHECK (
-  bucket_id = 'receipts' AND 
+  bucket_id = 'receipts' AND
   (storage.foldername(name))[1] = auth.uid()::text AND
   octet_length(decode(encode(content, 'base64'), 'base64')) < 5242880
 );
 ```
 
 ### 3. Environment Variables
+
 Ensure `.env` has:
+
 ```
 SUPABASE_URL=your_supabase_url
 SUPABASE_ANON_KEY=your_anon_key
@@ -176,12 +189,14 @@ SUPABASE_SERVICE_KEY=your_service_key
 ```
 
 ### 4. Start Application
+
 ```bash
 npm install
 npm start
 ```
 
 ### 5. Verify Deployment
+
 - Visit `http://localhost:3000/pages/admin/expenses.html`
 - Login as admin
 - Create test expense with receipt
@@ -204,24 +219,28 @@ npm start
 ## 🎓 Technical Decisions & Best Practices
 
 ### Architecture
+
 - **Clean Architecture**: Separation of concerns (Controller → Service → Repository → DB)
 - **Dependency Injection**: Container pattern for service management
 - **Repository Pattern**: Database access abstraction
 - **Service Layer**: Business logic isolation
 
 ### Security
+
 - **Defense in Depth**: Multiple layers (middleware + RLS + validation)
 - **Soft Delete**: Data preservation with `active` flag
 - **Admin-Only Access**: Enforced at every layer
 - **File Validation**: Type + size checks before upload
 
 ### Code Quality
+
 - **TDD Approach**: Tests written before/during implementation
 - **Manual Validation**: No external validation libraries (per project standard)
 - **Error Handling**: AppError with proper logging
 - **Fail Fast**: Immediate error throwing, no silent failures
 
 ### Frontend
+
 - **Progressive Enhancement**: Works without JavaScript for basic operations
 - **Accessibility**: Semantic HTML, ARIA labels
 - **Mobile-First**: Responsive design from 320px
@@ -247,20 +266,24 @@ npm start
 ## 📚 References & Standards Used
 
 ### MIT OpenCourseWare
+
 - **Software Construction** (6.005): Design principles, testing strategies
 - **Database Systems** (6.830): Schema design, query optimization
 
 ### Stanford CS Courses
+
 - **CS142 - Web Applications**: Frontend architecture, RESTful APIs
 - **CS253 - Web Security**: Input validation, CSRF protection
 
 ### Industry Standards
+
 - **REST API Design**: Richardson Maturity Model Level 2
 - **HTTP Status Codes**: RFC 7231 (correct use of 200, 201, 400, 403, 500)
 - **JWT Auth**: RFC 7519 (token-based authentication)
 - **Semantic Versioning**: API versioning strategy
 
 ### Project Standards (FloresYa-specific)
+
 - **No Zod**: Manual validation only
 - **ESLint**: Airbnb JavaScript Style Guide
 - **Tailwind v4**: Utility-first CSS
@@ -291,7 +314,8 @@ npm start
 
 The **Accounting Module** is **95% complete** and ready for final testing phase. All backend functionality is implemented and tested. Frontend provides a complete user experience with receipt management. The module follows best practices from MIT and Stanford coursework, implementing clean architecture, proper security layers, and comprehensive testing.
 
-**Next Steps**: 
+**Next Steps**:
+
 1. Run E2E tests against local server
 2. Complete manual QA checklist
 3. Deploy to production following deployment guide

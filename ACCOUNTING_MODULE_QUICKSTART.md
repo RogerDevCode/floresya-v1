@@ -1,8 +1,9 @@
 # 🚀 Accounting Module - Quick Start Guide
 
 ## ✅ Current Status
+
 - **Backend**: 100% Complete ✅
-- **Frontend**: 100% Complete ✅  
+- **Frontend**: 100% Complete ✅
 - **Tests**: 90% Complete (93/103 passing) ✅
 - **Overall**: 95% Complete - **READY FOR FINAL TESTING**
 
@@ -11,6 +12,7 @@
 ## 📦 What's Included
 
 ### Files Created/Modified
+
 ```
 database/migrations/
   ├── 006_accounting_module.sql          ✅ Main tables & views
@@ -61,6 +63,7 @@ cypress/e2e/
 ## ⚡ Quick Test Commands
 
 ### Run Unit Tests
+
 ```bash
 # All accounting tests
 npm test -- test/services/expenseService.test.js test/services/receiptStorageService.test.js test/services/expenseCategoryService.test.js test/controllers/expenseController.test.js test/integration/accounting-rbac.test.js --run
@@ -69,6 +72,7 @@ npm test -- test/services/expenseService.test.js test/services/receiptStorageSer
 ```
 
 ### Run E2E Tests (Requires Server)
+
 ```bash
 # Terminal 1: Start server
 npm start
@@ -79,6 +83,7 @@ npm run cypress:open
 ```
 
 ### Manual Testing
+
 ```bash
 # Start server
 npm start
@@ -93,6 +98,7 @@ npm start
 ## 🔧 Setup Instructions
 
 ### 1. Database Migration (If Not Done)
+
 ```bash
 # Copy SQL from database/migrations/ to Supabase SQL Editor
 # Run in order:
@@ -101,14 +107,16 @@ npm start
 ```
 
 ### 2. Supabase Storage Setup
+
 ```sql
 -- Run in Supabase SQL Editor:
-INSERT INTO storage.buckets (id, name, public) 
+INSERT INTO storage.buckets (id, name, public)
 VALUES ('receipts', 'receipts', true)
 ON CONFLICT DO NOTHING;
 ```
 
 Or create bucket manually:
+
 - Go to Supabase Dashboard → Storage
 - Click "New Bucket"
 - Name: `receipts`
@@ -116,6 +124,7 @@ Or create bucket manually:
 - Save
 
 ### 3. Verify Environment
+
 ```bash
 # Check .env has:
 SUPABASE_URL=...
@@ -128,6 +137,7 @@ SUPABASE_SERVICE_KEY=...
 ## 🧪 Testing Checklist
 
 ### Backend API Tests ✅
+
 - [x] Expense CRUD (30 tests)
 - [x] Category CRUD (18 tests)
 - [x] Receipt Upload (9 tests)
@@ -136,6 +146,7 @@ SUPABASE_SERVICE_KEY=...
 - [ ] Report Service (0/10 - DB views need mocking)
 
 ### Manual QA (To Do)
+
 - [ ] Create expense without receipt
 - [ ] Create expense with receipt (JPG)
 - [ ] Create expense with receipt (PDF)
@@ -154,6 +165,7 @@ SUPABASE_SERVICE_KEY=...
 - [ ] Non-admin access (should redirect)
 
 ### E2E Tests (To Run)
+
 - [ ] `accounting-admin.cy.js` - Admin access & CRUD
 - [ ] `accounting-customer.cy.js` - Customer restrictions
 - [ ] `accounting/expenses.cy.js` - Full workflow
@@ -163,6 +175,7 @@ SUPABASE_SERVICE_KEY=...
 ## 🚀 API Endpoints Available
 
 ### Expenses
+
 ```
 POST   /api/accounting/expenses           Create expense (with receipt upload)
 GET    /api/accounting/expenses           List all expenses (with filters)
@@ -173,6 +186,7 @@ GET    /api/accounting/expenses/by-category  Group by category
 ```
 
 ### Categories
+
 ```
 GET    /api/accounting/categories         List all categories
 POST   /api/accounting/categories         Create category
@@ -182,6 +196,7 @@ DELETE /api/accounting/categories/:id     Soft delete category
 ```
 
 ### Reports
+
 ```
 GET    /api/accounting/reports/dashboard          Dashboard summary (last 7 days)
 GET    /api/accounting/reports/weekly/:weekStart  Weekly P&L report
@@ -193,6 +208,7 @@ GET    /api/accounting/reports/monthly/:year/:month  Monthly P&L report
 ## 📝 Example API Calls
 
 ### Create Expense with Receipt
+
 ```bash
 curl -X POST http://localhost:3000/api/accounting/expenses \
   -H "Authorization: Bearer YOUR_TOKEN" \
@@ -206,6 +222,7 @@ curl -X POST http://localhost:3000/api/accounting/expenses \
 ```
 
 ### Get Weekly Report
+
 ```bash
 curl http://localhost:3000/api/accounting/reports/weekly/2025-11-18 \
   -H "Authorization: Bearer YOUR_TOKEN"
@@ -216,12 +233,14 @@ curl http://localhost:3000/api/accounting/reports/weekly/2025-11-18 \
 ## 🐛 Known Issues & Workarounds
 
 ### 1. Report Service Tests Failing
+
 **Issue**: 10/10 tests fail because DB views aren't mocked  
 **Impact**: Unit tests fail, feature works with real DB  
 **Workaround**: Skip or run against test database  
 **Fix**: TODO - Mock `daily_sales`, `daily_expenses`, `daily_profit_loss` views
 
 ### 2. Receipt Bucket Must Exist
+
 **Issue**: Receipt uploads fail if bucket doesn't exist  
 **Impact**: Can't upload receipts until setup  
 **Fix**: Run SQL script or create manually (see Setup #2)
@@ -265,6 +284,7 @@ curl http://localhost:3000/api/accounting/reports/weekly/2025-11-18 \
 ## 🙋 Need Help?
 
 ### Common Issues
+
 **Q**: Can't access expenses page  
 **A**: Ensure user has `admin` role in Supabase
 
@@ -300,6 +320,6 @@ curl http://localhost:3000/api/accounting/reports/weekly/2025-11-18 \
 
 ## 🎉 You're Almost There!
 
-The accounting module is **95% complete**. Just run the E2E tests, complete manual QA, and you're ready for production! 
+The accounting module is **95% complete**. Just run the E2E tests, complete manual QA, and you're ready for production!
 
 Good luck! 🚀

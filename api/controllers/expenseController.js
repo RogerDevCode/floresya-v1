@@ -108,7 +108,7 @@ class ExpenseController {
       if (req.file) {
         // Get existing expense to delete old receipt
         const existingExpense = await expenseService.getExpenseById(id)
-        
+
         // Upload new receipt
         const receiptUrl = await receiptStorageService.uploadReceipt(
           req.file.buffer,
@@ -145,10 +145,10 @@ class ExpenseController {
   async delete(req, res, next) {
     try {
       const { id } = req.params
-      
+
       // Get expense to delete receipt
       const expense = await expenseService.getExpenseById(id)
-      
+
       // Delete receipt if exists
       if (expense.receipt_url) {
         await receiptStorageService.deleteReceipt(expense.receipt_url)

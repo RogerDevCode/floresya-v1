@@ -24,7 +24,7 @@ vi.mock('../../api/utils/logger.js', () => ({
 
 // Mock supabase client
 vi.mock('../../api/services/supabaseClient.js', () => ({
-  supabaseClient: {
+  supabase: {
     from: vi.fn(() => ({
       select: vi.fn(() => ({
         gte: vi.fn(() => ({

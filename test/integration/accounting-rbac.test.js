@@ -19,13 +19,11 @@ describe('Accounting Routes - RBAC Integration', () => {
     })
 
     it('should deny access to POST /expenses without auth', async () => {
-      const res = await request(app)
-        .post(`${baseUrl}/expenses`)
-        .send({
-          category: 'Test',
-          amount: 10.5,
-          description: 'Test expense'
-        })
+      const res = await request(app).post(`${baseUrl}/expenses`).send({
+        category: 'Test',
+        amount: 10.5,
+        description: 'Test expense'
+      })
 
       // Dev mode may return 403 (mock user), production returns 401
       expect([401, 403]).toContain(res.status)

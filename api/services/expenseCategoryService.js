@@ -57,7 +57,9 @@ class ExpenseCategoryService {
       // Validate name format (lowercase, no spaces)
       const name = categoryData.name.toLowerCase().trim().replace(/\s+/g, '_')
       if (!/^[a-z0-9_]+$/.test(name)) {
-        throw new ValidationError('Category name must contain only lowercase letters, numbers, and underscores')
+        throw new ValidationError(
+          'Category name must contain only lowercase letters, numbers, and underscores'
+        )
       }
 
       // Check if category already exists
@@ -111,7 +113,9 @@ class ExpenseCategoryService {
       if (updates.name) {
         const name = updates.name.toLowerCase().trim().replace(/\s+/g, '_')
         if (!/^[a-z0-9_]+$/.test(name)) {
-          throw new ValidationError('Category name must contain only lowercase letters, numbers, and underscores')
+          throw new ValidationError(
+            'Category name must contain only lowercase letters, numbers, and underscores'
+          )
         }
 
         // Check for duplicates

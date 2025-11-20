@@ -6,6 +6,7 @@
 ## 🎯 What This Module Does
 
 Simple accounting for small flower shops:
+
 - Track daily expenses (flores, suministros, transporte, etc.)
 - View weekly/monthly profit & loss reports
 - Admin-only access (customers can't see financials)
@@ -14,12 +15,14 @@ Simple accounting for small flower shops:
 ## 🚀 Quick Start
 
 ### 1. Database Setup
+
 ```bash
 # Apply migration (creates expenses table + views)
 psql -d your_db -f database/migrations/006_accounting_module.sql
 ```
 
 ### 2. Backend API (Already Integrated)
+
 ```javascript
 // Endpoints ready:
 POST   /api/admin/accounting/expenses        // Create expense
@@ -33,12 +36,14 @@ GET    /api/admin/accounting/reports/monthly // Monthly P&L
 ```
 
 ### 3. Frontend Views (Created)
+
 ```
 src/views/pages/admin/expenses.ejs    // Add/edit expenses
 src/views/pages/admin/accounting.ejs  // Dashboard with reports
 ```
 
 ### 4. Run Tests
+
 ```bash
 # Unit tests (47/57 passing - 82.5%)
 npm test
@@ -80,10 +85,10 @@ npm run test:e2e
 ## 🔧 Architecture
 
 ```
-Controller (HTTP) 
+Controller (HTTP)
   ↓
 Service (Business Logic)
-  ↓  
+  ↓
 Repository (DB Operations)
   ↓
 Supabase Client (PostgreSQL)
@@ -107,20 +112,23 @@ Supabase Client (PostgreSQL)
 ## 🎯 Next Steps
 
 ### For Developers
+
 1. Fix reportService tests (update mock)
 2. Run E2E tests with Cypress
 3. Test admin vs customer access
 4. Add receipt upload feature
 
 ### For QA
+
 1. Validate admin can create/edit/delete expenses
 2. Validate customer gets 403 on accounting routes
 3. Test report calculations with real data
 4. Verify dark/light theme works
 
 ### For DevOps
+
 1. Apply database migration to staging/production
-2. Set environment variables (SUPABASE_*)
+2. Set environment variables (SUPABASE\_\*)
 3. Monitor slow query performance on reports
 
 ## 📝 Files Created
@@ -161,4 +169,4 @@ Database (1 file):
 
 ---
 
-*Following CLAUDE.md principles: KISS, MVC, TDD, Clean Code, Fail-Fast*
+_Following CLAUDE.md principles: KISS, MVC, TDD, Clean Code, Fail-Fast_

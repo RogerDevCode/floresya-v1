@@ -52,20 +52,16 @@ describe('ReceiptStorageService', () => {
       )
 
       expect(result).toBe('https://supabase.co/storage/receipts/1/123456_receipt.pdf')
-      expect(mockUpload).toHaveBeenCalledWith(
-        expect.stringContaining(`${userId}/`),
-        mockBuffer,
-        {
-          contentType: mimeType,
-          cacheControl: '3600',
-          upsert: false
-        }
-      )
+      expect(mockUpload).toHaveBeenCalledWith(expect.stringContaining(`${userId}/`), mockBuffer, {
+        contentType: mimeType,
+        cacheControl: '3600',
+        upsert: false
+      })
     })
 
     it('should handle upload error', async () => {
       const mockBuffer = Buffer.from('test')
-      
+
       const mockUpload = vi.fn().mockResolvedValue({
         data: null,
         error: { message: 'Storage error' }
@@ -83,7 +79,7 @@ describe('ReceiptStorageService', () => {
     it('should sanitize filename', async () => {
       const mockBuffer = Buffer.from('test')
       const dirtyFileName = 'receipt@#$%^&.pdf'
-      
+
       const mockUpload = vi.fn().mockResolvedValue({
         data: { path: '1/123_receipt______.pdf' },
         error: null
@@ -111,7 +107,7 @@ describe('ReceiptStorageService', () => {
   describe('deleteReceipt', () => {
     it('should delete receipt successfully', async () => {
       const receiptUrl = 'https://supabase.co/storage/receipts/1/123_receipt.pdf'
-      
+
       const mockRemove = vi.fn().mockResolvedValue({
         data: {},
         error: null
@@ -139,7 +135,7 @@ describe('ReceiptStorageService', () => {
 
     it('should handle deletion error', async () => {
       const receiptUrl = 'https://supabase.co/storage/receipts/1/123_receipt.pdf'
-      
+
       const mockRemove = vi.fn().mockResolvedValue({
         data: null,
         error: { message: 'Delete error' }

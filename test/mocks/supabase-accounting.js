@@ -30,7 +30,7 @@ export const seedAccountingData = () => {
       id: 1,
       category: 'flores',
       description: 'Rosas rojas importadas',
-      amount: 180.50,
+      amount: 180.5,
       expense_date: '2025-11-15',
       payment_method: 'transferencia',
       receipt_url: null,
@@ -44,7 +44,7 @@ export const seedAccountingData = () => {
       id: 2,
       category: 'transporte',
       description: 'Gasolina delivery',
-      amount: 45.00,
+      amount: 45.0,
       expense_date: '2025-11-16',
       payment_method: 'efectivo',
       receipt_url: null,
@@ -58,7 +58,7 @@ export const seedAccountingData = () => {
       id: 3,
       category: 'empaque',
       description: 'Cajas decorativas',
-      amount: 67.30,
+      amount: 67.3,
       expense_date: '2025-11-17',
       payment_method: 'tarjeta_credito',
       receipt_url: 'https://example.com/receipt1.pdf',
@@ -76,7 +76,7 @@ export const seedAccountingData = () => {
       id: 1,
       customer_email: 'customer1@test.com',
       customer_name: 'Juan Pérez',
-      total_amount_usd: 150.00,
+      total_amount_usd: 150.0,
       status: 'delivered',
       active: true,
       created_at: '2025-11-15T14:00:00Z'
@@ -85,7 +85,7 @@ export const seedAccountingData = () => {
       id: 2,
       customer_email: 'customer2@test.com',
       customer_name: 'María García',
-      total_amount_usd: 200.00,
+      total_amount_usd: 200.0,
       status: 'delivered',
       active: true,
       created_at: '2025-11-16T15:00:00Z'
@@ -94,7 +94,7 @@ export const seedAccountingData = () => {
       id: 3,
       customer_email: 'customer3@test.com',
       customer_name: 'Carlos López',
-      total_amount_usd: 175.50,
+      total_amount_usd: 175.5,
       status: 'verified',
       active: true,
       created_at: '2025-11-17T16:00:00Z'
@@ -108,9 +108,25 @@ export const seedAccountingData = () => {
 /**
  * Validate expense data
  */
-const validateExpense = (data) => {
-  const validCategories = ['flores', 'transporte', 'empaque', 'personal', 'servicios', 'marketing', 'otros']
-  const validPaymentMethods = ['efectivo', 'transferencia', 'tarjeta_debito', 'tarjeta_credito', 'pago_movil', 'zelle', 'otro']
+const validateExpense = data => {
+  const validCategories = [
+    'flores',
+    'transporte',
+    'empaque',
+    'personal',
+    'servicios',
+    'marketing',
+    'otros'
+  ]
+  const validPaymentMethods = [
+    'efectivo',
+    'transferencia',
+    'tarjeta_debito',
+    'tarjeta_credito',
+    'pago_movil',
+    'zelle',
+    'otro'
+  ]
 
   if (!data.category) {
     throw new AppError('category is required', 400, POSTGRESQL_ERROR_CODES.NOT_NULL_VIOLATION)
@@ -170,14 +186,20 @@ const applyFilters = (data, filters = {}) => {
  * Apply order
  */
 const applyOrder = (data, orderBy, ascending = true) => {
-  if (!orderBy) {return data}
+  if (!orderBy) {
+    return data
+  }
 
   return [...data].sort((a, b) => {
     const aVal = a[orderBy]
     const bVal = b[orderBy]
-    
-    if (aVal < bVal) {return ascending ? -1 : 1}
-    if (aVal > bVal) {return ascending ? 1 : -1}
+
+    if (aVal < bVal) {
+      return ascending ? -1 : 1
+    }
+    if (aVal > bVal) {
+      return ascending ? 1 : -1
+    }
     return 0
   })
 }
@@ -187,24 +209,24 @@ const applyOrder = (data, orderBy, ascending = true) => {
  */
 const applyPagination = (data, limit, offset = 0) => {
   let result = data
-  
+
   // Apply offset first
   if (offset > 0) {
     result = result.slice(offset)
   }
-  
+
   // Then apply limit
   if (limit) {
     result = result.slice(0, limit)
   }
-  
+
   return result
 }
 
 /**
  * Create expense
  */
-export const createExpense = (data) => {
+export const createExpense = data => {
   try {
     validateExpense(data)
 
@@ -236,7 +258,7 @@ export const createExpense = (data) => {
 export const findExpenses = (filters = {}, options = {}) => {
   try {
     let result = applyFilters(expensesData, filters)
-    
+
     if (options.orderBy) {
       result = applyOrder(result, options.orderBy, options.ascending !== false)
     }
@@ -252,7 +274,7 @@ export const findExpenses = (filters = {}, options = {}) => {
 /**
  * Find expense by ID
  */
-export const findExpenseById = (id) => {
+export const findExpenseById = id => {
   try {
     const expense = expensesData.find(e => e.id === parseInt(id) && e.active)
     return { data: expense || null, error: null }
@@ -267,7 +289,7 @@ export const findExpenseById = (id) => {
 export const updateExpense = (id, updates) => {
   try {
     const index = expensesData.findIndex(e => e.id === parseInt(id))
-    
+
     if (index === -1) {
       return { data: null, error: null }
     }
@@ -293,10 +315,10 @@ export const updateExpense = (id, updates) => {
 /**
  * Delete expense (soft delete)
  */
-export const deleteExpense = (id) => {
+export const deleteExpense = id => {
   try {
     const index = expensesData.findIndex(e => e.id === parseInt(id))
-    
+
     if (index === -1) {
       return { data: null, error: null }
     }
@@ -347,7 +369,7 @@ export const findOrders = (filters = {}) => {
  */
 export const createAccountingSupabaseMock = () => {
   return {
-    from: (table) => {
+    from: table => {
       const queryBuilder = {
         _table: table,
         _select: '*',
@@ -365,9 +387,13 @@ export const createAccountingSupabaseMock = () => {
         insert(data) {
           if (this._table === 'expenses') {
             return {
-              then: (resolve) => {
+              then: resolve => {
                 createExpense(data).then(result => {
-                  resolve(result.data ? { data: result.data, error: null } : { data: null, error: result.error })
+                  resolve(
+                    result.data
+                      ? { data: result.data, error: null }
+                      : { data: null, error: result.error }
+                  )
                 })
                 return this
               }

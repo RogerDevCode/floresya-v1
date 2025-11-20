@@ -5,7 +5,10 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import expenseService, { EXPENSE_CATEGORIES, PAYMENT_METHODS } from '../../api/services/expenseService.js'
+import expenseService, {
+  EXPENSE_CATEGORIES,
+  PAYMENT_METHODS
+} from '../../api/services/expenseService.js'
 import { ValidationError, NotFoundError } from '../../api/errors/AppError.js'
 import {
   resetAccountingData,
@@ -30,27 +33,37 @@ vi.mock('../../api/utils/logger.js', () => ({
 // Mock the repository
 vi.mock('../../api/repositories/expenseRepository.js', () => ({
   default: {
-    create: vi.fn(async (data) => {
+    create: vi.fn(async data => {
       const result = await createExpense(data)
-      if (result.error) {throw result.error}
+      if (result.error) {
+        throw result.error
+      }
       return result.data
     }),
-    findById: vi.fn(async (id) => {
+    findById: vi.fn(async id => {
       const result = await findExpenseById(id)
       return result.data
     }),
-    findMany: vi.fn(async (filters) => {
+    findMany: vi.fn(async filters => {
       const options = {}
-      if (filters.limit) {options.limit = filters.limit}
-      if (filters.offset) {options.offset = filters.offset}
+      if (filters.limit) {
+        options.limit = filters.limit
+      }
+      if (filters.offset) {
+        options.offset = filters.offset
+      }
       if (filters.orderBy) {
         options.orderBy = filters.orderBy[0]?.column
         options.ascending = filters.orderBy[0]?.ascending !== false
       }
 
       const queryFilters = {}
-      if (filters.category) {queryFilters.eq_category = filters.category}
-      if (filters.active !== undefined) {queryFilters.active = filters.active}
+      if (filters.category) {
+        queryFilters.eq_category = filters.category
+      }
+      if (filters.active !== undefined) {
+        queryFilters.active = filters.active
+      }
 
       const result = await findExpenses(queryFilters, options)
       return result.data
@@ -60,20 +73,26 @@ vi.mock('../../api/repositories/expenseRepository.js', () => ({
         gte_expense_date: startDate,
         lte_expense_date: endDate
       }
-      if (options.category) {filters.eq_category = options.category}
+      if (options.category) {
+        filters.eq_category = options.category
+      }
 
       const queryOptions = {}
-      if (options.limit) {queryOptions.limit = options.limit}
+      if (options.limit) {
+        queryOptions.limit = options.limit
+      }
 
       const result = await findExpenses(filters, queryOptions)
       return result.data
     }),
     update: vi.fn(async (id, updates) => {
       const result = await updateExpense(id, updates)
-      if (result.error) {throw result.error}
+      if (result.error) {
+        throw result.error
+      }
       return result.data
     }),
-    delete: vi.fn(async (id) => {
+    delete: vi.fn(async id => {
       const result = await deleteExpense(id)
       return result.data
     }),
@@ -120,7 +139,7 @@ describe('ExpenseService - Business Logic', () => {
       const expenseData = {
         category: 'flores',
         description: 'Rosas premium',
-        amount: 120.50,
+        amount: 120.5,
         payment_method: 'efectivo'
       }
 
@@ -130,7 +149,7 @@ describe('ExpenseService - Business Logic', () => {
       expect(result.id).toBeDefined()
       expect(result.category).toBe('flores')
       expect(result.description).toBe('Rosas premium')
-      expect(result.amount).toBe(120.50)
+      expect(result.amount).toBe(120.5)
       expect(result.created_by).toBe(1)
     })
 
@@ -138,7 +157,7 @@ describe('ExpenseService - Business Logic', () => {
       const expenseData = {
         category: 'transporte',
         description: 'Gasolina',
-        amount: 50.00
+        amount: 50.0
       }
 
       const result = await expenseService.createExpense(expenseData, 1)
@@ -154,8 +173,7 @@ describe('ExpenseService - Business Logic', () => {
         amount: 100
       }
 
-      await expect(expenseService.createExpense(expenseData, 1))
-        .rejects.toThrow(ValidationError)
+      await expect(expenseService.createExpense(expenseData, 1)).rejects.toThrow(ValidationError)
     })
 
     it('should throw ValidationError for amount <= 0', async () => {
@@ -165,8 +183,7 @@ describe('ExpenseService - Business Logic', () => {
         amount: 0
       }
 
-      await expect(expenseService.createExpense(expenseData, 1))
-        .rejects.toThrow(ValidationError)
+      await expect(expenseService.createExpense(expenseData, 1)).rejects.toThrow(ValidationError)
     })
 
     it('should throw ValidationError for negative amount', async () => {
@@ -176,8 +193,7 @@ describe('ExpenseService - Business Logic', () => {
         amount: -50
       }
 
-      await expect(expenseService.createExpense(expenseData, 1))
-        .rejects.toThrow(ValidationError)
+      await expect(expenseService.createExpense(expenseData, 1)).rejects.toThrow(ValidationError)
     })
 
     it('should throw ValidationError for missing amount', async () => {
@@ -186,8 +202,7 @@ describe('ExpenseService - Business Logic', () => {
         description: 'Test'
       }
 
-      await expect(expenseService.createExpense(expenseData, 1))
-        .rejects.toThrow(ValidationError)
+      await expect(expenseService.createExpense(expenseData, 1)).rejects.toThrow(ValidationError)
     })
 
     it('should throw ValidationError for invalid payment method', async () => {
@@ -198,8 +213,7 @@ describe('ExpenseService - Business Logic', () => {
         payment_method: 'invalid_method'
       }
 
-      await expect(expenseService.createExpense(expenseData, 1))
-        .rejects.toThrow(ValidationError)
+      await expect(expenseService.createExpense(expenseData, 1)).rejects.toThrow(ValidationError)
     })
 
     it('should accept valid payment methods', async () => {
@@ -240,15 +254,13 @@ describe('ExpenseService - Business Logic', () => {
     })
 
     it('should throw NotFoundError for non-existent ID', async () => {
-      await expect(expenseService.getExpenseById(999))
-        .rejects.toThrow(NotFoundError)
+      await expect(expenseService.getExpenseById(999)).rejects.toThrow(NotFoundError)
     })
 
     it('should throw NotFoundError for inactive expense', async () => {
       await expenseService.deleteExpense(1)
 
-      await expect(expenseService.getExpenseById(1))
-        .rejects.toThrow(NotFoundError)
+      await expect(expenseService.getExpenseById(1)).rejects.toThrow(NotFoundError)
     })
   })
 
@@ -286,10 +298,12 @@ describe('ExpenseService - Business Logic', () => {
 
       const result = await expenseService.getExpenses(filters)
 
-      expect(result.every(e => {
-        const date = new Date(e.expense_date)
-        return date >= filters.startDate && date <= filters.endDate
-      })).toBe(true)
+      expect(
+        result.every(e => {
+          const date = new Date(e.expense_date)
+          return date >= filters.startDate && date <= filters.endDate
+        })
+      ).toBe(true)
     })
 
     it('should return empty array when no expenses match filters', async () => {
@@ -307,13 +321,13 @@ describe('ExpenseService - Business Logic', () => {
     it('should update expense successfully', async () => {
       const updates = {
         description: 'Updated description',
-        amount: 250.00
+        amount: 250.0
       }
 
       const result = await expenseService.updateExpense(1, updates)
 
       expect(result.description).toBe('Updated description')
-      expect(result.amount).toBe(250.00)
+      expect(result.amount).toBe(250.0)
     })
 
     it('should validate category when updating', async () => {
@@ -321,8 +335,7 @@ describe('ExpenseService - Business Logic', () => {
         category: 'invalid_category'
       }
 
-      await expect(expenseService.updateExpense(1, updates))
-        .rejects.toThrow(ValidationError)
+      await expect(expenseService.updateExpense(1, updates)).rejects.toThrow(ValidationError)
     })
 
     it('should validate amount when updating', async () => {
@@ -330,8 +343,7 @@ describe('ExpenseService - Business Logic', () => {
         amount: -50
       }
 
-      await expect(expenseService.updateExpense(1, updates))
-        .rejects.toThrow(ValidationError)
+      await expect(expenseService.updateExpense(1, updates)).rejects.toThrow(ValidationError)
     })
 
     it('should validate payment method when updating', async () => {
@@ -339,8 +351,7 @@ describe('ExpenseService - Business Logic', () => {
         payment_method: 'invalid_method'
       }
 
-      await expect(expenseService.updateExpense(1, updates))
-        .rejects.toThrow(ValidationError)
+      await expect(expenseService.updateExpense(1, updates)).rejects.toThrow(ValidationError)
     })
 
     it('should throw NotFoundError for non-existent expense', async () => {
@@ -348,8 +359,7 @@ describe('ExpenseService - Business Logic', () => {
         description: 'Test'
       }
 
-      await expect(expenseService.updateExpense(999, updates))
-        .rejects.toThrow(NotFoundError)
+      await expect(expenseService.updateExpense(999, updates)).rejects.toThrow(NotFoundError)
     })
 
     it('should allow updating only some fields', async () => {
@@ -386,8 +396,7 @@ describe('ExpenseService - Business Logic', () => {
     })
 
     it('should throw NotFoundError when deleting non-existent expense', async () => {
-      await expect(expenseService.deleteExpense(999))
-        .rejects.toThrow(NotFoundError)
+      await expect(expenseService.deleteExpense(999)).rejects.toThrow(NotFoundError)
     })
   })
 

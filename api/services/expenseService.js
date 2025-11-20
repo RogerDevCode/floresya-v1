@@ -44,7 +44,9 @@ class ExpenseService {
     try {
       // Validate category
       if (!EXPENSE_CATEGORIES.includes(expenseData.category)) {
-        throw new ValidationError(`Invalid category. Must be one of: ${EXPENSE_CATEGORIES.join(', ')}`)
+        throw new ValidationError(
+          `Invalid category. Must be one of: ${EXPENSE_CATEGORIES.join(', ')}`
+        )
       }
 
       // Validate amount
@@ -54,7 +56,9 @@ class ExpenseService {
 
       // Validate payment method if provided
       if (expenseData.payment_method && !PAYMENT_METHODS.includes(expenseData.payment_method)) {
-        throw new ValidationError(`Invalid payment method. Must be one of: ${PAYMENT_METHODS.join(', ')}`)
+        throw new ValidationError(
+          `Invalid payment method. Must be one of: ${PAYMENT_METHODS.join(', ')}`
+        )
       }
 
       const expense = {
@@ -131,7 +135,9 @@ class ExpenseService {
     try {
       // Validate category if provided
       if (updates.category && !EXPENSE_CATEGORIES.includes(updates.category)) {
-        throw new ValidationError(`Invalid category. Must be one of: ${EXPENSE_CATEGORIES.join(', ')}`)
+        throw new ValidationError(
+          `Invalid category. Must be one of: ${EXPENSE_CATEGORIES.join(', ')}`
+        )
       }
 
       // Validate amount if provided
@@ -141,7 +147,9 @@ class ExpenseService {
 
       // Validate payment method if provided
       if (updates.payment_method && !PAYMENT_METHODS.includes(updates.payment_method)) {
-        throw new ValidationError(`Invalid payment method. Must be one of: ${PAYMENT_METHODS.join(', ')}`)
+        throw new ValidationError(
+          `Invalid payment method. Must be one of: ${PAYMENT_METHODS.join(', ')}`
+        )
       }
 
       const updated = await expenseRepository.update(id, updates)

@@ -41,14 +41,14 @@ class ReceiptStorageService {
       }
 
       // Get public URL
-      const { data: urlData } = supabase.storage
-        .from(BUCKET_NAME)
-        .getPublicUrl(uniqueFileName)
+      const { data: urlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(uniqueFileName)
 
       logger.info(`Receipt uploaded successfully: ${uniqueFileName}`)
       return urlData.publicUrl
     } catch (error) {
-      if (error instanceof AppError) {throw error}
+      if (error instanceof AppError) {
+        throw error
+      }
       logger.error('Error uploading receipt:', error)
       throw new AppError('Receipt upload failed', 500, { error: error.message })
     }
@@ -61,7 +61,9 @@ class ReceiptStorageService {
    */
   async deleteReceipt(receiptUrl) {
     try {
-      if (!receiptUrl) {return true}
+      if (!receiptUrl) {
+        return true
+      }
 
       // Extract file path from URL
       const urlParts = receiptUrl.split(`${BUCKET_NAME}/`)
@@ -72,9 +74,7 @@ class ReceiptStorageService {
 
       const filePath = urlParts[1]
 
-      const { error } = await supabase.storage
-        .from(BUCKET_NAME)
-        .remove([filePath])
+      const { error } = await supabase.storage.from(BUCKET_NAME).remove([filePath])
 
       if (error) {
         logger.error('Error deleting receipt:', error)
@@ -96,9 +96,9 @@ class ReceiptStorageService {
   async initializeBucket() {
     try {
       const { data: buckets } = await supabase.storage.listBuckets()
-      
+
       const bucketExists = buckets?.some(b => b.name === BUCKET_NAME)
-      
+
       if (!bucketExists) {
         const { error } = await supabase.storage.createBucket(BUCKET_NAME, {
           public: true,

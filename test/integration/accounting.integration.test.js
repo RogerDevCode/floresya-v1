@@ -50,11 +50,11 @@ describe('Accounting Module - Integration Tests', () => {
       // UPDATE
       const updateResult = await updateExpense(expenseId, {
         description: 'Updated integration test',
-        amount: 150.00
+        amount: 150.0
       })
       expect(updateResult.error).toBeNull()
       expect(updateResult.data.description).toBe('Updated integration test')
-      expect(updateResult.data.amount).toBe(150.00)
+      expect(updateResult.data.amount).toBe(150.0)
 
       // DELETE (soft)
       const deleteResult = await deleteExpense(expenseId)
@@ -110,10 +110,12 @@ describe('Accounting Module - Integration Tests', () => {
         lte_expense_date: '2025-11-17'
       })
 
-      expect(result.data.every(e => {
-        const date = new Date(e.expense_date)
-        return date >= new Date('2025-11-15') && date <= new Date('2025-11-17')
-      })).toBe(true)
+      expect(
+        result.data.every(e => {
+          const date = new Date(e.expense_date)
+          return date >= new Date('2025-11-15') && date <= new Date('2025-11-17')
+        })
+      ).toBe(true)
     })
 
     it('should apply pagination', async () => {
@@ -130,10 +132,13 @@ describe('Accounting Module - Integration Tests', () => {
     })
 
     it('should order results', async () => {
-      const result = await findExpenses({}, { 
-        orderBy: 'expense_date',
-        ascending: false 
-      })
+      const result = await findExpenses(
+        {},
+        {
+          orderBy: 'expense_date',
+          ascending: false
+        }
+      )
 
       if (result.data.length > 1) {
         for (let i = 0; i < result.data.length - 1; i++) {
@@ -157,7 +162,7 @@ describe('Accounting Module - Integration Tests', () => {
         // Query again - should have one less
         const afterDelete = await findExpenses()
         expect(afterDelete.data.length).toBe(initialCount - 1)
-        
+
         // Should not find deleted expense
         expect(afterDelete.data.find(e => e.id === toDelete.id)).toBeUndefined()
       }
