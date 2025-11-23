@@ -15,6 +15,7 @@ import {
   validateVenezuelanAddress
 } from './advancedValidation.amount.js'
 import { validateVenezuelanPhone } from './advancedValidation.phone.js'
+import { logger } from '../../utils/logger.js'
 
 /**
  * Advanced order items validation
@@ -95,21 +96,21 @@ export function validateOrderItems(items) {
  * Comprehensive order validation
  */
 export function validateOrderData(orderData) {
-  console.log('🔍 VALIDATING ORDER DATA:', JSON.stringify(orderData, null, 2))
+  logger.debug('🔍 VALIDATING ORDER DATA:', { orderData })
   const errors = []
 
   // Email validation
-  console.log('📧 Validating email:', orderData.customer_email)
+  logger.debug('📧 Validating email:', { email: orderData.customer_email })
   const emailError = validateEmail(orderData.customer_email)
   if (emailError) {
-    console.log('❌ Email validation failed:', emailError)
+    logger.debug('❌ Email validation failed:', { error: emailError })
     errors.push(emailError)
   } else {
-    console.log('✅ Email validation passed')
+    logger.debug('✅ Email validation passed')
   }
 
   // Name validation
-  console.log('👤 Validating name:', orderData.customer_name)
+  logger.debug('👤 Validating name:', { name: orderData.customer_name })
   const nameError = validateTextLength(
     orderData.customer_name,
     'Nombre del cliente',
@@ -117,76 +118,76 @@ export function validateOrderData(orderData) {
     BUSINESS_LIMITS.maxNameLength
   )
   if (nameError) {
-    console.log('❌ Name validation failed:', nameError)
+    logger.debug('❌ Name validation failed:', { error: nameError })
     errors.push(nameError)
   } else {
-    console.log('✅ Name validation passed')
+    logger.debug('✅ Name validation passed')
   }
 
   // Phone validation
-  console.log('📱 Validating phone:', orderData.customer_phone)
+  logger.debug('📱 Validating phone:', { phone: orderData.customer_phone })
   const phoneError = validateVenezuelanPhone(orderData.customer_phone)
   if (phoneError) {
-    console.log('❌ Phone validation failed:', phoneError)
+    logger.debug('❌ Phone validation failed:', { error: phoneError })
     errors.push(phoneError)
   } else {
-    console.log('✅ Phone validation passed')
+    logger.debug('✅ Phone validation passed')
   }
 
   // Address validation
-  console.log('🏠 Validating address:', orderData.delivery_address)
+  logger.debug('🏠 Validating address:', { address: orderData.delivery_address })
   const addressError = validateVenezuelanAddress(orderData.delivery_address)
   if (addressError) {
-    console.log('❌ Address validation failed:', addressError)
+    logger.debug('❌ Address validation failed:', { error: addressError })
     errors.push(addressError)
   } else {
-    console.log('✅ Address validation passed')
+    logger.debug('✅ Address validation passed')
   }
 
   // Amount validations
-  console.log('💵 Validating USD amount:', orderData.total_amount_usd)
+  logger.debug('💵 Validating USD amount:', { amount: orderData.total_amount_usd })
   const totalAmountError = validateAmount(orderData.total_amount_usd, 'Monto total')
   if (totalAmountError) {
-    console.log('❌ USD amount validation failed:', totalAmountError)
+    logger.debug('❌ USD amount validation failed:', { error: totalAmountError })
     errors.push(totalAmountError)
   } else {
-    console.log('✅ USD amount validation passed')
+    logger.debug('✅ USD amount validation passed')
   }
 
   // Validate VES amount separately (no max limit since exchange rate varies)
   if (orderData.total_amount_ves !== undefined && orderData.total_amount_ves !== null) {
-    console.log('💰 Validating VES amount:', orderData.total_amount_ves)
+    logger.debug('💰 Validating VES amount:', { amount: orderData.total_amount_ves })
     const vesValue =
       typeof orderData.total_amount_ves === 'string'
         ? parseFloat(orderData.total_amount_ves)
         : orderData.total_amount_ves
 
     if (isNaN(vesValue)) {
-      console.log('❌ VES amount validation failed: not a number')
+      logger.debug('❌ VES amount validation failed: not a number')
       errors.push('Monto total en bolívares debe ser un número válido')
     } else if (vesValue < 0) {
-      console.log('❌ VES amount validation failed: negative')
+      logger.debug('❌ VES amount validation failed: negative')
       errors.push('Monto total en bolívares debe ser un número positivo')
     } else {
-      console.log('✅ VES amount validation passed')
+      logger.debug('✅ VES amount validation passed')
     }
     // No maximum limit for VES due to varying exchange rates
   }
 
   // Currency rate validation
   if (orderData.currency_rate) {
-    console.log('💱 Validating currency rate:', orderData.currency_rate)
+    logger.debug('💱 Validating currency rate:', { rate: orderData.currency_rate })
     if (typeof orderData.currency_rate !== 'number' || orderData.currency_rate <= 0) {
-      console.log('❌ Currency rate validation failed')
+      logger.debug('❌ Currency rate validation failed')
       errors.push('Tasa de cambio debe ser un número positivo')
     } else {
-      console.log('✅ Currency rate validation passed')
+      logger.debug('✅ Currency rate validation passed')
     }
   }
 
   // Notes validation (optional)
   if (orderData.notes) {
-    console.log('📝 Validating notes:', orderData.notes)
+    logger.debug('📝 Validating notes:', { notes: orderData.notes })
     const notesError = validateTextLength(
       orderData.notes,
       'Notas del pedido',
@@ -194,16 +195,16 @@ export function validateOrderData(orderData) {
       BUSINESS_LIMITS.maxNotesLength
     )
     if (notesError) {
-      console.log('❌ Notes validation failed:', notesError)
+      logger.debug('❌ Notes validation failed:', { error: notesError })
       errors.push(notesError)
     } else {
-      console.log('✅ Notes validation passed')
+      logger.debug('✅ Notes validation passed')
     }
   }
 
   // Delivery notes validation (optional)
   if (orderData.delivery_notes) {
-    console.log('📦 Validating delivery notes:', orderData.delivery_notes)
+    logger.debug('📦 Validating delivery notes:', { notes: orderData.delivery_notes })
     const deliveryNotesError = validateTextLength(
       orderData.delivery_notes,
       'Notas de entrega',
@@ -211,13 +212,13 @@ export function validateOrderData(orderData) {
       BUSINESS_LIMITS.maxNotesLength
     )
     if (deliveryNotesError) {
-      console.log('❌ Delivery notes validation failed:', deliveryNotesError)
+      logger.debug('❌ Delivery notes validation failed:', { error: deliveryNotesError })
       errors.push(deliveryNotesError)
     } else {
-      console.log('✅ Delivery notes validation passed')
+      logger.debug('✅ Delivery notes validation passed')
     }
   }
 
-  console.log('🏁 ORDER VALIDATION COMPLETE. Errors:', errors)
+  logger.debug('🏁 ORDER VALIDATION COMPLETE. Errors:', { errors })
   return errors
 }

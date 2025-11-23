@@ -5,20 +5,14 @@
  */
 
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import {
-  resetAccountingData,
-  seedAccountingData,
-  createExpense,
-  findExpenses,
-  findExpenseById,
-  updateExpense,
-  deleteExpense
-} from '../mocks/supabase-accounting.js'
+import { SupabaseAccountingMock } from '../mocks/supabase-accounting.js'
 
 describe('ExpenseRepository - Data Layer', () => {
+  let mockDb
+
   beforeEach(() => {
-    resetAccountingData()
-    seedAccountingData()
+    mockDb = new SupabaseAccountingMock()
+    mockDb.seedAccountingData()
   })
 
   afterEach(() => {
@@ -27,9 +21,9 @@ describe('ExpenseRepository - Data Layer', () => {
 
   describe('findById', () => {
     it('should find expense by ID successfully', async () => {
-      const result = await findExpenseById(1)
+      const result = await mockDb.findExpenseById(1)
 
-      expect(result.data).toBeDefined()
+      expect(result.data).not.toBeNull()
       expect(result.data.id).toBe(1)
       expect(result.data.category).toBe('flores')
       expect(result.data.description).toBe('Rosas rojas importadas')
@@ -37,21 +31,21 @@ describe('ExpenseRepository - Data Layer', () => {
     })
 
     it('should return null for non-existent ID', async () => {
-      const result = await findExpenseById(999)
+      const result = await mockDb.findExpenseById(999)
       expect(result.data).toBeNull()
     })
 
     it('should return null for inactive expense', async () => {
-      await deleteExpense(1)
+      await mockDb.deleteExpense(1)
 
-      const result = await findExpenseById(1)
+      const result = await mockDb.findExpenseById(1)
       expect(result.data).toBeNull()
     })
   })
 
   describe('findMany', () => {
     it('should find all active expenses', async () => {
-      const result = await findExpenses({})
+      const result = await mockDb.findExpenses({})
 
       expect(Array.isArray(result.data)).toBe(true)
       expect(result.data.length).toBeGreaterThan(0)
@@ -59,21 +53,21 @@ describe('ExpenseRepository - Data Layer', () => {
     })
 
     it('should filter by category', async () => {
-      const result = await findExpenses({ eq_category: 'flores' })
+      const result = await mockDb.findExpenses({ eq_category: 'flores' })
 
       expect(result.data.length).toBeGreaterThan(0)
       expect(result.data.every(e => e.category === 'flores')).toBe(true)
     })
 
     it('should apply limit', async () => {
-      const result = await findExpenses({}, { limit: 1 })
+      const result = await mockDb.findExpenses({}, { limit: 1 })
 
       expect(result.data.length).toBe(1)
     })
 
     it('should apply offset', async () => {
-      const allResults = await findExpenses({})
-      const offsetResults = await findExpenses({}, { offset: 1 })
+      const allResults = await mockDb.findExpenses({})
+      const offsetResults = await mockDb.findExpenses({}, { offset: 1 })
 
       // With 3 initial expenses and offset 1, should return 2 items
       expect(offsetResults.data.length).toBeLessThan(allResults.data.length)
@@ -81,7 +75,7 @@ describe('ExpenseRepository - Data Layer', () => {
     })
 
     it('should order by date descending', async () => {
-      const result = await findExpenses(
+      const result = await mockDb.findExpenses(
         {},
         {
           orderBy: 'expense_date',
@@ -100,7 +94,7 @@ describe('ExpenseRepository - Data Layer', () => {
       const startDate = '2025-11-15'
       const endDate = '2025-11-17'
 
-      const result = await findExpenses({
+      const result = await mockDb.findExpenses({
         gte_expense_date: startDate,
         lte_expense_date: endDate
       })
@@ -113,7 +107,7 @@ describe('ExpenseRepository - Data Layer', () => {
     })
 
     it('should filter by category within date range', async () => {
-      const result = await findExpenses({
+      const result = await mockDb.findExpenses({
         gte_expense_date: '2025-11-15',
         lte_expense_date: '2025-11-17',
         eq_category: 'transporte'
@@ -123,7 +117,7 @@ describe('ExpenseRepository - Data Layer', () => {
     })
 
     it('should apply limit to date range query', async () => {
-      const result = await findExpenses(
+      const result = await mockDb.findExpenses(
         {
           gte_expense_date: '2025-11-15',
           lte_expense_date: '2025-11-17'
@@ -135,7 +129,7 @@ describe('ExpenseRepository - Data Layer', () => {
     })
 
     it('should return empty array for date range with no expenses', async () => {
-      const result = await findExpenses({
+      const result = await mockDb.findExpenses({
         gte_expense_date: '2025-01-01',
         lte_expense_date: '2025-01-02'
       })
@@ -155,10 +149,10 @@ describe('ExpenseRepository - Data Layer', () => {
         payment_method: 'tarjeta_credito'
       }
 
-      const result = await createExpense(newExpense)
+      const result = await mockDb.createExpense(newExpense)
 
-      expect(result.data).toBeDefined()
-      expect(result.data.id).toBeDefined()
+      expect(result.data).not.toBeNull()
+      expect(result.data.id).toEqual(expect.any(Number))
       expect(result.data.category).toBe('marketing')
       expect(result.data.description).toBe('Facebook Ads')
       expect(result.data.amount).toBe(100.0)
@@ -172,9 +166,9 @@ describe('ExpenseRepository - Data Layer', () => {
         amount: 50.0
       }
 
-      const result = await createExpense(newExpense)
+      const result = await mockDb.createExpense(newExpense)
 
-      expect(result.data.expense_date).toBeDefined()
+      expect(result.data.expense_date).toEqual(expect.any(String))
     })
 
     it('should return error for invalid category', async () => {
@@ -184,9 +178,9 @@ describe('ExpenseRepository - Data Layer', () => {
         amount: 100
       }
 
-      const result = await createExpense(invalidExpense)
+      const result = await mockDb.createExpense(invalidExpense)
 
-      expect(result.error).toBeDefined()
+      expect(result.error).not.toBeNull()
       expect(result.data).toBeNull()
     })
 
@@ -195,9 +189,9 @@ describe('ExpenseRepository - Data Layer', () => {
         category: 'flores'
       }
 
-      const result = await createExpense(invalidExpense)
+      const result = await mockDb.createExpense(invalidExpense)
 
-      expect(result.error).toBeDefined()
+      expect(result.error).not.toBeNull()
       expect(result.data).toBeNull()
     })
 
@@ -208,9 +202,9 @@ describe('ExpenseRepository - Data Layer', () => {
         amount: 0
       }
 
-      const result = await createExpense(invalidExpense)
+      const result = await mockDb.createExpense(invalidExpense)
 
-      expect(result.error).toBeDefined()
+      expect(result.error).not.toBeNull()
       expect(result.data).toBeNull()
     })
   })
@@ -222,21 +216,21 @@ describe('ExpenseRepository - Data Layer', () => {
         amount: 200.0
       }
 
-      const result = await updateExpense(1, updates)
+      const result = await mockDb.updateExpense(1, updates)
 
-      expect(result.data).toBeDefined()
+      expect(result.data).not.toBeNull()
       expect(result.data.id).toBe(1)
       expect(result.data.description).toBe('Updated description')
       expect(result.data.amount).toBe(200.0)
     })
 
     it('should update only specified fields', async () => {
-      const original = await findExpenseById(1)
+      const original = await mockDb.findExpenseById(1)
       const updates = {
         description: 'New description'
       }
 
-      const result = await updateExpense(1, updates)
+      const result = await mockDb.updateExpense(1, updates)
 
       expect(result.data.description).toBe('New description')
       expect(result.data.category).toBe(original.data.category)
@@ -244,7 +238,7 @@ describe('ExpenseRepository - Data Layer', () => {
     })
 
     it('should return null for non-existent expense', async () => {
-      const result = await updateExpense(999, { description: 'Test' })
+      const result = await mockDb.updateExpense(999, { description: 'Test' })
       expect(result.data).toBeNull()
     })
 
@@ -253,9 +247,9 @@ describe('ExpenseRepository - Data Layer', () => {
         category: 'invalid_category'
       }
 
-      const result = await updateExpense(1, updates)
+      const result = await mockDb.updateExpense(1, updates)
 
-      expect(result.error).toBeDefined()
+      expect(result.error).not.toBeNull()
       expect(result.data).toBeNull()
     })
 
@@ -264,40 +258,40 @@ describe('ExpenseRepository - Data Layer', () => {
         amount: -10
       }
 
-      const result = await updateExpense(1, updates)
+      const result = await mockDb.updateExpense(1, updates)
 
-      expect(result.error).toBeDefined()
+      expect(result.error).not.toBeNull()
       expect(result.data).toBeNull()
     })
   })
 
   describe('delete', () => {
     it('should soft delete expense successfully', async () => {
-      const result = await deleteExpense(1)
+      const result = await mockDb.deleteExpense(1)
 
-      expect(result.data).toBeDefined()
+      expect(result.data).not.toBeNull()
       expect(result.data.id).toBe(1)
       expect(result.data.active).toBe(false)
     })
 
     it('should not appear in active queries after deletion', async () => {
-      await deleteExpense(1)
+      await mockDb.deleteExpense(1)
 
-      const activeExpenses = await findExpenses({ active: true })
+      const activeExpenses = await mockDb.findExpenses({ active: true })
       const deleted = activeExpenses.data.find(e => e.id === 1)
 
       expect(deleted).toBeUndefined()
     })
 
     it('should return null for non-existent expense', async () => {
-      const result = await deleteExpense(999)
+      const result = await mockDb.deleteExpense(999)
       expect(result.data).toBeNull()
     })
   })
 
   describe('getExpensesByCategory', () => {
     it('should group expenses by category', async () => {
-      const expenses = await findExpenses({
+      const expenses = await mockDb.findExpenses({
         gte_expense_date: '2025-11-15',
         lte_expense_date: '2025-11-17'
       })
@@ -321,7 +315,7 @@ describe('ExpenseRepository - Data Layer', () => {
     })
 
     it('should calculate totals correctly', async () => {
-      const expenses = await findExpenses({
+      const expenses = await mockDb.findExpenses({
         gte_expense_date: '2025-11-15',
         lte_expense_date: '2025-11-17'
       })
@@ -335,7 +329,7 @@ describe('ExpenseRepository - Data Layer', () => {
 
   describe('getTotalExpenses', () => {
     it('should calculate total expenses for date range', async () => {
-      const expenses = await findExpenses({
+      const expenses = await mockDb.findExpenses({
         gte_expense_date: '2025-11-15',
         lte_expense_date: '2025-11-17'
       })
@@ -347,7 +341,7 @@ describe('ExpenseRepository - Data Layer', () => {
     })
 
     it('should return 0 for date range with no expenses', async () => {
-      const expenses = await findExpenses({
+      const expenses = await mockDb.findExpenses({
         gte_expense_date: '2025-01-01',
         lte_expense_date: '2025-01-02'
       })
@@ -358,7 +352,7 @@ describe('ExpenseRepository - Data Layer', () => {
     })
 
     it('should sum all expenses in range correctly', async () => {
-      const expenses = await findExpenses({
+      const expenses = await mockDb.findExpenses({
         gte_expense_date: '2025-11-15',
         lte_expense_date: '2025-11-17'
       })

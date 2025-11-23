@@ -32,7 +32,7 @@ describe('ProductImage Service - Product Image Management Operations', () => {
 
   describe('Service module can be imported', () => {
     test('should import product image service module without errors', () => {
-      expect(productImageService).toBeDefined()
+      expect(productImageService).not.toBeNull()
       expect(typeof productImageService).toBe('object')
     })
   })

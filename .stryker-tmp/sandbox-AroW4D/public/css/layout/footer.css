@@ -1,0 +1,13 @@
+/* ===== FOOTER ===== */
+.footer-section {
+  background-color: var(--floresya-gray-900);
+  color: white;
+}
+
+.footer-section a {
+  text-decoration: none;
+}
+
+.footer-section h6 {
+  color: var(--floresya-primary-light);
+}

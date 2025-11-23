@@ -172,7 +172,8 @@ export default [
       'test-*.js', // Test files at root
       'seed-product-occasions-api.js', // Seed scripts
       'tests/**/*.mjs', // Test files using fetch (integration tests)
-      'tests/orders.integration.test.js' // Integration test with fetch
+      'tests/orders.integration.test.js', // Integration test with fetch
+      '.stryker-tmp/**' // Ignore Stryker temp files
     ]
   }
 ]

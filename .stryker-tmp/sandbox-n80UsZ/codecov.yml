@@ -1,0 +1,47 @@
+# Codecov Configuration for FloresYa
+# https://docs.codecov.com/docs/codecovyml-reference
+
+coverage:
+  status:
+    project:
+      default:
+        # Require 80% coverage for the entire project
+        target: 80%
+        threshold: 1%
+        base: auto
+        if_ci_failed: error
+
+    patch:
+      default:
+        # Require 80% coverage for changed lines
+        target: 80%
+        threshold: 1%
+        base: auto
+        if_ci_failed: error
+
+  ignore:
+    - "node_modules/**"
+    - "tests/**"
+    - "test-results/**"
+    - "playwright-report/**"
+    - "coverage/**"
+    - "*.d.ts"
+    - "*.config.js"
+    - "*.config.mjs"
+    - "api/config/"
+    - "api/docs/"
+    - "mcp-*.js"
+    - "public/js/components-standalone.js"
+    - "public/js/demo-*.js"
+    - "public/js/utils-standalone.js"
+    - "cypress/**"
+
+comment:
+  layout: "reach,diff,flags,tree"
+  behavior: default
+  require_changes: false
+  require_base: no
+  require_head: yes
+
+github_checks:
+  annotations: true

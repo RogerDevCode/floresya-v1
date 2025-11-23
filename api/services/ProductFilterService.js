@@ -16,7 +16,7 @@
  */
 
 import DIContainer from '../architecture/di-container.js'
-import { NotFoundError, DatabaseError } from '../errors/AppError.js'
+import { DatabaseError } from '../errors/AppError.js'
 
 /**
  * Get ProductRepository instance from DI Container
@@ -46,6 +46,7 @@ export class ProductFilterService {
 
   /**
    * Filtra productos con múltiples criterios (ocasión, búsqueda, precio, ordenamiento)
+   * ✅ OPTIMIZADO: Delega 100% filtrado al repositorio (usa get_products_filtered RPC)
    * @param {Object} filters - Criterios de filtrado
    * @param {boolean} [_includeDeactivated=false] - Incluir productos inactivos (solo admin)
    * @param {string} [_includeImageSize=null] - Tamaño de imagen a incluir
@@ -53,73 +54,38 @@ export class ProductFilterService {
    * @throws {NotFoundError} Cuando no se encuentran productos
    */
   async filterProducts(filters = {}, _includeDeactivated = false, _includeImageSize = null) {
-    // Si hay filtro de ocasión, usar la función SQL optimizada
-    if (filters.occasionId && typeof filters.occasionId === 'number') {
-      return await this.filterByOccasion(filters, _includeDeactivated, _includeImageSize)
-    }
-
-    // Para filtros simples (sin ocasión), usar el método base del repository
+    // ✅ OPTIMIZACIÓN: Repository ahora maneja TODO el filtrado en SQL
     const query = {
-      ...filters
+      occasionId: filters.occasionId,
+      sku: filters.sku,
+      featured:
+        filters.featured === 'true'
+          ? true
+          : filters.featured === 'false'
+            ? false
+            : filters.featured,
+      search: filters.search?.trim() || null,
+      price_min: filters.price_min,
+      price_max: filters.price_max,
+      sortBy: filters.sortBy,
+      includeDeactivated: _includeDeactivated
     }
 
-    // Aplicar filtros básicos
-    if (filters.sku) {
-      query.sku = filters.sku
-    }
-
-    if (filters.featured !== undefined) {
-      query.featured = filters.featured === 'true'
-    }
-
-    if (filters.search && filters.search.trim() !== '') {
-      query.search = filters.search.trim()
-    }
-
-    if (filters.price_min !== undefined && typeof filters.price_min === 'number') {
-      query.price_min = filters.price_min
-    }
-
-    if (filters.price_max !== undefined && typeof filters.price_max === 'number') {
-      query.price_max = filters.price_max
-    }
-
-    // Obtener productos del repository
-    const products = await this.productRepository.findAllWithFilters(query, {
+    // Repository options con paginación
+    const options = {
       limit: filters.limit || 50,
-      offset: filters.offset || 0,
-      includeDeactivated
-    })
-
-    // Los productos ya vienen filtrados desde el repository (SQL)
-    // Solo aplicamos ordenamiento y paginación en JavaScript
-    const filteredProducts = products || []
-
-    // Aplicar ordenamiento
-    if (filters.sortBy === 'price_asc') {
-      filteredProducts.sort((a, b) => a.price_usd - b.price_usd)
-    } else if (filters.sortBy === 'price_desc') {
-      filteredProducts.sort((a, b) => b.price_usd - a.price_usd)
-    } else if (filters.sortBy === 'name_asc') {
-      filteredProducts.sort((a, b) => a.name.localeCompare(b.name))
-    } else if (filters.sortBy === 'created_desc') {
-      filteredProducts.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-    } else {
-      // Default: más recientes primero
-      filteredProducts.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      offset: filters.offset || 0
     }
 
-    // Paginación
-    const limit = filters.limit || 50
-    const offset = filters.offset || 0
-    const startIndex = Math.min(offset, filteredProducts.length)
-    const endIndex = Math.min(startIndex + limit, filteredProducts.length)
+    // ✅ Una sola llamada al repository - TODO se hace en SQL
+    const products = await this.productRepository.findAllWithFilters(query, options)
 
-    return filteredProducts.slice(startIndex, endIndex)
+    return products || []
   }
 
   /**
    * Filtrado específico por ocasión usando función SQL optimizada
+   * ✅ OPTIMIZADO: Redirige a filterProducts (misma lógica, sin duplicación)
    * @param {Object} filters - Filtros a aplicar
    * @param {boolean} [_includeDeactivated=false] - Incluir productos inactivos
    * @param {string} [_includeImageSize=null] - Tamaño de imagen a incluir
@@ -128,54 +94,9 @@ export class ProductFilterService {
    * @throws {DatabaseError} Error en la llamada RPC
    */
   async filterByOccasion(filters, _includeDeactivated = false, _includeImageSize = null) {
-    try {
-      // Usar la función SQL optimizada que ya existe en la BD
-      const { data, error } = await this.productRepository.rpc('get_products_with_occasions', {
-        p_occasion_id: filters.occasionId,
-        p_limit: filters.limit || 50,
-        p_offset: filters.offset || 0
-      })
-
-      if (error) {
-        throw new DatabaseError('Error en consulta SQL: ' + error.message, 'FILTER_BY_OCCASION', {
-          filters,
-          sqlError: error
-        })
-      }
-
-      if (!data || data.length === 0) {
-        throw new NotFoundError('No products found for this occasion', 'OCCASION_NOT_FOUND', {
-          occasionId: filters.occasionId
-        })
-      }
-
-      // Los productos ya vienen filtrados desde la función SQL
-      // Solo aplicamos ordenamiento y paginación en JavaScript
-      const filteredProducts = data || []
-
-      // Aplicar ordenamiento
-      if (filters.sortBy === 'price_asc') {
-        filteredProducts.sort((a, b) => a.price_usd - b.price_usd)
-      } else if (filters.sortBy === 'price_desc') {
-        filteredProducts.sort((a, b) => b.price_usd - a.price_usd)
-      } else if (filters.sortBy === 'name_asc') {
-        filteredProducts.sort((a, b) => a.name.localeCompare(b.name))
-      } else {
-        // Default: más recientes primero
-        filteredProducts.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-      }
-
-      // Paginación
-      const limit = filters.limit || 50
-      const offset = filters.offset || 0
-      const startIndex = Math.min(offset, filteredProducts.length)
-      const endIndex = Math.min(startIndex + limit, filteredProducts.length)
-
-      return filteredProducts.slice(startIndex, endIndex)
-    } catch (error) {
-      console.error('❌ ProductFilterService.filterByOccasion failed:', error)
-      throw error
-    }
+    // ✅ OPTIMIZACIÓN: Usar filterProducts para evitar duplicación
+    // filterProducts ya usa get_products_filtered RPC que maneja ocasiones
+    return await this.filterProducts(filters, _includeDeactivated, _includeImageSize)
   }
 
   /**

@@ -41,17 +41,16 @@ describe('Product Repository - Product-specific Operations', () => {
     test('should return products with standard filters', async () => {
       const mockProducts = [testData.products.active]
 
-      const mockQuery = {
-        select: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis(),
-        order: vi.fn().mockResolvedValue({ data: mockProducts, error: null }),
-        range: vi.fn().mockResolvedValue({ data: mockProducts, error: null })
-      }
-
-      mockSupabase.from.mockReturnValue(mockQuery)
+      mockSupabase.rpc.mockResolvedValue({ data: mockProducts, error: null })
 
       const result = await repository.findAllWithFilters()
 
+      expect(mockSupabase.rpc).toHaveBeenCalledWith(
+        'get_products_filtered',
+        expect.objectContaining({
+          p_include_inactive: false
+        })
+      )
       expect(result).toEqual(mockProducts)
     })
 
@@ -59,17 +58,16 @@ describe('Product Repository - Product-specific Operations', () => {
       const filters = { sku: 'TEST-001' }
       const mockProducts = [testData.products.active]
 
-      const mockQuery = {
-        select: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis(),
-        order: vi.fn().mockResolvedValue({ data: mockProducts, error: null }),
-        range: vi.fn().mockResolvedValue({ data: mockProducts, error: null })
-      }
-
-      mockSupabase.from.mockReturnValue(mockQuery)
+      mockSupabase.rpc.mockResolvedValue({ data: mockProducts, error: null })
 
       const result = await repository.findAllWithFilters(filters)
 
+      expect(mockSupabase.rpc).toHaveBeenCalledWith(
+        'get_products_filtered',
+        expect.objectContaining({
+          p_sku: 'TEST-001'
+        })
+      )
       expect(result).toEqual(mockProducts)
     })
 
@@ -77,17 +75,16 @@ describe('Product Repository - Product-specific Operations', () => {
       const filters = { featured: true }
       const mockProducts = [testData.products.active]
 
-      const mockQuery = {
-        select: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis(),
-        order: vi.fn().mockResolvedValue({ data: mockProducts, error: null }),
-        range: vi.fn().mockResolvedValue({ data: mockProducts, error: null })
-      }
-
-      mockSupabase.from.mockReturnValue(mockQuery)
+      mockSupabase.rpc.mockResolvedValue({ data: mockProducts, error: null })
 
       const result = await repository.findAllWithFilters(filters)
 
+      expect(mockSupabase.rpc).toHaveBeenCalledWith(
+        'get_products_filtered',
+        expect.objectContaining({
+          p_featured: true
+        })
+      )
       expect(result).toEqual(mockProducts)
     })
 
@@ -95,19 +92,17 @@ describe('Product Repository - Product-specific Operations', () => {
       const filters = { price_min: 10, price_max: 100 }
       const mockProducts = [testData.products.active]
 
-      const mockQuery = {
-        select: vi.fn().mockReturnThis(),
-        gte: vi.fn().mockReturnThis(),
-        lte: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis(),
-        order: vi.fn().mockResolvedValue({ data: mockProducts, error: null }),
-        range: vi.fn().mockResolvedValue({ data: mockProducts, error: null })
-      }
-
-      mockSupabase.from.mockReturnValue(mockQuery)
+      mockSupabase.rpc.mockResolvedValue({ data: mockProducts, error: null })
 
       const result = await repository.findAllWithFilters(filters)
 
+      expect(mockSupabase.rpc).toHaveBeenCalledWith(
+        'get_products_filtered',
+        expect.objectContaining({
+          p_price_min: 10,
+          p_price_max: 100
+        })
+      )
       expect(result).toEqual(mockProducts)
     })
 
@@ -115,18 +110,16 @@ describe('Product Repository - Product-specific Operations', () => {
       const filters = { search: 'test product' }
       const mockProducts = [testData.products.active]
 
-      const mockQuery = {
-        select: vi.fn().mockReturnThis(),
-        or: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis(),
-        order: vi.fn().mockResolvedValue({ data: mockProducts, error: null }),
-        range: vi.fn().mockResolvedValue({ data: mockProducts, error: null })
-      }
-
-      mockSupabase.from.mockReturnValue(mockQuery)
+      mockSupabase.rpc.mockResolvedValue({ data: mockProducts, error: null })
 
       const result = await repository.findAllWithFilters(filters)
 
+      expect(mockSupabase.rpc).toHaveBeenCalledWith(
+        'get_products_filtered',
+        expect.objectContaining({
+          p_search: 'test product'
+        })
+      )
       expect(result).toEqual(mockProducts)
     })
 
@@ -138,9 +131,18 @@ describe('Product Repository - Product-specific Operations', () => {
 
       const result = await repository.findAllWithFilters(filters)
 
-      expect(mockSupabase.rpc).toHaveBeenCalledWith('get_products_by_occasion', {
+      expect(mockSupabase.rpc).toHaveBeenCalledWith('get_products_filtered', {
         p_occasion_id: 1,
-        p_limit: 50
+        p_search: null,
+        p_price_min: null,
+        p_price_max: null,
+        p_featured: null,
+        p_sku: null,
+        p_sort_by: 'created_at',
+        p_sort_order: 'DESC',
+        p_limit: 50,
+        p_offset: 0,
+        p_include_inactive: false
       })
       expect(result).toEqual(mockProducts)
     })

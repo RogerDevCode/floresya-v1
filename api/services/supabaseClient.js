@@ -124,8 +124,8 @@ export const DB_SCHEMA = {
       'description_normalized'
     ],
     filters: ['active', 'featured'],
-    sorts: ['created_at', 'carousel_order'],
-    search: ['name_normalized', 'description_normalized'],
+    sorts: ['created_at', 'carousel_order', 'price_usd'],
+    search: ['name_normalized', 'description_normalized', 'search_vector'],
     columns: [
       'id',
       'name',
@@ -141,7 +141,8 @@ export const DB_SCHEMA = {
       'created_at',
       'updated_at',
       'name_normalized',
-      'description_normalized'
+      'description_normalized',
+      'search_vector'
     ]
   },
   product_occasions: {

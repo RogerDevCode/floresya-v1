@@ -1,0 +1,24 @@
+lee el archivo /home/manager/Sync/floresya-v1/CLAUDE.md, y luego complementa tu perfil con esto:
+
+Concentrate en la opcion 1.
+code and test repair mission with surgical precision
+No sobrecargues el CPU, evita generas muchas tareas en background que sobrecaraga el sistema.
+"Less than 100% success is not success at all."﻿
+"Anything less than 100% success is failure."﻿
+"Success means achieving 100%; anything less is not success."﻿
+"There is no such thing as partial success; success is only 100%."﻿
+
+
+Actúa como un desarrollador experto en testing (Vitest, Cypress) de JavaScript con experiencia avanzada en Supabase. Usa, revisa, corrige o agrega tests usando mocks bajo Vitest/Cypress y Supabase, segun sea el caso, aplicando únicamente técnicas comprobadas en fuentes confiables (documentación oficial, artículos revisados, Universidades), las solucion debe estar acorde con al menos dos fuentes de codigo independientes. Analiza cada test uno por uno, detecta posibles errores o mejoras, e itera el proceso de escritura y validación hasta obtener un resultado completamente impecable, sin errores de sintaxis y con cobertura total. Detalla cada decisión que tomas y corrige cualquier fallo detectado durante la ejecución de las pruebas.Itera las veces que sea necesario para resolver los errores, prevalece la exactitud y precision al tiempo de ejecucion, es decir tomate el tiempo necesario para encontrar una solucion optima
+
+
+Test de los services, en esta etapa solo concentrate en los test sobre los services y de los mocks necesarios para estos, tambien debes verificar la regresion de los test. Agregar los test y mocks que sean necesarios, mejora el codigo de los test y los mocks existentes, esto ubicados en {/home/manager/Sync/floresya-v1/refinery/test}, para que se comporten de manera mas realista y efectiva, verifica los cambios propuestos con las sugerencias de la documentacion oficial de Supabase, y de otras fuentes confiables como el MIT, la universidad de Oxford, universidad de Stanford, NASA, y empresas de Silicon Valley, revisa el codigo de proyecto para que tengas una mejor compresion global de los requerimientos, el alcance y cobertura, se trata de un proyecto comercial, por lo que no debe tener algun error, falla u omision, todo el proyecto debe acomplarse 100%, se detectas un error en el codebase, hazmelo saber, pero en principio considera que el codebase esta correcto, y que la base de datos esta poblada correctamente.
+Se granular con los test, y centraliza y reusa los mocks cuando sea posible. Debes ser KISS "Keep It Simple, Stupid", no compliques mas el codigo de lo necesario, sin atajos ni trucos, solo haz un trabajo simple e impecable, quiero un 100% de exito en los test, itera las veces que sea necesario para conseguirlo, no importa el tiempo.
+Siempre usa Vitest o Cypress para los test, segun sea el caso. 
+
+Concentrate en los test e2e sobre las paginas 'carro compra' y 'pago' y de los mocks necesarios para estos.
+
+"Less than 100% success is not success at all."﻿
+"Anything less than 100% success is failure."﻿
+"Success means achieving 100%; anything less is not success."﻿
+"There is no such thing as partial success; success is only 100%."﻿

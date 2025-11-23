@@ -19,118 +19,88 @@ export class ProductRepository extends BaseRepository {
 
   /**
    * Obtener productos con filtros específicos
-   * OPTIMIZACIÓN: Todos los filtros se aplican en SQL WHERE (no en JavaScript)
-   * Usa índices existentes: active, featured, sku, price_usd, name_normalized
+   * ✅ OPTIMIZADO: 100% SQL filtering usando get_products_filtered()
+   * NO JavaScript filtering - todo se hace en PostgreSQL con índices
    * @param {Object} filters - Filtros específicos para productos
    * @param {Object} options - Opciones de consulta
    * @returns {Promise<Array>} Lista de productos
    */
   async findAllWithFilters(filters = {}, options = {}) {
-    // Handle occasion filter with join - OPTIMIZADO
-    if (filters.occasionId) {
-      // Use the existing SQL function for filtering by occasion (efficient)
-      const { data, error } = await this.supabase.rpc('get_products_by_occasion', {
-        p_occasion_id: filters.occasionId,
-        p_limit: options.limit || 50
+    // ✅ OPTIMIZACIÓN: Usar get_products_filtered() RPC para TODOS los filtros
+    // Todos los filtros se aplican en SQL (no JavaScript)
+
+    // Map sortBy format to SQL function parameters
+    let sortBy = 'created_at'
+    let sortOrder = 'DESC'
+
+    if (filters.sortBy === 'price_asc') {
+      sortBy = 'price_usd'
+      sortOrder = 'ASC'
+    } else if (filters.sortBy === 'price_desc') {
+      sortBy = 'price_usd'
+      sortOrder = 'DESC'
+    } else if (filters.sortBy === 'name_asc') {
+      sortBy = 'name'
+      sortOrder = 'ASC'
+    } else if (filters.sortBy === 'created_desc') {
+      sortBy = 'created_at'
+      sortOrder = 'DESC'
+    } else if (filters.sortBy === 'created_asc') {
+      sortBy = 'created_at'
+      sortOrder = 'ASC'
+    } else if (filters.sortBy) {
+      sortBy = filters.sortBy
+      sortOrder = options.ascending ? 'ASC' : 'DESC'
+    }
+
+    // ✅ FAIL FAST: Validate numeric parameters
+    let priceMin = null
+    let priceMax = null
+
+    if (filters.price_min !== undefined && filters.price_min !== null && filters.price_min !== '') {
+      priceMin = parseFloat(filters.price_min)
+      if (isNaN(priceMin) || priceMin < 0) {
+        throw new BadRequestError('Invalid price_min: must be a non-negative number', {
+          price_min: filters.price_min
+        })
+      }
+    }
+
+    if (filters.price_max !== undefined && filters.price_max !== null && filters.price_max !== '') {
+      priceMax = parseFloat(filters.price_max)
+      if (isNaN(priceMax) || priceMax < 0) {
+        throw new BadRequestError('Invalid price_max: must be a non-negative number', {
+          price_max: filters.price_max
+        })
+      }
+    }
+
+    if (priceMin !== null && priceMax !== null && priceMin > priceMax) {
+      throw new BadRequestError('Invalid price range: price_min cannot be greater than price_max', {
+        price_min: priceMin,
+        price_max: priceMax
       })
-
-      if (error) {
-        throw this.handleError(error, 'findAllWithFilters (RPC call)', { filters, options })
-      }
-
-      if (!data || data.length === 0) {
-        return []
-      }
-
-      // OPTIMIZACIÓN: Apply remaining filters in JavaScript (after SQL join)
-      let filteredData = data
-
-      // Apply search filter (cannot be done in RPC join efficiently)
-      if (filters.search) {
-        const searchLower = filters.search.toLowerCase()
-        filteredData = filteredData.filter(
-          product =>
-            product.name.toLowerCase().includes(searchLower) ||
-            (product.description && product.description.toLowerCase().includes(searchLower)) ||
-            (product.summary && product.summary.toLowerCase().includes(searchLower))
-        )
-      }
-
-      // Apply sorting (price, name) - efficient in JavaScript for small datasets
-      if (filters.sortBy === 'price_asc') {
-        filteredData.sort((a, b) => a.price_usd - b.price_usd)
-      } else if (filters.sortBy === 'price_desc') {
-        filteredData.sort((a, b) => b.price_usd - a.price_usd)
-      } else if (filters.sortBy === 'name_asc') {
-        filteredData.sort((a, b) => a.name.localeCompare(b.name))
-      }
-
-      // Apply limit if not already applied by RPC
-      if (options.limit && !filters.limit) {
-        const offset = options.offset || 0
-        filteredData = filteredData.slice(offset, offset + options.limit)
-      }
-
-      return filteredData
     }
 
-    // Standard query without occasion filter - OPTIMIZADO CON WHERE EN SQL
-    let query = this.supabase.from(this.table).select(`
-      id, name, summary, description, price_usd, price_ves, stock, sku, active, featured, carousel_order, created_at, updated_at
-    `)
-
-    // ✅ OPTIMIZACIÓN: Apply ALL filters in SQL WHERE clauses (not JavaScript)
-    // Using indexed columns for efficient filtering
-
-    if (filters.sku) {
-      // Using index: sku (unique, very fast)
-      query = query.eq('sku', filters.sku)
-    }
-
-    if (filters.featured !== undefined) {
-      // Using index: featured (fast boolean filter)
-      query = query.eq('featured', filters.featured)
-    }
-
-    if (filters.price_min !== undefined) {
-      // Using index: price_usd can use B-tree indexing for range queries
-      query = query.gte('price_usd', filters.price_min)
-    }
-
-    if (filters.price_max !== undefined) {
-      // Using index: price_usd can use B-tree indexing for range queries
-      query = query.lte('price_usd', filters.price_max)
-    }
-
-    if (filters.search) {
-      // Using indexes: name_normalized, description_normalized (fast ilike)
-      const searchPattern = `%${filters.search}%`
-      query = query.or(
-        `name.ilike.${searchPattern},description.ilike.${searchPattern},summary.ilike.${searchPattern}`
-      )
-    }
-
-    // Incluir productos inactivos solo para admins (ALWAYS in SQL WHERE)
-    if (!filters.includeDeactivated) {
-      // Using index: active (very fast boolean filter)
-      query = query.eq('active', true)
-    }
-
-    // Aplicar ordenamiento eficiente (usar índices cuando sea posible)
-    const orderBy = filters.sortBy || 'created_at'
-    const ascending = options.ascending || false
-    query = query.order(orderBy, { ascending })
-
-    // Aplicar límites (LIMIT/OFFSET en SQL - eficiente)
-    if (options.limit !== undefined) {
-      const offset = options.offset || 0
-      query = query.range(offset, offset + options.limit - 1)
-    }
-
-    const { data, error } = await query
+    const { data, error } = await this.supabase.rpc('get_products_filtered', {
+      p_occasion_id: filters.occasionId || null,
+      p_search: filters.search || null,
+      p_price_min: priceMin,
+      p_price_max: priceMax,
+      p_featured: filters.featured !== undefined ? filters.featured : null,
+      p_sku: filters.sku || null,
+      p_sort_by: sortBy,
+      p_sort_order: sortOrder,
+      p_limit: options.limit || 50,
+      p_offset: options.offset || 0,
+      p_include_inactive: filters.includeDeactivated || false
+    })
 
     if (error) {
-      throw this.handleError(error, 'findAllWithFilters', { filters, options })
+      throw this.handleError(error, 'findAllWithFilters (get_products_filtered RPC)', {
+        filters,
+        options
+      })
     }
 
     return data || []

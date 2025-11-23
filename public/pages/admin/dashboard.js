@@ -172,8 +172,99 @@ function init() {
   // Setup event listeners
   setupEventListeners()
 
+  // Setup collapsible secondary stats
+  setupSecondaryStatsToggle()
+
+  // Setup dashboard filters
+  setupDashboardFilters()
+
   // Load initial view
   showView('dashboard')
+}
+
+/**
+ * Setup collapsible secondary stats panel
+ */
+function setupSecondaryStatsToggle() {
+  const toggleBtn = document.getElementById('toggle-secondary-stats')
+  const content = document.getElementById('secondary-stats-content')
+  const icon = document.getElementById('toggle-icon')
+
+  if (!toggleBtn || !content) {
+    return
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true'
+
+    toggleBtn.setAttribute('aria-expanded', !isExpanded)
+    content.classList.toggle('hidden')
+
+    if (icon) {
+      icon.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)'
+    }
+  })
+}
+
+/**
+ * Setup dashboard filters
+ */
+function setupDashboardFilters() {
+  const applyBtn = document.getElementById('apply-dashboard-filters')
+  const clearBtn = document.getElementById('clear-dashboard-filters')
+  const yearFilter = document.getElementById('dashboard-year-filter')
+  const dateFilter = document.getElementById('dashboard-date-filter')
+  const indicator = document.getElementById('dashboard-filter-indicator')
+
+  if (!applyBtn || !clearBtn) {
+    return
+  }
+
+  // Apply filters
+  applyBtn.addEventListener('click', () => {
+    const year = yearFilter?.value || '2025'
+    const period = dateFilter?.value || ''
+
+    updateFilterIndicator(year, period, indicator)
+    loadDashboardData()
+    toast.success('Filtros aplicados correctamente')
+  })
+
+  // Clear filters
+  clearBtn.addEventListener('click', () => {
+    if (yearFilter) {
+      yearFilter.value = '2025'
+    }
+    if (dateFilter) {
+      dateFilter.value = ''
+    }
+
+    updateFilterIndicator('2025', '', indicator)
+    loadDashboardData()
+    toast.info('Filtros restablecidos')
+  })
+}
+
+/**
+ * Update filter indicator text
+ */
+function updateFilterIndicator(year, period, indicator) {
+  if (!indicator) {
+    return
+  }
+
+  const periodTexts = {
+    '': 'Todos los pedidos',
+    today: 'Día de hoy',
+    'current-month': 'Este mes',
+    'last-month': 'Mes pasado',
+    30: 'Últimos 30 días',
+    60: 'Últimos 60 días',
+    90: 'Últimos 90 días'
+  }
+
+  const periodText = periodTexts[period] || 'Todos los pedidos'
+  indicator.textContent = `Mostrando: Año ${year} | ${periodText}`
 }
 
 /**
@@ -238,8 +329,8 @@ function setupMobileSidebar() {
 
 // ==================== DASHBOARD STATS ====================
 
-let dashboardYearFilter = new Date().getFullYear().toString() // Default: año actual
-let dashboardDateFilter = '' // Default: todos los períodos
+const dashboardYearFilter = new Date().getFullYear().toString() // Default: año actual
+const dashboardDateFilter = '' // Default: todos los períodos
 let chartStatusFilter = 'all-non-cancelled' // Default: todos los pedidos no cancelados
 let salesChartInstance = null // Chart.js instance
 let isLoadingDashboardStats = false // Flag to prevent concurrent API calls
@@ -252,33 +343,6 @@ async function loadDashboardData() {
   setupDashboardFilters()
   setupChartFilter()
   await updateDashboardStats()
-}
-
-/**
- * Setup dashboard filter listeners
- */
-function setupDashboardFilters() {
-  const yearFilter = document.getElementById('dashboard-year-filter')
-  const dateFilter = document.getElementById('dashboard-date-filter')
-
-  if (yearFilter) {
-    yearFilter.value = dashboardYearFilter
-    yearFilter.addEventListener('change', e => {
-      dashboardYearFilter = e.target.value
-      if (!isLoadingDashboardStats) {
-        updateDashboardStats()
-      }
-    })
-  }
-
-  if (dateFilter) {
-    dateFilter.addEventListener('change', e => {
-      dashboardDateFilter = e.target.value
-      if (!isLoadingDashboardStats) {
-        updateDashboardStats()
-      }
-    })
-  }
 }
 
 /**
@@ -322,35 +386,6 @@ function applyDashboardFilters(orders) {
   }
 
   return filtered
-}
-
-/**
- * Update filter indicator text
- */
-function updateFilterIndicator() {
-  const indicator = document.getElementById('dashboard-filter-indicator')
-  if (!indicator) {
-    return
-  }
-
-  const yearText = `Año ${dashboardYearFilter}`
-  let periodText = 'Todos los pedidos'
-
-  if (dashboardDateFilter === 'today') {
-    periodText = 'Día de hoy'
-  } else if (dashboardDateFilter === 'current-month') {
-    periodText = 'Este mes'
-  } else if (dashboardDateFilter === 'last-month') {
-    periodText = 'Mes pasado'
-  } else if (dashboardDateFilter === '30') {
-    periodText = 'Últimos 30 días'
-  } else if (dashboardDateFilter === '60') {
-    periodText = 'Últimos 60 días'
-  } else if (dashboardDateFilter === '90') {
-    periodText = 'Últimos 90 días'
-  }
-
-  indicator.textContent = `Mostrando: ${yearText} | ${periodText}`
 }
 
 /**

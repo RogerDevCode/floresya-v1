@@ -97,27 +97,17 @@ class ExpenseService {
 
   /**
    * Get all expenses with filters
+   * ✅ OPTIMIZADO: Usa findAllWithFilters con RPC
    * @param {Object} filters - Filter options
    * @returns {Promise<Array>} Expenses
    */
   async getExpenses(filters = {}) {
     try {
-      const { startDate, endDate, category, limit, offset } = filters
-
-      if (startDate && endDate) {
-        return await expenseRepository.findByDateRange(startDate, endDate, {
-          category,
-          limit,
-          offset
-        })
-      }
-
-      return await expenseRepository.findMany({
-        category,
-        active: true,
-        limit: limit || 50,
-        offset: offset || 0,
-        orderBy: [{ column: 'expense_date', ascending: false }]
+      // ✅ OPTIMIZACIÓN: Usar findAllWithFilters que usa get_expenses_filtered RPC
+      return await expenseRepository.findAllWithFilters(filters, {
+        limit: filters.limit || 50,
+        offset: filters.offset || 0,
+        orderBy: 'expense_date'
       })
     } catch (error) {
       logger.error('Error getting expenses', { error, filters })

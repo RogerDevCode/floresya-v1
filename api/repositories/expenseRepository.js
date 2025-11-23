@@ -13,6 +13,50 @@ class ExpenseRepository extends BaseRepository {
   }
 
   /**
+   * Find expenses with filters
+   * ✅ OPTIMIZED: 100% SQL filtering using get_expenses_filtered()
+   * NO JavaScript filtering - everything done in PostgreSQL with indexes
+   * @param {Object} filters - Filter options
+   * @param {Object} options - Query options
+   * @returns {Promise<Array>} Filtered expenses
+   */
+  async findAllWithFilters(filters = {}, options = {}) {
+    // ✅ OPTIMIZATION: Use get_expenses_filtered() RPC for complete SQL filtering
+
+    let sortBy = 'expense_date'
+    let sortOrder = 'DESC'
+
+    if (options.orderBy) {
+      sortBy = options.orderBy
+      sortOrder = options.ascending ? 'ASC' : 'DESC'
+    }
+
+    const { data, error } = await this.supabase.rpc('get_expenses_filtered', {
+      p_category: filters.category || null,
+      p_date_from: filters.startDate
+        ? new Date(filters.startDate).toISOString().split('T')[0]
+        : null,
+      p_date_to: filters.endDate ? new Date(filters.endDate).toISOString().split('T')[0] : null,
+      p_payment_method: filters.paymentMethod || null,
+      p_sort_by: sortBy,
+      p_sort_order: sortOrder,
+      p_limit: options.limit || 50,
+      p_offset: options.offset || 0
+    })
+
+    if (error) {
+      logger.error('Error in findAllWithFilters (get_expenses_filtered RPC)', {
+        error,
+        filters,
+        options
+      })
+      throw error
+    }
+
+    return data || []
+  }
+
+  /**
    * Find expenses by date range
    * @param {Date} startDate - Start date
    * @param {Date} endDate - End date
@@ -20,32 +64,17 @@ class ExpenseRepository extends BaseRepository {
    * @returns {Promise<Array>} Expenses
    */
   async findByDateRange(startDate, endDate, options = {}) {
-    try {
-      let query = this.supabase
-        .from(this.tableName)
-        .select('*')
-        .gte('expense_date', startDate)
-        .lte('expense_date', endDate)
-        .order('expense_date', { ascending: false })
-
-      if (options.category) {
-        query = query.eq('category', options.category)
+    // Use findAllWithFilters for consistency
+    return this.findAllWithFilters(
+      {
+        startDate,
+        endDate,
+        category: options.category
+      },
+      {
+        limit: options.limit
       }
-
-      if (options.limit) {
-        query = query.limit(options.limit)
-      }
-
-      const { data, error } = await query
-
-      if (error) {
-        throw error
-      }
-      return data || []
-    } catch (error) {
-      logger.error('Error finding expenses by date range', { error, startDate, endDate })
-      throw error
-    }
+    )
   }
 
   /**

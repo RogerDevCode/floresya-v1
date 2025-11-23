@@ -16,6 +16,7 @@ import yaml from 'js-yaml'
 import config from '../config/configLoader.js'
 import { ConfigurationError } from '../errors/AppError.js'
 import { fileURLToPath } from 'node:url'
+import { logger } from '../utils/logger.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const API_DIR = path.join(__dirname, '..')
@@ -263,7 +264,7 @@ export class DocumentationSynchronizer {
     if (updated) {
       const yamlSpec = yaml.dump(this.spec, { lineWidth: -1 })
       await fs.writeFile(this.specPath, yamlSpec)
-      console.log('✅ OpenAPI spec updated with detected routes')
+      logger.info('✅ OpenAPI spec updated with detected routes')
     }
 
     return updated
@@ -273,48 +274,48 @@ export class DocumentationSynchronizer {
    * Synchronize documentation with implementation
    */
   async synchronize() {
-    console.log('🔄 Starting documentation synchronization...')
+    logger.info('🔄 Starting documentation synchronization...')
 
     // Generate report of discrepancies
     const report = await this.generateSynchronizationReport()
 
     if (report.totalDiscrepancies > 0) {
-      console.log(`⚠️  Found ${report.totalDiscrepancies} discrepancies:`)
+      logger.info(`⚠️  Found ${report.totalDiscrepancies} discrepancies:`)
 
       if (report.endpointDiscrepancies.missingInSpec.length > 0) {
-        console.log(
+        logger.info(
           `  - ${report.endpointDiscrepancies.missingInSpec.length} endpoints missing in OpenAPI spec`
         )
         for (const endpoint of report.endpointDiscrepancies.missingInSpec) {
-          console.log(`    • ${endpoint.method} ${endpoint.path} (defined in ${endpoint.file})`)
+          logger.info(`    • ${endpoint.method} ${endpoint.path} (defined in ${endpoint.file})`)
         }
       }
 
       if (report.endpointDiscrepancies.missingInCode.length > 0) {
-        console.log(
+        logger.info(
           `  - ${report.endpointDiscrepancies.missingInCode.length} endpoints in spec but not implemented`
         )
         for (const endpoint of report.endpointDiscrepancies.missingInCode) {
-          console.log(`    • ${endpoint.method} ${endpoint.path}`)
+          logger.info(`    • ${endpoint.method} ${endpoint.path}`)
         }
       }
 
       // Attempt to fix missing endpoints in spec
       const updatedSpec = await this.updateSpecWithDetectedRoutes()
       if (updatedSpec) {
-        console.log('✅ OpenAPI spec updated with missing endpoints')
+        logger.info('✅ OpenAPI spec updated with missing endpoints')
       }
 
       // Generate annotations for missing documentation
       const annotations = await this.generateMissingAnnotations()
       if (annotations) {
-        console.log(
+        logger.info(
           `📝 Generated ${annotations.split('/**').length - 1} JSDoc annotation templates`
         )
         // In a real implementation, we might write these to a temporary file
       }
     } else {
-      console.log('✅ Documentation is synchronized with implementation')
+      logger.info('✅ Documentation is synchronized with implementation')
     }
 
     return report

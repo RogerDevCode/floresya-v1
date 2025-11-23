@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict zedaB7TTRRkE9XbnLD5cLKinFxjje7VTo6iGnwU2IbBiAbG0NEFGhaYwlwPDveq
+\restrict eBkse3eg3aumsA54PslbfN3K0LEfS5M6PvPofSp4YwwXrgRfGAm0L5nxaoKFTaJ
 
 -- Dumped from database version 17.4
 -- Dumped by pg_dump version 17.6 (Ubuntu 17.6-2.pgdg24.04+1)
 
--- Started on 2025-11-04 20:36:37 -03
+-- Started on 2025-11-22 20:16:22 -03
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -22,7 +22,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 105 (class 2615 OID 2200)
+-- TOC entry 107 (class 2615 OID 2200)
 -- Name: public; Type: SCHEMA; Schema: -; Owner: pg_database_owner
 --
 
@@ -32,8 +32,8 @@ CREATE SCHEMA public;
 ALTER SCHEMA public OWNER TO pg_database_owner;
 
 --
--- TOC entry 4276 (class 0 OID 0)
--- Dependencies: 105
+-- TOC entry 4425 (class 0 OID 0)
+-- Dependencies: 107
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pg_database_owner
 --
 
@@ -41,7 +41,7 @@ COMMENT ON SCHEMA public IS 'standard public schema';
 
 
 --
--- TOC entry 1377 (class 1247 OID 32337)
+-- TOC entry 1446 (class 1247 OID 32337)
 -- Name: image_size; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -56,7 +56,7 @@ CREATE TYPE public.image_size AS ENUM (
 ALTER TYPE public.image_size OWNER TO postgres;
 
 --
--- TOC entry 1338 (class 1247 OID 31954)
+-- TOC entry 1407 (class 1247 OID 31954)
 -- Name: order_status; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -73,7 +73,7 @@ CREATE TYPE public.order_status AS ENUM (
 ALTER TYPE public.order_status OWNER TO postgres;
 
 --
--- TOC entry 1303 (class 1247 OID 28694)
+-- TOC entry 1354 (class 1247 OID 28694)
 -- Name: payment_method_type; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -89,7 +89,7 @@ CREATE TYPE public.payment_method_type AS ENUM (
 ALTER TYPE public.payment_method_type OWNER TO postgres;
 
 --
--- TOC entry 1341 (class 1247 OID 31968)
+-- TOC entry 1410 (class 1247 OID 31968)
 -- Name: payment_status; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -105,7 +105,7 @@ CREATE TYPE public.payment_status AS ENUM (
 ALTER TYPE public.payment_status OWNER TO postgres;
 
 --
--- TOC entry 1385 (class 1247 OID 77594)
+-- TOC entry 1457 (class 1247 OID 77594)
 -- Name: query_timeout_estado; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -120,7 +120,7 @@ CREATE TYPE public.query_timeout_estado AS ENUM (
 ALTER TYPE public.query_timeout_estado OWNER TO postgres;
 
 --
--- TOC entry 1388 (class 1247 OID 77604)
+-- TOC entry 1460 (class 1247 OID 77604)
 -- Name: query_timeout_tipo; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -137,7 +137,7 @@ CREATE TYPE public.query_timeout_tipo AS ENUM (
 ALTER TYPE public.query_timeout_tipo OWNER TO postgres;
 
 --
--- TOC entry 1382 (class 1247 OID 77583)
+-- TOC entry 1454 (class 1247 OID 77583)
 -- Name: setting_type; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -153,7 +153,7 @@ CREATE TYPE public.setting_type AS ENUM (
 ALTER TYPE public.setting_type OWNER TO postgres;
 
 --
--- TOC entry 1344 (class 1247 OID 31980)
+-- TOC entry 1413 (class 1247 OID 31980)
 -- Name: user_role; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -166,7 +166,7 @@ CREATE TYPE public.user_role AS ENUM (
 ALTER TYPE public.user_role OWNER TO postgres;
 
 --
--- TOC entry 512 (class 1255 OID 60002)
+-- TOC entry 545 (class 1255 OID 60002)
 -- Name: acknowledge_alert(bigint); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -185,7 +185,7 @@ $$;
 ALTER FUNCTION public.acknowledge_alert(alert_id bigint) OWNER TO postgres;
 
 --
--- TOC entry 567 (class 1255 OID 59797)
+-- TOC entry 610 (class 1255 OID 59797)
 -- Name: actualizar_vector_busqueda_productos(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -207,7 +207,7 @@ $$;
 ALTER FUNCTION public.actualizar_vector_busqueda_productos() OWNER TO postgres;
 
 --
--- TOC entry 538 (class 1255 OID 59773)
+-- TOC entry 574 (class 1255 OID 59773)
 -- Name: analizar_consulta(text, text[]); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -246,7 +246,7 @@ $$;
 ALTER FUNCTION public.analizar_consulta(consulta_sql text, parametros text[]) OWNER TO postgres;
 
 --
--- TOC entry 608 (class 1255 OID 59863)
+-- TOC entry 658 (class 1255 OID 59863)
 -- Name: analizar_rendimiento_conexiones(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -340,7 +340,7 @@ $$;
 ALTER FUNCTION public.analizar_rendimiento_conexiones() OWNER TO postgres;
 
 --
--- TOC entry 414 (class 1255 OID 59801)
+-- TOC entry 429 (class 1255 OID 59801)
 -- Name: buscar_productos_ranking(text, integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -388,7 +388,7 @@ $$;
 ALTER FUNCTION public.buscar_productos_ranking(termino_busqueda text, limite integer, offset_param integer) OWNER TO postgres;
 
 --
--- TOC entry 461 (class 1255 OID 76121)
+-- TOC entry 483 (class 1255 OID 76121)
 -- Name: compare_user_id(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -406,7 +406,7 @@ $$;
 ALTER FUNCTION public.compare_user_id(order_user_id integer) OWNER TO postgres;
 
 --
--- TOC entry 407 (class 1255 OID 59865)
+-- TOC entry 421 (class 1255 OID 59865)
 -- Name: configuracion_conexiones(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -457,7 +457,7 @@ $$;
 ALTER FUNCTION public.configuracion_conexiones() OWNER TO postgres;
 
 --
--- TOC entry 457 (class 1255 OID 59956)
+-- TOC entry 478 (class 1255 OID 59956)
 -- Name: configurar_timeout_consulta(text, integer, text); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -489,7 +489,7 @@ $$;
 ALTER FUNCTION public.configurar_timeout_consulta(patron_consulta text, timeout_ms integer, tipo_consulta text) OWNER TO postgres;
 
 --
--- TOC entry 580 (class 1255 OID 59955)
+-- TOC entry 625 (class 1255 OID 59955)
 -- Name: consultas_problematicas(numeric, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -543,7 +543,7 @@ $$;
 ALTER FUNCTION public.consultas_problematicas(porcentaje_minimo_timeout numeric, consultas_minimas integer) OWNER TO postgres;
 
 --
--- TOC entry 474 (class 1255 OID 58540)
+-- TOC entry 497 (class 1255 OID 58540)
 -- Name: create_order_with_items(jsonb, jsonb[]); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -718,7 +718,7 @@ $$;
 ALTER FUNCTION public.create_order_with_items(order_data jsonb, order_items jsonb[]) OWNER TO postgres;
 
 --
--- TOC entry 525 (class 1255 OID 75909)
+-- TOC entry 560 (class 1255 OID 75909)
 -- Name: create_order_with_items(jsonb, jsonb); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -749,7 +749,7 @@ CREATE FUNCTION public.create_order_with_items(p_order_data jsonb, p_order_items
 ALTER FUNCTION public.create_order_with_items(p_order_data jsonb, p_order_items jsonb) OWNER TO postgres;
 
 --
--- TOC entry 576 (class 1255 OID 34868)
+-- TOC entry 621 (class 1255 OID 34868)
 -- Name: create_product_images_atomic(integer, integer, jsonb[], boolean); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -830,7 +830,7 @@ $$;
 ALTER FUNCTION public.create_product_images_atomic(product_id integer, image_index integer, images_data jsonb[], is_primary boolean) OWNER TO postgres;
 
 --
--- TOC entry 452 (class 1255 OID 75914)
+-- TOC entry 473 (class 1255 OID 75914)
 -- Name: create_product_with_occasions(jsonb, integer[]); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -859,7 +859,7 @@ CREATE FUNCTION public.create_product_with_occasions(p_product_data jsonb, p_occ
 ALTER FUNCTION public.create_product_with_occasions(p_product_data jsonb, p_occasion_ids integer[]) OWNER TO postgres;
 
 --
--- TOC entry 519 (class 1255 OID 34869)
+-- TOC entry 553 (class 1255 OID 34869)
 -- Name: delete_product_images_safe(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -895,7 +895,7 @@ $$;
 ALTER FUNCTION public.delete_product_images_safe(product_id integer) OWNER TO postgres;
 
 --
--- TOC entry 555 (class 1255 OID 59953)
+-- TOC entry 596 (class 1255 OID 59953)
 -- Name: ejecutar_con_timeout(text, integer, text, text, jsonb); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1010,7 +1010,7 @@ $$;
 ALTER FUNCTION public.ejecutar_con_timeout(consulta_sql text, timeout_ms integer, nombre_consulta text, tipo_consulta text, parametros jsonb) OWNER TO postgres;
 
 --
--- TOC entry 554 (class 1255 OID 59774)
+-- TOC entry 595 (class 1255 OID 59774)
 -- Name: estadisticas_rendimiento(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1070,7 +1070,7 @@ $$;
 ALTER FUNCTION public.estadisticas_rendimiento() OWNER TO postgres;
 
 --
--- TOC entry 582 (class 1255 OID 59954)
+-- TOC entry 627 (class 1255 OID 59954)
 -- Name: estadisticas_timeouts(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1103,7 +1103,7 @@ $$;
 ALTER FUNCTION public.estadisticas_timeouts(horas_atras integer) OWNER TO postgres;
 
 --
--- TOC entry 463 (class 1255 OID 59866)
+-- TOC entry 486 (class 1255 OID 59866)
 -- Name: generar_alertas_conexiones(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1164,7 +1164,7 @@ $$;
 ALTER FUNCTION public.generar_alertas_conexiones() OWNER TO postgres;
 
 --
--- TOC entry 586 (class 1255 OID 60000)
+-- TOC entry 631 (class 1255 OID 60000)
 -- Name: get_backend_messages(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1198,7 +1198,7 @@ $$;
 ALTER FUNCTION public.get_backend_messages() OWNER TO postgres;
 
 --
--- TOC entry 513 (class 1255 OID 59997)
+-- TOC entry 546 (class 1255 OID 59997)
 -- Name: get_database_metrics(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1221,7 +1221,7 @@ $$;
 ALTER FUNCTION public.get_database_metrics() OWNER TO postgres;
 
 --
--- TOC entry 427 (class 1255 OID 22541)
+-- TOC entry 442 (class 1255 OID 22541)
 -- Name: get_existing_image_by_hash(character varying); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1244,7 +1244,71 @@ CREATE FUNCTION public.get_existing_image_by_hash(hash_input character varying) 
 ALTER FUNCTION public.get_existing_image_by_hash(hash_input character varying) OWNER TO postgres;
 
 --
--- TOC entry 498 (class 1255 OID 59999)
+-- TOC entry 471 (class 1255 OID 86914)
+-- Name: get_expenses_filtered(text, date, date, text, text, text, integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.get_expenses_filtered(p_category text DEFAULT NULL::text, p_date_from date DEFAULT NULL::date, p_date_to date DEFAULT NULL::date, p_payment_method text DEFAULT NULL::text, p_sort_by text DEFAULT 'expense_date'::text, p_sort_order text DEFAULT 'DESC'::text, p_limit integer DEFAULT 50, p_offset integer DEFAULT 0) RETURNS TABLE(id integer, description text, amount numeric, category text, expense_date date, payment_method text, receipt_url text, notes text, created_at timestamp with time zone, updated_at timestamp with time zone)
+    LANGUAGE plpgsql STABLE
+    SET search_path TO 'public', 'pg_temp'
+    AS $$
+BEGIN
+  IF p_sort_by NOT IN ('expense_date', 'amount', 'category', 'created_at') THEN
+    p_sort_by := 'expense_date';
+  END IF;
+  
+  IF p_sort_order NOT IN ('ASC', 'DESC') THEN
+    p_sort_order := 'DESC';
+  END IF;
+  
+  IF p_limit IS NULL OR p_limit < 1 THEN
+    p_limit := 50;
+  END IF;
+  IF p_limit > 1000 THEN
+    p_limit := 1000;
+  END IF;
+  
+  IF p_offset IS NULL OR p_offset < 0 THEN
+    p_offset := 0;
+  END IF;
+
+  RETURN QUERY
+  SELECT 
+    e.id,
+    e.description,
+    e.amount,
+    e.category,
+    e.expense_date,
+    e.payment_method,
+    e.receipt_url,
+    e.notes,
+    e.created_at,
+    e.updated_at
+  FROM expenses e
+  WHERE
+    (p_category IS NULL OR e.category = p_category)
+    AND (p_date_from IS NULL OR e.expense_date >= p_date_from)
+    AND (p_date_to IS NULL OR e.expense_date <= p_date_to)
+    AND (p_payment_method IS NULL OR e.payment_method = p_payment_method)
+  ORDER BY
+    CASE WHEN p_sort_by = 'expense_date' AND p_sort_order = 'ASC' THEN e.expense_date END ASC NULLS LAST,
+    CASE WHEN p_sort_by = 'expense_date' AND p_sort_order = 'DESC' THEN e.expense_date END DESC NULLS LAST,
+    CASE WHEN p_sort_by = 'amount' AND p_sort_order = 'ASC' THEN e.amount END ASC NULLS LAST,
+    CASE WHEN p_sort_by = 'amount' AND p_sort_order = 'DESC' THEN e.amount END DESC NULLS LAST,
+    CASE WHEN p_sort_by = 'category' AND p_sort_order = 'ASC' THEN e.category END ASC NULLS LAST,
+    CASE WHEN p_sort_by = 'category' AND p_sort_order = 'DESC' THEN e.category END DESC NULLS LAST,
+    CASE WHEN p_sort_by = 'created_at' AND p_sort_order = 'ASC' THEN e.created_at END ASC NULLS LAST,
+    CASE WHEN p_sort_by = 'created_at' AND p_sort_order = 'DESC' THEN e.created_at END DESC NULLS LAST
+  LIMIT p_limit
+  OFFSET p_offset;
+END;
+$$;
+
+
+ALTER FUNCTION public.get_expenses_filtered(p_category text, p_date_from date, p_date_to date, p_payment_method text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer) OWNER TO postgres;
+
+--
+-- TOC entry 529 (class 1255 OID 59999)
 -- Name: get_optimization_messages(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1278,7 +1342,101 @@ $$;
 ALTER FUNCTION public.get_optimization_messages() OWNER TO postgres;
 
 --
--- TOC entry 489 (class 1255 OID 75913)
+-- TOC entry 460 (class 1255 OID 86913)
+-- Name: get_orders_filtered(text, integer, date, date, text, text, text, integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.get_orders_filtered(p_status text DEFAULT NULL::text, p_year integer DEFAULT NULL::integer, p_date_from date DEFAULT NULL::date, p_date_to date DEFAULT NULL::date, p_search text DEFAULT NULL::text, p_sort_by text DEFAULT 'created_at'::text, p_sort_order text DEFAULT 'DESC'::text, p_limit integer DEFAULT 50, p_offset integer DEFAULT 0) RETURNS TABLE(id integer, customer_name character varying, customer_email character varying, customer_phone character varying, delivery_address text, delivery_date date, delivery_time_slot character varying, total_amount_usd numeric, total_amount_ves numeric, status text, created_at timestamp with time zone, updated_at timestamp with time zone, notes text, delivery_notes text, order_items json)
+    LANGUAGE plpgsql STABLE
+    SET search_path TO 'public', 'pg_temp'
+    AS $$
+BEGIN
+  IF p_sort_by NOT IN ('created_at', 'total_amount_usd', 'delivery_date', 'customer_name') THEN
+    p_sort_by := 'created_at';
+  END IF;
+  
+  IF p_sort_order NOT IN ('ASC', 'DESC') THEN
+    p_sort_order := 'DESC';
+  END IF;
+  
+  IF p_limit IS NULL OR p_limit < 1 THEN
+    p_limit := 50;
+  END IF;
+  IF p_limit > 1000 THEN
+    p_limit := 1000;
+  END IF;
+  
+  IF p_offset IS NULL OR p_offset < 0 THEN
+    p_offset := 0;
+  END IF;
+
+  RETURN QUERY
+  SELECT 
+    o.id,
+    o.customer_name,
+    o.customer_email,
+    o.customer_phone,
+    o.delivery_address,
+    o.delivery_date,
+    o.delivery_time_slot,
+    o.total_amount_usd,
+    o.total_amount_ves,
+    o.status::TEXT,
+    o.created_at,
+    o.updated_at,
+    o.notes,
+    o.delivery_notes,
+    COALESCE(
+      (SELECT json_agg(
+        json_build_object(
+          'id', oi.id,
+          'product_id', oi.product_id,
+          'product_name', oi.product_name,
+          'product_summary', oi.product_summary,
+          'quantity', oi.quantity,
+          'unit_price_usd', oi.unit_price_usd,
+          'unit_price_ves', oi.unit_price_ves,
+          'subtotal_usd', oi.subtotal_usd,
+          'subtotal_ves', oi.subtotal_ves
+        ) ORDER BY oi.id
+      )
+      FROM order_items oi 
+      WHERE oi.order_id = o.id AND oi.active = TRUE),
+      '[]'::json
+    ) as order_items
+  FROM orders o
+  WHERE
+    (p_status IS NULL OR o.status::TEXT = p_status)
+    AND (p_year IS NULL OR EXTRACT(YEAR FROM o.created_at) = p_year)
+    AND (p_date_from IS NULL OR o.created_at::date >= p_date_from)
+    AND (p_date_to IS NULL OR o.created_at::date <= p_date_to)
+    AND (
+      p_search IS NULL OR (
+        LOWER(UNACCENT(o.customer_name)) LIKE LOWER(UNACCENT('%' || p_search || '%'))
+        OR LOWER(UNACCENT(COALESCE(o.customer_email, ''))) LIKE LOWER(UNACCENT('%' || p_search || '%'))
+        OR LOWER(UNACCENT(COALESCE(o.delivery_address, ''))) LIKE LOWER(UNACCENT('%' || p_search || '%'))
+        OR LOWER(UNACCENT(COALESCE(o.customer_phone, ''))) LIKE LOWER(UNACCENT('%' || p_search || '%'))
+      )
+    )
+  ORDER BY
+    CASE WHEN p_sort_by = 'created_at' AND p_sort_order = 'ASC' THEN o.created_at END ASC NULLS LAST,
+    CASE WHEN p_sort_by = 'created_at' AND p_sort_order = 'DESC' THEN o.created_at END DESC NULLS LAST,
+    CASE WHEN p_sort_by = 'total_amount_usd' AND p_sort_order = 'ASC' THEN o.total_amount_usd END ASC NULLS LAST,
+    CASE WHEN p_sort_by = 'total_amount_usd' AND p_sort_order = 'DESC' THEN o.total_amount_usd END DESC NULLS LAST,
+    CASE WHEN p_sort_by = 'delivery_date' AND p_sort_order = 'ASC' THEN o.delivery_date END ASC NULLS LAST,
+    CASE WHEN p_sort_by = 'delivery_date' AND p_sort_order = 'DESC' THEN o.delivery_date END DESC NULLS LAST,
+    CASE WHEN p_sort_by = 'customer_name' AND p_sort_order = 'ASC' THEN o.customer_name END ASC NULLS LAST,
+    CASE WHEN p_sort_by = 'customer_name' AND p_sort_order = 'DESC' THEN o.customer_name END DESC NULLS LAST
+  LIMIT p_limit
+  OFFSET p_offset;
+END;
+$$;
+
+
+ALTER FUNCTION public.get_orders_filtered(p_status text, p_year integer, p_date_from date, p_date_to date, p_search text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer) OWNER TO postgres;
+
+--
+-- TOC entry 517 (class 1255 OID 75913)
 -- Name: get_product_occasions(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1299,49 +1457,122 @@ CREATE FUNCTION public.get_product_occasions(p_product_id integer) RETURNS TABLE
 ALTER FUNCTION public.get_product_occasions(p_product_id integer) OWNER TO postgres;
 
 --
--- TOC entry 428 (class 1255 OID 75912)
--- Name: get_products_by_occasion(integer); Type: FUNCTION; Schema: public; Owner: postgres
---
-
-CREATE FUNCTION public.get_products_by_occasion(p_occasion_id integer) RETURNS TABLE(id integer, name character varying, price_usd numeric, stock integer)
-    LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO 'public'
-    AS $$
-  BEGIN
-    RETURN QUERY
-    SELECT p.id, p.name, p.price_usd, p.stock
-    FROM products p
-    WHERE p.active = true
-    ORDER BY p.name;
-  END;
-  $$;
-
-
-ALTER FUNCTION public.get_products_by_occasion(p_occasion_id integer) OWNER TO postgres;
-
---
--- TOC entry 480 (class 1255 OID 19037)
+-- TOC entry 646 (class 1255 OID 86915)
 -- Name: get_products_by_occasion(integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.get_products_by_occasion(p_occasion_id integer, p_limit integer DEFAULT 50) RETURNS TABLE(id integer, name character varying, description text, price numeric, image_url character varying, primary_image character varying)
-    LANGUAGE sql STABLE
-    SET search_path TO 'public'
+CREATE FUNCTION public.get_products_by_occasion(p_occasion_id integer, p_limit integer DEFAULT 50) RETURNS TABLE(id integer, name character varying, summary text, description text, price_usd numeric, price_ves numeric, stock integer, sku character varying, active boolean, featured boolean, carousel_order integer, created_at timestamp with time zone, updated_at timestamp with time zone)
+    LANGUAGE plpgsql STABLE
+    SET search_path TO 'public', 'pg_temp'
     AS $$
-    SELECT p.id, p.name, p.description, p.price, p.image_url, p.primary_image
-    FROM products p
-    JOIN product_occasions po ON p.id = po.product_id
-    WHERE po.occasion_id = p_occasion_id 
-    AND p.active = true
-    ORDER BY p.featured DESC, p.created_at DESC
-    LIMIT p_limit;
+BEGIN
+  RETURN QUERY
+  SELECT * FROM get_products_filtered(
+    p_occasion_id := p_occasion_id,
+    p_limit := p_limit
+  );
+END;
 $$;
 
 
 ALTER FUNCTION public.get_products_by_occasion(p_occasion_id integer, p_limit integer) OWNER TO postgres;
 
 --
--- TOC entry 535 (class 1255 OID 19043)
+-- TOC entry 521 (class 1255 OID 87186)
+-- Name: get_products_filtered(integer, text, numeric, numeric, boolean, text, text, text, integer, integer, boolean); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.get_products_filtered(p_occasion_id integer DEFAULT NULL::integer, p_search text DEFAULT NULL::text, p_price_min numeric DEFAULT NULL::numeric, p_price_max numeric DEFAULT NULL::numeric, p_featured boolean DEFAULT NULL::boolean, p_sku text DEFAULT NULL::text, p_sort_by text DEFAULT 'created_at'::text, p_sort_order text DEFAULT 'DESC'::text, p_limit integer DEFAULT 50, p_offset integer DEFAULT 0, p_include_inactive boolean DEFAULT false) RETURNS TABLE(id integer, name character varying, summary text, description text, price_usd numeric, price_ves numeric, stock integer, sku character varying, active boolean, featured boolean, carousel_order integer, created_at timestamp with time zone, updated_at timestamp with time zone)
+    LANGUAGE plpgsql STABLE SECURITY DEFINER
+    SET search_path TO 'public', 'pg_temp'
+    AS $$
+BEGIN
+  -- Validate sort_by parameter
+  IF p_sort_by NOT IN ('price_usd', 'name', 'created_at', 'stock', 'carousel_order') THEN
+    p_sort_by := 'created_at';
+  END IF;
+  
+  -- Validate sort_order parameter
+  IF p_sort_order NOT IN ('ASC', 'DESC') THEN
+    p_sort_order := 'DESC';
+  END IF;
+  
+  -- Validate limit/offset
+  IF p_limit IS NULL OR p_limit < 1 THEN
+    p_limit := 50;
+  END IF;
+  IF p_limit > 1000 THEN
+    p_limit := 1000;
+  END IF;
+  
+  IF p_offset IS NULL OR p_offset < 0 THEN
+    p_offset := 0;
+  END IF;
+
+  RETURN QUERY
+  SELECT DISTINCT ON (p.id)
+    p.id,
+    p.name,
+    p.summary,
+    p.description,
+    p.price_usd,
+    p.price_ves,
+    p.stock,
+    p.sku,
+    p.active,
+    p.featured,
+    p.carousel_order,
+    p.created_at,
+    p.updated_at
+  FROM products p
+  LEFT JOIN product_occasions po ON p.id = po.product_id
+  WHERE
+    (p_include_inactive OR p.active = TRUE)
+    AND (p_occasion_id IS NULL OR po.occasion_id = p_occasion_id)
+    AND (
+      p_search IS NULL OR (
+        LOWER(UNACCENT(p.name)) LIKE LOWER(UNACCENT('%' || p_search || '%'))
+        OR LOWER(UNACCENT(COALESCE(p.description, ''))) LIKE LOWER(UNACCENT('%' || p_search || '%'))
+        OR LOWER(UNACCENT(COALESCE(p.summary, ''))) LIKE LOWER(UNACCENT('%' || p_search || '%'))
+      )
+    )
+    AND (p_price_min IS NULL OR p.price_usd >= p_price_min)
+    AND (p_price_max IS NULL OR p.price_usd <= p_price_max)
+    AND (p_featured IS NULL OR p.featured = p_featured)
+    AND (p_sku IS NULL OR p.sku = p_sku)
+  ORDER BY
+    p.id,
+    CASE WHEN p_sort_by = 'price_usd' AND p_sort_order = 'ASC' THEN p.price_usd END ASC NULLS LAST,
+    CASE WHEN p_sort_by = 'price_usd' AND p_sort_order = 'DESC' THEN p.price_usd END DESC NULLS LAST,
+    CASE WHEN p_sort_by = 'name' AND p_sort_order = 'ASC' THEN p.name END ASC NULLS LAST,
+    CASE WHEN p_sort_by = 'name' AND p_sort_order = 'DESC' THEN p.name END DESC NULLS LAST,
+    CASE WHEN p_sort_by = 'stock' AND p_sort_order = 'ASC' THEN p.stock END ASC NULLS LAST,
+    CASE WHEN p_sort_by = 'stock' AND p_sort_order = 'DESC' THEN p.stock END DESC NULLS LAST,
+    CASE WHEN p_sort_by = 'carousel_order' AND p_sort_order = 'ASC' THEN p.carousel_order END ASC NULLS LAST,
+    CASE WHEN p_sort_by = 'carousel_order' AND p_sort_order = 'DESC' THEN p.carousel_order END DESC NULLS LAST,
+    CASE WHEN p_sort_by = 'created_at' AND p_sort_order = 'ASC' THEN p.created_at END ASC NULLS LAST,
+    CASE WHEN p_sort_by = 'created_at' AND p_sort_order = 'DESC' THEN p.created_at END DESC NULLS LAST
+  LIMIT p_limit
+  OFFSET p_offset;
+END;
+$$;
+
+
+ALTER FUNCTION public.get_products_filtered(p_occasion_id integer, p_search text, p_price_min numeric, p_price_max numeric, p_featured boolean, p_sku text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer, p_include_inactive boolean) OWNER TO postgres;
+
+--
+-- TOC entry 4453 (class 0 OID 0)
+-- Dependencies: 521
+-- Name: FUNCTION get_products_filtered(p_occasion_id integer, p_search text, p_price_min numeric, p_price_max numeric, p_featured boolean, p_sku text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer, p_include_inactive boolean); Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON FUNCTION public.get_products_filtered(p_occasion_id integer, p_search text, p_price_min numeric, p_price_max numeric, p_featured boolean, p_sku text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer, p_include_inactive boolean) IS 'Optimized product filtering with all parameters in SQL.
+Fixed: Changed DECIMAL to NUMERIC for price parameters.
+Returns paginated, sorted, and filtered products in a single query.';
+
+
+--
+-- TOC entry 571 (class 1255 OID 19043)
 -- Name: get_products_with_occasions(integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1386,7 +1617,7 @@ $$;
 ALTER FUNCTION public.get_products_with_occasions(p_limit integer, p_offset integer) OWNER TO postgres;
 
 --
--- TOC entry 601 (class 1255 OID 59996)
+-- TOC entry 650 (class 1255 OID 59996)
 -- Name: get_redis_metrics(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1409,7 +1640,7 @@ $$;
 ALTER FUNCTION public.get_redis_metrics() OWNER TO postgres;
 
 --
--- TOC entry 448 (class 1255 OID 60001)
+-- TOC entry 468 (class 1255 OID 60001)
 -- Name: get_system_alerts(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1445,7 +1676,7 @@ $$;
 ALTER FUNCTION public.get_system_alerts() OWNER TO postgres;
 
 --
--- TOC entry 419 (class 1255 OID 59998)
+-- TOC entry 434 (class 1255 OID 59998)
 -- Name: get_system_health_overview(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1471,7 +1702,7 @@ $$;
 ALTER FUNCTION public.get_system_health_overview() OWNER TO postgres;
 
 --
--- TOC entry 401 (class 1255 OID 59995)
+-- TOC entry 415 (class 1255 OID 59995)
 -- Name: get_timeout_statistics(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1500,27 +1731,28 @@ $$;
 ALTER FUNCTION public.get_timeout_statistics() OWNER TO postgres;
 
 --
--- TOC entry 514 (class 1255 OID 76122)
+-- TOC entry 547 (class 1255 OID 76122)
 -- Name: is_admin(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION public.is_admin() RETURNS boolean
     LANGUAGE plpgsql SECURITY DEFINER
+    SET search_path TO 'public'
     AS $$
-BEGIN
-  RETURN EXISTS (
-    SELECT 1 FROM auth.users
-    WHERE auth.users.id = auth.uid()
-    AND auth.users.raw_user_meta_data->>'role' = 'admin'
-  );
-END;
-$$;
+    BEGIN
+      RETURN EXISTS (
+        SELECT 1 FROM auth.users
+        WHERE auth.users.id = auth.uid()
+        AND auth.users.raw_user_meta_data->>'role' = 'admin'
+      );
+    END;
+    $$;
 
 
 ALTER FUNCTION public.is_admin() OWNER TO postgres;
 
 --
--- TOC entry 557 (class 1255 OID 59864)
+-- TOC entry 598 (class 1255 OID 59864)
 -- Name: limpiar_conexiones_inactivas(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1546,7 +1778,7 @@ $$;
 ALTER FUNCTION public.limpiar_conexiones_inactivas(horas_inactividad integer) OWNER TO postgres;
 
 --
--- TOC entry 561 (class 1255 OID 59957)
+-- TOC entry 603 (class 1255 OID 59957)
 -- Name: limpiar_logs_timeouts(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1571,7 +1803,7 @@ $$;
 ALTER FUNCTION public.limpiar_logs_timeouts(dias_a_conservar integer) OWNER TO postgres;
 
 --
--- TOC entry 438 (class 1255 OID 59803)
+-- TOC entry 454 (class 1255 OID 59803)
 -- Name: productos_similares(integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1616,7 +1848,7 @@ $$;
 ALTER FUNCTION public.productos_similares(producto_id integer, limite integer) OWNER TO postgres;
 
 --
--- TOC entry 596 (class 1255 OID 59816)
+-- TOC entry 643 (class 1255 OID 59816)
 -- Name: registrar_busqueda(text, integer, numeric, text, text); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1645,7 +1877,7 @@ $$;
 ALTER FUNCTION public.registrar_busqueda(termino_busqueda text, resultados integer, tiempo_ejecucion numeric, ip_cliente text, user_agent text) OWNER TO postgres;
 
 --
--- TOC entry 550 (class 1255 OID 51636)
+-- TOC entry 588 (class 1255 OID 51636)
 -- Name: reset_sequence(text); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1662,7 +1894,7 @@ CREATE FUNCTION public.reset_sequence(sequence_name text) RETURNS void
 ALTER FUNCTION public.reset_sequence(sequence_name text) OWNER TO postgres;
 
 --
--- TOC entry 573 (class 1255 OID 75916)
+-- TOC entry 618 (class 1255 OID 75916)
 -- Name: reset_sequence(character varying); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1680,7 +1912,7 @@ CREATE FUNCTION public.reset_sequence(sequence_name character varying) RETURNS b
 ALTER FUNCTION public.reset_sequence(sequence_name character varying) OWNER TO postgres;
 
 --
--- TOC entry 475 (class 1255 OID 60003)
+-- TOC entry 498 (class 1255 OID 60003)
 -- Name: resolve_alert(bigint); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1699,7 +1931,7 @@ $$;
 ALTER FUNCTION public.resolve_alert(alert_id bigint) OWNER TO postgres;
 
 --
--- TOC entry 408 (class 1255 OID 59994)
+-- TOC entry 422 (class 1255 OID 59994)
 -- Name: round(numeric, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1716,7 +1948,7 @@ $_$;
 ALTER FUNCTION public.round(numeric, integer) OWNER TO postgres;
 
 --
--- TOC entry 491 (class 1255 OID 59802)
+-- TOC entry 519 (class 1255 OID 59802)
 -- Name: sugerencias_busqueda(text, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1756,7 +1988,7 @@ $$;
 ALTER FUNCTION public.sugerencias_busqueda(termino_parcial text, limite integer) OWNER TO postgres;
 
 --
--- TOC entry 568 (class 1255 OID 59775)
+-- TOC entry 611 (class 1255 OID 59775)
 -- Name: sugerir_optimizaciones(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1807,32 +2039,31 @@ $$;
 ALTER FUNCTION public.sugerir_optimizaciones() OWNER TO postgres;
 
 --
--- TOC entry 415 (class 1255 OID 77631)
+-- TOC entry 430 (class 1255 OID 77631)
 -- Name: sync_payment_method_name(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION public.sync_payment_method_name() RETURNS trigger
     LANGUAGE plpgsql
+    SET search_path TO 'public'
     AS $$
-BEGIN
-    -- Clear payment_method_name if payment_method_id is NULL
-    IF NEW.payment_method_id IS NULL THEN
-        NEW.payment_method_name := NULL;
-    -- Sync name if payment_method_id is provided
-    ELSIF NEW.payment_method_id IS NOT NULL THEN
-        SELECT name INTO NEW.payment_method_name
-        FROM payment_methods
-        WHERE id = NEW.payment_method_id;
-    END IF;
-    RETURN NEW;
-END
-$$;
+    BEGIN
+        IF NEW.payment_method_id IS NULL THEN
+            NEW.payment_method_name := NULL;
+        ELSIF NEW.payment_method_id IS NOT NULL THEN
+            SELECT name INTO NEW.payment_method_name
+            FROM payment_methods
+            WHERE id = NEW.payment_method_id;
+        END IF;
+        RETURN NEW;
+    END
+    $$;
 
 
 ALTER FUNCTION public.sync_payment_method_name() OWNER TO postgres;
 
 --
--- TOC entry 510 (class 1255 OID 75915)
+-- TOC entry 543 (class 1255 OID 75915)
 -- Name: update_carousel_order_atomic(integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1850,7 +2081,7 @@ CREATE FUNCTION public.update_carousel_order_atomic(p_product_id integer, p_orde
 ALTER FUNCTION public.update_carousel_order_atomic(p_product_id integer, p_order integer) OWNER TO postgres;
 
 --
--- TOC entry 606 (class 1255 OID 75910)
+-- TOC entry 656 (class 1255 OID 75910)
 -- Name: update_order_status_with_history(integer, character varying, text, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1868,7 +2099,7 @@ CREATE FUNCTION public.update_order_status_with_history(p_order_id integer, p_ne
 ALTER FUNCTION public.update_order_status_with_history(p_order_id integer, p_new_status character varying, p_notes text, p_changed_by integer) OWNER TO postgres;
 
 --
--- TOC entry 499 (class 1255 OID 34865)
+-- TOC entry 530 (class 1255 OID 34865)
 -- Name: update_order_status_with_history(integer, public.order_status, text, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1931,7 +2162,7 @@ $$;
 ALTER FUNCTION public.update_order_status_with_history(order_id integer, new_status public.order_status, notes text, changed_by integer) OWNER TO postgres;
 
 --
--- TOC entry 540 (class 1255 OID 28932)
+-- TOC entry 576 (class 1255 OID 28932)
 -- Name: update_updated_at_column(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1949,38 +2180,37 @@ CREATE FUNCTION public.update_updated_at_column() RETURNS trigger
 ALTER FUNCTION public.update_updated_at_column() OWNER TO postgres;
 
 --
--- TOC entry 472 (class 1255 OID 77629)
+-- TOC entry 495 (class 1255 OID 77629)
 -- Name: validate_order_total(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION public.validate_order_total() RETURNS trigger
     LANGUAGE plpgsql
+    SET search_path TO 'public'
     AS $$
-DECLARE
-    calculated_total DECIMAL(10,2);
-BEGIN
-    -- Calculate total from all order_items for this order
-    SELECT COALESCE(SUM(subtotal_usd), 0) INTO calculated_total
-    FROM order_items
-    WHERE order_id = NEW.order_id;
+    DECLARE
+        calculated_total DECIMAL(10,2);
+    BEGIN
+        SELECT COALESCE(SUM(subtotal_usd), 0) INTO calculated_total
+        FROM order_items
+        WHERE order_id = NEW.order_id;
 
-    -- Compare with the order's total (with 0.01 tolerance for rounding)
-    IF calculated_total > 0 AND NEW.order_id IN (SELECT id FROM orders WHERE abs(total_amount_usd - calculated_total) > 0.01) THEN
-        RAISE EXCEPTION 'Order total (%.2f) does not match item subtotals (%.2f) for order %',
-            (SELECT total_amount_usd FROM orders WHERE id = NEW.order_id),
-            calculated_total,
-            NEW.order_id;
-    END IF;
+        IF calculated_total > 0 AND NEW.order_id IN (SELECT id FROM orders WHERE abs(total_amount_usd - calculated_total) > 0.01) THEN
+            RAISE EXCEPTION 'Order total (%.2f) does not match item subtotals (%.2f) for order %',
+                (SELECT total_amount_usd FROM orders WHERE id = NEW.order_id),
+                calculated_total,
+                NEW.order_id;
+        END IF;
 
-    RETURN NEW;
-END
-$$;
+        RETURN NEW;
+    END
+    $$;
 
 
 ALTER FUNCTION public.validate_order_total() OWNER TO postgres;
 
 --
--- TOC entry 2585 (class 3602 OID 59796)
+-- TOC entry 2673 (class 3602 OID 59796)
 -- Name: floresya_spanish; Type: TEXT SEARCH CONFIGURATION; Schema: public; Owner: postgres
 --
 
@@ -2052,7 +2282,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 395 (class 1259 OID 59805)
+-- TOC entry 401 (class 1259 OID 59805)
 -- Name: busquedas_log; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2074,7 +2304,7 @@ CREATE TABLE public.busquedas_log (
 ALTER TABLE public.busquedas_log OWNER TO postgres;
 
 --
--- TOC entry 394 (class 1259 OID 59804)
+-- TOC entry 400 (class 1259 OID 59804)
 -- Name: busquedas_log_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2090,8 +2320,8 @@ CREATE SEQUENCE public.busquedas_log_id_seq
 ALTER SEQUENCE public.busquedas_log_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4326 (class 0 OID 0)
--- Dependencies: 394
+-- TOC entry 4478 (class 0 OID 0)
+-- Dependencies: 400
 -- Name: busquedas_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2099,7 +2329,160 @@ ALTER SEQUENCE public.busquedas_log_id_seq OWNED BY public.busquedas_log.id;
 
 
 --
--- TOC entry 373 (class 1259 OID 31986)
+-- TOC entry 410 (class 1259 OID 84803)
+-- Name: expenses; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.expenses (
+    id integer NOT NULL,
+    category text NOT NULL,
+    description text NOT NULL,
+    amount numeric(10,2) NOT NULL,
+    expense_date date DEFAULT CURRENT_DATE NOT NULL,
+    payment_method text,
+    receipt_url text,
+    notes text,
+    created_by integer,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now(),
+    active boolean DEFAULT true NOT NULL,
+    CONSTRAINT expenses_amount_check CHECK ((amount > (0)::numeric)),
+    CONSTRAINT expenses_category_check CHECK ((category = ANY (ARRAY['flores'::text, 'transporte'::text, 'empaque'::text, 'personal'::text, 'servicios'::text, 'marketing'::text, 'otros'::text]))),
+    CONSTRAINT expenses_payment_method_check CHECK ((payment_method = ANY (ARRAY['efectivo'::text, 'transferencia'::text, 'tarjeta_debito'::text, 'tarjeta_credito'::text, 'pago_movil'::text, 'zelle'::text, 'otro'::text])))
+);
+
+
+ALTER TABLE public.expenses OWNER TO postgres;
+
+--
+-- TOC entry 412 (class 1259 OID 86920)
+-- Name: daily_expenses; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.daily_expenses WITH (security_invoker='on') AS
+ SELECT expense_date,
+    category,
+    count(id) AS expense_count,
+    sum(amount) AS total_amount
+   FROM public.expenses e
+  WHERE (active = true)
+  GROUP BY expense_date, category
+  ORDER BY expense_date DESC, category;
+
+
+ALTER VIEW public.daily_expenses OWNER TO postgres;
+
+--
+-- TOC entry 389 (class 1259 OID 32093)
+-- Name: orders; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.orders (
+    id integer NOT NULL,
+    user_id integer,
+    customer_email character varying(255) NOT NULL,
+    customer_name character varying(255) NOT NULL,
+    customer_phone character varying(20) NOT NULL,
+    delivery_address text NOT NULL,
+    delivery_city character varying(100) NOT NULL,
+    delivery_state character varying(100) NOT NULL,
+    delivery_zip character varying(20),
+    delivery_date date,
+    delivery_time_slot character varying(100),
+    delivery_notes text,
+    status public.order_status DEFAULT 'pending'::public.order_status,
+    total_amount_usd numeric(10,2) NOT NULL,
+    total_amount_ves numeric(10,2),
+    currency_rate numeric(10,6) DEFAULT 1.0,
+    notes text,
+    admin_notes text,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now(),
+    customer_name_normalized text GENERATED ALWAYS AS (lower(regexp_replace(translate((customer_name)::text, 'áéíóúÁÉÍÓÚàèìòùÀÈÌÒÙäëïöüÄËÏÖÜâêîôûÂÊÎÔÛñÑçÇ'::text, 'aeiouAEIOUaeiouAEIOUaeiouAEIOUaeiouAEIOUnNcC'::text), '[^a-z0-9 ]'::text, ''::text, 'gi'::text))) STORED,
+    customer_email_normalized text GENERATED ALWAYS AS (lower((customer_email)::text)) STORED,
+    active boolean DEFAULT true NOT NULL,
+    CONSTRAINT check_customer_info CHECK ((((user_id IS NOT NULL) AND (customer_email IS NOT NULL) AND (customer_name IS NOT NULL)) OR ((user_id IS NULL) AND (customer_email IS NOT NULL) AND (customer_name IS NOT NULL)))),
+    CONSTRAINT orders_currency_rate_positive CHECK (((currency_rate IS NULL) OR (currency_rate > (0)::numeric))),
+    CONSTRAINT orders_currency_rate_required CHECK (((total_amount_ves IS NULL) OR (currency_rate IS NOT NULL))),
+    CONSTRAINT orders_customer_email_format CHECK (((customer_email)::text ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'::text)),
+    CONSTRAINT orders_customer_email_not_empty CHECK (((customer_email IS NOT NULL) AND (TRIM(BOTH FROM customer_email) <> ''::text))),
+    CONSTRAINT orders_customer_name_not_empty CHECK (((customer_name IS NOT NULL) AND (TRIM(BOTH FROM customer_name) <> ''::text))),
+    CONSTRAINT orders_delivery_address_not_empty CHECK (((delivery_address IS NOT NULL) AND (TRIM(BOTH FROM delivery_address) <> ''::text))),
+    CONSTRAINT orders_status_valid CHECK ((status = ANY (ARRAY['pending'::public.order_status, 'verified'::public.order_status, 'preparing'::public.order_status, 'shipped'::public.order_status, 'delivered'::public.order_status, 'cancelled'::public.order_status]))),
+    CONSTRAINT orders_total_amount_positive CHECK ((total_amount_usd > (0)::numeric)),
+    CONSTRAINT orders_total_amount_usd_check CHECK ((total_amount_usd >= (0)::numeric)),
+    CONSTRAINT orders_total_amount_usd_positive CHECK ((total_amount_usd > (0)::numeric)),
+    CONSTRAINT orders_total_amount_ves_positive CHECK (((total_amount_ves IS NULL) OR (total_amount_ves > (0)::numeric)))
+);
+
+
+ALTER TABLE public.orders OWNER TO postgres;
+
+--
+-- TOC entry 411 (class 1259 OID 86916)
+-- Name: daily_sales; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.daily_sales WITH (security_invoker='on') AS
+ SELECT (created_at)::date AS sale_date,
+    count(id) AS total_orders,
+    sum(total_amount_usd) AS total_usd,
+    sum(total_amount_ves) AS total_ves
+   FROM public.orders o
+  WHERE ((status)::text = 'delivered'::text)
+  GROUP BY ((created_at)::date)
+  ORDER BY ((created_at)::date) DESC;
+
+
+ALTER VIEW public.daily_sales OWNER TO postgres;
+
+--
+-- TOC entry 414 (class 1259 OID 86928)
+-- Name: daily_profit_loss; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.daily_profit_loss WITH (security_invoker='on') AS
+ SELECT COALESCE(s.sale_date, e.expense_date) AS date,
+    COALESCE(s.total_usd, (0)::numeric) AS revenue_usd,
+    COALESCE(e.total_amount, (0)::numeric) AS expenses,
+    (COALESCE(s.total_usd, (0)::numeric) - COALESCE(e.total_amount, (0)::numeric)) AS profit_loss
+   FROM (public.daily_sales s
+     FULL JOIN ( SELECT daily_expenses.expense_date,
+            sum(daily_expenses.total_amount) AS total_amount
+           FROM public.daily_expenses
+          GROUP BY daily_expenses.expense_date) e ON ((s.sale_date = e.expense_date)))
+  ORDER BY COALESCE(s.sale_date, e.expense_date) DESC;
+
+
+ALTER VIEW public.daily_profit_loss OWNER TO postgres;
+
+--
+-- TOC entry 409 (class 1259 OID 84802)
+-- Name: expenses_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.expenses_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.expenses_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 4485 (class 0 OID 0)
+-- Dependencies: 409
+-- Name: expenses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.expenses_id_seq OWNED BY public.expenses.id;
+
+
+--
+-- TOC entry 379 (class 1259 OID 31986)
 -- Name: occasions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2118,7 +2501,7 @@ CREATE TABLE public.occasions (
 ALTER TABLE public.occasions OWNER TO postgres;
 
 --
--- TOC entry 372 (class 1259 OID 31985)
+-- TOC entry 378 (class 1259 OID 31985)
 -- Name: occasions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2134,8 +2517,8 @@ CREATE SEQUENCE public.occasions_id_seq
 ALTER SEQUENCE public.occasions_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4329 (class 0 OID 0)
--- Dependencies: 372
+-- TOC entry 4488 (class 0 OID 0)
+-- Dependencies: 378
 -- Name: occasions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2143,7 +2526,7 @@ ALTER SEQUENCE public.occasions_id_seq OWNED BY public.occasions.id;
 
 
 --
--- TOC entry 385 (class 1259 OID 32112)
+-- TOC entry 391 (class 1259 OID 32112)
 -- Name: order_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2178,7 +2561,7 @@ CREATE TABLE public.order_items (
 ALTER TABLE public.order_items OWNER TO postgres;
 
 --
--- TOC entry 384 (class 1259 OID 32111)
+-- TOC entry 390 (class 1259 OID 32111)
 -- Name: order_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2194,8 +2577,8 @@ CREATE SEQUENCE public.order_items_id_seq
 ALTER SEQUENCE public.order_items_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4332 (class 0 OID 0)
--- Dependencies: 384
+-- TOC entry 4491 (class 0 OID 0)
+-- Dependencies: 390
 -- Name: order_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2203,7 +2586,7 @@ ALTER SEQUENCE public.order_items_id_seq OWNED BY public.order_items.id;
 
 
 --
--- TOC entry 387 (class 1259 OID 32136)
+-- TOC entry 393 (class 1259 OID 32136)
 -- Name: order_status_history; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2222,7 +2605,7 @@ CREATE TABLE public.order_status_history (
 ALTER TABLE public.order_status_history OWNER TO postgres;
 
 --
--- TOC entry 386 (class 1259 OID 32135)
+-- TOC entry 392 (class 1259 OID 32135)
 -- Name: order_status_history_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2238,8 +2621,8 @@ CREATE SEQUENCE public.order_status_history_id_seq
 ALTER SEQUENCE public.order_status_history_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4335 (class 0 OID 0)
--- Dependencies: 386
+-- TOC entry 4494 (class 0 OID 0)
+-- Dependencies: 392
 -- Name: order_status_history_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2247,53 +2630,7 @@ ALTER SEQUENCE public.order_status_history_id_seq OWNED BY public.order_status_h
 
 
 --
--- TOC entry 383 (class 1259 OID 32093)
--- Name: orders; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.orders (
-    id integer NOT NULL,
-    user_id integer,
-    customer_email character varying(255) NOT NULL,
-    customer_name character varying(255) NOT NULL,
-    customer_phone character varying(20) NOT NULL,
-    delivery_address text NOT NULL,
-    delivery_city character varying(100) NOT NULL,
-    delivery_state character varying(100) NOT NULL,
-    delivery_zip character varying(20),
-    delivery_date date,
-    delivery_time_slot character varying(100),
-    delivery_notes text,
-    status public.order_status DEFAULT 'pending'::public.order_status,
-    total_amount_usd numeric(10,2) NOT NULL,
-    total_amount_ves numeric(10,2),
-    currency_rate numeric(10,6),
-    notes text,
-    admin_notes text,
-    created_at timestamp with time zone DEFAULT now(),
-    updated_at timestamp with time zone DEFAULT now(),
-    customer_name_normalized text GENERATED ALWAYS AS (lower(regexp_replace(translate((customer_name)::text, 'áéíóúÁÉÍÓÚàèìòùÀÈÌÒÙäëïöüÄËÏÖÜâêîôûÂÊÎÔÛñÑçÇ'::text, 'aeiouAEIOUaeiouAEIOUaeiouAEIOUaeiouAEIOUnNcC'::text), '[^a-z0-9 ]'::text, ''::text, 'gi'::text))) STORED,
-    customer_email_normalized text GENERATED ALWAYS AS (lower((customer_email)::text)) STORED,
-    active boolean DEFAULT true NOT NULL,
-    CONSTRAINT check_customer_info CHECK ((((user_id IS NOT NULL) AND (customer_email IS NOT NULL) AND (customer_name IS NOT NULL)) OR ((user_id IS NULL) AND (customer_email IS NOT NULL) AND (customer_name IS NOT NULL)))),
-    CONSTRAINT orders_currency_rate_positive CHECK (((currency_rate IS NULL) OR (currency_rate > (0)::numeric))),
-    CONSTRAINT orders_currency_rate_required CHECK (((total_amount_ves IS NULL) OR (currency_rate IS NOT NULL))),
-    CONSTRAINT orders_customer_email_format CHECK (((customer_email)::text ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'::text)),
-    CONSTRAINT orders_customer_email_not_empty CHECK (((customer_email IS NOT NULL) AND (TRIM(BOTH FROM customer_email) <> ''::text))),
-    CONSTRAINT orders_customer_name_not_empty CHECK (((customer_name IS NOT NULL) AND (TRIM(BOTH FROM customer_name) <> ''::text))),
-    CONSTRAINT orders_delivery_address_not_empty CHECK (((delivery_address IS NOT NULL) AND (TRIM(BOTH FROM delivery_address) <> ''::text))),
-    CONSTRAINT orders_status_valid CHECK ((status = ANY (ARRAY['pending'::public.order_status, 'verified'::public.order_status, 'preparing'::public.order_status, 'shipped'::public.order_status, 'delivered'::public.order_status, 'cancelled'::public.order_status]))),
-    CONSTRAINT orders_total_amount_positive CHECK ((total_amount_usd > (0)::numeric)),
-    CONSTRAINT orders_total_amount_usd_check CHECK ((total_amount_usd >= (0)::numeric)),
-    CONSTRAINT orders_total_amount_usd_positive CHECK ((total_amount_usd > (0)::numeric)),
-    CONSTRAINT orders_total_amount_ves_positive CHECK (((total_amount_ves IS NULL) OR (total_amount_ves > (0)::numeric)))
-);
-
-
-ALTER TABLE public.orders OWNER TO postgres;
-
---
--- TOC entry 382 (class 1259 OID 32092)
+-- TOC entry 388 (class 1259 OID 32092)
 -- Name: orders_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2309,8 +2646,8 @@ CREATE SEQUENCE public.orders_id_seq
 ALTER SEQUENCE public.orders_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4338 (class 0 OID 0)
--- Dependencies: 382
+-- TOC entry 4496 (class 0 OID 0)
+-- Dependencies: 388
 -- Name: orders_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2318,7 +2655,7 @@ ALTER SEQUENCE public.orders_id_seq OWNED BY public.orders.id;
 
 
 --
--- TOC entry 389 (class 1259 OID 32156)
+-- TOC entry 395 (class 1259 OID 32156)
 -- Name: payment_methods; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2338,7 +2675,7 @@ CREATE TABLE public.payment_methods (
 ALTER TABLE public.payment_methods OWNER TO postgres;
 
 --
--- TOC entry 388 (class 1259 OID 32155)
+-- TOC entry 394 (class 1259 OID 32155)
 -- Name: payment_methods_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2354,8 +2691,8 @@ CREATE SEQUENCE public.payment_methods_id_seq
 ALTER SEQUENCE public.payment_methods_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4341 (class 0 OID 0)
--- Dependencies: 388
+-- TOC entry 4499 (class 0 OID 0)
+-- Dependencies: 394
 -- Name: payment_methods_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2363,7 +2700,7 @@ ALTER SEQUENCE public.payment_methods_id_seq OWNED BY public.payment_methods.id;
 
 
 --
--- TOC entry 391 (class 1259 OID 32169)
+-- TOC entry 397 (class 1259 OID 32169)
 -- Name: payments; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2397,7 +2734,7 @@ CREATE TABLE public.payments (
 ALTER TABLE public.payments OWNER TO postgres;
 
 --
--- TOC entry 390 (class 1259 OID 32168)
+-- TOC entry 396 (class 1259 OID 32168)
 -- Name: payments_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2413,8 +2750,8 @@ CREATE SEQUENCE public.payments_id_seq
 ALTER SEQUENCE public.payments_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4344 (class 0 OID 0)
--- Dependencies: 390
+-- TOC entry 4502 (class 0 OID 0)
+-- Dependencies: 396
 -- Name: payments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2422,7 +2759,7 @@ ALTER SEQUENCE public.payments_id_seq OWNED BY public.payments.id;
 
 
 --
--- TOC entry 393 (class 1259 OID 32525)
+-- TOC entry 399 (class 1259 OID 32525)
 -- Name: product_images; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2450,7 +2787,7 @@ CREATE TABLE public.product_images (
 ALTER TABLE public.product_images OWNER TO postgres;
 
 --
--- TOC entry 392 (class 1259 OID 32524)
+-- TOC entry 398 (class 1259 OID 32524)
 -- Name: product_images_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2466,8 +2803,8 @@ CREATE SEQUENCE public.product_images_id_seq
 ALTER SEQUENCE public.product_images_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4347 (class 0 OID 0)
--- Dependencies: 392
+-- TOC entry 4505 (class 0 OID 0)
+-- Dependencies: 398
 -- Name: product_images_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2475,7 +2812,7 @@ ALTER SEQUENCE public.product_images_id_seq OWNED BY public.product_images.id;
 
 
 --
--- TOC entry 381 (class 1259 OID 32072)
+-- TOC entry 387 (class 1259 OID 32072)
 -- Name: product_occasions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2492,8 +2829,8 @@ CREATE TABLE public.product_occasions (
 ALTER TABLE public.product_occasions OWNER TO postgres;
 
 --
--- TOC entry 4349 (class 0 OID 0)
--- Dependencies: 381
+-- TOC entry 4507 (class 0 OID 0)
+-- Dependencies: 387
 -- Name: TABLE product_occasions; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2501,7 +2838,7 @@ COMMENT ON TABLE public.product_occasions IS 'Relación muchos-a-muchos entre pr
 
 
 --
--- TOC entry 380 (class 1259 OID 32071)
+-- TOC entry 386 (class 1259 OID 32071)
 -- Name: product_occasions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2517,8 +2854,8 @@ CREATE SEQUENCE public.product_occasions_id_seq
 ALTER SEQUENCE public.product_occasions_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4351 (class 0 OID 0)
--- Dependencies: 380
+-- TOC entry 4509 (class 0 OID 0)
+-- Dependencies: 386
 -- Name: product_occasions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2526,7 +2863,7 @@ ALTER SEQUENCE public.product_occasions_id_seq OWNED BY public.product_occasions
 
 
 --
--- TOC entry 379 (class 1259 OID 32033)
+-- TOC entry 385 (class 1259 OID 32033)
 -- Name: products; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2566,8 +2903,8 @@ CREATE TABLE public.products (
 ALTER TABLE public.products OWNER TO postgres;
 
 --
--- TOC entry 4353 (class 0 OID 0)
--- Dependencies: 379
+-- TOC entry 4511 (class 0 OID 0)
+-- Dependencies: 385
 -- Name: TABLE products; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2575,8 +2912,8 @@ COMMENT ON TABLE public.products IS 'Productos vendidos en la tienda. Cada produ
 
 
 --
--- TOC entry 4354 (class 0 OID 0)
--- Dependencies: 379
+-- TOC entry 4512 (class 0 OID 0)
+-- Dependencies: 385
 -- Name: COLUMN products.carousel_order; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2584,7 +2921,7 @@ COMMENT ON COLUMN public.products.carousel_order IS 'Orden en que aparece en el 
 
 
 --
--- TOC entry 378 (class 1259 OID 32032)
+-- TOC entry 384 (class 1259 OID 32032)
 -- Name: products_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2600,8 +2937,8 @@ CREATE SEQUENCE public.products_id_seq
 ALTER SEQUENCE public.products_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4356 (class 0 OID 0)
--- Dependencies: 378
+-- TOC entry 4514 (class 0 OID 0)
+-- Dependencies: 384
 -- Name: products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2609,7 +2946,7 @@ ALTER SEQUENCE public.products_id_seq OWNED BY public.products.id;
 
 
 --
--- TOC entry 397 (class 1259 OID 59940)
+-- TOC entry 403 (class 1259 OID 59940)
 -- Name: query_timeouts_log; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2632,7 +2969,7 @@ CREATE TABLE public.query_timeouts_log (
 ALTER TABLE public.query_timeouts_log OWNER TO postgres;
 
 --
--- TOC entry 396 (class 1259 OID 59939)
+-- TOC entry 402 (class 1259 OID 59939)
 -- Name: query_timeouts_log_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2648,8 +2985,8 @@ CREATE SEQUENCE public.query_timeouts_log_id_seq
 ALTER SEQUENCE public.query_timeouts_log_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4359 (class 0 OID 0)
--- Dependencies: 396
+-- TOC entry 4517 (class 0 OID 0)
+-- Dependencies: 402
 -- Name: query_timeouts_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2657,7 +2994,7 @@ ALTER SEQUENCE public.query_timeouts_log_id_seq OWNED BY public.query_timeouts_l
 
 
 --
--- TOC entry 377 (class 1259 OID 32018)
+-- TOC entry 383 (class 1259 OID 32018)
 -- Name: settings; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2677,7 +3014,7 @@ CREATE TABLE public.settings (
 ALTER TABLE public.settings OWNER TO postgres;
 
 --
--- TOC entry 376 (class 1259 OID 32017)
+-- TOC entry 382 (class 1259 OID 32017)
 -- Name: settings_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2693,8 +3030,8 @@ CREATE SEQUENCE public.settings_id_seq
 ALTER SEQUENCE public.settings_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4362 (class 0 OID 0)
--- Dependencies: 376
+-- TOC entry 4520 (class 0 OID 0)
+-- Dependencies: 382
 -- Name: settings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2702,7 +3039,25 @@ ALTER SEQUENCE public.settings_id_seq OWNED BY public.settings.id;
 
 
 --
--- TOC entry 375 (class 1259 OID 32002)
+-- TOC entry 413 (class 1259 OID 86924)
+-- Name: test_daily_expenses; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.test_daily_expenses WITH (security_invoker='on') AS
+ SELECT expense_date,
+    category,
+    count(id) AS count,
+    sum(amount) AS total
+   FROM public.expenses e
+  WHERE (active = true)
+  GROUP BY expense_date, category
+  ORDER BY expense_date DESC;
+
+
+ALTER VIEW public.test_daily_expenses OWNER TO postgres;
+
+--
+-- TOC entry 381 (class 1259 OID 32002)
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2731,7 +3086,7 @@ CREATE TABLE public.users (
 ALTER TABLE public.users OWNER TO postgres;
 
 --
--- TOC entry 374 (class 1259 OID 32001)
+-- TOC entry 380 (class 1259 OID 32001)
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2747,8 +3102,8 @@ CREATE SEQUENCE public.users_id_seq
 ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4365 (class 0 OID 0)
--- Dependencies: 374
+-- TOC entry 4524 (class 0 OID 0)
+-- Dependencies: 380
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2756,7 +3111,7 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- TOC entry 3845 (class 2604 OID 59808)
+-- TOC entry 3934 (class 2604 OID 59808)
 -- Name: busquedas_log id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -2764,7 +3119,15 @@ ALTER TABLE ONLY public.busquedas_log ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
--- TOC entry 3784 (class 2604 OID 31989)
+-- TOC entry 3941 (class 2604 OID 84806)
+-- Name: expenses id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.expenses ALTER COLUMN id SET DEFAULT nextval('public.expenses_id_seq'::regclass);
+
+
+--
+-- TOC entry 3872 (class 2604 OID 31989)
 -- Name: occasions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -2772,7 +3135,7 @@ ALTER TABLE ONLY public.occasions ALTER COLUMN id SET DEFAULT nextval('public.oc
 
 
 --
--- TOC entry 3822 (class 2604 OID 32115)
+-- TOC entry 3911 (class 2604 OID 32115)
 -- Name: order_items id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -2780,7 +3143,7 @@ ALTER TABLE ONLY public.order_items ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
--- TOC entry 3826 (class 2604 OID 32139)
+-- TOC entry 3915 (class 2604 OID 32139)
 -- Name: order_status_history id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -2788,7 +3151,7 @@ ALTER TABLE ONLY public.order_status_history ALTER COLUMN id SET DEFAULT nextval
 
 
 --
--- TOC entry 3815 (class 2604 OID 32096)
+-- TOC entry 3903 (class 2604 OID 32096)
 -- Name: orders id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -2796,7 +3159,7 @@ ALTER TABLE ONLY public.orders ALTER COLUMN id SET DEFAULT nextval('public.order
 
 
 --
--- TOC entry 3829 (class 2604 OID 32159)
+-- TOC entry 3918 (class 2604 OID 32159)
 -- Name: payment_methods id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -2804,7 +3167,7 @@ ALTER TABLE ONLY public.payment_methods ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
--- TOC entry 3834 (class 2604 OID 32172)
+-- TOC entry 3923 (class 2604 OID 32172)
 -- Name: payments id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -2812,7 +3175,7 @@ ALTER TABLE ONLY public.payments ALTER COLUMN id SET DEFAULT nextval('public.pay
 
 
 --
--- TOC entry 3839 (class 2604 OID 32528)
+-- TOC entry 3928 (class 2604 OID 32528)
 -- Name: product_images id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -2820,7 +3183,7 @@ ALTER TABLE ONLY public.product_images ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
--- TOC entry 3811 (class 2604 OID 32075)
+-- TOC entry 3899 (class 2604 OID 32075)
 -- Name: product_occasions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -2828,7 +3191,7 @@ ALTER TABLE ONLY public.product_occasions ALTER COLUMN id SET DEFAULT nextval('p
 
 
 --
--- TOC entry 3803 (class 2604 OID 32036)
+-- TOC entry 3891 (class 2604 OID 32036)
 -- Name: products id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -2836,7 +3199,7 @@ ALTER TABLE ONLY public.products ALTER COLUMN id SET DEFAULT nextval('public.pro
 
 
 --
--- TOC entry 3848 (class 2604 OID 59943)
+-- TOC entry 3937 (class 2604 OID 59943)
 -- Name: query_timeouts_log id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -2844,7 +3207,7 @@ ALTER TABLE ONLY public.query_timeouts_log ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
--- TOC entry 3797 (class 2604 OID 32021)
+-- TOC entry 3885 (class 2604 OID 32021)
 -- Name: settings id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -2852,7 +3215,7 @@ ALTER TABLE ONLY public.settings ALTER COLUMN id SET DEFAULT nextval('public.set
 
 
 --
--- TOC entry 3789 (class 2604 OID 32005)
+-- TOC entry 3877 (class 2604 OID 32005)
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -2860,2876 +3223,64 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- TOC entry 4268 (class 0 OID 59805)
--- Dependencies: 395
+-- TOC entry 4415 (class 0 OID 59805)
+-- Dependencies: 401
 -- Data for Name: busquedas_log; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 
 
 --
--- TOC entry 4246 (class 0 OID 31986)
--- Dependencies: 373
+-- TOC entry 4419 (class 0 OID 84803)
+-- Dependencies: 410
+-- Data for Name: expenses; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.expenses VALUES (1, 'flores', 'Test expense', 10.50, '2025-11-19', 'efectivo', NULL, 'Prueba de creación', NULL, '2025-11-19 15:04:09.129113+00', '2025-11-19 15:04:09.129113+00', true);
+
+
+--
+-- TOC entry 4393 (class 0 OID 31986)
+-- Dependencies: 379
 -- Data for Name: occasions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.occasions VALUES (110, 'Test Occasion 1760835304464', 'Test occasion for integration tests', false, 64, '2025-10-19 00:55:04.598568+00', '2025-10-19 00:55:04.598568+00', 'test-occasion-1760835304464');
-INSERT INTO public.occasions VALUES (19, 'Día de la Madre', 'Updated description for testing', true, 50, '2025-09-25 05:04:48.026907+00', '2025-09-25 05:04:48.026907+00', 'dia-de-la-madre');
-INSERT INTO public.occasions VALUES (92, 'test_Cumpleaños Test', 'Ocasión de prueba para cumpleaños', true, 1, '2025-10-18 15:30:44.694691+00', '2025-10-18 15:30:44.694691+00', 'test_cumpleanos-test');
-INSERT INTO public.occasions VALUES (93, 'test_Aniversario Test', 'Ocasión de prueba para aniversarios', true, 2, '2025-10-18 15:30:44.902203+00', '2025-10-18 15:30:44.902203+00', 'test_aniversario-test');
-INSERT INTO public.occasions VALUES (94, 'Test Occasion 1760835296447', 'Test occasion for integration tests', false, 47, '2025-10-19 00:54:57.509289+00', '2025-10-19 00:54:57.509289+00', 'test-occasion-1760835296447');
-INSERT INTO public.occasions VALUES (95, 'Test Occasion 1760835298003', 'Test occasion for integration tests', false, 3, '2025-10-19 00:54:58.158029+00', '2025-10-19 00:54:58.158029+00', 'test-occasion-1760835298003');
-INSERT INTO public.occasions VALUES (96, 'Test Occasion 1760835298490', 'Test occasion for integration tests', false, 90, '2025-10-19 00:54:58.657674+00', '2025-10-19 00:54:58.657674+00', 'test-occasion-1760835298490');
-INSERT INTO public.occasions VALUES (97, 'Test Occasion 1760835298941', 'Test occasion for integration tests', false, 41, '2025-10-19 00:54:59.080143+00', '2025-10-19 00:54:59.080143+00', 'test-occasion-1760835298941');
-INSERT INTO public.occasions VALUES (98, 'Test Occasion 1760835299471', 'Test occasion for integration tests', false, 71, '2025-10-19 00:54:59.61456+00', '2025-10-19 00:54:59.61456+00', 'test-occasion-1760835299471');
-INSERT INTO public.occasions VALUES (99, 'Test Occasion 1760835300333', 'Test occasion for integration tests', false, 33, '2025-10-19 00:55:00.465011+00', '2025-10-19 00:55:00.465011+00', 'test-occasion-1760835300333');
-INSERT INTO public.occasions VALUES (100, 'Test Occasion 1760835300657', 'Test occasion for integration tests', false, 57, '2025-10-19 00:55:00.796235+00', '2025-10-19 00:55:00.796235+00', 'test-occasion-1760835300657');
-INSERT INTO public.occasions VALUES (101, 'Test Occasion 1760835301152', 'Test occasion for integration tests', false, 52, '2025-10-19 00:55:01.292386+00', '2025-10-19 00:55:01.292386+00', 'test-occasion-1760835301152');
-INSERT INTO public.occasions VALUES (103, 'New Test Occasion 1760835301877', 'New test occasion for integration tests', false, 10, '2025-10-19 00:55:02.025755+00', '2025-10-19 00:55:02.025755+00', 'new-test-occasion-1760835301877');
-INSERT INTO public.occasions VALUES (102, 'Test Occasion 1760835301666', 'Test occasion for integration tests', false, 66, '2025-10-19 00:55:01.822791+00', '2025-10-19 00:55:01.822791+00', 'test-occasion-1760835301666');
-INSERT INTO public.occasions VALUES (104, 'Test Occasion 1760835302325', 'Test occasion for integration tests', false, 25, '2025-10-19 00:55:02.481096+00', '2025-10-19 00:55:02.481096+00', 'test-occasion-1760835302325');
-INSERT INTO public.occasions VALUES (106, 'Test Occasion 1760835302812', 'Test occasion for integration tests', false, 12, '2025-10-19 00:55:02.977842+00', '2025-10-19 00:55:02.977842+00', 'test-occasion-1760835302812');
-INSERT INTO public.occasions VALUES (107, 'Updated Occasion Name', 'Updated description for the occasion', false, 5, '2025-10-19 00:55:03.254645+00', '2025-10-19 00:55:03.254645+00', 'test-occasion-1760835303124');
-INSERT INTO public.occasions VALUES (16, 'Cumpleaños', 'Celebra un cumpleaños especial', true, 0, '2025-09-25 05:04:48.026907+00', '2025-09-25 05:04:48.026907+00', 'cumpleanos');
-INSERT INTO public.occasions VALUES (17, 'Aniversario', 'Conmemora un aniversario importante', true, 0, '2025-09-25 05:04:48.026907+00', '2025-09-25 05:04:48.026907+00', 'aniversario');
-INSERT INTO public.occasions VALUES (18, 'San Valentín', 'Expresa tu amor en el día de los enamorados', true, 0, '2025-09-25 05:04:48.026907+00', '2025-09-25 05:04:48.026907+00', 'san-valentin');
-INSERT INTO public.occasions VALUES (20, 'Graduación', 'Felicita por un logro académico', true, 0, '2025-09-25 05:04:48.026907+00', '2025-09-25 05:04:48.026907+00', 'graduacion');
-INSERT INTO public.occasions VALUES (21, 'Condolencias', 'Expresa solidaridad en momentos difíciles', true, 0, '2025-09-25 05:04:48.026907+00', '2025-09-25 05:04:48.026907+00', 'condolencias');
-INSERT INTO public.occasions VALUES (22, 'Nueva Casa', 'Celebra un nuevo hogar', true, 0, '2025-09-25 05:04:48.026907+00', '2025-09-25 05:04:48.026907+00', 'nueva-casa');
-INSERT INTO public.occasions VALUES (23, 'Boda', 'Celebra la unión matrimonial', true, 0, '2025-09-25 05:04:48.026907+00', '2025-09-25 05:04:48.026907+00', 'boda');
-INSERT INTO public.occasions VALUES (105, 'Unauthorized Occasion', 'Sin descripción', true, 0, '2025-10-19 00:55:02.658851+00', '2025-10-19 00:55:02.658851+00', 'unauthorized-occasion');
-INSERT INTO public.occasions VALUES (108, 'Unauthorized Update', 'Test occasion for integration tests', false, 5, '2025-10-19 00:55:03.738616+00', '2025-10-19 00:55:03.738616+00', 'test-occasion-1760835303605');
-INSERT INTO public.occasions VALUES (109, 'Test Occasion 1760835304050', 'Test occasion for integration tests', false, 50, '2025-10-19 00:55:04.182698+00', '2025-10-19 00:55:04.182698+00', 'test-occasion-1760835304050');
-INSERT INTO public.occasions VALUES (123, 'Updated Status Test Occasion', 'Status code test occasion', false, 5, '2025-10-19 00:55:10.860947+00', '2025-10-19 00:55:10.860947+00', 'status-test-occasion-1760835310736');
-INSERT INTO public.occasions VALUES (111, 'Test Occasion 1760835304760', 'Test occasion for integration tests', false, 15, '2025-10-19 00:55:04.884201+00', '2025-10-19 00:55:04.884201+00', 'test-occasion-1760835304760');
-INSERT INTO public.occasions VALUES (118, 'Test Occasion 1760835308179', 'Test occasion for integration tests', false, 79, '2025-10-19 00:55:08.318185+00', '2025-10-19 00:55:08.318185+00', 'test-occasion-1760835308179');
-INSERT INTO public.occasions VALUES (112, 'Test Occasion 1760835305150', 'Test occasion for integration tests', false, 10, '2025-10-19 00:55:05.28485+00', '2025-10-19 00:55:05.28485+00', 'test-occasion-1760835305150');
-INSERT INTO public.occasions VALUES (91, 'Database Test Occasion', 'Testing database operations', false, 999, '2025-10-18 04:28:50.879665+00', '2025-10-18 04:28:50.879665+00', 'database-test-occasion');
-INSERT INTO public.occasions VALUES (113, 'Test Occasion 1760835305694', 'Test occasion for integration tests', false, 94, '2025-10-19 00:55:05.83315+00', '2025-10-19 00:55:05.83315+00', 'test-occasion-1760835305694');
-INSERT INTO public.occasions VALUES (114, 'Test Occasion 1760835306156', 'Test occasion for integration tests', false, 56, '2025-10-19 00:55:06.300685+00', '2025-10-19 00:55:06.300685+00', 'test-occasion-1760835306156');
-INSERT INTO public.occasions VALUES (115, 'Test Occasion 1760835306510', 'Test occasion for integration tests', false, 10, '2025-10-19 00:55:06.671877+00', '2025-10-19 00:55:06.671877+00', 'test-occasion-1760835306510');
-INSERT INTO public.occasions VALUES (116, 'Test Occasion 1760835307182', 'Test occasion for integration tests', false, 82, '2025-10-19 00:55:07.360933+00', '2025-10-19 00:55:07.360933+00', 'test-occasion-1760835307182');
-INSERT INTO public.occasions VALUES (117, 'Test Occasion 1760835307669', 'Test occasion for integration tests', false, 69, '2025-10-19 00:55:07.797734+00', '2025-10-19 00:55:07.797734+00', 'test-occasion-1760835307669');
-INSERT INTO public.occasions VALUES (122, 'Test Occasion 1760835310612', 'Test occasion for integration tests', false, 12, '2025-10-19 00:55:10.731412+00', '2025-10-19 00:55:10.731412+00', 'test-occasion-1760835310612');
-INSERT INTO public.occasions VALUES (119, 'Test Occasion 1760835308777', 'Test occasion for integration tests', false, 77, '2025-10-19 00:55:09.008463+00', '2025-10-19 00:55:09.008463+00', 'test-occasion-1760835308777');
-INSERT INTO public.occasions VALUES (120, 'Test Occasion 1760835309328', 'Test occasion for integration tests', false, 28, '2025-10-19 00:55:09.460756+00', '2025-10-19 00:55:09.460756+00', 'test-occasion-1760835309328');
-INSERT INTO public.occasions VALUES (121, 'Test Occasion 1760835309870', 'Test occasion for integration tests', false, 70, '2025-10-19 00:55:10.011971+00', '2025-10-19 00:55:10.011971+00', 'test-occasion-1760835309870');
-INSERT INTO public.occasions VALUES (124, 'Test Occasion 1760835546452', 'Test occasion for integration tests', false, 52, '2025-10-19 00:59:07.683907+00', '2025-10-19 00:59:07.683907+00', 'test-occasion-1760835546452');
-INSERT INTO public.occasions VALUES (125, 'Test Occasion 1760835548061', 'Test occasion for integration tests', false, 61, '2025-10-19 00:59:08.20435+00', '2025-10-19 00:59:08.20435+00', 'test-occasion-1760835548061');
-INSERT INTO public.occasions VALUES (126, 'Test Occasion 1760835548495', 'Test occasion for integration tests', false, 95, '2025-10-19 00:59:08.635809+00', '2025-10-19 00:59:08.635809+00', 'test-occasion-1760835548495');
-INSERT INTO public.occasions VALUES (127, 'Test Occasion 1760835549129', 'Test occasion for integration tests', false, 29, '2025-10-19 00:59:09.272497+00', '2025-10-19 00:59:09.272497+00', 'test-occasion-1760835549129');
-INSERT INTO public.occasions VALUES (128, 'Test Occasion 1760835549584', 'Test occasion for integration tests', false, 84, '2025-10-19 00:59:09.705805+00', '2025-10-19 00:59:09.705805+00', 'test-occasion-1760835549584');
-INSERT INTO public.occasions VALUES (129, 'Test Occasion 1760835549981', 'Test occasion for integration tests', false, 81, '2025-10-19 00:59:10.117242+00', '2025-10-19 00:59:10.117242+00', 'test-occasion-1760835549981');
-INSERT INTO public.occasions VALUES (130, 'Test Occasion 1760835550274', 'Test occasion for integration tests', false, 74, '2025-10-19 00:59:10.406195+00', '2025-10-19 00:59:10.406195+00', 'test-occasion-1760835550274');
-INSERT INTO public.occasions VALUES (131, 'Test Occasion 1760835550696', 'Test occasion for integration tests', false, 96, '2025-10-19 00:59:10.817455+00', '2025-10-19 00:59:10.817455+00', 'test-occasion-1760835550696');
-INSERT INTO public.occasions VALUES (132, 'Test Occasion 1760835551147', 'Test occasion for integration tests', false, 47, '2025-10-19 00:59:11.27535+00', '2025-10-19 00:59:11.27535+00', 'test-occasion-1760835551147');
-INSERT INTO public.occasions VALUES (133, 'New Test Occasion 1760835551294', 'New test occasion for integration tests', false, 10, '2025-10-19 00:59:11.444454+00', '2025-10-19 00:59:11.444454+00', 'new-test-occasion-1760835551294');
-INSERT INTO public.occasions VALUES (334, 'Test Occasion 1761006302013', 'Test occasion for integration tests', false, 13, '2025-10-21 00:25:03.589656+00', '2025-10-21 00:25:03.589656+00', 'test-occasion-1761006302013');
-INSERT INTO public.occasions VALUES (134, 'Test Occasion 1760835551747', 'Test occasion for integration tests', false, 47, '2025-10-19 00:59:11.875446+00', '2025-10-19 00:59:11.875446+00', 'test-occasion-1760835551747');
-INSERT INTO public.occasions VALUES (139, 'Test Occasion 1760835553560', 'Test occasion for integration tests', false, 60, '2025-10-19 00:59:13.694033+00', '2025-10-19 00:59:13.694033+00', 'test-occasion-1760835553560');
-INSERT INTO public.occasions VALUES (140, 'Test Occasion 1760835554004', 'Test occasion for integration tests', false, 4, '2025-10-19 00:59:14.146532+00', '2025-10-19 00:59:14.146532+00', 'test-occasion-1760835554004');
-INSERT INTO public.occasions VALUES (145, 'Test Occasion 1760835555830', 'Test occasion for integration tests', false, 30, '2025-10-19 00:59:15.966948+00', '2025-10-19 00:59:15.966948+00', 'test-occasion-1760835555830');
-INSERT INTO public.occasions VALUES (146, 'Test Occasion 1760835556376', 'Test occasion for integration tests', false, 76, '2025-10-19 00:59:16.496734+00', '2025-10-19 00:59:16.496734+00', 'test-occasion-1760835556376');
-INSERT INTO public.occasions VALUES (360, 'Test Occasion 1761006314414', 'Test occasion for integration tests', false, 14, '2025-10-21 00:25:14.501214+00', '2025-10-21 00:25:14.501214+00', 'test-occasion-1761006314414');
-INSERT INTO public.occasions VALUES (362, 'Test Occasion 1761006315554', 'Test occasion for integration tests', false, 54, '2025-10-21 00:25:15.663293+00', '2025-10-21 00:25:15.663293+00', 'test-occasion-1761006315554');
-INSERT INTO public.occasions VALUES (136, 'Test Occasion 1760835552222', 'Test occasion for integration tests', false, 22, '2025-10-19 00:59:12.360381+00', '2025-10-19 00:59:12.360381+00', 'test-occasion-1760835552222');
-INSERT INTO public.occasions VALUES (138, 'Test Occasion 1760835553144', 'Test occasion for integration tests', false, 44, '2025-10-19 00:59:13.273556+00', '2025-10-19 00:59:13.273556+00', 'test-occasion-1760835553144');
-INSERT INTO public.occasions VALUES (335, 'Test Occasion 1761006304167', 'Test occasion for integration tests', false, 67, '2025-10-21 00:25:04.307937+00', '2025-10-21 00:25:04.307937+00', 'test-occasion-1761006304167');
-INSERT INTO public.occasions VALUES (141, 'Test Occasion 1760835554308', 'Test occasion for integration tests', false, 15, '2025-10-19 00:59:14.434577+00', '2025-10-19 00:59:14.434577+00', 'test-occasion-1760835554308');
-INSERT INTO public.occasions VALUES (143, 'Test Occasion 1760835555097', 'Test occasion for integration tests', false, 97, '2025-10-19 00:59:15.224635+00', '2025-10-19 00:59:15.224635+00', 'test-occasion-1760835555097');
-INSERT INTO public.occasions VALUES (144, 'Test Occasion 1760835555558', 'Test occasion for integration tests', false, 58, '2025-10-19 00:59:15.674192+00', '2025-10-19 00:59:15.674192+00', 'test-occasion-1760835555558');
-INSERT INTO public.occasions VALUES (149, 'Test Occasion 1760835557896', 'Test occasion for integration tests', false, 96, '2025-10-19 00:59:18.033288+00', '2025-10-19 00:59:18.033288+00', 'test-occasion-1760835557896');
-INSERT INTO public.occasions VALUES (152, 'Test Occasion 1760835559482', 'Test occasion for integration tests', false, 82, '2025-10-19 00:59:19.605521+00', '2025-10-19 00:59:19.605521+00', 'test-occasion-1760835559482');
-INSERT INTO public.occasions VALUES (336, 'Test Occasion 1761006304723', 'Test occasion for integration tests', false, 23, '2025-10-21 00:25:04.842776+00', '2025-10-21 00:25:04.842776+00', 'test-occasion-1761006304723');
-INSERT INTO public.occasions VALUES (339, 'Test Occasion 1761006306155', 'Test occasion for integration tests', false, 55, '2025-10-21 00:25:06.263436+00', '2025-10-21 00:25:06.263436+00', 'test-occasion-1761006306155');
-INSERT INTO public.occasions VALUES (341, 'Test Occasion 1761006306922', 'Test occasion for integration tests', false, 22, '2025-10-21 00:25:07.019542+00', '2025-10-21 00:25:07.019542+00', 'test-occasion-1761006306922');
-INSERT INTO public.occasions VALUES (351, 'Test Occasion 1761006310144', 'Test occasion for integration tests', false, 15, '2025-10-21 00:25:10.237651+00', '2025-10-21 00:25:10.237651+00', 'test-occasion-1761006310144');
-INSERT INTO public.occasions VALUES (352, 'Test Occasion 1761006310562', 'Test occasion for integration tests', false, 10, '2025-10-21 00:25:10.651897+00', '2025-10-21 00:25:10.651897+00', 'test-occasion-1761006310562');
-INSERT INTO public.occasions VALUES (354, 'Test Occasion 1761006311432', 'Test occasion for integration tests', false, 32, '2025-10-21 00:25:11.513734+00', '2025-10-21 00:25:11.513734+00', 'test-occasion-1761006311432');
-INSERT INTO public.occasions VALUES (359, 'Test Occasion 1761006313876', 'Test occasion for integration tests', false, 76, '2025-10-21 00:25:13.973199+00', '2025-10-21 00:25:13.973199+00', 'test-occasion-1761006313876');
-INSERT INTO public.occasions VALUES (137, 'Test Occasion 1760835552685', 'Test occasion for integration tests', false, 85, '2025-10-19 00:59:12.816593+00', '2025-10-19 00:59:12.816593+00', 'test-occasion-1760835552685');
-INSERT INTO public.occasions VALUES (142, 'Test Occasion 1760835554693', 'Test occasion for integration tests', false, 10, '2025-10-19 00:59:14.827304+00', '2025-10-19 00:59:14.827304+00', 'test-occasion-1760835554693');
-INSERT INTO public.occasions VALUES (147, 'Test Occasion 1760835556791', 'Test occasion for integration tests', false, 91, '2025-10-19 00:59:16.939083+00', '2025-10-19 00:59:16.939083+00', 'test-occasion-1760835556791');
-INSERT INTO public.occasions VALUES (168, 'Test Occasion 1760963187435', 'Test occasion for integration tests', false, 35, '2025-10-20 12:26:27.531883+00', '2025-10-20 12:26:27.531883+00', 'test-occasion-1760963187435');
-INSERT INTO public.occasions VALUES (148, 'Test Occasion 1760835557286', 'Test occasion for integration tests', false, 86, '2025-10-19 00:59:17.427354+00', '2025-10-19 00:59:17.427354+00', 'test-occasion-1760835557286');
-INSERT INTO public.occasions VALUES (150, 'Test Occasion 1760835558328', 'Test occasion for integration tests', false, 28, '2025-10-19 00:59:18.45765+00', '2025-10-19 00:59:18.45765+00', 'test-occasion-1760835558328');
-INSERT INTO public.occasions VALUES (151, 'Test Occasion 1760835558764', 'Test occasion for integration tests', false, 64, '2025-10-19 00:59:18.903532+00', '2025-10-19 00:59:18.903532+00', 'test-occasion-1760835558764');
-INSERT INTO public.occasions VALUES (153, 'Status Test Occasion 1760835559610', 'Status code test occasion', true, 5, '2025-10-19 00:59:19.746081+00', '2025-10-19 00:59:19.746081+00', 'status-test-occasion-1760835559610');
-INSERT INTO public.occasions VALUES (154, 'Test Occasion 1760963181501', 'Test occasion for integration tests', false, 1, '2025-10-20 12:26:21.910187+00', '2025-10-20 12:26:21.910187+00', 'test-occasion-1760963181501');
-INSERT INTO public.occasions VALUES (155, 'Test Occasion 1760963182553', 'Test occasion for integration tests', false, 53, '2025-10-20 12:26:22.687881+00', '2025-10-20 12:26:22.687881+00', 'test-occasion-1760963182553');
-INSERT INTO public.occasions VALUES (156, 'Test Occasion 1760963183093', 'Test occasion for integration tests', false, 93, '2025-10-20 12:26:23.207352+00', '2025-10-20 12:26:23.207352+00', 'test-occasion-1760963183093');
-INSERT INTO public.occasions VALUES (157, 'Test Occasion 1760963183565', 'Test occasion for integration tests', false, 65, '2025-10-20 12:26:23.679903+00', '2025-10-20 12:26:23.679903+00', 'test-occasion-1760963183565');
-INSERT INTO public.occasions VALUES (158, 'Test Occasion 1760963184046', 'Test occasion for integration tests', false, 46, '2025-10-20 12:26:24.156653+00', '2025-10-20 12:26:24.156653+00', 'test-occasion-1760963184046');
-INSERT INTO public.occasions VALUES (159, 'Test Occasion 1760963184509', 'Test occasion for integration tests', false, 9, '2025-10-20 12:26:24.60803+00', '2025-10-20 12:26:24.60803+00', 'test-occasion-1760963184509');
-INSERT INTO public.occasions VALUES (160, 'Test Occasion 1760963184813', 'Test occasion for integration tests', false, 13, '2025-10-20 12:26:24.922135+00', '2025-10-20 12:26:24.922135+00', 'test-occasion-1760963184813');
-INSERT INTO public.occasions VALUES (161, 'Test Occasion 1760963185317', 'Test occasion for integration tests', false, 17, '2025-10-20 12:26:25.413853+00', '2025-10-20 12:26:25.413853+00', 'test-occasion-1760963185317');
-INSERT INTO public.occasions VALUES (163, 'New Test Occasion 1760963185880', 'New test occasion for integration tests', false, 10, '2025-10-20 12:26:25.999292+00', '2025-10-20 12:26:25.999292+00', 'new-test-occasion-1760963185880');
-INSERT INTO public.occasions VALUES (162, 'Test Occasion 1760963185751', 'Test occasion for integration tests', false, 51, '2025-10-20 12:26:25.846004+00', '2025-10-20 12:26:25.846004+00', 'test-occasion-1760963185751');
-INSERT INTO public.occasions VALUES (164, 'Test Occasion 1760963186337', 'Test occasion for integration tests', false, 37, '2025-10-20 12:26:26.426411+00', '2025-10-20 12:26:26.426411+00', 'test-occasion-1760963186337');
-INSERT INTO public.occasions VALUES (166, 'Test Occasion 1760963186734', 'Test occasion for integration tests', false, 34, '2025-10-20 12:26:26.844872+00', '2025-10-20 12:26:26.844872+00', 'test-occasion-1760963186734');
-INSERT INTO public.occasions VALUES (167, 'Test Occasion 1760963187003', 'Test occasion for integration tests', false, 3, '2025-10-20 12:26:27.095936+00', '2025-10-20 12:26:27.095936+00', 'test-occasion-1760963187003');
-INSERT INTO public.occasions VALUES (169, 'Test Occasion 1760963187835', 'Test occasion for integration tests', false, 35, '2025-10-20 12:26:27.940231+00', '2025-10-20 12:26:27.940231+00', 'test-occasion-1760963187835');
-INSERT INTO public.occasions VALUES (170, 'Test Occasion 1760963188244', 'Test occasion for integration tests', false, 44, '2025-10-20 12:26:28.326438+00', '2025-10-20 12:26:28.326438+00', 'test-occasion-1760963188244');
-INSERT INTO public.occasions VALUES (184, 'Test Occasion 1760964124116', 'Test occasion for integration tests', false, 16, '2025-10-20 12:42:04.759636+00', '2025-10-20 12:42:04.759636+00', 'test-occasion-1760964124116');
-INSERT INTO public.occasions VALUES (171, 'Test Occasion 1760963188533', 'Test occasion for integration tests', false, 15, '2025-10-20 12:26:28.626996+00', '2025-10-20 12:26:28.626996+00', 'test-occasion-1760963188533');
-INSERT INTO public.occasions VALUES (178, 'Test Occasion 1760963191420', 'Test occasion for integration tests', false, 20, '2025-10-20 12:26:31.500272+00', '2025-10-20 12:26:31.500272+00', 'test-occasion-1760963191420');
-INSERT INTO public.occasions VALUES (172, 'Test Occasion 1760963188960', 'Test occasion for integration tests', false, 10, '2025-10-20 12:26:29.053197+00', '2025-10-20 12:26:29.053197+00', 'test-occasion-1760963188960');
-INSERT INTO public.occasions VALUES (173, 'Test Occasion 1760963189362', 'Test occasion for integration tests', false, 62, '2025-10-20 12:26:29.450848+00', '2025-10-20 12:26:29.450848+00', 'test-occasion-1760963189362');
-INSERT INTO public.occasions VALUES (174, 'Test Occasion 1760963189737', 'Test occasion for integration tests', false, 37, '2025-10-20 12:26:29.832369+00', '2025-10-20 12:26:29.832369+00', 'test-occasion-1760963189737');
-INSERT INTO public.occasions VALUES (175, 'Test Occasion 1760963190022', 'Test occasion for integration tests', false, 22, '2025-10-20 12:26:30.109548+00', '2025-10-20 12:26:30.109548+00', 'test-occasion-1760963190022');
-INSERT INTO public.occasions VALUES (176, 'Test Occasion 1760963190511', 'Test occasion for integration tests', false, 11, '2025-10-20 12:26:30.607142+00', '2025-10-20 12:26:30.607142+00', 'test-occasion-1760963190511');
-INSERT INTO public.occasions VALUES (177, 'Test Occasion 1760963190895', 'Test occasion for integration tests', false, 95, '2025-10-20 12:26:31.004962+00', '2025-10-20 12:26:31.004962+00', 'test-occasion-1760963190895');
-INSERT INTO public.occasions VALUES (179, 'Test Occasion 1760963192082', 'Test occasion for integration tests', false, 82, '2025-10-20 12:26:32.17649+00', '2025-10-20 12:26:32.17649+00', 'test-occasion-1760963192082');
-INSERT INTO public.occasions VALUES (180, 'Test Occasion 1760963192654', 'Test occasion for integration tests', false, 54, '2025-10-20 12:26:32.754593+00', '2025-10-20 12:26:32.754593+00', 'test-occasion-1760963192654');
-INSERT INTO public.occasions VALUES (181, 'Test Occasion 1760963193073', 'Test occasion for integration tests', false, 73, '2025-10-20 12:26:33.169944+00', '2025-10-20 12:26:33.169944+00', 'test-occasion-1760963193073');
-INSERT INTO public.occasions VALUES (183, 'Status Test Occasion 1760963194090', 'Status code test occasion', true, 5, '2025-10-20 12:26:34.176882+00', '2025-10-20 12:26:34.176882+00', 'status-test-occasion-1760963194090');
-INSERT INTO public.occasions VALUES (182, 'Test Occasion 1760963193955', 'Test occasion for integration tests', false, 55, '2025-10-20 12:26:34.045525+00', '2025-10-20 12:26:34.045525+00', 'test-occasion-1760963193955');
-INSERT INTO public.occasions VALUES (185, 'Test Occasion 1760964125211', 'Test occasion for integration tests', false, 11, '2025-10-20 12:42:05.309058+00', '2025-10-20 12:42:05.309058+00', 'test-occasion-1760964125211');
-INSERT INTO public.occasions VALUES (186, 'Test Occasion 1760964125675', 'Test occasion for integration tests', false, 75, '2025-10-20 12:42:05.782877+00', '2025-10-20 12:42:05.782877+00', 'test-occasion-1760964125675');
-INSERT INTO public.occasions VALUES (187, 'Test Occasion 1760964126120', 'Test occasion for integration tests', false, 20, '2025-10-20 12:42:06.23377+00', '2025-10-20 12:42:06.23377+00', 'test-occasion-1760964126120');
-INSERT INTO public.occasions VALUES (188, 'Test Occasion 1760964126915', 'Test occasion for integration tests', false, 15, '2025-10-20 12:42:07.001087+00', '2025-10-20 12:42:07.001087+00', 'test-occasion-1760964126915');
-INSERT INTO public.occasions VALUES (189, 'Test Occasion 1760964127322', 'Test occasion for integration tests', false, 22, '2025-10-20 12:42:07.413642+00', '2025-10-20 12:42:07.413642+00', 'test-occasion-1760964127322');
-INSERT INTO public.occasions VALUES (190, 'Test Occasion 1760964127608', 'Test occasion for integration tests', false, 8, '2025-10-20 12:42:07.68672+00', '2025-10-20 12:42:07.68672+00', 'test-occasion-1760964127608');
-INSERT INTO public.occasions VALUES (191, 'Test Occasion 1760964128027', 'Test occasion for integration tests', false, 27, '2025-10-20 12:42:08.112045+00', '2025-10-20 12:42:08.112045+00', 'test-occasion-1760964128027');
-INSERT INTO public.occasions VALUES (193, 'New Test Occasion 1760964128574', 'New test occasion for integration tests', false, 10, '2025-10-20 12:42:08.651601+00', '2025-10-20 12:42:08.651601+00', 'new-test-occasion-1760964128574');
-INSERT INTO public.occasions VALUES (192, 'Test Occasion 1760964128444', 'Test occasion for integration tests', false, 44, '2025-10-20 12:42:08.532927+00', '2025-10-20 12:42:08.532927+00', 'test-occasion-1760964128444');
-INSERT INTO public.occasions VALUES (194, 'Test Occasion 1760964128996', 'Test occasion for integration tests', false, 96, '2025-10-20 12:42:09.086763+00', '2025-10-20 12:42:09.086763+00', 'test-occasion-1760964128996');
-INSERT INTO public.occasions VALUES (199, 'Test Occasion 1760964130387', 'Test occasion for integration tests', false, 87, '2025-10-20 12:42:10.485486+00', '2025-10-20 12:42:10.485486+00', 'test-occasion-1760964130387');
-INSERT INTO public.occasions VALUES (209, 'Test Occasion 1760964134630', 'Test occasion for integration tests', false, 30, '2025-10-20 12:42:14.727475+00', '2025-10-20 12:42:14.727475+00', 'test-occasion-1760964134630');
-INSERT INTO public.occasions VALUES (337, 'Test Occasion 1761006305190', 'Test occasion for integration tests', false, 90, '2025-10-21 00:25:05.267615+00', '2025-10-21 00:25:05.267615+00', 'test-occasion-1761006305190');
-INSERT INTO public.occasions VALUES (342, 'Test Occasion 1761006307339', 'Test occasion for integration tests', false, 39, '2025-10-21 00:25:07.43374+00', '2025-10-21 00:25:07.43374+00', 'test-occasion-1761006307339');
-INSERT INTO public.occasions VALUES (346, 'Test Occasion 1761006308328', 'Test occasion for integration tests', false, 28, '2025-10-21 00:25:08.412481+00', '2025-10-21 00:25:08.412481+00', 'test-occasion-1761006308328');
-INSERT INTO public.occasions VALUES (348, 'Test Occasion 1761006309003', 'Test occasion for integration tests', false, 3, '2025-10-21 00:25:09.115621+00', '2025-10-21 00:25:09.115621+00', 'test-occasion-1761006309003');
-INSERT INTO public.occasions VALUES (349, 'Test Occasion 1761006309445', 'Test occasion for integration tests', false, 45, '2025-10-21 00:25:09.533188+00', '2025-10-21 00:25:09.533188+00', 'test-occasion-1761006309445');
-INSERT INTO public.occasions VALUES (353, 'Test Occasion 1761006310990', 'Test occasion for integration tests', false, 90, '2025-10-21 00:25:11.085087+00', '2025-10-21 00:25:11.085087+00', 'test-occasion-1761006310990');
-INSERT INTO public.occasions VALUES (355, 'Test Occasion 1761006311734', 'Test occasion for integration tests', false, 34, '2025-10-21 00:25:11.838193+00', '2025-10-21 00:25:11.838193+00', 'test-occasion-1761006311734');
-INSERT INTO public.occasions VALUES (356, 'Test Occasion 1761006312278', 'Test occasion for integration tests', false, 78, '2025-10-21 00:25:12.36959+00', '2025-10-21 00:25:12.36959+00', 'test-occasion-1761006312278');
-INSERT INTO public.occasions VALUES (358, 'Test Occasion 1761006313233', 'Test occasion for integration tests', false, 33, '2025-10-21 00:25:13.338965+00', '2025-10-21 00:25:13.338965+00', 'test-occasion-1761006313233');
-INSERT INTO public.occasions VALUES (196, 'Test Occasion 1760964129387', 'Test occasion for integration tests', false, 87, '2025-10-20 12:42:09.468762+00', '2025-10-20 12:42:09.468762+00', 'test-occasion-1760964129387');
-INSERT INTO public.occasions VALUES (197, 'Test Occasion 1760964129639', 'Test occasion for integration tests', false, 39, '2025-10-20 12:42:09.72428+00', '2025-10-20 12:42:09.72428+00', 'test-occasion-1760964129639');
-INSERT INTO public.occasions VALUES (200, 'Test Occasion 1760964130813', 'Test occasion for integration tests', false, 13, '2025-10-20 12:42:10.899273+00', '2025-10-20 12:42:10.899273+00', 'test-occasion-1760964130813');
-INSERT INTO public.occasions VALUES (206, 'Test Occasion 1760964133273', 'Test occasion for integration tests', false, 73, '2025-10-20 12:42:13.381753+00', '2025-10-20 12:42:13.381753+00', 'test-occasion-1760964133273');
-INSERT INTO public.occasions VALUES (207, 'Test Occasion 1760964133708', 'Test occasion for integration tests', false, 8, '2025-10-20 12:42:13.805279+00', '2025-10-20 12:42:13.805279+00', 'test-occasion-1760964133708');
-INSERT INTO public.occasions VALUES (210, 'Test Occasion 1760964135036', 'Test occasion for integration tests', false, 36, '2025-10-20 12:42:15.147149+00', '2025-10-20 12:42:15.147149+00', 'test-occasion-1760964135036');
-INSERT INTO public.occasions VALUES (213, 'Status Test Occasion 1760964136394', 'Status code test occasion', true, 5, '2025-10-20 12:42:16.473151+00', '2025-10-20 12:42:16.473151+00', 'status-test-occasion-1760964136394');
-INSERT INTO public.occasions VALUES (338, 'Test Occasion 1761006305598', 'Test occasion for integration tests', false, 98, '2025-10-21 00:25:05.681202+00', '2025-10-21 00:25:05.681202+00', 'test-occasion-1761006305598');
-INSERT INTO public.occasions VALUES (212, 'Test Occasion 1760964136241', 'Test occasion for integration tests', false, 41, '2025-10-20 12:42:16.348563+00', '2025-10-20 12:42:16.348563+00', 'test-occasion-1760964136241');
-INSERT INTO public.occasions VALUES (343, 'New Test Occasion 1761006307476', 'New test occasion for integration tests', false, 10, '2025-10-21 00:25:07.570774+00', '2025-10-21 00:25:07.570774+00', 'new-test-occasion-1761006307476');
-INSERT INTO public.occasions VALUES (344, 'Test Occasion 1761006307884', 'Test occasion for integration tests', false, 84, '2025-10-21 00:25:07.991013+00', '2025-10-21 00:25:07.991013+00', 'test-occasion-1761006307884');
-INSERT INTO public.occasions VALUES (347, 'Test Occasion 1761006308605', 'Test occasion for integration tests', false, 5, '2025-10-21 00:25:08.698275+00', '2025-10-21 00:25:08.698275+00', 'test-occasion-1761006308605');
-INSERT INTO public.occasions VALUES (198, 'Test Occasion 1760964130000', 'Test occasion for integration tests', false, 0, '2025-10-20 12:42:10.088605+00', '2025-10-20 12:42:10.088605+00', 'test-occasion-1760964130000');
-INSERT INTO public.occasions VALUES (340, 'Test Occasion 1761006306452', 'Test occasion for integration tests', false, 52, '2025-10-21 00:25:06.560645+00', '2025-10-21 00:25:06.560645+00', 'test-occasion-1761006306452');
-INSERT INTO public.occasions VALUES (201, 'Test Occasion 1760964131102', 'Test occasion for integration tests', false, 15, '2025-10-20 12:42:11.263203+00', '2025-10-20 12:42:11.263203+00', 'test-occasion-1760964131102');
-INSERT INTO public.occasions VALUES (350, 'Test Occasion 1761006309857', 'Test occasion for integration tests', false, 57, '2025-10-21 00:25:09.950916+00', '2025-10-21 00:25:09.950916+00', 'test-occasion-1761006309857');
-INSERT INTO public.occasions VALUES (202, 'Test Occasion 1760964131597', 'Test occasion for integration tests', false, 10, '2025-10-20 12:42:11.678963+00', '2025-10-20 12:42:11.678963+00', 'test-occasion-1760964131597');
-INSERT INTO public.occasions VALUES (208, 'Test Occasion 1760964134106', 'Test occasion for integration tests', false, 6, '2025-10-20 12:42:14.19045+00', '2025-10-20 12:42:14.19045+00', 'test-occasion-1760964134106');
-INSERT INTO public.occasions VALUES (203, 'Test Occasion 1760964131984', 'Test occasion for integration tests', false, 84, '2025-10-20 12:42:12.065063+00', '2025-10-20 12:42:12.065063+00', 'test-occasion-1760964131984');
-INSERT INTO public.occasions VALUES (204, 'Test Occasion 1760964132379', 'Test occasion for integration tests', false, 79, '2025-10-20 12:42:12.460862+00', '2025-10-20 12:42:12.460862+00', 'test-occasion-1760964132379');
-INSERT INTO public.occasions VALUES (205, 'Test Occasion 1760964132655', 'Test occasion for integration tests', false, 55, '2025-10-20 12:42:12.745941+00', '2025-10-20 12:42:12.745941+00', 'test-occasion-1760964132655');
-INSERT INTO public.occasions VALUES (211, 'Test Occasion 1760964135501', 'Test occasion for integration tests', false, 1, '2025-10-20 12:42:15.602862+00', '2025-10-20 12:42:15.602862+00', 'test-occasion-1760964135501');
-INSERT INTO public.occasions VALUES (214, 'Test Occasion 1760966170380', 'Test occasion for integration tests', false, 80, '2025-10-20 13:16:11.566956+00', '2025-10-20 13:16:11.566956+00', 'test-occasion-1760966170380');
-INSERT INTO public.occasions VALUES (215, 'Test Occasion 1760966172024', 'Test occasion for integration tests', false, 24, '2025-10-20 13:16:12.097195+00', '2025-10-20 13:16:12.097195+00', 'test-occasion-1760966172024');
-INSERT INTO public.occasions VALUES (216, 'Test Occasion 1760966172497', 'Test occasion for integration tests', false, 97, '2025-10-20 13:16:12.566446+00', '2025-10-20 13:16:12.566446+00', 'test-occasion-1760966172497');
-INSERT INTO public.occasions VALUES (217, 'Test Occasion 1760966172977', 'Test occasion for integration tests', false, 77, '2025-10-20 13:16:13.041592+00', '2025-10-20 13:16:13.041592+00', 'test-occasion-1760966172977');
-INSERT INTO public.occasions VALUES (218, 'Test Occasion 1760966173384', 'Test occasion for integration tests', false, 84, '2025-10-20 13:16:13.473009+00', '2025-10-20 13:16:13.473009+00', 'test-occasion-1760966173384');
-INSERT INTO public.occasions VALUES (219, 'Test Occasion 1760966173879', 'Test occasion for integration tests', false, 79, '2025-10-20 13:16:13.937797+00', '2025-10-20 13:16:13.937797+00', 'test-occasion-1760966173879');
-INSERT INTO public.occasions VALUES (220, 'Test Occasion 1760966174163', 'Test occasion for integration tests', false, 63, '2025-10-20 13:16:14.225053+00', '2025-10-20 13:16:14.225053+00', 'test-occasion-1760966174163');
-INSERT INTO public.occasions VALUES (221, 'Test Occasion 1760966174574', 'Test occasion for integration tests', false, 74, '2025-10-20 13:16:14.632784+00', '2025-10-20 13:16:14.632784+00', 'test-occasion-1760966174574');
-INSERT INTO public.occasions VALUES (223, 'New Test Occasion 1760966175088', 'New test occasion for integration tests', false, 10, '2025-10-20 13:16:15.137997+00', '2025-10-20 13:16:15.137997+00', 'new-test-occasion-1760966175088');
-INSERT INTO public.occasions VALUES (222, 'Test Occasion 1760966174956', 'Test occasion for integration tests', false, 56, '2025-10-20 13:16:15.018104+00', '2025-10-20 13:16:15.018104+00', 'test-occasion-1760966174956');
-INSERT INTO public.occasions VALUES (224, 'Test Occasion 1760966175483', 'Test occasion for integration tests', false, 83, '2025-10-20 13:16:15.533516+00', '2025-10-20 13:16:15.533516+00', 'test-occasion-1760966175483');
-INSERT INTO public.occasions VALUES (226, 'Test Occasion 1760966175897', 'Test occasion for integration tests', false, 97, '2025-10-20 13:16:15.998539+00', '2025-10-20 13:16:15.998539+00', 'test-occasion-1760966175897');
-INSERT INTO public.occasions VALUES (227, 'Test Occasion 1760966176237', 'Test occasion for integration tests', false, 37, '2025-10-20 13:16:16.330894+00', '2025-10-20 13:16:16.330894+00', 'test-occasion-1760966176237');
-INSERT INTO public.occasions VALUES (228, 'Test Occasion 1760966176687', 'Test occasion for integration tests', false, 87, '2025-10-20 13:16:16.751487+00', '2025-10-20 13:16:16.751487+00', 'test-occasion-1760966176687');
-INSERT INTO public.occasions VALUES (229, 'Test Occasion 1760966177091', 'Test occasion for integration tests', false, 91, '2025-10-20 13:16:17.155815+00', '2025-10-20 13:16:17.155815+00', 'test-occasion-1760966177091');
-INSERT INTO public.occasions VALUES (230, 'Test Occasion 1760966177679', 'Test occasion for integration tests', false, 79, '2025-10-20 13:16:17.748676+00', '2025-10-20 13:16:17.748676+00', 'test-occasion-1760966177679');
-INSERT INTO public.occasions VALUES (231, 'Test Occasion 1760966177974', 'Test occasion for integration tests', false, 15, '2025-10-20 13:16:18.041038+00', '2025-10-20 13:16:18.041038+00', 'test-occasion-1760966177974');
-INSERT INTO public.occasions VALUES (232, 'Test Occasion 1760966178625', 'Test occasion for integration tests', false, 10, '2025-10-20 13:16:18.690885+00', '2025-10-20 13:16:18.690885+00', 'test-occasion-1760966178625');
-INSERT INTO public.occasions VALUES (233, 'Test Occasion 1760966179293', 'Test occasion for integration tests', false, 93, '2025-10-20 13:16:19.349808+00', '2025-10-20 13:16:19.349808+00', 'test-occasion-1760966179293');
-INSERT INTO public.occasions VALUES (234, 'Test Occasion 1760966179646', 'Test occasion for integration tests', false, 46, '2025-10-20 13:16:19.703022+00', '2025-10-20 13:16:19.703022+00', 'test-occasion-1760966179646');
-INSERT INTO public.occasions VALUES (235, 'Test Occasion 1760966179905', 'Test occasion for integration tests', false, 5, '2025-10-20 13:16:19.991185+00', '2025-10-20 13:16:19.991185+00', 'test-occasion-1760966179905');
-INSERT INTO public.occasions VALUES (236, 'Test Occasion 1760966180477', 'Test occasion for integration tests', false, 77, '2025-10-20 13:16:20.535781+00', '2025-10-20 13:16:20.535781+00', 'test-occasion-1760966180477');
-INSERT INTO public.occasions VALUES (237, 'Test Occasion 1760966180858', 'Test occasion for integration tests', false, 58, '2025-10-20 13:16:20.927131+00', '2025-10-20 13:16:20.927131+00', 'test-occasion-1760966180858');
-INSERT INTO public.occasions VALUES (242, 'Test Occasion 1760966183463', 'Test occasion for integration tests', false, 63, '2025-10-20 13:16:23.543875+00', '2025-10-20 13:16:23.543875+00', 'test-occasion-1760966183463');
-INSERT INTO public.occasions VALUES (238, 'Test Occasion 1760966181269', 'Test occasion for integration tests', false, 69, '2025-10-20 13:16:21.355018+00', '2025-10-20 13:16:21.355018+00', 'test-occasion-1760966181269');
-INSERT INTO public.occasions VALUES (239, 'Test Occasion 1760966181887', 'Test occasion for integration tests', false, 87, '2025-10-20 13:16:21.952871+00', '2025-10-20 13:16:21.952871+00', 'test-occasion-1760966181887');
-INSERT INTO public.occasions VALUES (240, 'Test Occasion 1760966182316', 'Test occasion for integration tests', false, 16, '2025-10-20 13:16:22.389327+00', '2025-10-20 13:16:22.389327+00', 'test-occasion-1760966182316');
-INSERT INTO public.occasions VALUES (241, 'Test Occasion 1760966182760', 'Test occasion for integration tests', false, 60, '2025-10-20 13:16:22.816363+00', '2025-10-20 13:16:22.816363+00', 'test-occasion-1760966182760');
-INSERT INTO public.occasions VALUES (243, 'Status Test Occasion 1760966183613', 'Status code test occasion', true, 5, '2025-10-20 13:16:23.672445+00', '2025-10-20 13:16:23.672445+00', 'status-test-occasion-1760966183613');
-INSERT INTO public.occasions VALUES (244, 'Test Occasion 1760971458021', 'Test occasion for integration tests', false, 21, '2025-10-20 14:44:19.155512+00', '2025-10-20 14:44:19.155512+00', 'test-occasion-1760971458021');
-INSERT INTO public.occasions VALUES (245, 'Test Occasion 1760971459612', 'Test occasion for integration tests', false, 12, '2025-10-20 14:44:19.68585+00', '2025-10-20 14:44:19.68585+00', 'test-occasion-1760971459612');
-INSERT INTO public.occasions VALUES (246, 'Test Occasion 1760971460134', 'Test occasion for integration tests', false, 34, '2025-10-20 14:44:20.21229+00', '2025-10-20 14:44:20.21229+00', 'test-occasion-1760971460134');
-INSERT INTO public.occasions VALUES (247, 'Test Occasion 1760971460545', 'Test occasion for integration tests', false, 45, '2025-10-20 14:44:20.61679+00', '2025-10-20 14:44:20.61679+00', 'test-occasion-1760971460545');
-INSERT INTO public.occasions VALUES (248, 'Test Occasion 1760971460962', 'Test occasion for integration tests', false, 62, '2025-10-20 14:44:21.024934+00', '2025-10-20 14:44:21.024934+00', 'test-occasion-1760971460962');
-INSERT INTO public.occasions VALUES (249, 'Test Occasion 1760971461335', 'Test occasion for integration tests', false, 35, '2025-10-20 14:44:21.420365+00', '2025-10-20 14:44:21.420365+00', 'test-occasion-1760971461335');
-INSERT INTO public.occasions VALUES (250, 'Test Occasion 1760971461625', 'Test occasion for integration tests', false, 25, '2025-10-20 14:44:21.689569+00', '2025-10-20 14:44:21.689569+00', 'test-occasion-1760971461625');
-INSERT INTO public.occasions VALUES (251, 'Test Occasion 1760971462018', 'Test occasion for integration tests', false, 18, '2025-10-20 14:44:22.084404+00', '2025-10-20 14:44:22.084404+00', 'test-occasion-1760971462018');
-INSERT INTO public.occasions VALUES (253, 'New Test Occasion 1760971462749', 'New test occasion for integration tests', false, 10, '2025-10-20 14:44:22.82855+00', '2025-10-20 14:44:22.82855+00', 'new-test-occasion-1760971462749');
-INSERT INTO public.occasions VALUES (252, 'Test Occasion 1760971462500', 'Test occasion for integration tests', false, 0, '2025-10-20 14:44:22.566024+00', '2025-10-20 14:44:22.566024+00', 'test-occasion-1760971462500');
-INSERT INTO public.occasions VALUES (254, 'Test Occasion 1760971463334', 'Test occasion for integration tests', false, 34, '2025-10-20 14:44:23.409245+00', '2025-10-20 14:44:23.409245+00', 'test-occasion-1760971463334');
-INSERT INTO public.occasions VALUES (256, 'Test Occasion 1760971464007', 'Test occasion for integration tests', false, 7, '2025-10-20 14:44:24.078698+00', '2025-10-20 14:44:24.078698+00', 'test-occasion-1760971464007');
-INSERT INTO public.occasions VALUES (257, 'Test Occasion 1760971464460', 'Test occasion for integration tests', false, 60, '2025-10-20 14:44:24.534309+00', '2025-10-20 14:44:24.534309+00', 'test-occasion-1760971464460');
-INSERT INTO public.occasions VALUES (258, 'Test Occasion 1760971464870', 'Test occasion for integration tests', false, 70, '2025-10-20 14:44:24.931498+00', '2025-10-20 14:44:24.931498+00', 'test-occasion-1760971464870');
-INSERT INTO public.occasions VALUES (259, 'Test Occasion 1760971465246', 'Test occasion for integration tests', false, 46, '2025-10-20 14:44:25.317152+00', '2025-10-20 14:44:25.317152+00', 'test-occasion-1760971465246');
-INSERT INTO public.occasions VALUES (264, 'Test Occasion 1760971467169', 'Test occasion for integration tests', false, 69, '2025-10-20 14:44:27.237401+00', '2025-10-20 14:44:27.237401+00', 'test-occasion-1760971467169');
-INSERT INTO public.occasions VALUES (272, 'Test Occasion 1760971471067', 'Test occasion for integration tests', false, 67, '2025-10-20 14:44:31.145474+00', '2025-10-20 14:44:31.145474+00', 'test-occasion-1760971471067');
-INSERT INTO public.occasions VALUES (357, 'Test Occasion 1761006312715', 'Test occasion for integration tests', false, 15, '2025-10-21 00:25:12.818226+00', '2025-10-21 00:25:12.818226+00', 'test-occasion-1761006312715');
-INSERT INTO public.occasions VALUES (361, 'Test Occasion 1761006314815', 'Test occasion for integration tests', false, 15, '2025-10-21 00:25:14.914188+00', '2025-10-21 00:25:14.914188+00', 'test-occasion-1761006314815');
-INSERT INTO public.occasions VALUES (363, 'Status Test Occasion 1761006315710', 'Status code test occasion', true, 5, '2025-10-21 00:25:15.808649+00', '2025-10-21 00:25:15.808649+00', 'status-test-occasion-1761006315710');
-INSERT INTO public.occasions VALUES (260, 'Test Occasion 1760971465624', 'Test occasion for integration tests', false, 24, '2025-10-20 14:44:25.690228+00', '2025-10-20 14:44:25.690228+00', 'test-occasion-1760971465624');
-INSERT INTO public.occasions VALUES (261, 'Test Occasion 1760971465900', 'Test occasion for integration tests', false, 15, '2025-10-20 14:44:25.960603+00', '2025-10-20 14:44:25.960603+00', 'test-occasion-1760971465900');
-INSERT INTO public.occasions VALUES (263, 'Test Occasion 1760971466731', 'Test occasion for integration tests', false, 31, '2025-10-20 14:44:26.789815+00', '2025-10-20 14:44:26.789815+00', 'test-occasion-1760971466731');
-INSERT INTO public.occasions VALUES (265, 'Test Occasion 1760971467542', 'Test occasion for integration tests', false, 42, '2025-10-20 14:44:27.629602+00', '2025-10-20 14:44:27.629602+00', 'test-occasion-1760971467542');
-INSERT INTO public.occasions VALUES (270, 'Test Occasion 1760971469946', 'Test occasion for integration tests', false, 46, '2025-10-20 14:44:30.01218+00', '2025-10-20 14:44:30.01218+00', 'test-occasion-1760971469946');
-INSERT INTO public.occasions VALUES (271, 'Test Occasion 1760971470344', 'Test occasion for integration tests', false, 44, '2025-10-20 14:44:30.424293+00', '2025-10-20 14:44:30.424293+00', 'test-occasion-1760971470344');
-INSERT INTO public.occasions VALUES (364, 'Test Occasion 1761334056511', 'Test occasion for integration tests', false, 11, '2025-10-24 19:27:41.698565+00', '2025-10-24 19:27:41.698565+00', 'test-occasion-1761334056511');
-INSERT INTO public.occasions VALUES (367, 'Test Occasion 1761334063127', 'Test occasion for integration tests', false, 27, '2025-10-24 19:27:43.235447+00', '2025-10-24 19:27:43.235447+00', 'test-occasion-1761334063127');
-INSERT INTO public.occasions VALUES (368, 'Test Occasion 1761334063568', 'Test occasion for integration tests', false, 68, '2025-10-24 19:27:43.665194+00', '2025-10-24 19:27:43.665194+00', 'test-occasion-1761334063568');
-INSERT INTO public.occasions VALUES (369, 'Test Occasion 1761334063976', 'Test occasion for integration tests', false, 76, '2025-10-24 19:27:44.092608+00', '2025-10-24 19:27:44.092608+00', 'test-occasion-1761334063976');
-INSERT INTO public.occasions VALUES (370, 'Test Occasion 1761334064465', 'Test occasion for integration tests', false, 65, '2025-10-24 19:27:44.564595+00', '2025-10-24 19:27:44.564595+00', 'test-occasion-1761334064465');
-INSERT INTO public.occasions VALUES (371, 'Test Occasion 1761334064921', 'Test occasion for integration tests', false, 21, '2025-10-24 19:27:45.03295+00', '2025-10-24 19:27:45.03295+00', 'test-occasion-1761334064921');
-INSERT INTO public.occasions VALUES (373, 'New Test Occasion 1761334065607', 'New test occasion for integration tests', false, 10, '2025-10-24 19:27:45.70158+00', '2025-10-24 19:27:45.70158+00', 'new-test-occasion-1761334065607');
-INSERT INTO public.occasions VALUES (377, 'Test Occasion 1761334066777', 'Test occasion for integration tests', false, 77, '2025-10-24 19:27:46.899417+00', '2025-10-24 19:27:46.899417+00', 'test-occasion-1761334066777');
-INSERT INTO public.occasions VALUES (378, 'Test Occasion 1761334067260', 'Test occasion for integration tests', false, 60, '2025-10-24 19:27:47.360586+00', '2025-10-24 19:27:47.360586+00', 'test-occasion-1761334067260');
-INSERT INTO public.occasions VALUES (379, 'Test Occasion 1761334067690', 'Test occasion for integration tests', false, 90, '2025-10-24 19:27:47.798678+00', '2025-10-24 19:27:47.798678+00', 'test-occasion-1761334067690');
-INSERT INTO public.occasions VALUES (380, 'Test Occasion 1761334068115', 'Test occasion for integration tests', false, 15, '2025-10-24 19:27:48.215754+00', '2025-10-24 19:27:48.215754+00', 'test-occasion-1761334068115');
-INSERT INTO public.occasions VALUES (381, 'Test Occasion 1761334068415', 'Test occasion for integration tests', false, 15, '2025-10-24 19:27:48.523037+00', '2025-10-24 19:27:48.523037+00', 'test-occasion-1761334068415');
-INSERT INTO public.occasions VALUES (385, 'Test Occasion 1761334070081', 'Test occasion for integration tests', false, 81, '2025-10-24 19:27:50.176037+00', '2025-10-24 19:27:50.176037+00', 'test-occasion-1761334070081');
-INSERT INTO public.occasions VALUES (386, 'Test Occasion 1761334070907', 'Test occasion for integration tests', false, 7, '2025-10-24 19:27:51.026136+00', '2025-10-24 19:27:51.026136+00', 'test-occasion-1761334070907');
-INSERT INTO public.occasions VALUES (289, 'Test Occasion 1760971585093', 'Test occasion for integration tests', false, 93, '2025-10-20 14:46:25.155614+00', '2025-10-20 14:46:25.155614+00', 'test-occasion-1760971585093');
-INSERT INTO public.occasions VALUES (262, 'Test Occasion 1760971466317', 'Test occasion for integration tests', false, 10, '2025-10-20 14:44:26.390791+00', '2025-10-20 14:44:26.390791+00', 'test-occasion-1760971466317');
-INSERT INTO public.occasions VALUES (266, 'Test Occasion 1760971468092', 'Test occasion for integration tests', false, 92, '2025-10-20 14:44:28.159209+00', '2025-10-20 14:44:28.159209+00', 'test-occasion-1760971468092');
-INSERT INTO public.occasions VALUES (267, 'Test Occasion 1760971468488', 'Test occasion for integration tests', false, 88, '2025-10-20 14:44:28.568139+00', '2025-10-20 14:44:28.568139+00', 'test-occasion-1760971468488');
-INSERT INTO public.occasions VALUES (290, 'Test Occasion 1760971585492', 'Test occasion for integration tests', false, 92, '2025-10-20 14:46:25.560272+00', '2025-10-20 14:46:25.560272+00', 'test-occasion-1760971585492');
-INSERT INTO public.occasions VALUES (268, 'Test Occasion 1760971468992', 'Test occasion for integration tests', false, 92, '2025-10-20 14:44:29.063218+00', '2025-10-20 14:44:29.063218+00', 'test-occasion-1760971468992');
-INSERT INTO public.occasions VALUES (269, 'Test Occasion 1760971469550', 'Test occasion for integration tests', false, 50, '2025-10-20 14:44:29.607608+00', '2025-10-20 14:44:29.607608+00', 'test-occasion-1760971469550');
-INSERT INTO public.occasions VALUES (273, 'Status Test Occasion 1760971471214', 'Status code test occasion', true, 5, '2025-10-20 14:44:31.283085+00', '2025-10-20 14:44:31.283085+00', 'status-test-occasion-1760971471214');
-INSERT INTO public.occasions VALUES (274, 'Test Occasion 1760971577475', 'Test occasion for integration tests', false, 75, '2025-10-20 14:46:18.638232+00', '2025-10-20 14:46:18.638232+00', 'test-occasion-1760971577475');
-INSERT INTO public.occasions VALUES (275, 'Test Occasion 1760971579086', 'Test occasion for integration tests', false, 86, '2025-10-20 14:46:19.176132+00', '2025-10-20 14:46:19.176132+00', 'test-occasion-1760971579086');
-INSERT INTO public.occasions VALUES (276, 'Test Occasion 1760971579533', 'Test occasion for integration tests', false, 33, '2025-10-20 14:46:19.618043+00', '2025-10-20 14:46:19.618043+00', 'test-occasion-1760971579533');
-INSERT INTO public.occasions VALUES (277, 'Test Occasion 1760971580137', 'Test occasion for integration tests', false, 37, '2025-10-20 14:46:20.235422+00', '2025-10-20 14:46:20.235422+00', 'test-occasion-1760971580137');
-INSERT INTO public.occasions VALUES (278, 'Test Occasion 1760971580576', 'Test occasion for integration tests', false, 76, '2025-10-20 14:46:20.648034+00', '2025-10-20 14:46:20.648034+00', 'test-occasion-1760971580576');
-INSERT INTO public.occasions VALUES (279, 'Test Occasion 1760971581083', 'Test occasion for integration tests', false, 83, '2025-10-20 14:46:21.155209+00', '2025-10-20 14:46:21.155209+00', 'test-occasion-1760971581083');
-INSERT INTO public.occasions VALUES (280, 'Test Occasion 1760971581405', 'Test occasion for integration tests', false, 5, '2025-10-20 14:46:21.508916+00', '2025-10-20 14:46:21.508916+00', 'test-occasion-1760971581405');
-INSERT INTO public.occasions VALUES (281, 'Test Occasion 1760971581964', 'Test occasion for integration tests', false, 64, '2025-10-20 14:46:22.039865+00', '2025-10-20 14:46:22.039865+00', 'test-occasion-1760971581964');
-INSERT INTO public.occasions VALUES (283, 'New Test Occasion 1760971582519', 'New test occasion for integration tests', false, 10, '2025-10-20 14:46:22.585106+00', '2025-10-20 14:46:22.585106+00', 'new-test-occasion-1760971582519');
-INSERT INTO public.occasions VALUES (282, 'Test Occasion 1760971582390', 'Test occasion for integration tests', false, 90, '2025-10-20 14:46:22.460582+00', '2025-10-20 14:46:22.460582+00', 'test-occasion-1760971582390');
-INSERT INTO public.occasions VALUES (365, 'Test Occasion 1761334062138', 'Test occasion for integration tests', false, 38, '2025-10-24 19:27:42.246999+00', '2025-10-24 19:27:42.246999+00', 'test-occasion-1761334062138');
-INSERT INTO public.occasions VALUES (284, 'Test Occasion 1760971582933', 'Test occasion for integration tests', false, 33, '2025-10-20 14:46:23.013425+00', '2025-10-20 14:46:23.013425+00', 'test-occasion-1760971582933');
-INSERT INTO public.occasions VALUES (286, 'Test Occasion 1760971583640', 'Test occasion for integration tests', false, 40, '2025-10-20 14:46:23.711739+00', '2025-10-20 14:46:23.711739+00', 'test-occasion-1760971583640');
-INSERT INTO public.occasions VALUES (287, 'Test Occasion 1760971583936', 'Test occasion for integration tests', false, 36, '2025-10-20 14:46:23.991417+00', '2025-10-20 14:46:23.991417+00', 'test-occasion-1760971583936');
-INSERT INTO public.occasions VALUES (288, 'Test Occasion 1760971584659', 'Test occasion for integration tests', false, 59, '2025-10-20 14:46:24.728771+00', '2025-10-20 14:46:24.728771+00', 'test-occasion-1760971584659');
-INSERT INTO public.occasions VALUES (299, 'Test Occasion 1760971589729', 'Test occasion for integration tests', false, 29, '2025-10-20 14:46:29.80164+00', '2025-10-20 14:46:29.80164+00', 'test-occasion-1760971589729');
-INSERT INTO public.occasions VALUES (291, 'Test Occasion 1760971585766', 'Test occasion for integration tests', false, 15, '2025-10-20 14:46:25.832963+00', '2025-10-20 14:46:25.832963+00', 'test-occasion-1760971585766');
-INSERT INTO public.occasions VALUES (292, 'Test Occasion 1760971586187', 'Test occasion for integration tests', false, 10, '2025-10-20 14:46:26.267522+00', '2025-10-20 14:46:26.267522+00', 'test-occasion-1760971586187');
-INSERT INTO public.occasions VALUES (293, 'Test Occasion 1760971586593', 'Test occasion for integration tests', false, 93, '2025-10-20 14:46:26.663617+00', '2025-10-20 14:46:26.663617+00', 'test-occasion-1760971586593');
-INSERT INTO public.occasions VALUES (294, 'Test Occasion 1760971587002', 'Test occasion for integration tests', false, 2, '2025-10-20 14:46:27.092977+00', '2025-10-20 14:46:27.092977+00', 'test-occasion-1760971587002');
-INSERT INTO public.occasions VALUES (295, 'Test Occasion 1760971587331', 'Test occasion for integration tests', false, 31, '2025-10-20 14:46:27.416627+00', '2025-10-20 14:46:27.416627+00', 'test-occasion-1760971587331');
-INSERT INTO public.occasions VALUES (296, 'Test Occasion 1760971587908', 'Test occasion for integration tests', false, 8, '2025-10-20 14:46:27.972191+00', '2025-10-20 14:46:27.972191+00', 'test-occasion-1760971587908');
-INSERT INTO public.occasions VALUES (297, 'Test Occasion 1760971588439', 'Test occasion for integration tests', false, 39, '2025-10-20 14:46:28.524346+00', '2025-10-20 14:46:28.524346+00', 'test-occasion-1760971588439');
-INSERT INTO public.occasions VALUES (300, 'Test Occasion 1760971590138', 'Test occasion for integration tests', false, 38, '2025-10-20 14:46:30.22012+00', '2025-10-20 14:46:30.22012+00', 'test-occasion-1760971590138');
-INSERT INTO public.occasions VALUES (298, 'Test Occasion 1760971589173', 'Test occasion for integration tests', false, 73, '2025-10-20 14:46:29.251521+00', '2025-10-20 14:46:29.251521+00', 'test-occasion-1760971589173');
-INSERT INTO public.occasions VALUES (301, 'Test Occasion 1760971590553', 'Test occasion for integration tests', false, 53, '2025-10-20 14:46:30.625307+00', '2025-10-20 14:46:30.625307+00', 'test-occasion-1760971590553');
-INSERT INTO public.occasions VALUES (303, 'Status Test Occasion 1760971591411', 'Status code test occasion', true, 5, '2025-10-20 14:46:31.507416+00', '2025-10-20 14:46:31.507416+00', 'status-test-occasion-1760971591411');
-INSERT INTO public.occasions VALUES (302, 'Test Occasion 1760971591254', 'Test occasion for integration tests', false, 54, '2025-10-20 14:46:31.338982+00', '2025-10-20 14:46:31.338982+00', 'test-occasion-1760971591254');
-INSERT INTO public.occasions VALUES (304, 'Test Occasion 1760999765786', 'Test occasion for integration tests', false, 86, '2025-10-20 22:36:07.14142+00', '2025-10-20 22:36:07.14142+00', 'test-occasion-1760999765786');
-INSERT INTO public.occasions VALUES (305, 'Test Occasion 1760999767898', 'Test occasion for integration tests', false, 98, '2025-10-20 22:36:07.979137+00', '2025-10-20 22:36:07.979137+00', 'test-occasion-1760999767898');
-INSERT INTO public.occasions VALUES (306, 'Test Occasion 1760999768341', 'Test occasion for integration tests', false, 41, '2025-10-20 22:36:08.437524+00', '2025-10-20 22:36:08.437524+00', 'test-occasion-1760999768341');
-INSERT INTO public.occasions VALUES (307, 'Test Occasion 1760999768917', 'Test occasion for integration tests', false, 17, '2025-10-20 22:36:09.013482+00', '2025-10-20 22:36:09.013482+00', 'test-occasion-1760999768917');
-INSERT INTO public.occasions VALUES (308, 'Test Occasion 1760999769392', 'Test occasion for integration tests', false, 92, '2025-10-20 22:36:09.471976+00', '2025-10-20 22:36:09.471976+00', 'test-occasion-1760999769392');
-INSERT INTO public.occasions VALUES (309, 'Test Occasion 1760999769833', 'Test occasion for integration tests', false, 33, '2025-10-20 22:36:09.917984+00', '2025-10-20 22:36:09.917984+00', 'test-occasion-1760999769833');
-INSERT INTO public.occasions VALUES (310, 'Test Occasion 1760999770142', 'Test occasion for integration tests', false, 42, '2025-10-20 22:36:10.246467+00', '2025-10-20 22:36:10.246467+00', 'test-occasion-1760999770142');
-INSERT INTO public.occasions VALUES (311, 'Test Occasion 1760999770600', 'Test occasion for integration tests', false, 0, '2025-10-20 22:36:10.679915+00', '2025-10-20 22:36:10.679915+00', 'test-occasion-1760999770600');
-INSERT INTO public.occasions VALUES (313, 'New Test Occasion 1760999771189', 'New test occasion for integration tests', false, 10, '2025-10-20 22:36:11.273729+00', '2025-10-20 22:36:11.273729+00', 'new-test-occasion-1760999771189');
-INSERT INTO public.occasions VALUES (312, 'Test Occasion 1760999771032', 'Test occasion for integration tests', false, 32, '2025-10-20 22:36:11.124841+00', '2025-10-20 22:36:11.124841+00', 'test-occasion-1760999771032');
-INSERT INTO public.occasions VALUES (314, 'Test Occasion 1760999771658', 'Test occasion for integration tests', false, 58, '2025-10-20 22:36:11.734539+00', '2025-10-20 22:36:11.734539+00', 'test-occasion-1760999771658');
-INSERT INTO public.occasions VALUES (316, 'Test Occasion 1760999772094', 'Test occasion for integration tests', false, 94, '2025-10-20 22:36:12.188895+00', '2025-10-20 22:36:12.188895+00', 'test-occasion-1760999772094');
-INSERT INTO public.occasions VALUES (318, 'Test Occasion 1760999772834', 'Test occasion for integration tests', false, 34, '2025-10-20 22:36:12.928819+00', '2025-10-20 22:36:12.928819+00', 'test-occasion-1760999772834');
-INSERT INTO public.occasions VALUES (319, 'Test Occasion 1760999773284', 'Test occasion for integration tests', false, 84, '2025-10-20 22:36:13.369841+00', '2025-10-20 22:36:13.369841+00', 'test-occasion-1760999773284');
-INSERT INTO public.occasions VALUES (320, 'Test Occasion 1760999773704', 'Test occasion for integration tests', false, 4, '2025-10-20 22:36:13.769434+00', '2025-10-20 22:36:13.769434+00', 'test-occasion-1760999773704');
-INSERT INTO public.occasions VALUES (323, 'Test Occasion 1760999774865', 'Test occasion for integration tests', false, 65, '2025-10-20 22:36:14.939296+00', '2025-10-20 22:36:14.939296+00', 'test-occasion-1760999774865');
-INSERT INTO public.occasions VALUES (325, 'Test Occasion 1760999775538', 'Test occasion for integration tests', false, 38, '2025-10-20 22:36:15.612868+00', '2025-10-20 22:36:15.612868+00', 'test-occasion-1760999775538');
-INSERT INTO public.occasions VALUES (366, 'Test Occasion 1761334062636', 'Test occasion for integration tests', false, 36, '2025-10-24 19:27:42.756897+00', '2025-10-24 19:27:42.756897+00', 'test-occasion-1761334062636');
-INSERT INTO public.occasions VALUES (372, 'Test Occasion 1761334065462', 'Test occasion for integration tests', false, 62, '2025-10-24 19:27:45.567767+00', '2025-10-24 19:27:45.567767+00', 'test-occasion-1761334065462');
-INSERT INTO public.occasions VALUES (374, 'Test Occasion 1761334066039', 'Test occasion for integration tests', false, 39, '2025-10-24 19:27:46.159752+00', '2025-10-24 19:27:46.159752+00', 'test-occasion-1761334066039');
-INSERT INTO public.occasions VALUES (376, 'Test Occasion 1761334066481', 'Test occasion for integration tests', false, 81, '2025-10-24 19:27:46.57807+00', '2025-10-24 19:27:46.57807+00', 'test-occasion-1761334066481');
-INSERT INTO public.occasions VALUES (382, 'Test Occasion 1761334068864', 'Test occasion for integration tests', false, 10, '2025-10-24 19:27:48.953359+00', '2025-10-24 19:27:48.953359+00', 'test-occasion-1761334068864');
-INSERT INTO public.occasions VALUES (383, 'Test Occasion 1761334069317', 'Test occasion for integration tests', false, 17, '2025-10-24 19:27:49.418672+00', '2025-10-24 19:27:49.418672+00', 'test-occasion-1761334069317');
-INSERT INTO public.occasions VALUES (384, 'Test Occasion 1761334069755', 'Test occasion for integration tests', false, 55, '2025-10-24 19:27:49.843538+00', '2025-10-24 19:27:49.843538+00', 'test-occasion-1761334069755');
-INSERT INTO public.occasions VALUES (388, 'Test Occasion 1761334072088', 'Test occasion for integration tests', false, 88, '2025-10-24 19:27:52.190567+00', '2025-10-24 19:27:52.190567+00', 'test-occasion-1761334072088');
-INSERT INTO public.occasions VALUES (390, 'Test Occasion 1761334073117', 'Test occasion for integration tests', false, 17, '2025-10-24 19:27:53.21902+00', '2025-10-24 19:27:53.21902+00', 'test-occasion-1761334073117');
-INSERT INTO public.occasions VALUES (391, 'Test Occasion 1761334073573', 'Test occasion for integration tests', false, 73, '2025-10-24 19:27:53.694307+00', '2025-10-24 19:27:53.694307+00', 'test-occasion-1761334073573');
-INSERT INTO public.occasions VALUES (393, 'Status Test Occasion 1761334074463', 'Status code test occasion', true, 5, '2025-10-24 19:27:54.558487+00', '2025-10-24 19:27:54.558487+00', 'status-test-occasion-1761334074463');
-INSERT INTO public.occasions VALUES (317, 'Test Occasion 1760999772399', 'Test occasion for integration tests', false, 99, '2025-10-20 22:36:12.490845+00', '2025-10-20 22:36:12.490845+00', 'test-occasion-1760999772399');
-INSERT INTO public.occasions VALUES (387, 'Test Occasion 1761334071474', 'Test occasion for integration tests', false, 74, '2025-10-24 19:27:51.650571+00', '2025-10-24 19:27:51.650571+00', 'test-occasion-1761334071474');
-INSERT INTO public.occasions VALUES (328, 'Test Occasion 1760999776982', 'Test occasion for integration tests', false, 82, '2025-10-20 22:36:17.078129+00', '2025-10-20 22:36:17.078129+00', 'test-occasion-1760999776982');
-INSERT INTO public.occasions VALUES (330, 'Test Occasion 1760999778079', 'Test occasion for integration tests', false, 79, '2025-10-20 22:36:18.172027+00', '2025-10-20 22:36:18.172027+00', 'test-occasion-1760999778079');
-INSERT INTO public.occasions VALUES (332, 'Test Occasion 1760999779229', 'Test occasion for integration tests', false, 29, '2025-10-20 22:36:19.333623+00', '2025-10-20 22:36:19.333623+00', 'test-occasion-1760999779229');
-INSERT INTO public.occasions VALUES (389, 'Test Occasion 1761334072677', 'Test occasion for integration tests', false, 77, '2025-10-24 19:27:52.780417+00', '2025-10-24 19:27:52.780417+00', 'test-occasion-1761334072677');
-INSERT INTO public.occasions VALUES (392, 'Test Occasion 1761334074326', 'Test occasion for integration tests', false, 26, '2025-10-24 19:27:54.425988+00', '2025-10-24 19:27:54.425988+00', 'test-occasion-1761334074326');
-INSERT INTO public.occasions VALUES (321, 'Test Occasion 1760999774011', 'Test occasion for integration tests', false, 15, '2025-10-20 22:36:14.09036+00', '2025-10-20 22:36:14.09036+00', 'test-occasion-1760999774011');
-INSERT INTO public.occasions VALUES (322, 'Test Occasion 1760999774459', 'Test occasion for integration tests', false, 10, '2025-10-20 22:36:14.532265+00', '2025-10-20 22:36:14.532265+00', 'test-occasion-1760999774459');
-INSERT INTO public.occasions VALUES (324, 'Test Occasion 1760999775261', 'Test occasion for integration tests', false, 61, '2025-10-20 22:36:15.346813+00', '2025-10-20 22:36:15.346813+00', 'test-occasion-1760999775261');
-INSERT INTO public.occasions VALUES (327, 'Test Occasion 1760999776537', 'Test occasion for integration tests', false, 37, '2025-10-20 22:36:16.625443+00', '2025-10-20 22:36:16.625443+00', 'test-occasion-1760999776537');
-INSERT INTO public.occasions VALUES (331, 'Test Occasion 1760999778520', 'Test occasion for integration tests', false, 20, '2025-10-20 22:36:18.608803+00', '2025-10-20 22:36:18.608803+00', 'test-occasion-1760999778520');
-INSERT INTO public.occasions VALUES (333, 'Status Test Occasion 1760999779388', 'Status code test occasion', true, 5, '2025-10-20 22:36:19.496844+00', '2025-10-20 22:36:19.496844+00', 'status-test-occasion-1760999779388');
-INSERT INTO public.occasions VALUES (326, 'Test Occasion 1760999776072', 'Test occasion for integration tests', false, 72, '2025-10-20 22:36:16.170065+00', '2025-10-20 22:36:16.170065+00', 'test-occasion-1760999776072');
-INSERT INTO public.occasions VALUES (329, 'Test Occasion 1760999777589', 'Test occasion for integration tests', false, 89, '2025-10-20 22:36:17.676383+00', '2025-10-20 22:36:17.676383+00', 'test-occasion-1760999777589');
+INSERT INTO public.occasions VALUES (404, 'Cumpleaños', 'Flores para cumpleaños', true, 0, '2025-11-11 23:41:17.860442+00', '2025-11-11 23:41:17.860442+00', 'cumpleanos');
+INSERT INTO public.occasions VALUES (405, 'Aniversario', 'Flores para aniversarios', true, 0, '2025-11-11 23:41:17.860442+00', '2025-11-11 23:41:17.860442+00', 'aniversario');
+INSERT INTO public.occasions VALUES (406, 'Día de la Madre', 'Flores para el día de la madre', true, 0, '2025-11-11 23:41:17.860442+00', '2025-11-11 23:41:17.860442+00', 'dia-de-la-madre');
+INSERT INTO public.occasions VALUES (407, 'San Valentín', 'Flores para san valentín', true, 0, '2025-11-11 23:41:17.860442+00', '2025-11-11 23:41:17.860442+00', 'san-valentin');
+INSERT INTO public.occasions VALUES (408, 'Boda', 'Flores para bodas', true, 0, '2025-11-11 23:41:17.860442+00', '2025-11-11 23:41:17.860442+00', 'boda');
+INSERT INTO public.occasions VALUES (409, 'Graduación', 'Flores para graduaciones', true, 0, '2025-11-11 23:41:17.860442+00', '2025-11-11 23:41:17.860442+00', 'graduacion');
+INSERT INTO public.occasions VALUES (410, 'Felicidades', 'Flores para felicitar', true, 0, '2025-11-11 23:41:17.860442+00', '2025-11-11 23:41:17.860442+00', 'felicidades');
 
 
 --
--- TOC entry 4258 (class 0 OID 32112)
--- Dependencies: 385
+-- TOC entry 4405 (class 0 OID 32112)
+-- Dependencies: 391
 -- Data for Name: order_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.order_items VALUES (1, 1, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 3, 98.97, 3607.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (2, 1, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 2, 145.98, 5320.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (3, 1, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 2, 145.98, 5320.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (4, 2, 93, 'Margaritas Blancas Frescas', 'Margaritas Blancas Frescas', 29.99, 1093.14, 1, 29.99, 1093.14, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (5, 2, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 2, 93.98, 3425.57, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (6, 3, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 1, 68.99, 2514.69, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (7, 4, 89, 'Rosas Rojas Clásicas', 'Rosas Rojas Clásicas', 55.99, 2040.84, 1, 55.99, 2040.84, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (8, 4, 93, 'Margaritas Blancas Frescas', 'Margaritas Blancas Frescas', 29.99, 1093.14, 1, 29.99, 1093.14, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (9, 4, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 1, 38.99, 1421.19, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (10, 5, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 3, 206.97, 7544.06, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (11, 6, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 3, 140.97, 5138.36, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (12, 6, 89, 'Rosas Rojas Clásicas', 'Rosas Rojas Clásicas', 55.99, 2040.84, 3, 167.97, 6122.51, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (13, 7, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 3, 98.97, 3607.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (14, 8, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 3, 98.97, 3607.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (15, 9, 93, 'Margaritas Blancas Frescas', 'Margaritas Blancas Frescas', 29.99, 1093.14, 2, 59.98, 2186.27, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (16, 9, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 1, 68.99, 2514.69, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (17, 10, 93, 'Margaritas Blancas Frescas', 'Margaritas Blancas Frescas', 29.99, 1093.14, 3, 89.97, 3279.41, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (18, 10, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 2, 93.98, 3425.57, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (19, 11, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 3, 158.97, 5794.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (20, 11, 83, 'Ramo Tropical Vibrante', 'Ramo Tropical Vibrante', 45.99, 1676.34, 2, 91.98, 3352.67, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (21, 11, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 3, 140.97, 5138.36, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (22, 12, 93, 'Margaritas Blancas Frescas', 'Margaritas Blancas Frescas', 29.99, 1093.14, 2, 59.98, 2186.27, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (23, 13, 88, 'Tulipanes Holandeses Mix', 'Tulipanes Holandeses Mix', 49.99, 1822.14, 2, 99.98, 3644.27, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (24, 14, 87, 'Lirios Blancos Puros', 'Lirios Blancos Puros', 42.99, 1566.99, 3, 128.97, 4700.96, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (25, 14, 87, 'Lirios Blancos Puros', 'Lirios Blancos Puros', 42.99, 1566.99, 3, 128.97, 4700.96, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (26, 14, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 2, 93.98, 3425.57, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (27, 15, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 3, 116.97, 4263.56, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (28, 15, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 1, 72.99, 2660.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (29, 15, 93, 'Margaritas Blancas Frescas', 'Margaritas Blancas Frescas', 29.99, 1093.14, 3, 89.97, 3279.41, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (30, 16, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 2, 137.98, 5029.37, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (31, 17, 93, 'Margaritas Blancas Frescas', 'Margaritas Blancas Frescas', 29.99, 1093.14, 1, 29.99, 1093.14, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (32, 18, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 1, 32.99, 1202.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (33, 18, 92, 'Ramo Campestre Silvestre', 'Ramo Campestre Silvestre', 39.99, 1457.64, 1, 39.99, 1457.64, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (34, 18, 83, 'Ramo Tropical Vibrante', 'Ramo Tropical Vibrante', 45.99, 1676.34, 1, 45.99, 1676.34, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (35, 19, 93, 'Margaritas Blancas Frescas', 'Margaritas Blancas Frescas', 29.99, 1093.14, 1, 29.99, 1093.14, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (36, 19, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 3, 218.97, 7981.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (37, 19, 83, 'Ramo Tropical Vibrante', 'Ramo Tropical Vibrante', 45.99, 1676.34, 3, 137.97, 5029.01, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (38, 20, 88, 'Tulipanes Holandeses Mix', 'Tulipanes Holandeses Mix', 49.99, 1822.14, 2, 99.98, 3644.27, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (39, 21, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 2, 77.98, 2842.37, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (40, 21, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 1, 32.99, 1202.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (41, 22, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 2, 105.98, 3862.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (42, 23, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 3, 140.97, 5138.36, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (43, 23, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 2, 105.98, 3862.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (44, 23, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 3, 218.97, 7981.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (45, 24, 87, 'Lirios Blancos Puros', 'Lirios Blancos Puros', 42.99, 1566.99, 3, 128.97, 4700.96, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (46, 25, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 1, 46.99, 1712.79, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (47, 25, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 2, 77.98, 2842.37, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (48, 25, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 2, 137.98, 5029.37, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (49, 26, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 1, 52.99, 1931.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (50, 26, 87, 'Lirios Blancos Puros', 'Lirios Blancos Puros', 42.99, 1566.99, 3, 128.97, 4700.96, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (51, 26, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 2, 65.98, 2404.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (52, 27, 83, 'Ramo Tropical Vibrante', 'Ramo Tropical Vibrante', 45.99, 1676.34, 2, 91.98, 3352.67, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (53, 27, 87, 'Lirios Blancos Puros', 'Lirios Blancos Puros', 42.99, 1566.99, 1, 42.99, 1566.99, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (54, 27, 87, 'Lirios Blancos Puros', 'Lirios Blancos Puros', 42.99, 1566.99, 2, 85.98, 3133.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (55, 28, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 3, 158.97, 5794.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (56, 29, 88, 'Tulipanes Holandeses Mix', 'Tulipanes Holandeses Mix', 49.99, 1822.14, 2, 99.98, 3644.27, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (57, 30, 87, 'Lirios Blancos Puros', 'Lirios Blancos Puros', 42.99, 1566.99, 1, 42.99, 1566.99, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (58, 31, 87, 'Lirios Blancos Puros', 'Lirios Blancos Puros', 42.99, 1566.99, 3, 128.97, 4700.96, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (59, 31, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 2, 65.98, 2404.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (60, 32, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 2, 65.98, 2404.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (61, 33, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 2, 77.98, 2842.37, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (62, 33, 93, 'Margaritas Blancas Frescas', 'Margaritas Blancas Frescas', 29.99, 1093.14, 3, 89.97, 3279.41, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (63, 34, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 1, 46.99, 1712.79, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (64, 34, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 1, 72.99, 2660.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (65, 34, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 2, 105.98, 3862.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (66, 35, 92, 'Ramo Campestre Silvestre', 'Ramo Campestre Silvestre', 39.99, 1457.64, 1, 39.99, 1457.64, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (67, 35, 92, 'Ramo Campestre Silvestre', 'Ramo Campestre Silvestre', 39.99, 1457.64, 3, 119.97, 4372.91, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (68, 35, 87, 'Lirios Blancos Puros', 'Lirios Blancos Puros', 42.99, 1566.99, 3, 128.97, 4700.96, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (69, 36, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 1, 32.99, 1202.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (70, 36, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 3, 98.97, 3607.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (71, 36, 89, 'Rosas Rojas Clásicas', 'Rosas Rojas Clásicas', 55.99, 2040.84, 1, 55.99, 2040.84, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (72, 37, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 3, 206.97, 7544.06, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (73, 38, 83, 'Ramo Tropical Vibrante', 'Ramo Tropical Vibrante', 45.99, 1676.34, 2, 91.98, 3352.67, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (74, 38, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 2, 145.98, 5320.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (75, 38, 92, 'Ramo Campestre Silvestre', 'Ramo Campestre Silvestre', 39.99, 1457.64, 3, 119.97, 4372.91, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (76, 39, 83, 'Ramo Tropical Vibrante', 'Ramo Tropical Vibrante', 45.99, 1676.34, 2, 91.98, 3352.67, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (77, 39, 89, 'Rosas Rojas Clásicas', 'Rosas Rojas Clásicas', 55.99, 2040.84, 1, 55.99, 2040.84, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (78, 40, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 1, 52.99, 1931.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (79, 40, 93, 'Margaritas Blancas Frescas', 'Margaritas Blancas Frescas', 29.99, 1093.14, 2, 59.98, 2186.27, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (80, 41, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 1, 32.99, 1202.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (81, 41, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 2, 145.98, 5320.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (82, 42, 83, 'Ramo Tropical Vibrante', 'Ramo Tropical Vibrante', 45.99, 1676.34, 3, 137.97, 5029.01, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (83, 43, 87, 'Lirios Blancos Puros', 'Lirios Blancos Puros', 42.99, 1566.99, 2, 85.98, 3133.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (84, 43, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 2, 93.98, 3425.57, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (85, 43, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 2, 77.98, 2842.37, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (86, 44, 83, 'Ramo Tropical Vibrante', 'Ramo Tropical Vibrante', 45.99, 1676.34, 3, 137.97, 5029.01, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (87, 44, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 1, 52.99, 1931.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (88, 44, 93, 'Margaritas Blancas Frescas', 'Margaritas Blancas Frescas', 29.99, 1093.14, 1, 29.99, 1093.14, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (89, 45, 87, 'Lirios Blancos Puros', 'Lirios Blancos Puros', 42.99, 1566.99, 2, 85.98, 3133.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (90, 45, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 3, 206.97, 7544.06, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (91, 46, 92, 'Ramo Campestre Silvestre', 'Ramo Campestre Silvestre', 39.99, 1457.64, 1, 39.99, 1457.64, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (92, 46, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 2, 105.98, 3862.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (93, 46, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 1, 32.99, 1202.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (94, 47, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 1, 68.99, 2514.69, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (95, 47, 89, 'Rosas Rojas Clásicas', 'Rosas Rojas Clásicas', 55.99, 2040.84, 3, 167.97, 6122.51, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (96, 47, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 3, 158.97, 5794.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (97, 48, 92, 'Ramo Campestre Silvestre', 'Ramo Campestre Silvestre', 39.99, 1457.64, 1, 39.99, 1457.64, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (98, 48, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 3, 98.97, 3607.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (99, 49, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 2, 77.98, 2842.37, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (100, 49, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 3, 98.97, 3607.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (101, 49, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 3, 98.97, 3607.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (102, 50, 92, 'Ramo Campestre Silvestre', 'Ramo Campestre Silvestre', 39.99, 1457.64, 1, 39.99, 1457.64, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (103, 50, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 1, 38.99, 1421.19, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (104, 51, 87, 'Lirios Blancos Puros', 'Lirios Blancos Puros', 42.99, 1566.99, 2, 85.98, 3133.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (105, 51, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 2, 105.98, 3862.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (106, 52, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 2, 145.98, 5320.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (107, 52, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 3, 140.97, 5138.36, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (108, 52, 88, 'Tulipanes Holandeses Mix', 'Tulipanes Holandeses Mix', 49.99, 1822.14, 1, 49.99, 1822.14, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (109, 53, 92, 'Ramo Campestre Silvestre', 'Ramo Campestre Silvestre', 39.99, 1457.64, 1, 39.99, 1457.64, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (110, 53, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 3, 116.97, 4263.56, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (111, 53, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 3, 206.97, 7544.06, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (112, 54, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 3, 98.97, 3607.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (113, 54, 92, 'Ramo Campestre Silvestre', 'Ramo Campestre Silvestre', 39.99, 1457.64, 1, 39.99, 1457.64, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (114, 55, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 3, 206.97, 7544.06, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (115, 56, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 3, 116.97, 4263.56, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (116, 56, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 2, 65.98, 2404.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (117, 57, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 3, 158.97, 5794.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (118, 58, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 3, 206.97, 7544.06, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (119, 58, 88, 'Tulipanes Holandeses Mix', 'Tulipanes Holandeses Mix', 49.99, 1822.14, 1, 49.99, 1822.14, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (120, 59, 89, 'Rosas Rojas Clásicas', 'Rosas Rojas Clásicas', 55.99, 2040.84, 3, 167.97, 6122.51, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (121, 59, 89, 'Rosas Rojas Clásicas', 'Rosas Rojas Clásicas', 55.99, 2040.84, 1, 55.99, 2040.84, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (122, 59, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 1, 38.99, 1421.19, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (123, 60, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 3, 140.97, 5138.36, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (124, 60, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 3, 98.97, 3607.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (125, 60, 89, 'Rosas Rojas Clásicas', 'Rosas Rojas Clásicas', 55.99, 2040.84, 2, 111.98, 4081.67, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (126, 61, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 3, 140.97, 5138.36, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (127, 61, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 2, 77.98, 2842.37, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (128, 61, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 3, 116.97, 4263.56, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (129, 62, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 1, 68.99, 2514.69, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (130, 63, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 2, 105.98, 3862.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (131, 64, 89, 'Rosas Rojas Clásicas', 'Rosas Rojas Clásicas', 55.99, 2040.84, 3, 167.97, 6122.51, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (132, 65, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 1, 32.99, 1202.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (133, 65, 83, 'Ramo Tropical Vibrante', 'Ramo Tropical Vibrante', 45.99, 1676.34, 1, 45.99, 1676.34, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (134, 66, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 2, 65.98, 2404.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (135, 66, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 1, 72.99, 2660.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (136, 66, 87, 'Lirios Blancos Puros', 'Lirios Blancos Puros', 42.99, 1566.99, 2, 85.98, 3133.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (137, 67, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 2, 145.98, 5320.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (138, 68, 89, 'Rosas Rojas Clásicas', 'Rosas Rojas Clásicas', 55.99, 2040.84, 1, 55.99, 2040.84, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (139, 68, 92, 'Ramo Campestre Silvestre', 'Ramo Campestre Silvestre', 39.99, 1457.64, 1, 39.99, 1457.64, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (140, 69, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 1, 52.99, 1931.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (141, 69, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 2, 77.98, 2842.37, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (142, 69, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 2, 137.98, 5029.37, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (143, 70, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 1, 38.99, 1421.19, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (144, 70, 88, 'Tulipanes Holandeses Mix', 'Tulipanes Holandeses Mix', 49.99, 1822.14, 2, 99.98, 3644.27, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (145, 70, 88, 'Tulipanes Holandeses Mix', 'Tulipanes Holandeses Mix', 49.99, 1822.14, 3, 149.97, 5466.41, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (146, 71, 92, 'Ramo Campestre Silvestre', 'Ramo Campestre Silvestre', 39.99, 1457.64, 2, 79.98, 2915.27, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (147, 71, 88, 'Tulipanes Holandeses Mix', 'Tulipanes Holandeses Mix', 49.99, 1822.14, 3, 149.97, 5466.41, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (148, 72, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 1, 68.99, 2514.69, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (149, 73, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 3, 116.97, 4263.56, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (150, 73, 93, 'Margaritas Blancas Frescas', 'Margaritas Blancas Frescas', 29.99, 1093.14, 2, 59.98, 2186.27, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (151, 73, 93, 'Margaritas Blancas Frescas', 'Margaritas Blancas Frescas', 29.99, 1093.14, 2, 59.98, 2186.27, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (152, 74, 83, 'Ramo Tropical Vibrante', 'Ramo Tropical Vibrante', 45.99, 1676.34, 2, 91.98, 3352.67, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (153, 74, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 2, 137.98, 5029.37, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (154, 74, 88, 'Tulipanes Holandeses Mix', 'Tulipanes Holandeses Mix', 49.99, 1822.14, 3, 149.97, 5466.41, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (155, 75, 92, 'Ramo Campestre Silvestre', 'Ramo Campestre Silvestre', 39.99, 1457.64, 1, 39.99, 1457.64, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (156, 75, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 3, 218.97, 7981.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (157, 76, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 2, 93.98, 3425.57, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (158, 76, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 1, 52.99, 1931.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (159, 76, 89, 'Rosas Rojas Clásicas', 'Rosas Rojas Clásicas', 55.99, 2040.84, 3, 167.97, 6122.51, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (160, 77, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 3, 98.97, 3607.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (161, 77, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 3, 158.97, 5794.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (162, 77, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 1, 32.99, 1202.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (163, 78, 87, 'Lirios Blancos Puros', 'Lirios Blancos Puros', 42.99, 1566.99, 3, 128.97, 4700.96, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (164, 78, 87, 'Lirios Blancos Puros', 'Lirios Blancos Puros', 42.99, 1566.99, 2, 85.98, 3133.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (165, 78, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 1, 72.99, 2660.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (166, 79, 88, 'Tulipanes Holandeses Mix', 'Tulipanes Holandeses Mix', 49.99, 1822.14, 2, 99.98, 3644.27, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (167, 79, 92, 'Ramo Campestre Silvestre', 'Ramo Campestre Silvestre', 39.99, 1457.64, 2, 79.98, 2915.27, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (168, 79, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 1, 72.99, 2660.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (169, 80, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 3, 116.97, 4263.56, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (170, 80, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 2, 105.98, 3862.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (171, 80, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 1, 68.99, 2514.69, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (172, 81, 89, 'Rosas Rojas Clásicas', 'Rosas Rojas Clásicas', 55.99, 2040.84, 2, 111.98, 4081.67, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (173, 81, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 3, 98.97, 3607.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (174, 81, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 3, 218.97, 7981.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (175, 82, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 1, 32.99, 1202.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (176, 82, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 3, 206.97, 7544.06, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (177, 83, 83, 'Ramo Tropical Vibrante', 'Ramo Tropical Vibrante', 45.99, 1676.34, 1, 45.99, 1676.34, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (178, 84, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 2, 145.98, 5320.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (179, 84, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 1, 46.99, 1712.79, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (180, 84, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 3, 98.97, 3607.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (181, 85, 92, 'Ramo Campestre Silvestre', 'Ramo Campestre Silvestre', 39.99, 1457.64, 1, 39.99, 1457.64, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (182, 85, 93, 'Margaritas Blancas Frescas', 'Margaritas Blancas Frescas', 29.99, 1093.14, 3, 89.97, 3279.41, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (183, 86, 88, 'Tulipanes Holandeses Mix', 'Tulipanes Holandeses Mix', 49.99, 1822.14, 1, 49.99, 1822.14, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (184, 87, 93, 'Margaritas Blancas Frescas', 'Margaritas Blancas Frescas', 29.99, 1093.14, 1, 29.99, 1093.14, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (185, 88, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 1, 72.99, 2660.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (186, 88, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 3, 116.97, 4263.56, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (187, 89, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 2, 93.98, 3425.57, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (188, 89, 89, 'Rosas Rojas Clásicas', 'Rosas Rojas Clásicas', 55.99, 2040.84, 2, 111.98, 4081.67, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (189, 89, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 1, 68.99, 2514.69, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (190, 90, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 1, 52.99, 1931.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (191, 90, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 1, 72.99, 2660.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (192, 91, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 1, 46.99, 1712.79, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (193, 92, 89, 'Rosas Rojas Clásicas', 'Rosas Rojas Clásicas', 55.99, 2040.84, 1, 55.99, 2040.84, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (194, 93, 93, 'Margaritas Blancas Frescas', 'Margaritas Blancas Frescas', 29.99, 1093.14, 2, 59.98, 2186.27, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (195, 94, 94, 'Peonías Rosadas Deluxe', 'Peonías Rosadas Deluxe', 72.99, 2660.49, 2, 145.98, 5320.97, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (196, 95, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 1, 32.99, 1202.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (197, 95, 88, 'Tulipanes Holandeses Mix', 'Tulipanes Holandeses Mix', 49.99, 1822.14, 2, 99.98, 3644.27, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (198, 95, 84, 'Bouquet Arcoíris de Rosas', 'Bouquet Arcoíris de Rosas', 52.99, 1931.49, 3, 158.97, 5794.46, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (199, 96, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 1, 68.99, 2514.69, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (200, 97, 91, 'Claveles Multicolor Festivos', 'Claveles Multicolor Festivos', 32.99, 1202.49, 1, 32.99, 1202.49, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (201, 97, 92, 'Ramo Campestre Silvestre', 'Ramo Campestre Silvestre', 39.99, 1457.64, 1, 39.99, 1457.64, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (202, 97, 88, 'Tulipanes Holandeses Mix', 'Tulipanes Holandeses Mix', 49.99, 1822.14, 1, 49.99, 1822.14, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (203, 98, 89, 'Rosas Rojas Clásicas', 'Rosas Rojas Clásicas', 55.99, 2040.84, 3, 167.97, 6122.51, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (204, 98, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 1, 46.99, 1712.79, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (205, 99, 85, 'Girasoles Gigantes Alegres', 'Girasoles Gigantes Alegres', 38.99, 1421.19, 3, 116.97, 4263.56, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (206, 99, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 2, 93.98, 3425.57, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (207, 100, 92, 'Ramo Campestre Silvestre', 'Ramo Campestre Silvestre', 39.99, 1457.64, 3, 119.97, 4372.91, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (208, 100, 90, 'Hortensias Azules Románticas', 'Hortensias Azules Románticas', 46.99, 1712.79, 2, 93.98, 3425.57, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (209, 100, 86, 'Orquídeas Elegantes Premium', 'Orquídeas Elegantes Premium', 68.99, 2514.69, 3, 206.97, 7544.06, '2025-10-03 12:11:37.246958+00', '2025-10-03 12:11:37.246958+00', true);
-INSERT INTO public.order_items VALUES (211, 102, 101, 'TEST Orquídeas Rosadas E2E', 'TEST Orquídeas Rosadas E2E', 99.99, 3999.60, 1, 99.99, 3999.60, '2025-10-06 22:15:42.83397+00', '2025-10-06 22:15:42.83397+00', true);
-INSERT INTO public.order_items VALUES (212, 102, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.20, 3, 293.94, 11757.60, '2025-10-06 22:15:42.83397+00', '2025-10-06 22:15:42.83397+00', true);
-INSERT INTO public.order_items VALUES (213, 102, 93, 'Margaritas Blancas Frescas', 'Margaritas Blancas Frescas', 29.99, 1199.60, 1, 29.99, 1199.60, '2025-10-06 22:15:42.83397+00', '2025-10-06 22:15:42.83397+00', true);
-INSERT INTO public.order_items VALUES (214, 103, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-07 00:34:02.394002+00', '2025-10-07 00:34:02.394002+00', true);
-INSERT INTO public.order_items VALUES (215, 104, 107, 'Test Product', NULL, 50.25, NULL, 2, 100.50, NULL, '2025-10-07 00:54:47.917341+00', '2025-10-07 00:54:47.917341+00', true);
-INSERT INTO public.order_items VALUES (216, 105, 107, 'Test Product', NULL, 50.25, NULL, 2, 100.50, NULL, '2025-10-07 00:56:36.537573+00', '2025-10-07 00:56:36.537573+00', true);
-INSERT INTO public.order_items VALUES (217, 106, 107, 'Test Product', NULL, 50.25, NULL, 2, 100.50, NULL, '2025-10-07 00:59:19.442374+00', '2025-10-07 00:59:19.442374+00', true);
-INSERT INTO public.order_items VALUES (218, 107, 107, 'Test Product', NULL, 50.25, NULL, 2, 100.50, NULL, '2025-10-07 01:01:08.802257+00', '2025-10-07 01:01:08.802257+00', true);
-INSERT INTO public.order_items VALUES (219, 108, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-07 22:10:03.293045+00', '2025-10-07 22:10:03.293045+00', true);
-INSERT INTO public.order_items VALUES (220, 109, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-09 00:05:28.866871+00', '2025-10-09 00:05:28.866871+00', true);
-INSERT INTO public.order_items VALUES (221, 110, 106, 'Probando2', 'Probando2', 455.00, 18200.00, 1, 455.00, 18200.00, '2025-10-09 14:08:32.224767+00', '2025-10-09 14:08:32.224767+00', true);
-INSERT INTO public.order_items VALUES (222, 111, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-09 15:15:44.823923+00', '2025-10-09 15:15:44.823923+00', true);
-INSERT INTO public.order_items VALUES (223, 112, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7290.00, '2025-10-09 22:43:44.168085+00', '2025-10-09 22:43:44.168085+00', true);
-INSERT INTO public.order_items VALUES (224, 112, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 2, 99.98, 3644.00, '2025-10-09 22:43:44.168085+00', '2025-10-09 22:43:44.168085+00', true);
-INSERT INTO public.order_items VALUES (225, 112, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7290.00, '2025-10-09 22:43:44.168085+00', '2025-10-09 22:43:44.168085+00', true);
-INSERT INTO public.order_items VALUES (226, 113, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7290.00, '2025-10-09 22:43:44.746971+00', '2025-10-09 22:43:44.746971+00', true);
-INSERT INTO public.order_items VALUES (227, 113, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7290.00, '2025-10-09 22:43:44.746971+00', '2025-10-09 22:43:44.746971+00', true);
-INSERT INTO public.order_items VALUES (228, 113, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7290.00, '2025-10-09 22:43:44.746971+00', '2025-10-09 22:43:44.746971+00', true);
-INSERT INTO public.order_items VALUES (229, 114, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 1, 45.99, 1676.00, '2025-10-09 22:43:45.201449+00', '2025-10-09 22:43:45.201449+00', true);
-INSERT INTO public.order_items VALUES (230, 115, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-09 22:43:45.732096+00', '2025-10-09 22:43:45.732096+00', true);
-INSERT INTO public.order_items VALUES (231, 115, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7290.00, '2025-10-09 22:43:45.732096+00', '2025-10-09 22:43:45.732096+00', true);
-INSERT INTO public.order_items VALUES (232, 116, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10935.00, '2025-10-09 22:43:46.24706+00', '2025-10-09 22:43:46.24706+00', true);
-INSERT INTO public.order_items VALUES (233, 116, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 1, 32.99, 1202.00, '2025-10-09 22:43:46.24706+00', '2025-10-09 22:43:46.24706+00', true);
-INSERT INTO public.order_items VALUES (234, 116, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 2, 137.98, 5029.00, '2025-10-09 22:43:46.24706+00', '2025-10-09 22:43:46.24706+00', true);
-INSERT INTO public.order_items VALUES (235, 116, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7290.00, '2025-10-09 22:43:46.24706+00', '2025-10-09 22:43:46.24706+00', true);
-INSERT INTO public.order_items VALUES (236, 116, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7290.00, '2025-10-09 22:43:46.24706+00', '2025-10-09 22:43:46.24706+00', true);
-INSERT INTO public.order_items VALUES (237, 117, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10935.00, '2025-10-09 22:43:46.720309+00', '2025-10-09 22:43:46.720309+00', true);
-INSERT INTO public.order_items VALUES (238, 117, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10935.00, '2025-10-09 22:43:46.720309+00', '2025-10-09 22:43:46.720309+00', true);
-INSERT INTO public.order_items VALUES (239, 117, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7290.00, '2025-10-09 22:43:46.720309+00', '2025-10-09 22:43:46.720309+00', true);
-INSERT INTO public.order_items VALUES (240, 118, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 3, 89.97, 3279.00, '2025-10-09 22:43:47.102123+00', '2025-10-09 22:43:47.102123+00', true);
-INSERT INTO public.order_items VALUES (241, 119, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10935.00, '2025-10-09 22:43:47.516081+00', '2025-10-09 22:43:47.516081+00', true);
-INSERT INTO public.order_items VALUES (242, 119, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 1, 52.99, 1931.00, '2025-10-09 22:43:47.516081+00', '2025-10-09 22:43:47.516081+00', true);
-INSERT INTO public.order_items VALUES (243, 119, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 1, 45.99, 1676.00, '2025-10-09 22:43:47.516081+00', '2025-10-09 22:43:47.516081+00', true);
-INSERT INTO public.order_items VALUES (244, 119, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-09 22:43:47.516081+00', '2025-10-09 22:43:47.516081+00', true);
-INSERT INTO public.order_items VALUES (245, 119, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 3, 89.97, 3279.00, '2025-10-09 22:43:47.516081+00', '2025-10-09 22:43:47.516081+00', true);
-INSERT INTO public.order_items VALUES (246, 120, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-09 22:43:47.890192+00', '2025-10-09 22:43:47.890192+00', true);
-INSERT INTO public.order_items VALUES (247, 120, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-10-09 22:43:47.890192+00', '2025-10-09 22:43:47.890192+00', true);
-INSERT INTO public.order_items VALUES (248, 120, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-09 22:43:47.890192+00', '2025-10-09 22:43:47.890192+00', true);
-INSERT INTO public.order_items VALUES (249, 120, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 1, 32.99, 1202.00, '2025-10-09 22:43:47.890192+00', '2025-10-09 22:43:47.890192+00', true);
-INSERT INTO public.order_items VALUES (250, 120, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7290.00, '2025-10-09 22:43:47.890192+00', '2025-10-09 22:43:47.890192+00', true);
-INSERT INTO public.order_items VALUES (251, 121, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 3, 116.97, 4264.00, '2025-10-09 22:43:48.294964+00', '2025-10-09 22:43:48.294964+00', true);
-INSERT INTO public.order_items VALUES (252, 121, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-09 22:43:48.294964+00', '2025-10-09 22:43:48.294964+00', true);
-INSERT INTO public.order_items VALUES (253, 122, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-12 23:42:00.061321+00', '2025-10-12 23:42:00.061321+00', true);
-INSERT INTO public.order_items VALUES (254, 123, 101, 'TEST Orquídeas Rosadas E2E', 'TEST Orquídeas Rosadas E2E', 99.99, 4000.00, 1, 99.99, 4000.00, '2025-10-14 23:35:19.150326+00', '2025-10-14 23:35:19.150326+00', true);
-INSERT INTO public.order_items VALUES (255, 124, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-14 23:36:22.882151+00', '2025-10-14 23:36:22.882151+00', true);
-INSERT INTO public.order_items VALUES (256, 125, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:25:45.496227+00', '2025-10-15 14:25:45.496227+00', true);
-INSERT INTO public.order_items VALUES (257, 126, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:25:47.266094+00', '2025-10-15 14:25:47.266094+00', true);
-INSERT INTO public.order_items VALUES (258, 127, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:26:03.192919+00', '2025-10-15 14:26:03.192919+00', true);
-INSERT INTO public.order_items VALUES (259, 128, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:26:05.750125+00', '2025-10-15 14:26:05.750125+00', true);
-INSERT INTO public.order_items VALUES (260, 129, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:28:11.409333+00', '2025-10-15 14:28:11.409333+00', true);
-INSERT INTO public.order_items VALUES (261, 130, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:28:15.863207+00', '2025-10-15 14:28:15.863207+00', true);
-INSERT INTO public.order_items VALUES (262, 131, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:29:10.019107+00', '2025-10-15 14:29:10.019107+00', true);
-INSERT INTO public.order_items VALUES (263, 132, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:32:21.709262+00', '2025-10-15 14:32:21.709262+00', true);
-INSERT INTO public.order_items VALUES (264, 133, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:32:22.756433+00', '2025-10-15 14:32:22.756433+00', true);
-INSERT INTO public.order_items VALUES (265, 134, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:32:22.893319+00', '2025-10-15 14:32:22.893319+00', true);
-INSERT INTO public.order_items VALUES (266, 135, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:32:23.041676+00', '2025-10-15 14:32:23.041676+00', true);
-INSERT INTO public.order_items VALUES (267, 136, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:32:26.465366+00', '2025-10-15 14:32:26.465366+00', true);
-INSERT INTO public.order_items VALUES (268, 137, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:33:30.850627+00', '2025-10-15 14:33:30.850627+00', true);
-INSERT INTO public.order_items VALUES (269, 138, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:33:30.998111+00', '2025-10-15 14:33:30.998111+00', true);
-INSERT INTO public.order_items VALUES (270, 139, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:33:31.894209+00', '2025-10-15 14:33:31.894209+00', true);
-INSERT INTO public.order_items VALUES (271, 140, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:33:46.725546+00', '2025-10-15 14:33:46.725546+00', true);
-INSERT INTO public.order_items VALUES (272, 141, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:36:45.620459+00', '2025-10-15 14:36:45.620459+00', true);
-INSERT INTO public.order_items VALUES (273, 142, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:36:45.905057+00', '2025-10-15 14:36:45.905057+00', true);
-INSERT INTO public.order_items VALUES (274, 143, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:36:46.193028+00', '2025-10-15 14:36:46.193028+00', true);
-INSERT INTO public.order_items VALUES (275, 144, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:42:57.73967+00', '2025-10-15 14:42:57.73967+00', true);
-INSERT INTO public.order_items VALUES (276, 145, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:42:58.71497+00', '2025-10-15 14:42:58.71497+00', true);
-INSERT INTO public.order_items VALUES (277, 146, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:42:59.353101+00', '2025-10-15 14:42:59.353101+00', true);
-INSERT INTO public.order_items VALUES (278, 147, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:42:59.359849+00', '2025-10-15 14:42:59.359849+00', true);
-INSERT INTO public.order_items VALUES (279, 148, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-15 14:43:02.961826+00', '2025-10-15 14:43:02.961826+00', true);
-INSERT INTO public.order_items VALUES (280, 149, 100, 'TEST Orquídeas Rosadas E2E', 'TEST Orquídeas Rosadas E2E', 99.99, 4000.00, 1, 99.99, 4000.00, '2025-10-17 20:52:21.032381+00', '2025-10-17 20:52:21.032381+00', true);
-INSERT INTO public.order_items VALUES (281, 150, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-18 22:06:48.632642+00', '2025-10-18 22:06:48.632642+00', true);
-INSERT INTO public.order_items VALUES (282, 151, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3919.00, 1, 97.98, 3919.00, '2025-10-19 18:21:17.021025+00', '2025-10-19 18:21:17.021025+00', true);
-INSERT INTO public.order_items VALUES (283, 152, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7290.00, '2025-10-22 15:06:35.214797+00', '2025-10-22 15:06:35.214797+00', true);
-INSERT INTO public.order_items VALUES (284, 152, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 1, 32.99, 1202.00, '2025-10-22 15:06:35.214797+00', '2025-10-22 15:06:35.214797+00', true);
-INSERT INTO public.order_items VALUES (285, 152, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 3, 167.97, 6123.00, '2025-10-22 15:06:35.214797+00', '2025-10-22 15:06:35.214797+00', true);
-INSERT INTO public.order_items VALUES (286, 152, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 2, 79.98, 2915.00, '2025-10-22 15:06:35.214797+00', '2025-10-22 15:06:35.214797+00', true);
-INSERT INTO public.order_items VALUES (287, 152, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 2, 137.98, 5029.00, '2025-10-22 15:06:35.214797+00', '2025-10-22 15:06:35.214797+00', true);
-INSERT INTO public.order_items VALUES (288, 153, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 3, 119.97, 4373.00, '2025-10-22 15:06:35.936562+00', '2025-10-22 15:06:35.936562+00', true);
-INSERT INTO public.order_items VALUES (814, 516, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 3, 293.94, 10714.00, '2025-11-03 16:16:40.841668+00', '2025-11-03 16:16:40.841668+00', true);
-INSERT INTO public.order_items VALUES (289, 153, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10935.00, '2025-10-22 15:06:35.936562+00', '2025-10-22 15:06:35.936562+00', true);
-INSERT INTO public.order_items VALUES (290, 153, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10935.00, '2025-10-22 15:06:35.936562+00', '2025-10-22 15:06:35.936562+00', true);
-INSERT INTO public.order_items VALUES (291, 153, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 2, 65.98, 2405.00, '2025-10-22 15:06:35.936562+00', '2025-10-22 15:06:35.936562+00', true);
-INSERT INTO public.order_items VALUES (292, 154, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 1, 52.99, 1931.00, '2025-10-22 15:06:36.510436+00', '2025-10-22 15:06:36.510436+00', true);
-INSERT INTO public.order_items VALUES (293, 154, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 2, 105.98, 3863.00, '2025-10-22 15:06:36.510436+00', '2025-10-22 15:06:36.510436+00', true);
-INSERT INTO public.order_items VALUES (294, 154, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 3, 89.97, 3279.00, '2025-10-22 15:06:36.510436+00', '2025-10-22 15:06:36.510436+00', true);
-INSERT INTO public.order_items VALUES (295, 154, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 2, 137.98, 5029.00, '2025-10-22 15:06:36.510436+00', '2025-10-22 15:06:36.510436+00', true);
-INSERT INTO public.order_items VALUES (296, 155, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-22 15:06:37.158403+00', '2025-10-22 15:06:37.158403+00', true);
-INSERT INTO public.order_items VALUES (297, 155, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 3, 116.97, 4264.00, '2025-10-22 15:06:37.158403+00', '2025-10-22 15:06:37.158403+00', true);
-INSERT INTO public.order_items VALUES (298, 155, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 1, 455.00, 16585.00, '2025-10-22 15:06:37.158403+00', '2025-10-22 15:06:37.158403+00', true);
-INSERT INTO public.order_items VALUES (299, 156, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 1, 68.99, 2515.00, '2025-10-22 15:06:37.716841+00', '2025-10-22 15:06:37.716841+00', true);
-INSERT INTO public.order_items VALUES (300, 157, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 2, 105.98, 3863.00, '2025-10-22 15:06:38.280942+00', '2025-10-22 15:06:38.280942+00', true);
-INSERT INTO public.order_items VALUES (301, 157, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 3, 119.97, 4373.00, '2025-10-22 15:06:38.280942+00', '2025-10-22 15:06:38.280942+00', true);
-INSERT INTO public.order_items VALUES (302, 157, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 2, 79.98, 2915.00, '2025-10-22 15:06:38.280942+00', '2025-10-22 15:06:38.280942+00', true);
-INSERT INTO public.order_items VALUES (303, 157, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 1, 32.99, 1202.00, '2025-10-22 15:06:38.280942+00', '2025-10-22 15:06:38.280942+00', true);
-INSERT INTO public.order_items VALUES (304, 157, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10935.00, '2025-10-22 15:06:38.280942+00', '2025-10-22 15:06:38.280942+00', true);
-INSERT INTO public.order_items VALUES (305, 158, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-22 15:06:38.646826+00', '2025-10-22 15:06:38.646826+00', true);
-INSERT INTO public.order_items VALUES (306, 158, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10935.00, '2025-10-22 15:06:38.646826+00', '2025-10-22 15:06:38.646826+00', true);
-INSERT INTO public.order_items VALUES (307, 158, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7290.00, '2025-10-22 15:06:38.646826+00', '2025-10-22 15:06:38.646826+00', true);
-INSERT INTO public.order_items VALUES (308, 159, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7290.00, '2025-10-22 15:06:39.056612+00', '2025-10-22 15:06:39.056612+00', true);
-INSERT INTO public.order_items VALUES (309, 159, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 2, 59.98, 2186.00, '2025-10-22 15:06:39.056612+00', '2025-10-22 15:06:39.056612+00', true);
-INSERT INTO public.order_items VALUES (310, 159, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 3, 128.97, 4701.00, '2025-10-22 15:06:39.056612+00', '2025-10-22 15:06:39.056612+00', true);
-INSERT INTO public.order_items VALUES (311, 159, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 2, 91.98, 3353.00, '2025-10-22 15:06:39.056612+00', '2025-10-22 15:06:39.056612+00', true);
-INSERT INTO public.order_items VALUES (312, 159, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-22 15:06:39.056612+00', '2025-10-22 15:06:39.056612+00', true);
-INSERT INTO public.order_items VALUES (313, 160, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 1, 38.99, 1421.00, '2025-10-22 15:06:39.44592+00', '2025-10-22 15:06:39.44592+00', true);
-INSERT INTO public.order_items VALUES (314, 160, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-22 15:06:39.44592+00', '2025-10-22 15:06:39.44592+00', true);
-INSERT INTO public.order_items VALUES (315, 160, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7290.00, '2025-10-22 15:06:39.44592+00', '2025-10-22 15:06:39.44592+00', true);
-INSERT INTO public.order_items VALUES (316, 160, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 3, 1365.00, 49755.00, '2025-10-22 15:06:39.44592+00', '2025-10-22 15:06:39.44592+00', true);
-INSERT INTO public.order_items VALUES (317, 161, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 1, 55.99, 2041.00, '2025-10-22 15:06:39.832913+00', '2025-10-22 15:06:39.832913+00', true);
-INSERT INTO public.order_items VALUES (318, 161, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 3, 158.97, 5794.00, '2025-10-22 15:06:39.832913+00', '2025-10-22 15:06:39.832913+00', true);
-INSERT INTO public.order_items VALUES (319, 161, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 2, 65.98, 2405.00, '2025-10-22 15:06:39.832913+00', '2025-10-22 15:06:39.832913+00', true);
-INSERT INTO public.order_items VALUES (320, 161, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-22 15:06:39.832913+00', '2025-10-22 15:06:39.832913+00', true);
-INSERT INTO public.order_items VALUES (321, 161, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 3, 218.97, 7981.00, '2025-10-22 15:06:39.832913+00', '2025-10-22 15:06:39.832913+00', true);
-INSERT INTO public.order_items VALUES (322, 162, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 3, 149.97, 5466.00, '2025-10-22 15:16:40.551+00', '2025-10-22 15:16:40.551+00', true);
-INSERT INTO public.order_items VALUES (323, 163, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 2, 77.98, 2842.00, '2025-10-22 15:26:13.009+00', '2025-10-22 15:26:13.009+00', true);
-INSERT INTO public.order_items VALUES (324, 164, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 1, 52.99, 1931.00, '2025-10-22 15:26:55.98+00', '2025-10-22 15:26:55.98+00', true);
-INSERT INTO public.order_items VALUES (325, 165, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-22 15:27:32.061+00', '2025-10-22 15:27:32.061+00', true);
-INSERT INTO public.order_items VALUES (326, 166, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-22 15:29:08.725+00', '2025-10-22 15:29:08.725+00', true);
-INSERT INTO public.order_items VALUES (327, 167, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 2, 105.98, 3863.00, '2025-10-22 15:32:52.261+00', '2025-10-22 15:32:52.261+00', true);
-INSERT INTO public.order_items VALUES (328, 168, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 4, 183.96, 6705.00, '2025-10-22 15:39:21.252+00', '2025-10-22 15:39:21.252+00', true);
-INSERT INTO public.order_items VALUES (329, 169, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 4, 171.96, 6268.00, '2025-10-22 15:43:22.379+00', '2025-10-22 15:43:22.379+00', true);
-INSERT INTO public.order_items VALUES (330, 170, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-22 15:47:57.572+00', '2025-10-22 15:47:57.572+00', true);
-INSERT INTO public.order_items VALUES (331, 171, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-22 15:51:26.626+00', '2025-10-22 15:51:26.626+00', true);
-INSERT INTO public.order_items VALUES (332, 172, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-22 15:52:55.878+00', '2025-10-22 15:52:55.878+00', true);
-INSERT INTO public.order_items VALUES (333, 173, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-22 15:57:12.007+00', '2025-10-22 15:57:12.007+00', true);
-INSERT INTO public.order_items VALUES (334, 174, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 4, 391.92, 14285.00, '2025-10-22 16:03:11.87+00', '2025-10-22 16:03:11.87+00', true);
-INSERT INTO public.order_items VALUES (335, 175, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 3, 119.97, 4373.00, '2025-10-22 16:09:39.721+00', '2025-10-22 16:09:39.721+00', true);
-INSERT INTO public.order_items VALUES (336, 176, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 5, 214.95, 7835.00, '2025-10-22 16:16:44.26+00', '2025-10-22 16:16:44.26+00', true);
-INSERT INTO public.order_items VALUES (337, 177, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 5, 279.95, 10204.00, '2025-10-22 16:25:54.903+00', '2025-10-22 16:25:54.903+00', true);
-INSERT INTO public.order_items VALUES (338, 178, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 2, 195.96, 7143.00, '2025-10-22 16:29:46.753+00', '2025-10-22 16:29:46.753+00', true);
-INSERT INTO public.order_items VALUES (339, 179, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 2, 195.96, 7143.00, '2025-10-22 16:33:56.138+00', '2025-10-22 16:33:56.138+00', true);
-INSERT INTO public.order_items VALUES (340, 180, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-22 16:43:52.861+00', '2025-10-22 16:43:52.861+00', true);
-INSERT INTO public.order_items VALUES (341, 181, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 3, 218.97, 7981.00, '2025-10-22 16:45:37.685+00', '2025-10-22 16:45:37.685+00', true);
-INSERT INTO public.order_items VALUES (342, 182, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 5, 149.95, 5466.00, '2025-10-22 16:46:56.517+00', '2025-10-22 16:46:56.517+00', true);
-INSERT INTO public.order_items VALUES (343, 183, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 5, 249.95, 9111.00, '2025-10-22 16:51:47.49+00', '2025-10-22 16:51:47.49+00', true);
-INSERT INTO public.order_items VALUES (344, 184, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 3, 89.97, 3279.00, '2025-10-22 16:56:51.898+00', '2025-10-22 16:56:51.898+00', true);
-INSERT INTO public.order_items VALUES (345, 185, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 4, 171.96, 6268.00, '2025-10-22 17:04:59.574+00', '2025-10-22 17:04:59.574+00', true);
-INSERT INTO public.order_items VALUES (346, 186, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-22 17:13:32.04+00', '2025-10-22 17:13:32.04+00', true);
-INSERT INTO public.order_items VALUES (347, 187, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 4, 291.96, 10642.00, '2025-10-22 17:18:03.849+00', '2025-10-22 17:18:03.849+00', true);
-INSERT INTO public.order_items VALUES (348, 188, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 5, 344.95, 12573.00, '2025-10-22 17:27:11.691+00', '2025-10-22 17:27:11.691+00', true);
-INSERT INTO public.order_items VALUES (349, 189, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-22 17:28:35.804+00', '2025-10-22 17:28:35.804+00', true);
-INSERT INTO public.order_items VALUES (350, 190, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 1, 72.99, 2660.00, '2025-10-22 17:36:21.377+00', '2025-10-22 17:36:21.377+00', true);
-INSERT INTO public.order_items VALUES (351, 191, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 5, 229.95, 8382.00, '2025-10-22 17:46:00.774+00', '2025-10-22 17:46:00.774+00', true);
-INSERT INTO public.order_items VALUES (352, 192, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 4, 119.96, 4373.00, '2025-10-22 17:47:34.028+00', '2025-10-22 17:47:34.028+00', true);
-INSERT INTO public.order_items VALUES (353, 193, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-22 17:54:59.961+00', '2025-10-22 17:54:59.961+00', true);
-INSERT INTO public.order_items VALUES (354, 194, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 2, 137.98, 5029.00, '2025-10-22 17:57:33.238+00', '2025-10-22 17:57:33.238+00', true);
-INSERT INTO public.order_items VALUES (355, 195, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 5, 199.95, 7288.00, '2025-10-22 17:59:42.059+00', '2025-10-22 17:59:42.059+00', true);
-INSERT INTO public.order_items VALUES (356, 196, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-22 18:01:51.606+00', '2025-10-22 18:01:51.606+00', true);
-INSERT INTO public.order_items VALUES (357, 197, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 2, 79.98, 2915.00, '2025-10-22 18:04:52.239+00', '2025-10-22 18:04:52.239+00', true);
-INSERT INTO public.order_items VALUES (358, 198, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 5, 249.95, 9111.00, '2025-10-22 18:07:17.785+00', '2025-10-22 18:07:17.785+00', true);
-INSERT INTO public.order_items VALUES (359, 199, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-22 18:13:38.506+00', '2025-10-22 18:13:38.506+00', true);
-INSERT INTO public.order_items VALUES (360, 200, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 1, 42.99, 1567.00, '2025-10-22 18:22:46.637+00', '2025-10-22 18:22:46.637+00', true);
-INSERT INTO public.order_items VALUES (361, 201, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 4, 171.96, 6268.00, '2025-10-22 18:23:50.628+00', '2025-10-22 18:23:50.628+00', true);
-INSERT INTO public.order_items VALUES (362, 202, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 1, 38.99, 1421.00, '2025-10-22 18:27:37.114+00', '2025-10-22 18:27:37.114+00', true);
-INSERT INTO public.order_items VALUES (363, 203, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 1, 68.99, 2515.00, '2025-10-22 18:33:04.148+00', '2025-10-22 18:33:04.148+00', true);
-INSERT INTO public.order_items VALUES (364, 204, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 4, 223.96, 8163.00, '2025-10-22 18:36:40.042+00', '2025-10-22 18:36:40.042+00', true);
-INSERT INTO public.order_items VALUES (365, 205, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-22 18:39:50.889+00', '2025-10-22 18:39:50.889+00', true);
-INSERT INTO public.order_items VALUES (366, 206, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-22 18:45:58.426+00', '2025-10-22 18:45:58.426+00', true);
-INSERT INTO public.order_items VALUES (367, 207, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-22 18:52:19.029+00', '2025-10-22 18:52:19.029+00', true);
-INSERT INTO public.order_items VALUES (368, 208, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 4, 119.96, 4373.00, '2025-10-22 18:55:54.608+00', '2025-10-22 18:55:54.608+00', true);
-INSERT INTO public.order_items VALUES (369, 209, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-22 18:58:58.547+00', '2025-10-22 18:58:58.547+00', true);
-INSERT INTO public.order_items VALUES (370, 210, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 2, 145.98, 5321.00, '2025-10-22 19:00:23.064+00', '2025-10-22 19:00:23.064+00', true);
-INSERT INTO public.order_items VALUES (371, 211, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 5, 489.90, 17857.00, '2025-10-22 19:08:15.587+00', '2025-10-22 19:08:15.587+00', true);
-INSERT INTO public.order_items VALUES (372, 212, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 2, 65.98, 2405.00, '2025-10-22 19:11:10.386+00', '2025-10-22 19:11:10.386+00', true);
-INSERT INTO public.order_items VALUES (373, 213, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 4, 199.96, 7289.00, '2025-10-22 19:20:10.788+00', '2025-10-22 19:20:10.788+00', true);
-INSERT INTO public.order_items VALUES (374, 214, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 4, 183.96, 6705.00, '2025-10-22 19:28:28.007+00', '2025-10-22 19:28:28.007+00', true);
-INSERT INTO public.order_items VALUES (375, 215, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 3, 218.97, 7981.00, '2025-10-22 19:32:39.813+00', '2025-10-22 19:32:39.813+00', true);
-INSERT INTO public.order_items VALUES (376, 216, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 3, 119.97, 4373.00, '2025-10-22 19:34:13.883+00', '2025-10-22 19:34:13.883+00', true);
-INSERT INTO public.order_items VALUES (377, 217, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-10-22 19:42:50.21+00', '2025-10-22 19:42:50.21+00', true);
-INSERT INTO public.order_items VALUES (378, 218, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 5, 249.95, 9111.00, '2025-10-22 19:51:56.469+00', '2025-10-22 19:51:56.469+00', true);
-INSERT INTO public.order_items VALUES (379, 219, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-22 19:53:34.737+00', '2025-10-22 19:53:34.737+00', true);
-INSERT INTO public.order_items VALUES (380, 220, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 1, 72.99, 2660.00, '2025-10-22 19:55:38.318+00', '2025-10-22 19:55:38.318+00', true);
-INSERT INTO public.order_items VALUES (381, 221, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 3, 158.97, 5794.00, '2025-10-22 20:05:04.719+00', '2025-10-22 20:05:04.719+00', true);
-INSERT INTO public.order_items VALUES (382, 222, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-22 20:10:25.244+00', '2025-10-22 20:10:25.244+00', true);
-INSERT INTO public.order_items VALUES (383, 223, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-22 20:17:45.898+00', '2025-10-22 20:17:45.898+00', true);
-INSERT INTO public.order_items VALUES (384, 224, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 3, 167.97, 6123.00, '2025-10-22 20:19:12.946+00', '2025-10-22 20:19:12.946+00', true);
-INSERT INTO public.order_items VALUES (385, 225, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-22 20:20:48.112+00', '2025-10-22 20:20:48.112+00', true);
-INSERT INTO public.order_items VALUES (386, 226, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-22 20:30:02.902+00', '2025-10-22 20:30:02.902+00', true);
-INSERT INTO public.order_items VALUES (387, 227, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-22 20:31:34.142+00', '2025-10-22 20:31:34.142+00', true);
-INSERT INTO public.order_items VALUES (388, 228, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-22 20:35:56.394+00', '2025-10-22 20:35:56.394+00', true);
-INSERT INTO public.order_items VALUES (389, 229, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 5, 234.95, 8564.00, '2025-10-22 20:40:40.66+00', '2025-10-22 20:40:40.66+00', true);
-INSERT INTO public.order_items VALUES (390, 230, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 1, 55.99, 2041.00, '2025-10-22 20:47:36.441+00', '2025-10-22 20:47:36.441+00', true);
-INSERT INTO public.order_items VALUES (391, 231, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 1, 42.99, 1567.00, '2025-10-22 20:56:40.417+00', '2025-10-22 20:56:40.417+00', true);
-INSERT INTO public.order_items VALUES (392, 232, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-22 20:59:52.618+00', '2025-10-22 20:59:52.618+00', true);
-INSERT INTO public.order_items VALUES (393, 233, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 4, 391.92, 14285.00, '2025-10-22 21:03:42.421+00', '2025-10-22 21:03:42.421+00', true);
-INSERT INTO public.order_items VALUES (394, 234, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-22 21:10:15.514+00', '2025-10-22 21:10:15.514+00', true);
-INSERT INTO public.order_items VALUES (395, 235, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 3, 116.97, 4264.00, '2025-10-22 21:13:31.522+00', '2025-10-22 21:13:31.522+00', true);
-INSERT INTO public.order_items VALUES (396, 236, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 3, 140.97, 5138.00, '2025-10-22 21:21:01.378+00', '2025-10-22 21:21:01.378+00', true);
-INSERT INTO public.order_items VALUES (397, 237, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 3, 293.94, 10714.00, '2025-10-22 21:27:11.058+00', '2025-10-22 21:27:11.058+00', true);
-INSERT INTO public.order_items VALUES (398, 238, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 5, 264.95, 9657.00, '2025-10-22 21:33:18.485+00', '2025-10-22 21:33:18.485+00', true);
-INSERT INTO public.order_items VALUES (399, 239, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-22 21:40:20.625+00', '2025-10-22 21:40:20.625+00', true);
-INSERT INTO public.order_items VALUES (400, 240, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-22 21:49:10.228+00', '2025-10-22 21:49:10.228+00', true);
-INSERT INTO public.order_items VALUES (401, 241, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-22 21:57:46.181+00', '2025-10-22 21:57:46.181+00', true);
-INSERT INTO public.order_items VALUES (402, 242, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 1, 68.99, 2515.00, '2025-10-22 22:00:08.081+00', '2025-10-22 22:00:08.081+00', true);
-INSERT INTO public.order_items VALUES (403, 243, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 4, 187.96, 6851.00, '2025-10-22 22:10:00.105+00', '2025-10-22 22:10:00.105+00', true);
-INSERT INTO public.order_items VALUES (404, 244, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-22 22:11:06.028+00', '2025-10-22 22:11:06.028+00', true);
-INSERT INTO public.order_items VALUES (405, 245, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 3, 149.97, 5466.00, '2025-10-22 22:20:58.691+00', '2025-10-22 22:20:58.691+00', true);
-INSERT INTO public.order_items VALUES (406, 246, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-22 22:27:18.687+00', '2025-10-22 22:27:18.687+00', true);
-INSERT INTO public.order_items VALUES (407, 247, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 5, 234.95, 8564.00, '2025-10-22 22:30:03.154+00', '2025-10-22 22:30:03.154+00', true);
-INSERT INTO public.order_items VALUES (408, 248, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 4, 291.96, 10642.00, '2025-10-22 22:38:45.515+00', '2025-10-22 22:38:45.515+00', true);
-INSERT INTO public.order_items VALUES (409, 249, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-22 22:41:27.112+00', '2025-10-22 22:41:27.112+00', true);
-INSERT INTO public.order_items VALUES (410, 250, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 4, 211.96, 7726.00, '2025-10-22 22:50:03.175+00', '2025-10-22 22:50:03.175+00', true);
-INSERT INTO public.order_items VALUES (411, 251, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 4, 131.96, 4810.00, '2025-10-22 22:57:59.498+00', '2025-10-22 22:57:59.498+00', true);
-INSERT INTO public.order_items VALUES (412, 252, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 5, 214.95, 7835.00, '2025-10-22 23:06:46.868+00', '2025-10-22 23:06:46.868+00', true);
-INSERT INTO public.order_items VALUES (413, 253, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-22 23:15:56.701+00', '2025-10-22 23:15:56.701+00', true);
-INSERT INTO public.order_items VALUES (414, 254, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 2, 910.00, 33170.00, '2025-10-22 23:18:39.463+00', '2025-10-22 23:18:39.463+00', true);
-INSERT INTO public.order_items VALUES (415, 255, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-22 23:24:46.472+00', '2025-10-22 23:24:46.472+00', true);
-INSERT INTO public.order_items VALUES (416, 256, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-22 23:27:19.211+00', '2025-10-22 23:27:19.211+00', true);
-INSERT INTO public.order_items VALUES (417, 257, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 3, 137.97, 5029.00, '2025-10-22 23:30:44.873+00', '2025-10-22 23:30:44.873+00', true);
-INSERT INTO public.order_items VALUES (418, 258, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-22 23:34:14.593+00', '2025-10-22 23:34:14.593+00', true);
-INSERT INTO public.order_items VALUES (419, 259, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-22 23:40:48.683+00', '2025-10-22 23:40:48.683+00', true);
-INSERT INTO public.order_items VALUES (420, 260, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 4, 171.96, 6268.00, '2025-10-22 23:42:43.777+00', '2025-10-22 23:42:43.777+00', true);
-INSERT INTO public.order_items VALUES (421, 261, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 1, 49.99, 1822.00, '2025-10-22 23:46:18.555+00', '2025-10-22 23:46:18.555+00', true);
-INSERT INTO public.order_items VALUES (422, 262, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-22 23:52:50.779+00', '2025-10-22 23:52:50.779+00', true);
-INSERT INTO public.order_items VALUES (423, 263, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-23 00:02:27.441+00', '2025-10-23 00:02:27.441+00', true);
-INSERT INTO public.order_items VALUES (424, 264, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 3, 116.97, 4264.00, '2025-10-23 00:05:10.967+00', '2025-10-23 00:05:10.967+00', true);
-INSERT INTO public.order_items VALUES (425, 265, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-23 00:09:17.138+00', '2025-10-23 00:09:17.139+00', true);
-INSERT INTO public.order_items VALUES (426, 266, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-23 00:13:32.354+00', '2025-10-23 00:13:32.354+00', true);
-INSERT INTO public.order_items VALUES (427, 267, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 5, 214.95, 7835.00, '2025-10-23 00:16:03.773+00', '2025-10-23 00:16:03.773+00', true);
-INSERT INTO public.order_items VALUES (428, 268, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 1, 46.99, 1713.00, '2025-10-23 00:18:37.394+00', '2025-10-23 00:18:37.394+00', true);
-INSERT INTO public.order_items VALUES (429, 269, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 3, 218.97, 7981.00, '2025-10-23 00:21:47.804+00', '2025-10-23 00:21:47.804+00', true);
-INSERT INTO public.order_items VALUES (430, 270, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-23 00:28:21.877+00', '2025-10-23 00:28:21.877+00', true);
-INSERT INTO public.order_items VALUES (431, 271, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 5, 279.95, 10204.00, '2025-10-23 00:30:31.347+00', '2025-10-23 00:30:31.347+00', true);
-INSERT INTO public.order_items VALUES (432, 272, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 2, 111.98, 4082.00, '2025-10-23 00:38:01.638+00', '2025-10-23 00:38:01.638+00', true);
-INSERT INTO public.order_items VALUES (433, 273, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 1, 455.00, 16585.00, '2025-10-23 00:43:38.886+00', '2025-10-23 00:43:38.886+00', true);
-INSERT INTO public.order_items VALUES (434, 274, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-23 00:46:43.629+00', '2025-10-23 00:46:43.629+00', true);
-INSERT INTO public.order_items VALUES (435, 275, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-23 00:52:09.724+00', '2025-10-23 00:52:09.724+00', true);
-INSERT INTO public.order_items VALUES (436, 276, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 3, 116.97, 4264.00, '2025-10-23 00:55:27.257+00', '2025-10-23 00:55:27.257+00', true);
-INSERT INTO public.order_items VALUES (437, 277, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 4, 155.96, 5685.00, '2025-10-23 00:58:50.825+00', '2025-10-23 00:58:50.825+00', true);
-INSERT INTO public.order_items VALUES (438, 278, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 1, 52.99, 1931.00, '2025-10-23 01:02:50.758+00', '2025-10-23 01:02:50.758+00', true);
-INSERT INTO public.order_items VALUES (439, 279, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-23 01:12:16.18+00', '2025-10-23 01:12:16.18+00', true);
-INSERT INTO public.order_items VALUES (440, 280, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 3, 149.97, 5466.00, '2025-10-23 01:18:43.084+00', '2025-10-23 01:18:43.084+00', true);
-INSERT INTO public.order_items VALUES (441, 281, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 4, 223.96, 8163.00, '2025-10-23 01:26:15.235+00', '2025-10-23 01:26:15.235+00', true);
-INSERT INTO public.order_items VALUES (442, 282, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 5, 264.95, 9657.00, '2025-10-23 01:33:17.342+00', '2025-10-23 01:33:17.342+00', true);
-INSERT INTO public.order_items VALUES (443, 283, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-23 01:36:05.01+00', '2025-10-23 01:36:05.01+00', true);
-INSERT INTO public.order_items VALUES (444, 284, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-23 01:45:04.13+00', '2025-10-23 01:45:04.13+00', true);
-INSERT INTO public.order_items VALUES (445, 285, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-23 01:51:50.71+00', '2025-10-23 01:51:50.71+00', true);
-INSERT INTO public.order_items VALUES (446, 286, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 5, 194.95, 7106.00, '2025-10-23 01:58:38.969+00', '2025-10-23 01:58:38.969+00', true);
-INSERT INTO public.order_items VALUES (447, 287, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 1, 46.99, 1713.00, '2025-10-23 02:08:33.774+00', '2025-10-23 02:08:33.774+00', true);
-INSERT INTO public.order_items VALUES (448, 288, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 4, 187.96, 6851.00, '2025-10-23 02:14:06.722+00', '2025-10-23 02:14:06.722+00', true);
-INSERT INTO public.order_items VALUES (449, 289, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 4, 171.96, 6268.00, '2025-10-23 02:17:26.688+00', '2025-10-23 02:17:26.688+00', true);
-INSERT INTO public.order_items VALUES (450, 290, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 1, 49.99, 1822.00, '2025-10-23 02:23:15.468+00', '2025-10-23 02:23:15.468+00', true);
-INSERT INTO public.order_items VALUES (451, 291, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-23 02:32:18.199+00', '2025-10-23 02:32:18.199+00', true);
-INSERT INTO public.order_items VALUES (452, 292, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 4, 171.96, 6268.00, '2025-10-23 02:35:23.287+00', '2025-10-23 02:35:23.287+00', true);
-INSERT INTO public.order_items VALUES (453, 293, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 4, 211.96, 7726.00, '2025-10-23 02:40:51.744+00', '2025-10-23 02:40:51.744+00', true);
-INSERT INTO public.order_items VALUES (454, 294, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 2, 79.98, 2915.00, '2025-10-23 02:45:22.88+00', '2025-10-23 02:45:22.88+00', true);
-INSERT INTO public.order_items VALUES (455, 295, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 3, 98.97, 3607.00, '2025-10-23 02:53:21.25+00', '2025-10-23 02:53:21.25+00', true);
-INSERT INTO public.order_items VALUES (456, 296, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 3, 89.97, 3279.00, '2025-10-23 02:59:27.828+00', '2025-10-23 02:59:27.828+00', true);
-INSERT INTO public.order_items VALUES (457, 297, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 3, 206.97, 7544.00, '2025-10-23 03:04:49.147+00', '2025-10-23 03:04:49.147+00', true);
-INSERT INTO public.order_items VALUES (458, 298, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-23 03:09:17.821+00', '2025-10-23 03:09:17.821+00', true);
-INSERT INTO public.order_items VALUES (459, 299, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-23 03:13:23.981+00', '2025-10-23 03:13:23.981+00', true);
-INSERT INTO public.order_items VALUES (460, 300, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 3, 137.97, 5029.00, '2025-10-23 10:41:23.021+00', '2025-10-23 10:41:23.021+00', true);
-INSERT INTO public.order_items VALUES (461, 301, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 5, 164.95, 6012.00, '2025-10-23 10:44:10.919+00', '2025-10-23 10:44:10.919+00', true);
-INSERT INTO public.order_items VALUES (462, 302, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 3, 116.97, 4264.00, '2025-10-23 10:45:13.254+00', '2025-10-23 10:45:13.254+00', true);
-INSERT INTO public.order_items VALUES (463, 303, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 2, 91.98, 3353.00, '2025-10-23 10:48:22.097+00', '2025-10-23 10:48:22.097+00', true);
-INSERT INTO public.order_items VALUES (464, 304, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-23 10:57:36.834+00', '2025-10-23 10:57:36.834+00', true);
-INSERT INTO public.order_items VALUES (465, 305, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 5, 364.95, 13302.00, '2025-10-23 11:06:16.261+00', '2025-10-23 11:06:16.261+00', true);
-INSERT INTO public.order_items VALUES (466, 306, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-23 11:14:19.874+00', '2025-10-23 11:14:19.874+00', true);
-INSERT INTO public.order_items VALUES (467, 307, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-23 11:18:49.911+00', '2025-10-23 11:18:49.911+00', true);
-INSERT INTO public.order_items VALUES (468, 308, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 3, 128.97, 4701.00, '2025-10-23 11:25:17.305+00', '2025-10-23 11:25:17.305+00', true);
-INSERT INTO public.order_items VALUES (469, 309, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-23 11:33:44.766+00', '2025-10-23 11:33:44.766+00', true);
-INSERT INTO public.order_items VALUES (470, 310, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 2, 59.98, 2186.00, '2025-10-23 11:38:42.328+00', '2025-10-23 11:38:42.328+00', true);
-INSERT INTO public.order_items VALUES (471, 311, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 3, 116.97, 4264.00, '2025-10-23 11:48:14.889+00', '2025-10-23 11:48:14.889+00', true);
-INSERT INTO public.order_items VALUES (472, 312, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-23 11:56:09.596+00', '2025-10-23 11:56:09.596+00', true);
-INSERT INTO public.order_items VALUES (473, 313, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-23 11:59:55.963+00', '2025-10-23 11:59:55.963+00', true);
-INSERT INTO public.order_items VALUES (474, 314, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-23 12:02:43.409+00', '2025-10-23 12:02:43.409+00', true);
-INSERT INTO public.order_items VALUES (475, 315, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 3, 137.97, 5029.00, '2025-10-23 12:08:55.713+00', '2025-10-23 12:08:55.713+00', true);
-INSERT INTO public.order_items VALUES (476, 316, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-23 12:13:44.281+00', '2025-10-23 12:13:44.281+00', true);
-INSERT INTO public.order_items VALUES (477, 317, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-23 12:16:29.211+00', '2025-10-23 12:16:29.211+00', true);
-INSERT INTO public.order_items VALUES (478, 318, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 4, 199.96, 7289.00, '2025-10-23 12:19:00.914+00', '2025-10-23 12:19:00.914+00', true);
-INSERT INTO public.order_items VALUES (479, 319, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 1, 42.99, 1567.00, '2025-10-23 12:26:53.572+00', '2025-10-23 12:26:53.572+00', true);
-INSERT INTO public.order_items VALUES (480, 320, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 2, 59.98, 2186.00, '2025-10-23 12:32:30.479+00', '2025-10-23 12:32:30.479+00', true);
-INSERT INTO public.order_items VALUES (481, 321, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-23 12:41:45.4+00', '2025-10-23 12:41:45.4+00', true);
-INSERT INTO public.order_items VALUES (482, 322, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-23 12:47:16.567+00', '2025-10-23 12:47:16.567+00', true);
-INSERT INTO public.order_items VALUES (483, 323, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 2, 77.98, 2842.00, '2025-10-23 12:56:06.29+00', '2025-10-23 12:56:06.29+00', true);
-INSERT INTO public.order_items VALUES (484, 324, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 1, 38.99, 1421.00, '2025-10-23 13:00:50.553+00', '2025-10-23 13:00:50.553+00', true);
-INSERT INTO public.order_items VALUES (485, 325, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-23 13:04:48.667+00', '2025-10-23 13:04:48.667+00', true);
-INSERT INTO public.order_items VALUES (486, 326, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 2, 195.96, 7143.00, '2025-10-23 13:08:25.299+00', '2025-10-23 13:08:25.299+00', true);
-INSERT INTO public.order_items VALUES (487, 327, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-23 13:15:04.746+00', '2025-10-23 13:15:04.746+00', true);
-INSERT INTO public.order_items VALUES (488, 328, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-23 13:17:33.561+00', '2025-10-23 13:17:33.561+00', true);
-INSERT INTO public.order_items VALUES (489, 329, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-23 13:22:44.14+00', '2025-10-23 13:22:44.14+00', true);
-INSERT INTO public.order_items VALUES (490, 330, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-23 13:27:28.813+00', '2025-10-23 13:27:28.813+00', true);
-INSERT INTO public.order_items VALUES (491, 331, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-23 13:36:47.072+00', '2025-10-23 13:36:47.072+00', true);
-INSERT INTO public.order_items VALUES (492, 332, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-23 13:40:58.026+00', '2025-10-23 13:40:58.026+00', true);
-INSERT INTO public.order_items VALUES (493, 333, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 3, 98.97, 3607.00, '2025-10-23 13:45:15.216+00', '2025-10-23 13:45:15.216+00', true);
-INSERT INTO public.order_items VALUES (494, 334, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 2, 59.98, 2186.00, '2025-10-23 13:55:15.059+00', '2025-10-23 13:55:15.059+00', true);
-INSERT INTO public.order_items VALUES (495, 335, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 4, 187.96, 6851.00, '2025-10-23 14:04:55.99+00', '2025-10-23 14:04:55.99+00', true);
-INSERT INTO public.order_items VALUES (496, 336, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 1, 38.99, 1421.00, '2025-10-23 14:13:02.291+00', '2025-10-23 14:13:02.291+00', true);
-INSERT INTO public.order_items VALUES (497, 337, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-23 14:14:18.855+00', '2025-10-23 14:14:18.855+00', true);
-INSERT INTO public.order_items VALUES (498, 338, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 5, 489.90, 17857.00, '2025-10-23 14:21:04.638+00', '2025-10-23 14:21:04.638+00', true);
-INSERT INTO public.order_items VALUES (499, 339, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 3, 137.97, 5029.00, '2025-10-23 14:30:53.887+00', '2025-10-23 14:30:53.887+00', true);
-INSERT INTO public.order_items VALUES (500, 340, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 5, 199.95, 7288.00, '2025-10-23 14:40:09.285+00', '2025-10-23 14:40:09.285+00', true);
-INSERT INTO public.order_items VALUES (501, 341, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 1, 32.99, 1202.00, '2025-10-23 14:46:46.981+00', '2025-10-23 14:46:46.981+00', true);
-INSERT INTO public.order_items VALUES (502, 342, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 5, 199.95, 7288.00, '2025-10-23 14:53:19.711+00', '2025-10-23 14:53:19.711+00', true);
-INSERT INTO public.order_items VALUES (503, 343, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 5, 249.95, 9111.00, '2025-10-23 15:02:52.778+00', '2025-10-23 15:02:52.778+00', true);
-INSERT INTO public.order_items VALUES (504, 344, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-23 15:05:23.245+00', '2025-10-23 15:05:23.245+00', true);
-INSERT INTO public.order_items VALUES (505, 345, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 1, 52.99, 1931.00, '2025-10-23 15:09:43.895+00', '2025-10-23 15:09:43.895+00', true);
-INSERT INTO public.order_items VALUES (506, 346, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-23 15:11:21.657+00', '2025-10-23 15:11:21.657+00', true);
-INSERT INTO public.order_items VALUES (507, 347, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 2, 77.98, 2842.00, '2025-10-23 15:14:59.767+00', '2025-10-23 15:14:59.767+00', true);
-INSERT INTO public.order_items VALUES (508, 348, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 3, 137.97, 5029.00, '2025-10-23 15:21:43.206+00', '2025-10-23 15:21:43.206+00', true);
-INSERT INTO public.order_items VALUES (509, 349, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-23 15:27:59.274+00', '2025-10-23 15:27:59.274+00', true);
-INSERT INTO public.order_items VALUES (510, 350, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 2, 137.98, 5029.00, '2025-10-23 15:33:14.424+00', '2025-10-23 15:33:14.424+00', true);
-INSERT INTO public.order_items VALUES (511, 351, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 4, 211.96, 7726.00, '2025-10-23 15:38:27.06+00', '2025-10-23 15:38:27.06+00', true);
-INSERT INTO public.order_items VALUES (512, 352, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 2, 145.98, 5321.00, '2025-10-23 15:40:53.256+00', '2025-10-23 15:40:53.256+00', true);
-INSERT INTO public.order_items VALUES (513, 353, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-23 15:46:00.128+00', '2025-10-23 15:46:00.128+00', true);
-INSERT INTO public.order_items VALUES (514, 354, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 1, 52.99, 1931.00, '2025-10-23 15:51:22.429+00', '2025-10-23 15:51:22.429+00', true);
-INSERT INTO public.order_items VALUES (515, 355, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 3, 89.97, 3279.00, '2025-10-23 15:58:02.191+00', '2025-10-23 15:58:02.191+00', true);
-INSERT INTO public.order_items VALUES (516, 356, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 5, 199.95, 7288.00, '2025-10-23 16:00:05.356+00', '2025-10-23 16:00:05.356+00', true);
-INSERT INTO public.order_items VALUES (517, 357, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-23 16:03:50.607+00', '2025-10-23 16:03:50.607+00', true);
-INSERT INTO public.order_items VALUES (518, 358, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-23 16:08:45.367+00', '2025-10-23 16:08:45.367+00', true);
-INSERT INTO public.order_items VALUES (519, 359, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 2, 137.98, 5029.00, '2025-10-23 16:18:16.549+00', '2025-10-23 16:18:16.549+00', true);
-INSERT INTO public.order_items VALUES (520, 360, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 3, 1365.00, 49754.00, '2025-10-23 16:25:23.243+00', '2025-10-23 16:25:23.243+00', true);
-INSERT INTO public.order_items VALUES (521, 361, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 5, 214.95, 7835.00, '2025-10-23 16:28:16.4+00', '2025-10-23 16:28:16.4+00', true);
-INSERT INTO public.order_items VALUES (522, 362, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-23 16:30:09.434+00', '2025-10-23 16:30:09.434+00', true);
-INSERT INTO public.order_items VALUES (523, 363, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-23 16:38:42.489+00', '2025-10-23 16:38:42.489+00', true);
-INSERT INTO public.order_items VALUES (524, 364, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-23 16:40:13.507+00', '2025-10-23 16:40:13.507+00', true);
-INSERT INTO public.order_items VALUES (525, 365, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-23 16:45:36.577+00', '2025-10-23 16:45:36.577+00', true);
-INSERT INTO public.order_items VALUES (526, 366, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-23 16:55:24.63+00', '2025-10-23 16:55:24.63+00', true);
-INSERT INTO public.order_items VALUES (527, 367, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 4, 1820.00, 66339.00, '2025-10-23 17:00:08.882+00', '2025-10-23 17:00:08.882+00', true);
-INSERT INTO public.order_items VALUES (528, 368, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-23 17:01:44.014+00', '2025-10-23 17:01:44.014+00', true);
-INSERT INTO public.order_items VALUES (529, 369, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-23 17:04:56.35+00', '2025-10-23 17:04:56.35+00', true);
-INSERT INTO public.order_items VALUES (530, 370, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 4, 211.96, 7726.00, '2025-10-23 17:07:46.542+00', '2025-10-23 17:07:46.542+00', true);
-INSERT INTO public.order_items VALUES (531, 371, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 1, 38.99, 1421.00, '2025-10-23 17:08:58.744+00', '2025-10-23 17:08:58.744+00', true);
-INSERT INTO public.order_items VALUES (532, 372, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 4, 131.96, 4810.00, '2025-10-23 17:15:10.786+00', '2025-10-23 17:15:10.786+00', true);
-INSERT INTO public.order_items VALUES (533, 373, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 2, 145.98, 5321.00, '2025-10-23 17:24:18.606+00', '2025-10-23 17:24:18.606+00', true);
-INSERT INTO public.order_items VALUES (534, 374, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-23 17:30:14.61+00', '2025-10-23 17:30:14.61+00', true);
-INSERT INTO public.order_items VALUES (535, 375, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 5, 164.95, 6012.00, '2025-10-23 17:33:44.61+00', '2025-10-23 17:33:44.61+00', true);
-INSERT INTO public.order_items VALUES (536, 376, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 5, 234.95, 8564.00, '2025-10-23 17:41:58.969+00', '2025-10-23 17:41:58.969+00', true);
-INSERT INTO public.order_items VALUES (537, 377, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-23 17:51:03.908+00', '2025-10-23 17:51:03.908+00', true);
-INSERT INTO public.order_items VALUES (538, 378, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 4, 211.96, 7726.00, '2025-10-23 17:55:31.979+00', '2025-10-23 17:55:31.979+00', true);
-INSERT INTO public.order_items VALUES (539, 379, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-23 17:58:33.644+00', '2025-10-23 17:58:33.644+00', true);
-INSERT INTO public.order_items VALUES (540, 380, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 1, 49.99, 1822.00, '2025-10-23 18:05:17.666+00', '2025-10-23 18:05:17.666+00', true);
-INSERT INTO public.order_items VALUES (541, 381, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-23 18:14:44.529+00', '2025-10-23 18:14:44.529+00', true);
-INSERT INTO public.order_items VALUES (542, 382, 126, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 3, 77.97, 2842.00, '2025-10-23 18:19:54.015+00', '2025-10-23 18:19:54.015+00', true);
-INSERT INTO public.order_items VALUES (543, 383, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-23 18:24:11.151+00', '2025-10-23 18:24:11.151+00', true);
-INSERT INTO public.order_items VALUES (544, 384, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 4, 131.96, 4810.00, '2025-10-23 18:27:30.117+00', '2025-10-23 18:27:30.117+00', true);
-INSERT INTO public.order_items VALUES (545, 385, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 3, 128.97, 4701.00, '2025-10-23 18:34:25.166+00', '2025-10-23 18:34:25.166+00', true);
-INSERT INTO public.order_items VALUES (546, 386, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 4, 211.96, 7726.00, '2025-10-23 18:41:26.23+00', '2025-10-23 18:41:26.23+00', true);
-INSERT INTO public.order_items VALUES (547, 387, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 2, 137.98, 5029.00, '2025-10-23 18:45:38.627+00', '2025-10-23 18:45:38.627+00', true);
-INSERT INTO public.order_items VALUES (548, 388, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 3, 167.97, 6123.00, '2025-10-23 18:52:38.189+00', '2025-10-23 18:52:38.189+00', true);
-INSERT INTO public.order_items VALUES (549, 389, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 1, 46.99, 1713.00, '2025-10-23 18:54:46.05+00', '2025-10-23 18:54:46.05+00', true);
-INSERT INTO public.order_items VALUES (550, 390, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-23 18:56:11.546+00', '2025-10-23 18:56:11.546+00', true);
-INSERT INTO public.order_items VALUES (551, 391, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 5, 199.95, 7288.00, '2025-10-23 19:02:45.491+00', '2025-10-23 19:02:45.491+00', true);
-INSERT INTO public.order_items VALUES (552, 392, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-10-23 19:12:37.524+00', '2025-10-23 19:12:37.524+00', true);
-INSERT INTO public.order_items VALUES (553, 393, 142, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 5, 129.95, 4737.00, '2025-10-23 19:19:36.584+00', '2025-10-23 19:19:36.584+00', true);
-INSERT INTO public.order_items VALUES (554, 394, 126, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 1, 25.99, 947.00, '2025-10-23 19:27:38.077+00', '2025-10-23 19:27:38.077+00', true);
-INSERT INTO public.order_items VALUES (555, 395, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-23 19:29:33.343+00', '2025-10-23 19:29:33.343+00', true);
-INSERT INTO public.order_items VALUES (556, 396, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-23 19:36:01.155+00', '2025-10-23 19:36:01.155+00', true);
-INSERT INTO public.order_items VALUES (557, 397, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 5, 214.95, 7835.00, '2025-10-23 19:41:39.523+00', '2025-10-23 19:41:39.523+00', true);
-INSERT INTO public.order_items VALUES (558, 398, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-23 19:46:48.266+00', '2025-10-23 19:46:48.266+00', true);
-INSERT INTO public.order_items VALUES (559, 399, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-23 19:48:47.254+00', '2025-10-23 19:48:47.254+00', true);
-INSERT INTO public.order_items VALUES (560, 400, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 2, 79.98, 2915.00, '2025-10-23 19:56:56.093+00', '2025-10-23 19:56:56.093+00', true);
-INSERT INTO public.order_items VALUES (561, 401, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 3, 218.97, 7981.00, '2025-10-23 20:01:51.217+00', '2025-10-23 20:01:51.217+00', true);
-INSERT INTO public.order_items VALUES (562, 402, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 4, 187.96, 6851.00, '2025-10-23 20:03:44.811+00', '2025-10-23 20:03:44.811+00', true);
-INSERT INTO public.order_items VALUES (563, 403, 115, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 2, 51.98, 1895.00, '2025-10-23 20:12:07.167+00', '2025-10-23 20:12:07.167+00', true);
-INSERT INTO public.order_items VALUES (564, 404, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 1, 29.99, 1093.00, '2025-10-23 20:16:29.377+00', '2025-10-23 20:16:29.377+00', true);
-INSERT INTO public.order_items VALUES (565, 405, 142, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 4, 103.96, 3789.00, '2025-10-23 20:20:29.271+00', '2025-10-23 20:20:29.271+00', true);
-INSERT INTO public.order_items VALUES (566, 406, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-23 20:26:10.665+00', '2025-10-23 20:26:10.665+00', true);
-INSERT INTO public.order_items VALUES (567, 407, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 5, 249.95, 9111.00, '2025-10-23 20:31:28.144+00', '2025-10-23 20:31:28.144+00', true);
-INSERT INTO public.order_items VALUES (568, 408, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 5, 2275.00, 82924.00, '2025-10-23 20:34:47.743+00', '2025-10-23 20:34:47.743+00', true);
-INSERT INTO public.order_items VALUES (569, 409, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-23 20:42:39.568+00', '2025-10-23 20:42:39.568+00', true);
-INSERT INTO public.order_items VALUES (570, 410, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-23 20:44:19.109+00', '2025-10-23 20:44:19.109+00', true);
-INSERT INTO public.order_items VALUES (571, 411, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 3, 218.97, 7981.00, '2025-10-23 20:48:11.912+00', '2025-10-23 20:48:11.912+00', true);
-INSERT INTO public.order_items VALUES (572, 412, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 2, 145.98, 5321.00, '2025-10-23 20:51:58.494+00', '2025-10-23 20:51:58.494+00', true);
-INSERT INTO public.order_items VALUES (573, 413, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 2, 99.98, 3644.00, '2025-10-23 20:57:00.845+00', '2025-10-23 20:57:00.845+00', true);
-INSERT INTO public.order_items VALUES (574, 414, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-23 21:04:10.46+00', '2025-10-23 21:04:10.46+00', true);
-INSERT INTO public.order_items VALUES (575, 415, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 4, 399.96, 14579.00, '2025-10-23 21:12:44.149+00', '2025-10-23 21:12:44.149+00', true);
-INSERT INTO public.order_items VALUES (576, 416, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 2, 195.96, 7143.00, '2025-10-23 21:19:42.781+00', '2025-10-23 21:19:42.781+00', true);
-INSERT INTO public.order_items VALUES (577, 417, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 4, 171.96, 6268.00, '2025-10-23 21:22:45.311+00', '2025-10-23 21:22:45.311+00', true);
-INSERT INTO public.order_items VALUES (578, 418, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-10-23 21:27:31.009+00', '2025-10-23 21:27:31.009+00', true);
-INSERT INTO public.order_items VALUES (579, 419, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 1, 32.99, 1202.00, '2025-10-23 21:31:11.319+00', '2025-10-23 21:31:11.319+00', true);
-INSERT INTO public.order_items VALUES (580, 420, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 5, 344.95, 12573.00, '2025-10-23 21:33:15.844+00', '2025-10-23 21:33:15.844+00', true);
-INSERT INTO public.order_items VALUES (581, 421, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 5, 214.95, 7835.00, '2025-10-23 21:42:25.145+00', '2025-10-23 21:42:25.145+00', true);
-INSERT INTO public.order_items VALUES (582, 422, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 1, 55.99, 2041.00, '2025-10-23 21:52:22.473+00', '2025-10-23 21:52:22.473+00', true);
-INSERT INTO public.order_items VALUES (583, 423, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 1, 455.00, 16585.00, '2025-10-23 21:57:00.128+00', '2025-10-23 21:57:00.128+00', true);
-INSERT INTO public.order_items VALUES (584, 424, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 2, 910.00, 33170.00, '2025-10-23 21:58:31.514+00', '2025-10-23 21:58:31.514+00', true);
-INSERT INTO public.order_items VALUES (585, 425, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 5, 364.95, 13302.00, '2025-10-23 22:07:14.564+00', '2025-10-23 22:07:14.564+00', true);
-INSERT INTO public.order_items VALUES (586, 426, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 5, 214.95, 7835.00, '2025-10-23 22:09:56.367+00', '2025-10-23 22:09:56.367+00', true);
-INSERT INTO public.order_items VALUES (587, 427, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 1, 32.99, 1202.00, '2025-10-23 22:16:06.3+00', '2025-10-23 22:16:06.3+00', true);
-INSERT INTO public.order_items VALUES (588, 428, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 1, 45.99, 1676.00, '2025-10-23 22:23:44.471+00', '2025-10-23 22:23:44.471+00', true);
-INSERT INTO public.order_items VALUES (589, 429, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 5, 229.95, 8382.00, '2025-10-23 22:29:26.59+00', '2025-10-23 22:29:26.59+00', true);
-INSERT INTO public.order_items VALUES (590, 430, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-23 22:36:45.892+00', '2025-10-23 22:36:45.892+00', true);
-INSERT INTO public.order_items VALUES (591, 431, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 5, 344.95, 12573.00, '2025-10-23 22:40:24.42+00', '2025-10-23 22:40:24.42+00', true);
-INSERT INTO public.order_items VALUES (592, 432, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-23 22:44:57.389+00', '2025-10-23 22:44:57.389+00', true);
-INSERT INTO public.order_items VALUES (593, 433, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 2, 910.00, 33170.00, '2025-10-23 22:49:28.455+00', '2025-10-23 22:49:28.455+00', true);
-INSERT INTO public.order_items VALUES (594, 434, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 3, 89.97, 3279.00, '2025-10-23 22:59:06.474+00', '2025-10-23 22:59:06.474+00', true);
-INSERT INTO public.order_items VALUES (595, 435, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 1, 38.99, 1421.00, '2025-10-23 23:02:21.452+00', '2025-10-23 23:02:21.452+00', true);
-INSERT INTO public.order_items VALUES (596, 436, 142, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 3, 77.97, 2842.00, '2025-10-23 23:06:37.091+00', '2025-10-23 23:06:37.091+00', true);
-INSERT INTO public.order_items VALUES (597, 437, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 5, 229.95, 8382.00, '2025-10-23 23:08:16.73+00', '2025-10-23 23:08:16.73+00', true);
-INSERT INTO public.order_items VALUES (598, 438, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 5, 499.95, 18223.00, '2025-10-23 23:09:54.418+00', '2025-10-23 23:09:54.418+00', true);
-INSERT INTO public.order_items VALUES (599, 439, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 1, 46.99, 1713.00, '2025-10-23 23:14:00.69+00', '2025-10-23 23:14:00.69+00', true);
-INSERT INTO public.order_items VALUES (600, 440, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-23 23:16:26.244+00', '2025-10-23 23:16:26.244+00', true);
-INSERT INTO public.order_items VALUES (601, 441, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-10-23 23:22:21.17+00', '2025-10-23 23:22:21.17+00', true);
-INSERT INTO public.order_items VALUES (602, 442, 142, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 2, 51.98, 1895.00, '2025-10-23 23:25:53.024+00', '2025-10-23 23:25:53.024+00', true);
-INSERT INTO public.order_items VALUES (603, 443, 142, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 4, 103.96, 3789.00, '2025-10-23 23:30:11.56+00', '2025-10-23 23:30:11.56+00', true);
-INSERT INTO public.order_items VALUES (604, 444, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-23 23:39:20.216+00', '2025-10-23 23:39:20.216+00', true);
-INSERT INTO public.order_items VALUES (605, 445, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 4, 391.92, 14285.00, '2025-10-23 23:42:29.138+00', '2025-10-23 23:42:29.138+00', true);
-INSERT INTO public.order_items VALUES (606, 446, 126, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 3, 77.97, 2842.00, '2025-10-23 23:45:09.999+00', '2025-10-23 23:45:09.999+00', true);
-INSERT INTO public.order_items VALUES (607, 447, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 1, 455.00, 16585.00, '2025-10-23 23:46:41.846+00', '2025-10-23 23:46:41.846+00', true);
-INSERT INTO public.order_items VALUES (608, 448, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-10-23 23:56:01.104+00', '2025-10-23 23:56:01.104+00', true);
-INSERT INTO public.order_items VALUES (609, 449, 126, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 3, 77.97, 2842.00, '2025-10-24 00:05:40.733+00', '2025-10-24 00:05:40.733+00', true);
-INSERT INTO public.order_items VALUES (610, 450, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 3, 1365.00, 49754.00, '2025-11-03 13:09:16.081533+00', '2025-11-03 13:09:16.081533+00', true);
-INSERT INTO public.order_items VALUES (611, 450, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 13:09:16.081533+00', '2025-11-03 13:09:16.081533+00', true);
-INSERT INTO public.order_items VALUES (612, 450, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 13:09:16.081533+00', '2025-11-03 13:09:16.081533+00', true);
-INSERT INTO public.order_items VALUES (613, 451, 115, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 2, 51.98, 1895.00, '2025-11-03 13:09:54.703952+00', '2025-11-03 13:09:54.703952+00', true);
-INSERT INTO public.order_items VALUES (614, 451, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 3, 116.97, 4264.00, '2025-11-03 13:09:54.703952+00', '2025-11-03 13:09:54.703952+00', true);
-INSERT INTO public.order_items VALUES (615, 452, 115, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 1, 25.99, 947.00, '2025-11-03 13:11:13.787906+00', '2025-11-03 13:11:13.787906+00', true);
-INSERT INTO public.order_items VALUES (616, 452, 126, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 3, 77.97, 2842.00, '2025-11-03 13:11:13.787906+00', '2025-11-03 13:11:13.787906+00', true);
-INSERT INTO public.order_items VALUES (617, 452, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 13:11:13.787906+00', '2025-11-03 13:11:13.787906+00', true);
-INSERT INTO public.order_items VALUES (618, 452, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 13:11:13.787906+00', '2025-11-03 13:11:13.787906+00', true);
-INSERT INTO public.order_items VALUES (619, 452, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 2, 77.98, 2842.00, '2025-11-03 13:11:13.787906+00', '2025-11-03 13:11:13.787906+00', true);
-INSERT INTO public.order_items VALUES (620, 453, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-11-03 13:12:12.315171+00', '2025-11-03 13:12:12.315171+00', true);
-INSERT INTO public.order_items VALUES (621, 454, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 13:12:40.418356+00', '2025-11-03 13:12:40.418356+00', true);
-INSERT INTO public.order_items VALUES (622, 454, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 1, 72.99, 2660.00, '2025-11-03 13:12:40.418356+00', '2025-11-03 13:12:40.418356+00', true);
-INSERT INTO public.order_items VALUES (623, 454, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 3, 293.94, 10714.00, '2025-11-03 13:12:40.418356+00', '2025-11-03 13:12:40.418356+00', true);
-INSERT INTO public.order_items VALUES (624, 454, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 13:12:40.418356+00', '2025-11-03 13:12:40.418356+00', true);
-INSERT INTO public.order_items VALUES (625, 454, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 3, 206.97, 7544.00, '2025-11-03 13:12:40.418356+00', '2025-11-03 13:12:40.418356+00', true);
-INSERT INTO public.order_items VALUES (626, 455, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 1, 32.99, 1202.00, '2025-11-03 13:13:08.509969+00', '2025-11-03 13:13:08.509969+00', true);
-INSERT INTO public.order_items VALUES (627, 455, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 2, 910.00, 33170.00, '2025-11-03 13:13:08.509969+00', '2025-11-03 13:13:08.509969+00', true);
-INSERT INTO public.order_items VALUES (628, 456, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 13:13:26.238569+00', '2025-11-03 13:13:26.238569+00', true);
-INSERT INTO public.order_items VALUES (629, 456, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 2, 105.98, 3863.00, '2025-11-03 13:13:26.238569+00', '2025-11-03 13:13:26.238569+00', true);
-INSERT INTO public.order_items VALUES (630, 456, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 1, 42.99, 1567.00, '2025-11-03 13:13:26.238569+00', '2025-11-03 13:13:26.238569+00', true);
-INSERT INTO public.order_items VALUES (631, 456, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 2, 137.98, 5029.00, '2025-11-03 13:13:26.238569+00', '2025-11-03 13:13:26.238569+00', true);
-INSERT INTO public.order_items VALUES (632, 457, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 1, 49.99, 1822.00, '2025-11-03 13:13:47.057753+00', '2025-11-03 13:13:47.057753+00', true);
-INSERT INTO public.order_items VALUES (633, 457, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 1, 68.99, 2515.00, '2025-11-03 13:13:47.057753+00', '2025-11-03 13:13:47.057753+00', true);
-INSERT INTO public.order_items VALUES (634, 457, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 13:13:47.057753+00', '2025-11-03 13:13:47.057753+00', true);
-INSERT INTO public.order_items VALUES (635, 458, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 13:14:06.222404+00', '2025-11-03 13:14:06.222404+00', true);
-INSERT INTO public.order_items VALUES (636, 458, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 1, 45.99, 1676.00, '2025-11-03 13:14:06.222404+00', '2025-11-03 13:14:06.222404+00', true);
-INSERT INTO public.order_items VALUES (637, 458, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 2, 93.98, 3426.00, '2025-11-03 13:14:06.222404+00', '2025-11-03 13:14:06.222404+00', true);
-INSERT INTO public.order_items VALUES (638, 459, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 13:14:26.465897+00', '2025-11-03 13:14:26.465897+00', true);
-INSERT INTO public.order_items VALUES (639, 459, 142, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 3, 77.97, 2842.00, '2025-11-03 13:14:26.465897+00', '2025-11-03 13:14:26.465897+00', true);
-INSERT INTO public.order_items VALUES (640, 460, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 2, 137.98, 5029.00, '2025-11-03 13:14:45.767524+00', '2025-11-03 13:14:45.767524+00', true);
-INSERT INTO public.order_items VALUES (641, 461, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 3, 140.97, 5138.00, '2025-11-03 13:14:55.626294+00', '2025-11-03 13:14:55.626294+00', true);
-INSERT INTO public.order_items VALUES (642, 462, 115, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 1, 25.99, 947.00, '2025-11-03 13:16:06.297955+00', '2025-11-03 13:16:06.297955+00', true);
-INSERT INTO public.order_items VALUES (643, 462, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 13:16:06.297955+00', '2025-11-03 13:16:06.297955+00', true);
-INSERT INTO public.order_items VALUES (644, 462, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 13:16:06.297955+00', '2025-11-03 13:16:06.297955+00', true);
-INSERT INTO public.order_items VALUES (645, 463, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 3, 1365.00, 49754.00, '2025-11-03 13:26:21.426553+00', '2025-11-03 13:26:21.426553+00', true);
-INSERT INTO public.order_items VALUES (646, 463, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 13:26:21.426553+00', '2025-11-03 13:26:21.426553+00', true);
-INSERT INTO public.order_items VALUES (647, 463, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 13:26:21.426553+00', '2025-11-03 13:26:21.426553+00', true);
-INSERT INTO public.order_items VALUES (648, 463, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 2, 145.98, 5321.00, '2025-11-03 13:26:21.426553+00', '2025-11-03 13:26:21.426553+00', true);
-INSERT INTO public.order_items VALUES (649, 463, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 1, 52.99, 1931.00, '2025-11-03 13:26:21.426553+00', '2025-11-03 13:26:21.426553+00', true);
-INSERT INTO public.order_items VALUES (650, 464, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 13:38:10.68386+00', '2025-11-03 13:38:10.68386+00', true);
-INSERT INTO public.order_items VALUES (651, 464, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 13:38:10.68386+00', '2025-11-03 13:38:10.68386+00', true);
-INSERT INTO public.order_items VALUES (652, 464, 115, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 3, 77.97, 2842.00, '2025-11-03 13:38:10.68386+00', '2025-11-03 13:38:10.68386+00', true);
-INSERT INTO public.order_items VALUES (653, 464, 126, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 1, 25.99, 947.00, '2025-11-03 13:38:10.68386+00', '2025-11-03 13:38:10.68386+00', true);
-INSERT INTO public.order_items VALUES (654, 465, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 3, 128.97, 4701.00, '2025-11-03 13:40:26.245999+00', '2025-11-03 13:40:26.245999+00', true);
-INSERT INTO public.order_items VALUES (655, 465, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 3, 98.97, 3607.00, '2025-11-03 13:40:26.245999+00', '2025-11-03 13:40:26.245999+00', true);
-INSERT INTO public.order_items VALUES (656, 465, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 13:40:26.245999+00', '2025-11-03 13:40:26.245999+00', true);
-INSERT INTO public.order_items VALUES (657, 465, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 13:40:26.245999+00', '2025-11-03 13:40:26.245999+00', true);
-INSERT INTO public.order_items VALUES (658, 465, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 2, 105.98, 3863.00, '2025-11-03 13:40:26.245999+00', '2025-11-03 13:40:26.245999+00', true);
-INSERT INTO public.order_items VALUES (659, 466, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 13:47:19.732109+00', '2025-11-03 13:47:19.732109+00', true);
-INSERT INTO public.order_items VALUES (660, 466, 142, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 1, 25.99, 947.00, '2025-11-03 13:47:19.732109+00', '2025-11-03 13:47:19.732109+00', true);
-INSERT INTO public.order_items VALUES (661, 466, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 2, 111.98, 4082.00, '2025-11-03 13:47:19.732109+00', '2025-11-03 13:47:19.732109+00', true);
-INSERT INTO public.order_items VALUES (662, 466, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 1, 42.99, 1567.00, '2025-11-03 13:47:19.732109+00', '2025-11-03 13:47:19.732109+00', true);
-INSERT INTO public.order_items VALUES (663, 467, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 13:49:51.109368+00', '2025-11-03 13:49:51.109368+00', true);
-INSERT INTO public.order_items VALUES (664, 467, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 13:49:51.109368+00', '2025-11-03 13:49:51.109368+00', true);
-INSERT INTO public.order_items VALUES (665, 467, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 3, 98.97, 3607.00, '2025-11-03 13:49:51.109368+00', '2025-11-03 13:49:51.109368+00', true);
-INSERT INTO public.order_items VALUES (666, 467, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 1, 68.99, 2515.00, '2025-11-03 13:49:51.109368+00', '2025-11-03 13:49:51.109368+00', true);
-INSERT INTO public.order_items VALUES (667, 467, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 2, 111.98, 4082.00, '2025-11-03 13:49:51.109368+00', '2025-11-03 13:49:51.109368+00', true);
-INSERT INTO public.order_items VALUES (668, 468, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 13:51:24.67782+00', '2025-11-03 13:51:24.67782+00', true);
-INSERT INTO public.order_items VALUES (669, 469, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 13:55:49.011443+00', '2025-11-03 13:55:49.011443+00', true);
-INSERT INTO public.order_items VALUES (670, 469, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 3, 137.97, 5029.00, '2025-11-03 13:55:49.011443+00', '2025-11-03 13:55:49.011443+00', true);
-INSERT INTO public.order_items VALUES (671, 469, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 2, 93.98, 3426.00, '2025-11-03 13:55:49.011443+00', '2025-11-03 13:55:49.011443+00', true);
-INSERT INTO public.order_items VALUES (672, 470, 142, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 1, 25.99, 947.00, '2025-11-03 14:00:42.115933+00', '2025-11-03 14:00:42.115933+00', true);
-INSERT INTO public.order_items VALUES (673, 470, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 14:00:42.115933+00', '2025-11-03 14:00:42.115933+00', true);
-INSERT INTO public.order_items VALUES (674, 470, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 2, 59.98, 2186.00, '2025-11-03 14:00:42.115933+00', '2025-11-03 14:00:42.115933+00', true);
-INSERT INTO public.order_items VALUES (675, 470, 126, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 3, 77.97, 2842.00, '2025-11-03 14:00:42.115933+00', '2025-11-03 14:00:42.115933+00', true);
-INSERT INTO public.order_items VALUES (676, 471, 142, 'No Carousel Product', 'No Carousel Product', 25.99, 947.00, 3, 77.97, 2842.00, '2025-11-03 14:02:52.967259+00', '2025-11-03 14:02:52.967259+00', true);
-INSERT INTO public.order_items VALUES (677, 471, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-11-03 14:02:52.967259+00', '2025-11-03 14:02:52.967259+00', true);
-INSERT INTO public.order_items VALUES (678, 471, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 1, 455.00, 16585.00, '2025-11-03 14:02:52.967259+00', '2025-11-03 14:02:52.967259+00', true);
-INSERT INTO public.order_items VALUES (679, 472, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 3, 206.97, 7544.00, '2025-11-03 14:03:59.238631+00', '2025-11-03 14:03:59.238631+00', true);
-INSERT INTO public.order_items VALUES (680, 472, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 3, 218.97, 7981.00, '2025-11-03 14:03:59.238631+00', '2025-11-03 14:03:59.238631+00', true);
-INSERT INTO public.order_items VALUES (681, 472, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 14:03:59.238631+00', '2025-11-03 14:03:59.238631+00', true);
-INSERT INTO public.order_items VALUES (682, 473, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 14:06:40.968061+00', '2025-11-03 14:06:40.968061+00', true);
-INSERT INTO public.order_items VALUES (683, 473, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 14:06:40.968061+00', '2025-11-03 14:06:40.968061+00', true);
-INSERT INTO public.order_items VALUES (684, 473, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 2, 105.98, 3863.00, '2025-11-03 14:06:40.968061+00', '2025-11-03 14:06:40.968061+00', true);
-INSERT INTO public.order_items VALUES (685, 474, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-11-03 14:10:04.992592+00', '2025-11-03 14:10:04.992592+00', true);
-INSERT INTO public.order_items VALUES (686, 475, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 14:13:46.634234+00', '2025-11-03 14:13:46.634234+00', true);
-INSERT INTO public.order_items VALUES (687, 475, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 14:13:46.634234+00', '2025-11-03 14:13:46.634234+00', true);
-INSERT INTO public.order_items VALUES (688, 475, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 1, 39.99, 1458.00, '2025-11-03 14:13:46.634234+00', '2025-11-03 14:13:46.634234+00', true);
-INSERT INTO public.order_items VALUES (689, 475, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 2, 145.98, 5321.00, '2025-11-03 14:13:46.634234+00', '2025-11-03 14:13:46.634234+00', true);
-INSERT INTO public.order_items VALUES (690, 475, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 14:13:46.634234+00', '2025-11-03 14:13:46.634234+00', true);
-INSERT INTO public.order_items VALUES (691, 476, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 1, 29.99, 1093.00, '2025-11-03 14:15:21.701404+00', '2025-11-03 14:15:21.701404+00', true);
-INSERT INTO public.order_items VALUES (692, 476, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 14:15:21.701404+00', '2025-11-03 14:15:21.701404+00', true);
-INSERT INTO public.order_items VALUES (693, 476, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 14:15:21.701404+00', '2025-11-03 14:15:21.701404+00', true);
-INSERT INTO public.order_items VALUES (694, 476, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 2, 85.98, 3134.00, '2025-11-03 14:15:21.701404+00', '2025-11-03 14:15:21.701404+00', true);
-INSERT INTO public.order_items VALUES (695, 477, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 1, 455.00, 16585.00, '2025-11-03 14:17:56.570978+00', '2025-11-03 14:17:56.570978+00', true);
-INSERT INTO public.order_items VALUES (696, 477, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 3, 293.94, 10714.00, '2025-11-03 14:17:56.570978+00', '2025-11-03 14:17:56.570978+00', true);
-INSERT INTO public.order_items VALUES (697, 477, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 14:17:56.570978+00', '2025-11-03 14:17:56.570978+00', true);
-INSERT INTO public.order_items VALUES (698, 477, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 2, 79.98, 2915.00, '2025-11-03 14:17:56.570978+00', '2025-11-03 14:17:56.570978+00', true);
-INSERT INTO public.order_items VALUES (699, 477, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 14:17:56.570978+00', '2025-11-03 14:17:56.570978+00', true);
-INSERT INTO public.order_items VALUES (700, 478, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 14:20:19.514619+00', '2025-11-03 14:20:19.514619+00', true);
-INSERT INTO public.order_items VALUES (701, 478, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-11-03 14:20:19.514619+00', '2025-11-03 14:20:19.514619+00', true);
-INSERT INTO public.order_items VALUES (702, 479, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 3, 149.97, 5466.00, '2025-11-03 14:23:24.058341+00', '2025-11-03 14:23:24.058341+00', true);
-INSERT INTO public.order_items VALUES (703, 480, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 3, 128.97, 4701.00, '2025-11-03 14:26:14.161939+00', '2025-11-03 14:26:14.161939+00', true);
-INSERT INTO public.order_items VALUES (704, 480, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 2, 99.98, 3644.00, '2025-11-03 14:26:14.161939+00', '2025-11-03 14:26:14.161939+00', true);
-INSERT INTO public.order_items VALUES (705, 481, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 14:30:24.811923+00', '2025-11-03 14:30:24.811923+00', true);
-INSERT INTO public.order_items VALUES (706, 482, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 3, 116.97, 4264.00, '2025-11-03 14:34:20.845142+00', '2025-11-03 14:34:20.845142+00', true);
-INSERT INTO public.order_items VALUES (707, 483, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 3, 167.97, 6123.00, '2025-11-03 14:37:53.362731+00', '2025-11-03 14:37:53.362731+00', true);
-INSERT INTO public.order_items VALUES (708, 483, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 2, 59.98, 2186.00, '2025-11-03 14:37:53.362731+00', '2025-11-03 14:37:53.362731+00', true);
-INSERT INTO public.order_items VALUES (709, 483, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 3, 218.97, 7981.00, '2025-11-03 14:37:53.362731+00', '2025-11-03 14:37:53.362731+00', true);
-INSERT INTO public.order_items VALUES (710, 484, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 2, 195.96, 7143.00, '2025-11-03 14:42:09.78662+00', '2025-11-03 14:42:09.78662+00', true);
-INSERT INTO public.order_items VALUES (711, 484, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 1, 29.99, 1093.00, '2025-11-03 14:42:09.78662+00', '2025-11-03 14:42:09.78662+00', true);
-INSERT INTO public.order_items VALUES (712, 484, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 14:42:09.78662+00', '2025-11-03 14:42:09.78662+00', true);
-INSERT INTO public.order_items VALUES (713, 484, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 14:42:09.78662+00', '2025-11-03 14:42:09.78662+00', true);
-INSERT INTO public.order_items VALUES (714, 485, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 14:43:24.605738+00', '2025-11-03 14:43:24.605738+00', true);
-INSERT INTO public.order_items VALUES (715, 485, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 14:43:24.605738+00', '2025-11-03 14:43:24.605738+00', true);
-INSERT INTO public.order_items VALUES (716, 485, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 14:43:24.605738+00', '2025-11-03 14:43:24.605738+00', true);
-INSERT INTO public.order_items VALUES (717, 485, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 14:43:24.605738+00', '2025-11-03 14:43:24.605738+00', true);
-INSERT INTO public.order_items VALUES (718, 485, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 2, 59.98, 2186.00, '2025-11-03 14:43:24.605738+00', '2025-11-03 14:43:24.605738+00', true);
-INSERT INTO public.order_items VALUES (719, 486, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 14:48:15.659507+00', '2025-11-03 14:48:15.659507+00', true);
-INSERT INTO public.order_items VALUES (720, 486, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 14:48:15.659507+00', '2025-11-03 14:48:15.659507+00', true);
-INSERT INTO public.order_items VALUES (721, 486, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 3, 89.97, 3279.00, '2025-11-03 14:48:15.659507+00', '2025-11-03 14:48:15.659507+00', true);
-INSERT INTO public.order_items VALUES (722, 487, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 1, 42.99, 1567.00, '2025-11-03 14:52:56.219441+00', '2025-11-03 14:52:56.219441+00', true);
-INSERT INTO public.order_items VALUES (723, 488, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 14:57:08.509194+00', '2025-11-03 14:57:08.509194+00', true);
-INSERT INTO public.order_items VALUES (724, 488, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 14:57:08.509194+00', '2025-11-03 14:57:08.509194+00', true);
-INSERT INTO public.order_items VALUES (725, 488, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 1, 32.99, 1202.00, '2025-11-03 14:57:08.509194+00', '2025-11-03 14:57:08.509194+00', true);
-INSERT INTO public.order_items VALUES (726, 489, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 1, 49.99, 1822.00, '2025-11-03 14:59:27.810084+00', '2025-11-03 14:59:27.810084+00', true);
-INSERT INTO public.order_items VALUES (727, 489, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 14:59:27.810084+00', '2025-11-03 14:59:27.810084+00', true);
-INSERT INTO public.order_items VALUES (728, 489, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 2, 910.00, 33170.00, '2025-11-03 14:59:27.810084+00', '2025-11-03 14:59:27.810084+00', true);
-INSERT INTO public.order_items VALUES (729, 489, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 1, 52.99, 1931.00, '2025-11-03 14:59:27.810084+00', '2025-11-03 14:59:27.810084+00', true);
-INSERT INTO public.order_items VALUES (730, 490, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 15:02:57.2583+00', '2025-11-03 15:02:57.2583+00', true);
-INSERT INTO public.order_items VALUES (731, 490, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 15:02:57.2583+00', '2025-11-03 15:02:57.2583+00', true);
-INSERT INTO public.order_items VALUES (732, 490, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 2, 65.98, 2405.00, '2025-11-03 15:02:57.2583+00', '2025-11-03 15:02:57.2583+00', true);
-INSERT INTO public.order_items VALUES (733, 491, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 3, 218.97, 7981.00, '2025-11-03 15:07:47.18228+00', '2025-11-03 15:07:47.18228+00', true);
-INSERT INTO public.order_items VALUES (734, 492, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 1, 39.99, 1458.00, '2025-11-03 15:08:53.290023+00', '2025-11-03 15:08:53.290023+00', true);
-INSERT INTO public.order_items VALUES (735, 492, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 15:08:53.290023+00', '2025-11-03 15:08:53.290023+00', true);
-INSERT INTO public.order_items VALUES (736, 493, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 15:10:44.961994+00', '2025-11-03 15:10:44.961994+00', true);
-INSERT INTO public.order_items VALUES (737, 494, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 2, 195.96, 7143.00, '2025-11-03 15:13:55.307958+00', '2025-11-03 15:13:55.307958+00', true);
-INSERT INTO public.order_items VALUES (738, 494, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 3, 206.97, 7544.00, '2025-11-03 15:13:55.307958+00', '2025-11-03 15:13:55.307958+00', true);
-INSERT INTO public.order_items VALUES (739, 494, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 2, 910.00, 33170.00, '2025-11-03 15:13:55.307958+00', '2025-11-03 15:13:55.307958+00', true);
-INSERT INTO public.order_items VALUES (740, 494, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 15:13:55.307958+00', '2025-11-03 15:13:55.307958+00', true);
-INSERT INTO public.order_items VALUES (741, 495, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 15:15:18.525793+00', '2025-11-03 15:15:18.525793+00', true);
-INSERT INTO public.order_items VALUES (742, 495, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 15:15:18.525793+00', '2025-11-03 15:15:18.525793+00', true);
-INSERT INTO public.order_items VALUES (743, 495, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 15:15:18.525793+00', '2025-11-03 15:15:18.525793+00', true);
-INSERT INTO public.order_items VALUES (744, 495, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 3, 149.97, 5466.00, '2025-11-03 15:15:18.525793+00', '2025-11-03 15:15:18.525793+00', true);
-INSERT INTO public.order_items VALUES (745, 496, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 1, 52.99, 1931.00, '2025-11-03 15:16:38.988634+00', '2025-11-03 15:16:38.988634+00', true);
-INSERT INTO public.order_items VALUES (746, 496, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 1, 38.99, 1421.00, '2025-11-03 15:16:38.988634+00', '2025-11-03 15:16:38.988634+00', true);
-INSERT INTO public.order_items VALUES (747, 496, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 15:16:38.988634+00', '2025-11-03 15:16:38.988634+00', true);
-INSERT INTO public.order_items VALUES (748, 496, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 15:16:38.988634+00', '2025-11-03 15:16:38.988634+00', true);
-INSERT INTO public.order_items VALUES (749, 497, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 2, 59.98, 2186.00, '2025-11-03 15:21:04.762539+00', '2025-11-03 15:21:04.762539+00', true);
-INSERT INTO public.order_items VALUES (750, 497, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 15:21:04.762539+00', '2025-11-03 15:21:04.762539+00', true);
-INSERT INTO public.order_items VALUES (751, 497, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 15:21:04.762539+00', '2025-11-03 15:21:04.762539+00', true);
-INSERT INTO public.order_items VALUES (752, 497, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 2, 105.98, 3863.00, '2025-11-03 15:21:04.762539+00', '2025-11-03 15:21:04.762539+00', true);
-INSERT INTO public.order_items VALUES (753, 497, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 15:21:04.762539+00', '2025-11-03 15:21:04.762539+00', true);
-INSERT INTO public.order_items VALUES (754, 498, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 15:24:26.846082+00', '2025-11-03 15:24:26.846082+00', true);
-INSERT INTO public.order_items VALUES (755, 499, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 2, 93.98, 3426.00, '2025-11-03 15:27:14.377227+00', '2025-11-03 15:27:14.377227+00', true);
-INSERT INTO public.order_items VALUES (756, 499, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 2, 910.00, 33170.00, '2025-11-03 15:27:14.377227+00', '2025-11-03 15:27:14.377227+00', true);
-INSERT INTO public.order_items VALUES (757, 499, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 15:27:14.377227+00', '2025-11-03 15:27:14.377227+00', true);
-INSERT INTO public.order_items VALUES (758, 500, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 1, 455.00, 16585.00, '2025-11-03 15:32:09.880601+00', '2025-11-03 15:32:09.880601+00', true);
-INSERT INTO public.order_items VALUES (759, 500, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 2, 59.98, 2186.00, '2025-11-03 15:32:09.880601+00', '2025-11-03 15:32:09.880601+00', true);
-INSERT INTO public.order_items VALUES (760, 500, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 15:32:09.880601+00', '2025-11-03 15:32:09.880601+00', true);
-INSERT INTO public.order_items VALUES (761, 500, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 3, 128.97, 4701.00, '2025-11-03 15:32:09.880601+00', '2025-11-03 15:32:09.880601+00', true);
-INSERT INTO public.order_items VALUES (762, 501, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 3, 89.97, 3279.00, '2025-11-03 15:34:09.745753+00', '2025-11-03 15:34:09.745753+00', true);
-INSERT INTO public.order_items VALUES (763, 501, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 15:34:09.745753+00', '2025-11-03 15:34:09.745753+00', true);
-INSERT INTO public.order_items VALUES (764, 501, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 3, 293.94, 10714.00, '2025-11-03 15:34:09.745753+00', '2025-11-03 15:34:09.745753+00', true);
-INSERT INTO public.order_items VALUES (765, 501, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 2, 105.98, 3863.00, '2025-11-03 15:34:09.745753+00', '2025-11-03 15:34:09.745753+00', true);
-INSERT INTO public.order_items VALUES (766, 501, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 1, 68.99, 2515.00, '2025-11-03 15:34:09.745753+00', '2025-11-03 15:34:09.745753+00', true);
-INSERT INTO public.order_items VALUES (767, 502, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 15:39:00.60717+00', '2025-11-03 15:39:00.60717+00', true);
-INSERT INTO public.order_items VALUES (768, 502, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 1, 52.99, 1931.00, '2025-11-03 15:39:00.60717+00', '2025-11-03 15:39:00.60717+00', true);
-INSERT INTO public.order_items VALUES (769, 502, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 3, 128.97, 4701.00, '2025-11-03 15:39:00.60717+00', '2025-11-03 15:39:00.60717+00', true);
-INSERT INTO public.order_items VALUES (770, 503, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 2, 77.98, 2842.00, '2025-11-03 15:40:24.115366+00', '2025-11-03 15:40:24.115366+00', true);
-INSERT INTO public.order_items VALUES (771, 503, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 15:40:24.115366+00', '2025-11-03 15:40:24.115366+00', true);
-INSERT INTO public.order_items VALUES (772, 504, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 1, 29.99, 1093.00, '2025-11-03 15:44:28.577905+00', '2025-11-03 15:44:28.577905+00', true);
-INSERT INTO public.order_items VALUES (773, 504, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 2, 93.98, 3426.00, '2025-11-03 15:44:28.577905+00', '2025-11-03 15:44:28.577905+00', true);
-INSERT INTO public.order_items VALUES (774, 504, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 2, 137.98, 5029.00, '2025-11-03 15:44:28.577905+00', '2025-11-03 15:44:28.577905+00', true);
-INSERT INTO public.order_items VALUES (775, 504, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 1, 72.99, 2660.00, '2025-11-03 15:44:28.577905+00', '2025-11-03 15:44:28.577905+00', true);
-INSERT INTO public.order_items VALUES (776, 504, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 15:44:28.577905+00', '2025-11-03 15:44:28.577905+00', true);
-INSERT INTO public.order_items VALUES (777, 505, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 15:45:42.218946+00', '2025-11-03 15:45:42.218946+00', true);
-INSERT INTO public.order_items VALUES (778, 505, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 2, 85.98, 3134.00, '2025-11-03 15:45:42.218946+00', '2025-11-03 15:45:42.218946+00', true);
-INSERT INTO public.order_items VALUES (779, 505, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 15:45:42.218946+00', '2025-11-03 15:45:42.218946+00', true);
-INSERT INTO public.order_items VALUES (780, 505, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 15:45:42.218946+00', '2025-11-03 15:45:42.218946+00', true);
-INSERT INTO public.order_items VALUES (781, 506, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 2, 65.98, 2405.00, '2025-11-03 15:47:32.980743+00', '2025-11-03 15:47:32.980743+00', true);
-INSERT INTO public.order_items VALUES (782, 506, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 15:47:32.980743+00', '2025-11-03 15:47:32.980743+00', true);
-INSERT INTO public.order_items VALUES (783, 507, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 3, 137.97, 5029.00, '2025-11-03 15:52:35.422899+00', '2025-11-03 15:52:35.422899+00', true);
-INSERT INTO public.order_items VALUES (784, 507, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 3, 140.97, 5138.00, '2025-11-03 15:52:35.422899+00', '2025-11-03 15:52:35.422899+00', true);
-INSERT INTO public.order_items VALUES (785, 507, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 15:52:35.422899+00', '2025-11-03 15:52:35.422899+00', true);
-INSERT INTO public.order_items VALUES (786, 507, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 15:52:35.422899+00', '2025-11-03 15:52:35.422899+00', true);
-INSERT INTO public.order_items VALUES (787, 507, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 15:52:35.422899+00', '2025-11-03 15:52:35.422899+00', true);
-INSERT INTO public.order_items VALUES (788, 508, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 3, 167.97, 6123.00, '2025-11-03 15:54:03.486387+00', '2025-11-03 15:54:03.486387+00', true);
-INSERT INTO public.order_items VALUES (789, 508, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 15:54:03.486387+00', '2025-11-03 15:54:03.486387+00', true);
-INSERT INTO public.order_items VALUES (790, 508, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 15:54:03.486387+00', '2025-11-03 15:54:03.486387+00', true);
-INSERT INTO public.order_items VALUES (791, 509, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-11-03 15:57:34.523371+00', '2025-11-03 15:57:34.523371+00', true);
-INSERT INTO public.order_items VALUES (792, 509, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 3, 1365.00, 49754.00, '2025-11-03 15:57:34.523371+00', '2025-11-03 15:57:34.523371+00', true);
-INSERT INTO public.order_items VALUES (793, 509, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 15:57:34.523371+00', '2025-11-03 15:57:34.523371+00', true);
-INSERT INTO public.order_items VALUES (794, 509, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 2, 91.98, 3353.00, '2025-11-03 15:57:34.523371+00', '2025-11-03 15:57:34.523371+00', true);
-INSERT INTO public.order_items VALUES (795, 509, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 2, 137.98, 5029.00, '2025-11-03 15:57:34.523371+00', '2025-11-03 15:57:34.523371+00', true);
-INSERT INTO public.order_items VALUES (796, 510, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 1, 55.99, 2041.00, '2025-11-03 15:58:51.569406+00', '2025-11-03 15:58:51.569406+00', true);
-INSERT INTO public.order_items VALUES (797, 510, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 15:58:51.569406+00', '2025-11-03 15:58:51.569406+00', true);
-INSERT INTO public.order_items VALUES (798, 510, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-11-03 15:58:51.569406+00', '2025-11-03 15:58:51.569406+00', true);
-INSERT INTO public.order_items VALUES (799, 511, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 16:02:20.702393+00', '2025-11-03 16:02:20.702393+00', true);
-INSERT INTO public.order_items VALUES (800, 512, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 16:05:22.78053+00', '2025-11-03 16:05:22.78053+00', true);
-INSERT INTO public.order_items VALUES (801, 512, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 2, 79.98, 2915.00, '2025-11-03 16:05:22.78053+00', '2025-11-03 16:05:22.78053+00', true);
-INSERT INTO public.order_items VALUES (802, 512, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 3, 1365.00, 49754.00, '2025-11-03 16:05:22.78053+00', '2025-11-03 16:05:22.78053+00', true);
-INSERT INTO public.order_items VALUES (803, 512, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 2, 137.98, 5029.00, '2025-11-03 16:05:22.78053+00', '2025-11-03 16:05:22.78053+00', true);
-INSERT INTO public.order_items VALUES (804, 513, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 2, 65.98, 2405.00, '2025-11-03 16:08:57.554102+00', '2025-11-03 16:08:57.554102+00', true);
-INSERT INTO public.order_items VALUES (805, 514, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 3, 140.97, 5138.00, '2025-11-03 16:12:21.990903+00', '2025-11-03 16:12:21.990903+00', true);
-INSERT INTO public.order_items VALUES (806, 514, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 3, 293.94, 10714.00, '2025-11-03 16:12:21.990903+00', '2025-11-03 16:12:21.990903+00', true);
-INSERT INTO public.order_items VALUES (807, 514, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 2, 91.98, 3353.00, '2025-11-03 16:12:21.990903+00', '2025-11-03 16:12:21.990903+00', true);
-INSERT INTO public.order_items VALUES (808, 515, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 16:15:01.548115+00', '2025-11-03 16:15:01.548115+00', true);
-INSERT INTO public.order_items VALUES (809, 515, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 3, 140.97, 5138.00, '2025-11-03 16:15:01.548115+00', '2025-11-03 16:15:01.548115+00', true);
-INSERT INTO public.order_items VALUES (810, 515, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 1, 29.99, 1093.00, '2025-11-03 16:15:01.548115+00', '2025-11-03 16:15:01.548115+00', true);
-INSERT INTO public.order_items VALUES (811, 515, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 3, 167.97, 6123.00, '2025-11-03 16:15:01.548115+00', '2025-11-03 16:15:01.548115+00', true);
-INSERT INTO public.order_items VALUES (812, 516, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 16:16:40.841668+00', '2025-11-03 16:16:40.841668+00', true);
-INSERT INTO public.order_items VALUES (813, 516, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 16:16:40.841668+00', '2025-11-03 16:16:40.841668+00', true);
-INSERT INTO public.order_items VALUES (815, 517, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 1, 38.99, 1421.00, '2025-11-03 16:21:15.422336+00', '2025-11-03 16:21:15.422336+00', true);
-INSERT INTO public.order_items VALUES (816, 517, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 3, 98.97, 3607.00, '2025-11-03 16:21:15.422336+00', '2025-11-03 16:21:15.422336+00', true);
-INSERT INTO public.order_items VALUES (817, 517, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 16:21:15.422336+00', '2025-11-03 16:21:15.422336+00', true);
-INSERT INTO public.order_items VALUES (818, 518, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 3, 119.97, 4373.00, '2025-11-03 16:23:33.167335+00', '2025-11-03 16:23:33.167335+00', true);
-INSERT INTO public.order_items VALUES (819, 518, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 3, 149.97, 5466.00, '2025-11-03 16:23:33.167335+00', '2025-11-03 16:23:33.167335+00', true);
-INSERT INTO public.order_items VALUES (820, 518, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 16:23:33.167335+00', '2025-11-03 16:23:33.167335+00', true);
-INSERT INTO public.order_items VALUES (821, 518, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 3, 218.97, 7981.00, '2025-11-03 16:23:33.167335+00', '2025-11-03 16:23:33.167335+00', true);
-INSERT INTO public.order_items VALUES (822, 518, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 1, 68.99, 2515.00, '2025-11-03 16:23:33.167335+00', '2025-11-03 16:23:33.167335+00', true);
-INSERT INTO public.order_items VALUES (823, 519, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 2, 195.96, 7143.00, '2025-11-03 16:27:07.40414+00', '2025-11-03 16:27:07.40414+00', true);
-INSERT INTO public.order_items VALUES (824, 519, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 3, 140.97, 5138.00, '2025-11-03 16:27:07.40414+00', '2025-11-03 16:27:07.40414+00', true);
-INSERT INTO public.order_items VALUES (825, 519, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 3, 98.97, 3607.00, '2025-11-03 16:27:07.40414+00', '2025-11-03 16:27:07.40414+00', true);
-INSERT INTO public.order_items VALUES (826, 520, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 2, 93.98, 3426.00, '2025-11-03 16:29:11.759443+00', '2025-11-03 16:29:11.759443+00', true);
-INSERT INTO public.order_items VALUES (827, 520, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 3, 128.97, 4701.00, '2025-11-03 16:29:11.759443+00', '2025-11-03 16:29:11.759443+00', true);
-INSERT INTO public.order_items VALUES (828, 521, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 16:33:52.852034+00', '2025-11-03 16:33:52.852034+00', true);
-INSERT INTO public.order_items VALUES (829, 521, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-11-03 16:33:52.852034+00', '2025-11-03 16:33:52.852034+00', true);
-INSERT INTO public.order_items VALUES (830, 521, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 2, 65.98, 2405.00, '2025-11-03 16:33:52.852034+00', '2025-11-03 16:33:52.852034+00', true);
-INSERT INTO public.order_items VALUES (831, 521, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 3, 1365.00, 49754.00, '2025-11-03 16:33:52.852034+00', '2025-11-03 16:33:52.852034+00', true);
-INSERT INTO public.order_items VALUES (832, 522, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 16:38:10.770407+00', '2025-11-03 16:38:10.770407+00', true);
-INSERT INTO public.order_items VALUES (833, 523, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-11-03 16:40:47.645669+00', '2025-11-03 16:40:47.645669+00', true);
-INSERT INTO public.order_items VALUES (834, 523, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 2, 111.98, 4082.00, '2025-11-03 16:40:47.645669+00', '2025-11-03 16:40:47.645669+00', true);
-INSERT INTO public.order_items VALUES (835, 524, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 16:45:15.170319+00', '2025-11-03 16:45:15.170319+00', true);
-INSERT INTO public.order_items VALUES (836, 524, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 16:45:15.170319+00', '2025-11-03 16:45:15.170319+00', true);
-INSERT INTO public.order_items VALUES (837, 524, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 16:45:15.170319+00', '2025-11-03 16:45:15.170319+00', true);
-INSERT INTO public.order_items VALUES (838, 524, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 2, 99.98, 3644.00, '2025-11-03 16:45:15.170319+00', '2025-11-03 16:45:15.170319+00', true);
-INSERT INTO public.order_items VALUES (839, 525, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 16:49:51.189001+00', '2025-11-03 16:49:51.189001+00', true);
-INSERT INTO public.order_items VALUES (840, 526, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 16:53:48.073029+00', '2025-11-03 16:53:48.073029+00', true);
-INSERT INTO public.order_items VALUES (841, 526, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 16:53:48.073029+00', '2025-11-03 16:53:48.073029+00', true);
-INSERT INTO public.order_items VALUES (842, 527, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 3, 149.97, 5466.00, '2025-11-03 16:56:47.556983+00', '2025-11-03 16:56:47.556983+00', true);
-INSERT INTO public.order_items VALUES (843, 527, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 3, 293.94, 10714.00, '2025-11-03 16:56:47.556983+00', '2025-11-03 16:56:47.556983+00', true);
-INSERT INTO public.order_items VALUES (844, 527, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 2, 105.98, 3863.00, '2025-11-03 16:56:47.556983+00', '2025-11-03 16:56:47.556983+00', true);
-INSERT INTO public.order_items VALUES (845, 527, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 3, 128.97, 4701.00, '2025-11-03 16:56:47.556983+00', '2025-11-03 16:56:47.556983+00', true);
-INSERT INTO public.order_items VALUES (846, 527, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 16:56:47.556983+00', '2025-11-03 16:56:47.556983+00', true);
-INSERT INTO public.order_items VALUES (847, 528, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 2, 137.98, 5029.00, '2025-11-03 16:59:08.505047+00', '2025-11-03 16:59:08.505047+00', true);
-INSERT INTO public.order_items VALUES (848, 528, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 16:59:08.505047+00', '2025-11-03 16:59:08.505047+00', true);
-INSERT INTO public.order_items VALUES (849, 528, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 2, 111.98, 4082.00, '2025-11-03 16:59:08.505047+00', '2025-11-03 16:59:08.505047+00', true);
-INSERT INTO public.order_items VALUES (850, 528, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 16:59:08.505047+00', '2025-11-03 16:59:08.505047+00', true);
-INSERT INTO public.order_items VALUES (851, 528, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 16:59:08.505047+00', '2025-11-03 16:59:08.505047+00', true);
-INSERT INTO public.order_items VALUES (852, 529, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-11-03 17:03:38.249043+00', '2025-11-03 17:03:38.249043+00', true);
-INSERT INTO public.order_items VALUES (853, 529, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 2, 77.98, 2842.00, '2025-11-03 17:03:38.249043+00', '2025-11-03 17:03:38.249043+00', true);
-INSERT INTO public.order_items VALUES (854, 529, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 3, 149.97, 5466.00, '2025-11-03 17:03:38.249043+00', '2025-11-03 17:03:38.249043+00', true);
-INSERT INTO public.order_items VALUES (855, 529, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 17:03:38.249043+00', '2025-11-03 17:03:38.249043+00', true);
-INSERT INTO public.order_items VALUES (856, 530, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 3, 158.97, 5794.00, '2025-11-03 17:07:29.771383+00', '2025-11-03 17:07:29.771383+00', true);
-INSERT INTO public.order_items VALUES (857, 530, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 3, 167.97, 6123.00, '2025-11-03 17:07:29.771383+00', '2025-11-03 17:07:29.771383+00', true);
-INSERT INTO public.order_items VALUES (858, 530, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 1, 38.99, 1421.00, '2025-11-03 17:07:29.771383+00', '2025-11-03 17:07:29.771383+00', true);
-INSERT INTO public.order_items VALUES (859, 531, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 2, 111.98, 4082.00, '2025-11-03 17:09:24.151881+00', '2025-11-03 17:09:24.151881+00', true);
-INSERT INTO public.order_items VALUES (860, 531, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 17:09:24.151881+00', '2025-11-03 17:09:24.151881+00', true);
-INSERT INTO public.order_items VALUES (861, 531, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 17:09:24.151881+00', '2025-11-03 17:09:24.151881+00', true);
-INSERT INTO public.order_items VALUES (862, 532, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 3, 206.97, 7544.00, '2025-11-03 17:11:16.852886+00', '2025-11-03 17:11:16.852886+00', true);
-INSERT INTO public.order_items VALUES (863, 532, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 2, 195.96, 7143.00, '2025-11-03 17:11:16.852886+00', '2025-11-03 17:11:16.852886+00', true);
-INSERT INTO public.order_items VALUES (864, 532, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 2, 910.00, 33170.00, '2025-11-03 17:11:16.852886+00', '2025-11-03 17:11:16.852886+00', true);
-INSERT INTO public.order_items VALUES (865, 532, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 17:11:16.852886+00', '2025-11-03 17:11:16.852886+00', true);
-INSERT INTO public.order_items VALUES (866, 532, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 2, 79.98, 2915.00, '2025-11-03 17:11:16.852886+00', '2025-11-03 17:11:16.852886+00', true);
-INSERT INTO public.order_items VALUES (867, 533, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 17:12:48.594237+00', '2025-11-03 17:12:48.594237+00', true);
-INSERT INTO public.order_items VALUES (868, 534, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 17:16:38.918995+00', '2025-11-03 17:16:38.918995+00', true);
-INSERT INTO public.order_items VALUES (869, 534, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 17:16:38.918995+00', '2025-11-03 17:16:38.918995+00', true);
-INSERT INTO public.order_items VALUES (870, 535, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 17:17:56.365153+00', '2025-11-03 17:17:56.365153+00', true);
-INSERT INTO public.order_items VALUES (871, 535, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 1, 55.99, 2041.00, '2025-11-03 17:17:56.365153+00', '2025-11-03 17:17:56.365153+00', true);
-INSERT INTO public.order_items VALUES (872, 536, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 1, 72.99, 2660.00, '2025-11-03 17:19:02.121328+00', '2025-11-03 17:19:02.121328+00', true);
-INSERT INTO public.order_items VALUES (873, 536, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 2, 910.00, 33170.00, '2025-11-03 17:19:02.121328+00', '2025-11-03 17:19:02.121328+00', true);
-INSERT INTO public.order_items VALUES (874, 536, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 17:19:02.121328+00', '2025-11-03 17:19:02.121328+00', true);
-INSERT INTO public.order_items VALUES (875, 536, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 17:19:02.121328+00', '2025-11-03 17:19:02.121328+00', true);
-INSERT INTO public.order_items VALUES (876, 536, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 17:19:02.121328+00', '2025-11-03 17:19:02.121328+00', true);
-INSERT INTO public.order_items VALUES (877, 537, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 17:23:56.483973+00', '2025-11-03 17:23:56.483973+00', true);
-INSERT INTO public.order_items VALUES (878, 537, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 2, 85.98, 3134.00, '2025-11-03 17:23:56.483973+00', '2025-11-03 17:23:56.483973+00', true);
-INSERT INTO public.order_items VALUES (879, 538, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 3, 116.97, 4264.00, '2025-11-03 17:26:52.268755+00', '2025-11-03 17:26:52.268755+00', true);
-INSERT INTO public.order_items VALUES (880, 538, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 17:26:52.268755+00', '2025-11-03 17:26:52.268755+00', true);
-INSERT INTO public.order_items VALUES (881, 539, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 2, 85.98, 3134.00, '2025-11-03 17:31:06.197167+00', '2025-11-03 17:31:06.197167+00', true);
-INSERT INTO public.order_items VALUES (882, 539, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-11-03 17:31:06.197167+00', '2025-11-03 17:31:06.197167+00', true);
-INSERT INTO public.order_items VALUES (883, 539, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 2, 93.98, 3426.00, '2025-11-03 17:31:06.197167+00', '2025-11-03 17:31:06.197167+00', true);
-INSERT INTO public.order_items VALUES (884, 540, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 2, 195.96, 7143.00, '2025-11-03 17:33:02.708002+00', '2025-11-03 17:33:02.708002+00', true);
-INSERT INTO public.order_items VALUES (885, 540, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 17:33:02.708002+00', '2025-11-03 17:33:02.708002+00', true);
-INSERT INTO public.order_items VALUES (886, 540, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 2, 111.98, 4082.00, '2025-11-03 17:33:02.708002+00', '2025-11-03 17:33:02.708002+00', true);
-INSERT INTO public.order_items VALUES (887, 540, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 3, 89.97, 3279.00, '2025-11-03 17:33:02.708002+00', '2025-11-03 17:33:02.708002+00', true);
-INSERT INTO public.order_items VALUES (888, 540, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 3, 98.97, 3607.00, '2025-11-03 17:33:02.708002+00', '2025-11-03 17:33:02.708002+00', true);
-INSERT INTO public.order_items VALUES (889, 541, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 17:36:04.653473+00', '2025-11-03 17:36:04.653473+00', true);
-INSERT INTO public.order_items VALUES (890, 541, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 3, 218.97, 7981.00, '2025-11-03 17:36:04.653473+00', '2025-11-03 17:36:04.653473+00', true);
-INSERT INTO public.order_items VALUES (891, 541, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 3, 149.97, 5466.00, '2025-11-03 17:36:04.653473+00', '2025-11-03 17:36:04.653473+00', true);
-INSERT INTO public.order_items VALUES (892, 541, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 2, 910.00, 33170.00, '2025-11-03 17:36:04.653473+00', '2025-11-03 17:36:04.653473+00', true);
-INSERT INTO public.order_items VALUES (893, 542, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 3, 116.97, 4264.00, '2025-11-03 17:39:42.318181+00', '2025-11-03 17:39:42.318181+00', true);
-INSERT INTO public.order_items VALUES (894, 542, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 17:39:42.318181+00', '2025-11-03 17:39:42.318181+00', true);
-INSERT INTO public.order_items VALUES (895, 542, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 1, 68.99, 2515.00, '2025-11-03 17:39:42.318181+00', '2025-11-03 17:39:42.318181+00', true);
-INSERT INTO public.order_items VALUES (896, 543, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 2, 93.98, 3426.00, '2025-11-03 17:42:17.417994+00', '2025-11-03 17:42:17.417994+00', true);
-INSERT INTO public.order_items VALUES (897, 543, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 17:42:17.417994+00', '2025-11-03 17:42:17.417994+00', true);
-INSERT INTO public.order_items VALUES (898, 544, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-11-03 17:47:09.502366+00', '2025-11-03 17:47:09.502366+00', true);
-INSERT INTO public.order_items VALUES (899, 544, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 2, 105.98, 3863.00, '2025-11-03 17:47:09.502366+00', '2025-11-03 17:47:09.502366+00', true);
-INSERT INTO public.order_items VALUES (900, 544, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 17:47:09.502366+00', '2025-11-03 17:47:09.502366+00', true);
-INSERT INTO public.order_items VALUES (901, 544, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 3, 140.97, 5138.00, '2025-11-03 17:47:09.502366+00', '2025-11-03 17:47:09.502366+00', true);
-INSERT INTO public.order_items VALUES (902, 545, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 3, 116.97, 4264.00, '2025-11-03 17:51:01.542938+00', '2025-11-03 17:51:01.542938+00', true);
-INSERT INTO public.order_items VALUES (903, 545, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 17:51:01.542938+00', '2025-11-03 17:51:01.542938+00', true);
-INSERT INTO public.order_items VALUES (904, 545, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 17:51:01.542938+00', '2025-11-03 17:51:01.542938+00', true);
-INSERT INTO public.order_items VALUES (905, 545, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 17:51:01.542938+00', '2025-11-03 17:51:01.542938+00', true);
-INSERT INTO public.order_items VALUES (906, 546, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 17:55:54.10975+00', '2025-11-03 17:55:54.10975+00', true);
-INSERT INTO public.order_items VALUES (907, 546, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 3, 137.97, 5029.00, '2025-11-03 17:55:54.10975+00', '2025-11-03 17:55:54.10975+00', true);
-INSERT INTO public.order_items VALUES (908, 546, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 1, 55.99, 2041.00, '2025-11-03 17:55:54.10975+00', '2025-11-03 17:55:54.10975+00', true);
-INSERT INTO public.order_items VALUES (909, 546, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 17:55:54.10975+00', '2025-11-03 17:55:54.10975+00', true);
-INSERT INTO public.order_items VALUES (910, 547, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 17:59:15.53787+00', '2025-11-03 17:59:15.53787+00', true);
-INSERT INTO public.order_items VALUES (911, 547, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 1, 72.99, 2660.00, '2025-11-03 17:59:15.53787+00', '2025-11-03 17:59:15.53787+00', true);
-INSERT INTO public.order_items VALUES (912, 547, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-11-03 17:59:15.53787+00', '2025-11-03 17:59:15.53787+00', true);
-INSERT INTO public.order_items VALUES (913, 547, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 3, 137.97, 5029.00, '2025-11-03 17:59:15.53787+00', '2025-11-03 17:59:15.53787+00', true);
-INSERT INTO public.order_items VALUES (914, 548, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 18:00:34.24153+00', '2025-11-03 18:00:34.24153+00', true);
-INSERT INTO public.order_items VALUES (915, 548, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 3, 293.94, 10714.00, '2025-11-03 18:00:34.24153+00', '2025-11-03 18:00:34.24153+00', true);
-INSERT INTO public.order_items VALUES (916, 548, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 18:00:34.24153+00', '2025-11-03 18:00:34.24153+00', true);
-INSERT INTO public.order_items VALUES (917, 548, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 1, 46.99, 1713.00, '2025-11-03 18:00:34.24153+00', '2025-11-03 18:00:34.24153+00', true);
-INSERT INTO public.order_items VALUES (918, 548, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 18:00:34.24153+00', '2025-11-03 18:00:34.24153+00', true);
-INSERT INTO public.order_items VALUES (919, 549, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 18:04:24.127362+00', '2025-11-03 18:04:24.127362+00', true);
-INSERT INTO public.order_items VALUES (920, 549, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 3, 89.97, 3279.00, '2025-11-03 18:04:24.127362+00', '2025-11-03 18:04:24.127362+00', true);
-INSERT INTO public.order_items VALUES (921, 549, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 1, 39.99, 1458.00, '2025-11-03 18:04:24.127362+00', '2025-11-03 18:04:24.127362+00', true);
-INSERT INTO public.order_items VALUES (922, 549, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 2, 111.98, 4082.00, '2025-11-03 18:04:24.127362+00', '2025-11-03 18:04:24.127362+00', true);
-INSERT INTO public.order_items VALUES (923, 550, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 18:09:19.59934+00', '2025-11-03 18:09:19.59934+00', true);
-INSERT INTO public.order_items VALUES (924, 551, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 1, 72.99, 2660.00, '2025-11-03 18:13:06.116468+00', '2025-11-03 18:13:06.116468+00', true);
-INSERT INTO public.order_items VALUES (925, 552, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 18:17:49.106774+00', '2025-11-03 18:17:49.106774+00', true);
-INSERT INTO public.order_items VALUES (926, 553, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 2, 145.98, 5321.00, '2025-11-03 18:19:52.919755+00', '2025-11-03 18:19:52.919755+00', true);
-INSERT INTO public.order_items VALUES (927, 553, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-03 18:19:52.919755+00', '2025-11-03 18:19:52.919755+00', true);
-INSERT INTO public.order_items VALUES (928, 553, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 3, 293.94, 10714.00, '2025-11-03 18:19:52.919755+00', '2025-11-03 18:19:52.919755+00', true);
-INSERT INTO public.order_items VALUES (929, 553, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 3, 167.97, 6123.00, '2025-11-03 18:19:52.919755+00', '2025-11-03 18:19:52.919755+00', true);
-INSERT INTO public.order_items VALUES (930, 554, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 3, 149.97, 5466.00, '2025-11-03 18:22:13.79477+00', '2025-11-03 18:22:13.79477+00', true);
-INSERT INTO public.order_items VALUES (931, 554, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 2, 145.98, 5321.00, '2025-11-03 18:22:13.79477+00', '2025-11-03 18:22:13.79477+00', true);
-INSERT INTO public.order_items VALUES (932, 554, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 18:22:13.79477+00', '2025-11-03 18:22:13.79477+00', true);
-INSERT INTO public.order_items VALUES (933, 555, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 3, 137.97, 5029.00, '2025-11-03 18:25:55.482171+00', '2025-11-03 18:25:55.482171+00', true);
-INSERT INTO public.order_items VALUES (934, 555, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-03 18:25:55.482171+00', '2025-11-03 18:25:55.482171+00', true);
-INSERT INTO public.order_items VALUES (935, 555, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 1, 455.00, 16585.00, '2025-11-03 18:25:55.482171+00', '2025-11-03 18:25:55.482171+00', true);
-INSERT INTO public.order_items VALUES (936, 555, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-03 18:25:55.482171+00', '2025-11-03 18:25:55.482171+00', true);
-INSERT INTO public.order_items VALUES (937, 556, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 12:32:46.497584+00', '2025-11-04 12:32:46.497584+00', true);
-INSERT INTO public.order_items VALUES (938, 557, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-04 12:34:37.800908+00', '2025-11-04 12:34:37.800908+00', true);
-INSERT INTO public.order_items VALUES (939, 557, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-04 12:34:37.800908+00', '2025-11-04 12:34:37.800908+00', true);
-INSERT INTO public.order_items VALUES (940, 557, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 2, 59.98, 2186.00, '2025-11-04 12:34:37.800908+00', '2025-11-04 12:34:37.800908+00', true);
-INSERT INTO public.order_items VALUES (941, 557, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 3, 137.97, 5029.00, '2025-11-04 12:34:37.800908+00', '2025-11-04 12:34:37.800908+00', true);
-INSERT INTO public.order_items VALUES (942, 557, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 2, 105.98, 3863.00, '2025-11-04 12:34:37.800908+00', '2025-11-04 12:34:37.800908+00', true);
-INSERT INTO public.order_items VALUES (943, 558, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 3, 167.97, 6123.00, '2025-11-04 12:38:21.984953+00', '2025-11-04 12:38:21.984953+00', true);
-INSERT INTO public.order_items VALUES (944, 558, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 2, 910.00, 33170.00, '2025-11-04 12:38:21.984953+00', '2025-11-04 12:38:21.984953+00', true);
-INSERT INTO public.order_items VALUES (945, 558, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 3, 206.97, 7544.00, '2025-11-04 12:38:21.984953+00', '2025-11-04 12:38:21.984953+00', true);
-INSERT INTO public.order_items VALUES (946, 558, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 2, 145.98, 5321.00, '2025-11-04 12:38:21.984953+00', '2025-11-04 12:38:21.984953+00', true);
-INSERT INTO public.order_items VALUES (947, 558, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 12:38:21.984953+00', '2025-11-04 12:38:21.984953+00', true);
-INSERT INTO public.order_items VALUES (948, 559, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 3, 293.94, 10714.00, '2025-11-04 12:41:08.666961+00', '2025-11-04 12:41:08.666961+00', true);
-INSERT INTO public.order_items VALUES (949, 559, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-04 12:41:08.666961+00', '2025-11-04 12:41:08.666961+00', true);
-INSERT INTO public.order_items VALUES (950, 559, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-04 12:41:08.666961+00', '2025-11-04 12:41:08.666961+00', true);
-INSERT INTO public.order_items VALUES (951, 559, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 2, 910.00, 33170.00, '2025-11-04 12:41:08.666961+00', '2025-11-04 12:41:08.666961+00', true);
-INSERT INTO public.order_items VALUES (952, 560, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 2, 195.96, 7143.00, '2025-11-04 12:43:53.653437+00', '2025-11-04 12:43:53.653437+00', true);
-INSERT INTO public.order_items VALUES (953, 561, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 1, 55.99, 2041.00, '2025-11-04 12:58:03.246492+00', '2025-11-04 12:58:03.246492+00', true);
-INSERT INTO public.order_items VALUES (954, 561, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 12:58:03.246492+00', '2025-11-04 12:58:03.246492+00', true);
-INSERT INTO public.order_items VALUES (955, 561, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 2, 99.98, 3644.00, '2025-11-04 12:58:03.246492+00', '2025-11-04 12:58:03.246492+00', true);
-INSERT INTO public.order_items VALUES (956, 562, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 13:09:56.30343+00', '2025-11-04 13:09:56.30343+00', true);
-INSERT INTO public.order_items VALUES (957, 563, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 13:21:37.268796+00', '2025-11-04 13:21:37.268796+00', true);
-INSERT INTO public.order_items VALUES (958, 563, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 2, 137.98, 5029.00, '2025-11-04 13:21:37.268796+00', '2025-11-04 13:21:37.268796+00', true);
-INSERT INTO public.order_items VALUES (959, 564, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 1, 45.99, 1676.00, '2025-11-04 13:34:01.821714+00', '2025-11-04 13:34:01.821714+00', true);
-INSERT INTO public.order_items VALUES (960, 564, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 3, 116.97, 4264.00, '2025-11-04 13:34:01.821714+00', '2025-11-04 13:34:01.821714+00', true);
-INSERT INTO public.order_items VALUES (961, 564, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-04 13:34:01.821714+00', '2025-11-04 13:34:01.821714+00', true);
-INSERT INTO public.order_items VALUES (962, 564, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 1, 455.00, 16585.00, '2025-11-04 13:34:01.821714+00', '2025-11-04 13:34:01.821714+00', true);
-INSERT INTO public.order_items VALUES (963, 564, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 1, 55.99, 2041.00, '2025-11-04 13:34:01.821714+00', '2025-11-04 13:34:01.821714+00', true);
-INSERT INTO public.order_items VALUES (964, 565, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 3, 218.97, 7981.00, '2025-11-04 13:44:29.624445+00', '2025-11-04 13:44:29.624445+00', true);
-INSERT INTO public.order_items VALUES (965, 565, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 3, 167.97, 6123.00, '2025-11-04 13:44:29.624445+00', '2025-11-04 13:44:29.624445+00', true);
-INSERT INTO public.order_items VALUES (966, 565, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-04 13:44:29.624445+00', '2025-11-04 13:44:29.624445+00', true);
-INSERT INTO public.order_items VALUES (967, 565, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 3, 140.97, 5138.00, '2025-11-04 13:44:29.624445+00', '2025-11-04 13:44:29.624445+00', true);
-INSERT INTO public.order_items VALUES (968, 565, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 13:44:29.624445+00', '2025-11-04 13:44:29.624445+00', true);
-INSERT INTO public.order_items VALUES (969, 566, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-04 14:08:45.555163+00', '2025-11-04 14:08:45.555163+00', true);
-INSERT INTO public.order_items VALUES (970, 567, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 3, 116.97, 4264.00, '2025-11-04 14:20:21.220964+00', '2025-11-04 14:20:21.220964+00', true);
-INSERT INTO public.order_items VALUES (971, 567, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 3, 98.97, 3607.00, '2025-11-04 14:20:21.220964+00', '2025-11-04 14:20:21.220964+00', true);
-INSERT INTO public.order_items VALUES (972, 567, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-04 14:20:21.220964+00', '2025-11-04 14:20:21.220964+00', true);
-INSERT INTO public.order_items VALUES (973, 568, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 2, 91.98, 3353.00, '2025-11-04 14:31:46.523837+00', '2025-11-04 14:31:46.523837+00', true);
-INSERT INTO public.order_items VALUES (974, 568, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 14:31:46.523837+00', '2025-11-04 14:31:46.523837+00', true);
-INSERT INTO public.order_items VALUES (975, 568, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 2, 65.98, 2405.00, '2025-11-04 14:31:46.523837+00', '2025-11-04 14:31:46.523837+00', true);
-INSERT INTO public.order_items VALUES (976, 568, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 14:31:46.523837+00', '2025-11-04 14:31:46.523837+00', true);
-INSERT INTO public.order_items VALUES (977, 569, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 2, 910.00, 33170.00, '2025-11-04 14:43:45.097425+00', '2025-11-04 14:43:45.097425+00', true);
-INSERT INTO public.order_items VALUES (978, 569, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-04 14:43:45.097425+00', '2025-11-04 14:43:45.097425+00', true);
-INSERT INTO public.order_items VALUES (979, 569, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-04 14:43:45.097425+00', '2025-11-04 14:43:45.097425+00', true);
-INSERT INTO public.order_items VALUES (980, 569, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 2, 93.98, 3426.00, '2025-11-04 14:43:45.097425+00', '2025-11-04 14:43:45.097425+00', true);
-INSERT INTO public.order_items VALUES (981, 570, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 2, 910.00, 33170.00, '2025-11-04 14:54:17.383835+00', '2025-11-04 14:54:17.383835+00', true);
-INSERT INTO public.order_items VALUES (982, 570, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-11-04 14:54:17.383835+00', '2025-11-04 14:54:17.383835+00', true);
-INSERT INTO public.order_items VALUES (983, 571, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 15:08:04.82858+00', '2025-11-04 15:08:04.82858+00', true);
-INSERT INTO public.order_items VALUES (984, 571, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 1, 39.99, 1458.00, '2025-11-04 15:08:04.82858+00', '2025-11-04 15:08:04.82858+00', true);
-INSERT INTO public.order_items VALUES (985, 572, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-04 15:20:26.480983+00', '2025-11-04 15:20:26.480983+00', true);
-INSERT INTO public.order_items VALUES (986, 572, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-04 15:20:26.480983+00', '2025-11-04 15:20:26.480983+00', true);
-INSERT INTO public.order_items VALUES (987, 572, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 1, 29.99, 1093.00, '2025-11-04 15:20:26.480983+00', '2025-11-04 15:20:26.480983+00', true);
-INSERT INTO public.order_items VALUES (988, 572, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 2, 195.96, 7143.00, '2025-11-04 15:20:26.480983+00', '2025-11-04 15:20:26.480983+00', true);
-INSERT INTO public.order_items VALUES (989, 573, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 3, 119.97, 4373.00, '2025-11-04 15:35:01.167175+00', '2025-11-04 15:35:01.167175+00', true);
-INSERT INTO public.order_items VALUES (990, 573, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 15:35:01.167175+00', '2025-11-04 15:35:01.167175+00', true);
-INSERT INTO public.order_items VALUES (991, 573, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 1, 42.99, 1567.00, '2025-11-04 15:35:01.167175+00', '2025-11-04 15:35:01.167175+00', true);
-INSERT INTO public.order_items VALUES (992, 573, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-04 15:35:01.167175+00', '2025-11-04 15:35:01.167175+00', true);
-INSERT INTO public.order_items VALUES (993, 574, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-04 15:47:22.673286+00', '2025-11-04 15:47:22.673286+00', true);
-INSERT INTO public.order_items VALUES (994, 574, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 15:47:22.673286+00', '2025-11-04 15:47:22.673286+00', true);
-INSERT INTO public.order_items VALUES (995, 574, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 1, 32.99, 1202.00, '2025-11-04 15:47:22.673286+00', '2025-11-04 15:47:22.673286+00', true);
-INSERT INTO public.order_items VALUES (996, 575, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 2, 111.98, 4082.00, '2025-11-04 15:58:17.580871+00', '2025-11-04 15:58:17.580871+00', true);
-INSERT INTO public.order_items VALUES (997, 576, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 1, 49.99, 1822.00, '2025-11-04 16:09:45.117374+00', '2025-11-04 16:09:45.117374+00', true);
-INSERT INTO public.order_items VALUES (998, 576, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 1, 52.99, 1931.00, '2025-11-04 16:09:45.117374+00', '2025-11-04 16:09:45.117374+00', true);
-INSERT INTO public.order_items VALUES (999, 577, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 16:22:20.961769+00', '2025-11-04 16:22:20.961769+00', true);
-INSERT INTO public.order_items VALUES (1000, 577, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 1, 39.99, 1458.00, '2025-11-04 16:22:20.961769+00', '2025-11-04 16:22:20.961769+00', true);
-INSERT INTO public.order_items VALUES (1001, 577, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 1, 455.00, 16585.00, '2025-11-04 16:22:20.961769+00', '2025-11-04 16:22:20.961769+00', true);
-INSERT INTO public.order_items VALUES (1002, 578, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-11-04 16:32:59.16337+00', '2025-11-04 16:32:59.16337+00', true);
-INSERT INTO public.order_items VALUES (1003, 578, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 2, 91.98, 3353.00, '2025-11-04 16:32:59.16337+00', '2025-11-04 16:32:59.16337+00', true);
-INSERT INTO public.order_items VALUES (1004, 578, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 3, 149.97, 5466.00, '2025-11-04 16:32:59.16337+00', '2025-11-04 16:32:59.16337+00', true);
-INSERT INTO public.order_items VALUES (1005, 578, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 16:32:59.16337+00', '2025-11-04 16:32:59.16337+00', true);
-INSERT INTO public.order_items VALUES (1006, 578, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 3, 167.97, 6123.00, '2025-11-04 16:32:59.16337+00', '2025-11-04 16:32:59.16337+00', true);
-INSERT INTO public.order_items VALUES (1007, 579, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 2, 85.98, 3134.00, '2025-11-04 16:44:47.525526+00', '2025-11-04 16:44:47.525526+00', true);
-INSERT INTO public.order_items VALUES (1008, 579, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 16:44:47.525526+00', '2025-11-04 16:44:47.525526+00', true);
-INSERT INTO public.order_items VALUES (1009, 580, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 3, 98.97, 3607.00, '2025-11-04 16:54:23.789203+00', '2025-11-04 16:54:23.789203+00', true);
-INSERT INTO public.order_items VALUES (1010, 581, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 1, 32.99, 1202.00, '2025-11-04 17:05:41.889321+00', '2025-11-04 17:05:41.889321+00', true);
-INSERT INTO public.order_items VALUES (1011, 581, 103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-04 17:05:41.889321+00', '2025-11-04 17:05:41.889321+00', true);
-INSERT INTO public.order_items VALUES (1012, 582, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 2, 77.98, 2842.00, '2025-11-04 17:20:05.708514+00', '2025-11-04 17:20:05.708514+00', true);
-INSERT INTO public.order_items VALUES (1013, 582, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 1, 29.99, 1093.00, '2025-11-04 17:20:05.708514+00', '2025-11-04 17:20:05.708514+00', true);
-INSERT INTO public.order_items VALUES (1014, 582, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 17:20:05.708514+00', '2025-11-04 17:20:05.708514+00', true);
-INSERT INTO public.order_items VALUES (1015, 582, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 2, 145.98, 5321.00, '2025-11-04 17:20:05.708514+00', '2025-11-04 17:20:05.708514+00', true);
-INSERT INTO public.order_items VALUES (1016, 582, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 3, 128.97, 4701.00, '2025-11-04 17:20:05.708514+00', '2025-11-04 17:20:05.708514+00', true);
-INSERT INTO public.order_items VALUES (1017, 583, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 3, 293.94, 10714.00, '2025-11-04 17:30:43.392449+00', '2025-11-04 17:30:43.392449+00', true);
-INSERT INTO public.order_items VALUES (1018, 583, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 17:30:43.392449+00', '2025-11-04 17:30:43.392449+00', true);
-INSERT INTO public.order_items VALUES (1019, 583, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 1, 46.99, 1713.00, '2025-11-04 17:30:43.392449+00', '2025-11-04 17:30:43.392449+00', true);
-INSERT INTO public.order_items VALUES (1020, 583, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 1, 32.99, 1202.00, '2025-11-04 17:30:43.392449+00', '2025-11-04 17:30:43.392449+00', true);
-INSERT INTO public.order_items VALUES (1021, 584, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 3, 149.97, 5466.00, '2025-11-04 17:41:42.92844+00', '2025-11-04 17:41:42.92844+00', true);
-INSERT INTO public.order_items VALUES (1022, 584, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 2, 79.98, 2915.00, '2025-11-04 17:41:42.92844+00', '2025-11-04 17:41:42.92844+00', true);
-INSERT INTO public.order_items VALUES (1023, 584, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 17:41:42.92844+00', '2025-11-04 17:41:42.92844+00', true);
-INSERT INTO public.order_items VALUES (1024, 584, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 2, 77.98, 2842.00, '2025-11-04 17:41:42.92844+00', '2025-11-04 17:41:42.92844+00', true);
-INSERT INTO public.order_items VALUES (1025, 585, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 2, 111.98, 4082.00, '2025-11-04 17:55:04.055683+00', '2025-11-04 17:55:04.055683+00', true);
-INSERT INTO public.order_items VALUES (1026, 585, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 17:55:04.055683+00', '2025-11-04 17:55:04.055683+00', true);
-INSERT INTO public.order_items VALUES (1027, 585, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 2, 99.98, 3644.00, '2025-11-04 17:55:04.055683+00', '2025-11-04 17:55:04.055683+00', true);
-INSERT INTO public.order_items VALUES (1028, 585, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-04 17:55:04.055683+00', '2025-11-04 17:55:04.055683+00', true);
-INSERT INTO public.order_items VALUES (1029, 585, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 1, 68.99, 2515.00, '2025-11-04 17:55:04.055683+00', '2025-11-04 17:55:04.055683+00', true);
-INSERT INTO public.order_items VALUES (1030, 586, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 3, 116.97, 4264.00, '2025-11-04 18:04:53.461578+00', '2025-11-04 18:04:53.461578+00', true);
-INSERT INTO public.order_items VALUES (1031, 586, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 1, 45.99, 1676.00, '2025-11-04 18:04:53.461578+00', '2025-11-04 18:04:53.461578+00', true);
-INSERT INTO public.order_items VALUES (1032, 587, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 3, 293.94, 10714.00, '2025-11-04 18:15:54.819937+00', '2025-11-04 18:15:54.819937+00', true);
-INSERT INTO public.order_items VALUES (1033, 588, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 2, 85.98, 3134.00, '2025-11-04 18:27:27.084499+00', '2025-11-04 18:27:27.084499+00', true);
-INSERT INTO public.order_items VALUES (1034, 588, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 1, 455.00, 16585.00, '2025-11-04 18:27:27.084499+00', '2025-11-04 18:27:27.084499+00', true);
-INSERT INTO public.order_items VALUES (1035, 588, 88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 49.99, 1822.00, 1, 49.99, 1822.00, '2025-11-04 18:27:27.084499+00', '2025-11-04 18:27:27.084499+00', true);
-INSERT INTO public.order_items VALUES (1036, 588, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 2, 93.98, 3426.00, '2025-11-04 18:27:27.084499+00', '2025-11-04 18:27:27.084499+00', true);
-INSERT INTO public.order_items VALUES (1037, 589, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 2, 65.98, 2405.00, '2025-11-04 18:39:58.81748+00', '2025-11-04 18:39:58.81748+00', true);
-INSERT INTO public.order_items VALUES (1038, 589, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 2, 137.98, 5029.00, '2025-11-04 18:39:58.81748+00', '2025-11-04 18:39:58.81748+00', true);
-INSERT INTO public.order_items VALUES (1039, 589, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 2, 77.98, 2842.00, '2025-11-04 18:39:58.81748+00', '2025-11-04 18:39:58.81748+00', true);
-INSERT INTO public.order_items VALUES (1040, 589, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-11-04 18:39:58.81748+00', '2025-11-04 18:39:58.81748+00', true);
-INSERT INTO public.order_items VALUES (1041, 590, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 1, 38.99, 1421.00, '2025-11-04 18:52:08.723171+00', '2025-11-04 18:52:08.723171+00', true);
-INSERT INTO public.order_items VALUES (1042, 590, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 2, 79.98, 2915.00, '2025-11-04 18:52:08.723171+00', '2025-11-04 18:52:08.723171+00', true);
-INSERT INTO public.order_items VALUES (1043, 591, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 1, 39.99, 1458.00, '2025-11-04 19:07:23.134756+00', '2025-11-04 19:07:23.134756+00', true);
-INSERT INTO public.order_items VALUES (1044, 591, 84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 52.99, 1931.00, 3, 158.97, 5794.00, '2025-11-04 19:07:23.134756+00', '2025-11-04 19:07:23.134756+00', true);
-INSERT INTO public.order_items VALUES (1045, 591, 85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 38.99, 1421.00, 1, 38.99, 1421.00, '2025-11-04 19:07:23.134756+00', '2025-11-04 19:07:23.134756+00', true);
-INSERT INTO public.order_items VALUES (1046, 591, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 2, 93.98, 3426.00, '2025-11-04 19:07:23.134756+00', '2025-11-04 19:07:23.134756+00', true);
-INSERT INTO public.order_items VALUES (1047, 591, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 3, 293.94, 10714.00, '2025-11-04 19:07:23.134756+00', '2025-11-04 19:07:23.134756+00', true);
-INSERT INTO public.order_items VALUES (1048, 592, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 1, 29.99, 1093.00, '2025-11-04 19:21:04.408791+00', '2025-11-04 19:21:04.408791+00', true);
-INSERT INTO public.order_items VALUES (1049, 593, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 2, 65.98, 2405.00, '2025-11-04 19:30:57.392115+00', '2025-11-04 19:30:57.392115+00', true);
-INSERT INTO public.order_items VALUES (1050, 593, 86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 68.99, 2515.00, 1, 68.99, 2515.00, '2025-11-04 19:30:57.392115+00', '2025-11-04 19:30:57.392115+00', true);
-INSERT INTO public.order_items VALUES (1051, 593, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 3, 1365.00, 49754.00, '2025-11-04 19:30:57.392115+00', '2025-11-04 19:30:57.392115+00', true);
-INSERT INTO public.order_items VALUES (1052, 593, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 19:30:57.392115+00', '2025-11-04 19:30:57.392115+00', true);
-INSERT INTO public.order_items VALUES (1053, 593, 90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 46.99, 1713.00, 3, 140.97, 5138.00, '2025-11-04 19:30:57.392115+00', '2025-11-04 19:30:57.392115+00', true);
-INSERT INTO public.order_items VALUES (1054, 594, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 19:41:30.715791+00', '2025-11-04 19:41:30.715791+00', true);
-INSERT INTO public.order_items VALUES (1055, 594, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 3, 293.94, 10714.00, '2025-11-04 19:41:30.715791+00', '2025-11-04 19:41:30.715791+00', true);
-INSERT INTO public.order_items VALUES (1056, 594, 98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 19:41:30.715791+00', '2025-11-04 19:41:30.715791+00', true);
-INSERT INTO public.order_items VALUES (1057, 594, 93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 29.99, 1093.00, 3, 89.97, 3279.00, '2025-11-04 19:41:30.715791+00', '2025-11-04 19:41:30.715791+00', true);
-INSERT INTO public.order_items VALUES (1058, 595, 106, 'Probando2', 'Probando2', 455.00, 16585.00, 3, 1365.00, 49754.00, '2025-11-04 19:52:15.117582+00', '2025-11-04 19:52:15.117582+00', true);
-INSERT INTO public.order_items VALUES (1059, 595, 83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 45.99, 1676.00, 3, 137.97, 5029.00, '2025-11-04 19:52:15.117582+00', '2025-11-04 19:52:15.117582+00', true);
-INSERT INTO public.order_items VALUES (1060, 595, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-04 19:52:15.117582+00', '2025-11-04 19:52:15.117582+00', true);
-INSERT INTO public.order_items VALUES (1061, 595, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 3, 98.97, 3607.00, '2025-11-04 19:52:15.117582+00', '2025-11-04 19:52:15.117582+00', true);
-INSERT INTO public.order_items VALUES (1062, 595, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 19:52:15.117582+00', '2025-11-04 19:52:15.117582+00', true);
-INSERT INTO public.order_items VALUES (1063, 596, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 20:07:30.511215+00', '2025-11-04 20:07:30.511215+00', true);
-INSERT INTO public.order_items VALUES (1064, 597, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 20:19:02.329941+00', '2025-11-04 20:19:02.329941+00', true);
-INSERT INTO public.order_items VALUES (1065, 597, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-04 20:19:02.329941+00', '2025-11-04 20:19:02.329941+00', true);
-INSERT INTO public.order_items VALUES (1066, 597, 94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 72.99, 2660.00, 1, 72.99, 2660.00, '2025-11-04 20:19:02.329941+00', '2025-11-04 20:19:02.329941+00', true);
-INSERT INTO public.order_items VALUES (1067, 597, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-04 20:19:02.329941+00', '2025-11-04 20:19:02.329941+00', true);
-INSERT INTO public.order_items VALUES (1068, 597, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 1, 42.99, 1567.00, '2025-11-04 20:19:02.329941+00', '2025-11-04 20:19:02.329941+00', true);
-INSERT INTO public.order_items VALUES (1069, 598, 107, 'Roma de gatos', 'Roma de gatos', 97.98, 3571.00, 1, 97.98, 3571.00, '2025-11-04 20:32:15.11886+00', '2025-11-04 20:32:15.11886+00', true);
-INSERT INTO public.order_items VALUES (1070, 598, 89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 55.99, 2041.00, 1, 55.99, 2041.00, '2025-11-04 20:32:15.11886+00', '2025-11-04 20:32:15.11886+00', true);
-INSERT INTO public.order_items VALUES (1071, 598, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 20:32:15.11886+00', '2025-11-04 20:32:15.11886+00', true);
-INSERT INTO public.order_items VALUES (1072, 599, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 3, 119.97, 4373.00, '2025-11-04 20:46:00.597279+00', '2025-11-04 20:46:00.597279+00', true);
-INSERT INTO public.order_items VALUES (1073, 599, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 20:46:00.597279+00', '2025-11-04 20:46:00.597279+00', true);
-INSERT INTO public.order_items VALUES (1074, 599, 99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 3, 299.97, 10934.00, '2025-11-04 20:46:00.597279+00', '2025-11-04 20:46:00.597279+00', true);
-INSERT INTO public.order_items VALUES (1075, 600, 87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 42.99, 1567.00, 3, 128.97, 4701.00, '2025-11-04 20:59:43.477336+00', '2025-11-04 20:59:43.477336+00', true);
-INSERT INTO public.order_items VALUES (1076, 600, 101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-04 20:59:43.477336+00', '2025-11-04 20:59:43.477336+00', true);
-INSERT INTO public.order_items VALUES (1077, 600, 91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 32.99, 1202.00, 2, 65.98, 2405.00, '2025-11-04 20:59:43.477336+00', '2025-11-04 20:59:43.477336+00', true);
-INSERT INTO public.order_items VALUES (1078, 600, 100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 20:59:43.477336+00', '2025-11-04 20:59:43.477336+00', true);
-INSERT INTO public.order_items VALUES (1079, 600, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-04 20:59:43.477336+00', '2025-11-04 20:59:43.477336+00', true);
-INSERT INTO public.order_items VALUES (1080, 601, 92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 39.99, 1458.00, 2, 79.98, 2915.00, '2025-11-04 21:12:09.397941+00', '2025-11-04 21:12:09.397941+00', true);
-INSERT INTO public.order_items VALUES (1081, 602, 96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 21:24:26.817518+00', '2025-11-04 21:24:26.817518+00', true);
-INSERT INTO public.order_items VALUES (1082, 602, 104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 1, 99.99, 3645.00, '2025-11-04 21:24:26.817518+00', '2025-11-04 21:24:26.817518+00', true);
-INSERT INTO public.order_items VALUES (1083, 602, 102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 99.99, 3645.00, 2, 199.98, 7289.00, '2025-11-04 21:24:26.817518+00', '2025-11-04 21:24:26.817518+00', true);
 
 
 --
--- TOC entry 4260 (class 0 OID 32136)
--- Dependencies: 387
+-- TOC entry 4407 (class 0 OID 32136)
+-- Dependencies: 393
 -- Data for Name: order_status_history; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.order_status_history VALUES (1, 1, NULL, 'pending', 'Pedido creado', 3, '2025-09-11 20:26:51.107+00', true);
-INSERT INTO public.order_status_history VALUES (2, 1, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-12 02:26:51.107+00', true);
-INSERT INTO public.order_status_history VALUES (3, 1, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-12 04:26:51.107+00', true);
-INSERT INTO public.order_status_history VALUES (4, 1, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-12 06:26:51.107+00', true);
-INSERT INTO public.order_status_history VALUES (5, 1, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-12 13:26:51.107+00', true);
-INSERT INTO public.order_status_history VALUES (6, 2, NULL, 'pending', 'Pedido creado', 3, '2025-09-26 13:50:09.082+00', true);
-INSERT INTO public.order_status_history VALUES (7, 2, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-26 16:50:09.082+00', true);
-INSERT INTO public.order_status_history VALUES (8, 2, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-26 19:50:09.082+00', true);
-INSERT INTO public.order_status_history VALUES (9, 2, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-27 01:50:09.082+00', true);
-INSERT INTO public.order_status_history VALUES (10, 2, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-27 07:50:09.082+00', true);
-INSERT INTO public.order_status_history VALUES (11, 3, NULL, 'pending', 'Pedido creado', 3, '2025-07-23 23:06:46.235+00', true);
-INSERT INTO public.order_status_history VALUES (12, 3, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-24 02:06:46.235+00', true);
-INSERT INTO public.order_status_history VALUES (13, 3, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-24 04:06:46.235+00', true);
-INSERT INTO public.order_status_history VALUES (14, 3, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-24 09:06:46.235+00', true);
-INSERT INTO public.order_status_history VALUES (15, 3, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-24 13:06:46.235+00', true);
-INSERT INTO public.order_status_history VALUES (16, 4, NULL, 'pending', 'Pedido creado', 3, '2025-08-21 21:14:48.22+00', true);
-INSERT INTO public.order_status_history VALUES (17, 4, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-21 23:14:48.22+00', true);
-INSERT INTO public.order_status_history VALUES (18, 4, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-22 00:14:48.22+00', true);
-INSERT INTO public.order_status_history VALUES (19, 4, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-22 09:14:48.22+00', true);
-INSERT INTO public.order_status_history VALUES (20, 4, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-23 03:14:48.22+00', true);
-INSERT INTO public.order_status_history VALUES (21, 5, NULL, 'pending', 'Pedido creado', 3, '2025-09-21 11:08:59.899+00', true);
-INSERT INTO public.order_status_history VALUES (22, 5, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-21 13:08:59.899+00', true);
-INSERT INTO public.order_status_history VALUES (23, 5, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-21 14:08:59.899+00', true);
-INSERT INTO public.order_status_history VALUES (24, 5, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-21 19:08:59.899+00', true);
-INSERT INTO public.order_status_history VALUES (25, 5, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-22 02:08:59.899+00', true);
-INSERT INTO public.order_status_history VALUES (26, 6, NULL, 'pending', 'Pedido creado', 3, '2025-08-07 20:37:53.802+00', true);
-INSERT INTO public.order_status_history VALUES (27, 6, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-07 23:37:53.802+00', true);
-INSERT INTO public.order_status_history VALUES (28, 6, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-08 00:37:53.802+00', true);
-INSERT INTO public.order_status_history VALUES (29, 6, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-08 08:37:53.802+00', true);
-INSERT INTO public.order_status_history VALUES (30, 6, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-08 18:37:53.802+00', true);
-INSERT INTO public.order_status_history VALUES (31, 7, NULL, 'pending', 'Pedido creado', 3, '2025-07-15 00:25:31.396+00', true);
-INSERT INTO public.order_status_history VALUES (32, 7, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-15 04:25:31.396+00', true);
-INSERT INTO public.order_status_history VALUES (33, 7, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-15 05:25:31.396+00', true);
-INSERT INTO public.order_status_history VALUES (34, 7, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-15 15:25:31.396+00', true);
-INSERT INTO public.order_status_history VALUES (35, 7, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-16 10:25:31.396+00', true);
-INSERT INTO public.order_status_history VALUES (36, 8, NULL, 'pending', 'Pedido creado', 3, '2025-07-22 21:52:12.409+00', true);
-INSERT INTO public.order_status_history VALUES (37, 8, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-23 03:52:12.409+00', true);
-INSERT INTO public.order_status_history VALUES (38, 8, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-23 05:52:12.409+00', true);
-INSERT INTO public.order_status_history VALUES (39, 8, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-23 13:52:12.409+00', true);
-INSERT INTO public.order_status_history VALUES (40, 8, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-24 12:52:12.409+00', true);
-INSERT INTO public.order_status_history VALUES (41, 9, NULL, 'pending', 'Pedido creado', 3, '2025-08-11 01:18:32.569+00', true);
-INSERT INTO public.order_status_history VALUES (42, 9, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-11 02:18:32.569+00', true);
-INSERT INTO public.order_status_history VALUES (43, 9, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-11 04:18:32.569+00', true);
-INSERT INTO public.order_status_history VALUES (44, 9, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-11 08:18:32.569+00', true);
-INSERT INTO public.order_status_history VALUES (45, 9, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-11 14:18:32.569+00', true);
-INSERT INTO public.order_status_history VALUES (46, 10, NULL, 'pending', 'Pedido creado', 3, '2025-07-27 23:49:02.097+00', true);
-INSERT INTO public.order_status_history VALUES (47, 10, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-28 02:49:02.097+00', true);
-INSERT INTO public.order_status_history VALUES (48, 10, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-28 05:49:02.097+00', true);
-INSERT INTO public.order_status_history VALUES (49, 10, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-28 10:49:02.097+00', true);
-INSERT INTO public.order_status_history VALUES (50, 10, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-28 14:49:02.097+00', true);
-INSERT INTO public.order_status_history VALUES (51, 11, NULL, 'pending', 'Pedido creado', 3, '2025-10-01 21:48:02.563+00', true);
-INSERT INTO public.order_status_history VALUES (52, 11, 'pending', 'verified', 'Pago confirmado', 3, '2025-10-02 00:48:02.563+00', true);
-INSERT INTO public.order_status_history VALUES (53, 12, NULL, 'pending', 'Pedido creado', 3, '2025-08-16 05:29:44.484+00', true);
-INSERT INTO public.order_status_history VALUES (54, 12, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-16 10:29:44.484+00', true);
-INSERT INTO public.order_status_history VALUES (55, 12, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-16 12:29:44.484+00', true);
-INSERT INTO public.order_status_history VALUES (56, 12, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-16 21:29:44.484+00', true);
-INSERT INTO public.order_status_history VALUES (57, 12, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-17 13:29:44.484+00', true);
-INSERT INTO public.order_status_history VALUES (58, 13, NULL, 'pending', 'Pedido creado', 3, '2025-07-31 05:33:25.657+00', true);
-INSERT INTO public.order_status_history VALUES (59, 13, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-31 06:33:25.657+00', true);
-INSERT INTO public.order_status_history VALUES (60, 13, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-31 08:33:25.657+00', true);
-INSERT INTO public.order_status_history VALUES (61, 13, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-31 19:33:25.657+00', true);
-INSERT INTO public.order_status_history VALUES (62, 13, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-01 03:33:25.657+00', true);
-INSERT INTO public.order_status_history VALUES (63, 14, NULL, 'pending', 'Pedido creado', 3, '2025-07-09 08:15:15.268+00', true);
-INSERT INTO public.order_status_history VALUES (64, 14, 'pending', 'cancelled', 'Producto no disponible', 3, '2025-07-09 13:15:15.268+00', true);
-INSERT INTO public.order_status_history VALUES (65, 15, NULL, 'pending', 'Pedido creado', 3, '2025-07-23 13:05:09.814+00', true);
-INSERT INTO public.order_status_history VALUES (66, 15, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-23 17:05:09.814+00', true);
-INSERT INTO public.order_status_history VALUES (67, 15, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-23 19:05:09.814+00', true);
-INSERT INTO public.order_status_history VALUES (68, 15, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-24 06:05:09.814+00', true);
-INSERT INTO public.order_status_history VALUES (69, 15, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-24 09:05:09.814+00', true);
-INSERT INTO public.order_status_history VALUES (70, 16, NULL, 'pending', 'Pedido creado', 3, '2025-09-20 12:58:42.739+00', true);
-INSERT INTO public.order_status_history VALUES (71, 16, 'pending', 'cancelled', 'Cambio de dirección no disponible', 3, '2025-09-20 13:58:42.739+00', true);
-INSERT INTO public.order_status_history VALUES (72, 17, NULL, 'pending', 'Pedido creado', 3, '2025-07-18 18:59:42.195+00', true);
-INSERT INTO public.order_status_history VALUES (73, 17, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-19 00:59:42.195+00', true);
-INSERT INTO public.order_status_history VALUES (74, 17, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-19 02:59:42.195+00', true);
-INSERT INTO public.order_status_history VALUES (75, 17, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-19 12:59:42.195+00', true);
-INSERT INTO public.order_status_history VALUES (76, 17, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-20 09:59:42.195+00', true);
-INSERT INTO public.order_status_history VALUES (77, 18, NULL, 'pending', 'Pedido creado', 3, '2025-09-03 14:38:20.853+00', true);
-INSERT INTO public.order_status_history VALUES (78, 18, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-03 16:38:20.853+00', true);
-INSERT INTO public.order_status_history VALUES (79, 18, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-03 19:38:20.853+00', true);
-INSERT INTO public.order_status_history VALUES (80, 18, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-04 00:38:20.853+00', true);
-INSERT INTO public.order_status_history VALUES (81, 18, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-05 00:38:20.853+00', true);
-INSERT INTO public.order_status_history VALUES (82, 19, NULL, 'pending', 'Pedido creado', 3, '2025-07-23 10:20:40.615+00', true);
-INSERT INTO public.order_status_history VALUES (83, 19, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-23 11:20:40.615+00', true);
-INSERT INTO public.order_status_history VALUES (84, 19, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-23 13:20:40.615+00', true);
-INSERT INTO public.order_status_history VALUES (85, 19, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-23 17:20:40.615+00', true);
-INSERT INTO public.order_status_history VALUES (86, 19, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-24 10:20:40.615+00', true);
-INSERT INTO public.order_status_history VALUES (87, 20, NULL, 'pending', 'Pedido creado', 3, '2025-09-14 12:18:48.498+00', true);
-INSERT INTO public.order_status_history VALUES (88, 20, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-14 16:18:48.498+00', true);
-INSERT INTO public.order_status_history VALUES (89, 20, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-14 19:18:48.498+00', true);
-INSERT INTO public.order_status_history VALUES (90, 20, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-14 23:18:48.498+00', true);
-INSERT INTO public.order_status_history VALUES (91, 20, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-15 08:18:48.498+00', true);
-INSERT INTO public.order_status_history VALUES (92, 21, NULL, 'pending', 'Pedido creado', 3, '2025-08-07 04:11:43.35+00', true);
-INSERT INTO public.order_status_history VALUES (93, 21, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-07 06:11:43.35+00', true);
-INSERT INTO public.order_status_history VALUES (94, 21, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-07 09:11:43.35+00', true);
-INSERT INTO public.order_status_history VALUES (95, 21, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-07 19:11:43.35+00', true);
-INSERT INTO public.order_status_history VALUES (96, 21, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-07 21:11:43.35+00', true);
-INSERT INTO public.order_status_history VALUES (97, 22, NULL, 'pending', 'Pedido creado', 3, '2025-08-03 14:50:54.543+00', true);
-INSERT INTO public.order_status_history VALUES (98, 22, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-03 17:50:54.543+00', true);
-INSERT INTO public.order_status_history VALUES (99, 22, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-03 20:50:54.543+00', true);
-INSERT INTO public.order_status_history VALUES (100, 22, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-04 06:50:54.543+00', true);
-INSERT INTO public.order_status_history VALUES (101, 22, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-04 09:50:54.543+00', true);
-INSERT INTO public.order_status_history VALUES (102, 23, NULL, 'pending', 'Pedido creado', 3, '2025-07-29 23:38:15.874+00', true);
-INSERT INTO public.order_status_history VALUES (103, 23, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-30 05:38:15.874+00', true);
-INSERT INTO public.order_status_history VALUES (104, 23, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-30 07:38:15.874+00', true);
-INSERT INTO public.order_status_history VALUES (105, 23, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-30 16:38:15.874+00', true);
-INSERT INTO public.order_status_history VALUES (106, 23, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-31 12:38:15.874+00', true);
-INSERT INTO public.order_status_history VALUES (107, 24, NULL, 'pending', 'Pedido creado', 3, '2025-07-20 16:28:28.299+00', true);
-INSERT INTO public.order_status_history VALUES (108, 24, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-20 22:28:28.299+00', true);
-INSERT INTO public.order_status_history VALUES (109, 24, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-20 23:28:28.299+00', true);
-INSERT INTO public.order_status_history VALUES (110, 24, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-21 04:28:28.299+00', true);
-INSERT INTO public.order_status_history VALUES (111, 24, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-21 13:28:28.299+00', true);
-INSERT INTO public.order_status_history VALUES (112, 25, NULL, 'pending', 'Pedido creado', 3, '2025-08-06 11:27:09.962+00', true);
-INSERT INTO public.order_status_history VALUES (113, 25, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-06 12:27:09.962+00', true);
-INSERT INTO public.order_status_history VALUES (114, 25, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-06 15:27:09.962+00', true);
-INSERT INTO public.order_status_history VALUES (115, 25, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-07 01:27:09.962+00', true);
-INSERT INTO public.order_status_history VALUES (116, 25, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-07 23:27:09.962+00', true);
-INSERT INTO public.order_status_history VALUES (117, 26, NULL, 'pending', 'Pedido creado', 3, '2025-07-28 03:08:15.885+00', true);
-INSERT INTO public.order_status_history VALUES (118, 26, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-28 06:08:15.885+00', true);
-INSERT INTO public.order_status_history VALUES (119, 26, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-28 08:08:15.885+00', true);
-INSERT INTO public.order_status_history VALUES (120, 26, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-28 10:08:15.885+00', true);
-INSERT INTO public.order_status_history VALUES (121, 26, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-29 04:08:15.885+00', true);
-INSERT INTO public.order_status_history VALUES (122, 27, NULL, 'pending', 'Pedido creado', 3, '2025-08-23 09:58:00.276+00', true);
-INSERT INTO public.order_status_history VALUES (123, 27, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-23 12:58:00.276+00', true);
-INSERT INTO public.order_status_history VALUES (124, 27, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-23 14:58:00.276+00', true);
-INSERT INTO public.order_status_history VALUES (125, 27, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-24 02:58:00.276+00', true);
-INSERT INTO public.order_status_history VALUES (126, 27, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-24 23:58:00.276+00', true);
-INSERT INTO public.order_status_history VALUES (127, 28, NULL, 'pending', 'Pedido creado', 3, '2025-10-02 04:17:57.106+00', true);
-INSERT INTO public.order_status_history VALUES (128, 28, 'pending', 'verified', 'Pago confirmado', 3, '2025-10-02 07:17:57.106+00', true);
-INSERT INTO public.order_status_history VALUES (129, 28, 'verified', 'preparing', 'Preparando pedido', 3, '2025-10-02 10:17:57.106+00', true);
-INSERT INTO public.order_status_history VALUES (130, 28, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-10-02 16:17:57.106+00', true);
-INSERT INTO public.order_status_history VALUES (131, 29, NULL, 'pending', 'Pedido creado', 3, '2025-09-05 05:52:49.629+00', true);
-INSERT INTO public.order_status_history VALUES (132, 29, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-05 11:52:49.629+00', true);
-INSERT INTO public.order_status_history VALUES (133, 29, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-05 12:52:49.629+00', true);
-INSERT INTO public.order_status_history VALUES (134, 29, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-05 17:52:49.629+00', true);
-INSERT INTO public.order_status_history VALUES (135, 29, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-06 08:52:49.629+00', true);
-INSERT INTO public.order_status_history VALUES (136, 30, NULL, 'pending', 'Pedido creado', 3, '2025-07-13 09:35:18.171+00', true);
-INSERT INTO public.order_status_history VALUES (137, 30, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-13 13:35:18.171+00', true);
-INSERT INTO public.order_status_history VALUES (138, 30, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-13 16:35:18.171+00', true);
-INSERT INTO public.order_status_history VALUES (139, 30, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-13 22:35:18.171+00', true);
-INSERT INTO public.order_status_history VALUES (140, 30, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-14 16:35:18.171+00', true);
-INSERT INTO public.order_status_history VALUES (141, 31, NULL, 'pending', 'Pedido creado', 3, '2025-08-06 20:17:59.744+00', true);
-INSERT INTO public.order_status_history VALUES (142, 31, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-07 01:17:59.744+00', true);
-INSERT INTO public.order_status_history VALUES (143, 31, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-07 02:17:59.744+00', true);
-INSERT INTO public.order_status_history VALUES (144, 31, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-07 09:17:59.744+00', true);
-INSERT INTO public.order_status_history VALUES (145, 31, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-07 16:17:59.744+00', true);
-INSERT INTO public.order_status_history VALUES (146, 32, NULL, 'pending', 'Pedido creado', 3, '2025-08-21 11:51:03.455+00', true);
-INSERT INTO public.order_status_history VALUES (147, 32, 'pending', 'cancelled', 'Producto no disponible', 3, '2025-08-21 17:51:03.455+00', true);
-INSERT INTO public.order_status_history VALUES (148, 33, NULL, 'pending', 'Pedido creado', 3, '2025-08-17 18:18:24.377+00', true);
-INSERT INTO public.order_status_history VALUES (149, 33, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-17 23:18:24.377+00', true);
-INSERT INTO public.order_status_history VALUES (150, 33, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-18 01:18:24.377+00', true);
-INSERT INTO public.order_status_history VALUES (151, 33, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-18 06:18:24.377+00', true);
-INSERT INTO public.order_status_history VALUES (152, 33, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-18 08:18:24.377+00', true);
-INSERT INTO public.order_status_history VALUES (153, 34, NULL, 'pending', 'Pedido creado', 3, '2025-08-11 12:31:36.925+00', true);
-INSERT INTO public.order_status_history VALUES (154, 34, 'pending', 'cancelled', 'Cambio de dirección no disponible', 3, '2025-08-11 14:31:36.925+00', true);
-INSERT INTO public.order_status_history VALUES (155, 35, NULL, 'pending', 'Pedido creado', 3, '2025-08-21 21:34:40.406+00', true);
-INSERT INTO public.order_status_history VALUES (156, 35, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-21 23:34:40.406+00', true);
-INSERT INTO public.order_status_history VALUES (157, 35, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-22 00:34:40.406+00', true);
-INSERT INTO public.order_status_history VALUES (158, 35, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-22 11:34:40.406+00', true);
-INSERT INTO public.order_status_history VALUES (159, 35, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-22 13:34:40.406+00', true);
-INSERT INTO public.order_status_history VALUES (160, 36, NULL, 'pending', 'Pedido creado', 3, '2025-08-31 13:57:18.308+00', true);
-INSERT INTO public.order_status_history VALUES (161, 36, 'pending', 'cancelled', 'Cliente canceló el pedido', 3, '2025-08-31 18:57:18.308+00', true);
-INSERT INTO public.order_status_history VALUES (162, 37, NULL, 'pending', 'Pedido creado', 3, '2025-07-14 17:20:43.647+00', true);
-INSERT INTO public.order_status_history VALUES (163, 37, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-14 21:20:43.647+00', true);
-INSERT INTO public.order_status_history VALUES (164, 37, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-14 23:20:43.647+00', true);
-INSERT INTO public.order_status_history VALUES (165, 37, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-15 11:20:43.647+00', true);
-INSERT INTO public.order_status_history VALUES (166, 37, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-15 15:20:43.647+00', true);
-INSERT INTO public.order_status_history VALUES (167, 38, NULL, 'pending', 'Pedido creado', 3, '2025-09-17 13:46:15.092+00', true);
-INSERT INTO public.order_status_history VALUES (168, 38, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-17 15:46:15.092+00', true);
-INSERT INTO public.order_status_history VALUES (169, 38, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-17 17:46:15.092+00', true);
-INSERT INTO public.order_status_history VALUES (170, 38, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-18 00:46:15.092+00', true);
-INSERT INTO public.order_status_history VALUES (171, 38, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-19 00:46:15.092+00', true);
-INSERT INTO public.order_status_history VALUES (172, 39, NULL, 'pending', 'Pedido creado', 3, '2025-08-22 10:45:13.786+00', true);
-INSERT INTO public.order_status_history VALUES (173, 39, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-22 11:45:13.786+00', true);
-INSERT INTO public.order_status_history VALUES (174, 39, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-22 14:45:13.786+00', true);
-INSERT INTO public.order_status_history VALUES (175, 39, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-22 21:45:13.786+00', true);
-INSERT INTO public.order_status_history VALUES (176, 39, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-23 14:45:13.786+00', true);
-INSERT INTO public.order_status_history VALUES (177, 40, NULL, 'pending', 'Pedido creado', 3, '2025-07-26 09:56:43.681+00', true);
-INSERT INTO public.order_status_history VALUES (178, 40, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-26 15:56:43.681+00', true);
-INSERT INTO public.order_status_history VALUES (179, 40, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-26 18:56:43.681+00', true);
-INSERT INTO public.order_status_history VALUES (180, 40, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-26 20:56:43.681+00', true);
-INSERT INTO public.order_status_history VALUES (181, 40, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-27 09:56:43.681+00', true);
-INSERT INTO public.order_status_history VALUES (182, 41, NULL, 'pending', 'Pedido creado', 3, '2025-09-10 16:16:32.169+00', true);
-INSERT INTO public.order_status_history VALUES (183, 41, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-10 17:16:32.169+00', true);
-INSERT INTO public.order_status_history VALUES (184, 41, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-10 19:16:32.169+00', true);
-INSERT INTO public.order_status_history VALUES (185, 41, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-11 04:16:32.169+00', true);
-INSERT INTO public.order_status_history VALUES (186, 41, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-11 18:16:32.169+00', true);
-INSERT INTO public.order_status_history VALUES (187, 42, NULL, 'pending', 'Pedido creado', 3, '2025-08-28 13:08:01.324+00', true);
-INSERT INTO public.order_status_history VALUES (188, 42, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-28 18:08:01.324+00', true);
-INSERT INTO public.order_status_history VALUES (189, 42, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-28 19:08:01.324+00', true);
-INSERT INTO public.order_status_history VALUES (190, 42, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-28 22:08:01.324+00', true);
-INSERT INTO public.order_status_history VALUES (191, 42, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-29 19:08:01.324+00', true);
-INSERT INTO public.order_status_history VALUES (192, 43, NULL, 'pending', 'Pedido creado', 3, '2025-09-25 19:20:35.688+00', true);
-INSERT INTO public.order_status_history VALUES (193, 43, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-25 21:20:35.688+00', true);
-INSERT INTO public.order_status_history VALUES (194, 43, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-25 23:20:35.688+00', true);
-INSERT INTO public.order_status_history VALUES (195, 43, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-26 03:20:35.688+00', true);
-INSERT INTO public.order_status_history VALUES (196, 43, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-26 13:20:35.688+00', true);
-INSERT INTO public.order_status_history VALUES (197, 44, NULL, 'pending', 'Pedido creado', 3, '2025-08-07 03:11:36.248+00', true);
-INSERT INTO public.order_status_history VALUES (198, 44, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-07 06:11:36.248+00', true);
-INSERT INTO public.order_status_history VALUES (199, 44, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-07 09:11:36.248+00', true);
-INSERT INTO public.order_status_history VALUES (200, 44, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-07 19:11:36.248+00', true);
-INSERT INTO public.order_status_history VALUES (201, 44, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-08 09:11:36.248+00', true);
-INSERT INTO public.order_status_history VALUES (202, 45, NULL, 'pending', 'Pedido creado', 3, '2025-08-21 15:46:16.255+00', true);
-INSERT INTO public.order_status_history VALUES (203, 45, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-21 18:46:16.255+00', true);
-INSERT INTO public.order_status_history VALUES (204, 45, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-21 19:46:16.255+00', true);
-INSERT INTO public.order_status_history VALUES (205, 45, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-22 05:46:16.255+00', true);
-INSERT INTO public.order_status_history VALUES (206, 45, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-23 03:46:16.255+00', true);
-INSERT INTO public.order_status_history VALUES (207, 46, NULL, 'pending', 'Pedido creado', 3, '2025-07-29 00:23:43.35+00', true);
-INSERT INTO public.order_status_history VALUES (208, 46, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-29 06:23:43.35+00', true);
-INSERT INTO public.order_status_history VALUES (209, 46, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-29 09:23:43.35+00', true);
-INSERT INTO public.order_status_history VALUES (210, 46, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-29 20:23:43.35+00', true);
-INSERT INTO public.order_status_history VALUES (211, 46, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-30 07:23:43.35+00', true);
-INSERT INTO public.order_status_history VALUES (212, 47, NULL, 'pending', 'Pedido creado', 3, '2025-09-11 08:28:00.466+00', true);
-INSERT INTO public.order_status_history VALUES (213, 47, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-11 10:28:00.466+00', true);
-INSERT INTO public.order_status_history VALUES (214, 47, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-11 13:28:00.466+00', true);
-INSERT INTO public.order_status_history VALUES (215, 47, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-11 15:28:00.466+00', true);
-INSERT INTO public.order_status_history VALUES (216, 48, NULL, 'pending', 'Pedido creado', 3, '2025-09-26 06:04:32.588+00', true);
-INSERT INTO public.order_status_history VALUES (217, 48, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-26 08:04:32.588+00', true);
-INSERT INTO public.order_status_history VALUES (218, 48, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-26 11:04:32.588+00', true);
-INSERT INTO public.order_status_history VALUES (219, 48, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-26 16:04:32.588+00', true);
-INSERT INTO public.order_status_history VALUES (220, 48, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-27 03:04:32.588+00', true);
-INSERT INTO public.order_status_history VALUES (221, 49, NULL, 'pending', 'Pedido creado', 3, '2025-07-30 16:06:15.465+00', true);
-INSERT INTO public.order_status_history VALUES (222, 49, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-30 17:06:15.465+00', true);
-INSERT INTO public.order_status_history VALUES (223, 49, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-30 20:06:15.465+00', true);
-INSERT INTO public.order_status_history VALUES (224, 49, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-30 23:06:15.465+00', true);
-INSERT INTO public.order_status_history VALUES (225, 49, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-31 20:06:15.465+00', true);
-INSERT INTO public.order_status_history VALUES (226, 50, NULL, 'pending', 'Pedido creado', 3, '2025-09-16 13:18:09.882+00', true);
-INSERT INTO public.order_status_history VALUES (227, 50, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-16 18:18:09.882+00', true);
-INSERT INTO public.order_status_history VALUES (228, 50, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-16 21:18:09.882+00', true);
-INSERT INTO public.order_status_history VALUES (229, 50, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-17 01:18:09.882+00', true);
-INSERT INTO public.order_status_history VALUES (230, 50, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-17 17:18:09.882+00', true);
-INSERT INTO public.order_status_history VALUES (231, 51, NULL, 'pending', 'Pedido creado', 3, '2025-08-29 02:40:04.458+00', true);
-INSERT INTO public.order_status_history VALUES (232, 51, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-29 05:40:04.458+00', true);
-INSERT INTO public.order_status_history VALUES (233, 51, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-29 07:40:04.458+00', true);
-INSERT INTO public.order_status_history VALUES (234, 51, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-29 17:40:04.458+00', true);
-INSERT INTO public.order_status_history VALUES (235, 52, NULL, 'pending', 'Pedido creado', 3, '2025-09-05 08:19:04.545+00', true);
-INSERT INTO public.order_status_history VALUES (236, 52, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-05 12:19:04.545+00', true);
-INSERT INTO public.order_status_history VALUES (237, 52, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-05 15:19:04.545+00', true);
-INSERT INTO public.order_status_history VALUES (238, 52, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-05 23:19:04.545+00', true);
-INSERT INTO public.order_status_history VALUES (239, 52, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-06 22:19:04.545+00', true);
-INSERT INTO public.order_status_history VALUES (240, 53, NULL, 'pending', 'Pedido creado', 3, '2025-07-10 03:32:24.417+00', true);
-INSERT INTO public.order_status_history VALUES (241, 53, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-10 08:32:24.417+00', true);
-INSERT INTO public.order_status_history VALUES (242, 53, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-10 10:32:24.417+00', true);
-INSERT INTO public.order_status_history VALUES (243, 53, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-10 17:32:24.417+00', true);
-INSERT INTO public.order_status_history VALUES (244, 53, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-11 02:32:24.417+00', true);
-INSERT INTO public.order_status_history VALUES (245, 54, NULL, 'pending', 'Pedido creado', 3, '2025-09-08 15:49:21.526+00', true);
-INSERT INTO public.order_status_history VALUES (246, 54, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-08 18:49:21.526+00', true);
-INSERT INTO public.order_status_history VALUES (247, 54, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-08 21:49:21.526+00', true);
-INSERT INTO public.order_status_history VALUES (248, 54, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-09 07:49:21.526+00', true);
-INSERT INTO public.order_status_history VALUES (249, 54, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-09 17:49:21.526+00', true);
-INSERT INTO public.order_status_history VALUES (250, 55, NULL, 'pending', 'Pedido creado', 3, '2025-10-02 09:58:39.515+00', true);
-INSERT INTO public.order_status_history VALUES (251, 55, 'pending', 'verified', 'Pago confirmado', 3, '2025-10-02 13:58:39.515+00', true);
-INSERT INTO public.order_status_history VALUES (252, 56, NULL, 'pending', 'Pedido creado', 3, '2025-09-17 00:45:55.06+00', true);
-INSERT INTO public.order_status_history VALUES (253, 56, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-17 04:45:55.06+00', true);
-INSERT INTO public.order_status_history VALUES (254, 56, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-17 06:45:55.06+00', true);
-INSERT INTO public.order_status_history VALUES (255, 56, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-17 16:45:55.06+00', true);
-INSERT INTO public.order_status_history VALUES (256, 56, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-17 20:45:55.06+00', true);
-INSERT INTO public.order_status_history VALUES (257, 57, NULL, 'pending', 'Pedido creado', 3, '2025-07-10 13:22:38.319+00', true);
-INSERT INTO public.order_status_history VALUES (258, 57, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-10 14:22:38.319+00', true);
-INSERT INTO public.order_status_history VALUES (259, 57, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-10 16:22:38.319+00', true);
-INSERT INTO public.order_status_history VALUES (260, 57, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-10 18:22:38.319+00', true);
-INSERT INTO public.order_status_history VALUES (261, 57, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-11 14:22:38.319+00', true);
-INSERT INTO public.order_status_history VALUES (262, 58, NULL, 'pending', 'Pedido creado', 3, '2025-08-02 19:51:11.879+00', true);
-INSERT INTO public.order_status_history VALUES (263, 58, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-03 00:51:11.879+00', true);
-INSERT INTO public.order_status_history VALUES (264, 58, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-03 01:51:11.879+00', true);
-INSERT INTO public.order_status_history VALUES (265, 58, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-03 11:51:11.879+00', true);
-INSERT INTO public.order_status_history VALUES (266, 58, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-03 23:51:11.879+00', true);
-INSERT INTO public.order_status_history VALUES (267, 59, NULL, 'pending', 'Pedido creado', 3, '2025-09-23 06:45:37.612+00', true);
-INSERT INTO public.order_status_history VALUES (268, 59, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-23 12:45:37.612+00', true);
-INSERT INTO public.order_status_history VALUES (269, 59, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-23 14:45:37.612+00', true);
-INSERT INTO public.order_status_history VALUES (270, 59, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-23 21:45:37.612+00', true);
-INSERT INTO public.order_status_history VALUES (271, 59, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-24 19:45:37.612+00', true);
-INSERT INTO public.order_status_history VALUES (272, 60, NULL, 'pending', 'Pedido creado', 3, '2025-07-30 11:20:35.4+00', true);
-INSERT INTO public.order_status_history VALUES (273, 60, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-30 12:20:35.4+00', true);
-INSERT INTO public.order_status_history VALUES (274, 60, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-30 14:20:35.4+00', true);
-INSERT INTO public.order_status_history VALUES (275, 60, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-31 02:20:35.4+00', true);
-INSERT INTO public.order_status_history VALUES (276, 61, NULL, 'pending', 'Pedido creado', 3, '2025-07-28 04:00:14.854+00', true);
-INSERT INTO public.order_status_history VALUES (277, 61, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-28 10:00:14.854+00', true);
-INSERT INTO public.order_status_history VALUES (278, 61, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-28 11:00:14.854+00', true);
-INSERT INTO public.order_status_history VALUES (279, 61, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-28 18:00:14.854+00', true);
-INSERT INTO public.order_status_history VALUES (280, 61, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-29 06:00:14.854+00', true);
-INSERT INTO public.order_status_history VALUES (281, 62, NULL, 'pending', 'Pedido creado', 3, '2025-10-02 18:44:56.212+00', true);
-INSERT INTO public.order_status_history VALUES (282, 62, 'pending', 'verified', 'Pago confirmado', 3, '2025-10-02 22:44:56.212+00', true);
-INSERT INTO public.order_status_history VALUES (283, 62, 'verified', 'preparing', 'Preparando pedido', 3, '2025-10-03 01:44:56.212+00', true);
-INSERT INTO public.order_status_history VALUES (284, 62, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-10-03 08:44:56.212+00', true);
-INSERT INTO public.order_status_history VALUES (285, 63, NULL, 'pending', 'Pedido creado', 3, '2025-07-13 20:57:20.391+00', true);
-INSERT INTO public.order_status_history VALUES (286, 63, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-14 00:57:20.391+00', true);
-INSERT INTO public.order_status_history VALUES (287, 63, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-14 03:57:20.391+00', true);
-INSERT INTO public.order_status_history VALUES (288, 63, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-14 12:57:20.391+00', true);
-INSERT INTO public.order_status_history VALUES (289, 63, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-15 07:57:20.391+00', true);
-INSERT INTO public.order_status_history VALUES (290, 64, NULL, 'pending', 'Pedido creado', 3, '2025-08-04 22:31:15.81+00', true);
-INSERT INTO public.order_status_history VALUES (291, 64, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-05 00:31:15.81+00', true);
-INSERT INTO public.order_status_history VALUES (292, 64, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-05 02:31:15.81+00', true);
-INSERT INTO public.order_status_history VALUES (293, 64, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-05 06:31:15.81+00', true);
-INSERT INTO public.order_status_history VALUES (294, 64, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-05 08:31:15.81+00', true);
-INSERT INTO public.order_status_history VALUES (295, 65, NULL, 'pending', 'Pedido creado', 3, '2025-07-23 11:21:19.001+00', true);
-INSERT INTO public.order_status_history VALUES (296, 65, 'pending', 'cancelled', 'Cliente no respondió', 3, '2025-07-23 14:21:19.001+00', true);
-INSERT INTO public.order_status_history VALUES (297, 66, NULL, 'pending', 'Pedido creado', 3, '2025-09-02 15:45:54.054+00', true);
-INSERT INTO public.order_status_history VALUES (298, 66, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-02 20:45:54.054+00', true);
-INSERT INTO public.order_status_history VALUES (299, 66, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-02 22:45:54.054+00', true);
-INSERT INTO public.order_status_history VALUES (300, 66, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-03 02:45:54.054+00', true);
-INSERT INTO public.order_status_history VALUES (301, 66, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-03 12:45:54.054+00', true);
-INSERT INTO public.order_status_history VALUES (302, 67, NULL, 'pending', 'Pedido creado', 3, '2025-08-04 23:03:46.06+00', true);
-INSERT INTO public.order_status_history VALUES (303, 67, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-05 04:03:46.06+00', true);
-INSERT INTO public.order_status_history VALUES (304, 67, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-05 07:03:46.06+00', true);
-INSERT INTO public.order_status_history VALUES (305, 67, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-05 13:03:46.06+00', true);
-INSERT INTO public.order_status_history VALUES (306, 67, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-06 11:03:46.06+00', true);
-INSERT INTO public.order_status_history VALUES (307, 68, NULL, 'pending', 'Pedido creado', 3, '2025-08-09 02:23:14.404+00', true);
-INSERT INTO public.order_status_history VALUES (308, 68, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-09 06:23:14.404+00', true);
-INSERT INTO public.order_status_history VALUES (309, 68, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-09 08:23:14.404+00', true);
-INSERT INTO public.order_status_history VALUES (310, 68, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-09 11:23:14.404+00', true);
-INSERT INTO public.order_status_history VALUES (311, 68, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-09 16:23:14.404+00', true);
-INSERT INTO public.order_status_history VALUES (312, 69, NULL, 'pending', 'Pedido creado', 3, '2025-08-02 02:12:24.965+00', true);
-INSERT INTO public.order_status_history VALUES (313, 69, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-02 07:12:24.965+00', true);
-INSERT INTO public.order_status_history VALUES (314, 69, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-02 09:12:24.965+00', true);
-INSERT INTO public.order_status_history VALUES (315, 69, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-02 21:12:24.965+00', true);
-INSERT INTO public.order_status_history VALUES (316, 69, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-03 01:12:24.965+00', true);
-INSERT INTO public.order_status_history VALUES (317, 70, NULL, 'pending', 'Pedido creado', 3, '2025-07-24 05:20:43.353+00', true);
-INSERT INTO public.order_status_history VALUES (318, 70, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-24 09:20:43.353+00', true);
-INSERT INTO public.order_status_history VALUES (319, 70, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-24 11:20:43.353+00', true);
-INSERT INTO public.order_status_history VALUES (320, 70, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-24 20:20:43.353+00', true);
-INSERT INTO public.order_status_history VALUES (321, 70, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-25 12:20:43.353+00', true);
-INSERT INTO public.order_status_history VALUES (322, 71, NULL, 'pending', 'Pedido creado', 3, '2025-08-13 09:40:00.88+00', true);
-INSERT INTO public.order_status_history VALUES (323, 71, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-13 12:40:00.88+00', true);
-INSERT INTO public.order_status_history VALUES (324, 71, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-13 14:40:00.88+00', true);
-INSERT INTO public.order_status_history VALUES (325, 71, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-13 16:40:00.88+00', true);
-INSERT INTO public.order_status_history VALUES (326, 71, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-13 21:40:00.88+00', true);
-INSERT INTO public.order_status_history VALUES (327, 72, NULL, 'pending', 'Pedido creado', 3, '2025-07-31 07:11:19.764+00', true);
-INSERT INTO public.order_status_history VALUES (328, 72, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-31 13:11:19.764+00', true);
-INSERT INTO public.order_status_history VALUES (329, 72, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-31 16:11:19.764+00', true);
-INSERT INTO public.order_status_history VALUES (330, 72, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-31 23:11:19.764+00', true);
-INSERT INTO public.order_status_history VALUES (331, 72, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-01 01:11:19.764+00', true);
-INSERT INTO public.order_status_history VALUES (332, 73, NULL, 'pending', 'Pedido creado', 3, '2025-07-08 15:01:27.846+00', true);
-INSERT INTO public.order_status_history VALUES (333, 73, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-08 16:01:27.846+00', true);
-INSERT INTO public.order_status_history VALUES (334, 73, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-08 17:01:27.846+00', true);
-INSERT INTO public.order_status_history VALUES (335, 73, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-09 05:01:27.846+00', true);
-INSERT INTO public.order_status_history VALUES (336, 73, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-09 18:01:27.846+00', true);
-INSERT INTO public.order_status_history VALUES (337, 74, NULL, 'pending', 'Pedido creado', 3, '2025-09-05 08:36:05.264+00', true);
-INSERT INTO public.order_status_history VALUES (338, 74, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-05 11:36:05.264+00', true);
-INSERT INTO public.order_status_history VALUES (339, 74, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-05 12:36:05.264+00', true);
-INSERT INTO public.order_status_history VALUES (340, 74, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-06 00:36:05.264+00', true);
-INSERT INTO public.order_status_history VALUES (341, 74, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-06 17:36:05.264+00', true);
-INSERT INTO public.order_status_history VALUES (342, 75, NULL, 'pending', 'Pedido creado', 3, '2025-07-25 20:03:30.156+00', true);
-INSERT INTO public.order_status_history VALUES (343, 75, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-25 23:03:30.156+00', true);
-INSERT INTO public.order_status_history VALUES (344, 75, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-26 02:03:30.156+00', true);
-INSERT INTO public.order_status_history VALUES (345, 75, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-26 05:03:30.156+00', true);
-INSERT INTO public.order_status_history VALUES (346, 75, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-26 08:03:30.156+00', true);
-INSERT INTO public.order_status_history VALUES (347, 76, NULL, 'pending', 'Pedido creado', 3, '2025-08-13 13:31:11.796+00', true);
-INSERT INTO public.order_status_history VALUES (348, 76, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-13 14:31:11.796+00', true);
-INSERT INTO public.order_status_history VALUES (349, 76, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-13 17:31:11.796+00', true);
-INSERT INTO public.order_status_history VALUES (350, 76, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-14 03:31:11.796+00', true);
-INSERT INTO public.order_status_history VALUES (351, 76, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-14 08:31:11.796+00', true);
-INSERT INTO public.order_status_history VALUES (352, 77, NULL, 'pending', 'Pedido creado', 3, '2025-07-08 22:53:43.895+00', true);
-INSERT INTO public.order_status_history VALUES (353, 77, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-09 00:53:43.895+00', true);
-INSERT INTO public.order_status_history VALUES (354, 77, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-09 02:53:43.895+00', true);
-INSERT INTO public.order_status_history VALUES (355, 77, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-09 09:53:43.895+00', true);
-INSERT INTO public.order_status_history VALUES (356, 77, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-09 13:53:43.895+00', true);
-INSERT INTO public.order_status_history VALUES (357, 78, NULL, 'pending', 'Pedido creado', 3, '2025-08-31 02:38:30.247+00', true);
-INSERT INTO public.order_status_history VALUES (358, 78, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-31 06:38:30.247+00', true);
-INSERT INTO public.order_status_history VALUES (359, 78, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-31 08:38:30.247+00', true);
-INSERT INTO public.order_status_history VALUES (360, 78, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-31 14:38:30.247+00', true);
-INSERT INTO public.order_status_history VALUES (361, 78, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-01 09:38:30.247+00', true);
-INSERT INTO public.order_status_history VALUES (362, 79, NULL, 'pending', 'Pedido creado', 3, '2025-07-04 16:01:48.34+00', true);
-INSERT INTO public.order_status_history VALUES (363, 79, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-04 21:01:48.34+00', true);
-INSERT INTO public.order_status_history VALUES (364, 79, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-05 00:01:48.34+00', true);
-INSERT INTO public.order_status_history VALUES (365, 79, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-05 02:01:48.34+00', true);
-INSERT INTO public.order_status_history VALUES (366, 79, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-05 21:01:48.34+00', true);
-INSERT INTO public.order_status_history VALUES (367, 80, NULL, 'pending', 'Pedido creado', 3, '2025-08-18 14:00:02.994+00', true);
-INSERT INTO public.order_status_history VALUES (368, 80, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-18 15:00:02.994+00', true);
-INSERT INTO public.order_status_history VALUES (369, 80, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-18 18:00:02.994+00', true);
-INSERT INTO public.order_status_history VALUES (370, 80, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-19 04:00:02.994+00', true);
-INSERT INTO public.order_status_history VALUES (371, 80, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-20 04:00:02.994+00', true);
-INSERT INTO public.order_status_history VALUES (372, 81, NULL, 'pending', 'Pedido creado', 3, '2025-08-20 20:26:40.15+00', true);
-INSERT INTO public.order_status_history VALUES (373, 81, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-21 02:26:40.15+00', true);
-INSERT INTO public.order_status_history VALUES (374, 81, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-21 05:26:40.15+00', true);
-INSERT INTO public.order_status_history VALUES (375, 81, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-21 11:26:40.15+00', true);
-INSERT INTO public.order_status_history VALUES (376, 81, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-22 05:26:40.15+00', true);
-INSERT INTO public.order_status_history VALUES (377, 82, NULL, 'pending', 'Pedido creado', 3, '2025-09-27 22:58:32.289+00', true);
-INSERT INTO public.order_status_history VALUES (378, 82, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-28 01:58:32.289+00', true);
-INSERT INTO public.order_status_history VALUES (379, 82, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-28 02:58:32.289+00', true);
-INSERT INTO public.order_status_history VALUES (380, 82, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-28 11:58:32.289+00', true);
-INSERT INTO public.order_status_history VALUES (381, 82, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-29 07:58:32.289+00', true);
-INSERT INTO public.order_status_history VALUES (382, 83, NULL, 'pending', 'Pedido creado', 3, '2025-09-26 15:12:49.043+00', true);
-INSERT INTO public.order_status_history VALUES (383, 83, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-26 17:12:49.043+00', true);
-INSERT INTO public.order_status_history VALUES (384, 83, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-26 18:12:49.043+00', true);
-INSERT INTO public.order_status_history VALUES (385, 83, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-26 21:12:49.043+00', true);
-INSERT INTO public.order_status_history VALUES (386, 83, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-27 17:12:49.043+00', true);
-INSERT INTO public.order_status_history VALUES (387, 84, NULL, 'pending', 'Pedido creado', 3, '2025-07-31 18:52:57.631+00', true);
-INSERT INTO public.order_status_history VALUES (388, 84, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-31 19:52:57.631+00', true);
-INSERT INTO public.order_status_history VALUES (389, 84, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-31 21:52:57.631+00', true);
-INSERT INTO public.order_status_history VALUES (390, 84, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-01 04:52:57.631+00', true);
-INSERT INTO public.order_status_history VALUES (391, 84, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-01 10:52:57.631+00', true);
-INSERT INTO public.order_status_history VALUES (392, 85, NULL, 'pending', 'Pedido creado', 3, '2025-07-31 23:35:32.669+00', true);
-INSERT INTO public.order_status_history VALUES (393, 85, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-01 01:35:32.669+00', true);
-INSERT INTO public.order_status_history VALUES (394, 85, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-01 02:35:32.669+00', true);
-INSERT INTO public.order_status_history VALUES (395, 85, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-01 13:35:32.669+00', true);
-INSERT INTO public.order_status_history VALUES (396, 86, NULL, 'pending', 'Pedido creado', 3, '2025-08-19 03:15:35.232+00', true);
-INSERT INTO public.order_status_history VALUES (397, 86, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-19 04:15:35.232+00', true);
-INSERT INTO public.order_status_history VALUES (398, 86, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-19 05:15:35.232+00', true);
-INSERT INTO public.order_status_history VALUES (399, 86, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-19 10:15:35.232+00', true);
-INSERT INTO public.order_status_history VALUES (400, 86, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-20 03:15:35.232+00', true);
-INSERT INTO public.order_status_history VALUES (401, 87, NULL, 'pending', 'Pedido creado', 3, '2025-08-19 15:01:18.202+00', true);
-INSERT INTO public.order_status_history VALUES (402, 87, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-19 17:01:18.202+00', true);
-INSERT INTO public.order_status_history VALUES (403, 87, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-19 19:01:18.202+00', true);
-INSERT INTO public.order_status_history VALUES (404, 87, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-20 00:01:18.202+00', true);
-INSERT INTO public.order_status_history VALUES (405, 87, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-20 12:01:18.202+00', true);
-INSERT INTO public.order_status_history VALUES (406, 88, NULL, 'pending', 'Pedido creado', 3, '2025-09-07 22:33:50.158+00', true);
-INSERT INTO public.order_status_history VALUES (407, 88, 'pending', 'cancelled', 'Cliente no respondió', 3, '2025-09-08 04:33:50.158+00', true);
-INSERT INTO public.order_status_history VALUES (408, 89, NULL, 'pending', 'Pedido creado', 3, '2025-08-15 00:01:01.715+00', true);
-INSERT INTO public.order_status_history VALUES (409, 89, 'pending', 'verified', 'Pago confirmado', 3, '2025-08-15 01:01:01.715+00', true);
-INSERT INTO public.order_status_history VALUES (410, 89, 'verified', 'preparing', 'Preparando pedido', 3, '2025-08-15 02:01:01.715+00', true);
-INSERT INTO public.order_status_history VALUES (411, 89, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-15 11:01:01.715+00', true);
-INSERT INTO public.order_status_history VALUES (412, 89, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-15 21:01:01.715+00', true);
-INSERT INTO public.order_status_history VALUES (413, 90, NULL, 'pending', 'Pedido creado', 3, '2025-09-13 04:35:02.922+00', true);
-INSERT INTO public.order_status_history VALUES (414, 90, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-13 05:35:02.922+00', true);
-INSERT INTO public.order_status_history VALUES (415, 90, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-13 07:35:02.922+00', true);
-INSERT INTO public.order_status_history VALUES (416, 90, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-13 10:35:02.922+00', true);
-INSERT INTO public.order_status_history VALUES (417, 90, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-14 00:35:02.922+00', true);
-INSERT INTO public.order_status_history VALUES (418, 91, NULL, 'pending', 'Pedido creado', 3, '2025-07-24 14:31:52.774+00', true);
-INSERT INTO public.order_status_history VALUES (419, 91, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-24 15:31:52.774+00', true);
-INSERT INTO public.order_status_history VALUES (420, 91, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-24 16:31:52.774+00', true);
-INSERT INTO public.order_status_history VALUES (421, 91, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-24 22:31:52.774+00', true);
-INSERT INTO public.order_status_history VALUES (422, 91, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-25 21:31:52.774+00', true);
-INSERT INTO public.order_status_history VALUES (423, 92, NULL, 'pending', 'Pedido creado', 3, '2025-07-10 12:54:42.648+00', true);
-INSERT INTO public.order_status_history VALUES (424, 92, 'pending', 'cancelled', 'Cliente canceló el pedido', 3, '2025-07-10 16:54:42.648+00', true);
-INSERT INTO public.order_status_history VALUES (425, 93, NULL, 'pending', 'Pedido creado', 3, '2025-08-08 10:17:17.883+00', true);
-INSERT INTO public.order_status_history VALUES (426, 93, 'pending', 'cancelled', 'Producto no disponible', 3, '2025-08-08 13:17:17.883+00', true);
-INSERT INTO public.order_status_history VALUES (427, 94, NULL, 'pending', 'Pedido creado', 3, '2025-09-15 01:39:25.251+00', true);
-INSERT INTO public.order_status_history VALUES (428, 94, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-15 02:39:25.251+00', true);
-INSERT INTO public.order_status_history VALUES (429, 94, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-15 03:39:25.251+00', true);
-INSERT INTO public.order_status_history VALUES (430, 94, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-15 10:39:25.251+00', true);
-INSERT INTO public.order_status_history VALUES (431, 95, NULL, 'pending', 'Pedido creado', 3, '2025-07-31 16:32:20.302+00', true);
-INSERT INTO public.order_status_history VALUES (432, 95, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-31 19:32:20.302+00', true);
-INSERT INTO public.order_status_history VALUES (433, 95, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-31 22:32:20.302+00', true);
-INSERT INTO public.order_status_history VALUES (434, 95, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-08-01 02:32:20.302+00', true);
-INSERT INTO public.order_status_history VALUES (435, 95, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-08-01 12:32:20.302+00', true);
-INSERT INTO public.order_status_history VALUES (436, 96, NULL, 'pending', 'Pedido creado', 3, '2025-07-28 21:29:11.478+00', true);
-INSERT INTO public.order_status_history VALUES (437, 96, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-28 23:29:11.478+00', true);
-INSERT INTO public.order_status_history VALUES (438, 96, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-29 02:29:11.478+00', true);
-INSERT INTO public.order_status_history VALUES (439, 96, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-29 13:29:11.478+00', true);
-INSERT INTO public.order_status_history VALUES (440, 96, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-29 16:29:11.478+00', true);
-INSERT INTO public.order_status_history VALUES (441, 97, NULL, 'pending', 'Pedido creado', 3, '2025-09-04 09:25:02.849+00', true);
-INSERT INTO public.order_status_history VALUES (442, 97, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-04 12:25:02.849+00', true);
-INSERT INTO public.order_status_history VALUES (443, 97, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-04 13:25:02.849+00', true);
-INSERT INTO public.order_status_history VALUES (444, 97, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-04 19:25:02.849+00', true);
-INSERT INTO public.order_status_history VALUES (445, 97, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-05 13:25:02.849+00', true);
-INSERT INTO public.order_status_history VALUES (446, 98, NULL, 'pending', 'Pedido creado', 3, '2025-09-15 20:58:16.907+00', true);
-INSERT INTO public.order_status_history VALUES (447, 98, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-16 01:58:16.907+00', true);
-INSERT INTO public.order_status_history VALUES (448, 98, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-16 02:58:16.907+00', true);
-INSERT INTO public.order_status_history VALUES (449, 98, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-16 09:58:16.907+00', true);
-INSERT INTO public.order_status_history VALUES (450, 98, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-16 13:58:16.907+00', true);
-INSERT INTO public.order_status_history VALUES (451, 99, NULL, 'pending', 'Pedido creado', 3, '2025-09-14 04:39:37.406+00', true);
-INSERT INTO public.order_status_history VALUES (452, 99, 'pending', 'verified', 'Pago confirmado', 3, '2025-09-14 10:39:37.406+00', true);
-INSERT INTO public.order_status_history VALUES (453, 99, 'verified', 'preparing', 'Preparando pedido', 3, '2025-09-14 11:39:37.406+00', true);
-INSERT INTO public.order_status_history VALUES (454, 99, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-09-14 18:39:37.406+00', true);
-INSERT INTO public.order_status_history VALUES (455, 99, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-09-15 18:39:37.406+00', true);
-INSERT INTO public.order_status_history VALUES (456, 100, NULL, 'pending', 'Pedido creado', 3, '2025-07-21 02:10:44.507+00', true);
-INSERT INTO public.order_status_history VALUES (457, 100, 'pending', 'verified', 'Pago confirmado', 3, '2025-07-21 05:10:44.507+00', true);
-INSERT INTO public.order_status_history VALUES (458, 100, 'verified', 'preparing', 'Preparando pedido', 3, '2025-07-21 07:10:44.507+00', true);
-INSERT INTO public.order_status_history VALUES (459, 100, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-07-21 09:10:44.507+00', true);
-INSERT INTO public.order_status_history VALUES (460, 100, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-07-22 08:10:44.507+00', true);
-INSERT INTO public.order_status_history VALUES (462, 55, 'verified', 'preparing', NULL, NULL, '2025-10-03 19:50:36.766398+00', true);
-INSERT INTO public.order_status_history VALUES (463, 102, NULL, 'pending', 'Order created', NULL, '2025-10-06 22:15:42.83397+00', true);
-INSERT INTO public.order_status_history VALUES (464, 103, NULL, 'pending', 'Order created', NULL, '2025-10-07 00:34:02.394002+00', true);
-INSERT INTO public.order_status_history VALUES (465, 104, NULL, 'pending', 'Order created', NULL, '2025-10-07 00:54:47.917341+00', true);
-INSERT INTO public.order_status_history VALUES (466, 105, NULL, 'pending', 'Order created', NULL, '2025-10-07 00:56:36.537573+00', true);
-INSERT INTO public.order_status_history VALUES (467, 106, NULL, 'pending', 'Order created', NULL, '2025-10-07 00:59:19.442374+00', true);
-INSERT INTO public.order_status_history VALUES (468, 107, NULL, 'pending', 'Order created', NULL, '2025-10-07 01:01:08.802257+00', true);
-INSERT INTO public.order_status_history VALUES (469, 108, NULL, 'pending', 'Order created', NULL, '2025-10-07 22:10:03.293045+00', true);
-INSERT INTO public.order_status_history VALUES (470, 109, NULL, 'pending', 'Order created', NULL, '2025-10-09 00:05:28.866871+00', true);
-INSERT INTO public.order_status_history VALUES (471, 109, 'pending', 'verified', 'Estado actualizado a Verificado', NULL, '2025-10-09 00:16:39.183337+00', true);
-INSERT INTO public.order_status_history VALUES (472, 110, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-09 14:08:32.224767+00', true);
-INSERT INTO public.order_status_history VALUES (473, 109, 'verified', 'preparing', 'Estado actualizado a Preparando', NULL, '2025-10-09 14:19:54.342332+00', true);
-INSERT INTO public.order_status_history VALUES (474, 111, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-09 15:15:44.823923+00', true);
-INSERT INTO public.order_status_history VALUES (475, 111, 'pending', 'verified', 'Estado actualizado a Verificado', NULL, '2025-10-09 15:16:25.801527+00', true);
-INSERT INTO public.order_status_history VALUES (476, 109, 'preparing', 'shipped', 'Estado actualizado a Enviado', NULL, '2025-10-09 15:16:45.503059+00', true);
-INSERT INTO public.order_status_history VALUES (477, 112, NULL, 'pending', 'Pedido creado', 3, '2025-10-09 22:43:44.223+00', true);
-INSERT INTO public.order_status_history VALUES (478, 112, 'pending', 'verified', 'Pago confirmado', 3, '2025-10-10 01:43:44.223+00', true);
-INSERT INTO public.order_status_history VALUES (479, 112, 'verified', 'preparing', 'Preparando pedido', 3, '2025-10-10 02:43:44.223+00', true);
-INSERT INTO public.order_status_history VALUES (480, 112, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-10-10 05:43:44.223+00', true);
-INSERT INTO public.order_status_history VALUES (481, 113, NULL, 'pending', 'Pedido creado', 3, '2025-10-09 22:43:44.801+00', true);
-INSERT INTO public.order_status_history VALUES (482, 113, 'pending', 'verified', 'Pago confirmado', 3, '2025-10-10 00:43:44.801+00', true);
-INSERT INTO public.order_status_history VALUES (483, 113, 'verified', 'preparing', 'Preparando pedido', 3, '2025-10-10 01:43:44.801+00', true);
-INSERT INTO public.order_status_history VALUES (484, 113, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-10-10 04:43:44.801+00', true);
-INSERT INTO public.order_status_history VALUES (485, 113, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-10-10 06:43:44.801+00', true);
-INSERT INTO public.order_status_history VALUES (486, 114, NULL, 'pending', 'Pedido creado', 3, '2025-10-09 22:43:45.233+00', true);
-INSERT INTO public.order_status_history VALUES (487, 114, 'pending', 'verified', 'Pago confirmado', 3, '2025-10-10 00:43:45.233+00', true);
-INSERT INTO public.order_status_history VALUES (488, 114, 'verified', 'preparing', 'Preparando pedido', 3, '2025-10-10 01:43:45.233+00', true);
-INSERT INTO public.order_status_history VALUES (489, 114, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-10-10 06:43:45.233+00', true);
-INSERT INTO public.order_status_history VALUES (490, 115, NULL, 'pending', 'Pedido creado', 3, '2025-10-09 22:43:45.783+00', true);
-INSERT INTO public.order_status_history VALUES (491, 115, 'pending', 'verified', 'Pago confirmado', 3, '2025-10-10 00:43:45.783+00', true);
-INSERT INTO public.order_status_history VALUES (492, 115, 'verified', 'preparing', 'Preparando pedido', 3, '2025-10-10 02:43:45.783+00', true);
-INSERT INTO public.order_status_history VALUES (493, 115, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-10-10 08:43:45.783+00', true);
-INSERT INTO public.order_status_history VALUES (494, 116, NULL, 'pending', 'Pedido creado', 3, '2025-10-09 22:43:46.316+00', true);
-INSERT INTO public.order_status_history VALUES (495, 116, 'pending', 'verified', 'Pago confirmado', 3, '2025-10-10 01:43:46.316+00', true);
-INSERT INTO public.order_status_history VALUES (496, 116, 'verified', 'preparing', 'Preparando pedido', 3, '2025-10-10 02:43:46.316+00', true);
-INSERT INTO public.order_status_history VALUES (497, 117, NULL, 'pending', 'Pedido creado', 3, '2025-10-09 22:43:46.736+00', true);
-INSERT INTO public.order_status_history VALUES (498, 117, 'pending', 'verified', 'Pago confirmado', 3, '2025-10-09 23:43:46.736+00', true);
-INSERT INTO public.order_status_history VALUES (499, 117, 'verified', 'preparing', 'Preparando pedido', 3, '2025-10-10 00:43:46.736+00', true);
-INSERT INTO public.order_status_history VALUES (500, 118, NULL, 'pending', 'Pedido creado', 3, '2025-10-09 22:43:47.137+00', true);
-INSERT INTO public.order_status_history VALUES (501, 118, 'pending', 'verified', 'Pago confirmado', 3, '2025-10-09 23:43:47.137+00', true);
-INSERT INTO public.order_status_history VALUES (502, 119, NULL, 'pending', 'Pedido creado', 3, '2025-10-09 22:43:47.534+00', true);
-INSERT INTO public.order_status_history VALUES (503, 119, 'pending', 'verified', 'Pago confirmado', 3, '2025-10-10 00:43:47.534+00', true);
-INSERT INTO public.order_status_history VALUES (504, 119, 'verified', 'preparing', 'Preparando pedido', 3, '2025-10-10 01:43:47.534+00', true);
-INSERT INTO public.order_status_history VALUES (505, 120, NULL, 'pending', 'Pedido creado', 3, '2025-10-09 22:43:47.916+00', true);
-INSERT INTO public.order_status_history VALUES (506, 121, NULL, 'pending', 'Pedido creado', 3, '2025-10-09 22:43:48.317+00', true);
-INSERT INTO public.order_status_history VALUES (507, 121, 'pending', 'verified', 'Pago confirmado', 3, '2025-10-09 23:43:48.317+00', true);
-INSERT INTO public.order_status_history VALUES (508, 121, 'verified', 'preparing', 'Preparando pedido', 3, '2025-10-10 01:43:48.317+00', true);
-INSERT INTO public.order_status_history VALUES (509, 121, 'preparing', 'shipped', 'Pedido enviado', 3, '2025-10-10 04:43:48.317+00', true);
-INSERT INTO public.order_status_history VALUES (510, 121, 'shipped', 'delivered', 'Pedido entregado exitosamente', 3, '2025-10-10 07:43:48.317+00', true);
-INSERT INTO public.order_status_history VALUES (511, 122, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-12 23:42:00.061321+00', true);
-INSERT INTO public.order_status_history VALUES (512, 123, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-14 23:35:19.150326+00', true);
-INSERT INTO public.order_status_history VALUES (513, 124, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-14 23:36:22.882151+00', true);
-INSERT INTO public.order_status_history VALUES (514, 125, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:25:45.496227+00', true);
-INSERT INTO public.order_status_history VALUES (515, 126, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:25:47.266094+00', true);
-INSERT INTO public.order_status_history VALUES (516, 127, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:26:03.192919+00', true);
-INSERT INTO public.order_status_history VALUES (517, 128, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:26:05.750125+00', true);
-INSERT INTO public.order_status_history VALUES (518, 129, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:28:11.409333+00', true);
-INSERT INTO public.order_status_history VALUES (519, 130, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:28:15.863207+00', true);
-INSERT INTO public.order_status_history VALUES (520, 131, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:29:10.019107+00', true);
-INSERT INTO public.order_status_history VALUES (521, 132, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:32:21.709262+00', true);
-INSERT INTO public.order_status_history VALUES (522, 133, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:32:22.756433+00', true);
-INSERT INTO public.order_status_history VALUES (523, 134, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:32:22.893319+00', true);
-INSERT INTO public.order_status_history VALUES (524, 135, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:32:23.041676+00', true);
-INSERT INTO public.order_status_history VALUES (525, 136, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:32:26.465366+00', true);
-INSERT INTO public.order_status_history VALUES (526, 137, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:33:30.850627+00', true);
-INSERT INTO public.order_status_history VALUES (527, 138, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:33:30.998111+00', true);
-INSERT INTO public.order_status_history VALUES (528, 139, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:33:31.894209+00', true);
-INSERT INTO public.order_status_history VALUES (529, 140, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:33:46.725546+00', true);
-INSERT INTO public.order_status_history VALUES (530, 141, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:36:45.620459+00', true);
-INSERT INTO public.order_status_history VALUES (531, 142, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:36:45.905057+00', true);
-INSERT INTO public.order_status_history VALUES (532, 143, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:36:46.193028+00', true);
-INSERT INTO public.order_status_history VALUES (533, 144, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:42:57.73967+00', true);
-INSERT INTO public.order_status_history VALUES (534, 145, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:42:58.71497+00', true);
-INSERT INTO public.order_status_history VALUES (535, 146, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:42:59.353101+00', true);
-INSERT INTO public.order_status_history VALUES (536, 147, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:42:59.359849+00', true);
-INSERT INTO public.order_status_history VALUES (537, 148, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-15 14:43:02.961826+00', true);
-INSERT INTO public.order_status_history VALUES (538, 149, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-17 20:52:21.032381+00', true);
-INSERT INTO public.order_status_history VALUES (539, 147, 'pending', 'verified', 'Estado actualizado a Verificado', NULL, '2025-10-17 21:46:33.915645+00', true);
-INSERT INTO public.order_status_history VALUES (540, 147, 'verified', 'preparing', 'Estado actualizado a Preparando', NULL, '2025-10-17 21:46:48.067225+00', true);
-INSERT INTO public.order_status_history VALUES (541, 149, 'pending', 'verified', 'Estado actualizado a Verificado', NULL, '2025-10-17 21:59:23.670582+00', true);
-INSERT INTO public.order_status_history VALUES (542, 146, 'pending', 'cancelled', 'Estado actualizado a Cancelado', NULL, '2025-10-17 22:10:47.108221+00', true);
-INSERT INTO public.order_status_history VALUES (543, 150, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-18 22:06:48.632642+00', true);
-INSERT INTO public.order_status_history VALUES (544, 150, 'pending', 'verified', 'Estado actualizado a Verificado', NULL, '2025-10-18 22:07:09.543489+00', true);
-INSERT INTO public.order_status_history VALUES (545, 150, 'verified', 'preparing', 'Estado actualizado a Preparando', NULL, '2025-10-18 22:07:13.244197+00', true);
-INSERT INTO public.order_status_history VALUES (546, 150, 'preparing', 'delivered', 'Estado actualizado a Entregado', NULL, '2025-10-18 22:07:16.348848+00', true);
-INSERT INTO public.order_status_history VALUES (547, 151, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-10-19 18:21:17.021025+00', true);
-INSERT INTO public.order_status_history VALUES (548, 151, 'pending', 'verified', NULL, NULL, '2025-10-21 14:17:29.642963+00', true);
-INSERT INTO public.order_status_history VALUES (549, 151, 'verified', 'verified', NULL, NULL, '2025-10-21 21:13:23.594159+00', true);
-INSERT INTO public.order_status_history VALUES (550, 151, 'verified', 'verified', NULL, NULL, '2025-10-21 21:39:22.262794+00', true);
-INSERT INTO public.order_status_history VALUES (551, 151, 'verified', 'verified', NULL, NULL, '2025-10-21 21:43:58.188796+00', true);
-INSERT INTO public.order_status_history VALUES (552, 151, 'verified', 'verified', NULL, NULL, '2025-10-21 21:44:38.456316+00', true);
-INSERT INTO public.order_status_history VALUES (553, 151, 'verified', 'verified', NULL, NULL, '2025-10-21 22:53:42.415408+00', true);
-INSERT INTO public.order_status_history VALUES (554, 123, 'pending', 'verified', NULL, NULL, '2025-10-22 04:26:39.518548+00', true);
-INSERT INTO public.order_status_history VALUES (555, 123, 'verified', 'verified', NULL, NULL, '2025-10-22 04:27:26.7349+00', true);
-INSERT INTO public.order_status_history VALUES (556, 123, 'verified', 'verified', NULL, NULL, '2025-10-22 11:30:33.036777+00', true);
-INSERT INTO public.order_status_history VALUES (557, 123, 'verified', 'verified', NULL, NULL, '2025-10-22 11:32:24.732979+00', true);
-INSERT INTO public.order_status_history VALUES (558, 123, 'verified', 'verified', NULL, NULL, '2025-10-22 11:32:54.445057+00', true);
-INSERT INTO public.order_status_history VALUES (559, 123, 'verified', 'verified', NULL, NULL, '2025-10-22 11:35:08.430735+00', true);
-INSERT INTO public.order_status_history VALUES (560, 152, NULL, 'pending', 'Pedido creado', 34, '2025-10-22 15:06:35.321+00', true);
-INSERT INTO public.order_status_history VALUES (561, 152, 'pending', 'verified', 'Pago confirmado', 34, '2025-10-22 18:06:35.321+00', true);
-INSERT INTO public.order_status_history VALUES (562, 153, NULL, 'pending', 'Pedido creado', 34, '2025-10-22 15:06:36.028+00', true);
-INSERT INTO public.order_status_history VALUES (563, 153, 'pending', 'cancelled', 'Cliente canceló el pedido', 34, '2025-10-22 16:06:36.028+00', true);
-INSERT INTO public.order_status_history VALUES (564, 154, NULL, 'pending', 'Pedido creado', 34, '2025-10-22 15:06:36.579+00', true);
-INSERT INTO public.order_status_history VALUES (565, 154, 'pending', 'cancelled', 'Cliente canceló el pedido', 34, '2025-10-22 18:06:36.579+00', true);
-INSERT INTO public.order_status_history VALUES (566, 155, NULL, 'pending', 'Pedido creado', 34, '2025-10-22 15:06:37.246+00', true);
-INSERT INTO public.order_status_history VALUES (567, 155, 'pending', 'verified', 'Pago confirmado', 34, '2025-10-22 17:06:37.246+00', true);
-INSERT INTO public.order_status_history VALUES (568, 155, 'verified', 'preparing', 'Preparando pedido', 34, '2025-10-22 18:06:37.246+00', true);
-INSERT INTO public.order_status_history VALUES (569, 155, 'preparing', 'shipped', 'Pedido enviado', 34, '2025-10-22 20:06:37.246+00', true);
-INSERT INTO public.order_status_history VALUES (570, 155, 'shipped', 'delivered', 'Pedido entregado exitosamente', 34, '2025-10-23 04:06:37.246+00', true);
-INSERT INTO public.order_status_history VALUES (571, 156, NULL, 'pending', 'Pedido creado', 34, '2025-10-22 15:06:37.779+00', true);
-INSERT INTO public.order_status_history VALUES (572, 157, NULL, 'pending', 'Pedido creado', 34, '2025-10-22 15:06:38.327+00', true);
-INSERT INTO public.order_status_history VALUES (573, 157, 'pending', 'cancelled', 'Cliente canceló el pedido', 34, '2025-10-22 17:06:38.327+00', true);
-INSERT INTO public.order_status_history VALUES (574, 158, NULL, 'pending', 'Pedido creado', 34, '2025-10-22 15:06:38.709+00', true);
-INSERT INTO public.order_status_history VALUES (575, 158, 'pending', 'verified', 'Pago confirmado', 34, '2025-10-22 17:06:38.709+00', true);
-INSERT INTO public.order_status_history VALUES (576, 158, 'verified', 'preparing', 'Preparando pedido', 34, '2025-10-22 19:06:38.709+00', true);
-INSERT INTO public.order_status_history VALUES (577, 158, 'preparing', 'shipped', 'Pedido enviado', 34, '2025-10-23 01:06:38.709+00', true);
-INSERT INTO public.order_status_history VALUES (578, 158, 'shipped', 'delivered', 'Pedido entregado exitosamente', 34, '2025-10-23 03:06:38.709+00', true);
-INSERT INTO public.order_status_history VALUES (579, 159, NULL, 'pending', 'Pedido creado', 34, '2025-10-22 15:06:39.116+00', true);
-INSERT INTO public.order_status_history VALUES (580, 159, 'pending', 'cancelled', 'Cliente canceló el pedido', 34, '2025-10-22 16:06:39.116+00', true);
-INSERT INTO public.order_status_history VALUES (581, 160, NULL, 'pending', 'Pedido creado', 34, '2025-10-22 15:06:39.491+00', true);
-INSERT INTO public.order_status_history VALUES (582, 160, 'pending', 'cancelled', 'Cliente canceló el pedido', 34, '2025-10-22 18:06:39.491+00', true);
-INSERT INTO public.order_status_history VALUES (583, 161, NULL, 'pending', 'Pedido creado', 34, '2025-10-22 15:06:39.879+00', true);
-INSERT INTO public.order_status_history VALUES (584, 161, 'pending', 'verified', 'Pago confirmado', 34, '2025-10-22 17:06:39.879+00', true);
-INSERT INTO public.order_status_history VALUES (585, 161, 'verified', 'preparing', 'Preparando pedido', 34, '2025-10-22 19:06:39.879+00', true);
-INSERT INTO public.order_status_history VALUES (586, 450, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:09:16.081533+00', true);
-INSERT INTO public.order_status_history VALUES (587, 451, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:09:54.703952+00', true);
-INSERT INTO public.order_status_history VALUES (588, 452, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:11:13.787906+00', true);
-INSERT INTO public.order_status_history VALUES (589, 453, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:12:12.315171+00', true);
-INSERT INTO public.order_status_history VALUES (590, 454, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:12:40.418356+00', true);
-INSERT INTO public.order_status_history VALUES (591, 455, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:13:08.509969+00', true);
-INSERT INTO public.order_status_history VALUES (592, 456, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:13:26.238569+00', true);
-INSERT INTO public.order_status_history VALUES (593, 457, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:13:47.057753+00', true);
-INSERT INTO public.order_status_history VALUES (594, 458, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:14:06.222404+00', true);
-INSERT INTO public.order_status_history VALUES (595, 459, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:14:26.465897+00', true);
-INSERT INTO public.order_status_history VALUES (596, 460, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:14:45.767524+00', true);
-INSERT INTO public.order_status_history VALUES (597, 460, 'pending', 'verified', 'Pago confirmado en test', NULL, '2025-11-03 13:14:46.732524+00', true);
-INSERT INTO public.order_status_history VALUES (598, 461, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:14:55.626294+00', true);
-INSERT INTO public.order_status_history VALUES (599, 461, 'pending', 'verified', 'Pago confirmado en test', NULL, '2025-11-03 13:14:56.290477+00', true);
-INSERT INTO public.order_status_history VALUES (600, 462, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:16:06.297955+00', true);
-INSERT INTO public.order_status_history VALUES (601, 462, 'pending', 'verified', 'Pago confirmado en test', NULL, '2025-11-03 13:16:07.136151+00', true);
-INSERT INTO public.order_status_history VALUES (602, 463, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:26:21.426553+00', true);
-INSERT INTO public.order_status_history VALUES (603, 463, 'pending', 'verified', 'Pago confirmado en test', NULL, '2025-11-03 13:26:22.390603+00', true);
-INSERT INTO public.order_status_history VALUES (604, 464, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:38:10.68386+00', true);
-INSERT INTO public.order_status_history VALUES (605, 464, 'pending', 'verified', 'Pago confirmado en test', NULL, '2025-11-03 13:38:11.582182+00', true);
-INSERT INTO public.order_status_history VALUES (606, 465, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:40:26.245999+00', true);
-INSERT INTO public.order_status_history VALUES (607, 465, 'pending', 'verified', 'Pago confirmado en test', NULL, '2025-11-03 13:40:26.996236+00', true);
-INSERT INTO public.order_status_history VALUES (608, 466, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:47:19.732109+00', true);
-INSERT INTO public.order_status_history VALUES (609, 466, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 13:47:20.515944+00', true);
-INSERT INTO public.order_status_history VALUES (610, 467, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:49:51.109368+00', true);
-INSERT INTO public.order_status_history VALUES (611, 467, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 13:49:52.192598+00', true);
-INSERT INTO public.order_status_history VALUES (612, 468, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:51:24.67782+00', true);
-INSERT INTO public.order_status_history VALUES (613, 468, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 13:51:25.467269+00', true);
-INSERT INTO public.order_status_history VALUES (614, 469, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 13:55:49.011443+00', true);
-INSERT INTO public.order_status_history VALUES (615, 469, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 13:55:49.77768+00', true);
-INSERT INTO public.order_status_history VALUES (616, 470, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:00:42.115933+00', true);
-INSERT INTO public.order_status_history VALUES (617, 470, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:00:43.150748+00', true);
-INSERT INTO public.order_status_history VALUES (618, 471, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:02:52.967259+00', true);
-INSERT INTO public.order_status_history VALUES (619, 471, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:02:53.923392+00', true);
-INSERT INTO public.order_status_history VALUES (620, 472, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:03:59.238631+00', true);
-INSERT INTO public.order_status_history VALUES (621, 472, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:03:59.853192+00', true);
-INSERT INTO public.order_status_history VALUES (622, 473, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:06:40.968061+00', true);
-INSERT INTO public.order_status_history VALUES (623, 473, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:06:41.632893+00', true);
-INSERT INTO public.order_status_history VALUES (624, 474, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:10:04.992592+00', true);
-INSERT INTO public.order_status_history VALUES (625, 474, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:10:05.876152+00', true);
-INSERT INTO public.order_status_history VALUES (626, 475, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:13:46.634234+00', true);
-INSERT INTO public.order_status_history VALUES (627, 475, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:13:47.37851+00', true);
-INSERT INTO public.order_status_history VALUES (628, 476, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:15:21.701404+00', true);
-INSERT INTO public.order_status_history VALUES (629, 476, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:15:22.9987+00', true);
-INSERT INTO public.order_status_history VALUES (630, 477, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:17:56.570978+00', true);
-INSERT INTO public.order_status_history VALUES (631, 477, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:17:57.255599+00', true);
-INSERT INTO public.order_status_history VALUES (632, 478, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:20:19.514619+00', true);
-INSERT INTO public.order_status_history VALUES (633, 478, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:20:20.33269+00', true);
-INSERT INTO public.order_status_history VALUES (634, 479, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:23:24.058341+00', true);
-INSERT INTO public.order_status_history VALUES (635, 479, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:23:24.975918+00', true);
-INSERT INTO public.order_status_history VALUES (636, 480, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:26:14.161939+00', true);
-INSERT INTO public.order_status_history VALUES (637, 480, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:26:15.153066+00', true);
-INSERT INTO public.order_status_history VALUES (638, 481, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:30:24.811923+00', true);
-INSERT INTO public.order_status_history VALUES (639, 481, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:30:25.550563+00', true);
-INSERT INTO public.order_status_history VALUES (640, 482, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:34:20.845142+00', true);
-INSERT INTO public.order_status_history VALUES (641, 482, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:34:21.82747+00', true);
-INSERT INTO public.order_status_history VALUES (642, 483, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:37:53.362731+00', true);
-INSERT INTO public.order_status_history VALUES (643, 483, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:37:54.254709+00', true);
-INSERT INTO public.order_status_history VALUES (644, 484, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:42:09.78662+00', true);
-INSERT INTO public.order_status_history VALUES (645, 484, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:42:10.445724+00', true);
-INSERT INTO public.order_status_history VALUES (646, 485, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:43:24.605738+00', true);
-INSERT INTO public.order_status_history VALUES (647, 485, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:43:25.47361+00', true);
-INSERT INTO public.order_status_history VALUES (648, 486, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:48:15.659507+00', true);
-INSERT INTO public.order_status_history VALUES (649, 486, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:48:17.162048+00', true);
-INSERT INTO public.order_status_history VALUES (650, 487, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:52:56.219441+00', true);
-INSERT INTO public.order_status_history VALUES (651, 487, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:52:57.210365+00', true);
-INSERT INTO public.order_status_history VALUES (652, 488, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:57:08.509194+00', true);
-INSERT INTO public.order_status_history VALUES (653, 488, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:57:09.161759+00', true);
-INSERT INTO public.order_status_history VALUES (654, 489, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 14:59:27.810084+00', true);
-INSERT INTO public.order_status_history VALUES (655, 489, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 14:59:29.121521+00', true);
-INSERT INTO public.order_status_history VALUES (656, 490, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:02:57.2583+00', true);
-INSERT INTO public.order_status_history VALUES (657, 490, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:02:58.051751+00', true);
-INSERT INTO public.order_status_history VALUES (658, 491, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:07:47.18228+00', true);
-INSERT INTO public.order_status_history VALUES (659, 491, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:07:47.999246+00', true);
-INSERT INTO public.order_status_history VALUES (660, 492, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:08:53.290023+00', true);
-INSERT INTO public.order_status_history VALUES (661, 492, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:08:54.046151+00', true);
-INSERT INTO public.order_status_history VALUES (662, 493, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:10:44.961994+00', true);
-INSERT INTO public.order_status_history VALUES (663, 493, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:10:45.705131+00', true);
-INSERT INTO public.order_status_history VALUES (664, 494, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:13:55.307958+00', true);
-INSERT INTO public.order_status_history VALUES (665, 494, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:13:56.081154+00', true);
-INSERT INTO public.order_status_history VALUES (666, 495, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:15:18.525793+00', true);
-INSERT INTO public.order_status_history VALUES (667, 495, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:15:19.576988+00', true);
-INSERT INTO public.order_status_history VALUES (668, 496, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:16:38.988634+00', true);
-INSERT INTO public.order_status_history VALUES (669, 496, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:16:39.763042+00', true);
-INSERT INTO public.order_status_history VALUES (670, 497, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:21:04.762539+00', true);
-INSERT INTO public.order_status_history VALUES (671, 497, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:21:05.607561+00', true);
-INSERT INTO public.order_status_history VALUES (672, 498, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:24:26.846082+00', true);
-INSERT INTO public.order_status_history VALUES (673, 498, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:24:27.695377+00', true);
-INSERT INTO public.order_status_history VALUES (674, 499, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:27:14.377227+00', true);
-INSERT INTO public.order_status_history VALUES (675, 499, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:27:15.031999+00', true);
-INSERT INTO public.order_status_history VALUES (676, 500, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:32:09.880601+00', true);
-INSERT INTO public.order_status_history VALUES (677, 500, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:32:10.533914+00', true);
-INSERT INTO public.order_status_history VALUES (678, 501, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:34:09.745753+00', true);
-INSERT INTO public.order_status_history VALUES (679, 501, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:34:10.550677+00', true);
-INSERT INTO public.order_status_history VALUES (680, 502, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:39:00.60717+00', true);
-INSERT INTO public.order_status_history VALUES (681, 502, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:39:01.390684+00', true);
-INSERT INTO public.order_status_history VALUES (682, 503, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:40:24.115366+00', true);
-INSERT INTO public.order_status_history VALUES (683, 503, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:40:25.06939+00', true);
-INSERT INTO public.order_status_history VALUES (684, 504, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:44:28.577905+00', true);
-INSERT INTO public.order_status_history VALUES (685, 504, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:44:29.601661+00', true);
-INSERT INTO public.order_status_history VALUES (686, 505, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:45:42.218946+00', true);
-INSERT INTO public.order_status_history VALUES (687, 505, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:45:43.043967+00', true);
-INSERT INTO public.order_status_history VALUES (688, 506, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:47:32.980743+00', true);
-INSERT INTO public.order_status_history VALUES (689, 506, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:47:33.800199+00', true);
-INSERT INTO public.order_status_history VALUES (690, 507, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:52:35.422899+00', true);
-INSERT INTO public.order_status_history VALUES (691, 507, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:52:36.280684+00', true);
-INSERT INTO public.order_status_history VALUES (692, 508, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:54:03.486387+00', true);
-INSERT INTO public.order_status_history VALUES (693, 508, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:54:04.145476+00', true);
-INSERT INTO public.order_status_history VALUES (694, 509, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:57:34.523371+00', true);
-INSERT INTO public.order_status_history VALUES (695, 509, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:57:35.137471+00', true);
-INSERT INTO public.order_status_history VALUES (696, 510, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 15:58:51.569406+00', true);
-INSERT INTO public.order_status_history VALUES (697, 510, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 15:58:52.629027+00', true);
-INSERT INTO public.order_status_history VALUES (698, 511, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 16:02:20.702393+00', true);
-INSERT INTO public.order_status_history VALUES (699, 511, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 16:02:21.511486+00', true);
-INSERT INTO public.order_status_history VALUES (700, 512, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 16:05:22.78053+00', true);
-INSERT INTO public.order_status_history VALUES (701, 512, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 16:05:23.458567+00', true);
-INSERT INTO public.order_status_history VALUES (702, 513, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 16:08:57.554102+00', true);
-INSERT INTO public.order_status_history VALUES (703, 513, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 16:08:58.217774+00', true);
-INSERT INTO public.order_status_history VALUES (704, 514, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 16:12:21.990903+00', true);
-INSERT INTO public.order_status_history VALUES (705, 514, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 16:12:22.93043+00', true);
-INSERT INTO public.order_status_history VALUES (706, 515, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 16:15:01.548115+00', true);
-INSERT INTO public.order_status_history VALUES (707, 515, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 16:15:02.353046+00', true);
-INSERT INTO public.order_status_history VALUES (708, 516, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 16:16:40.841668+00', true);
-INSERT INTO public.order_status_history VALUES (709, 516, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 16:16:41.475773+00', true);
-INSERT INTO public.order_status_history VALUES (710, 517, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 16:21:15.422336+00', true);
-INSERT INTO public.order_status_history VALUES (711, 517, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 16:21:16.261552+00', true);
-INSERT INTO public.order_status_history VALUES (712, 518, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 16:23:33.167335+00', true);
-INSERT INTO public.order_status_history VALUES (713, 518, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 16:23:33.955318+00', true);
-INSERT INTO public.order_status_history VALUES (714, 519, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 16:27:07.40414+00', true);
-INSERT INTO public.order_status_history VALUES (715, 519, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 16:27:08.079744+00', true);
-INSERT INTO public.order_status_history VALUES (716, 520, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 16:29:11.759443+00', true);
-INSERT INTO public.order_status_history VALUES (717, 520, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 16:29:12.68891+00', true);
-INSERT INTO public.order_status_history VALUES (718, 521, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 16:33:52.852034+00', true);
-INSERT INTO public.order_status_history VALUES (719, 521, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 16:33:54.573197+00', true);
-INSERT INTO public.order_status_history VALUES (720, 522, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 16:38:10.770407+00', true);
-INSERT INTO public.order_status_history VALUES (721, 522, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 16:38:11.465767+00', true);
-INSERT INTO public.order_status_history VALUES (722, 523, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 16:40:47.645669+00', true);
-INSERT INTO public.order_status_history VALUES (723, 523, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 16:40:48.37563+00', true);
-INSERT INTO public.order_status_history VALUES (724, 524, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 16:45:15.170319+00', true);
-INSERT INTO public.order_status_history VALUES (725, 524, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 16:45:15.936099+00', true);
-INSERT INTO public.order_status_history VALUES (726, 525, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 16:49:51.189001+00', true);
-INSERT INTO public.order_status_history VALUES (727, 525, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 16:49:52.034519+00', true);
-INSERT INTO public.order_status_history VALUES (728, 526, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 16:53:48.073029+00', true);
-INSERT INTO public.order_status_history VALUES (729, 526, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 16:53:49.085745+00', true);
-INSERT INTO public.order_status_history VALUES (730, 527, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 16:56:47.556983+00', true);
-INSERT INTO public.order_status_history VALUES (731, 527, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 16:56:48.498004+00', true);
-INSERT INTO public.order_status_history VALUES (732, 528, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 16:59:08.505047+00', true);
-INSERT INTO public.order_status_history VALUES (733, 528, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 16:59:09.296074+00', true);
-INSERT INTO public.order_status_history VALUES (734, 529, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:03:38.249043+00', true);
-INSERT INTO public.order_status_history VALUES (735, 529, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:03:39.052839+00', true);
-INSERT INTO public.order_status_history VALUES (736, 530, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:07:29.771383+00', true);
-INSERT INTO public.order_status_history VALUES (737, 530, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:07:30.651751+00', true);
-INSERT INTO public.order_status_history VALUES (738, 531, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:09:24.151881+00', true);
-INSERT INTO public.order_status_history VALUES (739, 531, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:09:24.823078+00', true);
-INSERT INTO public.order_status_history VALUES (740, 532, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:11:16.852886+00', true);
-INSERT INTO public.order_status_history VALUES (741, 532, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:11:17.635439+00', true);
-INSERT INTO public.order_status_history VALUES (742, 533, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:12:48.594237+00', true);
-INSERT INTO public.order_status_history VALUES (743, 533, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:12:49.801976+00', true);
-INSERT INTO public.order_status_history VALUES (744, 534, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:16:38.918995+00', true);
-INSERT INTO public.order_status_history VALUES (745, 534, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:16:39.67273+00', true);
-INSERT INTO public.order_status_history VALUES (746, 535, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:17:56.365153+00', true);
-INSERT INTO public.order_status_history VALUES (747, 535, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:17:57.319722+00', true);
-INSERT INTO public.order_status_history VALUES (748, 536, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:19:02.121328+00', true);
-INSERT INTO public.order_status_history VALUES (749, 536, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:19:02.973896+00', true);
-INSERT INTO public.order_status_history VALUES (750, 537, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:23:56.483973+00', true);
-INSERT INTO public.order_status_history VALUES (751, 537, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:23:57.518029+00', true);
-INSERT INTO public.order_status_history VALUES (752, 538, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:26:52.268755+00', true);
-INSERT INTO public.order_status_history VALUES (753, 538, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:26:53.168599+00', true);
-INSERT INTO public.order_status_history VALUES (754, 539, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:31:06.197167+00', true);
-INSERT INTO public.order_status_history VALUES (755, 539, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:31:06.861506+00', true);
-INSERT INTO public.order_status_history VALUES (756, 540, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:33:02.708002+00', true);
-INSERT INTO public.order_status_history VALUES (757, 540, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:33:03.497934+00', true);
-INSERT INTO public.order_status_history VALUES (758, 541, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:36:04.653473+00', true);
-INSERT INTO public.order_status_history VALUES (759, 541, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:36:05.539117+00', true);
-INSERT INTO public.order_status_history VALUES (760, 542, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:39:42.318181+00', true);
-INSERT INTO public.order_status_history VALUES (761, 542, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:39:43.094246+00', true);
-INSERT INTO public.order_status_history VALUES (762, 543, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:42:17.417994+00', true);
-INSERT INTO public.order_status_history VALUES (763, 543, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:42:18.228544+00', true);
-INSERT INTO public.order_status_history VALUES (764, 544, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:47:09.502366+00', true);
-INSERT INTO public.order_status_history VALUES (765, 544, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:47:10.520655+00', true);
-INSERT INTO public.order_status_history VALUES (766, 545, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:51:01.542938+00', true);
-INSERT INTO public.order_status_history VALUES (767, 545, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:51:03.376893+00', true);
-INSERT INTO public.order_status_history VALUES (768, 546, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:55:54.10975+00', true);
-INSERT INTO public.order_status_history VALUES (769, 546, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:55:54.850128+00', true);
-INSERT INTO public.order_status_history VALUES (770, 547, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 17:59:15.53787+00', true);
-INSERT INTO public.order_status_history VALUES (771, 547, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 17:59:16.410987+00', true);
-INSERT INTO public.order_status_history VALUES (772, 548, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 18:00:34.24153+00', true);
-INSERT INTO public.order_status_history VALUES (773, 548, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 18:00:34.942553+00', true);
-INSERT INTO public.order_status_history VALUES (774, 549, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 18:04:24.127362+00', true);
-INSERT INTO public.order_status_history VALUES (775, 549, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 18:04:25.268064+00', true);
-INSERT INTO public.order_status_history VALUES (776, 550, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 18:09:19.59934+00', true);
-INSERT INTO public.order_status_history VALUES (777, 550, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 18:09:20.340691+00', true);
-INSERT INTO public.order_status_history VALUES (778, 551, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 18:13:06.116468+00', true);
-INSERT INTO public.order_status_history VALUES (779, 551, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 18:13:06.981307+00', true);
-INSERT INTO public.order_status_history VALUES (780, 552, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 18:17:49.106774+00', true);
-INSERT INTO public.order_status_history VALUES (781, 552, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 18:17:49.935525+00', true);
-INSERT INTO public.order_status_history VALUES (782, 553, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 18:19:52.919755+00', true);
-INSERT INTO public.order_status_history VALUES (783, 553, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 18:19:53.869358+00', true);
-INSERT INTO public.order_status_history VALUES (784, 554, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 18:22:13.79477+00', true);
-INSERT INTO public.order_status_history VALUES (785, 554, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 18:22:14.603614+00', true);
-INSERT INTO public.order_status_history VALUES (786, 555, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-03 18:25:55.482171+00', true);
-INSERT INTO public.order_status_history VALUES (787, 555, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-03 18:25:56.150356+00', true);
-INSERT INTO public.order_status_history VALUES (788, 556, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 12:32:46.497584+00', true);
-INSERT INTO public.order_status_history VALUES (789, 556, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-04 12:32:47.91609+00', true);
-INSERT INTO public.order_status_history VALUES (790, 557, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 12:34:37.800908+00', true);
-INSERT INTO public.order_status_history VALUES (791, 557, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-04 12:34:38.520912+00', true);
-INSERT INTO public.order_status_history VALUES (792, 558, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 12:38:21.984953+00', true);
-INSERT INTO public.order_status_history VALUES (793, 558, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-04 12:38:23.068125+00', true);
-INSERT INTO public.order_status_history VALUES (794, 559, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 12:41:08.666961+00', true);
-INSERT INTO public.order_status_history VALUES (795, 559, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-04 12:41:09.311781+00', true);
-INSERT INTO public.order_status_history VALUES (796, 560, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 12:43:53.653437+00', true);
-INSERT INTO public.order_status_history VALUES (797, 560, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-04 12:43:54.846228+00', true);
-INSERT INTO public.order_status_history VALUES (798, 561, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 12:58:03.246492+00', true);
-INSERT INTO public.order_status_history VALUES (799, 561, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-04 12:58:04.280022+00', true);
-INSERT INTO public.order_status_history VALUES (800, 562, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 13:09:56.30343+00', true);
-INSERT INTO public.order_status_history VALUES (801, 562, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-04 13:09:57.313996+00', true);
-INSERT INTO public.order_status_history VALUES (802, 563, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 13:21:37.268796+00', true);
-INSERT INTO public.order_status_history VALUES (803, 563, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-04 13:21:38.081482+00', true);
-INSERT INTO public.order_status_history VALUES (804, 564, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 13:34:01.821714+00', true);
-INSERT INTO public.order_status_history VALUES (805, 564, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-04 13:34:03.34671+00', true);
-INSERT INTO public.order_status_history VALUES (806, 565, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 13:44:29.624445+00', true);
-INSERT INTO public.order_status_history VALUES (807, 565, 'pending', 'verified', 'Pago confirmado automáticamente', NULL, '2025-11-04 13:44:30.764953+00', true);
-INSERT INTO public.order_status_history VALUES (808, 566, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 14:08:45.555163+00', true);
-INSERT INTO public.order_status_history VALUES (809, 567, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 14:20:21.220964+00', true);
-INSERT INTO public.order_status_history VALUES (810, 568, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 14:31:46.523837+00', true);
-INSERT INTO public.order_status_history VALUES (811, 569, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 14:43:45.097425+00', true);
-INSERT INTO public.order_status_history VALUES (812, 570, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 14:54:17.383835+00', true);
-INSERT INTO public.order_status_history VALUES (813, 571, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 15:08:04.82858+00', true);
-INSERT INTO public.order_status_history VALUES (814, 572, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 15:20:26.480983+00', true);
-INSERT INTO public.order_status_history VALUES (815, 573, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 15:35:01.167175+00', true);
-INSERT INTO public.order_status_history VALUES (816, 574, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 15:47:22.673286+00', true);
-INSERT INTO public.order_status_history VALUES (817, 575, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 15:58:17.580871+00', true);
-INSERT INTO public.order_status_history VALUES (818, 576, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 16:09:45.117374+00', true);
-INSERT INTO public.order_status_history VALUES (819, 577, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 16:22:20.961769+00', true);
-INSERT INTO public.order_status_history VALUES (820, 578, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 16:32:59.16337+00', true);
-INSERT INTO public.order_status_history VALUES (821, 579, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 16:44:47.525526+00', true);
-INSERT INTO public.order_status_history VALUES (822, 580, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 16:54:23.789203+00', true);
-INSERT INTO public.order_status_history VALUES (823, 581, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 17:05:41.889321+00', true);
-INSERT INTO public.order_status_history VALUES (824, 582, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 17:20:05.708514+00', true);
-INSERT INTO public.order_status_history VALUES (825, 583, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 17:30:43.392449+00', true);
-INSERT INTO public.order_status_history VALUES (826, 584, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 17:41:42.92844+00', true);
-INSERT INTO public.order_status_history VALUES (827, 585, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 17:55:04.055683+00', true);
-INSERT INTO public.order_status_history VALUES (828, 586, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 18:04:53.461578+00', true);
-INSERT INTO public.order_status_history VALUES (829, 587, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 18:15:54.819937+00', true);
-INSERT INTO public.order_status_history VALUES (830, 588, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 18:27:27.084499+00', true);
-INSERT INTO public.order_status_history VALUES (831, 589, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 18:39:58.81748+00', true);
-INSERT INTO public.order_status_history VALUES (832, 590, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 18:52:08.723171+00', true);
-INSERT INTO public.order_status_history VALUES (833, 591, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 19:07:23.134756+00', true);
-INSERT INTO public.order_status_history VALUES (834, 592, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 19:21:04.408791+00', true);
-INSERT INTO public.order_status_history VALUES (835, 593, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 19:30:57.392115+00', true);
-INSERT INTO public.order_status_history VALUES (836, 594, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 19:41:30.715791+00', true);
-INSERT INTO public.order_status_history VALUES (837, 595, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 19:52:15.117582+00', true);
-INSERT INTO public.order_status_history VALUES (838, 596, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 20:07:30.511215+00', true);
-INSERT INTO public.order_status_history VALUES (839, 597, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 20:19:02.329941+00', true);
-INSERT INTO public.order_status_history VALUES (840, 598, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 20:32:15.11886+00', true);
-INSERT INTO public.order_status_history VALUES (841, 599, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 20:46:00.597279+00', true);
-INSERT INTO public.order_status_history VALUES (842, 600, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 20:59:43.477336+00', true);
-INSERT INTO public.order_status_history VALUES (843, 601, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 21:12:09.397941+00', true);
-INSERT INTO public.order_status_history VALUES (844, 602, NULL, 'pending', 'Order created and stock decremented', NULL, '2025-11-04 21:24:26.817518+00', true);
 
 
 --
--- TOC entry 4256 (class 0 OID 32093)
--- Dependencies: 383
+-- TOC entry 4403 (class 0 OID 32093)
+-- Dependencies: 389
 -- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.orders VALUES (1, 3, 'rosa_silva@gmail.com', 'Rosa Silva', '+58 412-367-8917', 'Urbanización Las Mercedes, Caracas', 'Caracas', 'Distrito Capital', '', '2025-09-12', '15:00-18:00', '', 'delivered', 390.93, 14249.40, 36.450000, 'Cumpleaños', NULL, '2025-09-11 20:26:51.107+00', '2025-09-11 20:26:51.107+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (2, 3, 'eduardosuarez@gmail.com', 'Eduardo Suárez', '+58 424-632-7423', 'Centro Plaza, Los Palos Grandes, Caracas', 'Caracas', 'Distrito Capital', '1070', '2025-09-29', '12:00-15:00', '', 'delivered', 123.97, 4518.71, 36.450000, 'Regalo', NULL, '2025-09-26 13:50:09.082+00', '2025-09-26 13:50:09.082+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (3, 3, 'roberto_ramos@hotmail.com', 'Roberto Ramos', '+58 424-629-7263', 'Los Dos Caminos, Caracas', 'Caracas', 'Distrito Capital', '1040', '2025-07-29', '09:00-12:00', 'Torre A, piso 5', 'delivered', 68.99, 2514.69, 36.450000, 'Ocasión especial', NULL, '2025-07-23 23:06:46.235+00', '2025-07-23 23:06:46.235+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (4, 3, 'alejandro_salazar@hotmail.com', 'Alejandro Salazar', '+58 416-383-3934', 'Av. Libertador, Altamira, Caracas', 'Caracas', 'Distrito Capital', '1080', '2025-08-22', '12:00-15:00', '', 'delivered', 124.97, 4555.16, 36.450000, 'Regalo', NULL, '2025-08-21 21:14:48.22+00', '2025-08-21 21:14:48.22+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (5, 3, 'antonio77@outlook.com', 'Antonio Castro', '+58 426-723-9062', 'Centro Comercial Sambil, Chacao, Caracas', 'Caracas', 'Distrito Capital', '1080', '2025-09-27', '12:00-15:00', '', 'delivered', 206.97, 7544.06, 36.450000, 'Cumpleaños', NULL, '2025-09-21 11:08:59.899+00', '2025-09-21 11:08:59.899+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (6, 3, 'gabrielagutierrez@hotmail.com', 'Gabriela Gutiérrez', '+58 414-411-9937', 'Carretera Baruta-El Hatillo, Miranda', 'Miranda', 'Miranda', '1060', '2025-08-09', '15:00-18:00', 'Torre A, piso 5', 'delivered', 308.94, 11260.86, 36.450000, 'Aniversario', NULL, '2025-08-07 20:37:53.802+00', '2025-08-07 20:37:53.802+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (7, 3, 'jose15@hotmail.com', 'José Gutiérrez', '+58 412-403-8432', 'Av. Principal de Bello Monte, Caracas', 'Caracas', 'Distrito Capital', '1070', '2025-07-19', '12:00-15:00', 'Torre A, piso 5', 'delivered', 98.97, 3607.46, 36.450000, 'Cumpleaños', NULL, '2025-07-15 00:25:31.396+00', '2025-07-15 00:25:31.396+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (8, 3, 'diegomendoza@outlook.com', 'Diego Mendoza', '+58 414-197-6103', 'Calle Paris, Las Mercedes, Caracas', 'Caracas', 'Distrito Capital', '1050', '2025-07-27', '12:00-15:00', 'Torre A, piso 5', 'delivered', 98.97, 3607.46, 36.450000, '', NULL, '2025-07-22 21:52:12.409+00', '2025-07-22 21:52:12.409+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (9, 3, 'ricardoperez@hotmail.com', 'Ricardo Pérez', '+58 412-189-5739', 'Calle La Guairita, Chuao, Caracas', 'Caracas', 'Distrito Capital', '', '2025-08-12', '09:00-12:00', 'Llamar al llegar', 'delivered', 128.97, 4700.96, 36.450000, '', NULL, '2025-08-11 01:18:32.569+00', '2025-08-11 01:18:32.569+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (10, 3, 'isabelortiz@hotmail.com', 'Isabel Ortiz', '+58 414-223-4081', 'Urbanización Colinas de Bello Monte, Caracas', 'Caracas', 'Distrito Capital', '1060', '2025-08-01', '', 'Torre A, piso 5', 'delivered', 183.95, 6704.98, 36.450000, 'Ocasión especial', NULL, '2025-07-27 23:49:02.097+00', '2025-07-27 23:49:02.097+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (11, 3, 'rafaelvasquez@hotmail.com', 'Rafael Vásquez', '+58 426-586-3274', 'Los Ruices, Miranda', 'Miranda', 'Miranda', '1070', '2025-10-08', '12:00-15:00', 'Llamar al llegar', 'verified', 391.92, 14285.48, 36.450000, '', NULL, '2025-10-01 21:48:02.563+00', '2025-10-01 21:48:02.563+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (12, 3, 'antonio_jimenez@yahoo.com', 'Antonio Jiménez', '+58 416-535-1560', 'Av. Francisco de Miranda, Chacao, Caracas', 'Caracas', 'Distrito Capital', '1060', '2025-08-22', '09:00-12:00', '', 'delivered', 59.98, 2186.27, 36.450000, 'Ocasión especial', NULL, '2025-08-16 05:29:44.484+00', '2025-08-16 05:29:44.484+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (13, 3, 'valentina.ortiz@yahoo.com', 'Valentina Ortiz', '+58 424-314-4357', 'Calle La Guairita, Chuao, Caracas', 'Caracas', 'Distrito Capital', '1060', '2025-08-03', '15:00-18:00', 'Llamar al llegar', 'delivered', 99.98, 3644.27, 36.450000, 'Ocasión especial', NULL, '2025-07-31 05:33:25.657+00', '2025-07-31 05:33:25.657+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (14, 3, 'ricardo14@gmail.com', 'Ricardo Martínez', '+58 414-790-1514', 'Av. Orinoco, Las Mercedes, Caracas', 'Caracas', 'Distrito Capital', '1070', '2025-07-12', '15:00-18:00', 'Torre A, piso 5', 'cancelled', 351.92, 12827.48, 36.450000, 'Aniversario', NULL, '2025-07-09 08:15:15.268+00', '2025-07-09 08:15:15.268+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (15, 3, 'miguel80@gmail.com', 'Miguel Sánchez', '+58 414-997-1396', 'Av. Abraham Lincoln, Sabana Grande, Caracas', 'Caracas', 'Distrito Capital', '1080', '2025-07-30', '15:00-18:00', 'Torre A, piso 5', 'delivered', 279.93, 10203.45, 36.450000, '', NULL, '2025-07-23 13:05:09.814+00', '2025-07-23 13:05:09.814+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (16, 3, 'jose23@gmail.com', 'José Sánchez', '+58 412-513-1959', 'Urbanización La Florida, Caracas', 'Caracas', 'Distrito Capital', '', '2025-09-26', '12:00-15:00', '', 'cancelled', 137.98, 5029.37, 36.450000, 'Regalo', NULL, '2025-09-20 12:58:42.739+00', '2025-09-20 12:58:42.739+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (17, 3, 'ricardo.martinez@yahoo.com', 'Ricardo Martínez', '+58 426-450-2665', 'Av. Andrés Bello, Los Palos Grandes, Caracas', 'Caracas', 'Distrito Capital', '1080', '2025-07-23', '12:00-15:00', 'Torre A, piso 5', 'delivered', 29.99, 1093.14, 36.450000, 'Ocasión especial', NULL, '2025-07-18 18:59:42.195+00', '2025-07-18 18:59:42.195+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (18, 3, 'victoria.gutierrez@gmail.com', 'Victoria Gutiérrez', '+58 416-345-4566', 'Lomas de La Lagunita, Miranda', 'Miranda', 'Miranda', '1070', '2025-09-07', '09:00-12:00', 'Llamar al llegar', 'delivered', 118.97, 4336.46, 36.450000, 'Regalo', NULL, '2025-09-03 14:38:20.853+00', '2025-09-03 14:38:20.853+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (19, 3, 'carmen69@gmail.com', 'Carmen Fernández', '+58 416-754-1086', 'Urbanización Colinas de Bello Monte, Caracas', 'Caracas', 'Distrito Capital', '1070', '2025-07-30', '15:00-18:00', 'Torre A, piso 5', 'delivered', 386.93, 14103.60, 36.450000, 'Regalo', NULL, '2025-07-23 10:20:40.615+00', '2025-07-23 10:20:40.615+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (20, 3, 'manuel86@gmail.com', 'Manuel Silva', '+58 426-536-3656', 'Urbanización La Trinidad, Miranda', 'Miranda', 'Miranda', '1040', '2025-09-21', '12:00-15:00', 'Dejar con portero', 'delivered', 99.98, 3644.27, 36.450000, 'Regalo', NULL, '2025-09-14 12:18:48.498+00', '2025-09-14 12:18:48.498+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (21, 3, 'jose.suarez@hotmail.com', 'José Suárez', '+58 414-432-6689', 'Urbanización La Trinidad, Miranda', 'Miranda', 'Miranda', '1040', '2025-08-11', '', 'Dejar con portero', 'delivered', 110.97, 4044.86, 36.450000, '', NULL, '2025-08-07 04:11:43.35+00', '2025-08-07 04:11:43.35+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (22, 3, 'antonio56@gmail.com', 'Antonio Vargas', '+58 416-859-3062', 'Calle Madrid, Las Mercedes, Caracas', 'Caracas', 'Distrito Capital', '1060', '2025-08-05', '', 'Dejar con portero', 'delivered', 105.98, 3862.97, 36.450000, 'Cumpleaños', NULL, '2025-08-03 14:50:54.543+00', '2025-08-03 14:50:54.543+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (23, 3, 'carmen84@gmail.com', 'Carmen Romero', '+58 424-954-2940', 'Centro Plaza, Los Palos Grandes, Caracas', 'Caracas', 'Distrito Capital', '1040', '2025-07-30', '15:00-18:00', '', 'delivered', 465.92, 16982.78, 36.450000, 'Regalo', NULL, '2025-07-29 23:38:15.874+00', '2025-07-29 23:38:15.874+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (24, 3, 'victoria_ramirez@outlook.com', 'Victoria Ramírez', '+58 414-928-5583', 'Residencias El Rosal, Caracas', 'Caracas', 'Distrito Capital', '1080', '2025-07-23', '12:00-15:00', 'Dejar con portero', 'delivered', 128.97, 4700.96, 36.450000, 'Aniversario', NULL, '2025-07-20 16:28:28.299+00', '2025-07-20 16:28:28.299+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (25, 3, 'isabella_jimenez@outlook.com', 'Isabella Jiménez', '+58 414-778-7405', 'Urbanización La Florida, Caracas', 'Caracas', 'Distrito Capital', '', '2025-08-09', '12:00-15:00', 'Llamar al llegar', 'delivered', 262.95, 9584.53, 36.450000, '', NULL, '2025-08-06 11:27:09.962+00', '2025-08-06 11:27:09.962+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (26, 3, 'sofia.suarez@yahoo.com', 'Sofía Suárez', '+58 412-808-6592', 'Residencias El Rosal, Caracas', 'Caracas', 'Distrito Capital', '1040', '2025-08-03', '15:00-18:00', 'Torre A, piso 5', 'delivered', 247.94, 9037.41, 36.450000, 'Ocasión especial', NULL, '2025-07-28 03:08:15.885+00', '2025-07-28 03:08:15.885+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (27, 3, 'luciagarcia@gmail.com', 'Lucía García', '+58 416-689-4734', 'Urbanización Santa Fe Norte, Caracas', 'Caracas', 'Distrito Capital', '1070', '2025-08-28', '', 'Torre A, piso 5', 'delivered', 220.95, 8053.63, 36.450000, 'Regalo', NULL, '2025-08-23 09:58:00.276+00', '2025-08-23 09:58:00.276+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (28, 3, 'maria.alvarez@yahoo.com', 'María Álvarez', '+58 412-301-2735', 'Urbanización La Florida, Caracas', 'Caracas', 'Distrito Capital', '1080', '2025-10-07', '12:00-15:00', '', 'shipped', 158.97, 5794.46, 36.450000, '', NULL, '2025-10-02 04:17:57.106+00', '2025-10-02 04:17:57.106+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (29, 3, 'ricardo_ortiz@gmail.com', 'Ricardo Ortiz', '+58 414-627-1036', 'Lomas de La Lagunita, Miranda', 'Miranda', 'Miranda', '', '2025-09-07', '15:00-18:00', 'Llamar al llegar', 'delivered', 99.98, 3644.27, 36.450000, 'Ocasión especial', NULL, '2025-09-05 05:52:49.629+00', '2025-09-05 05:52:49.629+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (30, 3, 'luis_gutierrez@outlook.com', 'Luis Gutiérrez', '+58 412-610-2551', 'Av. Luis Roche, Altamira, Caracas', 'Caracas', 'Distrito Capital', '', '2025-07-20', '15:00-18:00', 'Llamar al llegar', 'delivered', 42.99, 1566.99, 36.450000, 'Cumpleaños', NULL, '2025-07-13 09:35:18.171+00', '2025-07-13 09:35:18.171+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (31, 3, 'victoriafernandez@outlook.com', 'Victoria Fernández', '+58 416-915-0930', 'Av. Abraham Lincoln, Sabana Grande, Caracas', 'Caracas', 'Distrito Capital', '1040', '2025-08-07', '12:00-15:00', '', 'delivered', 194.95, 7105.93, 36.450000, 'Cumpleaños', NULL, '2025-08-06 20:17:59.744+00', '2025-08-06 20:17:59.744+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (32, 3, 'paula19@gmail.com', 'Paula Ramírez', '+58 424-915-5069', 'Calle La Guairita, Chuao, Caracas', 'Caracas', 'Distrito Capital', '1060', '2025-08-28', '09:00-12:00', 'Dejar con portero', 'cancelled', 65.98, 2404.97, 36.450000, '', NULL, '2025-08-21 11:51:03.455+00', '2025-08-21 11:51:03.455+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (33, 3, 'manuel40@gmail.com', 'Manuel Gutiérrez', '+58 426-572-7944', 'Los Ruices, Miranda', 'Miranda', 'Miranda', '1080', '2025-08-18', '', 'Llamar al llegar', 'delivered', 167.95, 6121.78, 36.450000, 'Aniversario', NULL, '2025-08-17 18:18:24.377+00', '2025-08-17 18:18:24.377+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (34, 3, 'antonio_vasquez@yahoo.com', 'Antonio Vásquez', '+58 416-973-6757', 'Los Dos Caminos, Caracas', 'Caracas', 'Distrito Capital', '1070', '2025-08-18', '09:00-12:00', 'Dejar con portero', 'cancelled', 225.96, 8236.24, 36.450000, 'Regalo', NULL, '2025-08-11 12:31:36.925+00', '2025-08-11 12:31:36.925+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (35, 3, 'anasanchez@yahoo.com', 'Ana Sánchez', '+58 414-871-5601', 'Av. Orinoco, Las Mercedes, Caracas', 'Caracas', 'Distrito Capital', '1060', '2025-08-27', '15:00-18:00', '', 'delivered', 288.93, 10531.50, 36.450000, 'Aniversario', NULL, '2025-08-21 21:34:40.406+00', '2025-08-21 21:34:40.406+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (36, 3, 'mariarojas@outlook.com', 'María Rojas', '+58 412-791-9490', 'Av. Andrés Bello, Los Palos Grandes, Caracas', 'Caracas', 'Distrito Capital', '1080', '2025-09-04', '', 'Llamar al llegar', 'cancelled', 187.95, 6850.78, 36.450000, 'Ocasión especial', NULL, '2025-08-31 13:57:18.308+00', '2025-08-31 13:57:18.308+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (37, 3, 'diego39@gmail.com', 'Diego Castro', '+58 424-602-2264', 'Centro Comercial San Ignacio, Caracas', 'Caracas', 'Distrito Capital', '1070', '2025-07-18', '15:00-18:00', 'Dejar con portero', 'delivered', 206.97, 7544.06, 36.450000, 'Cumpleaños', NULL, '2025-07-14 17:20:43.647+00', '2025-07-14 17:20:43.647+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (38, 3, 'ricardo_perez@outlook.com', 'Ricardo Pérez', '+58 412-352-9487', 'Urbanización Las Mercedes, Caracas', 'Caracas', 'Distrito Capital', '1070', '2025-09-21', '12:00-15:00', 'Llamar al llegar', 'delivered', 357.93, 13046.55, 36.450000, 'Regalo', NULL, '2025-09-17 13:46:15.092+00', '2025-09-17 13:46:15.092+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (39, 3, 'robertomendoza@outlook.com', 'Roberto Mendoza', '+58 416-773-4221', 'Av. Orinoco, Las Mercedes, Caracas', 'Caracas', 'Distrito Capital', '1080', '2025-08-25', '09:00-12:00', '', 'delivered', 147.97, 5393.51, 36.450000, 'Ocasión especial', NULL, '2025-08-22 10:45:13.786+00', '2025-08-22 10:45:13.786+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (40, 3, 'carlosalvarez@gmail.com', 'Carlos Álvarez', '+58 414-989-8478', 'Parque Cristal, Los Palos Grandes, Caracas', 'Caracas', 'Distrito Capital', '1040', '2025-07-27', '09:00-12:00', 'Llamar al llegar', 'delivered', 112.97, 4117.76, 36.450000, 'Ocasión especial', NULL, '2025-07-26 09:56:43.681+00', '2025-07-26 09:56:43.681+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (41, 3, 'daniela.hernandez@hotmail.com', 'Daniela Hernández', '+58 412-638-1067', 'Calle Principal de Los Palos Grandes, Caracas', 'Caracas', 'Distrito Capital', '1070', '2025-09-15', '12:00-15:00', 'Torre A, piso 5', 'delivered', 178.97, 6523.46, 36.450000, 'Regalo', NULL, '2025-09-10 16:16:32.169+00', '2025-09-10 16:16:32.169+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (42, 3, 'sofia_lopez@yahoo.com', 'Sofía López', '+58 424-939-8363', 'Los Ruices, Miranda', 'Miranda', 'Miranda', '1070', '2025-09-01', '12:00-15:00', '', 'delivered', 137.97, 5029.01, 36.450000, 'Ocasión especial', NULL, '2025-08-28 13:08:01.324+00', '2025-08-28 13:08:01.324+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (43, 3, 'daniela27@outlook.com', 'Daniela Ramírez', '+58 412-487-3765', 'Av. Principal de La Castellana, Caracas', 'Caracas', 'Distrito Capital', '1040', '2025-09-27', '', 'Torre A, piso 5', 'delivered', 257.94, 9401.91, 36.450000, 'Ocasión especial', NULL, '2025-09-25 19:20:35.688+00', '2025-09-25 19:20:35.688+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (44, 3, 'miguel33@hotmail.com', 'Miguel Rodríguez', '+58 424-435-6918', 'Residencias El Rosal, Caracas', 'Caracas', 'Distrito Capital', '1060', '2025-08-11', '09:00-12:00', 'Torre A, piso 5', 'delivered', 220.95, 8053.63, 36.450000, 'Cumpleaños', NULL, '2025-08-07 03:11:36.248+00', '2025-08-07 03:11:36.248+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (45, 3, 'rafael_fernandez@gmail.com', 'Rafael Fernández', '+58 424-870-5876', 'Los Ruices, Miranda', 'Miranda', 'Miranda', '1060', '2025-08-24', '15:00-18:00', '', 'delivered', 292.95, 10678.03, 36.450000, 'Cumpleaños', NULL, '2025-08-21 15:46:16.255+00', '2025-08-21 15:46:16.255+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (46, 3, 'gabrielaramirez@gmail.com', 'Gabriela Ramírez', '+58 412-282-7026', 'Lomas de La Lagunita, Miranda', 'Miranda', 'Miranda', '1070', '2025-08-04', '09:00-12:00', '', 'delivered', 178.96, 6523.09, 36.450000, 'Aniversario', NULL, '2025-07-29 00:23:43.35+00', '2025-07-29 00:23:43.35+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (47, 3, 'valentinasilva@hotmail.com', 'Valentina Silva', '+58 424-911-4046', 'Av. Principal de Bello Monte, Caracas', 'Caracas', 'Distrito Capital', '1060', '2025-09-12', '', 'Llamar al llegar', 'shipped', 395.93, 14431.65, 36.450000, 'Regalo', NULL, '2025-09-11 08:28:00.466+00', '2025-09-11 08:28:00.466+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (48, 3, 'eduardo28@yahoo.com', 'Eduardo Ramos', '+58 416-784-7858', 'Av. Principal de Chuao, Caracas', 'Caracas', 'Distrito Capital', '', '2025-09-28', '', '', 'delivered', 138.96, 5065.09, 36.450000, '', NULL, '2025-09-26 06:04:32.588+00', '2025-09-26 06:04:32.588+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (49, 3, 'fernando_medina@yahoo.com', 'Fernando Medina', '+58 426-664-7322', 'Calle Los Samanes, Los Palos Grandes, Caracas', 'Caracas', 'Distrito Capital', '', '2025-08-06', '', 'Torre A, piso 5', 'delivered', 275.92, 10057.28, 36.450000, 'Regalo', NULL, '2025-07-30 16:06:15.465+00', '2025-07-30 16:06:15.465+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (50, 3, 'pedrogarcia@hotmail.com', 'Pedro García', '+58 412-893-8952', 'Av. Francisco de Miranda, Chacao, Caracas', 'Caracas', 'Distrito Capital', '1040', '2025-09-19', '09:00-12:00', '', 'delivered', 78.98, 2878.82, 36.450000, '', NULL, '2025-09-16 13:18:09.882+00', '2025-09-16 13:18:09.882+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (51, 3, 'valentinavargas@hotmail.com', 'Valentina Vargas', '+58 424-202-9250', 'Centro Comercial San Ignacio, Caracas', 'Caracas', 'Distrito Capital', '1050', '2025-09-05', '09:00-12:00', 'Dejar con portero', 'shipped', 191.96, 6996.94, 36.450000, 'Aniversario', NULL, '2025-08-29 02:40:04.458+00', '2025-08-29 02:40:04.458+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (52, 3, 'sofia_rodriguez@hotmail.com', 'Sofía Rodríguez', '+58 414-257-6527', 'Urbanización Colinas de Bello Monte, Caracas', 'Caracas', 'Distrito Capital', '', '2025-09-06', '15:00-18:00', '', 'delivered', 336.94, 12281.46, 36.450000, '', NULL, '2025-09-05 08:19:04.545+00', '2025-09-05 08:19:04.545+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (53, 3, 'elenahernandez@gmail.com', 'Elena Hernández', '+58 416-770-0780', 'Los Ruices, Miranda', 'Miranda', 'Miranda', '1050', '2025-07-16', '', '', 'delivered', 363.93, 13265.25, 36.450000, 'Cumpleaños', NULL, '2025-07-10 03:32:24.417+00', '2025-07-10 03:32:24.417+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (54, 3, 'eduardo_alvarez@gmail.com', 'Eduardo Álvarez', '+58 426-837-7746', 'Urbanización Colinas de Bello Monte, Caracas', 'Caracas', 'Distrito Capital', '', '2025-09-09', '12:00-15:00', 'Dejar con portero', 'delivered', 138.96, 5065.09, 36.450000, 'Aniversario', NULL, '2025-09-08 15:49:21.526+00', '2025-09-08 15:49:21.526+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (56, 3, 'ricardo65@yahoo.com', 'Ricardo Gutiérrez', '+58 426-611-5863', 'Urbanización La Florida, Caracas', 'Caracas', 'Distrito Capital', '1080', '2025-09-20', '15:00-18:00', 'Dejar con portero', 'delivered', 182.95, 6668.53, 36.450000, 'Aniversario', NULL, '2025-09-17 00:45:55.06+00', '2025-09-17 00:45:55.06+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (57, 3, 'manuel_torres@outlook.com', 'Manuel Torres', '+58 412-461-8293', 'Residencias El Rosal, Caracas', 'Caracas', 'Distrito Capital', '1040', '2025-07-13', '12:00-15:00', '', 'delivered', 158.97, 5794.46, 36.450000, 'Aniversario', NULL, '2025-07-10 13:22:38.319+00', '2025-07-10 13:22:38.319+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (58, 3, 'marianamedina@outlook.com', 'Mariana Medina', '+58 412-710-8400', 'Calle Principal de Los Palos Grandes, Caracas', 'Caracas', 'Distrito Capital', '1050', '2025-08-05', '', 'Torre A, piso 5', 'delivered', 256.96, 9366.19, 36.450000, '', NULL, '2025-08-02 19:51:11.879+00', '2025-08-02 19:51:11.879+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (59, 3, 'daniela78@hotmail.com', 'Daniela Salazar', '+58 426-251-4061', 'Calle Real de Sabana Grande, Caracas', 'Caracas', 'Distrito Capital', '1050', '2025-09-26', '', 'Llamar al llegar', 'delivered', 262.95, 9584.53, 36.450000, 'Regalo', NULL, '2025-09-23 06:45:37.612+00', '2025-09-23 06:45:37.612+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (60, 3, 'roberto.vasquez@hotmail.com', 'Roberto Vásquez', '+58 412-391-6811', 'Centro Plaza, Los Palos Grandes, Caracas', 'Caracas', 'Distrito Capital', '', '2025-07-31', '15:00-18:00', '', 'shipped', 351.92, 12827.48, 36.450000, '', NULL, '2025-07-30 11:20:35.4+00', '2025-07-30 11:20:35.4+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (61, 3, 'elena58@hotmail.com', 'Elena Silva', '+58 424-336-2866', 'Urbanización La Florida, Caracas', 'Caracas', 'Distrito Capital', '1070', '2025-08-01', '12:00-15:00', 'Torre A, piso 5', 'delivered', 335.92, 12244.28, 36.450000, 'Cumpleaños', NULL, '2025-07-28 04:00:14.854+00', '2025-07-28 04:00:14.854+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (63, 3, 'gabriela.gonzalez@outlook.com', 'Gabriela González', '+58 414-867-0825', 'Centro Comercial San Ignacio, Caracas', 'Caracas', 'Distrito Capital', '1040', '2025-07-16', '09:00-12:00', 'Dejar con portero', 'delivered', 105.98, 3862.97, 36.450000, 'Ocasión especial', NULL, '2025-07-13 20:57:20.391+00', '2025-07-13 20:57:20.391+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (64, 3, 'victoria.silva@outlook.com', 'Victoria Silva', '+58 412-975-8963', 'Carretera Baruta-El Hatillo, Miranda', 'Miranda', 'Miranda', '1080', '2025-08-09', '12:00-15:00', 'Torre A, piso 5', 'delivered', 167.97, 6122.51, 36.450000, 'Aniversario', NULL, '2025-08-04 22:31:15.81+00', '2025-08-04 22:31:15.81+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (65, 3, 'maria.garcia@gmail.com', 'María García', '+58 412-113-6608', 'Calle La Guairita, Chuao, Caracas', 'Caracas', 'Distrito Capital', '1070', '2025-07-26', '09:00-12:00', 'Llamar al llegar', 'cancelled', 78.98, 2878.82, 36.450000, 'Regalo', NULL, '2025-07-23 11:21:19.001+00', '2025-07-23 11:21:19.001+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (66, 3, 'isabelfernandez@outlook.com', 'Isabel Fernández', '+58 416-159-3826', 'Urbanización Colinas de Bello Monte, Caracas', 'Caracas', 'Distrito Capital', '1050', '2025-09-07', '09:00-12:00', '', 'delivered', 224.95, 8199.43, 36.450000, 'Aniversario', NULL, '2025-09-02 15:45:54.054+00', '2025-09-02 15:45:54.054+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (67, 3, 'eduardo_ramirez@gmail.com', 'Eduardo Ramírez', '+58 424-229-7978', 'Av. Principal de Bello Monte, Caracas', 'Caracas', 'Distrito Capital', '1050', '2025-08-10', '09:00-12:00', 'Torre A, piso 5', 'delivered', 145.98, 5320.97, 36.450000, '', NULL, '2025-08-04 23:03:46.06+00', '2025-08-04 23:03:46.06+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (68, 3, 'javiertorres@outlook.com', 'Javier Torres', '+58 414-104-1452', 'Centro Comercial Sambil, Chacao, Caracas', 'Caracas', 'Distrito Capital', '1070', '2025-08-15', '15:00-18:00', 'Dejar con portero', 'delivered', 95.98, 3498.47, 36.450000, '', NULL, '2025-08-09 02:23:14.404+00', '2025-08-09 02:23:14.404+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (69, 3, 'luis.hernandez@yahoo.com', 'Luis Hernández', '+58 424-286-9560', 'Residencias El Rosal, Caracas', 'Caracas', 'Distrito Capital', '1080', '2025-08-03', '15:00-18:00', 'Torre A, piso 5', 'delivered', 268.95, 9803.23, 36.450000, 'Regalo', NULL, '2025-08-02 02:12:24.965+00', '2025-08-02 02:12:24.965+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (70, 3, 'javierrojas@yahoo.com', 'Javier Rojas', '+58 426-364-6499', 'Av. Francisco de Miranda, Chacao, Caracas', 'Caracas', 'Distrito Capital', '1070', '2025-07-29', '12:00-15:00', 'Llamar al llegar', 'delivered', 288.94, 10531.86, 36.450000, 'Aniversario', NULL, '2025-07-24 05:20:43.353+00', '2025-07-24 05:20:43.353+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (71, 3, 'andrea.martinez@gmail.com', 'Andrea Martínez', '+58 424-839-0773', 'Los Ruices, Miranda', 'Miranda', 'Miranda', '1080', '2025-08-20', '09:00-12:00', '', 'delivered', 229.95, 8381.68, 36.450000, 'Ocasión especial', NULL, '2025-08-13 09:40:00.88+00', '2025-08-13 09:40:00.88+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (72, 3, 'sofia.vasquez@outlook.com', 'Sofía Vásquez', '+58 424-394-4159', 'Centro Comercial Sambil, Chacao, Caracas', 'Caracas', 'Distrito Capital', '1080', '2025-08-02', '', 'Llamar al llegar', 'delivered', 68.99, 2514.69, 36.450000, 'Aniversario', NULL, '2025-07-31 07:11:19.764+00', '2025-07-31 07:11:19.764+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (73, 3, 'elena.salazar@yahoo.com', 'Elena Salazar', '+58 412-966-9245', 'Urbanización La Florida, Caracas', 'Caracas', 'Distrito Capital', '1050', '2025-07-13', '15:00-18:00', 'Dejar con portero', 'delivered', 236.93, 8636.10, 36.450000, 'Regalo', NULL, '2025-07-08 15:01:27.846+00', '2025-07-08 15:01:27.846+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (74, 3, 'lauramendoza@hotmail.com', 'Laura Mendoza', '+58 414-624-0024', 'Centro Plaza, Los Palos Grandes, Caracas', 'Caracas', 'Distrito Capital', '', '2025-09-10', '', '', 'delivered', 379.93, 13848.45, 36.450000, 'Aniversario', NULL, '2025-09-05 08:36:05.264+00', '2025-09-05 08:36:05.264+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (75, 3, 'rosaromero@hotmail.com', 'Rosa Romero', '+58 416-704-3163', 'Av. Abraham Lincoln, Sabana Grande, Caracas', 'Caracas', 'Distrito Capital', '1070', '2025-07-29', '09:00-12:00', 'Llamar al llegar', 'delivered', 258.96, 9439.09, 36.450000, 'Regalo', NULL, '2025-07-25 20:03:30.156+00', '2025-07-25 20:03:30.156+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (76, 3, 'manuelmorales@yahoo.com', 'Manuel Morales', '+58 416-527-5546', 'Av. Libertador, Altamira, Caracas', 'Caracas', 'Distrito Capital', '', '2025-08-20', '09:00-12:00', 'Torre A, piso 5', 'delivered', 314.94, 11479.56, 36.450000, 'Aniversario', NULL, '2025-08-13 13:31:11.796+00', '2025-08-13 13:31:11.796+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (77, 3, 'alejandro_ortiz@outlook.com', 'Alejandro Ortiz', '+58 414-190-0991', 'Los Dos Caminos, Caracas', 'Caracas', 'Distrito Capital', '1070', '2025-07-13', '12:00-15:00', '', 'delivered', 290.93, 10604.40, 36.450000, 'Aniversario', NULL, '2025-07-08 22:53:43.895+00', '2025-07-08 22:53:43.895+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (78, 3, 'rafael99@gmail.com', 'Rafael Rodríguez', '+58 416-462-3475', 'Urbanización Santa Fe Norte, Caracas', 'Caracas', 'Distrito Capital', '1040', '2025-09-04', '', 'Dejar con portero', 'delivered', 287.94, 10495.41, 36.450000, '', NULL, '2025-08-31 02:38:30.247+00', '2025-08-31 02:38:30.247+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (79, 3, 'carlos_castro@yahoo.com', 'Carlos Castro', '+58 414-482-8119', 'Av. Francisco de Miranda, Chacao, Caracas', 'Caracas', 'Distrito Capital', '1050', '2025-07-08', '09:00-12:00', 'Llamar al llegar', 'delivered', 252.95, 9220.03, 36.450000, 'Cumpleaños', NULL, '2025-07-04 16:01:48.34+00', '2025-07-04 16:01:48.34+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (80, 3, 'luis.hernandez@outlook.com', 'Luis Hernández', '+58 412-549-2015', 'Centro Comercial San Ignacio, Caracas', 'Caracas', 'Distrito Capital', '1060', '2025-08-19', '09:00-12:00', 'Torre A, piso 5', 'delivered', 291.94, 10641.21, 36.450000, 'Ocasión especial', NULL, '2025-08-18 14:00:02.994+00', '2025-08-18 14:00:02.994+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (81, 3, 'carmen.fernandez@yahoo.com', 'Carmen Fernández', '+58 412-725-1966', 'Av. Andrés Bello, Los Palos Grandes, Caracas', 'Caracas', 'Distrito Capital', '1080', '2025-08-27', '', 'Dejar con portero', 'delivered', 429.92, 15670.58, 36.450000, 'Aniversario', NULL, '2025-08-20 20:26:40.15+00', '2025-08-20 20:26:40.15+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (82, 3, 'fernandoramirez@hotmail.com', 'Fernando Ramírez', '+58 412-762-8066', 'Av. Libertador, Altamira, Caracas', 'Caracas', 'Distrito Capital', '', '2025-10-02', '15:00-18:00', 'Llamar al llegar', 'delivered', 239.96, 8746.54, 36.450000, '', NULL, '2025-09-27 22:58:32.289+00', '2025-09-27 22:58:32.289+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (83, 3, 'rafael51@gmail.com', 'Rafael Romero', '+58 412-611-6357', 'Parque Cristal, Los Palos Grandes, Caracas', 'Caracas', 'Distrito Capital', '1060', '2025-09-27', '09:00-12:00', 'Dejar con portero', 'delivered', 45.99, 1676.34, 36.450000, 'Regalo', NULL, '2025-09-26 15:12:49.043+00', '2025-09-26 15:12:49.043+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (84, 3, 'daniela44@yahoo.com', 'Daniela Sánchez', '+58 426-672-4386', 'Los Dos Caminos, Caracas', 'Caracas', 'Distrito Capital', '1080', '2025-08-01', '15:00-18:00', '', 'delivered', 291.94, 10641.21, 36.450000, '', NULL, '2025-07-31 18:52:57.631+00', '2025-07-31 18:52:57.631+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (85, 3, 'luis23@gmail.com', 'Luis Fernández', '+58 412-162-8804', 'Urbanización La Trinidad, Miranda', 'Miranda', 'Miranda', '1060', '2025-08-04', '09:00-12:00', 'Dejar con portero', 'shipped', 129.96, 4737.04, 36.450000, 'Regalo', NULL, '2025-07-31 23:35:32.669+00', '2025-07-31 23:35:32.669+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (86, 3, 'victoria.lopez@yahoo.com', 'Victoria López', '+58 426-254-2078', 'Calle Real de Sabana Grande, Caracas', 'Caracas', 'Distrito Capital', '', '2025-08-21', '09:00-12:00', '', 'delivered', 49.99, 1822.14, 36.450000, '', NULL, '2025-08-19 03:15:35.232+00', '2025-08-19 03:15:35.232+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (87, 3, 'jorge47@hotmail.com', 'Jorge Ramos', '+58 416-890-3527', 'Calle Paris, Las Mercedes, Caracas', 'Caracas', 'Distrito Capital', '1040', '2025-08-22', '09:00-12:00', 'Torre A, piso 5', 'delivered', 29.99, 1093.14, 36.450000, 'Cumpleaños', NULL, '2025-08-19 15:01:18.202+00', '2025-08-19 15:01:18.202+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (88, 3, 'ricardo_ramirez@yahoo.com', 'Ricardo Ramírez', '+58 412-707-9479', 'Av. Abraham Lincoln, Sabana Grande, Caracas', 'Caracas', 'Distrito Capital', '1070', '2025-09-13', '', 'Llamar al llegar', 'cancelled', 189.96, 6924.04, 36.450000, 'Ocasión especial', NULL, '2025-09-07 22:33:50.158+00', '2025-09-07 22:33:50.158+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (89, 3, 'diegovargas@yahoo.com', 'Diego Vargas', '+58 416-612-0588', 'Av. Abraham Lincoln, Sabana Grande, Caracas', 'Caracas', 'Distrito Capital', '1050', '2025-08-21', '12:00-15:00', 'Dejar con portero', 'delivered', 274.95, 10021.93, 36.450000, '', NULL, '2025-08-15 00:01:01.715+00', '2025-08-15 00:01:01.715+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (90, 3, 'luis.rodriguez@yahoo.com', 'Luis Rodríguez', '+58 412-763-0973', 'Urbanización La Trinidad, Miranda', 'Miranda', 'Miranda', '1060', '2025-09-15', '09:00-12:00', 'Dejar con portero', 'delivered', 125.98, 4591.97, 36.450000, 'Regalo', NULL, '2025-09-13 04:35:02.922+00', '2025-09-13 04:35:02.922+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (91, 3, 'isabelrodriguez@gmail.com', 'Isabel Rodríguez', '+58 424-432-9291', 'Urbanización Las Mercedes, Caracas', 'Caracas', 'Distrito Capital', '1080', '2025-07-28', '15:00-18:00', '', 'delivered', 46.99, 1712.79, 36.450000, '', NULL, '2025-07-24 14:31:52.774+00', '2025-07-24 14:31:52.774+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (92, 3, 'valentinaalvarez@hotmail.com', 'Valentina Álvarez', '+58 416-413-5691', 'Lomas de La Lagunita, Miranda', 'Miranda', 'Miranda', '1040', '2025-07-13', '09:00-12:00', 'Llamar al llegar', 'cancelled', 55.99, 2040.84, 36.450000, '', NULL, '2025-07-10 12:54:42.648+00', '2025-07-10 12:54:42.648+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (93, 3, 'diegosanchez@yahoo.com', 'Diego Sánchez', '+58 426-879-7481', 'Av. Principal de Bello Monte, Caracas', 'Caracas', 'Distrito Capital', '', '2025-08-11', '09:00-12:00', 'Dejar con portero', 'cancelled', 59.98, 2186.27, 36.450000, 'Cumpleaños', NULL, '2025-08-08 10:17:17.883+00', '2025-08-08 10:17:17.883+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (94, 3, 'pedrorodriguez@gmail.com', 'Pedro Rodríguez', '+58 412-359-4199', 'Av. Abraham Lincoln, Sabana Grande, Caracas', 'Caracas', 'Distrito Capital', '', '2025-09-18', '09:00-12:00', '', 'shipped', 145.98, 5320.97, 36.450000, 'Cumpleaños', NULL, '2025-09-15 01:39:25.251+00', '2025-09-15 01:39:25.251+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (95, 3, 'javierjimenez@yahoo.com', 'Javier Jiménez', '+58 426-494-6634', 'Urbanización La Trinidad, Miranda', 'Miranda', 'Miranda', '1040', '2025-08-03', '15:00-18:00', 'Dejar con portero', 'delivered', 291.94, 10641.21, 36.450000, 'Ocasión especial', NULL, '2025-07-31 16:32:20.302+00', '2025-07-31 16:32:20.302+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (96, 3, 'daniela79@gmail.com', 'Daniela González', '+58 426-741-4765', 'Calle Paris, Las Mercedes, Caracas', 'Caracas', 'Distrito Capital', '1070', '2025-07-30', '15:00-18:00', 'Llamar al llegar', 'delivered', 68.99, 2514.69, 36.450000, 'Ocasión especial', NULL, '2025-07-28 21:29:11.478+00', '2025-07-28 21:29:11.478+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (97, 3, 'sofia.gonzalez@yahoo.com', 'Sofía González', '+58 412-608-3745', 'Calle Los Samanes, Los Palos Grandes, Caracas', 'Caracas', 'Distrito Capital', '1070', '2025-09-05', '15:00-18:00', 'Torre A, piso 5', 'delivered', 122.97, 4482.26, 36.450000, 'Aniversario', NULL, '2025-09-04 09:25:02.849+00', '2025-09-04 09:25:02.849+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (98, 3, 'andrea_rojas@yahoo.com', 'Andrea Rojas', '+58 424-886-5095', 'Calle Los Samanes, Los Palos Grandes, Caracas', 'Caracas', 'Distrito Capital', '1060', '2025-09-19', '12:00-15:00', 'Torre A, piso 5', 'delivered', 214.96, 7835.29, 36.450000, '', NULL, '2025-09-15 20:58:16.907+00', '2025-09-15 20:58:16.907+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (99, 3, 'pedro.perez@hotmail.com', 'Pedro Pérez', '+58 416-517-9829', 'Calle La Guairita, Chuao, Caracas', 'Caracas', 'Distrito Capital', '1060', '2025-09-17', '', 'Torre A, piso 5', 'delivered', 210.95, 7689.13, 36.450000, '', NULL, '2025-09-14 04:39:37.406+00', '2025-09-14 04:39:37.406+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (100, 3, 'mariana_salazar@yahoo.com', 'Mariana Salazar', '+58 416-822-1402', 'Av. Luis Roche, Altamira, Caracas', 'Caracas', 'Distrito Capital', '1080', '2025-07-23', '12:00-15:00', 'Llamar al llegar', 'delivered', 420.92, 15342.53, 36.450000, 'Regalo', NULL, '2025-07-21 02:10:44.507+00', '2025-07-21 02:10:44.507+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (62, 3, 'andres_medina@gmail.com', 'Andrés Medina', '+58 416-270-5586', 'Calle La Guairita, Chuao, Caracas', 'Caracas', 'Distrito Capital', '1040', '2025-10-03', '12:00-15:00', 'Dejar con portero', 'shipped', 68.99, 2514.69, 36.450000, 'Ocasión especial', NULL, '2025-10-02 18:44:56.212+00', '2025-10-02 18:44:56.212+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (55, 3, 'pedrojimenez@yahoo.com', 'Pedro Jiménez', '+58 414-277-6864', 'Calle La Guairita, Chuao, Caracas', 'Caracas', 'Distrito Capital', '', '2025-10-06', '15:00-18:00', 'Dejar con portero', 'preparing', 206.97, 7544.06, 36.450000, 'Ocasión especial', NULL, '2025-10-02 09:58:39.515+00', '2025-10-02 09:58:39.515+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (102, NULL, 'baba.orere@gmail.com', 'Roger', '(+58)-414-7166388', 'Montalban, casa 405', 'Libertador', 'Gran Caracas', NULL, NULL, NULL, 'al lado de la matica', 'pending', 423.92, 16956.80, 40.000000, NULL, NULL, '2025-10-06 22:15:42.83397+00', '2025-10-06 22:15:42.83397+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (103, NULL, 'baba2.orere@gmail.com', 'Roger', '(+58)-414-7166888', 'Montalban, calle 4', 'Libertador', 'Gran Caracas', NULL, NULL, NULL, 'al lado de la matica', 'pending', 97.98, 3919.00, 40.000000, 'llamar antes de ir', NULL, '2025-10-07 00:34:02.394002+00', '2025-10-07 00:34:02.394002+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (145, NULL, 'transfer-test-customer@test.com', 'Test Customer-Transfer', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:42:58.71497+00', '2025-10-15 14:42:58.71497+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (104, NULL, 'test@example.com', 'Test User', 'N/A', 'Test address with more than 10 characters', 'Caracas', 'N/A', NULL, NULL, NULL, NULL, 'pending', 100.50, NULL, NULL, 'Test order', NULL, '2025-10-07 00:54:47.917341+00', '2025-10-07 00:54:47.917341+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (113, 3, 'luis_fernandez@outlook.com', 'Luis Fernández', '+58 426-312-0051', 'Av. Libertador, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-10-12', '12:00-15:00', NULL, 'delivered', 599.94, 21870.00, 36.450000, 'Regalo', NULL, '2025-10-09 22:43:44.558473+00', '2025-10-09 22:43:44.558473+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (458, NULL, 'rafael.perez@hotmail.com', 'Rafael Pérez', '+58 424-458-9139', 'Av. Francisco de Miranda, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-07', '09:00-12:00', 'Llamar al llegar', 'pending', 339.95, 13598.00, 40.000000, 'Pedido de prueba', NULL, '2025-11-03 13:14:06.222404+00', '2025-11-03 13:14:06.222404+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (487, NULL, 'roberto_medina@hotmail.com', 'Roberto Medina', '+58 424-275-6528', 'Calle Principal de Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '12:00-15:00', '', 'verified', 42.99, 1720.00, 40.000000, '', NULL, '2025-11-03 14:52:56.219441+00', '2025-11-03 14:52:57.210365+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (516, NULL, 'isabelramos@hotmail.com', 'Isabel Ramos', '+58 416-961-7623', 'Av. Francisco de Miranda, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-07', '12:00-15:00', 'Dejar con portero', 'verified', 493.92, 19757.00, 40.000000, 'Día de la madre', NULL, '2025-11-03 16:16:40.841668+00', '2025-11-03 16:16:41.475773+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (105, NULL, 'test@example.com', 'Test User', 'N/A', 'Test address with more than 10 characters', 'Caracas', 'N/A', NULL, NULL, NULL, NULL, 'pending', 100.50, NULL, NULL, 'Test order', NULL, '2025-10-07 00:56:36.537573+00', '2025-10-07 00:56:36.537573+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (106, NULL, 'test@example.com', 'Test User', 'N/A', 'Test address with more than 10 characters', 'Caracas', 'N/A', NULL, NULL, NULL, NULL, 'pending', 100.50, NULL, NULL, 'Test order', NULL, '2025-10-07 00:59:19.442374+00', '2025-10-07 00:59:19.442374+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (107, NULL, 'test@example.com', 'Test User', 'N/A', 'Test address with more than 10 characters', 'Caracas', 'N/A', NULL, NULL, NULL, NULL, 'pending', 100.50, NULL, NULL, 'Test order', NULL, '2025-10-07 01:01:08.802257+00', '2025-10-07 01:01:08.802257+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (108, NULL, 'test@example.com', 'Test User', '(+58)-414-7166388', 'Montalban, casa 405', 'N/A', 'N/A', NULL, NULL, NULL, 'al lado de la matica', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-07 22:10:03.293045+00', '2025-10-07 22:10:03.293045+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (110, NULL, 'baba.orere@gmail.com', 'Roger', '(+58)-414-7166388', 'Montalban, casa 405', 'N/A', 'N/A', NULL, NULL, NULL, 'al lado de la matica', 'pending', 455.00, 18200.00, 40.000000, NULL, NULL, '2025-10-09 14:08:32.224767+00', '2025-10-09 14:08:32.224767+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (111, NULL, 'baba2.orere@gmail.com', 'Roger', '(+58)-414-7166888', 'Montalban, calle 4', 'N/A', 'N/A', NULL, NULL, NULL, 'al lado de la matica', 'verified', 97.98, 3919.00, 40.000000, 'llamar antes de ir', NULL, '2025-10-09 15:15:44.823923+00', '2025-10-09 15:16:25.801527+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (109, NULL, 'baba.orere@gmail.com', 'Roger', '(+58)-414-7166388', 'Montalban, casa 405', 'N/A', 'N/A', NULL, NULL, NULL, 'al lado de la matica', 'shipped', 97.98, 3919.00, 40.000000, NULL, NULL, '2025-10-09 00:05:28.866871+00', '2025-10-09 15:16:45.503059+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (112, 3, 'maria_sanchez@outlook.com', 'María Sánchez', '+58 412-797-8934', 'Calle Madrid, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-10-14', '12:00-15:00', 'Dejar con portero', 'shipped', 499.94, 18224.00, 36.450000, 'Regalo', NULL, '2025-10-09 22:43:43.940567+00', '2025-10-09 22:43:43.940567+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (114, 3, 'luis_rodriguez@yahoo.com', 'Luis Rodríguez', '+58 416-947-6928', 'Av. Libertador, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-10-11', NULL, 'Dejar con portero', 'shipped', 45.99, 1676.00, 36.450000, NULL, NULL, '2025-10-09 22:43:45.042888+00', '2025-10-09 22:43:45.042888+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (115, 3, 'pedro_torres@yahoo.com', 'Pedro Torres', '+58 426-147-8739', 'Urbanización La Florida, Caracas', 'N/A', 'N/A', NULL, '2025-10-13', '09:00-12:00', 'Torre A, piso 5', 'shipped', 299.97, 10935.00, 36.450000, 'Ocasión especial', NULL, '2025-10-09 22:43:45.499346+00', '2025-10-09 22:43:45.499346+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (116, 3, 'maria14@outlook.com', 'María Rodríguez', '+58 424-627-4655', 'Av. Libertador, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-10-10', NULL, 'Llamar al llegar', 'preparing', 870.90, 31747.00, 36.450000, 'Cumpleaños', NULL, '2025-10-09 22:43:46.027772+00', '2025-10-09 22:43:46.027772+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (117, 3, 'rosa.ramirez@yahoo.com', 'Rosa Ramírez', '+58 424-818-6171', 'Av. Francisco de Miranda, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-10-15', '12:00-15:00', 'Llamar al llegar', 'preparing', 799.92, 29160.00, 36.450000, 'Aniversario', NULL, '2025-10-09 22:43:46.590932+00', '2025-10-09 22:43:46.590932+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (118, 3, 'antonio_garcia@gmail.com', 'Antonio García', '+58 424-264-3222', 'Calle Paris, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-10-16', '12:00-15:00', 'Llamar al llegar', 'verified', 89.97, 3279.00, 36.450000, 'Cumpleaños', NULL, '2025-10-09 22:43:46.981724+00', '2025-10-09 22:43:46.981724+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (119, 3, 'carmentorres@outlook.com', 'Carmen Torres', '+58 424-422-8567', 'Av. Principal de La Castellana, Caracas', 'N/A', 'N/A', NULL, '2025-10-11', '12:00-15:00', 'Llamar al llegar', 'preparing', 588.91, 21467.00, 36.450000, 'Cumpleaños', NULL, '2025-10-09 22:43:47.377428+00', '2025-10-09 22:43:47.377428+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (120, 3, 'jose.fernandez@outlook.com', 'José Fernández', '+58 416-925-8999', 'Calle Principal de Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-10-13', '12:00-15:00', 'Torre A, piso 5', 'pending', 530.93, 19353.00, 36.450000, NULL, NULL, '2025-10-09 22:43:47.760498+00', '2025-10-09 22:43:47.760498+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (121, 3, 'antonio17@gmail.com', 'Antonio Sánchez', '+58 416-374-6464', 'Urbanización Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-10-11', '09:00-12:00', 'Dejar con portero', 'delivered', 216.96, 7909.00, 36.450000, NULL, NULL, '2025-10-09 22:43:48.157611+00', '2025-10-09 22:43:48.157611+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (122, NULL, 'baba2.orere@gmail.com', 'Roger', '(+58)-414-7166888', 'Montalban, calle 4', 'N/A', 'N/A', NULL, NULL, NULL, 'al lado de la matica', 'pending', 97.98, 3919.00, 40.000000, 'llamar antes de ir', NULL, '2025-10-12 23:42:00.061321+00', '2025-10-12 23:42:00.061321+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (124, NULL, 'baba2.orere@gmail.com', 'Roger', '(+58)-414-7166888', 'Montalban, calle 4', 'N/A', 'N/A', NULL, NULL, NULL, 'al lado de la matica', 'pending', 97.98, 3919.00, 40.000000, 'llamar antes de ir', NULL, '2025-10-14 23:36:22.882151+00', '2025-10-14 23:36:22.882151+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (125, NULL, 'cash-customer@test.com', 'Test Cash Customer', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:25:45.496227+00', '2025-10-15 14:25:45.496227+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (126, NULL, 'cash-customer@test.com', 'Test Cash Customer', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:25:47.266094+00', '2025-10-15 14:25:47.266094+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (127, NULL, 'cash-customer@test.com', 'Test Cash Customer', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:26:03.192919+00', '2025-10-15 14:26:03.192919+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (128, NULL, 'cash-customer@test.com', 'Test Cash Customer', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:26:05.750125+00', '2025-10-15 14:26:05.750125+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (129, NULL, 'cash-customer@test.com', 'Test Cash Customer', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:28:11.409333+00', '2025-10-15 14:28:11.409333+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (130, NULL, 'cash-customer@test.com', 'Test Cash Customer', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:28:15.863207+00', '2025-10-15 14:28:15.863207+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (131, NULL, 'cash-customer@test.com', 'Test Cash Customer', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:29:10.019107+00', '2025-10-15 14:29:10.019107+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (132, NULL, 'cash-test-customer@test.com', 'Test Customer-Cash', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:32:21.709262+00', '2025-10-15 14:32:21.709262+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (133, NULL, 'transfer-test-customer@test.com', 'Test Customer-Transfer', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:32:22.756433+00', '2025-10-15 14:32:22.756433+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (134, NULL, 'zelle-test-customer@test.com', 'Test Customer-Zelle', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:32:22.893319+00', '2025-10-15 14:32:22.893319+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (135, NULL, 'mobile-test-customer@test.com', 'Test Customer-Mobile', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:32:23.041676+00', '2025-10-15 14:32:23.041676+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (136, NULL, 'crypto-test-customer@test.com', 'Test Customer-Crypto', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:32:26.465366+00', '2025-10-15 14:32:26.465366+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (137, NULL, 'zelle-test-customer@test.com', 'Test Customer-Zelle', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:33:30.850627+00', '2025-10-15 14:33:30.850627+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (138, NULL, 'transfer-test-customer@test.com', 'Test Customer-Transfer', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:33:30.998111+00', '2025-10-15 14:33:30.998111+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (139, NULL, 'cash-test-customer@test.com', 'Test Customer-Cash', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:33:31.894209+00', '2025-10-15 14:33:31.894209+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (140, NULL, 'crypto-test-customer@test.com', 'Test Customer-Crypto', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:33:46.725546+00', '2025-10-15 14:33:46.725546+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (141, NULL, 'cash-test-customer@test.com', 'Test Customer-Cash', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:36:45.620459+00', '2025-10-15 14:36:45.620459+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (142, NULL, 'transfer-test-customer@test.com', 'Test Customer-Transfer', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:36:45.905057+00', '2025-10-15 14:36:45.905057+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (143, NULL, 'mobile-test-customer@test.com', 'Test Customer-Mobile', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:36:46.193028+00', '2025-10-15 14:36:46.193028+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (144, NULL, 'cash-test-customer@test.com', 'Test Customer-Cash', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:42:57.73967+00', '2025-10-15 14:42:57.73967+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (148, NULL, 'crypto-test-customer@test.com', 'Test Customer-Crypto', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'pending', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:43:02.961826+00', '2025-10-15 14:43:02.961826+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (147, NULL, 'zelle-test-customer@test.com', 'Test Customer-Zelle', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'preparing', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:42:59.359849+00', '2025-10-17 21:46:48.067225+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (149, NULL, 'baba.orere@gmail.com', 'Roger', '(+58)-414-7166388', 'Montalban, casa 405', 'N/A', 'N/A', NULL, NULL, NULL, 'al lado de la matica', 'verified', 99.99, 4000.00, 40.000000, '', NULL, '2025-10-17 20:52:21.032381+00', '2025-10-17 21:59:23.670582+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (146, NULL, 'mobile-test-customer@test.com', 'Test Customer-Mobile', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'cancelled', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-15 14:42:59.353101+00', '2025-10-17 22:10:47.108221+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (150, NULL, 'baba2.orere@gmail.com', 'Roger', '(+58)-414-7166888', 'Montalban, calle 4', 'N/A', 'N/A', NULL, NULL, NULL, 'al lado de la matica', 'delivered', 97.98, 3919.00, 40.000000, 'llamar antes de ir', NULL, '2025-10-18 22:06:48.632642+00', '2025-10-18 22:07:16.348848+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (161, 34, 'luis48@gmail.com', 'Luis Martínez', '+58 412-392-7432', 'Av. Francisco de Miranda, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-10-29', '12:00-15:00', 'Torre A, piso 5', 'preparing', 599.90, 21867.00, 36.450000, 'Regalo', NULL, '2025-10-22 15:06:39.713653+00', '2025-10-22 15:06:39.713653+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (162, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 149.97, 5466.00, 36.450000, NULL, NULL, '2025-10-22 15:16:40.551+00', '2025-10-22 15:16:40.551+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (163, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 77.98, 2842.00, 36.450000, NULL, NULL, '2025-10-22 15:26:13.009+00', '2025-10-22 15:26:13.009+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (164, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 52.99, 1931.00, 36.450000, NULL, NULL, '2025-10-22 15:26:55.98+00', '2025-10-22 15:26:55.98+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (151, NULL, 'cash-customer@test.com', 'Test Cash Customer', '(+58)-414-1234567', 'Avenida Principal, Casa 123, Caracas, Venezuela', 'N/A', 'N/A', NULL, NULL, NULL, '', 'verified', 97.98, 3919.00, 40.000000, '', NULL, '2025-10-19 18:21:17.021025+00', '2025-10-21 22:53:42.415408+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (165, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-22 15:27:32.061+00', '2025-10-22 15:27:32.061+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (166, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-22 15:29:08.725+00', '2025-10-22 15:29:08.725+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (123, NULL, 'baba.orere@gmail.com', 'Roger', '(+58)-414-7169388', 'Caracas montalban', 'N/A', 'N/A', NULL, NULL, NULL, '', 'verified', 99.99, 4000.00, 40.000000, '', NULL, '2025-10-14 23:35:19.150326+00', '2025-10-22 11:35:08.430735+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (152, 34, 'pedro.perez@outlook.com', 'Pedro Pérez', '+58 416-914-7430', 'Centro Comercial San Ignacio, Caracas', 'N/A', 'N/A', NULL, '2025-10-25', '09:00-12:00', 'Llamar al llegar', 'verified', 618.90, 22560.00, 36.450000, 'Ocasión especial', NULL, '2025-10-22 15:06:34.922394+00', '2025-10-22 15:06:34.922394+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (153, 34, 'jose.rodriguez@yahoo.com', 'José Rodríguez', '+58 412-783-8164', 'Centro Comercial San Ignacio, Caracas', 'N/A', 'N/A', NULL, '2025-10-25', '12:00-15:00', NULL, 'cancelled', 785.89, 28648.00, 36.450000, 'Aniversario', NULL, '2025-10-22 15:06:35.721639+00', '2025-10-22 15:06:35.721639+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (154, 34, 'rosa.torres@hotmail.com', 'Rosa Torres', '+58 412-328-9294', 'Centro Comercial San Ignacio, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'cancelled', 386.92, 14103.00, 36.450000, 'Aniversario', NULL, '2025-10-22 15:06:36.314696+00', '2025-10-22 15:06:36.314696+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (155, 34, 'luis_torres@yahoo.com', 'Luis Torres', '+58 424-322-5630', 'Calle Paris, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-10-24', '09:00-12:00', 'Llamar al llegar', 'delivered', 671.96, 24494.00, 36.450000, 'Cumpleaños', NULL, '2025-10-22 15:06:36.949017+00', '2025-10-22 15:06:36.949017+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (156, 34, 'ana_perez@gmail.com', 'Ana Pérez', '+58 426-323-1796', 'Calle Principal de Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-10-28', '15:00-18:00', 'Llamar al llegar', 'pending', 68.99, 2515.00, 36.450000, 'Cumpleaños', NULL, '2025-10-22 15:06:37.529911+00', '2025-10-22 15:06:37.529911+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (157, 34, 'pedro_torres@yahoo.com', 'Pedro Torres', '+58 416-904-8557', 'Av. Francisco de Miranda, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-10-24', NULL, 'Dejar con portero', 'cancelled', 638.89, 23289.00, 36.450000, 'Ocasión especial', NULL, '2025-10-22 15:06:38.056446+00', '2025-10-22 15:06:38.056446+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (158, 34, 'rosa_lopez@hotmail.com', 'Rosa López', '+58 426-346-1936', 'Av. Libertador, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', '15:00-18:00', NULL, 'delivered', 599.94, 21870.00, 36.450000, 'Regalo', NULL, '2025-10-22 15:06:38.520409+00', '2025-10-22 15:06:38.520409+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (159, 34, 'carmen17@outlook.com', 'Carmen González', '+58 412-534-3703', 'Calle Principal de Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-10-26', '12:00-15:00', NULL, 'cancelled', 580.90, 21175.00, 36.450000, 'Ocasión especial', NULL, '2025-10-22 15:06:38.926589+00', '2025-10-22 15:06:38.926589+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (160, 34, 'luis.martinez@yahoo.com', 'Luis Martínez', '+58 426-675-7059', 'Av. Libertador, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-10-27', '15:00-18:00', NULL, 'cancelled', 1703.96, 62111.00, 36.450000, 'Ocasión especial', NULL, '2025-10-22 15:06:39.33276+00', '2025-10-22 15:06:39.33276+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (167, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 105.98, 3863.00, 36.450000, NULL, NULL, '2025-10-22 15:32:52.261+00', '2025-10-22 15:32:52.261+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (168, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 183.96, 6705.00, 36.450000, NULL, NULL, '2025-10-22 15:39:21.252+00', '2025-10-22 15:39:21.252+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (169, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 171.96, 6268.00, 36.450000, NULL, NULL, '2025-10-22 15:43:22.379+00', '2025-10-22 15:43:22.379+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (170, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-22 15:47:57.572+00', '2025-10-22 15:47:57.572+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (171, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-22 15:51:26.626+00', '2025-10-22 15:51:26.626+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (172, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-22 15:52:55.878+00', '2025-10-22 15:52:55.878+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (173, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-22 15:57:12.007+00', '2025-10-22 15:57:12.007+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (174, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 391.92, 14285.00, 36.450000, NULL, NULL, '2025-10-22 16:03:11.87+00', '2025-10-22 16:03:11.87+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (175, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 119.97, 4373.00, 36.450000, NULL, NULL, '2025-10-22 16:09:39.721+00', '2025-10-22 16:09:39.721+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (176, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 214.95, 7835.00, 36.450000, NULL, NULL, '2025-10-22 16:16:44.26+00', '2025-10-22 16:16:44.26+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (177, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 279.95, 10204.00, 36.450000, NULL, NULL, '2025-10-22 16:25:54.903+00', '2025-10-22 16:25:54.903+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (178, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 195.96, 7143.00, 36.450000, NULL, NULL, '2025-10-22 16:29:46.753+00', '2025-10-22 16:29:46.753+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (179, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 195.96, 7143.00, 36.450000, NULL, NULL, '2025-10-22 16:33:56.138+00', '2025-10-22 16:33:56.138+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (180, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-22 16:43:52.861+00', '2025-10-22 16:43:52.861+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (181, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 218.97, 7981.00, 36.450000, NULL, NULL, '2025-10-22 16:45:37.685+00', '2025-10-22 16:45:37.685+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (182, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 149.95, 5466.00, 36.450000, NULL, NULL, '2025-10-22 16:46:56.517+00', '2025-10-22 16:46:56.517+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (183, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 249.95, 9111.00, 36.450000, NULL, NULL, '2025-10-22 16:51:47.49+00', '2025-10-22 16:51:47.49+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (184, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 89.97, 3279.00, 36.450000, NULL, NULL, '2025-10-22 16:56:51.898+00', '2025-10-22 16:56:51.898+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (185, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 171.96, 6268.00, 36.450000, NULL, NULL, '2025-10-22 17:04:59.574+00', '2025-10-22 17:04:59.574+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (186, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-22 17:13:32.04+00', '2025-10-22 17:13:32.04+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (187, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 291.96, 10642.00, 36.450000, NULL, NULL, '2025-10-22 17:18:03.849+00', '2025-10-22 17:18:03.849+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (188, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 344.95, 12573.00, 36.450000, NULL, NULL, '2025-10-22 17:27:11.691+00', '2025-10-22 17:27:11.691+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (189, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-22 17:28:35.804+00', '2025-10-22 17:28:35.804+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (190, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 72.99, 2660.00, 36.450000, NULL, NULL, '2025-10-22 17:36:21.377+00', '2025-10-22 17:36:21.377+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (191, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 229.95, 8382.00, 36.450000, NULL, NULL, '2025-10-22 17:46:00.774+00', '2025-10-22 17:46:00.774+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (192, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 119.96, 4373.00, 36.450000, NULL, NULL, '2025-10-22 17:47:34.028+00', '2025-10-22 17:47:34.028+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (193, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-22 17:54:59.961+00', '2025-10-22 17:54:59.961+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (194, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 137.98, 5029.00, 36.450000, NULL, NULL, '2025-10-22 17:57:33.238+00', '2025-10-22 17:57:33.238+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (195, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 199.95, 7288.00, 36.450000, NULL, NULL, '2025-10-22 17:59:42.059+00', '2025-10-22 17:59:42.059+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (196, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-22 18:01:51.606+00', '2025-10-22 18:01:51.606+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (197, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 79.98, 2915.00, 36.450000, NULL, NULL, '2025-10-22 18:04:52.239+00', '2025-10-22 18:04:52.239+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (198, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 249.95, 9111.00, 36.450000, NULL, NULL, '2025-10-22 18:07:17.785+00', '2025-10-22 18:07:17.785+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (199, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-22 18:13:38.506+00', '2025-10-22 18:13:38.506+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (200, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 42.99, 1567.00, 36.450000, NULL, NULL, '2025-10-22 18:22:46.637+00', '2025-10-22 18:22:46.637+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (201, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 171.96, 6268.00, 36.450000, NULL, NULL, '2025-10-22 18:23:50.628+00', '2025-10-22 18:23:50.628+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (202, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 38.99, 1421.00, 36.450000, NULL, NULL, '2025-10-22 18:27:37.114+00', '2025-10-22 18:27:37.114+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (203, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 68.99, 2515.00, 36.450000, NULL, NULL, '2025-10-22 18:33:04.148+00', '2025-10-22 18:33:04.148+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (204, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 223.96, 8163.00, 36.450000, NULL, NULL, '2025-10-22 18:36:40.042+00', '2025-10-22 18:36:40.042+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (205, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-22 18:39:50.889+00', '2025-10-22 18:39:50.889+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (206, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-22 18:45:58.426+00', '2025-10-22 18:45:58.426+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (207, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-22 18:52:19.029+00', '2025-10-22 18:52:19.029+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (208, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 119.96, 4373.00, 36.450000, NULL, NULL, '2025-10-22 18:55:54.608+00', '2025-10-22 18:55:54.608+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (209, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-22 18:58:58.547+00', '2025-10-22 18:58:58.547+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (210, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 145.98, 5321.00, 36.450000, NULL, NULL, '2025-10-22 19:00:23.063+00', '2025-10-22 19:00:23.063+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (211, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 489.90, 17857.00, 36.450000, NULL, NULL, '2025-10-22 19:08:15.587+00', '2025-10-22 19:08:15.587+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (212, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 65.98, 2405.00, 36.450000, NULL, NULL, '2025-10-22 19:11:10.386+00', '2025-10-22 19:11:10.386+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (213, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 199.96, 7289.00, 36.450000, NULL, NULL, '2025-10-22 19:20:10.788+00', '2025-10-22 19:20:10.788+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (214, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 183.96, 6705.00, 36.450000, NULL, NULL, '2025-10-22 19:28:28.007+00', '2025-10-22 19:28:28.007+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (215, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 218.97, 7981.00, 36.450000, NULL, NULL, '2025-10-22 19:32:39.813+00', '2025-10-22 19:32:39.813+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (216, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 119.97, 4373.00, 36.450000, NULL, NULL, '2025-10-22 19:34:13.883+00', '2025-10-22 19:34:13.883+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (217, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 97.98, 3571.00, 36.450000, NULL, NULL, '2025-10-22 19:42:50.21+00', '2025-10-22 19:42:50.21+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (218, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 249.95, 9111.00, 36.450000, NULL, NULL, '2025-10-22 19:51:56.469+00', '2025-10-22 19:51:56.469+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (219, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-22 19:53:34.737+00', '2025-10-22 19:53:34.737+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (220, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 72.99, 2660.00, 36.450000, NULL, NULL, '2025-10-22 19:55:38.318+00', '2025-10-22 19:55:38.318+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (221, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 158.97, 5794.00, 36.450000, NULL, NULL, '2025-10-22 20:05:04.719+00', '2025-10-22 20:05:04.719+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (222, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-22 20:10:25.244+00', '2025-10-22 20:10:25.244+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (223, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-22 20:17:45.898+00', '2025-10-22 20:17:45.898+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (224, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 167.97, 6123.00, 36.450000, NULL, NULL, '2025-10-22 20:19:12.946+00', '2025-10-22 20:19:12.946+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (225, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-22 20:20:48.112+00', '2025-10-22 20:20:48.112+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (226, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-22 20:30:02.902+00', '2025-10-22 20:30:02.902+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (227, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-22 20:31:34.142+00', '2025-10-22 20:31:34.142+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (228, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-22 20:35:56.394+00', '2025-10-22 20:35:56.394+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (229, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 234.95, 8564.00, 36.450000, NULL, NULL, '2025-10-22 20:40:40.66+00', '2025-10-22 20:40:40.66+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (230, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 55.99, 2041.00, 36.450000, NULL, NULL, '2025-10-22 20:47:36.441+00', '2025-10-22 20:47:36.441+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (231, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 42.99, 1567.00, 36.450000, NULL, NULL, '2025-10-22 20:56:40.417+00', '2025-10-22 20:56:40.417+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (232, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-22 20:59:52.618+00', '2025-10-22 20:59:52.618+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (233, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 391.92, 14285.00, 36.450000, NULL, NULL, '2025-10-22 21:03:42.421+00', '2025-10-22 21:03:42.421+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (234, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-22 21:10:15.514+00', '2025-10-22 21:10:15.514+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (235, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 116.97, 4264.00, 36.450000, NULL, NULL, '2025-10-22 21:13:31.522+00', '2025-10-22 21:13:31.522+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (236, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 140.97, 5138.00, 36.450000, NULL, NULL, '2025-10-22 21:21:01.378+00', '2025-10-22 21:21:01.378+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (237, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 293.94, 10714.00, 36.450000, NULL, NULL, '2025-10-22 21:27:11.058+00', '2025-10-22 21:27:11.058+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (238, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 264.95, 9657.00, 36.450000, NULL, NULL, '2025-10-22 21:33:18.485+00', '2025-10-22 21:33:18.485+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (239, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-22 21:40:20.625+00', '2025-10-22 21:40:20.625+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (240, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-22 21:49:10.228+00', '2025-10-22 21:49:10.228+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (241, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-22 21:57:46.181+00', '2025-10-22 21:57:46.181+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (242, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 68.99, 2515.00, 36.450000, NULL, NULL, '2025-10-22 22:00:08.081+00', '2025-10-22 22:00:08.081+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (243, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 187.96, 6851.00, 36.450000, NULL, NULL, '2025-10-22 22:10:00.105+00', '2025-10-22 22:10:00.105+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (244, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-22 22:11:06.028+00', '2025-10-22 22:11:06.028+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (245, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 149.97, 5466.00, 36.450000, NULL, NULL, '2025-10-22 22:20:58.691+00', '2025-10-22 22:20:58.691+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (246, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-22 22:27:18.687+00', '2025-10-22 22:27:18.687+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (247, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 234.95, 8564.00, 36.450000, NULL, NULL, '2025-10-22 22:30:03.154+00', '2025-10-22 22:30:03.154+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (248, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 291.96, 10642.00, 36.450000, NULL, NULL, '2025-10-22 22:38:45.515+00', '2025-10-22 22:38:45.515+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (249, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-22 22:41:27.112+00', '2025-10-22 22:41:27.112+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (250, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 211.96, 7726.00, 36.450000, NULL, NULL, '2025-10-22 22:50:03.175+00', '2025-10-22 22:50:03.175+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (251, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 131.96, 4810.00, 36.450000, NULL, NULL, '2025-10-22 22:57:59.498+00', '2025-10-22 22:57:59.498+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (252, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 214.95, 7835.00, 36.450000, NULL, NULL, '2025-10-22 23:06:46.868+00', '2025-10-22 23:06:46.868+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (253, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-22 23:15:56.701+00', '2025-10-22 23:15:56.701+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (254, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 910.00, 33170.00, 36.450000, NULL, NULL, '2025-10-22 23:18:39.463+00', '2025-10-22 23:18:39.463+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (255, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-22 23:24:46.472+00', '2025-10-22 23:24:46.472+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (256, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-22 23:27:19.211+00', '2025-10-22 23:27:19.211+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (257, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 137.97, 5029.00, 36.450000, NULL, NULL, '2025-10-22 23:30:44.873+00', '2025-10-22 23:30:44.873+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (258, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-22 23:34:14.593+00', '2025-10-22 23:34:14.593+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (259, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-22 23:40:48.683+00', '2025-10-22 23:40:48.683+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (260, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 171.96, 6268.00, 36.450000, NULL, NULL, '2025-10-22 23:42:43.777+00', '2025-10-22 23:42:43.777+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (261, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 49.99, 1822.00, 36.450000, NULL, NULL, '2025-10-22 23:46:18.555+00', '2025-10-22 23:46:18.555+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (262, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-22', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-22 23:52:50.779+00', '2025-10-22 23:52:50.779+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (263, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-23 00:02:27.441+00', '2025-10-23 00:02:27.441+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (264, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 116.97, 4264.00, 36.450000, NULL, NULL, '2025-10-23 00:05:10.967+00', '2025-10-23 00:05:10.967+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (265, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-23 00:09:17.138+00', '2025-10-23 00:09:17.138+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (266, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-23 00:13:32.354+00', '2025-10-23 00:13:32.354+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (267, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 214.95, 7835.00, 36.450000, NULL, NULL, '2025-10-23 00:16:03.773+00', '2025-10-23 00:16:03.773+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (268, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 46.99, 1713.00, 36.450000, NULL, NULL, '2025-10-23 00:18:37.394+00', '2025-10-23 00:18:37.394+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (269, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 218.97, 7981.00, 36.450000, NULL, NULL, '2025-10-23 00:21:47.804+00', '2025-10-23 00:21:47.804+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (270, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-23 00:28:21.877+00', '2025-10-23 00:28:21.877+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (271, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 279.95, 10204.00, 36.450000, NULL, NULL, '2025-10-23 00:30:31.347+00', '2025-10-23 00:30:31.347+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (272, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 111.98, 4082.00, 36.450000, NULL, NULL, '2025-10-23 00:38:01.638+00', '2025-10-23 00:38:01.638+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (273, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 455.00, 16585.00, 36.450000, NULL, NULL, '2025-10-23 00:43:38.886+00', '2025-10-23 00:43:38.886+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (274, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-23 00:46:43.629+00', '2025-10-23 00:46:43.629+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (275, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-23 00:52:09.724+00', '2025-10-23 00:52:09.724+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (276, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 116.97, 4264.00, 36.450000, NULL, NULL, '2025-10-23 00:55:27.257+00', '2025-10-23 00:55:27.257+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (277, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 155.96, 5685.00, 36.450000, NULL, NULL, '2025-10-23 00:58:50.825+00', '2025-10-23 00:58:50.825+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (278, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 52.99, 1931.00, 36.450000, NULL, NULL, '2025-10-23 01:02:50.758+00', '2025-10-23 01:02:50.758+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (279, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-23 01:12:16.18+00', '2025-10-23 01:12:16.18+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (280, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 149.97, 5466.00, 36.450000, NULL, NULL, '2025-10-23 01:18:43.084+00', '2025-10-23 01:18:43.084+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (281, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 223.96, 8163.00, 36.450000, NULL, NULL, '2025-10-23 01:26:15.235+00', '2025-10-23 01:26:15.235+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (282, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 264.95, 9657.00, 36.450000, NULL, NULL, '2025-10-23 01:33:17.342+00', '2025-10-23 01:33:17.342+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (283, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-23 01:36:05.01+00', '2025-10-23 01:36:05.01+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (284, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-23 01:45:04.13+00', '2025-10-23 01:45:04.13+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (285, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-23 01:51:50.71+00', '2025-10-23 01:51:50.71+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (286, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 194.95, 7106.00, 36.450000, NULL, NULL, '2025-10-23 01:58:38.969+00', '2025-10-23 01:58:38.969+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (287, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 46.99, 1713.00, 36.450000, NULL, NULL, '2025-10-23 02:08:33.774+00', '2025-10-23 02:08:33.774+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (288, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 187.96, 6851.00, 36.450000, NULL, NULL, '2025-10-23 02:14:06.722+00', '2025-10-23 02:14:06.722+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (289, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 171.96, 6268.00, 36.450000, NULL, NULL, '2025-10-23 02:17:26.688+00', '2025-10-23 02:17:26.688+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (290, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 49.99, 1822.00, 36.450000, NULL, NULL, '2025-10-23 02:23:15.468+00', '2025-10-23 02:23:15.468+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (291, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-23 02:32:18.199+00', '2025-10-23 02:32:18.199+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (292, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 171.96, 6268.00, 36.450000, NULL, NULL, '2025-10-23 02:35:23.287+00', '2025-10-23 02:35:23.287+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (293, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 211.96, 7726.00, 36.450000, NULL, NULL, '2025-10-23 02:40:51.744+00', '2025-10-23 02:40:51.744+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (294, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 79.98, 2915.00, 36.450000, NULL, NULL, '2025-10-23 02:45:22.88+00', '2025-10-23 02:45:22.88+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (295, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 98.97, 3607.00, 36.450000, NULL, NULL, '2025-10-23 02:53:21.25+00', '2025-10-23 02:53:21.25+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (296, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 89.97, 3279.00, 36.450000, NULL, NULL, '2025-10-23 02:59:27.828+00', '2025-10-23 02:59:27.828+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (297, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 206.97, 7544.00, 36.450000, NULL, NULL, '2025-10-23 03:04:49.147+00', '2025-10-23 03:04:49.147+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (298, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-23 03:09:17.821+00', '2025-10-23 03:09:17.821+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (299, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-23 03:13:23.981+00', '2025-10-23 03:13:23.981+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (300, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 137.97, 5029.00, 36.450000, NULL, NULL, '2025-10-23 10:41:23.021+00', '2025-10-23 10:41:23.021+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (301, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 164.95, 6012.00, 36.450000, NULL, NULL, '2025-10-23 10:44:10.919+00', '2025-10-23 10:44:10.919+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (302, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 116.97, 4264.00, 36.450000, NULL, NULL, '2025-10-23 10:45:13.254+00', '2025-10-23 10:45:13.254+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (303, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 91.98, 3353.00, 36.450000, NULL, NULL, '2025-10-23 10:48:22.097+00', '2025-10-23 10:48:22.097+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (304, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-23 10:57:36.834+00', '2025-10-23 10:57:36.834+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (305, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 364.95, 13302.00, 36.450000, NULL, NULL, '2025-10-23 11:06:16.261+00', '2025-10-23 11:06:16.261+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (306, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-23 11:14:19.874+00', '2025-10-23 11:14:19.874+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (307, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-23 11:18:49.911+00', '2025-10-23 11:18:49.911+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (308, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 128.97, 4701.00, 36.450000, NULL, NULL, '2025-10-23 11:25:17.305+00', '2025-10-23 11:25:17.305+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (309, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-23 11:33:44.766+00', '2025-10-23 11:33:44.766+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (310, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 59.98, 2186.00, 36.450000, NULL, NULL, '2025-10-23 11:38:42.328+00', '2025-10-23 11:38:42.328+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (311, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 116.97, 4264.00, 36.450000, NULL, NULL, '2025-10-23 11:48:14.889+00', '2025-10-23 11:48:14.889+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (312, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-23 11:56:09.596+00', '2025-10-23 11:56:09.596+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (313, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-23 11:59:55.963+00', '2025-10-23 11:59:55.963+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (314, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-23 12:02:43.409+00', '2025-10-23 12:02:43.409+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (315, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 137.97, 5029.00, 36.450000, NULL, NULL, '2025-10-23 12:08:55.713+00', '2025-10-23 12:08:55.713+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (316, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-23 12:13:44.281+00', '2025-10-23 12:13:44.281+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (317, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-23 12:16:29.211+00', '2025-10-23 12:16:29.211+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (318, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.96, 7289.00, 36.450000, NULL, NULL, '2025-10-23 12:19:00.914+00', '2025-10-23 12:19:00.914+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (319, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 42.99, 1567.00, 36.450000, NULL, NULL, '2025-10-23 12:26:53.572+00', '2025-10-23 12:26:53.572+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (320, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 59.98, 2186.00, 36.450000, NULL, NULL, '2025-10-23 12:32:30.479+00', '2025-10-23 12:32:30.479+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (321, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-23 12:41:45.4+00', '2025-10-23 12:41:45.4+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (322, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-23 12:47:16.567+00', '2025-10-23 12:47:16.567+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (323, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 77.98, 2842.00, 36.450000, NULL, NULL, '2025-10-23 12:56:06.29+00', '2025-10-23 12:56:06.29+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (324, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 38.99, 1421.00, 36.450000, NULL, NULL, '2025-10-23 13:00:50.553+00', '2025-10-23 13:00:50.553+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (325, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-23 13:04:48.667+00', '2025-10-23 13:04:48.667+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (326, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 195.96, 7143.00, 36.450000, NULL, NULL, '2025-10-23 13:08:25.299+00', '2025-10-23 13:08:25.299+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (327, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-23 13:15:04.746+00', '2025-10-23 13:15:04.746+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (328, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-23 13:17:33.561+00', '2025-10-23 13:17:33.561+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (329, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-23 13:22:44.14+00', '2025-10-23 13:22:44.14+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (330, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-23 13:27:28.813+00', '2025-10-23 13:27:28.813+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (331, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-23 13:36:47.072+00', '2025-10-23 13:36:47.072+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (332, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-23 13:40:58.026+00', '2025-10-23 13:40:58.026+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (333, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 98.97, 3607.00, 36.450000, NULL, NULL, '2025-10-23 13:45:15.216+00', '2025-10-23 13:45:15.216+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (334, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 59.98, 2186.00, 36.450000, NULL, NULL, '2025-10-23 13:55:15.059+00', '2025-10-23 13:55:15.059+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (335, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 187.96, 6851.00, 36.450000, NULL, NULL, '2025-10-23 14:04:55.99+00', '2025-10-23 14:04:55.99+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (336, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 38.99, 1421.00, 36.450000, NULL, NULL, '2025-10-23 14:13:02.291+00', '2025-10-23 14:13:02.291+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (337, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-23 14:14:18.855+00', '2025-10-23 14:14:18.855+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (338, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 489.90, 17857.00, 36.450000, NULL, NULL, '2025-10-23 14:21:04.638+00', '2025-10-23 14:21:04.638+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (339, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 137.97, 5029.00, 36.450000, NULL, NULL, '2025-10-23 14:30:53.887+00', '2025-10-23 14:30:53.887+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (340, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.95, 7288.00, 36.450000, NULL, NULL, '2025-10-23 14:40:09.285+00', '2025-10-23 14:40:09.285+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (341, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 32.99, 1202.00, 36.450000, NULL, NULL, '2025-10-23 14:46:46.981+00', '2025-10-23 14:46:46.981+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (342, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.95, 7288.00, 36.450000, NULL, NULL, '2025-10-23 14:53:19.711+00', '2025-10-23 14:53:19.711+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (343, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 249.95, 9111.00, 36.450000, NULL, NULL, '2025-10-23 15:02:52.778+00', '2025-10-23 15:02:52.778+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (344, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-23 15:05:23.245+00', '2025-10-23 15:05:23.245+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (345, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 52.99, 1931.00, 36.450000, NULL, NULL, '2025-10-23 15:09:43.895+00', '2025-10-23 15:09:43.895+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (346, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-23 15:11:21.657+00', '2025-10-23 15:11:21.657+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (347, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 77.98, 2842.00, 36.450000, NULL, NULL, '2025-10-23 15:14:59.767+00', '2025-10-23 15:14:59.767+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (348, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 137.97, 5029.00, 36.450000, NULL, NULL, '2025-10-23 15:21:43.206+00', '2025-10-23 15:21:43.206+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (349, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-23 15:27:59.274+00', '2025-10-23 15:27:59.274+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (350, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 137.98, 5029.00, 36.450000, NULL, NULL, '2025-10-23 15:33:14.424+00', '2025-10-23 15:33:14.424+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (351, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 211.96, 7726.00, 36.450000, NULL, NULL, '2025-10-23 15:38:27.06+00', '2025-10-23 15:38:27.06+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (352, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 145.98, 5321.00, 36.450000, NULL, NULL, '2025-10-23 15:40:53.256+00', '2025-10-23 15:40:53.256+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (353, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-23 15:46:00.128+00', '2025-10-23 15:46:00.128+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (354, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 52.99, 1931.00, 36.450000, NULL, NULL, '2025-10-23 15:51:22.429+00', '2025-10-23 15:51:22.429+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (355, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 89.97, 3279.00, 36.450000, NULL, NULL, '2025-10-23 15:58:02.191+00', '2025-10-23 15:58:02.191+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (356, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.95, 7288.00, 36.450000, NULL, NULL, '2025-10-23 16:00:05.356+00', '2025-10-23 16:00:05.356+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (357, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-23 16:03:50.607+00', '2025-10-23 16:03:50.607+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (358, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-23 16:08:45.367+00', '2025-10-23 16:08:45.367+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (359, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 137.98, 5029.00, 36.450000, NULL, NULL, '2025-10-23 16:18:16.549+00', '2025-10-23 16:18:16.549+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (360, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 1365.00, 49754.00, 36.450000, NULL, NULL, '2025-10-23 16:25:23.243+00', '2025-10-23 16:25:23.243+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (361, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 214.95, 7835.00, 36.450000, NULL, NULL, '2025-10-23 16:28:16.4+00', '2025-10-23 16:28:16.4+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (362, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-23 16:30:09.434+00', '2025-10-23 16:30:09.434+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (363, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-23 16:38:42.489+00', '2025-10-23 16:38:42.489+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (364, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-23 16:40:13.507+00', '2025-10-23 16:40:13.507+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (365, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-23 16:45:36.577+00', '2025-10-23 16:45:36.577+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (366, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-23 16:55:24.63+00', '2025-10-23 16:55:24.63+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (367, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 1820.00, 66339.00, 36.450000, NULL, NULL, '2025-10-23 17:00:08.882+00', '2025-10-23 17:00:08.882+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (368, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-23 17:01:44.014+00', '2025-10-23 17:01:44.014+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (369, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-23 17:04:56.35+00', '2025-10-23 17:04:56.35+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (370, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 211.96, 7726.00, 36.450000, NULL, NULL, '2025-10-23 17:07:46.542+00', '2025-10-23 17:07:46.542+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (371, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 38.99, 1421.00, 36.450000, NULL, NULL, '2025-10-23 17:08:58.744+00', '2025-10-23 17:08:58.744+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (372, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 131.96, 4810.00, 36.450000, NULL, NULL, '2025-10-23 17:15:10.786+00', '2025-10-23 17:15:10.786+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (373, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 145.98, 5321.00, 36.450000, NULL, NULL, '2025-10-23 17:24:18.606+00', '2025-10-23 17:24:18.606+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (374, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-23 17:30:14.61+00', '2025-10-23 17:30:14.61+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (375, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 164.95, 6012.00, 36.450000, NULL, NULL, '2025-10-23 17:33:44.61+00', '2025-10-23 17:33:44.61+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (376, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 234.95, 8564.00, 36.450000, NULL, NULL, '2025-10-23 17:41:58.969+00', '2025-10-23 17:41:58.969+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (377, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-23 17:51:03.908+00', '2025-10-23 17:51:03.908+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (378, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 211.96, 7726.00, 36.450000, NULL, NULL, '2025-10-23 17:55:31.979+00', '2025-10-23 17:55:31.979+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (379, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-23 17:58:33.644+00', '2025-10-23 17:58:33.644+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (380, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 49.99, 1822.00, 36.450000, NULL, NULL, '2025-10-23 18:05:17.666+00', '2025-10-23 18:05:17.666+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (381, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-23 18:14:44.529+00', '2025-10-23 18:14:44.529+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (382, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 77.97, 2842.00, 36.450000, NULL, NULL, '2025-10-23 18:19:54.015+00', '2025-10-23 18:19:54.015+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (383, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-23 18:24:11.151+00', '2025-10-23 18:24:11.151+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (384, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 131.96, 4810.00, 36.450000, NULL, NULL, '2025-10-23 18:27:30.117+00', '2025-10-23 18:27:30.117+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (385, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 128.97, 4701.00, 36.450000, NULL, NULL, '2025-10-23 18:34:25.166+00', '2025-10-23 18:34:25.166+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (386, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 211.96, 7726.00, 36.450000, NULL, NULL, '2025-10-23 18:41:26.23+00', '2025-10-23 18:41:26.23+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (387, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 137.98, 5029.00, 36.450000, NULL, NULL, '2025-10-23 18:45:38.627+00', '2025-10-23 18:45:38.627+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (388, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 167.97, 6123.00, 36.450000, NULL, NULL, '2025-10-23 18:52:38.189+00', '2025-10-23 18:52:38.189+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (389, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 46.99, 1713.00, 36.450000, NULL, NULL, '2025-10-23 18:54:46.05+00', '2025-10-23 18:54:46.05+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (390, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-23 18:56:11.546+00', '2025-10-23 18:56:11.546+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (391, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.95, 7288.00, 36.450000, NULL, NULL, '2025-10-23 19:02:45.491+00', '2025-10-23 19:02:45.491+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (392, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 97.98, 3571.00, 36.450000, NULL, NULL, '2025-10-23 19:12:37.524+00', '2025-10-23 19:12:37.524+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (393, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 129.95, 4737.00, 36.450000, NULL, NULL, '2025-10-23 19:19:36.584+00', '2025-10-23 19:19:36.584+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (394, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 25.99, 947.00, 36.450000, NULL, NULL, '2025-10-23 19:27:38.077+00', '2025-10-23 19:27:38.077+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (395, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-23 19:29:33.343+00', '2025-10-23 19:29:33.343+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (396, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-23 19:36:01.155+00', '2025-10-23 19:36:01.155+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (397, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 214.95, 7835.00, 36.450000, NULL, NULL, '2025-10-23 19:41:39.523+00', '2025-10-23 19:41:39.523+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (398, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-23 19:46:48.266+00', '2025-10-23 19:46:48.266+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (399, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-23 19:48:47.254+00', '2025-10-23 19:48:47.254+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (400, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 79.98, 2915.00, 36.450000, NULL, NULL, '2025-10-23 19:56:56.093+00', '2025-10-23 19:56:56.093+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (401, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 218.97, 7981.00, 36.450000, NULL, NULL, '2025-10-23 20:01:51.217+00', '2025-10-23 20:01:51.217+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (402, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 187.96, 6851.00, 36.450000, NULL, NULL, '2025-10-23 20:03:44.811+00', '2025-10-23 20:03:44.811+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (403, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 51.98, 1895.00, 36.450000, NULL, NULL, '2025-10-23 20:12:07.167+00', '2025-10-23 20:12:07.167+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (404, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 29.99, 1093.00, 36.450000, NULL, NULL, '2025-10-23 20:16:29.377+00', '2025-10-23 20:16:29.377+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (405, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 103.96, 3789.00, 36.450000, NULL, NULL, '2025-10-23 20:20:29.271+00', '2025-10-23 20:20:29.271+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (406, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-23 20:26:10.665+00', '2025-10-23 20:26:10.665+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (407, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 249.95, 9111.00, 36.450000, NULL, NULL, '2025-10-23 20:31:28.144+00', '2025-10-23 20:31:28.144+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (408, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 2275.00, 82924.00, 36.450000, NULL, NULL, '2025-10-23 20:34:47.743+00', '2025-10-23 20:34:47.743+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (409, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-23 20:42:39.568+00', '2025-10-23 20:42:39.568+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (410, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-23 20:44:19.109+00', '2025-10-23 20:44:19.109+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (411, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 218.97, 7981.00, 36.450000, NULL, NULL, '2025-10-23 20:48:11.912+00', '2025-10-23 20:48:11.912+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (412, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 145.98, 5321.00, 36.450000, NULL, NULL, '2025-10-23 20:51:58.494+00', '2025-10-23 20:51:58.494+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (413, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 99.98, 3644.00, 36.450000, NULL, NULL, '2025-10-23 20:57:00.845+00', '2025-10-23 20:57:00.845+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (414, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-23 21:04:10.46+00', '2025-10-23 21:04:10.46+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (415, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 399.96, 14579.00, 36.450000, NULL, NULL, '2025-10-23 21:12:44.149+00', '2025-10-23 21:12:44.149+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (416, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 195.96, 7143.00, 36.450000, NULL, NULL, '2025-10-23 21:19:42.781+00', '2025-10-23 21:19:42.781+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (417, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 171.96, 6268.00, 36.450000, NULL, NULL, '2025-10-23 21:22:45.311+00', '2025-10-23 21:22:45.311+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (418, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 199.98, 7289.00, 36.450000, NULL, NULL, '2025-10-23 21:27:31.009+00', '2025-10-23 21:27:31.009+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (419, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 32.99, 1202.00, 36.450000, NULL, NULL, '2025-10-23 21:31:11.319+00', '2025-10-23 21:31:11.319+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (420, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 344.95, 12573.00, 36.450000, NULL, NULL, '2025-10-23 21:33:15.844+00', '2025-10-23 21:33:15.844+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (421, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 214.95, 7835.00, 36.450000, NULL, NULL, '2025-10-23 21:42:25.145+00', '2025-10-23 21:42:25.145+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (422, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 55.99, 2041.00, 36.450000, NULL, NULL, '2025-10-23 21:52:22.473+00', '2025-10-23 21:52:22.473+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (423, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 455.00, 16585.00, 36.450000, NULL, NULL, '2025-10-23 21:57:00.128+00', '2025-10-23 21:57:00.128+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (424, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 910.00, 33170.00, 36.450000, NULL, NULL, '2025-10-23 21:58:31.514+00', '2025-10-23 21:58:31.514+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (425, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 364.95, 13302.00, 36.450000, NULL, NULL, '2025-10-23 22:07:14.564+00', '2025-10-23 22:07:14.564+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (426, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 214.95, 7835.00, 36.450000, NULL, NULL, '2025-10-23 22:09:56.367+00', '2025-10-23 22:09:56.367+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (427, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 32.99, 1202.00, 36.450000, NULL, NULL, '2025-10-23 22:16:06.3+00', '2025-10-23 22:16:06.3+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (428, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 45.99, 1676.00, 36.450000, NULL, NULL, '2025-10-23 22:23:44.471+00', '2025-10-23 22:23:44.471+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (429, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 229.95, 8382.00, 36.450000, NULL, NULL, '2025-10-23 22:29:26.59+00', '2025-10-23 22:29:26.59+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (430, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-23 22:36:45.892+00', '2025-10-23 22:36:45.892+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (431, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 344.95, 12573.00, 36.450000, NULL, NULL, '2025-10-23 22:40:24.42+00', '2025-10-23 22:40:24.42+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (432, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-23 22:44:57.389+00', '2025-10-23 22:44:57.389+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (433, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 910.00, 33170.00, 36.450000, NULL, NULL, '2025-10-23 22:49:28.455+00', '2025-10-23 22:49:28.455+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (434, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 89.97, 3279.00, 36.450000, NULL, NULL, '2025-10-23 22:59:06.474+00', '2025-10-23 22:59:06.474+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (435, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 38.99, 1421.00, 36.450000, NULL, NULL, '2025-10-23 23:02:21.452+00', '2025-10-23 23:02:21.452+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (436, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 77.97, 2842.00, 36.450000, NULL, NULL, '2025-10-23 23:06:37.091+00', '2025-10-23 23:06:37.091+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (437, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 229.95, 8382.00, 36.450000, NULL, NULL, '2025-10-23 23:08:16.73+00', '2025-10-23 23:08:16.73+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (438, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 499.95, 18223.00, 36.450000, NULL, NULL, '2025-10-23 23:09:54.418+00', '2025-10-23 23:09:54.418+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (439, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 46.99, 1713.00, 36.450000, NULL, NULL, '2025-10-23 23:14:00.69+00', '2025-10-23 23:14:00.69+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (440, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-23 23:16:26.244+00', '2025-10-23 23:16:26.244+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (441, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 99.99, 3645.00, 36.450000, NULL, NULL, '2025-10-23 23:22:21.17+00', '2025-10-23 23:22:21.17+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (442, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 51.98, 1895.00, 36.450000, NULL, NULL, '2025-10-23 23:25:53.024+00', '2025-10-23 23:25:53.024+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (443, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 103.96, 3789.00, 36.450000, NULL, NULL, '2025-10-23 23:30:11.56+00', '2025-10-23 23:30:11.56+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (444, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-23 23:39:20.216+00', '2025-10-23 23:39:20.216+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (445, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 391.92, 14285.00, 36.450000, NULL, NULL, '2025-10-23 23:42:29.138+00', '2025-10-23 23:42:29.138+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (446, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 77.97, 2842.00, 36.450000, NULL, NULL, '2025-10-23 23:45:09.999+00', '2025-10-23 23:45:09.999+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (447, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 455.00, 16585.00, 36.450000, NULL, NULL, '2025-10-23 23:46:41.846+00', '2025-10-23 23:46:41.846+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (448, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-23', NULL, NULL, 'pending', 299.97, 10934.00, 36.450000, NULL, NULL, '2025-10-23 23:56:01.104+00', '2025-10-23 23:56:01.104+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (449, NULL, 'customer@example.com', 'Random Customer', '+58 412-123-4567', 'Test Address, Caracas', 'N/A', 'N/A', NULL, '2025-10-24', NULL, NULL, 'pending', 77.97, 2842.00, 36.450000, NULL, NULL, '2025-10-24 00:05:40.733+00', '2025-10-24 00:05:40.733+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (450, NULL, 'carmen.perez@gmail.com', 'Carmen Pérez', '+58 416-476-4788', 'Av. Libertador, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '09:00-12:00', 'Llamar al llegar', 'pending', 1664.97, 66599.00, 40.000000, 'Pedido de prueba', NULL, '2025-11-03 13:09:16.081533+00', '2025-11-03 13:09:16.081533+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (451, NULL, 'carmen.morales@hotmail.com', 'Carmen Morales', '+58 412-946-2024', 'Av. Libertador, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '09:00-12:00', 'Llamar al llegar', 'pending', 168.95, 6758.00, 40.000000, 'Pedido de prueba', NULL, '2025-11-03 13:09:54.703952+00', '2025-11-03 13:09:54.703952+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (452, NULL, 'carmen.flores@gmail.com', 'Carmen Flores', '+58 414-437-6094', 'Calle Principal de Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-04', '09:00-12:00', 'Llamar al llegar', 'pending', 681.89, 27276.00, 40.000000, 'Pedido de prueba', NULL, '2025-11-03 13:11:13.787906+00', '2025-11-03 13:11:13.787906+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (453, NULL, 'rafael.garcia@hotmail.com', 'Rafael García', '+58 426-487-0209', 'Calle Principal de Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '09:00-12:00', 'Llamar al llegar', 'pending', 97.98, 3919.00, 40.000000, 'Pedido de prueba', NULL, '2025-11-03 13:12:12.315171+00', '2025-11-03 13:12:12.315171+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (454, NULL, 'sofia.morales@yahoo.com', 'Sofía Morales', '+58 424-770-8141', 'Av. Libertador, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-11-07', '09:00-12:00', 'Llamar al llegar', 'pending', 1073.85, 42954.00, 40.000000, 'Pedido de prueba', NULL, '2025-11-03 13:12:40.418356+00', '2025-11-03 13:12:40.418356+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (455, NULL, 'rafael.torres@gmail.com', 'Rafael Torres', '+58 424-654-7294', 'Urbanización Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '09:00-12:00', 'Llamar al llegar', 'pending', 942.99, 37720.00, 40.000000, 'Pedido de prueba', NULL, '2025-11-03 13:13:08.509969+00', '2025-11-03 13:13:08.509969+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (456, NULL, 'jose.fernandez@gmail.com', 'José Fernández', '+58 416-157-3145', 'Calle Principal de Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-04', '09:00-12:00', 'Llamar al llegar', 'pending', 386.94, 15478.00, 40.000000, 'Pedido de prueba', NULL, '2025-11-03 13:13:26.238569+00', '2025-11-03 13:13:26.238569+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (457, NULL, 'pedro.flores@gmail.com', 'Pedro Flores', '+58 414-855-2928', 'Urbanización Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '09:00-12:00', 'Llamar al llegar', 'pending', 318.96, 12758.00, 40.000000, 'Pedido de prueba', NULL, '2025-11-03 13:13:47.057753+00', '2025-11-03 13:13:47.057753+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (459, NULL, 'maria.sanchez@gmail.com', 'María Sánchez', '+58 412-678-4917', 'Av. Libertador, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '09:00-12:00', 'Llamar al llegar', 'pending', 177.96, 7118.00, 40.000000, 'Pedido de prueba', NULL, '2025-11-03 13:14:26.465897+00', '2025-11-03 13:14:26.465897+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (460, NULL, 'rosa.perez@yahoo.com', 'Rosa Pérez', '+58 414-511-8075', 'Av. Libertador, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '09:00-12:00', 'Llamar al llegar', 'verified', 137.98, 5519.00, 40.000000, 'Pedido de prueba', NULL, '2025-11-03 13:14:45.767524+00', '2025-11-03 13:14:46.732524+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (461, NULL, 'jose.perez@hotmail.com', 'José Pérez', '+58 424-745-4448', 'Av. Libertador, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '09:00-12:00', 'Llamar al llegar', 'verified', 140.97, 5639.00, 40.000000, 'Pedido de prueba', NULL, '2025-11-03 13:14:55.626294+00', '2025-11-03 13:14:56.290477+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (462, NULL, 'antonio.ramirez@hotmail.com', 'Antonio Ramírez', '+58 424-464-2650', 'Av. Libertador, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '09:00-12:00', 'Llamar al llegar', 'verified', 325.96, 13038.00, 40.000000, 'Pedido de prueba', NULL, '2025-11-03 13:16:06.297955+00', '2025-11-03 13:16:07.136151+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (463, NULL, 'jose.garcia@yahoo.com', 'José García', '+58 426-665-1099', 'Calle Principal de Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-04', '09:00-12:00', 'Llamar al llegar', 'verified', 1963.93, 78557.00, 40.000000, 'Pedido de prueba', NULL, '2025-11-03 13:26:21.426553+00', '2025-11-03 13:26:22.390603+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (464, NULL, 'maria.torres@yahoo.com', 'María Torres', '+58 424-936-5313', 'Calle Principal de Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-06', '09:00-12:00', 'Llamar al llegar', 'verified', 503.92, 20157.00, 40.000000, 'Pedido de prueba', NULL, '2025-11-03 13:38:10.68386+00', '2025-11-03 13:38:11.582182+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (465, NULL, 'miguel.martinez@yahoo.com', 'Miguel Martínez', '+58 426-709-5195', 'Urbanización Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-06', '09:00-12:00', 'Llamar al llegar', 'verified', 833.87, 33355.00, 40.000000, 'Pedido de prueba', NULL, '2025-11-03 13:40:26.245999+00', '2025-11-03 13:40:26.996236+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (466, NULL, 'pedro_salazar@yahoo.com', 'Pedro Salazar', '+58 426-957-9038', 'Centro Comercial San Ignacio, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '09:00-12:00', 'Torre A, piso 5', 'verified', 280.95, 11238.00, 40.000000, 'San Valentín', NULL, '2025-11-03 13:47:19.732109+00', '2025-11-03 13:47:20.515944+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (467, NULL, 'fernando.castro@hotmail.com', 'Fernando Castro', '+58 426-854-6047', 'Urbanización Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '12:00-15:00', 'Timbre 3', 'verified', 579.91, 23196.00, 40.000000, 'Ocasión especial', NULL, '2025-11-03 13:49:51.109368+00', '2025-11-03 13:49:52.192598+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (468, NULL, 'camila_jimenez@gmail.com', 'Camila Jiménez', '+58 426-810-5801', 'Calle Paris, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '09:00-12:00', 'Torre A, piso 5', 'verified', 299.97, 11999.00, 40.000000, 'Ocasión especial', NULL, '2025-11-03 13:51:24.67782+00', '2025-11-03 13:51:25.467269+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (469, NULL, 'daniela43@yahoo.com', 'Daniela Mendoza', '+58 416-551-2748', 'Urbanización Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '12:00-15:00', '', 'verified', 331.94, 13278.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 13:55:49.011443+00', '2025-11-03 13:55:49.77768+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (470, NULL, 'valentina22@outlook.com', 'Valentina Silva', '+58 414-654-4438', 'Av. Francisco de Miranda, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '15:00-18:00', 'Torre A, piso 5', 'verified', 363.92, 14557.00, 40.000000, 'San Valentín', NULL, '2025-11-03 14:00:42.115933+00', '2025-11-03 14:00:43.150748+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (471, NULL, 'elena83@hotmail.com', 'Elena Romero', '+58 414-466-2194', 'Calle Los Samanes, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '15:00-18:00', 'Torre A, piso 5', 'verified', 630.95, 25238.00, 40.000000, 'San Valentín', NULL, '2025-11-03 14:02:52.967259+00', '2025-11-03 14:02:53.923392+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (472, NULL, 'antonio_silva@outlook.com', 'Antonio Silva', '+58 416-318-2053', 'Calle Los Samanes, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '09:00-12:00', 'Dejar con portero', 'verified', 725.91, 29036.00, 40.000000, '', NULL, '2025-11-03 14:03:59.238631+00', '2025-11-03 14:03:59.853192+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (473, NULL, 'luis_flores@hotmail.com', 'Luis Flores', '+58 424-249-7018', 'Parque Cristal, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-07', '09:00-12:00', 'Apartamento 12B', 'verified', 405.95, 16238.00, 40.000000, '', NULL, '2025-11-03 14:06:40.968061+00', '2025-11-03 14:06:41.632893+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (474, NULL, 'isabel59@gmail.com', 'Isabel Suárez', '+58 414-939-7572', 'Centro Comercial Sambil, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-07', '09:00-12:00', '', 'verified', 97.98, 3919.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-03 14:10:04.992592+00', '2025-11-03 14:10:05.876152+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (475, NULL, 'isabella.vargas@yahoo.com', 'Isabella Vargas', '+58 416-966-9442', 'Av. Abraham Lincoln, Sabana Grande, Caracas', 'N/A', 'N/A', NULL, '2025-11-07', '09:00-12:00', 'Torre A, piso 5', 'verified', 485.94, 19438.00, 40.000000, '', NULL, '2025-11-03 14:13:46.634234+00', '2025-11-03 14:13:47.37851+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (476, NULL, 'victoria24@gmail.com', 'Victoria Morales', '+58 412-508-2094', 'Calle Madrid, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '09:00-12:00', 'Timbre 3', 'verified', 615.92, 24637.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 14:15:21.701404+00', '2025-11-03 14:15:22.9987+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (477, NULL, 'ricardogarcia@outlook.com', 'Ricardo García', '+58 412-715-8477', 'Los Dos Caminos, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '09:00-12:00', 'Dejar con portero', 'verified', 1428.86, 57154.00, 40.000000, 'Ocasión especial', NULL, '2025-11-03 14:17:56.570978+00', '2025-11-03 14:17:57.255599+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (478, NULL, 'andres58@yahoo.com', 'Andrés Álvarez', '+58 426-608-9343', 'La California Norte, Caracas', 'N/A', 'N/A', NULL, '2025-11-04', '12:00-15:00', 'Dejar con portero', 'verified', 397.95, 15918.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 14:20:19.514619+00', '2025-11-03 14:20:20.33269+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (479, NULL, 'fernando.ramos@yahoo.com', 'Fernando Ramos', '+58 424-859-5153', 'Urbanización Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-04', '15:00-18:00', 'Timbre 3', 'verified', 149.97, 5999.00, 40.000000, '', NULL, '2025-11-03 14:23:24.058341+00', '2025-11-03 14:23:24.975918+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (480, NULL, 'elenaramos@yahoo.com', 'Elena Ramos', '+58 416-683-2624', 'Residencias El Rosal, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '12:00-15:00', 'Dejar con portero', 'verified', 228.95, 9158.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-03 14:26:14.161939+00', '2025-11-03 14:26:15.153066+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (481, NULL, 'isabel69@gmail.com', 'Isabel Rodríguez', '+58 416-756-9433', 'Urbanización La Florida, Caracas', 'N/A', 'N/A', NULL, '2025-11-04', '12:00-15:00', 'Llamar al llegar', 'verified', 199.98, 7999.00, 40.000000, '', NULL, '2025-11-03 14:30:24.811923+00', '2025-11-03 14:30:25.550563+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (482, NULL, 'valentina55@hotmail.com', 'Valentina Morales', '+58 414-718-1069', 'Av. Principal de La Castellana, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '12:00-15:00', 'Timbre 3', 'verified', 116.97, 4679.00, 40.000000, 'Ocasión especial', NULL, '2025-11-03 14:34:20.845142+00', '2025-11-03 14:34:21.82747+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (483, NULL, 'javier19@gmail.com', 'Javier Hernández', '+58 414-559-6549', 'Av. Orinoco, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '15:00-18:00', 'Llamar al llegar', 'verified', 446.92, 17877.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 14:37:53.362731+00', '2025-11-03 14:37:54.254709+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (484, NULL, 'eduardo.medina@hotmail.com', 'Eduardo Medina', '+58 424-830-2203', 'Calle Paris, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-06', '15:00-18:00', 'Dejar con portero', 'verified', 725.90, 29036.00, 40.000000, 'San Valentín', NULL, '2025-11-03 14:42:09.78662+00', '2025-11-03 14:42:10.445724+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (485, NULL, 'elena_castro@hotmail.com', 'Elena Castro', '+58 416-235-1967', 'Calle Madrid, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '09:00-12:00', '', 'verified', 1059.88, 42395.00, 40.000000, 'Día de la madre', NULL, '2025-11-03 14:43:24.605738+00', '2025-11-03 14:43:25.47361+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (486, NULL, 'pedro.gonzalez@gmail.com', 'Pedro González', '+58 414-895-1061', 'Av. Andrés Bello, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-07', '09:00-12:00', 'Torre A, piso 5', 'verified', 489.93, 19597.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 14:48:15.659507+00', '2025-11-03 14:48:17.162048+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (488, NULL, 'danielatorres@outlook.com', 'Daniela Torres', '+58 426-580-0167', 'Av. Orinoco, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '12:00-15:00', 'Dejar con portero', 'verified', 232.97, 9319.00, 40.000000, 'San Valentín', NULL, '2025-11-03 14:57:08.509194+00', '2025-11-03 14:57:09.161759+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (489, NULL, 'mariana28@hotmail.com', 'Mariana Álvarez', '+58 414-916-8110', 'Av. Principal de La Castellana, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '09:00-12:00', '', 'verified', 1312.95, 52518.00, 40.000000, '', NULL, '2025-11-03 14:59:27.810084+00', '2025-11-03 14:59:29.121521+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (490, NULL, 'gabriela45@gmail.com', 'Gabriela López', '+58 414-514-7498', 'Centro Comercial Sambil, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '09:00-12:00', 'Torre A, piso 5', 'verified', 465.94, 18638.00, 40.000000, 'San Valentín', NULL, '2025-11-03 15:02:57.2583+00', '2025-11-03 15:02:58.051751+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (491, NULL, 'valentina.morales@yahoo.com', 'Valentina Morales', '+58 424-713-2853', 'Parque Cristal, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '12:00-15:00', 'Torre A, piso 5', 'verified', 218.97, 8759.00, 40.000000, 'Ocasión especial', NULL, '2025-11-03 15:07:47.18228+00', '2025-11-03 15:07:47.999246+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (492, NULL, 'sofia87@yahoo.com', 'Sofía Ramos', '+58 416-200-0738', 'Av. Luis Roche, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '12:00-15:00', '', 'verified', 139.98, 5599.00, 40.000000, '', NULL, '2025-11-03 15:08:53.290023+00', '2025-11-03 15:08:54.046151+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (493, NULL, 'jorge.alvarez@outlook.com', 'Jorge Álvarez', '+58 424-784-5382', 'Av. Francisco de Miranda, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-06', '09:00-12:00', 'Torre A, piso 5', 'verified', 99.99, 4000.00, 40.000000, 'Ocasión especial', NULL, '2025-11-03 15:10:44.961994+00', '2025-11-03 15:10:45.705131+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (494, NULL, 'pedro45@yahoo.com', 'Pedro González', '+58 414-970-5458', 'Urbanización La Florida, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '15:00-18:00', 'Torre A, piso 5', 'verified', 1412.92, 56517.00, 40.000000, '', NULL, '2025-11-03 15:13:55.307958+00', '2025-11-03 15:13:56.081154+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (495, NULL, 'eduardosilva@hotmail.com', 'Eduardo Silva', '+58 414-823-1295', 'Av. Francisco de Miranda, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '12:00-15:00', 'Dejar con portero', 'verified', 849.90, 33996.00, 40.000000, 'San Valentín', NULL, '2025-11-03 15:15:18.525793+00', '2025-11-03 15:15:19.576988+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (496, NULL, 'ricardosilva@yahoo.com', 'Ricardo Silva', '+58 416-182-8676', 'Parque Cristal, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-06', '09:00-12:00', 'Dejar con portero', 'verified', 491.94, 19678.00, 40.000000, 'Ocasión especial', NULL, '2025-11-03 15:16:38.988634+00', '2025-11-03 15:16:39.763042+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (497, NULL, 'pauladiaz@outlook.com', 'Paula Díaz', '+58 414-948-9455', 'Los Dos Caminos, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '09:00-12:00', '', 'verified', 665.91, 26636.00, 40.000000, '', NULL, '2025-11-03 15:21:04.762539+00', '2025-11-03 15:21:05.607561+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (498, NULL, 'luisalvarez@yahoo.com', 'Luis Álvarez', '+58 426-261-9007', 'Av. Libertador, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '15:00-18:00', 'Dejar con portero', 'verified', 99.99, 4000.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 15:24:26.846082+00', '2025-11-03 15:24:27.695377+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (499, NULL, 'francisco_diaz@outlook.com', 'Francisco Díaz', '+58 412-313-8457', 'Av. Libertador, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-11-04', '15:00-18:00', 'Dejar con portero', 'verified', 1203.96, 48158.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 15:27:14.377227+00', '2025-11-03 15:27:15.031999+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (500, NULL, 'maria_gonzalez@hotmail.com', 'María González', '+58 412-752-7785', 'Urbanización Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '12:00-15:00', 'Llamar al llegar', 'verified', 743.94, 29758.00, 40.000000, 'San Valentín', NULL, '2025-11-03 15:32:09.880601+00', '2025-11-03 15:32:10.533914+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (501, NULL, 'diego.gutierrez@yahoo.com', 'Diego Gutiérrez', '+58 412-768-3978', 'Calle Los Samanes, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-04', '09:00-12:00', 'Apartamento 12B', 'verified', 858.85, 34354.00, 40.000000, 'Ocasión especial', NULL, '2025-11-03 15:34:09.745753+00', '2025-11-03 15:34:10.550677+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (502, NULL, 'jose_jimenez@gmail.com', 'José Jiménez', '+58 426-740-8554', 'Av. Principal de La Castellana, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '15:00-18:00', 'Dejar con portero', 'verified', 281.95, 11278.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 15:39:00.60717+00', '2025-11-03 15:39:01.390684+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (503, NULL, 'sofia.hernandez@hotmail.com', 'Sofía Hernández', '+58 412-877-4619', 'Av. Francisco de Miranda, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '09:00-12:00', 'Llamar al llegar', 'verified', 377.95, 15118.00, 40.000000, 'San Valentín', NULL, '2025-11-03 15:40:24.115366+00', '2025-11-03 15:40:25.06939+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (504, NULL, 'carmenalvarez@yahoo.com', 'Carmen Álvarez', '+58 416-921-0448', 'Urbanización La Florida, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '09:00-12:00', 'Apartamento 12B', 'verified', 434.93, 17397.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 15:44:28.577905+00', '2025-11-03 15:44:29.601661+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (505, NULL, 'andres_gonzalez@yahoo.com', 'Andrés González', '+58 424-862-4954', 'Av. Luis Roche, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '12:00-15:00', 'Dejar con portero', 'verified', 585.93, 23437.00, 40.000000, 'Día de la madre', NULL, '2025-11-03 15:45:42.218946+00', '2025-11-03 15:45:43.043967+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (506, NULL, 'jose.garcia@gmail.com', 'José García', '+58 414-814-2371', 'Residencias El Rosal, Caracas', 'N/A', 'N/A', NULL, '2025-11-07', '09:00-12:00', 'Llamar al llegar', 'verified', 365.95, 14638.00, 40.000000, 'San Valentín', NULL, '2025-11-03 15:47:32.980743+00', '2025-11-03 15:47:33.800199+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (507, NULL, 'valentina_medina@yahoo.com', 'Valentina Medina', '+58 414-744-2609', 'Av. Orinoco, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '12:00-15:00', 'Torre A, piso 5', 'verified', 978.87, 39155.00, 40.000000, 'Ocasión especial', NULL, '2025-11-03 15:52:35.422899+00', '2025-11-03 15:52:36.280684+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (508, NULL, 'carmen71@gmail.com', 'Carmen Medina', '+58 414-998-9484', 'Av. Francisco de Miranda, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '15:00-18:00', '', 'verified', 567.93, 22717.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 15:54:03.486387+00', '2025-11-03 15:54:04.145476+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (509, NULL, 'daniela_rojas@gmail.com', 'Daniela Rojas', '+58 416-477-5608', 'Av. Libertador, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '12:00-15:00', 'Torre A, piso 5', 'verified', 1892.92, 75717.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 15:57:34.523371+00', '2025-11-03 15:57:35.137471+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (510, NULL, 'fernando.torres@gmail.com', 'Fernando Torres', '+58 426-814-1833', 'Calle Principal de Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-04', '12:00-15:00', 'Timbre 3', 'verified', 453.94, 18158.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-03 15:58:51.569406+00', '2025-11-03 15:58:52.629027+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (511, NULL, 'isabella41@hotmail.com', 'Isabella González', '+58 426-631-4356', 'Av. Francisco de Miranda, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-07', '12:00-15:00', 'Timbre 3', 'verified', 199.98, 7999.00, 40.000000, 'San Valentín', NULL, '2025-11-03 16:02:20.702393+00', '2025-11-03 16:02:21.511486+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (512, NULL, 'jose86@outlook.com', 'José Vásquez', '+58 414-296-7845', 'Urbanización Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-04', '09:00-12:00', 'Dejar con portero', 'verified', 1682.95, 67318.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-03 16:05:22.78053+00', '2025-11-03 16:05:23.458567+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (513, NULL, 'sofia37@yahoo.com', 'Sofía González', '+58 412-531-4497', 'Calle Madrid, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '12:00-15:00', 'Torre A, piso 5', 'verified', 65.98, 2639.00, 40.000000, 'Ocasión especial', NULL, '2025-11-03 16:08:57.554102+00', '2025-11-03 16:08:58.217774+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (514, NULL, 'carlos_gonzalez@yahoo.com', 'Carlos González', '+58 424-257-1622', 'Av. Andrés Bello, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-06', '12:00-15:00', 'Llamar al llegar', 'verified', 526.89, 21076.00, 40.000000, 'San Valentín', NULL, '2025-11-03 16:12:21.990903+00', '2025-11-03 16:12:22.93043+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (515, NULL, 'rafael.rojas@yahoo.com', 'Rafael Rojas', '+58 412-514-0806', 'La California Norte, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '09:00-12:00', 'Apartamento 12B', 'verified', 438.92, 17557.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-03 16:15:01.548115+00', '2025-11-03 16:15:02.353046+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (517, NULL, 'victoriajimenez@gmail.com', 'Victoria Jiménez', '+58 414-875-4731', 'Calle Madrid, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '12:00-15:00', 'Dejar con portero', 'verified', 337.94, 13518.00, 40.000000, 'San Valentín', NULL, '2025-11-03 16:21:15.422336+00', '2025-11-03 16:21:16.261552+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (518, NULL, 'carmenalvarez@gmail.com', 'Carmen Álvarez', '+58 416-184-8629', 'Av. Andrés Bello, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '09:00-12:00', 'Dejar con portero', 'verified', 857.87, 34315.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 16:23:33.167335+00', '2025-11-03 16:23:33.955318+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (519, NULL, 'pedro_alvarez@yahoo.com', 'Pedro Álvarez', '+58 414-241-1198', 'Urbanización La Florida, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '09:00-12:00', 'Llamar al llegar', 'verified', 435.90, 17436.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 16:27:07.40414+00', '2025-11-03 16:27:08.079744+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (520, NULL, 'francisco_vargas@yahoo.com', 'Francisco Vargas', '+58 426-824-2299', 'Centro Comercial San Ignacio, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '12:00-15:00', '', 'verified', 222.95, 8918.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-03 16:29:11.759443+00', '2025-11-03 16:29:12.68891+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (521, NULL, 'jose48@hotmail.com', 'José Ortiz', '+58 416-669-4237', 'Av. Principal de La Castellana, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '09:00-12:00', 'Dejar con portero', 'verified', 1728.94, 69158.00, 40.000000, 'Día de la madre', NULL, '2025-11-03 16:33:52.852034+00', '2025-11-03 16:33:54.573197+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (522, NULL, 'jorge19@hotmail.com', 'Jorge Pérez', '+58 414-786-7185', 'Urbanización La Florida, Caracas', 'N/A', 'N/A', NULL, '2025-11-04', '15:00-18:00', 'Llamar al llegar', 'verified', 299.97, 11999.00, 40.000000, 'Día de la madre', NULL, '2025-11-03 16:38:10.770407+00', '2025-11-03 16:38:11.465767+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (523, NULL, 'rosa_garcia@outlook.com', 'Rosa García', '+58 426-153-1387', 'Centro Comercial Sambil, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-07', '15:00-18:00', 'Apartamento 12B', 'verified', 209.96, 8398.00, 40.000000, 'Ocasión especial', NULL, '2025-11-03 16:40:47.645669+00', '2025-11-03 16:40:48.37563+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (524, NULL, 'lucia.ortiz@yahoo.com', 'Lucía Ortiz', '+58 416-698-1246', 'Los Dos Caminos, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '12:00-15:00', '', 'verified', 999.89, 39996.00, 40.000000, 'Ocasión especial', NULL, '2025-11-03 16:45:15.170319+00', '2025-11-03 16:45:15.936099+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (525, NULL, 'diego_fernandez@yahoo.com', 'Diego Fernández', '+58 414-411-2490', 'Residencias El Rosal, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '12:00-15:00', 'Apartamento 12B', 'verified', 199.98, 7999.00, 40.000000, 'Ocasión especial', NULL, '2025-11-03 16:49:51.189001+00', '2025-11-03 16:49:52.034519+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (526, NULL, 'javier.fernandez@yahoo.com', 'Javier Fernández', '+58 414-373-0713', 'Av. Orinoco, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-06', '12:00-15:00', 'Dejar con portero', 'verified', 599.94, 23998.00, 40.000000, 'San Valentín', NULL, '2025-11-03 16:53:48.073029+00', '2025-11-03 16:53:49.085745+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (527, NULL, 'jose_flores@yahoo.com', 'José Flores', '+58 424-569-0418', 'Los Dos Caminos, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '15:00-18:00', '', 'verified', 778.85, 31154.00, 40.000000, '', NULL, '2025-11-03 16:56:47.556983+00', '2025-11-03 16:56:48.498004+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (528, NULL, 'isabella49@outlook.com', 'Isabella Castro', '+58 426-962-2664', 'Calle Paris, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-06', '15:00-18:00', 'Dejar con portero', 'verified', 1049.88, 41995.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-03 16:59:08.505047+00', '2025-11-03 16:59:09.296074+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (529, NULL, 'camilasanchez@gmail.com', 'Camila Sánchez', '+58 426-265-2988', 'Residencias El Rosal, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '15:00-18:00', 'Dejar con portero', 'verified', 625.90, 25036.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 17:03:38.249043+00', '2025-11-03 17:03:39.052839+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (530, NULL, 'rafael.vasquez@gmail.com', 'Rafael Vásquez', '+58 412-455-5351', 'Av. Francisco de Miranda, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-06', '15:00-18:00', '', 'verified', 365.93, 14637.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 17:07:29.771383+00', '2025-11-03 17:07:30.651751+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (531, NULL, 'andrea.sanchez@outlook.com', 'Andrea Sánchez', '+58 426-566-4933', 'Av. Luis Roche, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-11-07', '12:00-15:00', 'Dejar con portero', 'verified', 511.94, 20478.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 17:09:24.151881+00', '2025-11-03 17:09:24.823078+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (532, NULL, 'carmen_lopez@hotmail.com', 'Carmen López', '+58 414-778-7350', 'Centro Comercial Sambil, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-06', '09:00-12:00', 'Llamar al llegar', 'verified', 1492.90, 59716.00, 40.000000, '', NULL, '2025-11-03 17:11:16.852886+00', '2025-11-03 17:11:17.635439+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (533, NULL, 'francisco37@hotmail.com', 'Francisco Vásquez', '+58 414-505-7434', 'Calle Principal de Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '09:00-12:00', 'Timbre 3', 'verified', 299.97, 11999.00, 40.000000, 'Día de la madre', NULL, '2025-11-03 17:12:48.594237+00', '2025-11-03 17:12:49.801976+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (534, NULL, 'mariaperez@hotmail.com', 'María Pérez', '+58 416-949-3964', 'Urbanización Colinas de Bello Monte, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '15:00-18:00', '', 'verified', 499.95, 19998.00, 40.000000, 'San Valentín', NULL, '2025-11-03 17:16:38.918995+00', '2025-11-03 17:16:39.67273+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (535, NULL, 'jorge.ortiz@hotmail.com', 'Jorge Ortiz', '+58 412-284-4493', 'Residencias El Rosal, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '15:00-18:00', 'Timbre 3', 'verified', 155.98, 6239.00, 40.000000, 'Ocasión especial', NULL, '2025-11-03 17:17:56.365153+00', '2025-11-03 17:17:57.319722+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (536, NULL, 'roberto38@hotmail.com', 'Roberto Álvarez', '+58 426-539-4628', 'Av. Orinoco, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '15:00-18:00', 'Timbre 3', 'verified', 1382.95, 55318.00, 40.000000, '', NULL, '2025-11-03 17:19:02.121328+00', '2025-11-03 17:19:02.973896+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (537, NULL, 'andres28@yahoo.com', 'Andrés Ramos', '+58 414-522-2609', 'Urbanización La Florida, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '09:00-12:00', 'Dejar con portero', 'verified', 385.95, 15438.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-03 17:23:56.483973+00', '2025-11-03 17:23:57.518029+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (538, NULL, 'carmen.ramos@outlook.com', 'Carmen Ramos', '+58 416-451-9383', 'Av. Abraham Lincoln, Sabana Grande, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '12:00-15:00', 'Apartamento 12B', 'verified', 216.96, 8678.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 17:26:52.268755+00', '2025-11-03 17:26:53.168599+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (539, NULL, 'jorge53@yahoo.com', 'Jorge Pérez', '+58 416-595-5794', 'Parque Cristal, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '15:00-18:00', 'Llamar al llegar', 'verified', 277.94, 11118.00, 40.000000, 'Ocasión especial', NULL, '2025-11-03 17:31:06.197167+00', '2025-11-03 17:31:06.861506+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (540, NULL, 'laura_lopez@outlook.com', 'Laura López', '+58 424-393-3243', 'Residencias El Rosal, Caracas', 'N/A', 'N/A', NULL, '2025-11-07', '09:00-12:00', 'Torre A, piso 5', 'verified', 696.86, 27874.00, 40.000000, '', NULL, '2025-11-03 17:33:02.708002+00', '2025-11-03 17:33:03.497934+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (541, NULL, 'rafael47@hotmail.com', 'Rafael Jiménez', '+58 412-487-5532', 'Av. Luis Roche, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '09:00-12:00', 'Apartamento 12B', 'verified', 1578.91, 63156.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 17:36:04.653473+00', '2025-11-03 17:36:05.539117+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (542, NULL, 'maria47@gmail.com', 'María Martínez', '+58 412-959-2761', 'Calle Principal de Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '12:00-15:00', '', 'verified', 485.93, 19437.00, 40.000000, '', NULL, '2025-11-03 17:39:42.318181+00', '2025-11-03 17:39:43.094246+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (543, NULL, 'ricardohernandez@hotmail.com', 'Ricardo Hernández', '+58 412-575-1013', 'Calle Madrid, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '09:00-12:00', 'Apartamento 12B', 'verified', 193.97, 7759.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 17:42:17.417994+00', '2025-11-03 17:42:18.228544+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (544, NULL, 'carlos_vasquez@outlook.com', 'Carlos Vásquez', '+58 416-438-5409', 'Calle Paris, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '15:00-18:00', 'Apartamento 12B', 'verified', 644.90, 25796.00, 40.000000, '', NULL, '2025-11-03 17:47:09.502366+00', '2025-11-03 17:47:10.520655+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (545, NULL, 'victoria.lopez@outlook.com', 'Victoria López', '+58 424-835-6859', 'Calle Paris, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-06', '09:00-12:00', 'Apartamento 12B', 'verified', 616.92, 24677.00, 40.000000, 'Día de la madre', NULL, '2025-11-03 17:51:01.542938+00', '2025-11-03 17:51:03.376893+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (546, NULL, 'pedro82@hotmail.com', 'Pedro Vargas', '+58 424-469-5819', 'Calle Madrid, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '09:00-12:00', 'Timbre 3', 'verified', 493.93, 19757.00, 40.000000, 'San Valentín', NULL, '2025-11-03 17:55:54.10975+00', '2025-11-03 17:55:54.850128+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (547, NULL, 'andres.ramos@outlook.com', 'Andrés Ramos', '+58 426-879-0482', 'Los Dos Caminos, Caracas', 'N/A', 'N/A', NULL, '2025-11-06', '09:00-12:00', '', 'verified', 608.91, 24356.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-03 17:59:15.53787+00', '2025-11-03 17:59:16.410987+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (548, NULL, 'gabriela_martinez@gmail.com', 'Gabriela Martínez', '+58 424-953-3084', 'Urbanización La Florida, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '09:00-12:00', 'Apartamento 12B', 'verified', 840.88, 33635.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 18:00:34.24153+00', '2025-11-03 18:00:34.942553+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (549, NULL, 'maria.torres@yahoo.com', 'María Torres', '+58 414-495-0366', 'Av. Principal de La Castellana, Caracas', 'N/A', 'N/A', NULL, '2025-11-06', '15:00-18:00', 'Llamar al llegar', 'verified', 441.92, 17677.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-03 18:04:24.127362+00', '2025-11-03 18:04:25.268064+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (550, NULL, 'andrea33@outlook.com', 'Andrea Gutiérrez', '+58 416-912-1401', 'Calle Los Samanes, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '12:00-15:00', 'Dejar con portero', 'verified', 99.99, 4000.00, 40.000000, 'Día de la madre', NULL, '2025-11-03 18:09:19.59934+00', '2025-11-03 18:09:20.340691+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (551, NULL, 'valentina.alvarez@hotmail.com', 'Valentina Álvarez', '+58 424-734-7056', 'Calle Los Samanes, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '15:00-18:00', 'Torre A, piso 5', 'verified', 72.99, 2920.00, 40.000000, 'Ocasión especial', NULL, '2025-11-03 18:13:06.116468+00', '2025-11-03 18:13:06.981307+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (552, NULL, 'valentinamartinez@gmail.com', 'Valentina Martínez', '+58 424-839-3071', 'Los Dos Caminos, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '12:00-15:00', 'Apartamento 12B', 'verified', 99.99, 4000.00, 40.000000, 'Día de la madre', NULL, '2025-11-03 18:17:49.106774+00', '2025-11-03 18:17:49.935525+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (553, NULL, 'luisflores@outlook.com', 'Luis Flores', '+58 414-276-7410', 'Centro Comercial San Ignacio, Caracas', 'N/A', 'N/A', NULL, '2025-11-06', '15:00-18:00', 'Timbre 3', 'verified', 707.88, 28315.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-03 18:19:52.919755+00', '2025-11-03 18:19:53.869358+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (554, NULL, 'isabellarojas@gmail.com', 'Isabella Rojas', '+58 416-646-1911', 'Av. Luis Roche, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '09:00-12:00', 'Dejar con portero', 'verified', 595.92, 23837.00, 40.000000, '', NULL, '2025-11-03 18:22:13.79477+00', '2025-11-03 18:22:14.603614+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (555, NULL, 'carmendiaz@outlook.com', 'Carmen Díaz', '+58 412-973-2046', 'Parque Cristal, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-04', '12:00-15:00', 'Llamar al llegar', 'verified', 1092.92, 43717.00, 40.000000, 'Día de la madre', NULL, '2025-11-03 18:25:55.482171+00', '2025-11-03 18:25:56.150356+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (556, NULL, 'laura.suarez@outlook.com', 'Laura Suárez', '+58 416-912-7941', 'Av. Francisco de Miranda, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-07', '15:00-18:00', 'Torre A, piso 5', 'verified', 99.99, 4000.00, 40.000000, '', NULL, '2025-11-04 12:32:46.497584+00', '2025-11-04 12:32:47.91609+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (557, NULL, 'ricardo.gutierrez@gmail.com', 'Ricardo Gutiérrez', '+58 412-956-8998', 'Centro Comercial Sambil, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '15:00-18:00', '', 'verified', 803.88, 32155.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-04 12:34:37.800908+00', '2025-11-04 12:34:38.520912+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (558, NULL, 'francisco.romero@outlook.com', 'Francisco Romero', '+58 414-868-9717', 'Calle Los Samanes, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '15:00-18:00', 'Apartamento 12B', 'verified', 1530.91, 61236.00, 40.000000, 'Ocasión especial', NULL, '2025-11-04 12:38:21.984953+00', '2025-11-04 12:38:23.068125+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (559, NULL, 'franciscorojas@outlook.com', 'Francisco Rojas', '+58 426-389-4843', 'Calle Madrid, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '15:00-18:00', '', 'verified', 1703.89, 68156.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-04 12:41:08.666961+00', '2025-11-04 12:41:09.311781+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (560, NULL, 'andres49@outlook.com', 'Andrés Silva', '+58 416-576-4253', 'Av. Andrés Bello, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '15:00-18:00', 'Apartamento 12B', 'verified', 195.96, 7838.00, 40.000000, 'Ocasión especial', NULL, '2025-11-04 12:43:53.653437+00', '2025-11-04 12:43:54.846228+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (561, NULL, 'paulamorales@outlook.com', 'Paula Morales', '+58 416-308-6642', 'Parque Cristal, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '09:00-12:00', '', 'verified', 255.96, 10238.00, 40.000000, 'San Valentín', NULL, '2025-11-04 12:58:03.246492+00', '2025-11-04 12:58:04.280022+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (562, NULL, 'fernando_salazar@yahoo.com', 'Fernando Salazar', '+58 426-703-3167', 'Av. Francisco de Miranda, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-07', '09:00-12:00', 'Llamar al llegar', 'verified', 99.99, 4000.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-04 13:09:56.30343+00', '2025-11-04 13:09:57.313996+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (563, NULL, 'andrea_ortiz@yahoo.com', 'Andrea Ortiz', '+58 416-518-0743', 'La California Norte, Caracas', 'N/A', 'N/A', NULL, '2025-11-06', '12:00-15:00', 'Llamar al llegar', 'verified', 237.97, 9519.00, 40.000000, 'Día de la madre', NULL, '2025-11-04 13:21:37.268796+00', '2025-11-04 13:21:38.081482+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (564, NULL, 'javier.morales@hotmail.com', 'Javier Morales', '+58 412-599-6271', 'Urbanización Colinas de Bello Monte, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '15:00-18:00', 'Timbre 3', 'verified', 973.92, 38957.00, 40.000000, 'San Valentín', NULL, '2025-11-04 13:34:01.821714+00', '2025-11-04 13:34:03.34671+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (565, NULL, 'andrea_torres@hotmail.com', 'Andrea Torres', '+58 424-712-1467', 'Av. Orinoco, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-11', '15:00-18:00', 'Timbre 3', 'verified', 927.87, 37115.00, 40.000000, 'Ocasión especial', NULL, '2025-11-04 13:44:29.624445+00', '2025-11-04 13:44:30.764953+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (566, NULL, 'ana27@hotmail.com', 'Ana Vásquez', '+58 414-477-2037', 'Urbanización Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '09:00-12:00', '', 'pending', 199.98, 7999.00, 40.000000, 'Ocasión especial', NULL, '2025-11-04 14:08:45.555163+00', '2025-11-04 14:08:45.555163+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (567, NULL, 'carlos.rodriguez@yahoo.com', 'Carlos Rodríguez', '+58 424-447-4672', 'Av. Libertador, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '12:00-15:00', 'Timbre 3', 'pending', 415.92, 16637.00, 40.000000, 'Día de la madre', NULL, '2025-11-04 14:20:21.220964+00', '2025-11-04 14:20:21.220964+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (568, NULL, 'valentinaramos@gmail.com', 'Valentina Ramos', '+58 424-751-8701', 'Calle Los Samanes, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '12:00-15:00', '', 'pending', 357.94, 14318.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-04 14:31:46.523837+00', '2025-11-04 14:31:46.523837+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (569, NULL, 'daniela28@yahoo.com', 'Daniela Morales', '+58 416-699-6205', 'Av. Principal de La Castellana, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '12:00-15:00', 'Timbre 3', 'pending', 1503.93, 60157.00, 40.000000, 'San Valentín', NULL, '2025-11-04 14:43:45.097425+00', '2025-11-04 14:43:45.097425+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (570, NULL, 'miguelmartinez@outlook.com', 'Miguel Martínez', '+58 416-673-6108', 'Urbanización Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '15:00-18:00', 'Apartamento 12B', 'pending', 1007.98, 40319.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-04 14:54:17.383835+00', '2025-11-04 14:54:17.383835+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (571, NULL, 'elenasuarez@hotmail.com', 'Elena Suárez', '+58 414-846-2932', 'Parque Cristal, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '12:00-15:00', 'Dejar con portero', 'pending', 139.98, 5599.00, 40.000000, 'San Valentín', NULL, '2025-11-04 15:08:04.82858+00', '2025-11-04 15:08:04.82858+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (572, NULL, 'mariajimenez@hotmail.com', 'María Jiménez', '+58 424-922-3801', 'Urbanización La Florida, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '12:00-15:00', '', 'pending', 625.91, 25036.00, 40.000000, 'Día de la madre', NULL, '2025-11-04 15:20:26.480983+00', '2025-11-04 15:20:26.480983+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (573, NULL, 'elena_rojas@outlook.com', 'Elena Rojas', '+58 416-317-4186', 'Centro Comercial Sambil, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '09:00-12:00', 'Llamar al llegar', 'pending', 462.93, 18517.00, 40.000000, 'Día de la madre', NULL, '2025-11-04 15:35:01.167175+00', '2025-11-04 15:35:01.167175+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (574, NULL, 'andres.mendoza@hotmail.com', 'Andrés Mendoza', '+58 424-213-4757', 'Calle Paris, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-07', '15:00-18:00', 'Llamar al llegar', 'pending', 432.95, 17318.00, 40.000000, 'Ocasión especial', NULL, '2025-11-04 15:47:22.673286+00', '2025-11-04 15:47:22.673286+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (575, NULL, 'carlos_rojas@outlook.com', 'Carlos Rojas', '+58 416-704-1522', 'Av. Francisco de Miranda, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-07', '09:00-12:00', 'Timbre 3', 'pending', 111.98, 4479.00, 40.000000, 'San Valentín', NULL, '2025-11-04 15:58:17.580871+00', '2025-11-04 15:58:17.580871+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (576, NULL, 'daniela76@outlook.com', 'Daniela Martínez', '+58 424-893-3916', 'Calle Paris, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '15:00-18:00', 'Timbre 3', 'pending', 102.98, 4119.00, 40.000000, 'Ocasión especial', NULL, '2025-11-04 16:09:45.117374+00', '2025-11-04 16:09:45.117374+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (577, NULL, 'eduardoortiz@yahoo.com', 'Eduardo Ortiz', '+58 416-357-5583', 'Urbanización Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-11', '12:00-15:00', 'Torre A, piso 5', 'pending', 594.98, 23799.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-04 16:22:20.961769+00', '2025-11-04 16:22:20.961769+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (578, NULL, 'maria.gutierrez@gmail.com', 'María Gutiérrez', '+58 426-173-1786', 'Av. Abraham Lincoln, Sabana Grande, Caracas', 'N/A', 'N/A', NULL, '2025-11-11', '09:00-12:00', 'Llamar al llegar', 'pending', 607.89, 24316.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-04 16:32:59.16337+00', '2025-11-04 16:32:59.16337+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (579, NULL, 'miguel_gutierrez@outlook.com', 'Miguel Gutiérrez', '+58 424-474-9998', 'Los Dos Caminos, Caracas', 'N/A', 'N/A', NULL, '2025-11-06', '12:00-15:00', 'Torre A, piso 5', 'pending', 185.97, 7439.00, 40.000000, 'Ocasión especial', NULL, '2025-11-04 16:44:47.525526+00', '2025-11-04 16:44:47.525526+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (580, NULL, 'daniela.rodriguez@gmail.com', 'Daniela Rodríguez', '+58 416-200-0859', 'Parque Cristal, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '12:00-15:00', 'Torre A, piso 5', 'pending', 98.97, 3959.00, 40.000000, 'San Valentín', NULL, '2025-11-04 16:54:23.789203+00', '2025-11-04 16:54:23.789203+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (581, NULL, 'ana47@outlook.com', 'Ana Morales', '+58 412-141-1741', 'Calle Principal de Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '09:00-12:00', 'Timbre 3', 'pending', 332.96, 13318.00, 40.000000, 'Ocasión especial', NULL, '2025-11-04 17:05:41.889321+00', '2025-11-04 17:05:41.889321+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (582, NULL, 'andrea_torres@outlook.com', 'Andrea Torres', '+58 416-450-4812', 'La California Norte, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '09:00-12:00', 'Dejar con portero', 'pending', 482.91, 19316.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-04 17:20:05.708514+00', '2025-11-04 17:20:05.708514+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (583, NULL, 'rafael_gutierrez@gmail.com', 'Rafael Gutiérrez', '+58 416-814-3243', 'Los Dos Caminos, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '09:00-12:00', '', 'pending', 473.91, 18956.00, 40.000000, 'San Valentín', NULL, '2025-11-04 17:30:43.392449+00', '2025-11-04 17:30:43.392449+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (584, NULL, 'marianavasquez@yahoo.com', 'Mariana Vásquez', '+58 416-667-4893', 'Urbanización Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '12:00-15:00', 'Llamar al llegar', 'pending', 407.92, 16317.00, 40.000000, 'San Valentín', NULL, '2025-11-04 17:41:42.92844+00', '2025-11-04 17:41:42.92844+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (585, NULL, 'antonio_silva@yahoo.com', 'Antonio Silva', '+58 414-783-6560', 'Centro Comercial San Ignacio, Caracas', 'N/A', 'N/A', NULL, '2025-11-11', '15:00-18:00', 'Timbre 3', 'pending', 580.92, 23237.00, 40.000000, 'San Valentín', NULL, '2025-11-04 17:55:04.055683+00', '2025-11-04 17:55:04.055683+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (586, NULL, 'rafael44@gmail.com', 'Rafael Castro', '+58 426-504-8524', 'Av. Abraham Lincoln, Sabana Grande, Caracas', 'N/A', 'N/A', NULL, '2025-11-06', '12:00-15:00', 'Apartamento 12B', 'pending', 162.96, 6518.00, 40.000000, 'Ocasión especial', NULL, '2025-11-04 18:04:53.461578+00', '2025-11-04 18:04:53.461578+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (587, NULL, 'fernando25@gmail.com', 'Fernando Jiménez', '+58 414-195-0428', 'Av. Luis Roche, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '09:00-12:00', 'Llamar al llegar', 'pending', 293.94, 11758.00, 40.000000, 'Día de la madre', NULL, '2025-11-04 18:15:54.819937+00', '2025-11-04 18:15:54.819937+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (588, NULL, 'luis.romero@yahoo.com', 'Luis Romero', '+58 426-814-2362', 'Calle Madrid, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '09:00-12:00', 'Apartamento 12B', 'pending', 684.95, 27398.00, 40.000000, '', NULL, '2025-11-04 18:27:27.084499+00', '2025-11-04 18:27:27.084499+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (589, NULL, 'ana57@yahoo.com', 'Ana Ortiz', '+58 424-318-0347', 'Parque Cristal, Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '15:00-18:00', 'Apartamento 12B', 'pending', 379.92, 15197.00, 40.000000, 'Ocasión especial', NULL, '2025-11-04 18:39:58.81748+00', '2025-11-04 18:39:58.81748+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (590, NULL, 'maria.fernandez@outlook.com', 'María Fernández', '+58 416-492-0160', 'Calle Paris, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-08', '12:00-15:00', 'Llamar al llegar', 'pending', 118.97, 4759.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-04 18:52:08.723171+00', '2025-11-04 18:52:08.723171+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (591, NULL, 'luciaalvarez@hotmail.com', 'Lucía Álvarez', '+58 414-499-4422', 'Av. Principal de La Castellana, Caracas', 'N/A', 'N/A', NULL, '2025-11-07', '15:00-18:00', '', 'pending', 625.87, 25035.00, 40.000000, 'San Valentín', NULL, '2025-11-04 19:07:23.134756+00', '2025-11-04 19:07:23.134756+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (592, NULL, 'rosa30@hotmail.com', 'Rosa López', '+58 416-134-2124', 'Calle Madrid, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '15:00-18:00', 'Llamar al llegar', 'pending', 29.99, 1200.00, 40.000000, 'Ocasión especial', NULL, '2025-11-04 19:21:04.408791+00', '2025-11-04 19:21:04.408791+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (593, NULL, 'fernando94@yahoo.com', 'Fernando Jiménez', '+58 426-826-7260', 'Los Dos Caminos, Caracas', 'N/A', 'N/A', NULL, '2025-11-07', '09:00-12:00', '', 'pending', 1740.93, 69637.00, 40.000000, '', NULL, '2025-11-04 19:30:57.392115+00', '2025-11-04 19:30:57.392115+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (594, NULL, 'carmenjimenez@gmail.com', 'Carmen Jiménez', '+58 414-113-6399', 'Calle Principal de Los Palos Grandes, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '15:00-18:00', 'Dejar con portero', 'pending', 583.89, 23356.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-04 19:41:30.715791+00', '2025-11-04 19:41:30.715791+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (595, NULL, 'diegolopez@hotmail.com', 'Diego López', '+58 412-281-5936', 'Residencias El Rosal, Caracas', 'N/A', 'N/A', NULL, '2025-11-11', '15:00-18:00', 'Llamar al llegar', 'pending', 1901.91, 76076.00, 40.000000, '', NULL, '2025-11-04 19:52:15.117582+00', '2025-11-04 19:52:15.117582+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (596, NULL, 'paulamartinez@gmail.com', 'Paula Martínez', '+58 416-100-5116', 'Av. Francisco de Miranda, Chacao, Caracas', 'N/A', 'N/A', NULL, '2025-11-05', '15:00-18:00', 'Timbre 3', 'pending', 99.99, 4000.00, 40.000000, '', NULL, '2025-11-04 20:07:30.511215+00', '2025-11-04 20:07:30.511215+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (597, NULL, 'isabel97@hotmail.com', 'Isabel Morales', '+58 416-389-2310', 'Av. Libertador, Altamira, Caracas', 'N/A', 'N/A', NULL, '2025-11-10', '12:00-15:00', 'Torre A, piso 5', 'pending', 715.92, 28637.00, 40.000000, 'Aniversario de bodas', NULL, '2025-11-04 20:19:02.329941+00', '2025-11-04 20:19:02.329941+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (598, NULL, 'victoria.salazar@hotmail.com', 'Victoria Salazar', '+58 424-497-0936', 'Urbanización Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '15:00-18:00', 'Dejar con portero', 'pending', 253.96, 10158.00, 40.000000, 'San Valentín', NULL, '2025-11-04 20:32:15.11886+00', '2025-11-04 20:32:15.11886+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (599, NULL, 'miguelflores@gmail.com', 'Miguel Flores', '+58 414-930-5981', 'Av. Abraham Lincoln, Sabana Grande, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '15:00-18:00', 'Dejar con portero', 'pending', 519.93, 20797.00, 40.000000, 'Ocasión especial', NULL, '2025-11-04 20:46:00.597279+00', '2025-11-04 20:46:00.597279+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (600, NULL, 'roberto65@yahoo.com', 'Roberto Torres', '+58 424-184-8325', 'Av. Orinoco, Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '12:00-15:00', 'Timbre 3', 'pending', 694.90, 27796.00, 40.000000, '', NULL, '2025-11-04 20:59:43.477336+00', '2025-11-04 20:59:43.477336+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (601, NULL, 'diego_suarez@outlook.com', 'Diego Suárez', '+58 424-511-5095', 'Los Dos Caminos, Caracas', 'N/A', 'N/A', NULL, '2025-11-09', '12:00-15:00', '', 'pending', 79.98, 3199.00, 40.000000, 'Regalo de cumpleaños', NULL, '2025-11-04 21:12:09.397941+00', '2025-11-04 21:12:09.397941+00', DEFAULT, DEFAULT, true);
-INSERT INTO public.orders VALUES (602, NULL, 'camila55@outlook.com', 'Camila López', '+58 424-181-6081', 'Urbanización Las Mercedes, Caracas', 'N/A', 'N/A', NULL, '2025-11-06', '09:00-12:00', 'Apartamento 12B', 'pending', 399.96, 15998.00, 40.000000, 'Ocasión especial', NULL, '2025-11-04 21:24:26.817518+00', '2025-11-04 21:24:26.817518+00', DEFAULT, DEFAULT, true);
 
 
 --
--- TOC entry 4262 (class 0 OID 32156)
--- Dependencies: 389
+-- TOC entry 4409 (class 0 OID 32156)
+-- Dependencies: 395
 -- Data for Name: payment_methods; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -6617,487 +4168,97 @@ INSERT INTO public.payment_methods VALUES (884, 'Banco Mercantil', 'bank_transfe
 
 
 --
--- TOC entry 4264 (class 0 OID 32169)
--- Dependencies: 391
+-- TOC entry 4411 (class 0 OID 32169)
+-- Dependencies: 397
 -- Data for Name: payments; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.payments VALUES (1, 1, NULL, 3, 390.93, 14249.40, 36.450000, 'completed', 'paypal', 'TXN-1759493446996-6647', 'REF-142913', NULL, NULL, 'Pago verificado', '2025-09-12 00:26:51.107+00', '2025-09-12 00:47:51.107+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (2, 2, NULL, 3, 123.97, 4518.71, 36.450000, 'completed', 'paypal', 'TXN-1759493447623-5905', 'REF-650038', NULL, NULL, 'Pago verificado', '2025-09-26 14:50:09.082+00', '2025-09-26 15:42:09.082+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (3, 3, NULL, 3, 68.99, 2514.69, 36.450000, 'completed', 'pago_movil', 'TXN-1759493448361-1871', 'REF-395016', NULL, NULL, 'Pago verificado', '2025-07-24 01:06:46.235+00', '2025-07-24 01:47:46.235+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (4, 4, NULL, 3, 124.97, 4555.16, 36.450000, 'completed', 'binance', 'TXN-1759493448820-3488', 'REF-529240', NULL, NULL, 'Pago verificado', '2025-08-21 23:14:48.22+00', '2025-08-21 23:49:48.22+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (5, 5, NULL, 3, 206.97, 7544.06, 36.450000, 'completed', 'cash', 'TXN-1759493449170-8835', 'REF-882503', NULL, NULL, 'Pago verificado', '2025-09-21 12:08:59.899+00', '2025-09-21 12:37:59.899+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (6, 6, NULL, 3, 308.94, 11260.86, 36.450000, 'completed', 'cash', 'TXN-1759493449569-5349', 'REF-592291', NULL, NULL, 'Pago verificado', '2025-08-08 01:37:53.802+00', '2025-08-08 02:34:53.802+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (7, 7, NULL, 3, 98.97, 3607.46, 36.450000, 'completed', 'paypal', 'TXN-1759493450037-2808', 'REF-358762', NULL, NULL, 'Pago verificado', '2025-07-15 05:25:31.396+00', '2025-07-15 06:05:31.396+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (8, 8, NULL, 3, 98.97, 3607.46, 36.450000, 'completed', 'binance', 'TXN-1759493450381-2911', 'REF-867288', NULL, NULL, 'Pago verificado', '2025-07-23 00:52:12.409+00', '2025-07-23 01:52:12.409+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (9, 9, NULL, 3, 128.97, 4700.96, 36.450000, 'completed', 'binance', 'TXN-1759493450780-8801', 'REF-264188', NULL, NULL, 'Pago verificado', '2025-08-11 02:18:32.569+00', '2025-08-11 02:51:32.569+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (10, 10, NULL, 3, 183.95, 6704.98, 36.450000, 'completed', 'paypal', 'TXN-1759493451515-8946', 'REF-491545', NULL, NULL, 'Pago verificado', '2025-07-28 03:49:02.097+00', '2025-07-28 04:29:02.097+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (11, 11, NULL, 3, 391.92, 14285.48, 36.450000, 'completed', 'pago_movil', 'TXN-1759493452145-2681', 'REF-338831', NULL, NULL, 'Pago verificado', '2025-10-01 23:48:02.563+00', '2025-10-02 00:46:02.563+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (12, 12, NULL, 3, 59.98, 2186.27, 36.450000, 'completed', 'zelle', 'TXN-1759493452687-9023', 'REF-760642', NULL, NULL, 'Pago verificado', '2025-08-16 07:29:44.484+00', '2025-08-16 08:16:44.484+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (13, 13, NULL, 3, 99.98, 3644.27, 36.450000, 'completed', 'bank_transfer', 'TXN-1759493453322-7830', 'REF-604390', NULL, NULL, 'Pago verificado', '2025-07-31 08:33:25.657+00', '2025-07-31 09:12:25.657+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (14, 14, NULL, 3, 351.92, 12827.48, 36.450000, 'failed', 'paypal', 'TXN-1759493453783-8390', 'REF-526193', NULL, NULL, NULL, NULL, NULL, '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (15, 15, NULL, 3, 279.93, 10203.45, 36.450000, 'completed', 'zelle', 'TXN-1759493454302-2272', 'REF-799091', NULL, NULL, 'Pago verificado', '2025-07-23 19:05:09.814+00', '2025-07-23 19:15:09.814+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (16, 16, NULL, 3, 137.98, 5029.37, 36.450000, 'failed', 'pago_movil', 'TXN-1759493454744-5181', 'REF-586775', NULL, NULL, NULL, NULL, NULL, '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (17, 17, NULL, 3, 29.99, 1093.14, 36.450000, 'completed', 'cash', 'TXN-1759493455269-7292', 'REF-305165', NULL, NULL, 'Pago verificado', '2025-07-18 19:59:42.195+00', '2025-07-18 20:14:42.195+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (18, 18, NULL, 3, 118.97, 4336.46, 36.450000, 'completed', 'paypal', 'TXN-1759493455636-7445', 'REF-975216', NULL, NULL, 'Pago verificado', '2025-09-03 17:38:20.853+00', '2025-09-03 18:08:20.853+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (19, 19, NULL, 3, 386.93, 14103.60, 36.450000, 'completed', 'bank_transfer', 'TXN-1759493455967-9582', 'REF-785067', NULL, NULL, 'Pago verificado', '2025-07-23 16:20:40.615+00', '2025-07-23 16:58:40.615+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (20, 20, NULL, 3, 99.98, 3644.27, 36.450000, 'completed', 'pago_movil', 'TXN-1759493456452-6496', 'REF-613518', NULL, NULL, 'Pago verificado', '2025-09-14 14:18:48.498+00', '2025-09-14 15:03:48.498+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (21, 21, NULL, 3, 110.97, 4044.86, 36.450000, 'completed', 'zelle', 'TXN-1759493456870-7363', 'REF-965277', NULL, NULL, 'Pago verificado', '2025-08-07 07:11:43.35+00', '2025-08-07 07:52:43.35+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (22, 22, NULL, 3, 105.98, 3862.97, 36.450000, 'completed', 'zelle', 'TXN-1759493457247-3605', 'REF-447764', NULL, NULL, 'Pago verificado', '2025-08-03 15:50:54.543+00', '2025-08-03 16:35:54.543+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (23, 23, NULL, 3, 465.92, 16982.78, 36.450000, 'completed', 'paypal', 'TXN-1759493457825-4601', 'REF-610614', NULL, NULL, 'Pago verificado', '2025-07-30 00:38:15.874+00', '2025-07-30 00:54:15.874+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (24, 24, NULL, 3, 128.97, 4700.96, 36.450000, 'completed', 'binance', 'TXN-1759493458174-4868', 'REF-875080', NULL, NULL, 'Pago verificado', '2025-07-20 22:28:28.299+00', '2025-07-20 23:13:28.299+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (25, 25, NULL, 3, 262.95, 9584.53, 36.450000, 'completed', 'pago_movil', 'TXN-1759493458726-5459', 'REF-580778', NULL, NULL, 'Pago verificado', '2025-08-06 14:27:09.962+00', '2025-08-06 14:49:09.962+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (26, 26, NULL, 3, 247.94, 9037.41, 36.450000, 'completed', 'zelle', 'TXN-1759493459320-2840', 'REF-640330', NULL, NULL, 'Pago verificado', '2025-07-28 06:08:15.885+00', '2025-07-28 06:35:15.885+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (27, 27, NULL, 3, 220.95, 8053.63, 36.450000, 'completed', 'binance', 'TXN-1759493459869-1110', 'REF-495237', NULL, NULL, 'Pago verificado', '2025-08-23 13:58:00.276+00', '2025-08-23 14:26:00.276+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (28, 28, NULL, 3, 158.97, 5794.46, 36.450000, 'completed', 'binance', 'TXN-1759493460285-3514', 'REF-603649', NULL, NULL, 'Pago verificado', '2025-10-02 10:17:57.106+00', '2025-10-02 10:59:57.106+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (29, 29, NULL, 3, 99.98, 3644.27, 36.450000, 'completed', 'bank_transfer', 'TXN-1759493460887-3317', 'REF-955230', NULL, NULL, 'Pago verificado', '2025-09-05 08:52:49.629+00', '2025-09-05 09:24:49.629+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (30, 30, NULL, 3, 42.99, 1566.99, 36.450000, 'completed', 'cash', 'TXN-1759493461217-6241', 'REF-814040', NULL, NULL, 'Pago verificado', '2025-07-13 14:35:18.171+00', '2025-07-13 14:52:18.171+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (31, 31, NULL, 3, 194.95, 7105.93, 36.450000, 'completed', 'paypal', 'TXN-1759493461685-6904', 'REF-781579', NULL, NULL, 'Pago verificado', '2025-08-07 01:17:59.744+00', '2025-08-07 01:45:59.744+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (32, 32, NULL, 3, 65.98, 2404.97, 36.450000, 'failed', 'pago_movil', 'TXN-1759493462185-8935', 'REF-858333', NULL, NULL, NULL, NULL, NULL, '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (33, 33, NULL, 3, 167.95, 6121.78, 36.450000, 'completed', 'binance', 'TXN-1759493462527-6475', 'REF-996259', NULL, NULL, 'Pago verificado', '2025-08-17 23:18:24.377+00', '2025-08-17 23:30:24.377+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (34, 34, NULL, 3, 225.96, 8236.24, 36.450000, 'failed', 'paypal', 'TXN-1759493462941-9860', 'REF-378332', NULL, NULL, NULL, NULL, NULL, '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (35, 35, NULL, 3, 288.93, 10531.50, 36.450000, 'completed', 'zelle', 'TXN-1759493463485-1735', 'REF-667774', NULL, NULL, 'Pago verificado', '2025-08-21 22:34:40.406+00', '2025-08-21 22:59:40.406+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (36, 36, NULL, 3, 187.95, 6850.78, 36.450000, 'failed', 'pago_movil', 'TXN-1759493463820-3480', 'REF-898942', NULL, NULL, NULL, NULL, NULL, '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (37, 37, NULL, 3, 206.97, 7544.06, 36.450000, 'completed', 'paypal', 'TXN-1759493464343-7756', 'REF-498340', NULL, NULL, 'Pago verificado', '2025-07-14 19:20:43.647+00', '2025-07-14 20:09:43.647+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (38, 38, NULL, 3, 357.93, 13046.55, 36.450000, 'completed', 'zelle', 'TXN-1759493464855-6943', 'REF-374090', NULL, NULL, 'Pago verificado', '2025-09-17 17:46:15.092+00', '2025-09-17 18:32:15.092+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (39, 39, NULL, 3, 147.97, 5393.51, 36.450000, 'completed', 'zelle', 'TXN-1759493465288-9354', 'REF-434116', NULL, NULL, 'Pago verificado', '2025-08-22 14:45:13.786+00', '2025-08-22 14:56:13.786+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (40, 40, NULL, 3, 112.97, 4117.76, 36.450000, 'completed', 'pago_movil', 'TXN-1759493465720-6844', 'REF-235250', NULL, NULL, 'Pago verificado', '2025-07-26 11:56:43.681+00', '2025-07-26 12:23:43.681+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (41, 41, NULL, 3, 178.97, 6523.46, 36.450000, 'completed', 'pago_movil', 'TXN-1759493466149-9610', 'REF-867813', NULL, NULL, 'Pago verificado', '2025-09-10 21:16:32.169+00', '2025-09-10 22:05:32.169+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (42, 42, NULL, 3, 137.97, 5029.01, 36.450000, 'completed', 'cash', 'TXN-1759493466492-7176', 'REF-633125', NULL, NULL, 'Pago verificado', '2025-08-28 15:08:01.324+00', '2025-08-28 15:50:01.324+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (43, 43, NULL, 3, 257.94, 9401.91, 36.450000, 'completed', 'bank_transfer', 'TXN-1759493466920-7786', 'REF-684230', NULL, NULL, 'Pago verificado', '2025-09-25 21:20:35.688+00', '2025-09-25 21:47:35.688+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (44, 44, NULL, 3, 220.95, 8053.63, 36.450000, 'completed', 'pago_movil', 'TXN-1759493467300-3355', 'REF-189399', NULL, NULL, 'Pago verificado', '2025-08-07 06:11:36.248+00', '2025-08-07 06:51:36.248+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (45, 45, NULL, 3, 292.95, 10678.03, 36.450000, 'completed', 'paypal', 'TXN-1759493467970-3330', 'REF-417214', NULL, NULL, 'Pago verificado', '2025-08-21 20:46:16.255+00', '2025-08-21 20:58:16.255+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (46, 46, NULL, 3, 178.96, 6523.09, 36.450000, 'completed', 'binance', 'TXN-1759493468741-4368', 'REF-701511', NULL, NULL, 'Pago verificado', '2025-07-29 05:23:43.35+00', '2025-07-29 06:23:43.35+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (47, 47, NULL, 3, 395.93, 14431.65, 36.450000, 'completed', 'paypal', 'TXN-1759493469721-8311', 'REF-299859', NULL, NULL, 'Pago verificado', '2025-09-11 09:28:00.466+00', '2025-09-11 09:59:00.466+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (48, 48, NULL, 3, 138.96, 5065.09, 36.450000, 'completed', 'bank_transfer', 'TXN-1759493470183-1498', 'REF-763032', NULL, NULL, 'Pago verificado', '2025-09-26 10:04:32.588+00', '2025-09-26 10:14:32.588+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (49, 49, NULL, 3, 275.92, 10057.28, 36.450000, 'completed', 'bank_transfer', 'TXN-1759493470740-2639', 'REF-357658', NULL, NULL, 'Pago verificado', '2025-07-30 22:06:15.465+00', '2025-07-30 22:52:15.465+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (50, 50, NULL, 3, 78.98, 2878.82, 36.450000, 'completed', 'pago_movil', 'TXN-1759493471082-3214', 'REF-874825', NULL, NULL, 'Pago verificado', '2025-09-16 18:18:09.882+00', '2025-09-16 18:56:09.882+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (51, 51, NULL, 3, 191.96, 6996.94, 36.450000, 'completed', 'zelle', 'TXN-1759493471444-7299', 'REF-233661', NULL, NULL, 'Pago verificado', '2025-08-29 05:40:04.458+00', '2025-08-29 06:23:04.458+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (52, 52, NULL, 3, 336.94, 12281.46, 36.450000, 'completed', 'cash', 'TXN-1759493471848-5592', 'REF-597146', NULL, NULL, 'Pago verificado', '2025-09-05 09:19:04.545+00', '2025-09-05 09:41:04.545+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (53, 53, NULL, 3, 363.93, 13265.25, 36.450000, 'completed', 'bank_transfer', 'TXN-1759493472260-4590', 'REF-556606', NULL, NULL, 'Pago verificado', '2025-07-10 06:32:24.417+00', '2025-07-10 07:28:24.417+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (54, 54, NULL, 3, 138.96, 5065.09, 36.450000, 'completed', 'pago_movil', 'TXN-1759493472929-4476', 'REF-779551', NULL, NULL, 'Pago verificado', '2025-09-08 21:49:21.526+00', '2025-09-08 22:20:21.526+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (55, 55, NULL, 3, 206.97, 7544.06, 36.450000, 'completed', 'zelle', 'TXN-1759493473602-3649', 'REF-292986', NULL, NULL, 'Pago verificado', '2025-10-02 14:58:39.515+00', '2025-10-02 15:47:39.515+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (56, 56, NULL, 3, 182.95, 6668.53, 36.450000, 'completed', 'bank_transfer', 'TXN-1759493474183-5746', 'REF-625148', NULL, NULL, 'Pago verificado', '2025-09-17 02:45:55.06+00', '2025-09-17 03:20:55.06+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (57, 57, NULL, 3, 158.97, 5794.46, 36.450000, 'completed', 'bank_transfer', 'TXN-1759493474721-8337', 'REF-251300', NULL, NULL, 'Pago verificado', '2025-07-10 15:22:38.319+00', '2025-07-10 15:54:38.319+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (58, 58, NULL, 3, 256.96, 9366.19, 36.450000, 'completed', 'binance', 'TXN-1759493475275-4957', 'REF-828439', NULL, NULL, 'Pago verificado', '2025-08-02 20:51:11.879+00', '2025-08-02 21:18:11.879+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (59, 59, NULL, 3, 262.95, 9584.53, 36.450000, 'completed', 'binance', 'TXN-1759493475854-3153', 'REF-840753', NULL, NULL, 'Pago verificado', '2025-09-23 12:45:37.612+00', '2025-09-23 13:17:37.612+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (60, 60, NULL, 3, 351.92, 12827.48, 36.450000, 'completed', 'zelle', 'TXN-1759493476693-3083', 'REF-134685', NULL, NULL, 'Pago verificado', '2025-07-30 15:20:35.4+00', '2025-07-30 15:57:35.4+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (61, 61, NULL, 3, 335.92, 12244.28, 36.450000, 'completed', 'binance', 'TXN-1759493477315-7328', 'REF-829059', NULL, NULL, 'Pago verificado', '2025-07-28 05:00:14.854+00', '2025-07-28 05:17:14.854+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (62, 62, NULL, 3, 68.99, 2514.69, 36.450000, 'completed', 'cash', 'TXN-1759493477718-9212', 'REF-778028', NULL, NULL, 'Pago verificado', '2025-10-02 21:44:56.212+00', '2025-10-02 22:17:56.212+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (63, 63, NULL, 3, 105.98, 3862.97, 36.450000, 'completed', 'pago_movil', 'TXN-1759493478381-8123', 'REF-431980', NULL, NULL, 'Pago verificado', '2025-07-13 22:57:20.391+00', '2025-07-13 23:10:20.391+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (64, 64, NULL, 3, 167.97, 6122.51, 36.450000, 'completed', 'paypal', 'TXN-1759493478941-3767', 'REF-477245', NULL, NULL, 'Pago verificado', '2025-08-05 04:31:15.81+00', '2025-08-05 04:47:15.81+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (65, 65, NULL, 3, 78.98, 2878.82, 36.450000, 'failed', 'cash', 'TXN-1759493479466-5721', 'REF-968991', NULL, NULL, NULL, NULL, NULL, '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (66, 66, NULL, 3, 224.95, 8199.43, 36.450000, 'completed', 'paypal', 'TXN-1759493479822-4084', 'REF-915615', NULL, NULL, 'Pago verificado', '2025-09-02 18:45:54.054+00', '2025-09-02 19:09:54.054+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (67, 67, NULL, 3, 145.98, 5320.97, 36.450000, 'completed', 'zelle', 'TXN-1759493480193-3107', 'REF-711516', NULL, NULL, 'Pago verificado', '2025-08-05 02:03:46.06+00', '2025-08-05 02:52:46.06+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (68, 68, NULL, 3, 95.98, 3498.47, 36.450000, 'completed', 'cash', 'TXN-1759493480702-7483', 'REF-740426', NULL, NULL, 'Pago verificado', '2025-08-09 05:23:14.404+00', '2025-08-09 05:41:14.404+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (69, 69, NULL, 3, 268.95, 9803.23, 36.450000, 'completed', 'cash', 'TXN-1759493481321-3174', 'REF-103030', NULL, NULL, 'Pago verificado', '2025-08-02 07:12:24.965+00', '2025-08-02 07:51:24.965+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (70, 70, NULL, 3, 288.94, 10531.86, 36.450000, 'completed', 'binance', 'TXN-1759493481672-3100', 'REF-512067', NULL, NULL, 'Pago verificado', '2025-07-24 07:20:43.353+00', '2025-07-24 08:15:43.353+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (71, 71, NULL, 3, 229.95, 8381.68, 36.450000, 'completed', 'pago_movil', 'TXN-1759493482116-5124', 'REF-703513', NULL, NULL, 'Pago verificado', '2025-08-13 13:40:00.88+00', '2025-08-13 14:35:00.88+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (72, 72, NULL, 3, 68.99, 2514.69, 36.450000, 'completed', 'paypal', 'TXN-1759493482489-2369', 'REF-836185', NULL, NULL, 'Pago verificado', '2025-07-31 09:11:19.764+00', '2025-07-31 09:32:19.764+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (73, 73, NULL, 3, 236.93, 8636.10, 36.450000, 'completed', 'paypal', 'TXN-1759493482985-1833', 'REF-100043', NULL, NULL, 'Pago verificado', '2025-07-08 19:01:27.846+00', '2025-07-08 19:48:27.846+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (74, 74, NULL, 3, 379.93, 13848.45, 36.450000, 'completed', 'bank_transfer', 'TXN-1759493483319-7661', 'REF-958723', NULL, NULL, 'Pago verificado', '2025-09-05 12:36:05.264+00', '2025-09-05 12:59:05.264+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (75, 75, NULL, 3, 258.96, 9439.09, 36.450000, 'completed', 'bank_transfer', 'TXN-1759493483834-7827', 'REF-574158', NULL, NULL, 'Pago verificado', '2025-07-26 01:03:30.156+00', '2025-07-26 01:19:30.156+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (76, 76, NULL, 3, 314.94, 11479.56, 36.450000, 'completed', 'cash', 'TXN-1759493484177-6509', 'REF-595697', NULL, NULL, 'Pago verificado', '2025-08-13 16:31:11.796+00', '2025-08-13 17:08:11.796+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (77, 77, NULL, 3, 290.93, 10604.40, 36.450000, 'completed', 'pago_movil', 'TXN-1759493484685-9511', 'REF-400244', NULL, NULL, 'Pago verificado', '2025-07-09 01:53:43.895+00', '2025-07-09 02:18:43.895+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (78, 78, NULL, 3, 287.94, 10495.41, 36.450000, 'completed', 'cash', 'TXN-1759493485205-3887', 'REF-525118', NULL, NULL, 'Pago verificado', '2025-08-31 05:38:30.247+00', '2025-08-31 06:35:30.247+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (79, 79, NULL, 3, 252.95, 9220.03, 36.450000, 'completed', 'cash', 'TXN-1759493485768-5262', 'REF-553097', NULL, NULL, 'Pago verificado', '2025-07-04 22:01:48.34+00', '2025-07-04 22:30:48.34+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (80, 80, NULL, 3, 291.94, 10641.21, 36.450000, 'completed', 'paypal', 'TXN-1759493486224-1214', 'REF-140861', NULL, NULL, 'Pago verificado', '2025-08-18 19:00:02.994+00', '2025-08-18 20:00:02.994+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (81, 81, NULL, 3, 429.92, 15670.58, 36.450000, 'completed', 'bank_transfer', 'TXN-1759493486885-7555', 'REF-930031', NULL, NULL, 'Pago verificado', '2025-08-20 22:26:40.15+00', '2025-08-20 22:36:40.15+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (82, 82, NULL, 3, 239.96, 8746.54, 36.450000, 'completed', 'binance', 'TXN-1759493487450-7946', 'REF-430326', NULL, NULL, 'Pago verificado', '2025-09-28 03:58:32.289+00', '2025-09-28 04:18:32.289+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (83, 83, NULL, 3, 45.99, 1676.34, 36.450000, 'completed', 'cash', 'TXN-1759493488241-9786', 'REF-675607', NULL, NULL, 'Pago verificado', '2025-09-26 21:12:49.043+00', '2025-09-26 21:23:49.043+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (84, 84, NULL, 3, 291.94, 10641.21, 36.450000, 'completed', 'paypal', 'TXN-1759493488868-8268', 'REF-132375', NULL, NULL, 'Pago verificado', '2025-07-31 23:52:57.631+00', '2025-08-01 00:36:57.631+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (85, 85, NULL, 3, 129.96, 4737.04, 36.450000, 'completed', 'cash', 'TXN-1759493489637-7681', 'REF-810554', NULL, NULL, 'Pago verificado', '2025-08-01 03:35:32.669+00', '2025-08-01 04:33:32.669+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (86, 86, NULL, 3, 49.99, 1822.14, 36.450000, 'completed', 'cash', 'TXN-1759493490550-7167', 'REF-679885', NULL, NULL, 'Pago verificado', '2025-08-19 05:15:35.232+00', '2025-08-19 05:49:35.232+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (87, 87, NULL, 3, 29.99, 1093.14, 36.450000, 'completed', 'pago_movil', 'TXN-1759493491008-8804', 'REF-768003', NULL, NULL, 'Pago verificado', '2025-08-19 18:01:18.202+00', '2025-08-19 18:34:18.202+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (88, 88, NULL, 3, 189.96, 6924.04, 36.450000, 'failed', 'cash', 'TXN-1759493491359-6570', 'REF-260716', NULL, NULL, NULL, NULL, NULL, '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (89, 89, NULL, 3, 274.95, 10021.93, 36.450000, 'completed', 'zelle', 'TXN-1759493491728-1668', 'REF-206335', NULL, NULL, 'Pago verificado', '2025-08-15 02:01:01.715+00', '2025-08-15 02:25:01.715+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (90, 90, NULL, 3, 125.98, 4591.97, 36.450000, 'completed', 'paypal', 'TXN-1759493492262-7617', 'REF-130012', NULL, NULL, 'Pago verificado', '2025-09-13 06:35:02.922+00', '2025-09-13 07:14:02.922+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (91, 91, NULL, 3, 46.99, 1712.79, 36.450000, 'completed', 'pago_movil', 'TXN-1759493492638-2502', 'REF-561376', NULL, NULL, 'Pago verificado', '2025-07-24 15:31:52.774+00', '2025-07-24 16:28:52.774+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (92, 92, NULL, 3, 55.99, 2040.84, 36.450000, 'failed', 'paypal', 'TXN-1759493493001-5781', 'REF-528177', NULL, NULL, NULL, NULL, NULL, '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (93, 93, NULL, 3, 59.98, 2186.27, 36.450000, 'failed', 'bank_transfer', 'TXN-1759493493422-8526', 'REF-815839', NULL, NULL, NULL, NULL, NULL, '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (94, 94, NULL, 3, 145.98, 5320.97, 36.450000, 'completed', 'zelle', 'TXN-1759493493931-5563', 'REF-931765', NULL, NULL, 'Pago verificado', '2025-09-15 03:39:25.251+00', '2025-09-15 04:14:25.251+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (95, 95, NULL, 3, 291.94, 10641.21, 36.450000, 'completed', 'cash', 'TXN-1759493494461-3469', 'REF-470595', NULL, NULL, 'Pago verificado', '2025-07-31 22:32:20.302+00', '2025-07-31 23:09:20.302+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (96, 96, NULL, 3, 68.99, 2514.69, 36.450000, 'completed', 'cash', 'TXN-1759493495072-5185', 'REF-489295', NULL, NULL, 'Pago verificado', '2025-07-28 22:29:11.478+00', '2025-07-28 23:21:11.478+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (97, 97, NULL, 3, 122.97, 4482.26, 36.450000, 'completed', 'paypal', 'TXN-1759493495668-5312', 'REF-866708', NULL, NULL, 'Pago verificado', '2025-09-04 13:25:02.849+00', '2025-09-04 13:55:02.849+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (98, 98, NULL, 3, 214.96, 7835.29, 36.450000, 'completed', 'pago_movil', 'TXN-1759493496086-6925', 'REF-817196', NULL, NULL, 'Pago verificado', '2025-09-16 00:58:16.907+00', '2025-09-16 01:50:16.907+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (99, 99, NULL, 3, 210.95, 7689.13, 36.450000, 'completed', 'zelle', 'TXN-1759493496519-6494', 'REF-167825', NULL, NULL, 'Pago verificado', '2025-09-14 07:39:37.406+00', '2025-09-14 08:17:37.406+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (100, 100, NULL, 3, 420.92, 15342.53, 36.450000, 'completed', 'binance', 'TXN-1759493497058-1159', 'REF-270821', NULL, NULL, 'Pago verificado', '2025-07-21 08:10:44.507+00', '2025-07-21 08:55:44.507+00', '2025-10-03 12:11:38.233028+00', '2025-10-03 12:11:38.233028+00', true);
-INSERT INTO public.payments VALUES (101, 460, 3, NULL, 137.98, 5519.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'TEST-1762175686048-5685', '"Pago de prueba generado por test-generator.js"', NULL, NULL, '2025-11-03 13:14:46.448+00', NULL, '2025-11-03 13:14:46.478097+00', '2025-11-03 13:14:46.478097+00', true);
-INSERT INTO public.payments VALUES (102, 461, 3, NULL, 140.97, 5639.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'TEST-1762175695896-3551', '"Pago de prueba generado por test-generator.js"', NULL, NULL, '2025-11-03 13:14:56.136+00', NULL, '2025-11-03 13:14:56.156962+00', '2025-11-03 13:14:56.156962+00', true);
-INSERT INTO public.payments VALUES (103, 462, 3, NULL, 325.96, 13038.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'TEST-1762175766623-8532', '"Pago de prueba generado por test-generator.js"', NULL, NULL, '2025-11-03 13:16:06.978+00', NULL, '2025-11-03 13:16:06.978125+00', '2025-11-03 13:16:06.978125+00', true);
-INSERT INTO public.payments VALUES (104, 463, 3, NULL, 1963.93, 78557.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'TEST-1762176381960-3356', '"Pago de prueba generado por test-generator.js"', NULL, NULL, '2025-11-03 13:26:22.253+00', NULL, '2025-11-03 13:26:22.227596+00', '2025-11-03 13:26:22.227596+00', true);
-INSERT INTO public.payments VALUES (105, 464, 3, NULL, 503.92, 20157.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'TEST-1762177091159-1151', '"Pago de prueba generado por test-generator.js"', NULL, NULL, '2025-11-03 13:38:11.452+00', NULL, '2025-11-03 13:38:11.432514+00', '2025-11-03 13:38:11.432514+00', true);
-INSERT INTO public.payments VALUES (106, 465, 3, NULL, 833.87, 33355.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'TEST-1762177226634-2530', '"Pago de prueba generado por test-generator.js"', NULL, NULL, '2025-11-03 13:40:26.911+00', NULL, '2025-11-03 13:40:26.871153+00', '2025-11-03 13:40:26.871153+00', true);
-INSERT INTO public.payments VALUES (107, 466, 3, NULL, 280.95, 11238.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762177640139-6259', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 13:47:20.432+00', NULL, '2025-11-03 13:47:20.385565+00', '2025-11-03 13:47:20.385565+00', true);
-INSERT INTO public.payments VALUES (108, 467, 3, NULL, 579.91, 23196.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762177791656-1995', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 13:49:52.12+00', NULL, '2025-11-03 13:49:52.055214+00', '2025-11-03 13:49:52.055214+00', true);
-INSERT INTO public.payments VALUES (109, 468, 3, NULL, 299.97, 11999.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762177885149-3204', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 13:51:25.41+00', NULL, '2025-11-03 13:51:25.337547+00', '2025-11-03 13:51:25.337547+00', true);
-INSERT INTO public.payments VALUES (110, 469, 3, NULL, 331.94, 13278.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762178149415-9527', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 13:55:49.681+00', NULL, '2025-11-03 13:55:49.610519+00', '2025-11-03 13:55:49.610519+00', true);
-INSERT INTO public.payments VALUES (111, 470, 3, NULL, 363.92, 14557.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762178442605-9448', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:00:42.95+00', NULL, '2025-11-03 14:00:42.941481+00', '2025-11-03 14:00:42.941481+00', true);
-INSERT INTO public.payments VALUES (112, 471, 3, NULL, 630.95, 25238.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762178573432-1019', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:02:53.8+00', NULL, '2025-11-03 14:02:53.790413+00', '2025-11-03 14:02:53.790413+00', true);
-INSERT INTO public.payments VALUES (113, 472, 3, NULL, 725.91, 29036.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762178639498-1066', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:03:59.741+00', NULL, '2025-11-03 14:03:59.74138+00', '2025-11-03 14:03:59.74138+00', true);
-INSERT INTO public.payments VALUES (114, 473, 3, NULL, 405.95, 16238.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762178801201-8110', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:06:41.478+00', NULL, '2025-11-03 14:06:41.507547+00', '2025-11-03 14:06:41.507547+00', true);
-INSERT INTO public.payments VALUES (115, 474, 3, NULL, 97.98, 3919.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762179005299-5153', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:10:05.667+00', NULL, '2025-11-03 14:10:05.747979+00', '2025-11-03 14:10:05.747979+00', true);
-INSERT INTO public.payments VALUES (116, 475, 3, NULL, 485.94, 19438.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762179226872-4146', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:13:47.139+00', NULL, '2025-11-03 14:13:47.23494+00', '2025-11-03 14:13:47.23494+00', true);
-INSERT INTO public.payments VALUES (117, 476, 3, NULL, 615.92, 24637.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762179322202-7827', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:15:22.496+00', NULL, '2025-11-03 14:15:22.668547+00', '2025-11-03 14:15:22.668547+00', true);
-INSERT INTO public.payments VALUES (118, 477, 3, NULL, 1428.86, 57154.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762179476745-2596', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:17:57.03+00', NULL, '2025-11-03 14:17:57.125626+00', '2025-11-03 14:17:57.125626+00', true);
-INSERT INTO public.payments VALUES (119, 478, 3, NULL, 397.95, 15918.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762179619725-3379', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:20:20.031+00', NULL, '2025-11-03 14:20:20.157809+00', '2025-11-03 14:20:20.157809+00', true);
-INSERT INTO public.payments VALUES (120, 479, 3, NULL, 149.97, 5999.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762179804366-3790', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:23:24.628+00', NULL, '2025-11-03 14:23:24.757321+00', '2025-11-03 14:23:24.757321+00', true);
-INSERT INTO public.payments VALUES (121, 480, 3, NULL, 228.95, 9158.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762179974501-7442', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:26:14.838+00', NULL, '2025-11-03 14:26:15.004311+00', '2025-11-03 14:26:15.004311+00', true);
-INSERT INTO public.payments VALUES (122, 481, 3, NULL, 199.98, 7999.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762180224951-4507', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:30:25.305+00', NULL, '2025-11-03 14:30:25.429386+00', '2025-11-03 14:30:25.429386+00', true);
-INSERT INTO public.payments VALUES (123, 482, 3, NULL, 116.97, 4679.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762180461130-5737', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:34:21.585+00', NULL, '2025-11-03 14:34:21.701984+00', '2025-11-03 14:34:21.701984+00', true);
-INSERT INTO public.payments VALUES (124, 483, 3, NULL, 446.92, 17877.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762180673623-9305', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:37:53.906+00', NULL, '2025-11-03 14:37:54.029812+00', '2025-11-03 14:37:54.029812+00', true);
-INSERT INTO public.payments VALUES (125, 484, 3, NULL, 725.90, 29036.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762180929960-2200', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:42:10.207+00', NULL, '2025-11-03 14:42:10.30311+00', '2025-11-03 14:42:10.30311+00', true);
-INSERT INTO public.payments VALUES (126, 485, 3, NULL, 1059.88, 42395.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762181004794-3722', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:43:25.21+00', NULL, '2025-11-03 14:43:25.314406+00', '2025-11-03 14:43:25.314406+00', true);
-INSERT INTO public.payments VALUES (127, 486, 3, NULL, 489.93, 19597.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762181296154-6374', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:48:16.651+00', NULL, '2025-11-03 14:48:16.979226+00', '2025-11-03 14:48:16.979226+00', true);
-INSERT INTO public.payments VALUES (128, 487, 3, NULL, 42.99, 1720.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762181576515-4093', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:52:56.822+00', NULL, '2025-11-03 14:52:56.971812+00', '2025-11-03 14:52:56.971812+00', true);
-INSERT INTO public.payments VALUES (129, 488, 3, NULL, 232.97, 9319.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762181828685-1823', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:57:08.946+00', NULL, '2025-11-03 14:57:09.034761+00', '2025-11-03 14:57:09.034761+00', true);
-INSERT INTO public.payments VALUES (130, 489, 3, NULL, 1312.95, 52518.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762181968268-6265', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 14:59:28.823+00', NULL, '2025-11-03 14:59:28.91913+00', '2025-11-03 14:59:28.91913+00', true);
-INSERT INTO public.payments VALUES (131, 490, 3, NULL, 465.94, 18638.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762182177528-2377', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:02:57.83+00', NULL, '2025-11-03 15:02:57.933006+00', '2025-11-03 15:02:57.933006+00', true);
-INSERT INTO public.payments VALUES (132, 491, 3, NULL, 218.97, 8759.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762182467446-1238', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:07:47.716+00', NULL, '2025-11-03 15:07:47.805278+00', '2025-11-03 15:07:47.805278+00', true);
-INSERT INTO public.payments VALUES (133, 492, 3, NULL, 139.98, 5599.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762182533552-3280', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:08:53.809+00', NULL, '2025-11-03 15:08:53.88648+00', '2025-11-03 15:08:53.88648+00', true);
-INSERT INTO public.payments VALUES (134, 493, 3, NULL, 99.99, 4000.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762182645195-4907', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:10:45.488+00', NULL, '2025-11-03 15:10:45.570918+00', '2025-11-03 15:10:45.570918+00', true);
-INSERT INTO public.payments VALUES (135, 494, 3, NULL, 1412.92, 56517.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762182835585-2324', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:13:55.874+00', NULL, '2025-11-03 15:13:55.945486+00', '2025-11-03 15:13:55.945486+00', true);
-INSERT INTO public.payments VALUES (136, 495, 3, NULL, 849.90, 33996.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762182918884-9182', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:15:19.302+00', NULL, '2025-11-03 15:15:19.373842+00', '2025-11-03 15:15:19.373842+00', true);
-INSERT INTO public.payments VALUES (137, 496, 3, NULL, 491.94, 19678.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762182999206-1660', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:16:39.463+00', NULL, '2025-11-03 15:16:39.525754+00', '2025-11-03 15:16:39.525754+00', true);
-INSERT INTO public.payments VALUES (138, 497, 3, NULL, 665.91, 26636.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762183265022-7490', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:21:05.419+00', NULL, '2025-11-03 15:21:05.483025+00', '2025-11-03 15:21:05.483025+00', true);
-INSERT INTO public.payments VALUES (139, 498, 3, NULL, 99.99, 4000.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762183467177-9772', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:24:27.483+00', NULL, '2025-11-03 15:24:27.536084+00', '2025-11-03 15:24:27.536084+00', true);
-INSERT INTO public.payments VALUES (140, 499, 3, NULL, 1203.96, 48158.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762183634595-4647', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:27:14.855+00', NULL, '2025-11-03 15:27:14.909834+00', '2025-11-03 15:27:14.909834+00', true);
-INSERT INTO public.payments VALUES (141, 500, 3, NULL, 743.94, 29758.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762183930119-1774', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:32:10.367+00', NULL, '2025-11-03 15:32:10.404633+00', '2025-11-03 15:32:10.404633+00', true);
-INSERT INTO public.payments VALUES (142, 501, 3, NULL, 858.85, 34354.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762184050118-1293', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:34:10.362+00', NULL, '2025-11-03 15:34:10.417053+00', '2025-11-03 15:34:10.417053+00', true);
-INSERT INTO public.payments VALUES (143, 502, 3, NULL, 281.95, 11278.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762184340854-6060', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:39:01.19+00', NULL, '2025-11-03 15:39:01.238499+00', '2025-11-03 15:39:01.238499+00', true);
-INSERT INTO public.payments VALUES (144, 503, 3, NULL, 377.95, 15118.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762184424474-6379', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:40:24.781+00', NULL, '2025-11-03 15:40:24.869447+00', '2025-11-03 15:40:24.869447+00', true);
-INSERT INTO public.payments VALUES (145, 504, 3, NULL, 434.93, 17397.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762184668922-7723', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:44:29.33+00', NULL, '2025-11-03 15:44:29.377967+00', '2025-11-03 15:44:29.377967+00', true);
-INSERT INTO public.payments VALUES (146, 505, 3, NULL, 585.93, 23437.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762184742528-6522', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:45:42.792+00', NULL, '2025-11-03 15:45:42.861738+00', '2025-11-03 15:45:42.861738+00', true);
-INSERT INTO public.payments VALUES (147, 506, 3, NULL, 365.95, 14638.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762184853293-7126', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:47:33.558+00', NULL, '2025-11-03 15:47:33.645558+00', '2025-11-03 15:47:33.645558+00', true);
-INSERT INTO public.payments VALUES (148, 507, 3, NULL, 978.87, 39155.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762185155814-8077', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:52:36.068+00', NULL, '2025-11-03 15:52:36.142778+00', '2025-11-03 15:52:36.142778+00', true);
-INSERT INTO public.payments VALUES (149, 508, 3, NULL, 567.93, 22717.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762185243682-9165', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:54:03.94+00', NULL, '2025-11-03 15:54:04.013265+00', '2025-11-03 15:54:04.013265+00', true);
-INSERT INTO public.payments VALUES (150, 509, 3, NULL, 1892.92, 75717.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762185454707-4382', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:57:34.937+00', NULL, '2025-11-03 15:57:35.014437+00', '2025-11-03 15:57:35.014437+00', true);
-INSERT INTO public.payments VALUES (151, 510, 3, NULL, 453.94, 18158.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762185531921-1254', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 15:58:52.264+00', NULL, '2025-11-03 15:58:52.382395+00', '2025-11-03 15:58:52.382395+00', true);
-INSERT INTO public.payments VALUES (152, 511, 3, NULL, 199.98, 7999.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762185740943-4002', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 16:02:21.226+00', NULL, '2025-11-03 16:02:21.317337+00', '2025-11-03 16:02:21.317337+00', true);
-INSERT INTO public.payments VALUES (153, 512, 3, NULL, 1682.95, 67318.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762185922981-8492', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 16:05:23.244+00', NULL, '2025-11-03 16:05:23.325722+00', '2025-11-03 16:05:23.325722+00', true);
-INSERT INTO public.payments VALUES (154, 513, 3, NULL, 65.98, 2639.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762186137732-2415', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 16:08:57.993+00', NULL, '2025-11-03 16:08:58.0716+00', '2025-11-03 16:08:58.0716+00', true);
-INSERT INTO public.payments VALUES (155, 514, 3, NULL, 526.89, 21076.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762186342306-1810', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 16:12:22.6+00', NULL, '2025-11-03 16:12:22.702118+00', '2025-11-03 16:12:22.702118+00', true);
-INSERT INTO public.payments VALUES (156, 515, 3, NULL, 438.92, 17557.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762186501865-8840', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 16:15:02.146+00', NULL, '2025-11-03 16:15:02.226626+00', '2025-11-03 16:15:02.226626+00', true);
-INSERT INTO public.payments VALUES (157, 516, 3, NULL, 493.92, 19757.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762186601020-6079', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 16:16:41.283+00', NULL, '2025-11-03 16:16:41.362246+00', '2025-11-03 16:16:41.362246+00', true);
-INSERT INTO public.payments VALUES (158, 517, 3, NULL, 337.94, 13518.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762186875716-9702', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 16:21:16.022+00', NULL, '2025-11-03 16:21:16.102907+00', '2025-11-03 16:21:16.102907+00', true);
-INSERT INTO public.payments VALUES (159, 518, 3, NULL, 857.87, 34315.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762187013469-9937', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 16:23:33.756+00', NULL, '2025-11-03 16:23:33.818246+00', '2025-11-03 16:23:33.818246+00', true);
-INSERT INTO public.payments VALUES (160, 519, 3, NULL, 435.90, 17436.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762187227626-2480', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 16:27:07.896+00', NULL, '2025-11-03 16:27:07.950176+00', '2025-11-03 16:27:07.950176+00', true);
-INSERT INTO public.payments VALUES (161, 520, 3, NULL, 222.95, 8918.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762187351945-8660', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 16:29:12.504+00', NULL, '2025-11-03 16:29:12.556798+00', '2025-11-03 16:29:12.556798+00', true);
-INSERT INTO public.payments VALUES (162, 521, 3, NULL, 1728.94, 69158.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762187633427-8583', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 16:33:54.006+00', NULL, '2025-11-03 16:33:54.268244+00', '2025-11-03 16:33:54.268244+00', true);
-INSERT INTO public.payments VALUES (163, 522, 3, NULL, 299.97, 11999.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762187891018-1634', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 16:38:11.261+00', NULL, '2025-11-03 16:38:11.324555+00', '2025-11-03 16:38:11.324555+00', true);
-INSERT INTO public.payments VALUES (164, 523, 3, NULL, 209.96, 8398.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762188047873-2773', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 16:40:48.125+00', NULL, '2025-11-03 16:40:48.183994+00', '2025-11-03 16:40:48.183994+00', true);
-INSERT INTO public.payments VALUES (165, 524, 3, NULL, 999.89, 39996.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762188315415-6813', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 16:45:15.694+00', NULL, '2025-11-03 16:45:15.759202+00', '2025-11-03 16:45:15.759202+00', true);
-INSERT INTO public.payments VALUES (166, 525, 3, NULL, 199.98, 7999.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762188591557-5075', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 16:49:51.863+00', NULL, '2025-11-03 16:49:51.902016+00', '2025-11-03 16:49:51.902016+00', true);
-INSERT INTO public.payments VALUES (167, 526, 3, NULL, 599.94, 23998.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762188828608-5692', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 16:53:48.878+00', NULL, '2025-11-03 16:53:48.920479+00', '2025-11-03 16:53:48.920479+00', true);
-INSERT INTO public.payments VALUES (168, 527, 3, NULL, 778.85, 31154.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762189007909-8665', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 16:56:48.317+00', NULL, '2025-11-03 16:56:48.363656+00', '2025-11-03 16:56:48.363656+00', true);
-INSERT INTO public.payments VALUES (169, 528, 3, NULL, 1049.88, 41995.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762189148752-1116', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 16:59:09.115+00', NULL, '2025-11-03 16:59:09.176539+00', '2025-11-03 16:59:09.176539+00', true);
-INSERT INTO public.payments VALUES (170, 529, 3, NULL, 625.90, 25036.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762189418630-3012', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:03:38.888+00', NULL, '2025-11-03 17:03:38.929187+00', '2025-11-03 17:03:38.929187+00', true);
-INSERT INTO public.payments VALUES (171, 530, 3, NULL, 365.93, 14637.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762189649969-4872', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:07:30.326+00', NULL, '2025-11-03 17:07:30.395753+00', '2025-11-03 17:07:30.395753+00', true);
-INSERT INTO public.payments VALUES (172, 531, 3, NULL, 511.94, 20478.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762189764375-7826', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:09:24.645+00', NULL, '2025-11-03 17:09:24.701295+00', '2025-11-03 17:09:24.701295+00', true);
-INSERT INTO public.payments VALUES (173, 532, 3, NULL, 1492.90, 59716.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762189877109-3269', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:11:17.417+00', NULL, '2025-11-03 17:11:17.500591+00', '2025-11-03 17:11:17.500591+00', true);
-INSERT INTO public.payments VALUES (174, 533, 3, NULL, 299.97, 11999.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762189969018-3919', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:12:49.51+00', NULL, '2025-11-03 17:12:49.57287+00', '2025-11-03 17:12:49.57287+00', true);
-INSERT INTO public.payments VALUES (175, 534, 3, NULL, 499.95, 19998.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762190199141-6413', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:16:39.455+00', NULL, '2025-11-03 17:16:39.516314+00', '2025-11-03 17:16:39.516314+00', true);
-INSERT INTO public.payments VALUES (176, 535, 3, NULL, 155.98, 6239.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762190276596-1740', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:17:56.969+00', NULL, '2025-11-03 17:17:57.053036+00', '2025-11-03 17:17:57.053036+00', true);
-INSERT INTO public.payments VALUES (177, 536, 3, NULL, 1382.95, 55318.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762190342404-3267', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:19:02.658+00', NULL, '2025-11-03 17:19:02.722012+00', '2025-11-03 17:19:02.722012+00', true);
-INSERT INTO public.payments VALUES (178, 537, 3, NULL, 385.95, 15438.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762190636855-2832', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:23:57.284+00', NULL, '2025-11-03 17:23:57.34556+00', '2025-11-03 17:23:57.34556+00', true);
-INSERT INTO public.payments VALUES (179, 538, 3, NULL, 216.96, 8678.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762190812530-6956', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:26:52.818+00', NULL, '2025-11-03 17:26:52.938137+00', '2025-11-03 17:26:52.938137+00', true);
-INSERT INTO public.payments VALUES (180, 539, 3, NULL, 277.94, 11118.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762191066389-5414', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:31:06.654+00', NULL, '2025-11-03 17:31:06.714477+00', '2025-11-03 17:31:06.714477+00', true);
-INSERT INTO public.payments VALUES (181, 540, 3, NULL, 696.86, 27874.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762191182998-9367', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:33:03.263+00', NULL, '2025-11-03 17:33:03.343569+00', '2025-11-03 17:33:03.343569+00', true);
-INSERT INTO public.payments VALUES (182, 541, 3, NULL, 1578.91, 63156.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762191364899-9216', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:36:05.341+00', NULL, '2025-11-03 17:36:05.4102+00', '2025-11-03 17:36:05.4102+00', true);
-INSERT INTO public.payments VALUES (183, 542, 3, NULL, 485.93, 19437.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762191582532-7793', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:39:42.857+00', NULL, '2025-11-03 17:39:42.936196+00', '2025-11-03 17:39:42.936196+00', true);
-INSERT INTO public.payments VALUES (184, 543, 3, NULL, 193.97, 7759.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762191737721-1470', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:42:17.998+00', NULL, '2025-11-03 17:42:18.084899+00', '2025-11-03 17:42:18.084899+00', true);
-INSERT INTO public.payments VALUES (185, 544, 3, NULL, 644.90, 25796.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762192029810-9925', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:47:10.182+00', NULL, '2025-11-03 17:47:10.270646+00', '2025-11-03 17:47:10.270646+00', true);
-INSERT INTO public.payments VALUES (186, 545, 3, NULL, 616.92, 24677.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762192262264-3652', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:51:02.774+00', NULL, '2025-11-03 17:51:03.09402+00', '2025-11-03 17:51:03.09402+00', true);
-INSERT INTO public.payments VALUES (187, 546, 3, NULL, 493.93, 19757.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762192554317-2541', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:55:54.643+00', NULL, '2025-11-03 17:55:54.717052+00', '2025-11-03 17:55:54.717052+00', true);
-INSERT INTO public.payments VALUES (188, 547, 3, NULL, 608.91, 24356.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762192755832-3665', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 17:59:16.126+00', NULL, '2025-11-03 17:59:16.23771+00', '2025-11-03 17:59:16.23771+00', true);
-INSERT INTO public.payments VALUES (189, 548, 3, NULL, 840.88, 33635.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762192834482-9240', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 18:00:34.741+00', NULL, '2025-11-03 18:00:34.820618+00', '2025-11-03 18:00:34.820618+00', true);
-INSERT INTO public.payments VALUES (190, 549, 3, NULL, 441.92, 17677.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762193064576-9063', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 18:04:24.872+00', NULL, '2025-11-03 18:04:25.053769+00', '2025-11-03 18:04:25.053769+00', true);
-INSERT INTO public.payments VALUES (191, 550, 3, NULL, 99.99, 4000.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762193359782-9527', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 18:09:20.107+00', NULL, '2025-11-03 18:09:20.199783+00', '2025-11-03 18:09:20.199783+00', true);
-INSERT INTO public.payments VALUES (192, 551, 3, NULL, 72.99, 2920.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762193586362-8356', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 18:13:06.727+00', NULL, '2025-11-03 18:13:06.821958+00', '2025-11-03 18:13:06.821958+00', true);
-INSERT INTO public.payments VALUES (193, 552, 3, NULL, 99.99, 4000.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762193869333-2021', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 18:17:49.6+00', NULL, '2025-11-03 18:17:49.699769+00', '2025-11-03 18:17:49.699769+00', true);
-INSERT INTO public.payments VALUES (194, 553, 3, NULL, 707.88, 28315.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762193993338-3724', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 18:19:53.645+00', NULL, '2025-11-03 18:19:53.744098+00', '2025-11-03 18:19:53.744098+00', true);
-INSERT INTO public.payments VALUES (195, 554, 3, NULL, 595.92, 23837.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762194134088-5517', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 18:22:14.373+00', NULL, '2025-11-03 18:22:14.465756+00', '2025-11-03 18:22:14.465756+00', true);
-INSERT INTO public.payments VALUES (196, 555, 3, NULL, 1092.92, 43717.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762194355690-4732', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-03 18:25:55.928+00', NULL, '2025-11-03 18:25:56.007786+00', '2025-11-03 18:25:56.007786+00', true);
-INSERT INTO public.payments VALUES (197, 556, 20, NULL, 99.99, 4000.00, 40.000000, 'pending', 'test_Pago Móvil Test', NULL, 'AUTO-1762259567096-5638', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-04 12:32:47.604+00', NULL, '2025-11-04 12:32:47.697585+00', '2025-11-04 12:32:47.697585+00', true);
-INSERT INTO public.payments VALUES (198, 557, 3, NULL, 803.88, 32155.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762259678010-8306', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-04 12:34:38.314+00', NULL, '2025-11-04 12:34:38.402864+00', '2025-11-04 12:34:38.402864+00', true);
-INSERT INTO public.payments VALUES (199, 558, 3, NULL, 1530.91, 61236.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762259902371-5725', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-04 12:38:22.881+00', NULL, '2025-11-04 12:38:22.945322+00', '2025-11-04 12:38:22.945322+00', true);
-INSERT INTO public.payments VALUES (200, 559, 3, NULL, 1703.89, 68156.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762260068866-3370', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-04 12:41:09.101+00', NULL, '2025-11-04 12:41:09.180171+00', '2025-11-04 12:41:09.180171+00', true);
-INSERT INTO public.payments VALUES (201, 560, 20, NULL, 195.96, 7838.00, 40.000000, 'pending', 'test_Pago Móvil Test', NULL, 'AUTO-1762260234158-8259', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-04 12:43:54.567+00', NULL, '2025-11-04 12:43:54.647089+00', '2025-11-04 12:43:54.647089+00', true);
-INSERT INTO public.payments VALUES (202, 561, 3, NULL, 255.96, 10238.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762261083693-2363', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-04 12:58:04.099+00', NULL, '2025-11-04 12:58:04.134896+00', '2025-11-04 12:58:04.134896+00', true);
-INSERT INTO public.payments VALUES (203, 562, 3, NULL, 99.99, 4000.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762261796796-3767', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-04 13:09:57.126+00', NULL, '2025-11-04 13:09:57.178479+00', '2025-11-04 13:09:57.178479+00', true);
-INSERT INTO public.payments VALUES (204, 563, 3, NULL, 237.97, 9519.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762262497637-1159', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-04 13:21:37.903+00', NULL, '2025-11-04 13:21:37.952653+00', '2025-11-04 13:21:37.952653+00', true);
-INSERT INTO public.payments VALUES (205, 564, 3, NULL, 973.92, 38957.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762263242686-9622', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-04 13:34:03.094+00', NULL, '2025-11-04 13:34:03.151913+00', '2025-11-04 13:34:03.151913+00', true);
-INSERT INTO public.payments VALUES (206, 565, 3, NULL, 927.87, 37115.00, 40.000000, 'pending', 'Banco Mercantil', NULL, 'AUTO-1762263870065-8241', '"Pago automático generado por servicio de testing"', NULL, NULL, '2025-11-04 13:44:30.473+00', NULL, '2025-11-04 13:44:30.554634+00', '2025-11-04 13:44:30.554634+00', true);
 
 
 --
--- TOC entry 4266 (class 0 OID 32525)
--- Dependencies: 393
+-- TOC entry 4413 (class 0 OID 32525)
+-- Dependencies: 399
 -- Data for Name: product_images; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.product_images VALUES (397, 83, 1, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_1_1_2936bd98a01c34ea9a24d536299084682e5800dcc182ff6838b948469d10f626.webp', '2936bd98a01c34ea9a24d536299084682e5800dcc182ff6838b948469d10f626', 'image/webp', false, '2025-10-03 17:13:43.219+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (398, 83, 1, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_1_1_76d59fb1ffab75b97d610f295195d6266c6b9bcb875748ffc19b526d4cef3163.webp', '76d59fb1ffab75b97d610f295195d6266c6b9bcb875748ffc19b526d4cef3163', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (399, 83, 1, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_1_1_36804f18956f620cd8e7c7368413ac9e1f051e700fa1cb5f2f66784d43c655df.webp', '36804f18956f620cd8e7c7368413ac9e1f051e700fa1cb5f2f66784d43c655df', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (400, 83, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_1_1_17e2d03c735674d8fd1770a7f042573f6ca5a4bf25d1bad7bfa76b72c9033881.webp', '17e2d03c735674d8fd1770a7f042573f6ca5a4bf25d1bad7bfa76b72c9033881', 'image/webp', true, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (401, 84, 1, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_1_2_121abfe695774fc594f0056334b072a3d17c36f25a4b5abd7c29e3b4853ebe9f.webp', '121abfe695774fc594f0056334b072a3d17c36f25a4b5abd7c29e3b4853ebe9f', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (402, 84, 1, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_1_2_7504e5d30ba2e687648d55d6b87e779657b428e87fa3d4ea3feb25ad120a8651.webp', '7504e5d30ba2e687648d55d6b87e779657b428e87fa3d4ea3feb25ad120a8651', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (403, 84, 1, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_1_2_c6f916367239f90ed029922cff97bba9ea436df25a2d59b09c0b9c6577719cfc.webp', 'c6f916367239f90ed029922cff97bba9ea436df25a2d59b09c0b9c6577719cfc', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (404, 84, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_1_2_90b58d2a3bb547c632b69b932b8fcdf6811362464549b8837ab5aa65b912f88e.webp', '90b58d2a3bb547c632b69b932b8fcdf6811362464549b8837ab5aa65b912f88e', 'image/webp', true, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (405, 85, 1, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_1_3_a151c415a32d9bb2ab5306fd912fc91fd0a57bf51782a4dd13ef18f9a0d01b12.webp', 'a151c415a32d9bb2ab5306fd912fc91fd0a57bf51782a4dd13ef18f9a0d01b12', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (406, 85, 1, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_1_3_52fbe4997911472083dcd981f1b98ed864ae4e138b18a8fc48828af5ed9b06e2.webp', '52fbe4997911472083dcd981f1b98ed864ae4e138b18a8fc48828af5ed9b06e2', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (407, 85, 1, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_1_3_4ba58ceaa61591260d6f2104db956832e3c2c58fc743ba7e3905936afbfedef5.webp', '4ba58ceaa61591260d6f2104db956832e3c2c58fc743ba7e3905936afbfedef5', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (408, 85, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_1_3_65da340aff6eeb1a5e1c16a682bc7c52fc5a877dcadc09033af89fee3e3e8184.webp', '65da340aff6eeb1a5e1c16a682bc7c52fc5a877dcadc09033af89fee3e3e8184', 'image/webp', true, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (409, 86, 1, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_1_4_85b9acb2c86827d6ef9dff962771ed6bec60b8365e3a8559fb40d49cb435ef4e.webp', '85b9acb2c86827d6ef9dff962771ed6bec60b8365e3a8559fb40d49cb435ef4e', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (410, 86, 1, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_1_4_99caa2561439b2481b073c4521b2c3291b0d6cafb625812d6173cec2462a3d8f.webp', '99caa2561439b2481b073c4521b2c3291b0d6cafb625812d6173cec2462a3d8f', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (411, 86, 1, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_1_4_41312e60b2846416d680df06ca072cdf544b49dfeac8fdb09be544cf4b74d9fe.webp', '41312e60b2846416d680df06ca072cdf544b49dfeac8fdb09be544cf4b74d9fe', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (412, 86, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_1_4_ef3d8dd703b989b15baf319626ec0d6c3377f99c6b7032c4d7070f47fa586260.webp', 'ef3d8dd703b989b15baf319626ec0d6c3377f99c6b7032c4d7070f47fa586260', 'image/webp', true, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (413, 87, 1, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_10_1_585e41429ed395fb6f136ccee513957cc10fc6d5a29f56a1ae73c65444fa899a.webp', '585e41429ed395fb6f136ccee513957cc10fc6d5a29f56a1ae73c65444fa899a', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (414, 87, 1, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_10_1_99159f297848c61420bf7d8435e5936059aa5407884523de8ac26431a25b4033.webp', '99159f297848c61420bf7d8435e5936059aa5407884523de8ac26431a25b4033', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (415, 87, 1, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_10_1_42f1ba1f0377ff55e690110ebd1ea2e39044cd863d51dc9a84fdf4fa9c296343.webp', '42f1ba1f0377ff55e690110ebd1ea2e39044cd863d51dc9a84fdf4fa9c296343', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (416, 87, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_10_1_3b83d695a4dd98e49aff32326fb99214ea2838acd41ffe14fafa866022342729.webp', '3b83d695a4dd98e49aff32326fb99214ea2838acd41ffe14fafa866022342729', 'image/webp', true, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (417, 88, 1, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_10_2_67f25e13f66e72967f840496d2074e176970b7be41790f540940a67e99ab86f0.webp', '67f25e13f66e72967f840496d2074e176970b7be41790f540940a67e99ab86f0', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (418, 88, 1, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_10_2_d5733d3f6ba80a7c21accb8d630f1d5f51d25f371ea0ce3033cf8deafef2f7ad.webp', 'd5733d3f6ba80a7c21accb8d630f1d5f51d25f371ea0ce3033cf8deafef2f7ad', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (419, 88, 1, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_10_2_df9511880025b0507d3262508f9c00d835b39f192379f751717af6ec22f2560f.webp', 'df9511880025b0507d3262508f9c00d835b39f192379f751717af6ec22f2560f', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (420, 88, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_10_2_60428b746ec9a677e4dd7283e37d867602bdfa3fde53c2592c0214f6d1b25368.webp', '60428b746ec9a677e4dd7283e37d867602bdfa3fde53c2592c0214f6d1b25368', 'image/webp', true, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (421, 89, 1, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_10_3_c23c945500041ff7a8009490f2d7ee243cb782df69be006708d5f88464a68cf8.webp', 'c23c945500041ff7a8009490f2d7ee243cb782df69be006708d5f88464a68cf8', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (422, 89, 1, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_10_3_10b32c7c5c380696f3e89d0a243f81d7a25929cab41dc76d2efcfd52092f55b4.webp', '10b32c7c5c380696f3e89d0a243f81d7a25929cab41dc76d2efcfd52092f55b4', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (423, 89, 1, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_10_3_15fd384e233f2231ff57afee9170f2f774598556b07b2ae63c87e1642131bac4.webp', '15fd384e233f2231ff57afee9170f2f774598556b07b2ae63c87e1642131bac4', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (424, 89, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_10_3_0352ce0c3b2326fd0483eced9794053fd28d05869f28dc88ff387285fc8b9a96.webp', '0352ce0c3b2326fd0483eced9794053fd28d05869f28dc88ff387285fc8b9a96', 'image/webp', true, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (425, 90, 1, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_10_4_b0900e63ecb21512838fa6e0df43885b130656e172af8750839c3067acd55cea.webp', 'b0900e63ecb21512838fa6e0df43885b130656e172af8750839c3067acd55cea', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (426, 90, 1, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_10_4_d96c6111a5c2ce699e0a36638ed229598f1cd5009b0caba23d7b9a60ef76da81.webp', 'd96c6111a5c2ce699e0a36638ed229598f1cd5009b0caba23d7b9a60ef76da81', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (427, 90, 1, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_10_4_067848a80370f15337826814b26063f9503ec0bec0e87ce21f959e1ee3c4df48.webp', '067848a80370f15337826814b26063f9503ec0bec0e87ce21f959e1ee3c4df48', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (428, 90, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_10_4_a3442f17209984253dc088a6ad3f2c46bd68bc1560cfdfce2c3794194e458f81.webp', 'a3442f17209984253dc088a6ad3f2c46bd68bc1560cfdfce2c3794194e458f81', 'image/webp', true, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (429, 91, 1, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_11_1_99d5373726dca6c08f6af90909eae773b9da3a5a41e3074e3d4a08ca15d733af.webp', '99d5373726dca6c08f6af90909eae773b9da3a5a41e3074e3d4a08ca15d733af', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (430, 91, 1, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_11_1_144eee9c82e7c5db3dd82f196e12b27650ecff5499da2087b6bfce1aa568b03f.webp', '144eee9c82e7c5db3dd82f196e12b27650ecff5499da2087b6bfce1aa568b03f', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (431, 91, 1, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_11_1_63e2e655f07b233d2f2cef7ec21717285cc00511d7ff3e208dd60995215ee1cb.webp', '63e2e655f07b233d2f2cef7ec21717285cc00511d7ff3e208dd60995215ee1cb', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (432, 91, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_11_1_b185482b2084a7e92f67c69046b6d3d4c0cccc911835c3c41e97164d88e93a0f.webp', 'b185482b2084a7e92f67c69046b6d3d4c0cccc911835c3c41e97164d88e93a0f', 'image/webp', true, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (433, 92, 1, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_11_2_aa587f94d38137822f22c26c7f0710a541b06f2a99224334c3de9987ea41595e.webp', 'aa587f94d38137822f22c26c7f0710a541b06f2a99224334c3de9987ea41595e', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (434, 92, 1, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_11_2_e5c1842166e379867945905fc74d1e16e9fa262155a59cf7e542e496cd564734.webp', 'e5c1842166e379867945905fc74d1e16e9fa262155a59cf7e542e496cd564734', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (435, 92, 1, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_11_2_616ba756960e949d99955a507b3e0597d7308284f102c4227060b203e38b37ae.webp', '616ba756960e949d99955a507b3e0597d7308284f102c4227060b203e38b37ae', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (436, 92, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_11_2_3013ec05e7208c7b7cb6a26ddb7079afd9504695e570c65c4f1f8ddccdc030cd.webp', '3013ec05e7208c7b7cb6a26ddb7079afd9504695e570c65c4f1f8ddccdc030cd', 'image/webp', true, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (437, 93, 1, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_11_3_a01f80ce8bf44935ddfff6839ec5e146eea11633a9527afdeaa139b7abcace2e.webp', 'a01f80ce8bf44935ddfff6839ec5e146eea11633a9527afdeaa139b7abcace2e', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (438, 93, 1, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_11_3_d596ebbef9c30811f4732605e6828aacb3f2ef280851fb541127582fb4138714.webp', 'd596ebbef9c30811f4732605e6828aacb3f2ef280851fb541127582fb4138714', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (439, 93, 1, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_11_3_e495cb095eb88bc4df81bf6ad2b5cbc9dcd6c6e48cadda37821160a123199bb7.webp', 'e495cb095eb88bc4df81bf6ad2b5cbc9dcd6c6e48cadda37821160a123199bb7', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (440, 93, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_11_3_56426a418954cfb02df930324bd0dd0900fa2f4d25abb00fe898c32d44d3e05b.webp', '56426a418954cfb02df930324bd0dd0900fa2f4d25abb00fe898c32d44d3e05b', 'image/webp', true, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (441, 94, 1, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_11_4_ffb18671273a8ea5f52e19055f03c753abece4efa311235a75e9a7f22e762d67.webp', 'ffb18671273a8ea5f52e19055f03c753abece4efa311235a75e9a7f22e762d67', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (442, 94, 1, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_11_4_ebda4ee277b7b6c3b830a7645e089e2a0f4595e8b66e2830e0cbdb0c1bc83e8f.webp', 'ebda4ee277b7b6c3b830a7645e089e2a0f4595e8b66e2830e0cbdb0c1bc83e8f', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (443, 94, 1, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_11_4_3d4645849f5545d7f99ce56480fa16a2a6e78b609a0e4595884484a0af8c3c0c.webp', '3d4645849f5545d7f99ce56480fa16a2a6e78b609a0e4595884484a0af8c3c0c', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (444, 94, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_11_4_85f0bdd1c886d81554188836363bfe56d93001bffea11452e0e68560f4111332.webp', '85f0bdd1c886d81554188836363bfe56d93001bffea11452e0e68560f4111332', 'image/webp', true, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (445, 83, 2, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_12_1_a98fe3e354a6f4e3d0a82e7e5fa371cf586f26d3bc1bf10bece962a888d81863.webp', 'a98fe3e354a6f4e3d0a82e7e5fa371cf586f26d3bc1bf10bece962a888d81863', 'image/webp', false, '2025-10-03 17:13:43.22+00', '2025-10-03 17:13:43.22+00', true);
-INSERT INTO public.product_images VALUES (446, 83, 2, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_12_1_f2680516ceeab398cf9c3b945a79992060a738960b25f09099add094f093c950.webp', 'f2680516ceeab398cf9c3b945a79992060a738960b25f09099add094f093c950', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (447, 83, 2, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_12_1_7ab5441ff75bb42b3321e8c0c10e1032000da2437f4b4e466614194a04060697.webp', '7ab5441ff75bb42b3321e8c0c10e1032000da2437f4b4e466614194a04060697', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (448, 83, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_12_1_956dd99d024b7a395ed612bd65ac976ae7a2615680acc2c3938e2bd1a2d4a78f.webp', '956dd99d024b7a395ed612bd65ac976ae7a2615680acc2c3938e2bd1a2d4a78f', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (449, 84, 2, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_12_2_6200d6ab802260b68e5d1b8601b269e9e1938e39557b261ea6a355d64c4c7895.webp', '6200d6ab802260b68e5d1b8601b269e9e1938e39557b261ea6a355d64c4c7895', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (450, 84, 2, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_12_2_f848cfe021afc02096509d34ca2a57aa149703eb9116c5d3b16efa89fc382f41.webp', 'f848cfe021afc02096509d34ca2a57aa149703eb9116c5d3b16efa89fc382f41', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (451, 84, 2, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_12_2_9187897d1bd73c013c1524fb1fd6f732dfebde2ba68f9530dfa2b2721297e2c8.webp', '9187897d1bd73c013c1524fb1fd6f732dfebde2ba68f9530dfa2b2721297e2c8', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (452, 84, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_12_2_64defb63144bc231795ccfd2ea89f64f292110dface20d389dfdb4e3a5e70341.webp', '64defb63144bc231795ccfd2ea89f64f292110dface20d389dfdb4e3a5e70341', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (453, 85, 2, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_12_3_4b43bab922d3aa031df9adb585bd80fa792505b3d4ffd493d64ce38497bda45e.webp', '4b43bab922d3aa031df9adb585bd80fa792505b3d4ffd493d64ce38497bda45e', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (454, 85, 2, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_12_3_a9d7725d9f9f766eda57510295428f9b78bddb28cd12ce43276cbc71d495d073.webp', 'a9d7725d9f9f766eda57510295428f9b78bddb28cd12ce43276cbc71d495d073', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (455, 85, 2, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_12_3_7856f23533311b8a521aff0d9cd4f11cbbe755487937bed8a821763686308132.webp', '7856f23533311b8a521aff0d9cd4f11cbbe755487937bed8a821763686308132', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (456, 85, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_12_3_e5da83e94b522e11b17d9cc608022520acdcb89a309b8cbec80434629a54de5f.webp', 'e5da83e94b522e11b17d9cc608022520acdcb89a309b8cbec80434629a54de5f', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (457, 86, 2, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_12_4_bd7c96794af9f145f4b0323ff5afce20a85df5385a1e8b9192ef21585143d8e6.webp', 'bd7c96794af9f145f4b0323ff5afce20a85df5385a1e8b9192ef21585143d8e6', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (458, 86, 2, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_12_4_f701db6ec306278e902a2b04134aa6f828b2031872539c5ec7684bf92092bb49.webp', 'f701db6ec306278e902a2b04134aa6f828b2031872539c5ec7684bf92092bb49', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (459, 86, 2, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_12_4_4ff6edcca0e7388a1d0fba467ca7c4d025f98d9c417a9b87c4ee72cd8dccc087.webp', '4ff6edcca0e7388a1d0fba467ca7c4d025f98d9c417a9b87c4ee72cd8dccc087', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (460, 86, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_12_4_ac25c93b8f3d28b22ec5a0af4b5ddea8f44e741206d48abcb871db24484c175c.webp', 'ac25c93b8f3d28b22ec5a0af4b5ddea8f44e741206d48abcb871db24484c175c', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (461, 87, 2, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_13_1_d843b25b464fb1b27b05a68725cc35ac27575176c71eae1c496784b6c1931e66.webp', 'd843b25b464fb1b27b05a68725cc35ac27575176c71eae1c496784b6c1931e66', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (462, 87, 2, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_13_1_a865b21026f9f0a10d960767f72993331085f725c9bc45d531a1b70775bf99ad.webp', 'a865b21026f9f0a10d960767f72993331085f725c9bc45d531a1b70775bf99ad', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (463, 87, 2, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_13_1_200cadc760dac5bb6beeb2a7c1455c0f8e09d3f7c95eb548ec4967e1c35c27dd.webp', '200cadc760dac5bb6beeb2a7c1455c0f8e09d3f7c95eb548ec4967e1c35c27dd', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (464, 87, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_13_1_0f5d40f67f8d05ff70d6b6dd62bb05ee2d675502d78647152eb86d15b4686b8d.webp', '0f5d40f67f8d05ff70d6b6dd62bb05ee2d675502d78647152eb86d15b4686b8d', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (465, 88, 2, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_13_2_2fb7755422621092f40ff72f934b7ed403a26408ca3e89d50e1e0bc18c74e264.webp', '2fb7755422621092f40ff72f934b7ed403a26408ca3e89d50e1e0bc18c74e264', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (466, 88, 2, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_13_2_d8d9e12e91a2b7bc69db0e7971e2b29551c671abe8232a7205ce83aeb745c2bc.webp', 'd8d9e12e91a2b7bc69db0e7971e2b29551c671abe8232a7205ce83aeb745c2bc', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (467, 88, 2, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_13_2_59f61ef859ea6cd781c55a9bf0787b1319655c2600b08ad0362510e1b2f5a4f6.webp', '59f61ef859ea6cd781c55a9bf0787b1319655c2600b08ad0362510e1b2f5a4f6', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (468, 88, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_13_2_75d29c93f688e53c58702b99cd4f67da767638e3d7badbbfbd27f2e724fe0930.webp', '75d29c93f688e53c58702b99cd4f67da767638e3d7badbbfbd27f2e724fe0930', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (469, 89, 2, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_13_3_34e168ef348f6a738415190a3de57b3a579cf5ed3daca0f4338a6a822f6fc435.webp', '34e168ef348f6a738415190a3de57b3a579cf5ed3daca0f4338a6a822f6fc435', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (470, 89, 2, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_13_3_ce2df7b62cb7b5b3d394e7d137515d8cb158c156f8ed0186b3f9dbd3843a50ea.webp', 'ce2df7b62cb7b5b3d394e7d137515d8cb158c156f8ed0186b3f9dbd3843a50ea', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (471, 89, 2, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_13_3_1f61fb7cd403ee387c98547f4b8e59dd4f9dfbcbef44b9a984529a24fbb9bdbb.webp', '1f61fb7cd403ee387c98547f4b8e59dd4f9dfbcbef44b9a984529a24fbb9bdbb', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (472, 89, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_13_3_5e58f5689aefd64ca1339d5757218869f491efd1ca3419e062e1ca0bf007efa2.webp', '5e58f5689aefd64ca1339d5757218869f491efd1ca3419e062e1ca0bf007efa2', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (473, 90, 2, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_13_4_9ca4eecbe61930a74436468d5ca079466b72a558800dd437d58ec29b88398b3a.webp', '9ca4eecbe61930a74436468d5ca079466b72a558800dd437d58ec29b88398b3a', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (474, 90, 2, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_13_4_58959f1f6fea965e6650a518443ec76d8c8b5ede6ff772e238583f6c3ffcab17.webp', '58959f1f6fea965e6650a518443ec76d8c8b5ede6ff772e238583f6c3ffcab17', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (475, 90, 2, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_13_4_a04a9380d6d80e901f09c9ba74c173f46e30ef5567f3c06a0eb5f5991cf8bec4.webp', 'a04a9380d6d80e901f09c9ba74c173f46e30ef5567f3c06a0eb5f5991cf8bec4', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (476, 90, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_13_4_12ca76f2374b66fe8783434c3a8571f2f61c93c4a4044ae1c2eb169421bba8ef.webp', '12ca76f2374b66fe8783434c3a8571f2f61c93c4a4044ae1c2eb169421bba8ef', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (477, 91, 2, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_14_1_9946f54da342e708d1b501d947d8f349936c02ebb097d281c1cca51018ff11af.webp', '9946f54da342e708d1b501d947d8f349936c02ebb097d281c1cca51018ff11af', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (478, 91, 2, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_14_1_8c0db486b65659a1725af5673fe0bb12a3c2bcb49600736062c9b18fd6fbeff0.webp', '8c0db486b65659a1725af5673fe0bb12a3c2bcb49600736062c9b18fd6fbeff0', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (479, 91, 2, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_14_1_5be866867a702ef982057dde511a616f4bb8f6710d5a7a110837cc6b09981ab0.webp', '5be866867a702ef982057dde511a616f4bb8f6710d5a7a110837cc6b09981ab0', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (480, 91, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_14_1_1ebbff6e009fdad38588c522063bd0b0a8c42965a1df26c7f12d9dec4d10f640.webp', '1ebbff6e009fdad38588c522063bd0b0a8c42965a1df26c7f12d9dec4d10f640', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (481, 92, 2, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_2_1_2b2c7b9194319bca9cab16343905d8921fac927f134fa6b685fc7966a27db041.webp', '2b2c7b9194319bca9cab16343905d8921fac927f134fa6b685fc7966a27db041', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (482, 92, 2, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_2_1_da5d332dd4dc197d82b54510415674b8568a026d0a258ca29064365db2a2db5d.webp', 'da5d332dd4dc197d82b54510415674b8568a026d0a258ca29064365db2a2db5d', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (483, 92, 2, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_2_1_ba1098ffbe48cd9e89fd4e4467dcbd667c91827e9034a8d663af66336f11795a.webp', 'ba1098ffbe48cd9e89fd4e4467dcbd667c91827e9034a8d663af66336f11795a', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (484, 92, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_2_1_ac1439cdc3783a9105eec13dac3eeaecea6bff84ac58daf32f2006e044bfacb3.webp', 'ac1439cdc3783a9105eec13dac3eeaecea6bff84ac58daf32f2006e044bfacb3', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (485, 93, 2, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_2_2_6774f76e865f3fe05b7664f78bac5d4ecc76eb14f000bc5892007be29c78c80d.webp', '6774f76e865f3fe05b7664f78bac5d4ecc76eb14f000bc5892007be29c78c80d', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (486, 93, 2, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_2_2_4c089bcd67d7d6961bb232eda290dd6f5e32fba2fd7e83dacd7924502e2f45b9.webp', '4c089bcd67d7d6961bb232eda290dd6f5e32fba2fd7e83dacd7924502e2f45b9', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (487, 93, 2, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_2_2_6b1099b95f71ea23e3dd2b877a4a9d2ee7e32d52f55cb5da78ca6dbcd0333a0f.webp', '6b1099b95f71ea23e3dd2b877a4a9d2ee7e32d52f55cb5da78ca6dbcd0333a0f', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (488, 93, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_2_2_1c2252a79ee507ee099618f91aa0d79353d3758b923fa4adb0ab24d4fa59ea9b.webp', '1c2252a79ee507ee099618f91aa0d79353d3758b923fa4adb0ab24d4fa59ea9b', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (489, 94, 2, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_2_3_a78dea84ccfc929d9d86af0fde12d719c291817b0c8c70198c1831579f4e7b52.webp', 'a78dea84ccfc929d9d86af0fde12d719c291817b0c8c70198c1831579f4e7b52', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (490, 94, 2, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_2_3_f309a553db3f51393052b79ba96ff64a2563bbd9e5bd6c032ea88af82d41838c.webp', 'f309a553db3f51393052b79ba96ff64a2563bbd9e5bd6c032ea88af82d41838c', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (491, 94, 2, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_2_3_ec74fb16f87fe71d5e13e3e52ade42d815a9a84fb49788bfd32b7dd472f2917e.webp', 'ec74fb16f87fe71d5e13e3e52ade42d815a9a84fb49788bfd32b7dd472f2917e', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (492, 94, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_2_3_ec9ce4c3217c4fa5962fe566e6626356582d47ebccb0762fe5a8eeec4f29c859.webp', 'ec9ce4c3217c4fa5962fe566e6626356582d47ebccb0762fe5a8eeec4f29c859', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (493, 83, 3, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_3_1_883505ae6858cd9ac95ea81c50d9fa287e4aac7a72afdef291107c39aba80339.webp', '883505ae6858cd9ac95ea81c50d9fa287e4aac7a72afdef291107c39aba80339', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (494, 83, 3, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_3_1_ad2b977382aeba1e01926b43a4efd2f44c1ba863627bb6dafaa03c8b3c9c7ee5.webp', 'ad2b977382aeba1e01926b43a4efd2f44c1ba863627bb6dafaa03c8b3c9c7ee5', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (495, 83, 3, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_3_1_4f063ea1e9f6c6277beab7cf30187998f7a2ca199216e24068081487bcc77de8.webp', '4f063ea1e9f6c6277beab7cf30187998f7a2ca199216e24068081487bcc77de8', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (496, 83, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_3_1_a54078e720522a6433aa98246b29ea1568f9af6bd520351486f4142c53d239cf.webp', 'a54078e720522a6433aa98246b29ea1568f9af6bd520351486f4142c53d239cf', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (497, 84, 3, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_3_2_1833d93b627b5e211c5847130bcb5b3f351f73ef4827307d944808efaa2feb7b.webp', '1833d93b627b5e211c5847130bcb5b3f351f73ef4827307d944808efaa2feb7b', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (498, 84, 3, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_3_2_26ce64bc2a3d6c4aa8a320fa2383405e577a52163df585b8e775487e6888de9a.webp', '26ce64bc2a3d6c4aa8a320fa2383405e577a52163df585b8e775487e6888de9a', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (499, 84, 3, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_3_2_bb67cae0829f02c90483bed65d86321490ea0f9f32d209cc88fbc771b5a3421d.webp', 'bb67cae0829f02c90483bed65d86321490ea0f9f32d209cc88fbc771b5a3421d', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (500, 84, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_3_2_275afc6a8363b280e00a80f85fd338e5e25d6d10be6ffc3a935093eedb6e67bb.webp', '275afc6a8363b280e00a80f85fd338e5e25d6d10be6ffc3a935093eedb6e67bb', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (501, 85, 3, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_4_1_ebb8d452480906230b9d07be4530b4897ed9fe804d2fb24963a789899b12c699.webp', 'ebb8d452480906230b9d07be4530b4897ed9fe804d2fb24963a789899b12c699', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (502, 85, 3, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_4_1_6015a9865025338e4918005e2c3bae05d17c33e461b6e5a7c95922c48b439be0.webp', '6015a9865025338e4918005e2c3bae05d17c33e461b6e5a7c95922c48b439be0', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (503, 85, 3, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_4_1_090b640769811144dc33e028c1de5f833d658c69f1de686b26501a7cfb083b86.webp', '090b640769811144dc33e028c1de5f833d658c69f1de686b26501a7cfb083b86', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (504, 85, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_4_1_7b23c0e6c08d32c2650e6018b6962be17aaa638d367acb87f879f1eb080d9b45.webp', '7b23c0e6c08d32c2650e6018b6962be17aaa638d367acb87f879f1eb080d9b45', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (505, 86, 3, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_4_2_98bf88eed757c7557c1b23e33d724342a304c4a104f9adb1ab42a7a3ed38a33d.webp', '98bf88eed757c7557c1b23e33d724342a304c4a104f9adb1ab42a7a3ed38a33d', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (506, 86, 3, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_4_2_fc42beec8f35cafaf394f0e8afce3b92d225bd8258347930be1fb0f78af6d7a2.webp', 'fc42beec8f35cafaf394f0e8afce3b92d225bd8258347930be1fb0f78af6d7a2', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (507, 86, 3, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_4_2_d89368be2cf2834865c13d307663144d2fc2951ed20b6ca69c4fd595b857bd59.webp', 'd89368be2cf2834865c13d307663144d2fc2951ed20b6ca69c4fd595b857bd59', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (508, 86, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_4_2_04eb4768eb6cb84374d23528fb5d5330b3683c850105a2efa17a94cebc4c00e7.webp', '04eb4768eb6cb84374d23528fb5d5330b3683c850105a2efa17a94cebc4c00e7', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (509, 87, 3, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_4_3_343baf888fa6ffa9421984b91e58f168753377b25eec7c887ff57a2416907e17.webp', '343baf888fa6ffa9421984b91e58f168753377b25eec7c887ff57a2416907e17', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (510, 87, 3, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_4_3_9107a2d260fd51b110e5e29115ac5599865874b49caef619fa59d5a4e7c2654f.webp', '9107a2d260fd51b110e5e29115ac5599865874b49caef619fa59d5a4e7c2654f', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (511, 87, 3, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_4_3_2ffa2c17f9675eb7e195991ab5e0f72f61480f0f34facde6fde3b62b6037ec78.webp', '2ffa2c17f9675eb7e195991ab5e0f72f61480f0f34facde6fde3b62b6037ec78', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (512, 87, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_4_3_703f65845872a02e72e1516bbe174f24a8f7ed609afcded31747857ce05ff309.webp', '703f65845872a02e72e1516bbe174f24a8f7ed609afcded31747857ce05ff309', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (513, 88, 3, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_5_1_e79dd78c69f512c2646edaffd1dba255efd8ad207c20011f7d9b6d37a7c6a350.webp', 'e79dd78c69f512c2646edaffd1dba255efd8ad207c20011f7d9b6d37a7c6a350', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (514, 88, 3, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_5_1_0aabb489cc0a81b2a4b7f10d1160d4b9a25d7f713dc1e40e556a07c9647e2381.webp', '0aabb489cc0a81b2a4b7f10d1160d4b9a25d7f713dc1e40e556a07c9647e2381', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (515, 88, 3, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_5_1_b83475b1cf7da35e853530c1d5650193bde6a460c8400162e28b74679d4a7086.webp', 'b83475b1cf7da35e853530c1d5650193bde6a460c8400162e28b74679d4a7086', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (516, 88, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_5_1_a94420c5792bf1f5a2447f471b8bb6adfb2500a5ae395bceacd50698a340cc07.webp', 'a94420c5792bf1f5a2447f471b8bb6adfb2500a5ae395bceacd50698a340cc07', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (517, 89, 3, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_5_2_08d8716736e3a17b03a2c65a649050e5ff5f170cc330ee3e265dd8e32ef5de31.webp', '08d8716736e3a17b03a2c65a649050e5ff5f170cc330ee3e265dd8e32ef5de31', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (518, 89, 3, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_5_2_95812a72d016e2e8715756a1da69bf455da9ab8ffa9cc72a1d3c0cba6fc5ebc7.webp', '95812a72d016e2e8715756a1da69bf455da9ab8ffa9cc72a1d3c0cba6fc5ebc7', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (519, 89, 3, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_5_2_eb261efb6cc0c9451a70aaf8f27fd46491588efbc9445630abbeda48ba49735d.webp', 'eb261efb6cc0c9451a70aaf8f27fd46491588efbc9445630abbeda48ba49735d', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (520, 89, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_5_2_735540ce4a1b90812851f0a873c4a0005da6bc3fbba4c6b662cd800387d50855.webp', '735540ce4a1b90812851f0a873c4a0005da6bc3fbba4c6b662cd800387d50855', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (521, 90, 3, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_6_1_74ca4ea9fd1a81b134f1964534ce8aa3330d11cb2cd97b56ab40d9a12dac80fb.webp', '74ca4ea9fd1a81b134f1964534ce8aa3330d11cb2cd97b56ab40d9a12dac80fb', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (522, 90, 3, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_6_1_0eb9cf038d78f57935b313c1bec77531dc05fe270eae30c9c0b79b67f6d028fa.webp', '0eb9cf038d78f57935b313c1bec77531dc05fe270eae30c9c0b79b67f6d028fa', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (523, 90, 3, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_6_1_d154082d5d4365e86084b0a105b7a31efe5dd32d0de46103946536f8f503457e.webp', 'd154082d5d4365e86084b0a105b7a31efe5dd32d0de46103946536f8f503457e', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (524, 90, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_6_1_28c156112854440297676d63d390f07d6d2823f52d191c7eeacb7f47b8bdd256.webp', '28c156112854440297676d63d390f07d6d2823f52d191c7eeacb7f47b8bdd256', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (525, 91, 3, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_7_1_bc51a8756209f5999488a668b80afab08fdba97194d7e786bfdb43016de9f944.webp', 'bc51a8756209f5999488a668b80afab08fdba97194d7e786bfdb43016de9f944', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (526, 91, 3, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_7_1_fb27412304eedaaadf2be171185177ca54ed8297ecf8122f1ff9cbc8922f5ac5.webp', 'fb27412304eedaaadf2be171185177ca54ed8297ecf8122f1ff9cbc8922f5ac5', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (527, 91, 3, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_7_1_ad725efb7ce7669d9064c3ad5cd829c1e572accb44c61d1ef7945145a52e86ae.webp', 'ad725efb7ce7669d9064c3ad5cd829c1e572accb44c61d1ef7945145a52e86ae', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (528, 91, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_7_1_2d109697081bea3d10c57431479648e9c908d9a3fe25fe6092fbfbe5f3e12b43.webp', '2d109697081bea3d10c57431479648e9c908d9a3fe25fe6092fbfbe5f3e12b43', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (529, 92, 3, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_7_2_b92bee7b4d50e5d20eb8a7f7356bce7739cb91eabaa7f4d1990ad4e41dcefe41.webp', 'b92bee7b4d50e5d20eb8a7f7356bce7739cb91eabaa7f4d1990ad4e41dcefe41', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (530, 92, 3, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_7_2_28a699290b8f079e6ef9378fa742393380ad2c19845f0737b198caf01272247b.webp', '28a699290b8f079e6ef9378fa742393380ad2c19845f0737b198caf01272247b', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (531, 92, 3, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_7_2_f4c2047a4cf2f77de76ff8c51447eae5f01f24253abef84521a0f3ee08363e15.webp', 'f4c2047a4cf2f77de76ff8c51447eae5f01f24253abef84521a0f3ee08363e15', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (532, 92, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_7_2_5a31789270fc9364641e5823ae7df6ccdcf78691ecf122875c2fff50418fca38.webp', '5a31789270fc9364641e5823ae7df6ccdcf78691ecf122875c2fff50418fca38', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (533, 93, 3, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_7_3_20db3cca47ad2c72b99a518419b6e95aa096fcf7468deacc5c20ff050d88ac91.webp', '20db3cca47ad2c72b99a518419b6e95aa096fcf7468deacc5c20ff050d88ac91', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (534, 93, 3, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_7_3_f9ce9d53e579444ebac181ddb9ec547480cfc3dc0d18e7cc7ffb8df7337ec2ec.webp', 'f9ce9d53e579444ebac181ddb9ec547480cfc3dc0d18e7cc7ffb8df7337ec2ec', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (535, 93, 3, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_7_3_ad0495372bcc646bc7a524eeea180d3384d98a8d619f2a1e8ab7a2af2e571482.webp', 'ad0495372bcc646bc7a524eeea180d3384d98a8d619f2a1e8ab7a2af2e571482', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (536, 93, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_7_3_f43a3636e3f93d9c15beab832ddb3e1895c896df585732d84f2f55f3f8d5c82f.webp', 'f43a3636e3f93d9c15beab832ddb3e1895c896df585732d84f2f55f3f8d5c82f', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (537, 94, 3, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_7_4_b2225becc4d0f5f342afe8d5941c37857e26a8d471455527963f453f9e16d33b.webp', 'b2225becc4d0f5f342afe8d5941c37857e26a8d471455527963f453f9e16d33b', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (538, 94, 3, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_7_4_587e1ff9ebe91e65d6b8bee6f45645801b15af24e17d9c399ead34d25b414785.webp', '587e1ff9ebe91e65d6b8bee6f45645801b15af24e17d9c399ead34d25b414785', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (539, 94, 3, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_7_4_e10dcb1c5babee8a453f4e2634efbe15182338c6fceb581e229f7dc583d1bc55.webp', 'e10dcb1c5babee8a453f4e2634efbe15182338c6fceb581e229f7dc583d1bc55', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (540, 94, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_7_4_4e4ae2d7a1cf1603aef25657961057884962e30488a74e90b1cf6e840cb23141.webp', '4e4ae2d7a1cf1603aef25657961057884962e30488a74e90b1cf6e840cb23141', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (541, 83, 4, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_8_1_5e53d9e3ac093ed5e918de80d3c34b8a4fdef65ee114e6979dd708605be27c31.webp', '5e53d9e3ac093ed5e918de80d3c34b8a4fdef65ee114e6979dd708605be27c31', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (542, 83, 4, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_8_1_f0038a4eeae5fddb0b8929787693b1bd8c5f6f6b0440de60bb9b900a01f53afd.webp', 'f0038a4eeae5fddb0b8929787693b1bd8c5f6f6b0440de60bb9b900a01f53afd', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (543, 83, 4, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_8_1_48538198bedad4e2785b2694574a16f3b623a166f2a77a08642a4dbadf020025.webp', '48538198bedad4e2785b2694574a16f3b623a166f2a77a08642a4dbadf020025', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (544, 83, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_8_1_ebb66be7c823ecf934632f192ea47c305238facb61d3213aefb72018ab300606.webp', 'ebb66be7c823ecf934632f192ea47c305238facb61d3213aefb72018ab300606', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (545, 84, 4, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_9_1_a3fe393c0efcb6572f0697e20866c74f51b8fed719f01a906afedf6303b4b7e9.webp', 'a3fe393c0efcb6572f0697e20866c74f51b8fed719f01a906afedf6303b4b7e9', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (546, 84, 4, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_9_1_c5ce360f0eeff5c79d7f03b4ed51807efb75c98743f7970fc80b11b8d42bf892.webp', 'c5ce360f0eeff5c79d7f03b4ed51807efb75c98743f7970fc80b11b8d42bf892', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (547, 84, 4, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_9_1_6b917e83ffdea3097d394e2abfdd8375b232956e9a36999654ef554ce77ce86f.webp', '6b917e83ffdea3097d394e2abfdd8375b232956e9a36999654ef554ce77ce86f', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (548, 84, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_9_1_b26cfaed00334261b502e19fb48f40e21db02c5e3550a87a0f07e981047c2662.webp', 'b26cfaed00334261b502e19fb48f40e21db02c5e3550a87a0f07e981047c2662', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (549, 85, 4, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_9_2_d82bd1c7139587ad311851eca27a8338afac21a29a1d1be604575d50d58f75f0.webp', 'd82bd1c7139587ad311851eca27a8338afac21a29a1d1be604575d50d58f75f0', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (550, 85, 4, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_9_2_b8a5e88784ed1e61511bf58b8313d0b24f5644b3efc25d42a5a6f947c42b9db3.webp', 'b8a5e88784ed1e61511bf58b8313d0b24f5644b3efc25d42a5a6f947c42b9db3', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (551, 85, 4, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_9_2_15e5674aa4389874a8918668101b688764c9626caa765e854b3aba95b93656bd.webp', '15e5674aa4389874a8918668101b688764c9626caa765e854b3aba95b93656bd', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (552, 85, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_9_2_31902a6d557687f069c164a929eb43a19275498482f444391c643cd0e5927d1f.webp', '31902a6d557687f069c164a929eb43a19275498482f444391c643cd0e5927d1f', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (553, 86, 4, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_9_3_4cdf72debbe7f49b42c214f526c090f9f88dfbf663c699257017a0437fbf4084.webp', '4cdf72debbe7f49b42c214f526c090f9f88dfbf663c699257017a0437fbf4084', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (554, 86, 4, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_9_3_73dd981824af88db398e6b0f2f0147ce7d364f2c125af7f0f9b9c754863b31cf.webp', '73dd981824af88db398e6b0f2f0147ce7d364f2c125af7f0f9b9c754863b31cf', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (555, 86, 4, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_9_3_61b4941f3c5027cea0ad2afec68e133ff2b0eeda5d980a1b5b87ed10d9a53ca7.webp', '61b4941f3c5027cea0ad2afec68e133ff2b0eeda5d980a1b5b87ed10d9a53ca7', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (556, 86, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_9_3_f99d96a70b4e59beb42964d959d45aa4cd2b74769eb5306576eca2e416d34ccc.webp', 'f99d96a70b4e59beb42964d959d45aa4cd2b74769eb5306576eca2e416d34ccc', 'image/webp', false, '2025-10-03 17:13:43.221+00', '2025-10-03 17:13:43.221+00', true);
-INSERT INTO public.product_images VALUES (559, 104, 1, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_104_1_955959497c02f9ed157c9f9d423c29663cc46ca33e8964855bda56650538f281.webp', '955959497c02f9ed157c9f9d423c29663cc46ca33e8964855bda56650538f281', 'image/webp', false, '2025-10-04 08:23:22.310947+00', '2025-10-04 08:23:22.310947+00', true);
-INSERT INTO public.product_images VALUES (560, 104, 1, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_104_1_955959497c02f9ed157c9f9d423c29663cc46ca33e8964855bda56650538f281.webp', '955959497c02f9ed157c9f9d423c29663cc46ca33e8964855bda56650538f281', 'image/webp', false, '2025-10-04 08:23:22.310947+00', '2025-10-04 08:23:22.310947+00', true);
-INSERT INTO public.product_images VALUES (561, 104, 1, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_104_1_955959497c02f9ed157c9f9d423c29663cc46ca33e8964855bda56650538f281.webp', '955959497c02f9ed157c9f9d423c29663cc46ca33e8964855bda56650538f281', 'image/webp', true, '2025-10-04 08:23:22.310947+00', '2025-10-04 08:23:22.310947+00', true);
-INSERT INTO public.product_images VALUES (562, 104, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_104_1_955959497c02f9ed157c9f9d423c29663cc46ca33e8964855bda56650538f281.webp', '955959497c02f9ed157c9f9d423c29663cc46ca33e8964855bda56650538f281', 'image/webp', false, '2025-10-04 08:23:22.310947+00', '2025-10-04 08:23:22.310947+00', true);
-INSERT INTO public.product_images VALUES (563, 106, 1, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_106_1_234fded092ca2f02ffdbf10ea13b8c73ea5150dad853ee472b31be36f6b63ce9.webp', '234fded092ca2f02ffdbf10ea13b8c73ea5150dad853ee472b31be36f6b63ce9', 'image/webp', false, '2025-10-04 15:14:20.872474+00', '2025-10-04 15:14:20.872474+00', true);
-INSERT INTO public.product_images VALUES (564, 106, 1, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_106_1_234fded092ca2f02ffdbf10ea13b8c73ea5150dad853ee472b31be36f6b63ce9.webp', '234fded092ca2f02ffdbf10ea13b8c73ea5150dad853ee472b31be36f6b63ce9', 'image/webp', false, '2025-10-04 15:14:20.872474+00', '2025-10-04 15:14:20.872474+00', true);
-INSERT INTO public.product_images VALUES (565, 106, 1, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_106_1_234fded092ca2f02ffdbf10ea13b8c73ea5150dad853ee472b31be36f6b63ce9.webp', '234fded092ca2f02ffdbf10ea13b8c73ea5150dad853ee472b31be36f6b63ce9', 'image/webp', true, '2025-10-04 15:14:20.872474+00', '2025-10-04 15:14:20.872474+00', true);
-INSERT INTO public.product_images VALUES (566, 106, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_106_1_234fded092ca2f02ffdbf10ea13b8c73ea5150dad853ee472b31be36f6b63ce9.webp', '234fded092ca2f02ffdbf10ea13b8c73ea5150dad853ee472b31be36f6b63ce9', 'image/webp', false, '2025-10-04 15:14:20.872474+00', '2025-10-04 15:14:20.872474+00', true);
-INSERT INTO public.product_images VALUES (567, 107, 1, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_107_1_fb1aa7b52a915ae07c3792d0e471f459d3bcb953f27b665675672d762374bda5.webp', 'fb1aa7b52a915ae07c3792d0e471f459d3bcb953f27b665675672d762374bda5', 'image/webp', false, '2025-10-06 15:18:34.79981+00', '2025-10-06 15:18:34.79981+00', true);
-INSERT INTO public.product_images VALUES (568, 107, 1, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_107_1_fb1aa7b52a915ae07c3792d0e471f459d3bcb953f27b665675672d762374bda5.webp', 'fb1aa7b52a915ae07c3792d0e471f459d3bcb953f27b665675672d762374bda5', 'image/webp', false, '2025-10-06 15:18:34.79981+00', '2025-10-06 15:18:34.79981+00', true);
-INSERT INTO public.product_images VALUES (569, 107, 1, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_107_1_fb1aa7b52a915ae07c3792d0e471f459d3bcb953f27b665675672d762374bda5.webp', 'fb1aa7b52a915ae07c3792d0e471f459d3bcb953f27b665675672d762374bda5', 'image/webp', true, '2025-10-06 15:18:34.79981+00', '2025-10-06 15:18:34.79981+00', true);
-INSERT INTO public.product_images VALUES (570, 107, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_107_1_fb1aa7b52a915ae07c3792d0e471f459d3bcb953f27b665675672d762374bda5.webp', 'fb1aa7b52a915ae07c3792d0e471f459d3bcb953f27b665675672d762374bda5', 'image/webp', false, '2025-10-06 15:18:34.79981+00', '2025-10-06 15:18:34.79981+00', true);
-INSERT INTO public.product_images VALUES (571, 107, 2, 'thumb', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/thumb/product_107_2_f1863916521b81cdcbd6ad3d11fd19e89a8401a0304966381863fa516dfb98d2.webp', 'f1863916521b81cdcbd6ad3d11fd19e89a8401a0304966381863fa516dfb98d2', 'image/webp', false, '2025-10-06 15:18:38.64043+00', '2025-10-06 15:18:38.64043+00', true);
-INSERT INTO public.product_images VALUES (572, 107, 2, 'small', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/small/product_107_2_f1863916521b81cdcbd6ad3d11fd19e89a8401a0304966381863fa516dfb98d2.webp', 'f1863916521b81cdcbd6ad3d11fd19e89a8401a0304966381863fa516dfb98d2', 'image/webp', false, '2025-10-06 15:18:38.64043+00', '2025-10-06 15:18:38.64043+00', true);
-INSERT INTO public.product_images VALUES (573, 107, 2, 'medium', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/medium/product_107_2_f1863916521b81cdcbd6ad3d11fd19e89a8401a0304966381863fa516dfb98d2.webp', 'f1863916521b81cdcbd6ad3d11fd19e89a8401a0304966381863fa516dfb98d2', 'image/webp', false, '2025-10-06 15:18:38.64043+00', '2025-10-06 15:18:38.64043+00', true);
-INSERT INTO public.product_images VALUES (574, 107, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_107_2_f1863916521b81cdcbd6ad3d11fd19e89a8401a0304966381863fa516dfb98d2.webp', 'f1863916521b81cdcbd6ad3d11fd19e89a8401a0304966381863fa516dfb98d2', 'image/webp', false, '2025-10-06 15:18:38.64043+00', '2025-10-06 15:18:38.64043+00', true);
+INSERT INTO public.product_images VALUES (600, 179, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_7_3_f43a3636e3f93d9c15beab832ddb3e1895c896df585732d84f2f55f3f8d5c82f.webp', 'f43a3636e3f93d9c15beab832ddb3e1895c896df585732d84f2f55f3f8d5c82f', 'image/webp', true, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
+INSERT INTO public.product_images VALUES (601, 179, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_2_2_1c2252a79ee507ee099618f91aa0d79353d3758b923fa4adb0ab24d4fa59ea9b.webp', '1c2252a79ee507ee099618f91aa0d79353d3758b923fa4adb0ab24d4fa59ea9b', 'image/webp', false, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
+INSERT INTO public.product_images VALUES (602, 179, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_1_1_17e2d03c735674d8fd1770a7f042573f6ca5a4bf25d1bad7bfa76b72c9033881.webp', '17e2d03c735674d8fd1770a7f042573f6ca5a4bf25d1bad7bfa76b72c9033881', 'image/webp', false, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
+INSERT INTO public.product_images VALUES (603, 179, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_4_3_703f65845872a02e72e1516bbe174f24a8f7ed609afcded31747857ce05ff309.webp', '703f65845872a02e72e1516bbe174f24a8f7ed609afcded31747857ce05ff309', 'image/webp', false, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
+INSERT INTO public.product_images VALUES (604, 180, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_13_4_12ca76f2374b66fe8783434c3a8571f2f61c93c4a4044ae1c2eb169421bba8ef.webp', '12ca76f2374b66fe8783434c3a8571f2f61c93c4a4044ae1c2eb169421bba8ef', 'image/webp', true, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
+INSERT INTO public.product_images VALUES (605, 180, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_10_2_60428b746ec9a677e4dd7283e37d867602bdfa3fde53c2592c0214f6d1b25368.webp', '60428b746ec9a677e4dd7283e37d867602bdfa3fde53c2592c0214f6d1b25368', 'image/webp', false, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
+INSERT INTO public.product_images VALUES (606, 180, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_106_1_234fded092ca2f02ffdbf10ea13b8c73ea5150dad853ee472b31be36f6b63ce9.webp', '234fded092ca2f02ffdbf10ea13b8c73ea5150dad853ee472b31be36f6b63ce9', 'image/webp', false, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
+INSERT INTO public.product_images VALUES (607, 180, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_4_2_04eb4768eb6cb84374d23528fb5d5330b3683c850105a2efa17a94cebc4c00e7.webp', '04eb4768eb6cb84374d23528fb5d5330b3683c850105a2efa17a94cebc4c00e7', 'image/webp', false, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
+INSERT INTO public.product_images VALUES (608, 181, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_7_4_4e4ae2d7a1cf1603aef25657961057884962e30488a74e90b1cf6e840cb23141.webp', '4e4ae2d7a1cf1603aef25657961057884962e30488a74e90b1cf6e840cb23141', 'image/webp', true, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
+INSERT INTO public.product_images VALUES (609, 181, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_4_1_7b23c0e6c08d32c2650e6018b6962be17aaa638d367acb87f879f1eb080d9b45.webp', '7b23c0e6c08d32c2650e6018b6962be17aaa638d367acb87f879f1eb080d9b45', 'image/webp', false, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
+INSERT INTO public.product_images VALUES (610, 181, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_12_3_e5da83e94b522e11b17d9cc608022520acdcb89a309b8cbec80434629a54de5f.webp', 'e5da83e94b522e11b17d9cc608022520acdcb89a309b8cbec80434629a54de5f', 'image/webp', false, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
+INSERT INTO public.product_images VALUES (611, 181, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_11_1_b185482b2084a7e92f67c69046b6d3d4c0cccc911835c3c41e97164d88e93a0f.webp', 'b185482b2084a7e92f67c69046b6d3d4c0cccc911835c3c41e97164d88e93a0f', 'image/webp', false, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
+INSERT INTO public.product_images VALUES (612, 182, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_14_1_1ebbff6e009fdad38588c522063bd0b0a8c42965a1df26c7f12d9dec4d10f640.webp', '1ebbff6e009fdad38588c522063bd0b0a8c42965a1df26c7f12d9dec4d10f640', 'image/webp', true, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
+INSERT INTO public.product_images VALUES (613, 182, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_12_2_64defb63144bc231795ccfd2ea89f64f292110dface20d389dfdb4e3a5e70341.webp', '64defb63144bc231795ccfd2ea89f64f292110dface20d389dfdb4e3a5e70341', 'image/webp', false, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
+INSERT INTO public.product_images VALUES (614, 182, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_12_1_956dd99d024b7a395ed612bd65ac976ae7a2615680acc2c3938e2bd1a2d4a78f.webp', '956dd99d024b7a395ed612bd65ac976ae7a2615680acc2c3938e2bd1a2d4a78f', 'image/webp', false, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
+INSERT INTO public.product_images VALUES (615, 182, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_107_2_f1863916521b81cdcbd6ad3d11fd19e89a8401a0304966381863fa516dfb98d2.webp', 'f1863916521b81cdcbd6ad3d11fd19e89a8401a0304966381863fa516dfb98d2', 'image/webp', false, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
+INSERT INTO public.product_images VALUES (616, 183, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_2_3_ec9ce4c3217c4fa5962fe566e6626356582d47ebccb0762fe5a8eeec4f29c859.webp', 'ec9ce4c3217c4fa5962fe566e6626356582d47ebccb0762fe5a8eeec4f29c859', 'image/webp', true, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
+INSERT INTO public.product_images VALUES (617, 183, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_12_4_ac25c93b8f3d28b22ec5a0af4b5ddea8f44e741206d48abcb871db24484c175c.webp', 'ac25c93b8f3d28b22ec5a0af4b5ddea8f44e741206d48abcb871db24484c175c', 'image/webp', false, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
+INSERT INTO public.product_images VALUES (618, 183, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_10_3_0352ce0c3b2326fd0483eced9794053fd28d05869f28dc88ff387285fc8b9a96.webp', '0352ce0c3b2326fd0483eced9794053fd28d05869f28dc88ff387285fc8b9a96', 'image/webp', false, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
+INSERT INTO public.product_images VALUES (619, 183, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_1_4_ef3d8dd703b989b15baf319626ec0d6c3377f99c6b7032c4d7070f47fa586260.webp', 'ef3d8dd703b989b15baf319626ec0d6c3377f99c6b7032c4d7070f47fa586260', 'image/webp', false, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
+INSERT INTO public.product_images VALUES (620, 184, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_11_3_56426a418954cfb02df930324bd0dd0900fa2f4d25abb00fe898c32d44d3e05b.webp', '56426a418954cfb02df930324bd0dd0900fa2f4d25abb00fe898c32d44d3e05b', 'image/webp', true, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
+INSERT INTO public.product_images VALUES (621, 184, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_13_1_0f5d40f67f8d05ff70d6b6dd62bb05ee2d675502d78647152eb86d15b4686b8d.webp', '0f5d40f67f8d05ff70d6b6dd62bb05ee2d675502d78647152eb86d15b4686b8d', 'image/webp', false, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
+INSERT INTO public.product_images VALUES (622, 184, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_3_1_a54078e720522a6433aa98246b29ea1568f9af6bd520351486f4142c53d239cf.webp', 'a54078e720522a6433aa98246b29ea1568f9af6bd520351486f4142c53d239cf', 'image/webp', false, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
+INSERT INTO public.product_images VALUES (623, 184, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_9_2_31902a6d557687f069c164a929eb43a19275498482f444391c643cd0e5927d1f.webp', '31902a6d557687f069c164a929eb43a19275498482f444391c643cd0e5927d1f', 'image/webp', false, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
+INSERT INTO public.product_images VALUES (624, 185, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_11_4_85f0bdd1c886d81554188836363bfe56d93001bffea11452e0e68560f4111332.webp', '85f0bdd1c886d81554188836363bfe56d93001bffea11452e0e68560f4111332', 'image/webp', true, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
+INSERT INTO public.product_images VALUES (625, 185, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_13_2_75d29c93f688e53c58702b99cd4f67da767638e3d7badbbfbd27f2e724fe0930.webp', '75d29c93f688e53c58702b99cd4f67da767638e3d7badbbfbd27f2e724fe0930', 'image/webp', false, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
+INSERT INTO public.product_images VALUES (626, 185, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_1_2_90b58d2a3bb547c632b69b932b8fcdf6811362464549b8837ab5aa65b912f88e.webp', '90b58d2a3bb547c632b69b932b8fcdf6811362464549b8837ab5aa65b912f88e', 'image/webp', false, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
+INSERT INTO public.product_images VALUES (627, 185, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_11_2_3013ec05e7208c7b7cb6a26ddb7079afd9504695e570c65c4f1f8ddccdc030cd.webp', '3013ec05e7208c7b7cb6a26ddb7079afd9504695e570c65c4f1f8ddccdc030cd', 'image/webp', false, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
+INSERT INTO public.product_images VALUES (628, 186, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_9_3_f99d96a70b4e59beb42964d959d45aa4cd2b74769eb5306576eca2e416d34ccc.webp', 'f99d96a70b4e59beb42964d959d45aa4cd2b74769eb5306576eca2e416d34ccc', 'image/webp', true, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
+INSERT INTO public.product_images VALUES (629, 186, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_9_1_b26cfaed00334261b502e19fb48f40e21db02c5e3550a87a0f07e981047c2662.webp', 'b26cfaed00334261b502e19fb48f40e21db02c5e3550a87a0f07e981047c2662', 'image/webp', false, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
+INSERT INTO public.product_images VALUES (630, 186, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_5_2_735540ce4a1b90812851f0a873c4a0005da6bc3fbba4c6b662cd800387d50855.webp', '735540ce4a1b90812851f0a873c4a0005da6bc3fbba4c6b662cd800387d50855', 'image/webp', false, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
+INSERT INTO public.product_images VALUES (631, 186, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_10_4_a3442f17209984253dc088a6ad3f2c46bd68bc1560cfdfce2c3794194e458f81.webp', 'a3442f17209984253dc088a6ad3f2c46bd68bc1560cfdfce2c3794194e458f81', 'image/webp', false, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
+INSERT INTO public.product_images VALUES (632, 187, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_3_2_275afc6a8363b280e00a80f85fd338e5e25d6d10be6ffc3a935093eedb6e67bb.webp', '275afc6a8363b280e00a80f85fd338e5e25d6d10be6ffc3a935093eedb6e67bb', 'image/webp', true, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
+INSERT INTO public.product_images VALUES (633, 187, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_103_1_955959497c02f9ed157c9f9d423c29663cc46ca33e8964855bda56650538f281.webp', '955959497c02f9ed157c9f9d423c29663cc46ca33e8964855bda56650538f281', 'image/webp', false, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
+INSERT INTO public.product_images VALUES (634, 187, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_1_3_65da340aff6eeb1a5e1c16a682bc7c52fc5a877dcadc09033af89fee3e3e8184.webp', '65da340aff6eeb1a5e1c16a682bc7c52fc5a877dcadc09033af89fee3e3e8184', 'image/webp', false, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
+INSERT INTO public.product_images VALUES (635, 187, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_7_2_5a31789270fc9364641e5823ae7df6ccdcf78691ecf122875c2fff50418fca38.webp', '5a31789270fc9364641e5823ae7df6ccdcf78691ecf122875c2fff50418fca38', 'image/webp', false, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
+INSERT INTO public.product_images VALUES (636, 188, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_10_1_3b83d695a4dd98e49aff32326fb99214ea2838acd41ffe14fafa866022342729.webp', '3b83d695a4dd98e49aff32326fb99214ea2838acd41ffe14fafa866022342729', 'image/webp', true, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
+INSERT INTO public.product_images VALUES (637, 188, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_104_1_955959497c02f9ed157c9f9d423c29663cc46ca33e8964855bda56650538f281.webp', '955959497c02f9ed157c9f9d423c29663cc46ca33e8964855bda56650538f281', 'image/webp', false, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
+INSERT INTO public.product_images VALUES (638, 188, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_7_1_2d109697081bea3d10c57431479648e9c908d9a3fe25fe6092fbfbe5f3e12b43.webp', '2d109697081bea3d10c57431479648e9c908d9a3fe25fe6092fbfbe5f3e12b43', 'image/webp', false, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
+INSERT INTO public.product_images VALUES (639, 189, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_8_1_ebb66be7c823ecf934632f192ea47c305238facb61d3213aefb72018ab300606.webp', 'ebb66be7c823ecf934632f192ea47c305238facb61d3213aefb72018ab300606', 'image/webp', true, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
+INSERT INTO public.product_images VALUES (640, 189, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_107_1_fb1aa7b52a915ae07c3792d0e471f459d3bcb953f27b665675672d762374bda5.webp', 'fb1aa7b52a915ae07c3792d0e471f459d3bcb953f27b665675672d762374bda5', 'image/webp', false, '2025-11-21 22:09:38.210231+00', '2025-11-21 22:09:38.210231+00', true);
+INSERT INTO public.product_images VALUES (641, 189, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_5_1_a94420c5792bf1f5a2447f471b8bb6adfb2500a5ae395bceacd50698a340cc07.webp', 'a94420c5792bf1f5a2447f471b8bb6adfb2500a5ae395bceacd50698a340cc07', 'image/webp', false, '2025-11-21 22:09:38.210231+00', '2025-11-21 22:09:38.210231+00', true);
+INSERT INTO public.product_images VALUES (642, 190, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_2_1_ac1439cdc3783a9105eec13dac3eeaecea6bff84ac58daf32f2006e044bfacb3.webp', 'ac1439cdc3783a9105eec13dac3eeaecea6bff84ac58daf32f2006e044bfacb3', 'image/webp', true, '2025-11-21 22:09:38.210231+00', '2025-11-21 22:09:38.210231+00', true);
+INSERT INTO public.product_images VALUES (643, 190, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_6_1_28c156112854440297676d63d390f07d6d2823f52d191c7eeacb7f47b8bdd256.webp', '28c156112854440297676d63d390f07d6d2823f52d191c7eeacb7f47b8bdd256', 'image/webp', false, '2025-11-21 22:09:38.210231+00', '2025-11-21 22:09:38.210231+00', true);
+INSERT INTO public.product_images VALUES (644, 190, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_13_3_5e58f5689aefd64ca1339d5757218869f491efd1ca3419e062e1ca0bf007efa2.webp', '5e58f5689aefd64ca1339d5757218869f491efd1ca3419e062e1ca0bf007efa2', 'image/webp', false, '2025-11-21 22:09:38.210231+00', '2025-11-21 22:09:38.210231+00', true);
 
 
 --
--- TOC entry 4254 (class 0 OID 32072)
--- Dependencies: 381
+-- TOC entry 4401 (class 0 OID 32072)
+-- Dependencies: 387
 -- Data for Name: product_occasions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.product_occasions VALUES (88, 104, 19, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (89, 104, 22, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (90, 103, 22, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (91, 103, 20, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (92, 102, 17, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (93, 102, 18, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (94, 102, 20, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (95, 101, 20, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (96, 100, 20, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (97, 100, 16, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (98, 100, 19, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (99, 99, 21, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (100, 99, 23, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (101, 98, 18, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (102, 96, 20, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (103, 96, 17, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (104, 96, 21, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (105, 92, 21, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (106, 92, 16, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (107, 92, 20, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (108, 83, 16, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (109, 94, 22, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (110, 94, 19, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (111, 93, 19, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (112, 93, 16, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (113, 84, 23, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (114, 84, 22, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (115, 84, 16, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (116, 85, 23, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (117, 85, 16, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (118, 86, 23, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (119, 87, 21, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (120, 88, 21, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (121, 89, 17, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (122, 89, 18, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (123, 89, 21, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (124, 90, 23, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (125, 91, 18, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
-INSERT INTO public.product_occasions VALUES (126, 91, 22, '2025-10-04 13:29:54.203398+00', '2025-10-04 13:29:54.203398+00', true);
 
 
 --
--- TOC entry 4252 (class 0 OID 32033)
--- Dependencies: 379
+-- TOC entry 4399 (class 0 OID 32033)
+-- Dependencies: 385
 -- Data for Name: products; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.products VALUES (85, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 'Girasoles enormes que irradian alegría y energía positiva', 38.99, 1421.19, 936, 'FY-003', true, false, NULL, '2025-10-02 23:53:39.778903+00', '2025-11-04 19:07:23.134756+00', DEFAULT, DEFAULT, '''-003'':17 ''alegr'':3A,12C ''energ'':14C ''enorm'':5B,9C ''fy'':16 ''gigant'':2A ''girasol'':1A,4B,8C ''irradi'':11C ''posit'':15C ''radiant'':7B');
-INSERT INTO public.products VALUES (98, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 'Prueba de integración completa con Sharp + Supabase Storage', 99.99, NULL, 931, 'TEST-E2E-1759565797', true, false, NULL, '2025-10-04 08:16:37.65542+00', '2025-11-04 19:41:30.715791+00', DEFAULT, DEFAULT, '''1759565797'':20 ''complet'':12C ''e2e'':4A,8B,19 ''integr'':11C ''orquid'':2A ''product'':5B ''prueb'':7B,9C ''ros'':3A ''sharp'':14C ''storag'':16C ''supab'':15C ''test'':1A,18 ''test-e2e'':17');
-INSERT INTO public.products VALUES (93, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 'Margaritas blancas que transmiten frescura y simplicidad', 29.99, 1093.14, 937, 'FY-011', true, false, NULL, '2025-10-02 23:53:39.778903+00', '2025-11-04 19:41:30.715791+00', DEFAULT, DEFAULT, '''-011'':15 ''blanc'':2A,5B,8C ''fresc'':3A ''frescur'':11C ''fy'':14 ''margarit'':1A,4B,7C ''simpl'':6B ''simplic'':13C ''transmit'':10C');
-INSERT INTO public.products VALUES (83, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 'Explosión de colores tropicales con aves del paraíso, heliconias y flores exóticas', 45.99, 1676.34, 944, 'FY-001', true, true, 1, '2025-10-02 23:53:39.778903+00', '2025-11-04 19:52:15.117582+00', DEFAULT, DEFAULT, '''-001'':21 ''aves'':13C ''color'':10C ''exot'':6B,19C ''explosion'':8C ''flor'':4B,18C ''fy'':20 ''heliconi'':16C ''parais'':15C ''ram'':1A ''tropical'':2A,5B,11C ''vibrant'':3A,7B');
-INSERT INTO public.products VALUES (105, 'Producto INACTIVO Test', NULL, 'Este producto está inactivo para testing', 9.99, NULL, 999, NULL, false, false, NULL, '2025-10-04 08:54:33.367999+00', '2025-10-04 08:54:33.367999+00', DEFAULT, DEFAULT, '''inact'':2A,7C ''product'':1A,5C ''test'':3A ''testing'':9C');
-INSERT INTO public.products VALUES (126, 'No Carousel Product', NULL, 'Test product description 1761240138155', 25.99, NULL, 2, 'TEST-1761240138155', true, false, 0, '2025-10-23 17:22:18.289563+00', '2025-11-03 14:00:42.115933+00', DEFAULT, DEFAULT, '''-1761240138155'':9 ''1761240138155'':7C ''carousel'':2A ''description'':6C ''product'':3A,5C ''test'':4C,8');
-INSERT INTO public.products VALUES (99, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 'Prueba de integración completa con Sharp + Supabase Storage', 99.99, NULL, 910, 'TEST-E2E-1759565851', true, false, NULL, '2025-10-04 08:17:31.28005+00', '2025-11-04 20:46:00.597279+00', DEFAULT, DEFAULT, '''1759565851'':20 ''complet'':12C ''e2e'':4A,8B,19 ''integr'':11C ''orquid'':2A ''product'':5B ''prueb'':7B,9C ''ros'':3A ''sharp'':14C ''storag'':16C ''supab'':15C ''test'':1A,18 ''test-e2e'':17');
-INSERT INTO public.products VALUES (101, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 'Prueba de integración completa con Sharp + Supabase Storage', 99.99, NULL, 917, 'TEST-E2E-1759565951', true, false, NULL, '2025-10-04 08:19:12.102503+00', '2025-11-04 20:59:43.477336+00', DEFAULT, DEFAULT, '''1759565951'':20 ''complet'':12C ''e2e'':4A,8B,19 ''integr'':11C ''orquid'':2A ''product'':5B ''prueb'':7B,9C ''ros'':3A ''sharp'':14C ''storag'':16C ''supab'':15C ''test'':1A,18 ''test-e2e'':17');
-INSERT INTO public.products VALUES (91, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 'Claveles coloridos perfectos para celebraciones alegres', 32.99, 1202.49, 930, 'FY-009', true, false, NULL, '2025-10-02 23:53:39.778903+00', '2025-11-04 20:59:43.477336+00', DEFAULT, DEFAULT, '''-009'':14 ''alegr'':6B,12C ''celebr'':11C ''clavel'':1A,4B,7C ''color'':5B,8C ''festiv'':3A ''fy'':13 ''multicolor'':2A ''perfect'':9C');
-INSERT INTO public.products VALUES (103, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 'Prueba de integración completa con Sharp + Supabase Storage', 99.99, NULL, 901, 'TEST-E2E-1759566136', true, false, NULL, '2025-10-04 08:22:16.82439+00', '2025-11-04 17:05:41.889321+00', DEFAULT, DEFAULT, '''1759566136'':20 ''complet'':12C ''e2e'':4A,8B,19 ''integr'':11C ''orquid'':2A ''product'':5B ''prueb'':7B,9C ''ros'':3A ''sharp'':14C ''storag'':16C ''supab'':15C ''test'':1A,18 ''test-e2e'':17');
-INSERT INTO public.products VALUES (96, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 'Prueba de integración completa con Sharp + Supabase Storage', 99.99, NULL, 959, 'TEST-E2E-001', true, false, NULL, '2025-10-04 08:15:05.738126+00', '2025-11-04 21:24:26.817518+00', DEFAULT, DEFAULT, '''001'':20 ''complet'':12C ''e2e'':4A,8B,19 ''integr'':11C ''orquid'':2A ''product'':5B ''prueb'':7B,9C ''ros'':3A ''sharp'':14C ''storag'':16C ''supab'':15C ''test'':1A,18 ''test-e2e'':17');
-INSERT INTO public.products VALUES (104, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 'Prueba de integración completa con Sharp + Supabase Storage', 99.99, NULL, 933, 'TEST-E2E-1759566200', true, false, NULL, '2025-10-04 08:23:21.081102+00', '2025-11-04 21:24:26.817518+00', DEFAULT, DEFAULT, '''1759566200'':20 ''complet'':12C ''e2e'':4A,8B,19 ''integr'':11C ''orquid'':2A ''product'':5B ''prueb'':7B,9C ''ros'':3A ''sharp'':14C ''storag'':16C ''supab'':15C ''test'':1A,18 ''test-e2e'':17');
-INSERT INTO public.products VALUES (102, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 'Prueba de integración completa con Sharp + Supabase Storage', 99.99, NULL, 918, 'TEST-E2E-1759566077', true, false, NULL, '2025-10-04 08:21:19.02731+00', '2025-11-04 21:24:26.817518+00', DEFAULT, DEFAULT, '''1759566077'':20 ''complet'':12C ''e2e'':4A,8B,19 ''integr'':11C ''orquid'':2A ''product'':5B ''prueb'':7B,9C ''ros'':3A ''sharp'':14C ''storag'':16C ''supab'':15C ''test'':1A,18 ''test-e2e'':17');
-INSERT INTO public.products VALUES (88, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 'Tulipanes importados en colores vibrantes del valle holandés', 49.99, 1822.14, 932, 'FY-006', true, false, NULL, '2025-10-02 23:53:39.778903+00', '2025-11-04 18:27:27.084499+00', DEFAULT, DEFAULT, '''-006'':16 ''color'':10C ''fy'':15 ''holandes'':2A,14C ''import'':5B,8C ''mix'':3A ''tulipan'':1A,4B,7C ''vall'':13C ''vibrant'':6B,11C');
-INSERT INTO public.products VALUES (84, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 'Rosas multicolores que forman un hermoso arcoíris de emociones', 52.99, 1931.49, 951, 'FY-002', true, true, 2, '2025-10-02 23:53:39.778903+00', '2025-11-04 19:07:23.134756+00', DEFAULT, DEFAULT, '''-002'':18 ''arcoiris'':2A,14C ''bouquet'':1A ''emocion'':16C ''espectacular'':7B ''form'':11C ''fy'':17 ''hermos'':13C ''multicolor'':6B,9C ''ros'':4A,5B,8C');
-INSERT INTO public.products VALUES (86, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 'Orquídeas exóticas de alta calidad en arreglo sofisticado', 68.99, 2514.69, 933, 'FY-004', true, true, 7, '2025-10-02 23:53:39.778903+00', '2025-11-04 19:30:57.392115+00', DEFAULT, DEFAULT, '''-004'':16 ''alta'':10C ''arregl'':13C ''calid'':11C ''eleg'':2A ''exot'':5B,8C ''fy'':15 ''orquid'':1A,4B,7C ''premium'':3A ''sofistic'':6B,14C');
-INSERT INTO public.products VALUES (90, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 'Hortensias azules en arreglo romántico y delicado', 46.99, 1712.79, 919, 'FY-008', true, false, NULL, '2025-10-02 23:53:39.778903+00', '2025-11-04 19:30:57.392115+00', DEFAULT, DEFAULT, '''-008'':15 ''arregl'':10C ''azul'':2A,5B,8C ''delic'':6B,13C ''fy'':14 ''hortensi'':1A,4B,7C ''romant'':3A,11C');
-INSERT INTO public.products VALUES (89, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 'Docena de rosas rojas, el símbolo eterno del amor', 55.99, 2040.84, 911, 'FY-007', true, false, NULL, '2025-10-02 23:53:39.778903+00', '2025-11-04 20:32:15.11886+00', DEFAULT, DEFAULT, '''-007'':19 ''amor'':8B,17C ''clasic'':3A ''docen'':9C ''etern'':15C ''fy'':18 ''roj'':2A,5B,12C ''ros'':1A,4B,11C ''simbol'':6B,14C');
-INSERT INTO public.products VALUES (87, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 'Lirios blancos simbolizando pureza y elegancia', 42.99, 1566.99, 930, 'FY-005', true, false, NULL, '2025-10-02 23:53:39.778903+00', '2025-11-04 20:59:43.477336+00', DEFAULT, DEFAULT, '''-005'':16 ''blanc'':2A,5B,10C ''eleg'':14C ''fy'':15 ''liri'':1A,4B,9C ''pur'':3A ''purez'':8B,12C ''simbol'':6B ''simboliz'':11C');
-INSERT INTO public.products VALUES (100, 'TEST Orquídeas Rosadas E2E', 'Producto de prueba E2E', 'Prueba de integración completa con Sharp + Supabase Storage', 99.99, NULL, 912, 'TEST-E2E-1759565883', true, false, NULL, '2025-10-04 08:18:03.788776+00', '2025-11-04 20:59:43.477336+00', DEFAULT, DEFAULT, '''1759565883'':20 ''complet'':12C ''e2e'':4A,8B,19 ''integr'':11C ''orquid'':2A ''product'':5B ''prueb'':7B,9C ''ros'':3A ''sharp'':14C ''storag'':16C ''supab'':15C ''test'':1A,18 ''test-e2e'':17');
-INSERT INTO public.products VALUES (92, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 'Flores silvestres en arreglo natural y espontáneo', 39.99, 1457.64, 960, 'FY-010', true, false, NULL, '2025-10-02 23:53:39.778903+00', '2025-11-04 21:12:09.397941+00', DEFAULT, DEFAULT, '''-010'':15 ''arregl'':10C ''campestr'':2A ''espontane'':13C ''flor'':4B,7C ''fy'':14 ''natural'':6B,11C ''ram'':1A ''silvestr'':3A,5B,8C');
-INSERT INTO public.products VALUES (142, 'No Carousel Product', NULL, 'Test product description 1761240458925', 25.99, NULL, 0, 'TEST-1761240458925', true, false, 0, '2025-10-23 17:27:39.256618+00', '2025-11-03 14:02:52.967259+00', DEFAULT, DEFAULT, '''-1761240458925'':9 ''1761240458925'':7C ''carousel'':2A ''description'':6C ''product'':3A,5C ''test'':4C,8');
-INSERT INTO public.products VALUES (106, 'Probando2', NULL, 'Pa&#x27; la prueba con gato 3', 455.00, NULL, 915, '123qwe456-4', true, false, NULL, '2025-10-04 15:14:19.005744+00', '2025-11-04 19:52:15.117582+00', DEFAULT, DEFAULT, '''-4'':9 ''123qwe456'':8 ''3'':7C ''gat'':6C ''pa'':2C ''probando2'':1A ''prueb'':4C');
-INSERT INTO public.products VALUES (94, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 'Peonías rosadas de temporada, suaves y voluminosas', 72.99, 2660.49, 931, 'FY-012', true, false, NULL, '2025-10-02 23:53:39.778903+00', '2025-11-04 20:19:02.329941+00', DEFAULT, DEFAULT, '''-012'':16 ''delux'':3A ''fy'':15 ''peon'':1A,4B,8C ''ros'':2A,5B,9C ''suav'':12C ''tempor'':7B,11C ''volumin'':14C');
-INSERT INTO public.products VALUES (107, 'Roma de gatos', NULL, 'Gatos goldotes', 97.98, NULL, 854, 'gato-gato', true, false, NULL, '2025-10-06 15:18:32.694905+00', '2025-11-04 20:32:15.11886+00', DEFAULT, DEFAULT, '''gat'':3A,4C,7,8 ''gato-gat'':6 ''goldot'':5C ''rom'':1A');
-INSERT INTO public.products VALUES (115, 'No Carousel Product', NULL, 'Test product description 1761240027312', 25.99, NULL, 2, 'TEST-1761240027312', true, false, 0, '2025-10-23 17:20:27.454548+00', '2025-11-03 13:38:10.68386+00', DEFAULT, DEFAULT, '''-1761240027312'':9 ''1761240027312'':7C ''carousel'':2A ''description'':6C ''product'':3A,5C ''test'':4C,8');
+INSERT INTO public.products VALUES (179, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 'Explosión de colores tropicales con aves del paraíso, heliconias y flores exóticas', 45.99, 1676.34, 25, 'FY-001', true, true, 1, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-001'':21 ''aves'':13C ''color'':10C ''exot'':6B,19C ''explosion'':8C ''flor'':4B,18C ''fy'':20 ''heliconi'':16C ''parais'':15C ''ram'':1A ''tropical'':2A,5B,11C ''vibrant'':3A,7B');
+INSERT INTO public.products VALUES (180, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 'Rosas multicolores que forman un hermoso arcoíris de emociones', 52.99, 1931.49, 30, 'FY-002', true, true, 2, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-002'':18 ''arcoiris'':2A,14C ''bouquet'':1A ''emocion'':16C ''espectacular'':7B ''form'':11C ''fy'':17 ''hermos'':13C ''multicolor'':6B,9C ''ros'':4A,5B,8C');
+INSERT INTO public.products VALUES (181, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 'Girasoles enormes que irradian alegría y energía positiva', 38.99, 1421.19, 20, 'FY-003', true, false, NULL, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-003'':17 ''alegr'':3A,12C ''energ'':14C ''enorm'':5B,9C ''fy'':16 ''gigant'':2A ''girasol'':1A,4B,8C ''irradi'':11C ''posit'':15C ''radiant'':7B');
+INSERT INTO public.products VALUES (182, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 'Orquídeas exóticas de alta calidad en arreglo sofisticado', 68.99, 2514.69, 15, 'FY-004', true, true, 3, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-004'':16 ''alta'':10C ''arregl'':13C ''calid'':11C ''eleg'':2A ''exot'':5B,8C ''fy'':15 ''orquid'':1A,4B,7C ''premium'':3A ''sofistic'':6B,14C');
+INSERT INTO public.products VALUES (183, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 'Lirios blancos simbolizando pureza y elegancia', 42.99, 1566.99, 18, 'FY-005', true, false, NULL, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-005'':16 ''blanc'':2A,5B,10C ''eleg'':14C ''fy'':15 ''liri'':1A,4B,9C ''pur'':3A ''purez'':8B,12C ''simbol'':6B ''simboliz'':11C');
+INSERT INTO public.products VALUES (184, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 'Tulipanes importados en colores vibrantes del valle holandés', 49.99, 1822.14, 22, 'FY-006', true, true, 4, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-006'':16 ''color'':10C ''fy'':15 ''holandes'':2A,14C ''import'':5B,8C ''mix'':3A ''tulipan'':1A,4B,7C ''vall'':13C ''vibrant'':6B,11C');
+INSERT INTO public.products VALUES (185, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 'Docena de rosas rojas, el símbolo eterno del amor', 55.99, 2040.84, 40, 'FY-007', true, true, 5, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-007'':19 ''amor'':8B,17C ''clasic'':3A ''docen'':9C ''etern'':15C ''fy'':18 ''roj'':2A,5B,12C ''ros'':1A,4B,11C ''simbol'':6B,14C');
+INSERT INTO public.products VALUES (186, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 'Hortensias azules en arreglo romántico y delicado', 46.99, 1712.79, 16, 'FY-008', true, false, NULL, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-008'':15 ''arregl'':10C ''azul'':2A,5B,8C ''delic'':6B,13C ''fy'':14 ''hortensi'':1A,4B,7C ''romant'':3A,11C');
+INSERT INTO public.products VALUES (187, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 'Claveles coloridos perfectos para celebraciones alegres', 32.99, 1202.49, 28, 'FY-009', true, false, NULL, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-009'':14 ''alegr'':6B,12C ''celebr'':11C ''clavel'':1A,4B,7C ''color'':5B,8C ''festiv'':3A ''fy'':13 ''multicolor'':2A ''perfect'':9C');
+INSERT INTO public.products VALUES (188, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 'Flores silvestres en arreglo natural y espontáneo', 39.99, 1457.64, 24, 'FY-010', true, true, 6, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-010'':15 ''arregl'':10C ''campestr'':2A ''espontane'':13C ''flor'':4B,7C ''fy'':14 ''natural'':6B,11C ''ram'':1A ''silvestr'':3A,5B,8C');
+INSERT INTO public.products VALUES (189, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 'Margaritas blancas que transmiten frescura y simplicidad', 29.99, 1093.14, 35, 'FY-011', true, false, NULL, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-011'':15 ''blanc'':2A,5B,8C ''fresc'':3A ''frescur'':11C ''fy'':14 ''margarit'':1A,4B,7C ''simpl'':6B ''simplic'':13C ''transmit'':10C');
+INSERT INTO public.products VALUES (190, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 'Peonías rosadas de temporada, suaves y voluminosas', 72.99, 2660.49, 12, 'FY-012', true, true, 7, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-012'':16 ''delux'':3A ''fy'':15 ''peon'':1A,4B,8C ''ros'':2A,5B,9C ''suav'':12C ''tempor'':7B,11C ''volumin'':14C');
 
 
 --
--- TOC entry 4270 (class 0 OID 59940)
--- Dependencies: 397
+-- TOC entry 4417 (class 0 OID 59940)
+-- Dependencies: 403
 -- Data for Name: query_timeouts_log; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7115,8 +4276,8 @@ INSERT INTO public.query_timeouts_log VALUES (11, 'CONFIG: get_popular_searches'
 
 
 --
--- TOC entry 4250 (class 0 OID 32018)
--- Dependencies: 377
+-- TOC entry 4397 (class 0 OID 32018)
+-- Dependencies: 383
 -- Data for Name: settings; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -7165,8 +4326,8 @@ INSERT INTO public.settings VALUES (85, 'bcv_usd_rate', '40.00', 'Tasa de cambio
 
 
 --
--- TOC entry 4248 (class 0 OID 32002)
--- Dependencies: 375
+-- TOC entry 4395 (class 0 OID 32002)
+-- Dependencies: 381
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -8260,8 +5421,8 @@ INSERT INTO public.users VALUES (1238, 'testuser1761575394865@example.com', 'tes
 
 
 --
--- TOC entry 4367 (class 0 OID 0)
--- Dependencies: 394
+-- TOC entry 4526 (class 0 OID 0)
+-- Dependencies: 400
 -- Name: busquedas_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -8269,17 +5430,26 @@ SELECT pg_catalog.setval('public.busquedas_log_id_seq', 1, false);
 
 
 --
--- TOC entry 4368 (class 0 OID 0)
--- Dependencies: 372
+-- TOC entry 4527 (class 0 OID 0)
+-- Dependencies: 409
+-- Name: expenses_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.expenses_id_seq', 1, true);
+
+
+--
+-- TOC entry 4528 (class 0 OID 0)
+-- Dependencies: 378
 -- Name: occasions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.occasions_id_seq', 393, true);
+SELECT pg_catalog.setval('public.occasions_id_seq', 410, true);
 
 
 --
--- TOC entry 4369 (class 0 OID 0)
--- Dependencies: 384
+-- TOC entry 4529 (class 0 OID 0)
+-- Dependencies: 390
 -- Name: order_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -8287,8 +5457,8 @@ SELECT pg_catalog.setval('public.order_items_id_seq', 1083, true);
 
 
 --
--- TOC entry 4370 (class 0 OID 0)
--- Dependencies: 386
+-- TOC entry 4530 (class 0 OID 0)
+-- Dependencies: 392
 -- Name: order_status_history_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -8296,17 +5466,17 @@ SELECT pg_catalog.setval('public.order_status_history_id_seq', 844, true);
 
 
 --
--- TOC entry 4371 (class 0 OID 0)
--- Dependencies: 382
+-- TOC entry 4531 (class 0 OID 0)
+-- Dependencies: 388
 -- Name: orders_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.orders_id_seq', 612, true);
+SELECT pg_catalog.setval('public.orders_id_seq', 614, true);
 
 
 --
--- TOC entry 4372 (class 0 OID 0)
--- Dependencies: 388
+-- TOC entry 4532 (class 0 OID 0)
+-- Dependencies: 394
 -- Name: payment_methods_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -8314,8 +5484,8 @@ SELECT pg_catalog.setval('public.payment_methods_id_seq', 886, true);
 
 
 --
--- TOC entry 4373 (class 0 OID 0)
--- Dependencies: 390
+-- TOC entry 4533 (class 0 OID 0)
+-- Dependencies: 396
 -- Name: payments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -8323,17 +5493,17 @@ SELECT pg_catalog.setval('public.payments_id_seq', 206, true);
 
 
 --
--- TOC entry 4374 (class 0 OID 0)
--- Dependencies: 392
+-- TOC entry 4534 (class 0 OID 0)
+-- Dependencies: 398
 -- Name: product_images_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.product_images_id_seq', 574, true);
+SELECT pg_catalog.setval('public.product_images_id_seq', 644, true);
 
 
 --
--- TOC entry 4375 (class 0 OID 0)
--- Dependencies: 380
+-- TOC entry 4535 (class 0 OID 0)
+-- Dependencies: 386
 -- Name: product_occasions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -8341,17 +5511,17 @@ SELECT pg_catalog.setval('public.product_occasions_id_seq', 126, true);
 
 
 --
--- TOC entry 4376 (class 0 OID 0)
--- Dependencies: 378
+-- TOC entry 4536 (class 0 OID 0)
+-- Dependencies: 384
 -- Name: products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.products_id_seq', 165, true);
+SELECT pg_catalog.setval('public.products_id_seq', 190, true);
 
 
 --
--- TOC entry 4377 (class 0 OID 0)
--- Dependencies: 396
+-- TOC entry 4537 (class 0 OID 0)
+-- Dependencies: 402
 -- Name: query_timeouts_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -8359,8 +5529,8 @@ SELECT pg_catalog.setval('public.query_timeouts_log_id_seq', 11, true);
 
 
 --
--- TOC entry 4378 (class 0 OID 0)
--- Dependencies: 376
+-- TOC entry 4538 (class 0 OID 0)
+-- Dependencies: 382
 -- Name: settings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -8368,8 +5538,8 @@ SELECT pg_catalog.setval('public.settings_id_seq', 85, true);
 
 
 --
--- TOC entry 4379 (class 0 OID 0)
--- Dependencies: 374
+-- TOC entry 4539 (class 0 OID 0)
+-- Dependencies: 380
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -8377,7 +5547,7 @@ SELECT pg_catalog.setval('public.users_id_seq', 1241, true);
 
 
 --
--- TOC entry 4011 (class 2606 OID 59813)
+-- TOC entry 4126 (class 2606 OID 59813)
 -- Name: busquedas_log busquedas_log_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8386,7 +5556,16 @@ ALTER TABLE ONLY public.busquedas_log
 
 
 --
--- TOC entry 3911 (class 2606 OID 32000)
+-- TOC entry 4139 (class 2606 OID 84817)
+-- Name: expenses expenses_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.expenses
+    ADD CONSTRAINT expenses_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4008 (class 2606 OID 32000)
 -- Name: occasions occasions_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8395,7 +5574,7 @@ ALTER TABLE ONLY public.occasions
 
 
 --
--- TOC entry 3913 (class 2606 OID 31998)
+-- TOC entry 4011 (class 2606 OID 31998)
 -- Name: occasions occasions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8404,7 +5583,7 @@ ALTER TABLE ONLY public.occasions
 
 
 --
--- TOC entry 3915 (class 2606 OID 32573)
+-- TOC entry 4013 (class 2606 OID 32573)
 -- Name: occasions occasions_slug_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8413,7 +5592,7 @@ ALTER TABLE ONLY public.occasions
 
 
 --
--- TOC entry 3983 (class 2606 OID 32124)
+-- TOC entry 4098 (class 2606 OID 32124)
 -- Name: order_items order_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8422,7 +5601,7 @@ ALTER TABLE ONLY public.order_items
 
 
 --
--- TOC entry 3986 (class 2606 OID 32144)
+-- TOC entry 4101 (class 2606 OID 32144)
 -- Name: order_status_history order_status_history_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8431,7 +5610,7 @@ ALTER TABLE ONLY public.order_status_history
 
 
 --
--- TOC entry 3976 (class 2606 OID 32105)
+-- TOC entry 4091 (class 2606 OID 32105)
 -- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8440,7 +5619,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- TOC entry 3989 (class 2606 OID 32167)
+-- TOC entry 4104 (class 2606 OID 32167)
 -- Name: payment_methods payment_methods_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8449,7 +5628,7 @@ ALTER TABLE ONLY public.payment_methods
 
 
 --
--- TOC entry 3995 (class 2606 OID 32180)
+-- TOC entry 4110 (class 2606 OID 32180)
 -- Name: payments payments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8458,7 +5637,7 @@ ALTER TABLE ONLY public.payments
 
 
 --
--- TOC entry 4007 (class 2606 OID 32537)
+-- TOC entry 4122 (class 2606 OID 32537)
 -- Name: product_images product_images_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8467,7 +5646,7 @@ ALTER TABLE ONLY public.product_images
 
 
 --
--- TOC entry 4009 (class 2606 OID 32539)
+-- TOC entry 4124 (class 2606 OID 32539)
 -- Name: product_images product_images_product_id_image_index_size_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8476,7 +5655,7 @@ ALTER TABLE ONLY public.product_images
 
 
 --
--- TOC entry 3957 (class 2606 OID 32079)
+-- TOC entry 4066 (class 2606 OID 32079)
 -- Name: product_occasions product_occasions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8485,7 +5664,7 @@ ALTER TABLE ONLY public.product_occasions
 
 
 --
--- TOC entry 3959 (class 2606 OID 32081)
+-- TOC entry 4068 (class 2606 OID 32081)
 -- Name: product_occasions product_occasions_product_id_occasion_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8494,7 +5673,7 @@ ALTER TABLE ONLY public.product_occasions
 
 
 --
--- TOC entry 3951 (class 2606 OID 32048)
+-- TOC entry 4057 (class 2606 OID 32048)
 -- Name: products products_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8503,7 +5682,7 @@ ALTER TABLE ONLY public.products
 
 
 --
--- TOC entry 3953 (class 2606 OID 32050)
+-- TOC entry 4059 (class 2606 OID 32050)
 -- Name: products products_sku_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8512,7 +5691,7 @@ ALTER TABLE ONLY public.products
 
 
 --
--- TOC entry 4022 (class 2606 OID 59949)
+-- TOC entry 4137 (class 2606 OID 59949)
 -- Name: query_timeouts_log query_timeouts_log_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8521,7 +5700,7 @@ ALTER TABLE ONLY public.query_timeouts_log
 
 
 --
--- TOC entry 3928 (class 2606 OID 32031)
+-- TOC entry 4029 (class 2606 OID 32031)
 -- Name: settings settings_key_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8530,7 +5709,7 @@ ALTER TABLE ONLY public.settings
 
 
 --
--- TOC entry 3930 (class 2606 OID 32029)
+-- TOC entry 4032 (class 2606 OID 32029)
 -- Name: settings settings_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8539,7 +5718,7 @@ ALTER TABLE ONLY public.settings
 
 
 --
--- TOC entry 3923 (class 2606 OID 32016)
+-- TOC entry 4022 (class 2606 OID 32016)
 -- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8548,7 +5727,16 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3925 (class 2606 OID 32014)
+-- TOC entry 4024 (class 2606 OID 77922)
+-- Name: users users_email_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_email_unique UNIQUE (email_normalized);
+
+
+--
+-- TOC entry 4026 (class 2606 OID 32014)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -8557,7 +5745,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4012 (class 1259 OID 59815)
+-- TOC entry 4127 (class 1259 OID 59815)
 -- Name: idx_busquedas_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8565,7 +5753,7 @@ CREATE INDEX idx_busquedas_fecha ON public.busquedas_log USING btree (created_at
 
 
 --
--- TOC entry 4013 (class 1259 OID 77627)
+-- TOC entry 4128 (class 1259 OID 77627)
 -- Name: idx_busquedas_ip_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8573,7 +5761,7 @@ CREATE INDEX idx_busquedas_ip_fecha ON public.busquedas_log USING btree (ip_clie
 
 
 --
--- TOC entry 4014 (class 1259 OID 77813)
+-- TOC entry 4129 (class 1259 OID 77813)
 -- Name: idx_busquedas_log_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8581,7 +5769,7 @@ CREATE INDEX idx_busquedas_log_active ON public.busquedas_log USING btree (activ
 
 
 --
--- TOC entry 4015 (class 1259 OID 77628)
+-- TOC entry 4130 (class 1259 OID 77628)
 -- Name: idx_busquedas_resultados; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8589,7 +5777,7 @@ CREATE INDEX idx_busquedas_resultados ON public.busquedas_log USING btree (resul
 
 
 --
--- TOC entry 4016 (class 1259 OID 59814)
+-- TOC entry 4131 (class 1259 OID 59814)
 -- Name: idx_busquedas_termino_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8597,7 +5785,71 @@ CREATE INDEX idx_busquedas_termino_fecha ON public.busquedas_log USING btree (te
 
 
 --
--- TOC entry 3907 (class 1259 OID 77804)
+-- TOC entry 4140 (class 1259 OID 84822)
+-- Name: idx_expenses_active; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_expenses_active ON public.expenses USING btree (active);
+
+
+--
+-- TOC entry 4141 (class 1259 OID 86509)
+-- Name: idx_expenses_amount; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_expenses_amount ON public.expenses USING btree (amount DESC);
+
+
+--
+-- TOC entry 4142 (class 1259 OID 86506)
+-- Name: idx_expenses_category; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_expenses_category ON public.expenses USING btree (category);
+
+
+--
+-- TOC entry 4143 (class 1259 OID 86511)
+-- Name: idx_expenses_category_date; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_expenses_category_date ON public.expenses USING btree (category, expense_date DESC);
+
+
+--
+-- TOC entry 4144 (class 1259 OID 86510)
+-- Name: idx_expenses_created_at; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_expenses_created_at ON public.expenses USING btree (created_at DESC);
+
+
+--
+-- TOC entry 4145 (class 1259 OID 84820)
+-- Name: idx_expenses_created_by; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_expenses_created_by ON public.expenses USING btree (created_by);
+
+
+--
+-- TOC entry 4146 (class 1259 OID 86507)
+-- Name: idx_expenses_expense_date; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_expenses_expense_date ON public.expenses USING btree (expense_date DESC);
+
+
+--
+-- TOC entry 4147 (class 1259 OID 86508)
+-- Name: idx_expenses_payment_method; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_expenses_payment_method ON public.expenses USING btree (payment_method);
+
+
+--
+-- TOC entry 4004 (class 1259 OID 77804)
 -- Name: idx_occasions_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8605,7 +5857,7 @@ CREATE INDEX idx_occasions_active ON public.occasions USING btree (active);
 
 
 --
--- TOC entry 3908 (class 1259 OID 77626)
+-- TOC entry 4005 (class 1259 OID 77626)
 -- Name: idx_occasions_active_display_order; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8613,7 +5865,7 @@ CREATE INDEX idx_occasions_active_display_order ON public.occasions USING btree 
 
 
 --
--- TOC entry 3909 (class 1259 OID 67986)
+-- TOC entry 4006 (class 1259 OID 67986)
 -- Name: idx_occasions_is_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8621,7 +5873,7 @@ CREATE INDEX idx_occasions_is_active ON public.occasions USING btree (active) WH
 
 
 --
--- TOC entry 3977 (class 1259 OID 77811)
+-- TOC entry 4092 (class 1259 OID 77811)
 -- Name: idx_order_items_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8629,7 +5881,7 @@ CREATE INDEX idx_order_items_active ON public.order_items USING btree (active);
 
 
 --
--- TOC entry 3978 (class 1259 OID 32202)
+-- TOC entry 4093 (class 1259 OID 86504)
 -- Name: idx_order_items_order_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8637,7 +5889,7 @@ CREATE INDEX idx_order_items_order_id ON public.order_items USING btree (order_i
 
 
 --
--- TOC entry 3979 (class 1259 OID 59745)
+-- TOC entry 4094 (class 1259 OID 59745)
 -- Name: idx_order_items_order_product; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8645,7 +5897,7 @@ CREATE INDEX idx_order_items_order_product ON public.order_items USING btree (or
 
 
 --
--- TOC entry 3980 (class 1259 OID 58599)
+-- TOC entry 4095 (class 1259 OID 86505)
 -- Name: idx_order_items_product_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8653,7 +5905,7 @@ CREATE INDEX idx_order_items_product_id ON public.order_items USING btree (produ
 
 
 --
--- TOC entry 3981 (class 1259 OID 59746)
+-- TOC entry 4096 (class 1259 OID 59746)
 -- Name: idx_order_items_product_quantity; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8661,7 +5913,7 @@ CREATE INDEX idx_order_items_product_quantity ON public.order_items USING btree 
 
 
 --
--- TOC entry 3984 (class 1259 OID 77812)
+-- TOC entry 4099 (class 1259 OID 77812)
 -- Name: idx_order_status_history_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8669,7 +5921,7 @@ CREATE INDEX idx_order_status_history_active ON public.order_status_history USIN
 
 
 --
--- TOC entry 3960 (class 1259 OID 77807)
+-- TOC entry 4069 (class 1259 OID 77807)
 -- Name: idx_orders_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8677,7 +5929,7 @@ CREATE INDEX idx_orders_active ON public.orders USING btree (active);
 
 
 --
--- TOC entry 3961 (class 1259 OID 59742)
+-- TOC entry 4070 (class 1259 OID 59742)
 -- Name: idx_orders_amount_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8685,7 +5937,7 @@ CREATE INDEX idx_orders_amount_date ON public.orders USING btree (total_amount_u
 
 
 --
--- TOC entry 3962 (class 1259 OID 32201)
+-- TOC entry 4071 (class 1259 OID 86495)
 -- Name: idx_orders_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8693,7 +5945,7 @@ CREATE INDEX idx_orders_created_at ON public.orders USING btree (created_at DESC
 
 
 --
--- TOC entry 3963 (class 1259 OID 58598)
+-- TOC entry 4072 (class 1259 OID 86498)
 -- Name: idx_orders_customer_email; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8701,7 +5953,7 @@ CREATE INDEX idx_orders_customer_email ON public.orders USING btree (customer_em
 
 
 --
--- TOC entry 3964 (class 1259 OID 52861)
+-- TOC entry 4073 (class 1259 OID 52861)
 -- Name: idx_orders_customer_email_normalized; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8709,7 +5961,15 @@ CREATE INDEX idx_orders_customer_email_normalized ON public.orders USING btree (
 
 
 --
--- TOC entry 3965 (class 1259 OID 52849)
+-- TOC entry 4074 (class 1259 OID 86497)
+-- Name: idx_orders_customer_name; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_orders_customer_name ON public.orders USING btree (customer_name);
+
+
+--
+-- TOC entry 4075 (class 1259 OID 52849)
 -- Name: idx_orders_customer_name_normalized; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8717,7 +5977,15 @@ CREATE INDEX idx_orders_customer_name_normalized ON public.orders USING btree (c
 
 
 --
--- TOC entry 3966 (class 1259 OID 59741)
+-- TOC entry 4076 (class 1259 OID 86500)
+-- Name: idx_orders_customer_phone; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_orders_customer_phone ON public.orders USING btree (customer_phone);
+
+
+--
+-- TOC entry 4077 (class 1259 OID 59741)
 -- Name: idx_orders_delivered; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8725,15 +5993,23 @@ CREATE INDEX idx_orders_delivered ON public.orders USING btree (created_at DESC)
 
 
 --
--- TOC entry 3967 (class 1259 OID 67989)
+-- TOC entry 4078 (class 1259 OID 86499)
+-- Name: idx_orders_delivery_address; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_orders_delivery_address ON public.orders USING btree (delivery_address);
+
+
+--
+-- TOC entry 4079 (class 1259 OID 86502)
 -- Name: idx_orders_delivery_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX idx_orders_delivery_date ON public.orders USING btree (delivery_date) WHERE (delivery_date IS NOT NULL);
+CREATE INDEX idx_orders_delivery_date ON public.orders USING btree (delivery_date);
 
 
 --
--- TOC entry 3968 (class 1259 OID 59740)
+-- TOC entry 4080 (class 1259 OID 59740)
 -- Name: idx_orders_recent_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8741,7 +6017,7 @@ CREATE INDEX idx_orders_recent_active ON public.orders USING btree (created_at D
 
 
 --
--- TOC entry 3969 (class 1259 OID 32200)
+-- TOC entry 4081 (class 1259 OID 86496)
 -- Name: idx_orders_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8749,7 +6025,23 @@ CREATE INDEX idx_orders_status ON public.orders USING btree (status);
 
 
 --
--- TOC entry 3970 (class 1259 OID 59738)
+-- TOC entry 4082 (class 1259 OID 77931)
+-- Name: idx_orders_status_created; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_orders_status_created ON public.orders USING btree (status, created_at DESC);
+
+
+--
+-- TOC entry 4083 (class 1259 OID 86503)
+-- Name: idx_orders_status_created_at; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_orders_status_created_at ON public.orders USING btree (status, created_at DESC);
+
+
+--
+-- TOC entry 4084 (class 1259 OID 59738)
 -- Name: idx_orders_status_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8757,7 +6049,7 @@ CREATE INDEX idx_orders_status_date ON public.orders USING btree (status, create
 
 
 --
--- TOC entry 3971 (class 1259 OID 67988)
+-- TOC entry 4085 (class 1259 OID 67988)
 -- Name: idx_orders_total_amount; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8765,7 +6057,15 @@ CREATE INDEX idx_orders_total_amount ON public.orders USING btree (total_amount_
 
 
 --
--- TOC entry 3972 (class 1259 OID 67991)
+-- TOC entry 4086 (class 1259 OID 86501)
+-- Name: idx_orders_total_amount_usd; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_orders_total_amount_usd ON public.orders USING btree (total_amount_usd DESC);
+
+
+--
+-- TOC entry 4087 (class 1259 OID 67991)
 -- Name: idx_orders_user_created; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8773,7 +6073,7 @@ CREATE INDEX idx_orders_user_created ON public.orders USING btree (user_id, crea
 
 
 --
--- TOC entry 3973 (class 1259 OID 59739)
+-- TOC entry 4088 (class 1259 OID 59739)
 -- Name: idx_orders_user_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8781,7 +6081,7 @@ CREATE INDEX idx_orders_user_date ON public.orders USING btree (user_id, created
 
 
 --
--- TOC entry 3974 (class 1259 OID 32199)
+-- TOC entry 4089 (class 1259 OID 32199)
 -- Name: idx_orders_user_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8789,7 +6089,7 @@ CREATE INDEX idx_orders_user_id ON public.orders USING btree (user_id);
 
 
 --
--- TOC entry 3987 (class 1259 OID 77805)
+-- TOC entry 4102 (class 1259 OID 77805)
 -- Name: idx_payment_methods_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8797,7 +6097,7 @@ CREATE INDEX idx_payment_methods_active ON public.payment_methods USING btree (a
 
 
 --
--- TOC entry 3990 (class 1259 OID 77808)
+-- TOC entry 4105 (class 1259 OID 77808)
 -- Name: idx_payments_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8805,7 +6105,7 @@ CREATE INDEX idx_payments_active ON public.payments USING btree (active);
 
 
 --
--- TOC entry 3991 (class 1259 OID 32203)
+-- TOC entry 4106 (class 1259 OID 32203)
 -- Name: idx_payments_order_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8813,7 +6113,7 @@ CREATE INDEX idx_payments_order_id ON public.payments USING btree (order_id);
 
 
 --
--- TOC entry 3992 (class 1259 OID 67990)
+-- TOC entry 4107 (class 1259 OID 67990)
 -- Name: idx_payments_payment_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8821,7 +6121,7 @@ CREATE INDEX idx_payments_payment_date ON public.payments USING btree (payment_d
 
 
 --
--- TOC entry 3993 (class 1259 OID 32204)
+-- TOC entry 4108 (class 1259 OID 32204)
 -- Name: idx_payments_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8829,7 +6129,7 @@ CREATE INDEX idx_payments_status ON public.payments USING btree (status);
 
 
 --
--- TOC entry 3996 (class 1259 OID 77809)
+-- TOC entry 4111 (class 1259 OID 77809)
 -- Name: idx_product_images_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8837,7 +6137,7 @@ CREATE INDEX idx_product_images_active ON public.product_images USING btree (act
 
 
 --
--- TOC entry 3997 (class 1259 OID 58597)
+-- TOC entry 4112 (class 1259 OID 58597)
 -- Name: idx_product_images_file_hash; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8845,7 +6145,7 @@ CREATE INDEX idx_product_images_file_hash ON public.product_images USING btree (
 
 
 --
--- TOC entry 3998 (class 1259 OID 59744)
+-- TOC entry 4113 (class 1259 OID 59744)
 -- Name: idx_product_images_hash; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8853,7 +6153,7 @@ CREATE INDEX idx_product_images_hash ON public.product_images USING btree (file_
 
 
 --
--- TOC entry 3999 (class 1259 OID 32548)
+-- TOC entry 4114 (class 1259 OID 32548)
 -- Name: idx_product_images_only_one_primary; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8861,7 +6161,7 @@ CREATE UNIQUE INDEX idx_product_images_only_one_primary ON public.product_images
 
 
 --
--- TOC entry 4000 (class 1259 OID 58513)
+-- TOC entry 4115 (class 1259 OID 58513)
 -- Name: idx_product_images_only_one_primary_per_size; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8869,7 +6169,7 @@ CREATE UNIQUE INDEX idx_product_images_only_one_primary_per_size ON public.produ
 
 
 --
--- TOC entry 4001 (class 1259 OID 32546)
+-- TOC entry 4116 (class 1259 OID 32546)
 -- Name: idx_product_images_primary; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8877,7 +6177,7 @@ CREATE INDEX idx_product_images_primary ON public.product_images USING btree (pr
 
 
 --
--- TOC entry 4002 (class 1259 OID 32545)
+-- TOC entry 4117 (class 1259 OID 32545)
 -- Name: idx_product_images_product_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8885,7 +6185,7 @@ CREATE INDEX idx_product_images_product_id ON public.product_images USING btree 
 
 
 --
--- TOC entry 4003 (class 1259 OID 58514)
+-- TOC entry 4118 (class 1259 OID 58514)
 -- Name: idx_product_images_product_id_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8893,7 +6193,7 @@ CREATE INDEX idx_product_images_product_id_active ON public.product_images USING
 
 
 --
--- TOC entry 4004 (class 1259 OID 59743)
+-- TOC entry 4119 (class 1259 OID 59743)
 -- Name: idx_product_images_product_primary; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8901,7 +6201,7 @@ CREATE INDEX idx_product_images_product_primary ON public.product_images USING b
 
 
 --
--- TOC entry 4005 (class 1259 OID 32547)
+-- TOC entry 4120 (class 1259 OID 32547)
 -- Name: idx_product_images_size; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8909,7 +6209,7 @@ CREATE INDEX idx_product_images_size ON public.product_images USING btree (size)
 
 
 --
--- TOC entry 3954 (class 1259 OID 77810)
+-- TOC entry 4061 (class 1259 OID 77810)
 -- Name: idx_product_occasions_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8917,7 +6217,15 @@ CREATE INDEX idx_product_occasions_active ON public.product_occasions USING btre
 
 
 --
--- TOC entry 3955 (class 1259 OID 32198)
+-- TOC entry 4062 (class 1259 OID 86494)
+-- Name: idx_product_occasions_composite; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_product_occasions_composite ON public.product_occasions USING btree (occasion_id, product_id);
+
+
+--
+-- TOC entry 4063 (class 1259 OID 86493)
 -- Name: idx_product_occasions_occasion_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8925,7 +6233,15 @@ CREATE INDEX idx_product_occasions_occasion_id ON public.product_occasions USING
 
 
 --
--- TOC entry 3931 (class 1259 OID 77815)
+-- TOC entry 4064 (class 1259 OID 86492)
+-- Name: idx_product_occasions_product_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_product_occasions_product_id ON public.product_occasions USING btree (product_id);
+
+
+--
+-- TOC entry 4033 (class 1259 OID 86483)
 -- Name: idx_products_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8933,7 +6249,15 @@ CREATE INDEX idx_products_active ON public.products USING btree (active);
 
 
 --
--- TOC entry 3932 (class 1259 OID 59733)
+-- TOC entry 4034 (class 1259 OID 86491)
+-- Name: idx_products_active_created; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_products_active_created ON public.products USING btree (active, created_at);
+
+
+--
+-- TOC entry 4035 (class 1259 OID 59733)
 -- Name: idx_products_active_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8941,7 +6265,7 @@ CREATE INDEX idx_products_active_created_at ON public.products USING btree (acti
 
 
 --
--- TOC entry 3933 (class 1259 OID 32207)
+-- TOC entry 4036 (class 1259 OID 86489)
 -- Name: idx_products_active_featured; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8949,7 +6273,7 @@ CREATE INDEX idx_products_active_featured ON public.products USING btree (active
 
 
 --
--- TOC entry 3934 (class 1259 OID 59732)
+-- TOC entry 4037 (class 1259 OID 59732)
 -- Name: idx_products_active_name_normalized; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8957,7 +6281,15 @@ CREATE INDEX idx_products_active_name_normalized ON public.products USING btree 
 
 
 --
--- TOC entry 3935 (class 1259 OID 59800)
+-- TOC entry 4038 (class 1259 OID 86490)
+-- Name: idx_products_active_price; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_products_active_price ON public.products USING btree (active, price_usd);
+
+
+--
+-- TOC entry 4039 (class 1259 OID 59800)
 -- Name: idx_products_active_search_gin; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8965,15 +6297,23 @@ CREATE INDEX idx_products_active_search_gin ON public.products USING gin (search
 
 
 --
--- TOC entry 3936 (class 1259 OID 32208)
+-- TOC entry 4040 (class 1259 OID 86487)
 -- Name: idx_products_carousel_order; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX idx_products_carousel_order ON public.products USING btree (carousel_order) WHERE (carousel_order IS NOT NULL);
+CREATE INDEX idx_products_carousel_order ON public.products USING btree (carousel_order);
 
 
 --
--- TOC entry 3937 (class 1259 OID 52886)
+-- TOC entry 4041 (class 1259 OID 86488)
+-- Name: idx_products_created_at; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_products_created_at ON public.products USING btree (created_at DESC);
+
+
+--
+-- TOC entry 4042 (class 1259 OID 52886)
 -- Name: idx_products_description_normalized; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8981,15 +6321,15 @@ CREATE INDEX idx_products_description_normalized ON public.products USING btree 
 
 
 --
--- TOC entry 3938 (class 1259 OID 58596)
+-- TOC entry 4043 (class 1259 OID 86484)
 -- Name: idx_products_featured; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX idx_products_featured ON public.products USING btree (featured) WHERE ((active = true) AND (featured = true));
+CREATE INDEX idx_products_featured ON public.products USING btree (featured);
 
 
 --
--- TOC entry 3939 (class 1259 OID 59735)
+-- TOC entry 4044 (class 1259 OID 59735)
 -- Name: idx_products_featured_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -8997,7 +6337,7 @@ CREATE INDEX idx_products_featured_active ON public.products USING btree (featur
 
 
 --
--- TOC entry 3940 (class 1259 OID 67987)
+-- TOC entry 4045 (class 1259 OID 67987)
 -- Name: idx_products_featured_created; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9005,7 +6345,15 @@ CREATE INDEX idx_products_featured_created ON public.products USING btree (featu
 
 
 --
--- TOC entry 3941 (class 1259 OID 52873)
+-- TOC entry 4046 (class 1259 OID 86482)
+-- Name: idx_products_name; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_products_name ON public.products USING btree (name);
+
+
+--
+-- TOC entry 4047 (class 1259 OID 52873)
 -- Name: idx_products_name_normalized; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9013,7 +6361,7 @@ CREATE INDEX idx_products_name_normalized ON public.products USING btree (name_n
 
 
 --
--- TOC entry 3942 (class 1259 OID 59736)
+-- TOC entry 4048 (class 1259 OID 59736)
 -- Name: idx_products_price_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9021,15 +6369,15 @@ CREATE INDEX idx_products_price_active ON public.products USING btree (price_usd
 
 
 --
--- TOC entry 3943 (class 1259 OID 58511)
+-- TOC entry 4049 (class 1259 OID 86481)
 -- Name: idx_products_price_usd; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX idx_products_price_usd ON public.products USING btree (price_usd) WHERE (active = true);
+CREATE INDEX idx_products_price_usd ON public.products USING btree (price_usd);
 
 
 --
--- TOC entry 3944 (class 1259 OID 59734)
+-- TOC entry 4050 (class 1259 OID 59734)
 -- Name: idx_products_search_full; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9037,7 +6385,7 @@ CREATE INDEX idx_products_search_full ON public.products USING btree (name_norma
 
 
 --
--- TOC entry 3945 (class 1259 OID 77625)
+-- TOC entry 4051 (class 1259 OID 77625)
 -- Name: idx_products_search_vector; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9045,7 +6393,7 @@ CREATE INDEX idx_products_search_vector ON public.products USING gin (search_vec
 
 
 --
--- TOC entry 3946 (class 1259 OID 59799)
+-- TOC entry 4052 (class 1259 OID 59799)
 -- Name: idx_products_search_vector_gin; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9053,7 +6401,7 @@ CREATE INDEX idx_products_search_vector_gin ON public.products USING gin (search
 
 
 --
--- TOC entry 3947 (class 1259 OID 32206)
+-- TOC entry 4053 (class 1259 OID 86485)
 -- Name: idx_products_sku; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9061,15 +6409,15 @@ CREATE INDEX idx_products_sku ON public.products USING btree (sku);
 
 
 --
--- TOC entry 3948 (class 1259 OID 58512)
+-- TOC entry 4054 (class 1259 OID 86486)
 -- Name: idx_products_stock; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX idx_products_stock ON public.products USING btree (stock) WHERE (active = true);
+CREATE INDEX idx_products_stock ON public.products USING btree (stock);
 
 
 --
--- TOC entry 3949 (class 1259 OID 59737)
+-- TOC entry 4055 (class 1259 OID 59737)
 -- Name: idx_products_stock_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9077,7 +6425,7 @@ CREATE INDEX idx_products_stock_active ON public.products USING btree (stock, ac
 
 
 --
--- TOC entry 4017 (class 1259 OID 59952)
+-- TOC entry 4132 (class 1259 OID 59952)
 -- Name: idx_query_timeouts_estado; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9085,7 +6433,7 @@ CREATE INDEX idx_query_timeouts_estado ON public.query_timeouts_log USING btree 
 
 
 --
--- TOC entry 4018 (class 1259 OID 59950)
+-- TOC entry 4133 (class 1259 OID 59950)
 -- Name: idx_query_timeouts_fecha_hora; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9093,7 +6441,7 @@ CREATE INDEX idx_query_timeouts_fecha_hora ON public.query_timeouts_log USING bt
 
 
 --
--- TOC entry 4019 (class 1259 OID 77814)
+-- TOC entry 4134 (class 1259 OID 77814)
 -- Name: idx_query_timeouts_log_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9101,7 +6449,7 @@ CREATE INDEX idx_query_timeouts_log_active ON public.query_timeouts_log USING bt
 
 
 --
--- TOC entry 4020 (class 1259 OID 59951)
+-- TOC entry 4135 (class 1259 OID 59951)
 -- Name: idx_query_timeouts_nombre_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9109,7 +6457,7 @@ CREATE INDEX idx_query_timeouts_nombre_fecha ON public.query_timeouts_log USING 
 
 
 --
--- TOC entry 3926 (class 1259 OID 77806)
+-- TOC entry 4027 (class 1259 OID 77806)
 -- Name: idx_settings_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9117,7 +6465,7 @@ CREATE INDEX idx_settings_active ON public.settings USING btree (active);
 
 
 --
--- TOC entry 3916 (class 1259 OID 77803)
+-- TOC entry 4014 (class 1259 OID 77803)
 -- Name: idx_users_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9125,7 +6473,7 @@ CREATE INDEX idx_users_active ON public.users USING btree (active);
 
 
 --
--- TOC entry 3917 (class 1259 OID 32205)
+-- TOC entry 4015 (class 1259 OID 32205)
 -- Name: idx_users_email; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9133,7 +6481,7 @@ CREATE INDEX idx_users_email ON public.users USING btree (email);
 
 
 --
--- TOC entry 3918 (class 1259 OID 58515)
+-- TOC entry 4016 (class 1259 OID 58515)
 -- Name: idx_users_email_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9141,7 +6489,7 @@ CREATE INDEX idx_users_email_active ON public.users USING btree (email) WHERE (a
 
 
 --
--- TOC entry 3919 (class 1259 OID 52907)
+-- TOC entry 4017 (class 1259 OID 52907)
 -- Name: idx_users_email_normalized; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9149,7 +6497,7 @@ CREATE INDEX idx_users_email_normalized ON public.users USING btree (email_norma
 
 
 --
--- TOC entry 3920 (class 1259 OID 52896)
+-- TOC entry 4018 (class 1259 OID 52896)
 -- Name: idx_users_full_name_normalized; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9157,7 +6505,15 @@ CREATE INDEX idx_users_full_name_normalized ON public.users USING btree (full_na
 
 
 --
--- TOC entry 3921 (class 1259 OID 58516)
+-- TOC entry 4019 (class 1259 OID 77930)
+-- Name: idx_users_phone; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_users_phone ON public.users USING btree (phone);
+
+
+--
+-- TOC entry 4020 (class 1259 OID 58516)
 -- Name: idx_users_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -9165,7 +6521,31 @@ CREATE INDEX idx_users_role ON public.users USING btree (role) WHERE (active = t
 
 
 --
--- TOC entry 4034 (class 2620 OID 59798)
+-- TOC entry 4009 (class 1259 OID 77924)
+-- Name: occasions_name_unique_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX occasions_name_unique_idx ON public.occasions USING btree (upper((name)::text));
+
+
+--
+-- TOC entry 4060 (class 1259 OID 77923)
+-- Name: products_sku_unique_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX products_sku_unique_idx ON public.products USING btree (upper((sku)::text)) WHERE (sku IS NOT NULL);
+
+
+--
+-- TOC entry 4030 (class 1259 OID 77926)
+-- Name: settings_key_unique_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX settings_key_unique_idx ON public.settings USING btree (upper((key)::text));
+
+
+--
+-- TOC entry 4168 (class 2620 OID 59798)
 -- Name: products actualizar_search_products; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -9173,7 +6553,7 @@ CREATE TRIGGER actualizar_search_products BEFORE INSERT OR UPDATE ON public.prod
 
 
 --
--- TOC entry 4037 (class 2620 OID 77769)
+-- TOC entry 4171 (class 2620 OID 77769)
 -- Name: payments trigger_sync_payment_method_name; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -9181,7 +6561,7 @@ CREATE TRIGGER trigger_sync_payment_method_name BEFORE INSERT OR UPDATE ON publi
 
 
 --
--- TOC entry 4036 (class 2620 OID 77768)
+-- TOC entry 4170 (class 2620 OID 77768)
 -- Name: order_items trigger_validate_order_total; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -9189,7 +6569,7 @@ CREATE TRIGGER trigger_validate_order_total AFTER INSERT OR DELETE OR UPDATE ON 
 
 
 --
--- TOC entry 4035 (class 2620 OID 75911)
+-- TOC entry 4169 (class 2620 OID 75911)
 -- Name: products update_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -9197,7 +6577,88 @@ CREATE TRIGGER update_updated_at BEFORE UPDATE ON public.products FOR EACH ROW E
 
 
 --
--- TOC entry 4026 (class 2606 OID 32125)
+-- TOC entry 4154 (class 2606 OID 77881)
+-- Name: order_items fk_order_items_order; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.order_items
+    ADD CONSTRAINT fk_order_items_order FOREIGN KEY (order_id) REFERENCES public.orders(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 4155 (class 2606 OID 77886)
+-- Name: order_items fk_order_items_product; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.order_items
+    ADD CONSTRAINT fk_order_items_product FOREIGN KEY (product_id) REFERENCES public.products(id) ON DELETE RESTRICT;
+
+
+--
+-- TOC entry 4158 (class 2606 OID 77916)
+-- Name: order_status_history fk_order_status_history_order; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.order_status_history
+    ADD CONSTRAINT fk_order_status_history_order FOREIGN KEY (order_id) REFERENCES public.orders(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 4152 (class 2606 OID 77876)
+-- Name: orders fk_orders_user; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.orders
+    ADD CONSTRAINT fk_orders_user FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE SET NULL;
+
+
+--
+-- TOC entry 4161 (class 2606 OID 77891)
+-- Name: payments fk_payments_order; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.payments
+    ADD CONSTRAINT fk_payments_order FOREIGN KEY (order_id) REFERENCES public.orders(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 4162 (class 2606 OID 77896)
+-- Name: payments fk_payments_payment_method; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.payments
+    ADD CONSTRAINT fk_payments_payment_method FOREIGN KEY (payment_method_id) REFERENCES public.payment_methods(id) ON DELETE SET NULL;
+
+
+--
+-- TOC entry 4166 (class 2606 OID 77901)
+-- Name: product_images fk_product_images_product; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.product_images
+    ADD CONSTRAINT fk_product_images_product FOREIGN KEY (product_id) REFERENCES public.products(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 4148 (class 2606 OID 77911)
+-- Name: product_occasions fk_product_occasions_occasion; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.product_occasions
+    ADD CONSTRAINT fk_product_occasions_occasion FOREIGN KEY (occasion_id) REFERENCES public.occasions(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 4149 (class 2606 OID 77906)
+-- Name: product_occasions fk_product_occasions_product; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.product_occasions
+    ADD CONSTRAINT fk_product_occasions_product FOREIGN KEY (product_id) REFERENCES public.products(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 4156 (class 2606 OID 32125)
 -- Name: order_items order_items_order_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -9206,7 +6667,7 @@ ALTER TABLE ONLY public.order_items
 
 
 --
--- TOC entry 4027 (class 2606 OID 32130)
+-- TOC entry 4157 (class 2606 OID 32130)
 -- Name: order_items order_items_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -9215,7 +6676,7 @@ ALTER TABLE ONLY public.order_items
 
 
 --
--- TOC entry 4028 (class 2606 OID 32150)
+-- TOC entry 4159 (class 2606 OID 32150)
 -- Name: order_status_history order_status_history_changed_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -9224,7 +6685,7 @@ ALTER TABLE ONLY public.order_status_history
 
 
 --
--- TOC entry 4029 (class 2606 OID 32145)
+-- TOC entry 4160 (class 2606 OID 32145)
 -- Name: order_status_history order_status_history_order_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -9233,7 +6694,7 @@ ALTER TABLE ONLY public.order_status_history
 
 
 --
--- TOC entry 4025 (class 2606 OID 32106)
+-- TOC entry 4153 (class 2606 OID 32106)
 -- Name: orders orders_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -9242,7 +6703,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- TOC entry 4030 (class 2606 OID 32181)
+-- TOC entry 4163 (class 2606 OID 32181)
 -- Name: payments payments_order_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -9251,7 +6712,7 @@ ALTER TABLE ONLY public.payments
 
 
 --
--- TOC entry 4031 (class 2606 OID 32186)
+-- TOC entry 4164 (class 2606 OID 32186)
 -- Name: payments payments_payment_method_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -9260,7 +6721,7 @@ ALTER TABLE ONLY public.payments
 
 
 --
--- TOC entry 4032 (class 2606 OID 32191)
+-- TOC entry 4165 (class 2606 OID 32191)
 -- Name: payments payments_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -9269,7 +6730,7 @@ ALTER TABLE ONLY public.payments
 
 
 --
--- TOC entry 4033 (class 2606 OID 32540)
+-- TOC entry 4167 (class 2606 OID 32540)
 -- Name: product_images product_images_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -9278,7 +6739,7 @@ ALTER TABLE ONLY public.product_images
 
 
 --
--- TOC entry 4023 (class 2606 OID 32087)
+-- TOC entry 4150 (class 2606 OID 32087)
 -- Name: product_occasions product_occasions_occasion_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -9287,7 +6748,7 @@ ALTER TABLE ONLY public.product_occasions
 
 
 --
--- TOC entry 4024 (class 2606 OID 32082)
+-- TOC entry 4151 (class 2606 OID 32082)
 -- Name: product_occasions product_occasions_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -9296,7 +6757,7 @@ ALTER TABLE ONLY public.product_occasions
 
 
 --
--- TOC entry 4213 (class 3256 OID 76309)
+-- TOC entry 4360 (class 3256 OID 76309)
 -- Name: occasions Admins can create occasions; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9304,7 +6765,7 @@ CREATE POLICY "Admins can create occasions" ON public.occasions FOR INSERT WITH 
 
 
 --
--- TOC entry 4219 (class 3256 OID 76315)
+-- TOC entry 4366 (class 3256 OID 76315)
 -- Name: payment_methods Admins can create payment methods; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9312,7 +6773,7 @@ CREATE POLICY "Admins can create payment methods" ON public.payment_methods FOR 
 
 
 --
--- TOC entry 4223 (class 3256 OID 76319)
+-- TOC entry 4370 (class 3256 OID 76319)
 -- Name: product_images Admins can create product images; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9320,7 +6781,7 @@ CREATE POLICY "Admins can create product images" ON public.product_images FOR IN
 
 
 --
--- TOC entry 4227 (class 3256 OID 76323)
+-- TOC entry 4374 (class 3256 OID 76323)
 -- Name: product_occasions Admins can create product occasions; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9328,7 +6789,7 @@ CREATE POLICY "Admins can create product occasions" ON public.product_occasions 
 
 
 --
--- TOC entry 4231 (class 3256 OID 76327)
+-- TOC entry 4378 (class 3256 OID 76327)
 -- Name: products Admins can create products; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9336,7 +6797,7 @@ CREATE POLICY "Admins can create products" ON public.products FOR INSERT WITH CH
 
 
 --
--- TOC entry 4237 (class 3256 OID 76333)
+-- TOC entry 4384 (class 3256 OID 76333)
 -- Name: settings Admins can create settings; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9344,7 +6805,7 @@ CREATE POLICY "Admins can create settings" ON public.settings FOR INSERT WITH CH
 
 
 --
--- TOC entry 4215 (class 3256 OID 76311)
+-- TOC entry 4362 (class 3256 OID 76311)
 -- Name: occasions Admins can delete occasions; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9352,7 +6813,7 @@ CREATE POLICY "Admins can delete occasions" ON public.occasions FOR DELETE USING
 
 
 --
--- TOC entry 4221 (class 3256 OID 76317)
+-- TOC entry 4368 (class 3256 OID 76317)
 -- Name: payment_methods Admins can delete payment methods; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9360,7 +6821,7 @@ CREATE POLICY "Admins can delete payment methods" ON public.payment_methods FOR 
 
 
 --
--- TOC entry 4225 (class 3256 OID 76321)
+-- TOC entry 4372 (class 3256 OID 76321)
 -- Name: product_images Admins can delete product images; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9368,7 +6829,7 @@ CREATE POLICY "Admins can delete product images" ON public.product_images FOR DE
 
 
 --
--- TOC entry 4229 (class 3256 OID 76325)
+-- TOC entry 4376 (class 3256 OID 76325)
 -- Name: product_occasions Admins can delete product occasions; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9376,7 +6837,7 @@ CREATE POLICY "Admins can delete product occasions" ON public.product_occasions 
 
 
 --
--- TOC entry 4233 (class 3256 OID 76329)
+-- TOC entry 4380 (class 3256 OID 76329)
 -- Name: products Admins can delete products; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9384,7 +6845,7 @@ CREATE POLICY "Admins can delete products" ON public.products FOR DELETE USING (
 
 
 --
--- TOC entry 4239 (class 3256 OID 76335)
+-- TOC entry 4386 (class 3256 OID 76335)
 -- Name: settings Admins can delete settings; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9392,7 +6853,7 @@ CREATE POLICY "Admins can delete settings" ON public.settings FOR DELETE USING (
 
 
 --
--- TOC entry 4243 (class 3256 OID 76339)
+-- TOC entry 4390 (class 3256 OID 76339)
 -- Name: users Admins can delete users; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9400,7 +6861,7 @@ CREATE POLICY "Admins can delete users" ON public.users FOR DELETE USING (public
 
 
 --
--- TOC entry 4214 (class 3256 OID 76310)
+-- TOC entry 4361 (class 3256 OID 76310)
 -- Name: occasions Admins can update occasions; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9408,7 +6869,7 @@ CREATE POLICY "Admins can update occasions" ON public.occasions FOR UPDATE USING
 
 
 --
--- TOC entry 4220 (class 3256 OID 76316)
+-- TOC entry 4367 (class 3256 OID 76316)
 -- Name: payment_methods Admins can update payment methods; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9416,7 +6877,7 @@ CREATE POLICY "Admins can update payment methods" ON public.payment_methods FOR 
 
 
 --
--- TOC entry 4224 (class 3256 OID 76320)
+-- TOC entry 4371 (class 3256 OID 76320)
 -- Name: product_images Admins can update product images; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9424,7 +6885,7 @@ CREATE POLICY "Admins can update product images" ON public.product_images FOR UP
 
 
 --
--- TOC entry 4228 (class 3256 OID 76324)
+-- TOC entry 4375 (class 3256 OID 76324)
 -- Name: product_occasions Admins can update product occasions; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9432,7 +6893,7 @@ CREATE POLICY "Admins can update product occasions" ON public.product_occasions 
 
 
 --
--- TOC entry 4232 (class 3256 OID 76328)
+-- TOC entry 4379 (class 3256 OID 76328)
 -- Name: products Admins can update products; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9440,7 +6901,7 @@ CREATE POLICY "Admins can update products" ON public.products FOR UPDATE USING (
 
 
 --
--- TOC entry 4238 (class 3256 OID 76334)
+-- TOC entry 4385 (class 3256 OID 76334)
 -- Name: settings Admins can update settings; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9448,7 +6909,7 @@ CREATE POLICY "Admins can update settings" ON public.settings FOR UPDATE USING (
 
 
 --
--- TOC entry 4210 (class 3256 OID 76306)
+-- TOC entry 4357 (class 3256 OID 76306)
 -- Name: busquedas_log Admins can view search logs; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9456,7 +6917,7 @@ CREATE POLICY "Admins can view search logs" ON public.busquedas_log FOR SELECT U
 
 
 --
--- TOC entry 4234 (class 3256 OID 76330)
+-- TOC entry 4381 (class 3256 OID 76330)
 -- Name: query_timeouts_log Admins can view timeout logs; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9464,7 +6925,7 @@ CREATE POLICY "Admins can view timeout logs" ON public.query_timeouts_log FOR SE
 
 
 --
--- TOC entry 4211 (class 3256 OID 76307)
+-- TOC entry 4358 (class 3256 OID 76307)
 -- Name: busquedas_log Allow search log insertion; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9472,7 +6933,7 @@ CREATE POLICY "Allow search log insertion" ON public.busquedas_log FOR INSERT WI
 
 
 --
--- TOC entry 4206 (class 3256 OID 76197)
+-- TOC entry 4351 (class 3256 OID 76197)
 -- Name: busquedas_log Allow search log insertion from functions; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9480,7 +6941,7 @@ CREATE POLICY "Allow search log insertion from functions" ON public.busquedas_lo
 
 
 --
--- TOC entry 4217 (class 3256 OID 76313)
+-- TOC entry 4364 (class 3256 OID 76313)
 -- Name: order_status_history Allow status history insertion; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9488,7 +6949,7 @@ CREATE POLICY "Allow status history insertion" ON public.order_status_history FO
 
 
 --
--- TOC entry 4235 (class 3256 OID 76331)
+-- TOC entry 4382 (class 3256 OID 76331)
 -- Name: query_timeouts_log Allow timeout log insertion; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9496,7 +6957,39 @@ CREATE POLICY "Allow timeout log insertion" ON public.query_timeouts_log FOR INS
 
 
 --
--- TOC entry 4212 (class 3256 OID 76308)
+-- TOC entry 4352 (class 3256 OID 86934)
+-- Name: expenses Authenticated users can create expenses; Type: POLICY; Schema: public; Owner: postgres
+--
+
+CREATE POLICY "Authenticated users can create expenses" ON public.expenses FOR INSERT TO authenticated WITH CHECK (true);
+
+
+--
+-- TOC entry 4353 (class 3256 OID 86935)
+-- Name: expenses Authenticated users can update expenses; Type: POLICY; Schema: public; Owner: postgres
+--
+
+CREATE POLICY "Authenticated users can update expenses" ON public.expenses FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+
+
+--
+-- TOC entry 4350 (class 3256 OID 86933)
+-- Name: expenses Authenticated users can view expenses; Type: POLICY; Schema: public; Owner: postgres
+--
+
+CREATE POLICY "Authenticated users can view expenses" ON public.expenses FOR SELECT TO authenticated USING (true);
+
+
+--
+-- TOC entry 4342 (class 3256 OID 86806)
+-- Name: expenses Enable full access for authenticated users; Type: POLICY; Schema: public; Owner: postgres
+--
+
+CREATE POLICY "Enable full access for authenticated users" ON public.expenses TO authenticated USING (true) WITH CHECK (true);
+
+
+--
+-- TOC entry 4359 (class 3256 OID 76308)
 -- Name: occasions Everyone can view active occasions; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9504,7 +6997,7 @@ CREATE POLICY "Everyone can view active occasions" ON public.occasions FOR SELEC
 
 
 --
--- TOC entry 4218 (class 3256 OID 76314)
+-- TOC entry 4365 (class 3256 OID 76314)
 -- Name: payment_methods Everyone can view active payment methods; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9512,7 +7005,7 @@ CREATE POLICY "Everyone can view active payment methods" ON public.payment_metho
 
 
 --
--- TOC entry 4230 (class 3256 OID 76326)
+-- TOC entry 4377 (class 3256 OID 76326)
 -- Name: products Everyone can view active products; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9520,7 +7013,7 @@ CREATE POLICY "Everyone can view active products" ON public.products FOR SELECT 
 
 
 --
--- TOC entry 4222 (class 3256 OID 76318)
+-- TOC entry 4369 (class 3256 OID 76318)
 -- Name: product_images Everyone can view product images; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9530,7 +7023,7 @@ CREATE POLICY "Everyone can view product images" ON public.product_images FOR SE
 
 
 --
--- TOC entry 4226 (class 3256 OID 76322)
+-- TOC entry 4373 (class 3256 OID 76322)
 -- Name: product_occasions Everyone can view product occasions; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9540,7 +7033,7 @@ CREATE POLICY "Everyone can view product occasions" ON public.product_occasions 
 
 
 --
--- TOC entry 4236 (class 3256 OID 76332)
+-- TOC entry 4383 (class 3256 OID 76332)
 -- Name: settings Everyone can view public settings; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9548,7 +7041,7 @@ CREATE POLICY "Everyone can view public settings" ON public.settings FOR SELECT 
 
 
 --
--- TOC entry 4208 (class 3256 OID 76222)
+-- TOC entry 4355 (class 3256 OID 76222)
 -- Name: settings Everyone can view public settings, admins can view all; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9556,7 +7049,7 @@ CREATE POLICY "Everyone can view public settings, admins can view all" ON public
 
 
 --
--- TOC entry 4241 (class 3256 OID 76337)
+-- TOC entry 4388 (class 3256 OID 76337)
 -- Name: users Users can create own profile; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9564,7 +7057,7 @@ CREATE POLICY "Users can create own profile" ON public.users FOR INSERT WITH CHE
 
 
 --
--- TOC entry 4242 (class 3256 OID 76338)
+-- TOC entry 4389 (class 3256 OID 76338)
 -- Name: users Users can update own profile; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9572,7 +7065,7 @@ CREATE POLICY "Users can update own profile" ON public.users FOR UPDATE USING ((
 
 
 --
--- TOC entry 4207 (class 3256 OID 76202)
+-- TOC entry 4354 (class 3256 OID 76202)
 -- Name: order_status_history Users can view order status history of own orders; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9582,7 +7075,7 @@ CREATE POLICY "Users can view order status history of own orders" ON public.orde
 
 
 --
--- TOC entry 4216 (class 3256 OID 76312)
+-- TOC entry 4363 (class 3256 OID 76312)
 -- Name: order_status_history Users can view own order history; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9592,7 +7085,7 @@ CREATE POLICY "Users can view own order history" ON public.order_status_history 
 
 
 --
--- TOC entry 4240 (class 3256 OID 76336)
+-- TOC entry 4387 (class 3256 OID 76336)
 -- Name: users Users can view own profile; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9600,7 +7093,7 @@ CREATE POLICY "Users can view own profile" ON public.users FOR SELECT USING ((((
 
 
 --
--- TOC entry 4209 (class 3256 OID 76226)
+-- TOC entry 4356 (class 3256 OID 76226)
 -- Name: users Users can view own profile, admins can view all; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9608,31 +7101,71 @@ CREATE POLICY "Users can view own profile, admins can view all" ON public.users 
 
 
 --
--- TOC entry 4197 (class 0 OID 59805)
--- Dependencies: 395
+-- TOC entry 4335 (class 0 OID 59805)
+-- Dependencies: 401
 -- Name: busquedas_log; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.busquedas_log ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4186 (class 0 OID 31986)
--- Dependencies: 373
+-- TOC entry 4337 (class 0 OID 84803)
+-- Dependencies: 410
+-- Name: expenses; Type: ROW SECURITY; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.expenses ENABLE ROW LEVEL SECURITY;
+
+--
+-- TOC entry 4341 (class 3256 OID 86784)
+-- Name: expenses expenses_delete_policy; Type: POLICY; Schema: public; Owner: postgres
+--
+
+CREATE POLICY expenses_delete_policy ON public.expenses FOR DELETE TO authenticated USING (true);
+
+
+--
+-- TOC entry 4339 (class 3256 OID 86782)
+-- Name: expenses expenses_insert_policy; Type: POLICY; Schema: public; Owner: postgres
+--
+
+CREATE POLICY expenses_insert_policy ON public.expenses FOR INSERT TO authenticated WITH CHECK (true);
+
+
+--
+-- TOC entry 4338 (class 3256 OID 86781)
+-- Name: expenses expenses_select_policy; Type: POLICY; Schema: public; Owner: postgres
+--
+
+CREATE POLICY expenses_select_policy ON public.expenses FOR SELECT TO authenticated USING ((active = true));
+
+
+--
+-- TOC entry 4340 (class 3256 OID 86783)
+-- Name: expenses expenses_update_policy; Type: POLICY; Schema: public; Owner: postgres
+--
+
+CREATE POLICY expenses_update_policy ON public.expenses FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+
+
+--
+-- TOC entry 4324 (class 0 OID 31986)
+-- Dependencies: 379
 -- Name: occasions; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.occasions ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4192 (class 0 OID 32112)
--- Dependencies: 385
+-- TOC entry 4330 (class 0 OID 32112)
+-- Dependencies: 391
 -- Name: order_items; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4203 (class 3256 OID 76127)
+-- TOC entry 4347 (class 3256 OID 76127)
 -- Name: order_items order_items_admin_all; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9640,7 +7173,7 @@ CREATE POLICY order_items_admin_all ON public.order_items USING (public.is_admin
 
 
 --
--- TOC entry 4202 (class 3256 OID 76126)
+-- TOC entry 4346 (class 3256 OID 76126)
 -- Name: order_items order_items_select_visible; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9650,23 +7183,23 @@ CREATE POLICY order_items_select_visible ON public.order_items FOR SELECT USING 
 
 
 --
--- TOC entry 4193 (class 0 OID 32136)
--- Dependencies: 387
+-- TOC entry 4331 (class 0 OID 32136)
+-- Dependencies: 393
 -- Name: order_status_history; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.order_status_history ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4191 (class 0 OID 32093)
--- Dependencies: 383
+-- TOC entry 4329 (class 0 OID 32093)
+-- Dependencies: 389
 -- Name: orders; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4201 (class 3256 OID 76125)
+-- TOC entry 4345 (class 3256 OID 76125)
 -- Name: orders orders_admin_all; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9674,7 +7207,7 @@ CREATE POLICY orders_admin_all ON public.orders USING (public.is_admin());
 
 
 --
--- TOC entry 4200 (class 3256 OID 76124)
+-- TOC entry 4344 (class 3256 OID 76124)
 -- Name: orders orders_insert_own; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9682,7 +7215,7 @@ CREATE POLICY orders_insert_own ON public.orders FOR INSERT WITH CHECK ((public.
 
 
 --
--- TOC entry 4199 (class 3256 OID 76123)
+-- TOC entry 4343 (class 3256 OID 76123)
 -- Name: orders orders_select_own_or_admin; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9690,23 +7223,23 @@ CREATE POLICY orders_select_own_or_admin ON public.orders FOR SELECT USING ((pub
 
 
 --
--- TOC entry 4194 (class 0 OID 32156)
--- Dependencies: 389
+-- TOC entry 4332 (class 0 OID 32156)
+-- Dependencies: 395
 -- Name: payment_methods; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.payment_methods ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4195 (class 0 OID 32169)
--- Dependencies: 391
+-- TOC entry 4333 (class 0 OID 32169)
+-- Dependencies: 397
 -- Name: payments; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4205 (class 3256 OID 76129)
+-- TOC entry 4349 (class 3256 OID 76129)
 -- Name: payments payments_admin_all; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9714,7 +7247,7 @@ CREATE POLICY payments_admin_all ON public.payments USING (public.is_admin());
 
 
 --
--- TOC entry 4204 (class 3256 OID 76128)
+-- TOC entry 4348 (class 3256 OID 76128)
 -- Name: payments payments_select_visible; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -9724,56 +7257,56 @@ CREATE POLICY payments_select_visible ON public.payments FOR SELECT USING ((EXIS
 
 
 --
--- TOC entry 4196 (class 0 OID 32525)
--- Dependencies: 393
+-- TOC entry 4334 (class 0 OID 32525)
+-- Dependencies: 399
 -- Name: product_images; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.product_images ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4190 (class 0 OID 32072)
--- Dependencies: 381
+-- TOC entry 4328 (class 0 OID 32072)
+-- Dependencies: 387
 -- Name: product_occasions; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.product_occasions ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4189 (class 0 OID 32033)
--- Dependencies: 379
+-- TOC entry 4327 (class 0 OID 32033)
+-- Dependencies: 385
 -- Name: products; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4198 (class 0 OID 59940)
--- Dependencies: 397
+-- TOC entry 4336 (class 0 OID 59940)
+-- Dependencies: 403
 -- Name: query_timeouts_log; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.query_timeouts_log ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4188 (class 0 OID 32018)
--- Dependencies: 377
+-- TOC entry 4326 (class 0 OID 32018)
+-- Dependencies: 383
 -- Name: settings; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.settings ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4187 (class 0 OID 32002)
--- Dependencies: 375
+-- TOC entry 4325 (class 0 OID 32002)
+-- Dependencies: 381
 -- Name: users; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4277 (class 0 OID 0)
--- Dependencies: 105
+-- TOC entry 4426 (class 0 OID 0)
+-- Dependencies: 107
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: pg_database_owner
 --
 
@@ -9785,8 +7318,8 @@ GRANT ALL ON SCHEMA public TO prisma;
 
 
 --
--- TOC entry 4278 (class 0 OID 0)
--- Dependencies: 512
+-- TOC entry 4427 (class 0 OID 0)
+-- Dependencies: 545
 -- Name: FUNCTION acknowledge_alert(alert_id bigint); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -9797,8 +7330,8 @@ GRANT ALL ON FUNCTION public.acknowledge_alert(alert_id bigint) TO prisma;
 
 
 --
--- TOC entry 4279 (class 0 OID 0)
--- Dependencies: 567
+-- TOC entry 4428 (class 0 OID 0)
+-- Dependencies: 610
 -- Name: FUNCTION actualizar_vector_busqueda_productos(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -9809,8 +7342,8 @@ GRANT ALL ON FUNCTION public.actualizar_vector_busqueda_productos() TO prisma;
 
 
 --
--- TOC entry 4280 (class 0 OID 0)
--- Dependencies: 538
+-- TOC entry 4429 (class 0 OID 0)
+-- Dependencies: 574
 -- Name: FUNCTION analizar_consulta(consulta_sql text, parametros text[]); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -9821,8 +7354,8 @@ GRANT ALL ON FUNCTION public.analizar_consulta(consulta_sql text, parametros tex
 
 
 --
--- TOC entry 4281 (class 0 OID 0)
--- Dependencies: 608
+-- TOC entry 4430 (class 0 OID 0)
+-- Dependencies: 658
 -- Name: FUNCTION analizar_rendimiento_conexiones(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -9833,8 +7366,8 @@ GRANT ALL ON FUNCTION public.analizar_rendimiento_conexiones() TO prisma;
 
 
 --
--- TOC entry 4282 (class 0 OID 0)
--- Dependencies: 414
+-- TOC entry 4431 (class 0 OID 0)
+-- Dependencies: 429
 -- Name: FUNCTION buscar_productos_ranking(termino_busqueda text, limite integer, offset_param integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -9845,8 +7378,8 @@ GRANT ALL ON FUNCTION public.buscar_productos_ranking(termino_busqueda text, lim
 
 
 --
--- TOC entry 4283 (class 0 OID 0)
--- Dependencies: 461
+-- TOC entry 4432 (class 0 OID 0)
+-- Dependencies: 483
 -- Name: FUNCTION compare_user_id(order_user_id integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -9857,8 +7390,8 @@ GRANT ALL ON FUNCTION public.compare_user_id(order_user_id integer) TO prisma;
 
 
 --
--- TOC entry 4284 (class 0 OID 0)
--- Dependencies: 407
+-- TOC entry 4433 (class 0 OID 0)
+-- Dependencies: 421
 -- Name: FUNCTION configuracion_conexiones(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -9869,8 +7402,8 @@ GRANT ALL ON FUNCTION public.configuracion_conexiones() TO prisma;
 
 
 --
--- TOC entry 4285 (class 0 OID 0)
--- Dependencies: 457
+-- TOC entry 4434 (class 0 OID 0)
+-- Dependencies: 478
 -- Name: FUNCTION configurar_timeout_consulta(patron_consulta text, timeout_ms integer, tipo_consulta text); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -9881,8 +7414,8 @@ GRANT ALL ON FUNCTION public.configurar_timeout_consulta(patron_consulta text, t
 
 
 --
--- TOC entry 4286 (class 0 OID 0)
--- Dependencies: 580
+-- TOC entry 4435 (class 0 OID 0)
+-- Dependencies: 625
 -- Name: FUNCTION consultas_problematicas(porcentaje_minimo_timeout numeric, consultas_minimas integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -9893,8 +7426,8 @@ GRANT ALL ON FUNCTION public.consultas_problematicas(porcentaje_minimo_timeout n
 
 
 --
--- TOC entry 4287 (class 0 OID 0)
--- Dependencies: 474
+-- TOC entry 4436 (class 0 OID 0)
+-- Dependencies: 497
 -- Name: FUNCTION create_order_with_items(order_data jsonb, order_items jsonb[]); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -9905,8 +7438,8 @@ GRANT ALL ON FUNCTION public.create_order_with_items(order_data jsonb, order_ite
 
 
 --
--- TOC entry 4288 (class 0 OID 0)
--- Dependencies: 525
+-- TOC entry 4437 (class 0 OID 0)
+-- Dependencies: 560
 -- Name: FUNCTION create_order_with_items(p_order_data jsonb, p_order_items jsonb); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -9917,8 +7450,8 @@ GRANT ALL ON FUNCTION public.create_order_with_items(p_order_data jsonb, p_order
 
 
 --
--- TOC entry 4289 (class 0 OID 0)
--- Dependencies: 576
+-- TOC entry 4438 (class 0 OID 0)
+-- Dependencies: 621
 -- Name: FUNCTION create_product_images_atomic(product_id integer, image_index integer, images_data jsonb[], is_primary boolean); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -9929,8 +7462,8 @@ GRANT ALL ON FUNCTION public.create_product_images_atomic(product_id integer, im
 
 
 --
--- TOC entry 4290 (class 0 OID 0)
--- Dependencies: 452
+-- TOC entry 4439 (class 0 OID 0)
+-- Dependencies: 473
 -- Name: FUNCTION create_product_with_occasions(p_product_data jsonb, p_occasion_ids integer[]); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -9941,8 +7474,8 @@ GRANT ALL ON FUNCTION public.create_product_with_occasions(p_product_data jsonb,
 
 
 --
--- TOC entry 4291 (class 0 OID 0)
--- Dependencies: 519
+-- TOC entry 4440 (class 0 OID 0)
+-- Dependencies: 553
 -- Name: FUNCTION delete_product_images_safe(product_id integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -9953,8 +7486,8 @@ GRANT ALL ON FUNCTION public.delete_product_images_safe(product_id integer) TO p
 
 
 --
--- TOC entry 4292 (class 0 OID 0)
--- Dependencies: 555
+-- TOC entry 4441 (class 0 OID 0)
+-- Dependencies: 596
 -- Name: FUNCTION ejecutar_con_timeout(consulta_sql text, timeout_ms integer, nombre_consulta text, tipo_consulta text, parametros jsonb); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -9965,8 +7498,8 @@ GRANT ALL ON FUNCTION public.ejecutar_con_timeout(consulta_sql text, timeout_ms 
 
 
 --
--- TOC entry 4293 (class 0 OID 0)
--- Dependencies: 554
+-- TOC entry 4442 (class 0 OID 0)
+-- Dependencies: 595
 -- Name: FUNCTION estadisticas_rendimiento(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -9977,8 +7510,8 @@ GRANT ALL ON FUNCTION public.estadisticas_rendimiento() TO prisma;
 
 
 --
--- TOC entry 4294 (class 0 OID 0)
--- Dependencies: 582
+-- TOC entry 4443 (class 0 OID 0)
+-- Dependencies: 627
 -- Name: FUNCTION estadisticas_timeouts(horas_atras integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -9989,8 +7522,8 @@ GRANT ALL ON FUNCTION public.estadisticas_timeouts(horas_atras integer) TO prism
 
 
 --
--- TOC entry 4295 (class 0 OID 0)
--- Dependencies: 463
+-- TOC entry 4444 (class 0 OID 0)
+-- Dependencies: 486
 -- Name: FUNCTION generar_alertas_conexiones(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10001,8 +7534,8 @@ GRANT ALL ON FUNCTION public.generar_alertas_conexiones() TO prisma;
 
 
 --
--- TOC entry 4296 (class 0 OID 0)
--- Dependencies: 586
+-- TOC entry 4445 (class 0 OID 0)
+-- Dependencies: 631
 -- Name: FUNCTION get_backend_messages(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10013,8 +7546,8 @@ GRANT ALL ON FUNCTION public.get_backend_messages() TO prisma;
 
 
 --
--- TOC entry 4297 (class 0 OID 0)
--- Dependencies: 513
+-- TOC entry 4446 (class 0 OID 0)
+-- Dependencies: 546
 -- Name: FUNCTION get_database_metrics(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10025,8 +7558,8 @@ GRANT ALL ON FUNCTION public.get_database_metrics() TO prisma;
 
 
 --
--- TOC entry 4298 (class 0 OID 0)
--- Dependencies: 427
+-- TOC entry 4447 (class 0 OID 0)
+-- Dependencies: 442
 -- Name: FUNCTION get_existing_image_by_hash(hash_input character varying); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10037,8 +7570,20 @@ GRANT ALL ON FUNCTION public.get_existing_image_by_hash(hash_input character var
 
 
 --
--- TOC entry 4299 (class 0 OID 0)
--- Dependencies: 498
+-- TOC entry 4448 (class 0 OID 0)
+-- Dependencies: 471
+-- Name: FUNCTION get_expenses_filtered(p_category text, p_date_from date, p_date_to date, p_payment_method text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer); Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON FUNCTION public.get_expenses_filtered(p_category text, p_date_from date, p_date_to date, p_payment_method text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer) TO anon;
+GRANT ALL ON FUNCTION public.get_expenses_filtered(p_category text, p_date_from date, p_date_to date, p_payment_method text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer) TO authenticated;
+GRANT ALL ON FUNCTION public.get_expenses_filtered(p_category text, p_date_from date, p_date_to date, p_payment_method text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer) TO service_role;
+GRANT ALL ON FUNCTION public.get_expenses_filtered(p_category text, p_date_from date, p_date_to date, p_payment_method text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer) TO prisma;
+
+
+--
+-- TOC entry 4449 (class 0 OID 0)
+-- Dependencies: 529
 -- Name: FUNCTION get_optimization_messages(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10049,8 +7594,20 @@ GRANT ALL ON FUNCTION public.get_optimization_messages() TO prisma;
 
 
 --
--- TOC entry 4300 (class 0 OID 0)
--- Dependencies: 489
+-- TOC entry 4450 (class 0 OID 0)
+-- Dependencies: 460
+-- Name: FUNCTION get_orders_filtered(p_status text, p_year integer, p_date_from date, p_date_to date, p_search text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer); Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON FUNCTION public.get_orders_filtered(p_status text, p_year integer, p_date_from date, p_date_to date, p_search text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer) TO anon;
+GRANT ALL ON FUNCTION public.get_orders_filtered(p_status text, p_year integer, p_date_from date, p_date_to date, p_search text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer) TO authenticated;
+GRANT ALL ON FUNCTION public.get_orders_filtered(p_status text, p_year integer, p_date_from date, p_date_to date, p_search text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer) TO service_role;
+GRANT ALL ON FUNCTION public.get_orders_filtered(p_status text, p_year integer, p_date_from date, p_date_to date, p_search text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer) TO prisma;
+
+
+--
+-- TOC entry 4451 (class 0 OID 0)
+-- Dependencies: 517
 -- Name: FUNCTION get_product_occasions(p_product_id integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10061,20 +7618,8 @@ GRANT ALL ON FUNCTION public.get_product_occasions(p_product_id integer) TO pris
 
 
 --
--- TOC entry 4301 (class 0 OID 0)
--- Dependencies: 428
--- Name: FUNCTION get_products_by_occasion(p_occasion_id integer); Type: ACL; Schema: public; Owner: postgres
---
-
-GRANT ALL ON FUNCTION public.get_products_by_occasion(p_occasion_id integer) TO anon;
-GRANT ALL ON FUNCTION public.get_products_by_occasion(p_occasion_id integer) TO authenticated;
-GRANT ALL ON FUNCTION public.get_products_by_occasion(p_occasion_id integer) TO service_role;
-GRANT ALL ON FUNCTION public.get_products_by_occasion(p_occasion_id integer) TO prisma;
-
-
---
--- TOC entry 4302 (class 0 OID 0)
--- Dependencies: 480
+-- TOC entry 4452 (class 0 OID 0)
+-- Dependencies: 646
 -- Name: FUNCTION get_products_by_occasion(p_occasion_id integer, p_limit integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10085,8 +7630,20 @@ GRANT ALL ON FUNCTION public.get_products_by_occasion(p_occasion_id integer, p_l
 
 
 --
--- TOC entry 4303 (class 0 OID 0)
--- Dependencies: 535
+-- TOC entry 4454 (class 0 OID 0)
+-- Dependencies: 521
+-- Name: FUNCTION get_products_filtered(p_occasion_id integer, p_search text, p_price_min numeric, p_price_max numeric, p_featured boolean, p_sku text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer, p_include_inactive boolean); Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON FUNCTION public.get_products_filtered(p_occasion_id integer, p_search text, p_price_min numeric, p_price_max numeric, p_featured boolean, p_sku text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer, p_include_inactive boolean) TO anon;
+GRANT ALL ON FUNCTION public.get_products_filtered(p_occasion_id integer, p_search text, p_price_min numeric, p_price_max numeric, p_featured boolean, p_sku text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer, p_include_inactive boolean) TO authenticated;
+GRANT ALL ON FUNCTION public.get_products_filtered(p_occasion_id integer, p_search text, p_price_min numeric, p_price_max numeric, p_featured boolean, p_sku text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer, p_include_inactive boolean) TO service_role;
+GRANT ALL ON FUNCTION public.get_products_filtered(p_occasion_id integer, p_search text, p_price_min numeric, p_price_max numeric, p_featured boolean, p_sku text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer, p_include_inactive boolean) TO prisma;
+
+
+--
+-- TOC entry 4455 (class 0 OID 0)
+-- Dependencies: 571
 -- Name: FUNCTION get_products_with_occasions(p_limit integer, p_offset integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10097,8 +7654,8 @@ GRANT ALL ON FUNCTION public.get_products_with_occasions(p_limit integer, p_offs
 
 
 --
--- TOC entry 4304 (class 0 OID 0)
--- Dependencies: 601
+-- TOC entry 4456 (class 0 OID 0)
+-- Dependencies: 650
 -- Name: FUNCTION get_redis_metrics(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10109,8 +7666,8 @@ GRANT ALL ON FUNCTION public.get_redis_metrics() TO prisma;
 
 
 --
--- TOC entry 4305 (class 0 OID 0)
--- Dependencies: 448
+-- TOC entry 4457 (class 0 OID 0)
+-- Dependencies: 468
 -- Name: FUNCTION get_system_alerts(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10121,8 +7678,8 @@ GRANT ALL ON FUNCTION public.get_system_alerts() TO prisma;
 
 
 --
--- TOC entry 4306 (class 0 OID 0)
--- Dependencies: 419
+-- TOC entry 4458 (class 0 OID 0)
+-- Dependencies: 434
 -- Name: FUNCTION get_system_health_overview(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10133,8 +7690,8 @@ GRANT ALL ON FUNCTION public.get_system_health_overview() TO prisma;
 
 
 --
--- TOC entry 4307 (class 0 OID 0)
--- Dependencies: 401
+-- TOC entry 4459 (class 0 OID 0)
+-- Dependencies: 415
 -- Name: FUNCTION get_timeout_statistics(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10145,8 +7702,8 @@ GRANT ALL ON FUNCTION public.get_timeout_statistics() TO prisma;
 
 
 --
--- TOC entry 4308 (class 0 OID 0)
--- Dependencies: 514
+-- TOC entry 4460 (class 0 OID 0)
+-- Dependencies: 547
 -- Name: FUNCTION is_admin(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10157,8 +7714,8 @@ GRANT ALL ON FUNCTION public.is_admin() TO prisma;
 
 
 --
--- TOC entry 4309 (class 0 OID 0)
--- Dependencies: 557
+-- TOC entry 4461 (class 0 OID 0)
+-- Dependencies: 598
 -- Name: FUNCTION limpiar_conexiones_inactivas(horas_inactividad integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10169,8 +7726,8 @@ GRANT ALL ON FUNCTION public.limpiar_conexiones_inactivas(horas_inactividad inte
 
 
 --
--- TOC entry 4310 (class 0 OID 0)
--- Dependencies: 561
+-- TOC entry 4462 (class 0 OID 0)
+-- Dependencies: 603
 -- Name: FUNCTION limpiar_logs_timeouts(dias_a_conservar integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10181,8 +7738,8 @@ GRANT ALL ON FUNCTION public.limpiar_logs_timeouts(dias_a_conservar integer) TO 
 
 
 --
--- TOC entry 4311 (class 0 OID 0)
--- Dependencies: 438
+-- TOC entry 4463 (class 0 OID 0)
+-- Dependencies: 454
 -- Name: FUNCTION productos_similares(producto_id integer, limite integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10193,8 +7750,8 @@ GRANT ALL ON FUNCTION public.productos_similares(producto_id integer, limite int
 
 
 --
--- TOC entry 4312 (class 0 OID 0)
--- Dependencies: 596
+-- TOC entry 4464 (class 0 OID 0)
+-- Dependencies: 643
 -- Name: FUNCTION registrar_busqueda(termino_busqueda text, resultados integer, tiempo_ejecucion numeric, ip_cliente text, user_agent text); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10205,8 +7762,8 @@ GRANT ALL ON FUNCTION public.registrar_busqueda(termino_busqueda text, resultado
 
 
 --
--- TOC entry 4313 (class 0 OID 0)
--- Dependencies: 550
+-- TOC entry 4465 (class 0 OID 0)
+-- Dependencies: 588
 -- Name: FUNCTION reset_sequence(sequence_name text); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10217,8 +7774,8 @@ GRANT ALL ON FUNCTION public.reset_sequence(sequence_name text) TO prisma;
 
 
 --
--- TOC entry 4314 (class 0 OID 0)
--- Dependencies: 573
+-- TOC entry 4466 (class 0 OID 0)
+-- Dependencies: 618
 -- Name: FUNCTION reset_sequence(sequence_name character varying); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10229,8 +7786,8 @@ GRANT ALL ON FUNCTION public.reset_sequence(sequence_name character varying) TO 
 
 
 --
--- TOC entry 4315 (class 0 OID 0)
--- Dependencies: 475
+-- TOC entry 4467 (class 0 OID 0)
+-- Dependencies: 498
 -- Name: FUNCTION resolve_alert(alert_id bigint); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10241,8 +7798,8 @@ GRANT ALL ON FUNCTION public.resolve_alert(alert_id bigint) TO prisma;
 
 
 --
--- TOC entry 4316 (class 0 OID 0)
--- Dependencies: 408
+-- TOC entry 4468 (class 0 OID 0)
+-- Dependencies: 422
 -- Name: FUNCTION round(numeric, integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10253,8 +7810,8 @@ GRANT ALL ON FUNCTION public.round(numeric, integer) TO prisma;
 
 
 --
--- TOC entry 4317 (class 0 OID 0)
--- Dependencies: 491
+-- TOC entry 4469 (class 0 OID 0)
+-- Dependencies: 519
 -- Name: FUNCTION sugerencias_busqueda(termino_parcial text, limite integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10265,8 +7822,8 @@ GRANT ALL ON FUNCTION public.sugerencias_busqueda(termino_parcial text, limite i
 
 
 --
--- TOC entry 4318 (class 0 OID 0)
--- Dependencies: 568
+-- TOC entry 4470 (class 0 OID 0)
+-- Dependencies: 611
 -- Name: FUNCTION sugerir_optimizaciones(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10277,8 +7834,8 @@ GRANT ALL ON FUNCTION public.sugerir_optimizaciones() TO prisma;
 
 
 --
--- TOC entry 4319 (class 0 OID 0)
--- Dependencies: 415
+-- TOC entry 4471 (class 0 OID 0)
+-- Dependencies: 430
 -- Name: FUNCTION sync_payment_method_name(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10289,8 +7846,8 @@ GRANT ALL ON FUNCTION public.sync_payment_method_name() TO prisma;
 
 
 --
--- TOC entry 4320 (class 0 OID 0)
--- Dependencies: 510
+-- TOC entry 4472 (class 0 OID 0)
+-- Dependencies: 543
 -- Name: FUNCTION update_carousel_order_atomic(p_product_id integer, p_order integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10301,8 +7858,8 @@ GRANT ALL ON FUNCTION public.update_carousel_order_atomic(p_product_id integer, 
 
 
 --
--- TOC entry 4321 (class 0 OID 0)
--- Dependencies: 606
+-- TOC entry 4473 (class 0 OID 0)
+-- Dependencies: 656
 -- Name: FUNCTION update_order_status_with_history(p_order_id integer, p_new_status character varying, p_notes text, p_changed_by integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10313,8 +7870,8 @@ GRANT ALL ON FUNCTION public.update_order_status_with_history(p_order_id integer
 
 
 --
--- TOC entry 4322 (class 0 OID 0)
--- Dependencies: 499
+-- TOC entry 4474 (class 0 OID 0)
+-- Dependencies: 530
 -- Name: FUNCTION update_order_status_with_history(order_id integer, new_status public.order_status, notes text, changed_by integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10325,8 +7882,8 @@ GRANT ALL ON FUNCTION public.update_order_status_with_history(order_id integer, 
 
 
 --
--- TOC entry 4323 (class 0 OID 0)
--- Dependencies: 540
+-- TOC entry 4475 (class 0 OID 0)
+-- Dependencies: 576
 -- Name: FUNCTION update_updated_at_column(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10337,8 +7894,8 @@ GRANT ALL ON FUNCTION public.update_updated_at_column() TO prisma;
 
 
 --
--- TOC entry 4324 (class 0 OID 0)
--- Dependencies: 472
+-- TOC entry 4476 (class 0 OID 0)
+-- Dependencies: 495
 -- Name: FUNCTION validate_order_total(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10349,8 +7906,8 @@ GRANT ALL ON FUNCTION public.validate_order_total() TO prisma;
 
 
 --
--- TOC entry 4325 (class 0 OID 0)
--- Dependencies: 395
+-- TOC entry 4477 (class 0 OID 0)
+-- Dependencies: 401
 -- Name: TABLE busquedas_log; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10361,8 +7918,8 @@ GRANT ALL ON TABLE public.busquedas_log TO prisma;
 
 
 --
--- TOC entry 4327 (class 0 OID 0)
--- Dependencies: 394
+-- TOC entry 4479 (class 0 OID 0)
+-- Dependencies: 400
 -- Name: SEQUENCE busquedas_log_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10373,80 +7930,32 @@ GRANT ALL ON SEQUENCE public.busquedas_log_id_seq TO prisma;
 
 
 --
--- TOC entry 4328 (class 0 OID 0)
--- Dependencies: 373
--- Name: TABLE occasions; Type: ACL; Schema: public; Owner: postgres
+-- TOC entry 4480 (class 0 OID 0)
+-- Dependencies: 410
+-- Name: TABLE expenses; Type: ACL; Schema: public; Owner: postgres
 --
 
-GRANT ALL ON TABLE public.occasions TO anon;
-GRANT ALL ON TABLE public.occasions TO authenticated;
-GRANT ALL ON TABLE public.occasions TO service_role;
-GRANT ALL ON TABLE public.occasions TO prisma;
-
-
---
--- TOC entry 4330 (class 0 OID 0)
--- Dependencies: 372
--- Name: SEQUENCE occasions_id_seq; Type: ACL; Schema: public; Owner: postgres
---
-
-GRANT ALL ON SEQUENCE public.occasions_id_seq TO anon;
-GRANT ALL ON SEQUENCE public.occasions_id_seq TO authenticated;
-GRANT ALL ON SEQUENCE public.occasions_id_seq TO service_role;
-GRANT ALL ON SEQUENCE public.occasions_id_seq TO prisma;
+GRANT ALL ON TABLE public.expenses TO anon;
+GRANT ALL ON TABLE public.expenses TO authenticated;
+GRANT ALL ON TABLE public.expenses TO service_role;
+GRANT ALL ON TABLE public.expenses TO prisma;
 
 
 --
--- TOC entry 4331 (class 0 OID 0)
--- Dependencies: 385
--- Name: TABLE order_items; Type: ACL; Schema: public; Owner: postgres
+-- TOC entry 4481 (class 0 OID 0)
+-- Dependencies: 412
+-- Name: TABLE daily_expenses; Type: ACL; Schema: public; Owner: postgres
 --
 
-GRANT ALL ON TABLE public.order_items TO anon;
-GRANT ALL ON TABLE public.order_items TO authenticated;
-GRANT ALL ON TABLE public.order_items TO service_role;
-GRANT ALL ON TABLE public.order_items TO prisma;
-
-
---
--- TOC entry 4333 (class 0 OID 0)
--- Dependencies: 384
--- Name: SEQUENCE order_items_id_seq; Type: ACL; Schema: public; Owner: postgres
---
-
-GRANT ALL ON SEQUENCE public.order_items_id_seq TO anon;
-GRANT ALL ON SEQUENCE public.order_items_id_seq TO authenticated;
-GRANT ALL ON SEQUENCE public.order_items_id_seq TO service_role;
-GRANT ALL ON SEQUENCE public.order_items_id_seq TO prisma;
+GRANT ALL ON TABLE public.daily_expenses TO anon;
+GRANT ALL ON TABLE public.daily_expenses TO authenticated;
+GRANT ALL ON TABLE public.daily_expenses TO service_role;
+GRANT ALL ON TABLE public.daily_expenses TO prisma;
 
 
 --
--- TOC entry 4334 (class 0 OID 0)
--- Dependencies: 387
--- Name: TABLE order_status_history; Type: ACL; Schema: public; Owner: postgres
---
-
-GRANT ALL ON TABLE public.order_status_history TO anon;
-GRANT ALL ON TABLE public.order_status_history TO authenticated;
-GRANT ALL ON TABLE public.order_status_history TO service_role;
-GRANT ALL ON TABLE public.order_status_history TO prisma;
-
-
---
--- TOC entry 4336 (class 0 OID 0)
--- Dependencies: 386
--- Name: SEQUENCE order_status_history_id_seq; Type: ACL; Schema: public; Owner: postgres
---
-
-GRANT ALL ON SEQUENCE public.order_status_history_id_seq TO anon;
-GRANT ALL ON SEQUENCE public.order_status_history_id_seq TO authenticated;
-GRANT ALL ON SEQUENCE public.order_status_history_id_seq TO service_role;
-GRANT ALL ON SEQUENCE public.order_status_history_id_seq TO prisma;
-
-
---
--- TOC entry 4337 (class 0 OID 0)
--- Dependencies: 383
+-- TOC entry 4482 (class 0 OID 0)
+-- Dependencies: 389
 -- Name: TABLE orders; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10457,8 +7966,116 @@ GRANT ALL ON TABLE public.orders TO prisma;
 
 
 --
--- TOC entry 4339 (class 0 OID 0)
--- Dependencies: 382
+-- TOC entry 4483 (class 0 OID 0)
+-- Dependencies: 411
+-- Name: TABLE daily_sales; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.daily_sales TO anon;
+GRANT ALL ON TABLE public.daily_sales TO authenticated;
+GRANT ALL ON TABLE public.daily_sales TO service_role;
+GRANT ALL ON TABLE public.daily_sales TO prisma;
+
+
+--
+-- TOC entry 4484 (class 0 OID 0)
+-- Dependencies: 414
+-- Name: TABLE daily_profit_loss; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.daily_profit_loss TO anon;
+GRANT ALL ON TABLE public.daily_profit_loss TO authenticated;
+GRANT ALL ON TABLE public.daily_profit_loss TO service_role;
+GRANT ALL ON TABLE public.daily_profit_loss TO prisma;
+
+
+--
+-- TOC entry 4486 (class 0 OID 0)
+-- Dependencies: 409
+-- Name: SEQUENCE expenses_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.expenses_id_seq TO anon;
+GRANT ALL ON SEQUENCE public.expenses_id_seq TO authenticated;
+GRANT ALL ON SEQUENCE public.expenses_id_seq TO service_role;
+GRANT ALL ON SEQUENCE public.expenses_id_seq TO prisma;
+
+
+--
+-- TOC entry 4487 (class 0 OID 0)
+-- Dependencies: 379
+-- Name: TABLE occasions; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.occasions TO anon;
+GRANT ALL ON TABLE public.occasions TO authenticated;
+GRANT ALL ON TABLE public.occasions TO service_role;
+GRANT ALL ON TABLE public.occasions TO prisma;
+
+
+--
+-- TOC entry 4489 (class 0 OID 0)
+-- Dependencies: 378
+-- Name: SEQUENCE occasions_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.occasions_id_seq TO anon;
+GRANT ALL ON SEQUENCE public.occasions_id_seq TO authenticated;
+GRANT ALL ON SEQUENCE public.occasions_id_seq TO service_role;
+GRANT ALL ON SEQUENCE public.occasions_id_seq TO prisma;
+
+
+--
+-- TOC entry 4490 (class 0 OID 0)
+-- Dependencies: 391
+-- Name: TABLE order_items; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.order_items TO anon;
+GRANT ALL ON TABLE public.order_items TO authenticated;
+GRANT ALL ON TABLE public.order_items TO service_role;
+GRANT ALL ON TABLE public.order_items TO prisma;
+
+
+--
+-- TOC entry 4492 (class 0 OID 0)
+-- Dependencies: 390
+-- Name: SEQUENCE order_items_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.order_items_id_seq TO anon;
+GRANT ALL ON SEQUENCE public.order_items_id_seq TO authenticated;
+GRANT ALL ON SEQUENCE public.order_items_id_seq TO service_role;
+GRANT ALL ON SEQUENCE public.order_items_id_seq TO prisma;
+
+
+--
+-- TOC entry 4493 (class 0 OID 0)
+-- Dependencies: 393
+-- Name: TABLE order_status_history; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.order_status_history TO anon;
+GRANT ALL ON TABLE public.order_status_history TO authenticated;
+GRANT ALL ON TABLE public.order_status_history TO service_role;
+GRANT ALL ON TABLE public.order_status_history TO prisma;
+
+
+--
+-- TOC entry 4495 (class 0 OID 0)
+-- Dependencies: 392
+-- Name: SEQUENCE order_status_history_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.order_status_history_id_seq TO anon;
+GRANT ALL ON SEQUENCE public.order_status_history_id_seq TO authenticated;
+GRANT ALL ON SEQUENCE public.order_status_history_id_seq TO service_role;
+GRANT ALL ON SEQUENCE public.order_status_history_id_seq TO prisma;
+
+
+--
+-- TOC entry 4497 (class 0 OID 0)
+-- Dependencies: 388
 -- Name: SEQUENCE orders_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10469,8 +8086,8 @@ GRANT ALL ON SEQUENCE public.orders_id_seq TO prisma;
 
 
 --
--- TOC entry 4340 (class 0 OID 0)
--- Dependencies: 389
+-- TOC entry 4498 (class 0 OID 0)
+-- Dependencies: 395
 -- Name: TABLE payment_methods; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10481,8 +8098,8 @@ GRANT ALL ON TABLE public.payment_methods TO prisma;
 
 
 --
--- TOC entry 4342 (class 0 OID 0)
--- Dependencies: 388
+-- TOC entry 4500 (class 0 OID 0)
+-- Dependencies: 394
 -- Name: SEQUENCE payment_methods_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10493,8 +8110,8 @@ GRANT ALL ON SEQUENCE public.payment_methods_id_seq TO prisma;
 
 
 --
--- TOC entry 4343 (class 0 OID 0)
--- Dependencies: 391
+-- TOC entry 4501 (class 0 OID 0)
+-- Dependencies: 397
 -- Name: TABLE payments; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10505,8 +8122,8 @@ GRANT ALL ON TABLE public.payments TO prisma;
 
 
 --
--- TOC entry 4345 (class 0 OID 0)
--- Dependencies: 390
+-- TOC entry 4503 (class 0 OID 0)
+-- Dependencies: 396
 -- Name: SEQUENCE payments_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10517,8 +8134,8 @@ GRANT ALL ON SEQUENCE public.payments_id_seq TO prisma;
 
 
 --
--- TOC entry 4346 (class 0 OID 0)
--- Dependencies: 393
+-- TOC entry 4504 (class 0 OID 0)
+-- Dependencies: 399
 -- Name: TABLE product_images; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10529,8 +8146,8 @@ GRANT ALL ON TABLE public.product_images TO prisma;
 
 
 --
--- TOC entry 4348 (class 0 OID 0)
--- Dependencies: 392
+-- TOC entry 4506 (class 0 OID 0)
+-- Dependencies: 398
 -- Name: SEQUENCE product_images_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10541,8 +8158,8 @@ GRANT ALL ON SEQUENCE public.product_images_id_seq TO prisma;
 
 
 --
--- TOC entry 4350 (class 0 OID 0)
--- Dependencies: 381
+-- TOC entry 4508 (class 0 OID 0)
+-- Dependencies: 387
 -- Name: TABLE product_occasions; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10553,8 +8170,8 @@ GRANT ALL ON TABLE public.product_occasions TO prisma;
 
 
 --
--- TOC entry 4352 (class 0 OID 0)
--- Dependencies: 380
+-- TOC entry 4510 (class 0 OID 0)
+-- Dependencies: 386
 -- Name: SEQUENCE product_occasions_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10565,8 +8182,8 @@ GRANT ALL ON SEQUENCE public.product_occasions_id_seq TO prisma;
 
 
 --
--- TOC entry 4355 (class 0 OID 0)
--- Dependencies: 379
+-- TOC entry 4513 (class 0 OID 0)
+-- Dependencies: 385
 -- Name: TABLE products; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10577,8 +8194,8 @@ GRANT ALL ON TABLE public.products TO prisma;
 
 
 --
--- TOC entry 4357 (class 0 OID 0)
--- Dependencies: 378
+-- TOC entry 4515 (class 0 OID 0)
+-- Dependencies: 384
 -- Name: SEQUENCE products_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10589,8 +8206,8 @@ GRANT ALL ON SEQUENCE public.products_id_seq TO prisma;
 
 
 --
--- TOC entry 4358 (class 0 OID 0)
--- Dependencies: 397
+-- TOC entry 4516 (class 0 OID 0)
+-- Dependencies: 403
 -- Name: TABLE query_timeouts_log; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10601,8 +8218,8 @@ GRANT ALL ON TABLE public.query_timeouts_log TO prisma;
 
 
 --
--- TOC entry 4360 (class 0 OID 0)
--- Dependencies: 396
+-- TOC entry 4518 (class 0 OID 0)
+-- Dependencies: 402
 -- Name: SEQUENCE query_timeouts_log_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10613,8 +8230,8 @@ GRANT ALL ON SEQUENCE public.query_timeouts_log_id_seq TO prisma;
 
 
 --
--- TOC entry 4361 (class 0 OID 0)
--- Dependencies: 377
+-- TOC entry 4519 (class 0 OID 0)
+-- Dependencies: 383
 -- Name: TABLE settings; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10625,8 +8242,8 @@ GRANT ALL ON TABLE public.settings TO prisma;
 
 
 --
--- TOC entry 4363 (class 0 OID 0)
--- Dependencies: 376
+-- TOC entry 4521 (class 0 OID 0)
+-- Dependencies: 382
 -- Name: SEQUENCE settings_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10637,8 +8254,20 @@ GRANT ALL ON SEQUENCE public.settings_id_seq TO prisma;
 
 
 --
--- TOC entry 4364 (class 0 OID 0)
--- Dependencies: 375
+-- TOC entry 4522 (class 0 OID 0)
+-- Dependencies: 413
+-- Name: TABLE test_daily_expenses; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.test_daily_expenses TO anon;
+GRANT ALL ON TABLE public.test_daily_expenses TO authenticated;
+GRANT ALL ON TABLE public.test_daily_expenses TO service_role;
+GRANT ALL ON TABLE public.test_daily_expenses TO prisma;
+
+
+--
+-- TOC entry 4523 (class 0 OID 0)
+-- Dependencies: 381
 -- Name: TABLE users; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10649,8 +8278,8 @@ GRANT ALL ON TABLE public.users TO prisma;
 
 
 --
--- TOC entry 4366 (class 0 OID 0)
--- Dependencies: 374
+-- TOC entry 4525 (class 0 OID 0)
+-- Dependencies: 380
 -- Name: SEQUENCE users_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -10661,7 +8290,7 @@ GRANT ALL ON SEQUENCE public.users_id_seq TO prisma;
 
 
 --
--- TOC entry 2610 (class 826 OID 16490)
+-- TOC entry 2698 (class 826 OID 16490)
 -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: public; Owner: postgres
 --
 
@@ -10673,7 +8302,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON SEQUENC
 
 
 --
--- TOC entry 2587 (class 826 OID 16491)
+-- TOC entry 2675 (class 826 OID 16491)
 -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: public; Owner: supabase_admin
 --
 
@@ -10684,7 +8313,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON S
 
 
 --
--- TOC entry 2609 (class 826 OID 16489)
+-- TOC entry 2697 (class 826 OID 16489)
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: public; Owner: postgres
 --
 
@@ -10696,7 +8325,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON FUNCTIO
 
 
 --
--- TOC entry 2589 (class 826 OID 16493)
+-- TOC entry 2677 (class 826 OID 16493)
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: public; Owner: supabase_admin
 --
 
@@ -10707,7 +8336,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON F
 
 
 --
--- TOC entry 2608 (class 826 OID 16488)
+-- TOC entry 2696 (class 826 OID 16488)
 -- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: postgres
 --
 
@@ -10719,7 +8348,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES 
 
 
 --
--- TOC entry 2588 (class 826 OID 16492)
+-- TOC entry 2676 (class 826 OID 16492)
 -- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: supabase_admin
 --
 
@@ -10729,11 +8358,11 @@ ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON T
 ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON TABLES TO service_role;
 
 
--- Completed on 2025-11-04 20:37:03 -03
+-- Completed on 2025-11-22 20:16:47 -03
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict zedaB7TTRRkE9XbnLD5cLKinFxjje7VTo6iGnwU2IbBiAbG0NEFGhaYwlwPDveq
+\unrestrict eBkse3eg3aumsA54PslbfN3K0LEfS5M6PvPofSp4YwwXrgRfGAm0L5nxaoKFTaJ
 

@@ -10,15 +10,7 @@ import expenseService, {
   PAYMENT_METHODS
 } from '../../api/services/expenseService.js'
 import { ValidationError, NotFoundError } from '../../api/errors/AppError.js'
-import {
-  resetAccountingData,
-  seedAccountingData,
-  createExpense,
-  findExpenses,
-  findExpenseById,
-  updateExpense,
-  deleteExpense
-} from '../mocks/supabase-accounting.js'
+import { SupabaseAccountingMock } from '../mocks/supabase-accounting.js'
 
 // Mock logger
 vi.mock('../../api/utils/logger.js', () => ({
@@ -30,18 +22,21 @@ vi.mock('../../api/utils/logger.js', () => ({
   }
 }))
 
+// Create a mock instance for the repository mock to use
+let mockDb
+
 // Mock the repository
 vi.mock('../../api/repositories/expenseRepository.js', () => ({
   default: {
     create: vi.fn(async data => {
-      const result = await createExpense(data)
+      const result = await mockDb.createExpense(data)
       if (result.error) {
         throw result.error
       }
       return result.data
     }),
     findById: vi.fn(async id => {
-      const result = await findExpenseById(id)
+      const result = await mockDb.findExpenseById(id)
       return result.data
     }),
     findMany: vi.fn(async filters => {
@@ -65,7 +60,38 @@ vi.mock('../../api/repositories/expenseRepository.js', () => ({
         queryFilters.active = filters.active
       }
 
-      const result = await findExpenses(queryFilters, options)
+      const result = await mockDb.findExpenses(queryFilters, options)
+      return result.data
+    }),
+    findAllWithFilters: vi.fn(async (filters = {}, options = {}) => {
+      const queryFilters = {}
+      if (filters.category) {
+        queryFilters.eq_category = filters.category
+      }
+      if (filters.active !== undefined) {
+        queryFilters.active = filters.active
+      }
+      // Support both dateFrom/dateTo and startDate/endDate
+      if (filters.dateFrom || filters.startDate) {
+        const dateFrom = filters.dateFrom || filters.startDate
+        queryFilters.gte_expense_date =
+          typeof dateFrom === 'string' ? dateFrom : dateFrom.toISOString().split('T')[0]
+      }
+      if (filters.dateTo || filters.endDate) {
+        const dateTo = filters.dateTo || filters.endDate
+        queryFilters.lte_expense_date =
+          typeof dateTo === 'string' ? dateTo : dateTo.toISOString().split('T')[0]
+      }
+
+      const queryOptions = {}
+      if (options.limit || filters.limit) {
+        queryOptions.limit = options.limit || filters.limit
+      }
+      if (options.offset || filters.offset) {
+        queryOptions.offset = options.offset || filters.offset
+      }
+
+      const result = await mockDb.findExpenses(queryFilters, queryOptions)
       return result.data
     }),
     findByDateRange: vi.fn(async (startDate, endDate, options = {}) => {
@@ -82,22 +108,22 @@ vi.mock('../../api/repositories/expenseRepository.js', () => ({
         queryOptions.limit = options.limit
       }
 
-      const result = await findExpenses(filters, queryOptions)
+      const result = await mockDb.findExpenses(filters, queryOptions)
       return result.data
     }),
     update: vi.fn(async (id, updates) => {
-      const result = await updateExpense(id, updates)
+      const result = await mockDb.updateExpense(id, updates)
       if (result.error) {
         throw result.error
       }
       return result.data
     }),
     delete: vi.fn(async id => {
-      const result = await deleteExpense(id)
+      const result = await mockDb.deleteExpense(id)
       return result.data
     }),
     getExpensesByCategory: vi.fn(async (startDate, endDate) => {
-      const result = await findExpenses({
+      const result = await mockDb.findExpenses({
         gte_expense_date: startDate,
         lte_expense_date: endDate
       })
@@ -114,7 +140,7 @@ vi.mock('../../api/repositories/expenseRepository.js', () => ({
       return Object.values(grouped)
     }),
     getTotalExpenses: vi.fn(async (startDate, endDate) => {
-      const result = await findExpenses({
+      const result = await mockDb.findExpenses({
         gte_expense_date: startDate,
         lte_expense_date: endDate
       })
@@ -125,8 +151,8 @@ vi.mock('../../api/repositories/expenseRepository.js', () => ({
 
 describe('ExpenseService - Business Logic', () => {
   beforeEach(() => {
-    resetAccountingData()
-    seedAccountingData()
+    mockDb = new SupabaseAccountingMock()
+    mockDb.seedAccountingData()
     vi.clearAllMocks()
   })
 
@@ -145,8 +171,8 @@ describe('ExpenseService - Business Logic', () => {
 
       const result = await expenseService.createExpense(expenseData, 1)
 
-      expect(result).toBeDefined()
-      expect(result.id).toBeDefined()
+      expect(result).not.toBeNull()
+      expect(result.id).toEqual(expect.any(Number))
       expect(result.category).toBe('flores')
       expect(result.description).toBe('Rosas premium')
       expect(result.amount).toBe(120.5)
@@ -162,7 +188,7 @@ describe('ExpenseService - Business Logic', () => {
 
       const result = await expenseService.createExpense(expenseData, 1)
 
-      expect(result.expense_date).toBeDefined()
+      expect(result.expense_date).toEqual(expect.any(String))
       expect(typeof result.expense_date).toBe('string')
     })
 
@@ -248,7 +274,7 @@ describe('ExpenseService - Business Logic', () => {
     it('should return expense by ID', async () => {
       const result = await expenseService.getExpenseById(1)
 
-      expect(result).toBeDefined()
+      expect(result).not.toBeNull()
       expect(result.id).toBe(1)
       expect(result.category).toBe('flores')
     })
@@ -380,7 +406,7 @@ describe('ExpenseService - Business Logic', () => {
     it('should soft delete expense', async () => {
       const result = await expenseService.deleteExpense(1)
 
-      expect(result).toBeDefined()
+      expect(result).not.toBeNull()
       expect(result.active).toBe(false)
     })
 

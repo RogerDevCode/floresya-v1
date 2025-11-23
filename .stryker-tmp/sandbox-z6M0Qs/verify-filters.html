@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verification - Filter Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl font-bold mb-8">🔍 Filtros de Ocasiones - Verificación Manual</h1>
+
+      <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">Estado del Servidor API</h2>
+        <div id="api-status" class="p-4 rounded bg-gray-100">
+          <p>Cargando...</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">Filtros de Ocasión Disponibles</h2>
+        <div id="occasions-list" class="space-y-2">
+          <p>Cargando...</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">Prueba de Filtrado</h2>
+        <div id="filter-tests" class="space-y-4">
+          <p>Cargando...</p>
+        </div>
+      </div>
+
+      <div class="bg-green-50 border-l-4 border-green-500 p-4">
+        <p class="text-green-700">
+          <strong>✅ Resultado:</strong>
+          <span id="final-result">Ejecutando pruebas...</span>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // @ts-nocheck
+
+      const API_BASE = 'http://localhost:3001'
+      let passedTests = 0
+      let totalTests = 0
+
+      async function log(message, type = 'info') {
+        console.log(`[${type.toUpperCase()}] ${message}`)
+      }
+
+      async function updateStatus(elementId, content, className = '') {
+        const el = document.getElementById(elementId)
+        if (el) {
+          el.className = className
+          el.innerHTML = content
+        }
+      }
+
+      async function testAPIHealth() {
+        totalTests++
+        try {
+          const res = await fetch(`${API_BASE}/health`)
+          const data = await res.json()
+          if (data.success) {
+            passedTests++
+            await updateStatus(
+              'api-status',
+              `<div class="p-3 bg-green-100 text-green-800 rounded">
+                            ✅ Servidor API funcionando correctamente<br>
+                            <small>Uptime: ${Math.floor(data.data.uptime)}s</small>
+                        </div>`
+            )
+            log('API Health: OK', 'success')
+            return true
+          }
+        } catch (error) {
+          await updateStatus(
+            'api-status',
+            `<div class="p-3 bg-red-100 text-red-800 rounded">
+                        ❌ Error: ${error.message}
+                    </div>`
+          )
+          log(`API Health: FAILED - ${error.message}`, 'error')
+        }
+        return false
+      }
+
+      async function testOccasionsAPI() {
+        totalTests++
+        try {
+          const res = await fetch(`${API_BASE}/api/occasions`)
+          const data = await res.json()
+
+          if (!data.success) {
+            throw new Error('API returned success: false')
+          }
+
+          const occasions = data.data.filter(o => o.active && !o.slug.includes('unauthorized'))
+          const html = occasions
+            .map(
+              o => `
+                    <div class="flex items-center justify-between p-2 border rounded">
+                        <span>${o.name}</span>
+                        <code class="text-sm bg-gray-200 px-2 py-1">${o.slug}</code>
+                    </div>
+                `
+            )
+            .join('')
+
+          if (occasions.length > 0) {
+            passedTests++
+            await updateStatus('occasions-list', html)
+            log(`Occasions API: OK (${occasions.length} occasions)`, 'success')
+            return occasions
+          } else {
+            throw new Error('No occasions found')
+          }
+        } catch (error) {
+          await updateStatus(
+            'occasions-list',
+            `<div class="p-3 bg-red-100 text-red-800 rounded">
+                        ❌ Error: ${error.message}
+                    </div>`
+          )
+          log(`Occasions API: FAILED - ${error.message}`, 'error')
+        }
+        return []
+      }
+
+      async function testProductFiltering(occasions) {
+        totalTests++
+        const results = []
+
+        for (const occasion of occasions.slice(0, 3)) {
+          // Test first 3 occasions
+          try {
+            const res = await fetch(`${API_BASE}/api/products?occasion=${occasion.slug}&limit=2`)
+            const data = await res.json()
+
+            if (data.success) {
+              results.push({
+                occasion: occasion.name,
+                slug: occasion.slug,
+                count: data.data.length,
+                status: 'ok'
+              })
+            } else {
+              results.push({
+                occasion: occasion.name,
+                slug: occasion.slug,
+                count: 0,
+                status: 'error',
+                error: 'API returned success: false'
+              })
+            }
+          } catch (error) {
+            results.push({
+              occasion: occasion.name,
+              slug: occasion.slug,
+              count: 0,
+              status: 'error',
+              error: error.message
+            })
+          }
+        }
+
+        const html = results
+          .map(r => {
+            const color = r.status === 'ok' ? 'green' : 'red'
+            const bg =
+              r.status === 'ok' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
+            return `
+                    <div class="p-3 ${bg} border rounded">
+                        <strong>${r.occasion}</strong> (${r.slug})<br>
+                        ${
+                          r.status === 'ok'
+                            ? `✅ ${r.count} productos encontrados`
+                            : `❌ Error: ${r.error}`
+                        }
+                    </div>
+                `
+          })
+          .join('')
+
+        await updateStatus('filter-tests', html)
+
+        const okCount = results.filter(r => r.status === 'ok').length
+        if (okCount === results.length) {
+          passedTests++
+          log(`Product Filtering: OK (${okCount}/${results.length})`, 'success')
+        } else {
+          log(`Product Filtering: PARTIAL (${okCount}/${results.length})`, 'warn')
+        }
+
+        return results
+      }
+
+      async function runAllTests() {
+        await log('Starting filter verification tests...', 'info')
+
+        const healthOk = await testAPIHealth()
+        if (!healthOk) {
+          await updateStatus(
+            'final-result',
+            '❌ Pruebas fallidas: API no disponible',
+            'text-red-700 font-bold'
+          )
+          return
+        }
+
+        const occasions = await testOccasionsAPI()
+        if (occasions.length > 0) {
+          await testProductFiltering(occasions)
+        }
+
+        const percentage = Math.round((passedTests / totalTests) * 100)
+        const status = percentage === 100 ? '✅' : percentage >= 50 ? '⚠️' : '❌'
+        const color = percentage === 100 ? 'green' : percentage >= 50 ? 'yellow' : 'red'
+
+        await updateStatus(
+          'final-result',
+          `${status} Pruebas completadas: ${passedTests}/${totalTests} (${percentage}%)`,
+          `text-${color}-700 font-bold text-lg`
+        )
+
+        await log(
+          `Final result: ${passedTests}/${totalTests} (${percentage}%)`,
+          percentage === 100 ? 'success' : 'warn'
+        )
+      }
+
+      // Run tests when page loads
+      runAllTests()
+    </script>
+  </body>
+</html>

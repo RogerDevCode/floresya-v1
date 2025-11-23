@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "_comment": "Stryker configuration for FloresYa v1",
+  "packageManager": "npm",
+  "reporters": ["html", "clear-text", "progress"],
+  "testRunner": "command",
+  "commandRunner": {
+    "command": "npm run test:unit"
+  },
+  "coverageAnalysis": "off",
+  "mutate": ["api/services/orderService.js", "api/services/paymentService.js", "!api/**/*.test.js"],
+  "timeoutMS": 30000
+}

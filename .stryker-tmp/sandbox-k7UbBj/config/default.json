@@ -1,0 +1,41 @@
+{
+  "database": {
+    "url": "postgresql://localhost:5432/floresya",
+    "maxConnections": 20,
+    "timeout": 10000
+  },
+  "logger": {
+    "level": "INFO",
+    "colors": true,
+    "timestamp": true,
+    "file": null
+  },
+  "api": {
+    "port": 3000,
+    "host": "localhost",
+    "timeout": 30000
+  },
+  "orderGenerator": {
+    "minDaily": 100,
+    "maxDaily": 300,
+    "minItems": 1,
+    "maxItems": 5,
+    "verbose": false,
+    "logFile": null
+  },
+  "bcv": {
+    "rate": 36.5,
+    "updateInterval": 3600000
+  },
+  "testing": {
+    "timeout": 5000,
+    "retries": 3,
+    "headless": true
+  },
+  "features": {
+    "cors": true,
+    "compression": true,
+    "helmet": true,
+    "rateLimit": true
+  }
+}

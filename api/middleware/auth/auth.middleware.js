@@ -23,7 +23,7 @@ export async function authenticate(req, res, next) {
   try {
     // DEVELOPMENT MODE: Use authService (allows proper test mocking)
     if (IS_DEV && process.env.NODE_ENV !== 'test') {
-      console.log('🔍 AUTH MIDDLEWARE - Development mode, using authService')
+      logger.debug('🔍 AUTH MIDDLEWARE - Development mode, using authService')
       req.user = DEV_MOCK_USER
       req.token = 'dev-mock-token'
       logger.info('🔓 DEV MODE: Auto-authenticated', {

@@ -33,7 +33,7 @@ describe('Payment Service - Payment Management Operations', () => {
 
   describe('Service module can be imported', () => {
     test('should import payment service module without errors', () => {
-      expect(paymentService).toBeDefined()
+      expect(paymentService).not.toBeNull()
       expect(typeof paymentService).toBe('object')
     })
   })

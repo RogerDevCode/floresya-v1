@@ -9,11 +9,12 @@
  *
  * Usage:
  * import config from './configLoader.js'
- * console.log(config.database.url)
+ * logger.info(config.database.url)
  */
 
 import { ConfigurationError } from '../errors/AppError.js'
 import dotenv from 'dotenv'
+import { logger } from '../utils/logger.js'
 
 // Load environment variables from appropriate .env file based on NODE_ENV
 const IS_VERCEL = process.env.VERCEL === '1'
@@ -31,7 +32,7 @@ if (!IS_VERCEL && !IS_TEST) {
   const envFile =
     nodeEnv === 'testing' ? '.env.testing' : nodeEnv === 'development' ? '.env' : '.env'
 
-  console.log(`📋 Loading environment from: ${envFile} (NODE_ENV: ${nodeEnv})`)
+  logger.info(`📋 Loading environment from: ${envFile} (NODE_ENV: ${nodeEnv})`)
   dotenv.config({ path: join(__dirname, `../../${envFile}`) })
 }
 
@@ -305,7 +306,7 @@ function validateConfig() {
 try {
   validateConfig()
 } catch (error) {
-  console.error('Configuration validation error:', error)
+  logger.error('Configuration validation error:', error)
   // Don't throw in test environment to allow tests to run
   if (config.NODE_ENV !== 'test') {
     throw error

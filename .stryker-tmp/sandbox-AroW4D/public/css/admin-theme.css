@@ -1,0 +1,299 @@
+/**
+ * Admin Theme Styles
+ * Tema claro con colores florales suaves y tema oscuro profesional
+ * Enfoque en contraste óptimo para lectura
+ */
+
+/* ============================================
+   VARIABLES DE TEMA - Colores Florales Suaves
+   ============================================ */
+
+:root {
+  /* Modo Claro - Colores Florales Suaves */
+  --bg-primary: #fef5f8; /* Rosa muy suave - fondo principal */
+  --bg-secondary: #fff9fb; /* Rosa casi blanco - cards */
+  --bg-tertiary: #ffeef4; /* Rosa pastel - hover states */
+
+  --text-primary: #2d1b2e; /* Púrpura oscuro - texto principal */
+  --text-secondary: #5a4a5e; /* Gris-púrpura - texto secundario */
+  --text-muted: #8b7a8e; /* Gris lavanda - texto menos importante */
+
+  --accent-primary: #e91e8c; /* Rosa FloresYa - acciones principales */
+  --accent-secondary: #f472b6; /* Rosa más claro - hover */
+  --accent-tertiary: #fbbf24; /* Amarillo dorado - acentos */
+
+  --border-color: #f3d5e3; /* Rosa pálido - bordes */
+  --shadow: rgba(233, 30, 140, 0.1); /* Sombra rosa suave */
+
+  /* Colores semánticos */
+  --success-bg: #f0fdf4;
+  --success-text: #166534;
+  --success-border: #bbf7d0;
+
+  --warning-bg: #fffbeb;
+  --warning-text: #92400e;
+  --warning-border: #fde68a;
+
+  --error-bg: #fef2f2;
+  --error-text: #991b1b;
+  --error-border: #fecaca;
+
+  --info-bg: #eff6ff;
+  --info-text: #1e40af;
+  --info-border: #bfdbfe;
+}
+
+.dark {
+  /* Modo Oscuro - Profesional con toques florales */
+  --bg-primary: #1a1625; /* Púrpura muy oscuro */
+  --bg-secondary: #251d30; /* Púrpura oscuro - cards */
+  --bg-tertiary: #332841; /* Púrpura medio - hover */
+
+  --text-primary: #f5f3f7; /* Casi blanco con tono lavanda */
+  --text-secondary: #d4c9de; /* Lavanda claro */
+  --text-muted: #9b8ba8; /* Lavanda grisáceo */
+
+  --accent-primary: #f472b6; /* Rosa brillante */
+  --accent-secondary: #fb7185; /* Rosa coral */
+  --accent-tertiary: #fbbf24; /* Dorado */
+
+  --border-color: #3d3347; /* Púrpura oscuro para bordes */
+  --shadow: rgba(0, 0, 0, 0.4);
+
+  /* Colores semánticos oscuros */
+  --success-bg: #14532d;
+  --success-text: #86efac;
+  --success-border: #166534;
+
+  --warning-bg: #713f12;
+  --warning-text: #fde047;
+  --warning-border: #92400e;
+
+  --error-bg: #7f1d1d;
+  --error-text: #fca5a5;
+  --error-border: #991b1b;
+
+  --info-bg: #1e3a8a;
+  --info-text: #93c5fd;
+  --info-border: #1e40af;
+}
+
+/* ============================================
+   APLICACIÓN DE TEMAS
+   ============================================ */
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Navbar */
+.navbar {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+/* Cards */
+.card,
+.bg-white {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Inputs */
+input,
+select,
+textarea {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+input::placeholder,
+select::placeholder,
+textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 0 0 3px rgba(233, 30, 140, 0.1) !important;
+}
+
+/* Buttons */
+.btn-primary,
+.bg-pink-600 {
+  background-color: var(--accent-primary) !important;
+  color: white !important;
+}
+
+.btn-primary:hover,
+.bg-pink-600:hover {
+  background-color: var(--accent-secondary) !important;
+}
+
+/* Tables */
+table {
+  background-color: var(--bg-secondary);
+}
+
+th {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+td {
+  color: var(--text-secondary);
+  border-color: var(--border-color);
+}
+
+tr:hover {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* Badges y Pills */
+.badge,
+.pill {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+/* Alertas y Notificaciones */
+.alert-success {
+  background-color: var(--success-bg) !important;
+  color: var(--success-text) !important;
+  border-color: var(--success-border) !important;
+}
+
+.alert-warning {
+  background-color: var(--warning-bg) !important;
+  color: var(--warning-text) !important;
+  border-color: var(--warning-border) !important;
+}
+
+.alert-error {
+  background-color: var(--error-bg) !important;
+  color: var(--error-text) !important;
+  border-color: var(--error-border) !important;
+}
+
+.alert-info {
+  background-color: var(--info-bg) !important;
+  color: var(--info-text) !important;
+  border-color: var(--info-border) !important;
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
+}
+
+.sidebar-item:hover {
+  background-color: var(--bg-tertiary);
+}
+
+/* Footer */
+footer {
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+/* Links */
+a {
+  color: var(--accent-primary);
+}
+
+a:hover {
+  color: var(--accent-secondary);
+}
+
+/* Modals y Dropdowns */
+.modal,
+.dropdown {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 25px var(--shadow);
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  color: var(--text-muted);
+}
+
+.breadcrumb-active {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Optimización de contraste para texto */
+.dark .text-gray-600 {
+  color: var(--text-secondary) !important;
+}
+
+.dark .text-gray-500 {
+  color: var(--text-muted) !important;
+}
+
+.dark .text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+/* Asegurar contraste en componentes específicos */
+.dark .bg-gray-50,
+.dark .bg-gray-100 {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.dark .bg-gray-200 {
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark .border-gray-300,
+.dark .border-gray-200 {
+  border-color: var(--border-color) !important;
+}
+
+/* Transiciones suaves */
+* {
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* Evitar transiciones en elementos que lo necesiten inmediato */
+input,
+select,
+textarea,
+button {
+  transition: none;
+}

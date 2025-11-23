@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="FloresYa - Tu floristería en línea de confianza. Hermosos ramos, arreglos florales y plantas para toda ocasión. Entrega a domicilio en la Gran Caracas."
+    />
+    <meta
+      name="keywords"
+      content="flores, floristería, ramos, arreglos florales, plantas, Gran Caracas, Caracas, entrega domicilio"
+    />
+    <title>FloresYa - Vintage Romántico</title>
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="FloresYa - Tu Floristería en Línea" />
+    <meta
+      property="og:description"
+      content="Hermosos ramos, arreglos florales y plantas para toda ocasión. Entrega a domicilio en la Gran Caracas."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://floresya.com" />
+    <meta property="og:image" content="../images/og-image.jpg" />
+
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="../css/tailwind.css" />
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="../css/theme-vintage-romantico.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+  </head>
+  <body>
+    <!-- Las secciones se agregarán aquí progresivamente -->
+
+    <!-- Navigation -->
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+      <div class="container">
+        <div class="navbar-content">
+          <!-- Logo -->
+          <a
+            class="navbar-brand"
+            href="../index.html"
+            aria-label="Ir a la página principal de FloresYa"
+          >
+            <img src="../images/logoFloresYa.jpeg" alt="Logo de FloresYa" class="brand-logo" />
+            <span class="brand-text">FloresYa</span>
+          </a>
+
+          <!-- Desktop Navigation -->
+          <div class="desktop-nav">
+            <ul class="nav-links" role="menubar">
+              <li><a href="../index.html#inicio" class="nav-link">Inicio</a></li>
+              <li><a href="../index.html#productos" class="nav-link">Productos</a></li>
+              <li><a href="contacto.html" class="nav-link">Contacto</a></li>
+              <li><a href="admin/dashboard.html" class="nav-link">Admin</a></li>
+            </ul>
+          </div>
+
+          <!-- Actions (Desktop) -->
+          <div class="nav-actions">
+            <!-- Cart -->
+            <a
+              href="/pages/cart.html"
+              class="nav-icon"
+              aria-label="Carrito de compras (0 productos)"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="icon"
+              >
+                <circle cx="8" cy="21" r="1" />
+                <circle cx="19" cy="21" r="1" />
+                <path
+                  d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"
+                />
+              </svg>
+              <span class="cart-badge" aria-label="0 productos">0</span>
+            </a>
+            <!-- Login -->
+            <a href="#login" class="btn btn-login">Iniciar Sesión</a>
+            <!-- Mobile menu toggle -->
+            <button
+              class="mobile-menu-toggle"
+              aria-label="Abrir menú móvil"
+              aria-expanded="false"
+              id="mobile-menu-btn"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="icon"
+              >
+                <line x1="4" x2="20" y1="12" y2="12" />
+                <line x1="4" x2="20" y1="6" y2="6" />
+                <line x1="4" x2="20" y1="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Menu (oculto por defecto) -->
+      <div
+        class="mobile-menu hidden"
+        id="mobile-menu"
+        role="navigation"
+        aria-label="Menú de navegación móvil"
+      >
+        <div class="container">
+          <ul class="mobile-nav-links">
+            <li><a href="../index.html#inicio" class="mobile-nav-link">Inicio</a></li>
+            <li><a href="../index.html#productos" class="mobile-nav-link">Productos</a></li>
+            <li><a href="contacto.html" class="mobile-nav-link">Contacto</a></li>
+            <li><a href="admin/dashboard.html" class="mobile-nav-link">Admin</a></li>
+            <li><a href="#" class="mobile-nav-link">Iniciar Sesión</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Spacer for fixed navbar -->
+    <div class="navbar-spacer"></div>
+
+    <!-- Hero Section -->
+    <section
+      class="hero-section relative overflow-hidden"
+      role="banner"
+      aria-labelledby="hero-title"
+    >
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1 id="hero-title" class="hero-title">Flores frescas para cada ocasión 🌸</h1>
+            <p class="hero-subtitle">
+              Ramos y arreglos florales diseñados con amor, entregados en la puerta de tu casa.
+            </p>
+            <div class="hero-cta">
+              <a href="#productos" class="btn btn-primary btn-lg">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="icon"
+                >
+                  <path
+                    d="M12 7.5a4.5 4.5 0 1 1 4.5 4.5M12 7.5A4.5 4.5 0 1 0 7.5 12M12 7.5V9m-4.5 3a4.5 4.5 0 1 0 4.5 4.5M7.5 12H9m7.5 0a4.5 4.5 0 1 1-4.5 4.5m4.5-4.5H15m-3 4.5V15"
+                  />
+                  <circle cx="12" cy="12" r="1" />
+                  <path d="m8.7 3.4 6.9 6.9" />
+                  <path d="m3.4 8.7 6.9 6.9" />
+                  <path d="m8.7 20.6 6.9-6.9" />
+                  <path d="m20.6 15.3-6.9-6.9" />
+                </svg>
+                Explorar Catálogo
+              </a>
+              <a href="#bodas" class="btn btn-secondary btn-lg">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="icon"
+                >
+                  <path
+                    d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+                  />
+                </svg>
+                Arreglos para Bodas
+              </a>
+            </div>
+            <div class="hero-features">
+              <div class="feature-item">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="feature-icon"
+                >
+                  <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
+                  <path d="M15 18H9" />
+                  <path
+                    d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"
+                  />
+                  <circle cx="17" cy="18" r="2" />
+                  <circle cx="7" cy="18" r="2" />
+                </svg>
+                <span>Entrega gratis</span>
+              </div>
+              <div class="feature-item">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="feature-icon"
+                >
+                  <path
+                    d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+                  />
+                  <path d="m9 12 2 2 4-4" />
+                </svg>
+                <span>100% garantizado</span>
+              </div>
+              <div class="feature-item">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="feature-icon"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                <span>Entrega el mismo día</span>
+              </div>
+            </div>
+          </div>
+          <div class="hero-image-wrapper relative">
+            <div class="hero-image-container">
+              <img
+                src="../images/hero-flowers.webp"
+                alt="Hermoso ramo de flores frescas multicolores"
+                class="hero-image"
+                width="600"
+                height="450"
+                loading="eager"
+              />
+            </div>
+            <!-- Hero decorations -->
+            <div class="hero-decoration pink"></div>
+            <div class="hero-decoration green"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Products Carousel -->
+    <section class="py-12 bg-white" role="region" aria-labelledby="carousel-title">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-8">
+          <h3 id="carousel-title" class="text-2xl lg:text-3xl font-bold text-pink-600 mb-2">
+            Nuestras Creaciones Destacadas
+          </h3>
+          <p class="text-gray-600">Descubre nuestros arreglos más populares</p>
+        </div>
+
+        <!-- Dynamic Carousel - populated by JavaScript -->
+        <div
+          id="featuredCarousel"
+          class="relative rounded-lg shadow-lg overflow-hidden bg-gray-50"
+          role="region"
+          aria-roledescription="carousel"
+          aria-label="Productos destacados"
+        >
+          <!-- Indicators will be generated dynamically -->
+          <div
+            class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10"
+            id="carouselIndicators"
+            role="tablist"
+            aria-label="Slides"
+          >
+            <!-- Dynamic indicators -->
+          </div>
+
+          <!-- Slides will be generated dynamically -->
+          <div
+            class="relative h-[300px] bg-gray-100 flex items-center justify-center"
+            id="carouselSlides"
+            aria-live="polite"
+          >
+            <!-- Temporary placeholder until JS loads products -->
+            <div class="text-center text-gray-400">
+              <p class="text-lg">Cargando productos destacados...</p>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <button
+            class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110 z-10 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            type="button"
+            id="carousel-prev"
+            aria-label="Producto anterior"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="h-6 w-6 text-gray-700"
+            >
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+          </button>
+          <button
+            class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110 z-10 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            type="button"
+            id="carousel-next"
+            aria-label="Producto siguiente"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="h-6 w-6 text-gray-700"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Products -->
+    <main id="main-content">
+      <section
+        id="productos"
+        class="py-12 bg-white"
+        role="main"
+        aria-label="Sección de productos destacados"
+      >
+        <div class="container mx-auto px-4">
+          <div class="text-center mb-4">
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mt-10 mb-2">
+              Productos Destacados
+            </h2>
+            <p class="text-lg text-gray-600">Nuestras flores más populares y arreglos especiales</p>
+          </div>
+
+          <!-- Search and Filters -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 mt-16">
+            <div class="md:col-span-2">
+              <label for="searchInput" class="block text-sm font-semibold text-gray-700 mb-2">
+                Buscar productos
+              </label>
+              <div class="relative">
+                <input
+                  type="text"
+                  class="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors shadow-sm"
+                  placeholder="Buscar por nombre..."
+                  id="searchInput"
+                  aria-label="Buscar productos"
+                />
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-5 w-5 text-gray-400"
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.3-4.3" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label for="occasionFilter" class="block text-sm font-semibold text-gray-700 mb-2">
+                Ocasión
+              </label>
+              <select
+                class="w-full py-3 px-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors shadow-sm bg-white"
+                id="occasionFilter"
+                aria-label="Filtrar por ocasión"
+              >
+                <option value="">Todas las ocasiones</option>
+                <!-- Options loaded dynamically from /api/occasions -->
+              </select>
+            </div>
+            <div>
+              <label for="sortFilter" class="block text-sm font-semibold text-gray-700 mb-2">
+                Ordenar por
+              </label>
+              <select
+                class="w-full py-3 px-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors shadow-sm bg-white"
+                id="sortFilter"
+                aria-label="Ordenar productos"
+              >
+                <option value="">Más recientes</option>
+                <option value="price_asc">Precio: Menor a mayor</option>
+                <option value="price_desc">Precio: Mayor a menor</option>
+                <option value="name_asc">Nombre: A-Z</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Products Grid (dynamically loaded) -->
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+            id="productsContainer"
+          >
+            <!-- Products will be loaded here by JavaScript -->
+            <div class="col-span-full text-center py-12">
+              <p class="text-gray-500">Cargando productos...</p>
+            </div>
+          </div>
+
+          <!-- Pagination (dynamically loaded) -->
+          <nav aria-label="Paginación de productos" class="mt-10 mb-4">
+            <div class="flex justify-center items-center space-x-2" id="pagination">
+              <!-- Pagination buttons will be loaded here by JavaScript -->
+            </div>
+          </nav>
+        </div>
+      </section>
+    </main>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">Lo que dicen nuestros clientes</h2>
+          <p class="text-lg text-gray-600">Experiencias reales con FloresYa</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Testimonial 1 -->
+          <div class="testimonial-card pink">
+            <p class="testimonial-quote">
+              "El ramo llegó perfecto y justo a tiempo. Hermoso servicio."
+            </p>
+            <h4 class="testimonial-author pink">— Mi Mamá</h4>
+          </div>
+          <!-- Testimonial 2 -->
+          <div class="testimonial-card green">
+            <p class="testimonial-quote">
+              "Excelente atención y las flores duraron mucho más de lo esperado."
+            </p>
+            <h4 class="testimonial-author green">— Mi Papá</h4>
+          </div>
+          <!-- Testimonial 3 -->
+          <div class="testimonial-card yellow">
+            <p class="testimonial-quote">"Muy fácil comprar en línea. Definitivamente repetiré."</p>
+            <h4 class="testimonial-author yellow">— Mi Hermana</h4>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section py-16 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 text-center">
+          <!-- Feature 1 -->
+          <div class="feature-card space-y-4">
+            <div class="feature-icon-wrapper">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feature-icon text-green-600"
+              >
+                <path
+                  d="M12 7.5a4.5 4.5 0 1 1 4.5 4.5M12 7.5A4.5 4.5 0 1 0 7.5 12M12 7.5V9m-4.5 3a4.5 4.5 0 1 0 4.5 4.5M7.5 12H9m7.5 0a4.5 4.5 0 1 1-4.5 4.5m4.5-4.5H15m-3 4.5V15"
+                />
+                <circle cx="12" cy="12" r="1" />
+                <path d="m8.7 3.4 6.9 6.9" />
+                <path d="m3.4 8.7 6.9 6.9" />
+                <path d="m8.7 20.6 6.9-6.9" />
+                <path d="m20.6 15.3-6.9-6.9" />
+              </svg>
+            </div>
+            <h3 class="feature-title text-xl font-semibold text-gray-900">Flores Frescas</h3>
+            <p class="feature-description text-gray-600">
+              Garantizamos la frescura y calidad de todas nuestras flores
+            </p>
+          </div>
+          <!-- Feature 2 -->
+          <div class="feature-card space-y-4">
+            <div class="feature-icon-wrapper">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feature-icon text-green-600"
+              >
+                <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
+                <path d="M15 18H9" />
+                <path
+                  d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"
+                />
+                <circle cx="17" cy="18" r="2" />
+                <circle cx="7" cy="18" r="2" />
+              </svg>
+            </div>
+            <h3 class="feature-title text-xl font-semibold text-gray-900">Entrega Rápida</h3>
+            <p class="feature-description text-gray-600">
+              Entregamos en el día que elijas, puntual y seguro
+            </p>
+          </div>
+          <!-- Feature 3 -->
+          <div class="feature-card space-y-4">
+            <div class="feature-icon-wrapper">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feature-icon text-green-600"
+              >
+                <path
+                  d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+                />
+              </svg>
+            </div>
+            <h3 class="feature-title text-xl font-semibold text-gray-900">Hechos con Amor</h3>
+            <p class="feature-description text-gray-600">
+              Cada arreglo es creado con dedicación y cuidado especial
+            </p>
+          </div>
+          <!-- Feature 4 -->
+          <div class="feature-card space-y-4">
+            <div class="feature-icon-wrapper">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feature-icon text-green-600"
+              >
+                <path
+                  d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+                />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+            </div>
+            <h3 class="feature-title text-xl font-semibold text-gray-900">Garantía Total</h3>
+            <p class="feature-description text-gray-600">
+              Si no estás satisfecho, te devolvemos tu dinero
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Special CTA Section -->
+    <section class="special-cta-section text-white text-center">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-white mb-4">¿Buscas algo especial?</h2>
+          <p class="text-xl text-white mb-8">
+            Personalizamos ramos únicos para cada ocasión inolvidable
+          </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+          <!-- FloresYa Novias -->
+          <a href="#novias" class="block cta-card" aria-label="Conocer más sobre FloresYa Novias">
+            <div
+              class="bg-white rounded-lg shadow-lg p-8 h-full flex flex-col items-center justify-center text-center hover:shadow-xl transition-shadow"
+            >
+              <svg
+                style="stroke-width: 2"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-16 w-16 text-pink-600 mb-4"
+              >
+                <path
+                  d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+                />
+              </svg>
+              <h3 class="text-2xl font-bold text-pink-600 mb-3">FloresYa Novias</h3>
+              <p class="text-gray-600 mb-4 flex-grow">
+                Arreglos exclusivos para el día más especial de tu vida
+              </p>
+              <span class="btn btn-secondary">Conocer más</span>
+            </div>
+          </a>
+          <!-- Entrega Express -->
+          <div class="cta-card">
+            <div
+              class="bg-white rounded-lg shadow-lg p-8 h-full flex flex-col items-center justify-center text-center hover:shadow-xl transition-shadow"
+            >
+              <svg
+                style="stroke-width: 2"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-16 w-16 text-yellow-500 mb-4"
+              >
+                <path
+                  d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"
+                />
+              </svg>
+              <h3 class="text-2xl font-bold text-yellow-600 mb-3">Entrega Express</h3>
+              <p class="text-gray-600 mb-4 flex-grow">
+                ¿Necesitas flores urgente? Entregamos en 2 horas
+              </p>
+              <span class="btn btn-warning">Próximamente</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-section bg-gray-900 text-white py-12">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          <!-- Brand -->
+          <div class="space-y-6">
+            <div class="flex items-center space-x-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-6 w-6 text-primary-400"
+              >
+                <path
+                  d="M12 7.5a4.5 4.5 0 1 1 4.5 4.5M12 7.5A4.5 4.5 0 1 0 7.5 12M12 7.5V9m-4.5 3a4.5 4.5 0 1 0 4.5 4.5M7.5 12H9m7.5 0a4.5 4.5 0 1 1-4.5 4.5m4.5-4.5H15m-3 4.5V15"
+                />
+                <circle cx="12" cy="12" r="1" />
+                <path d="m8.7 3.4 6.9 6.9" />
+                <path d="m3.4 8.7 6.9 6.9" />
+                <path d="m8.7 20.6 6.9-6.9" />
+                <path d="m20.6 15.3-6.9-6.9" />
+              </svg>
+              <span class="text-xl font-bold">FloresYa</span>
+            </div>
+            <p class="text-gray-300">
+              Tu floristería en línea de confianza. Llevamos la belleza de las flores directamente a
+              tu hogar.
+            </p>
+            <div class="flex space-x-4">
+              <a
+                href="https://facebook.com"
+                class="text-gray-300 hover:text-white transition-colors"
+                aria-label="Facebook"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-5 w-5"
+                >
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                </svg>
+              </a>
+              <a
+                href="https://instagram.com"
+                class="text-gray-300 hover:text-white transition-colors"
+                aria-label="Instagram"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-5 w-5"
+                >
+                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                </svg>
+              </a>
+              <a
+                href="https://twitter.com"
+                class="text-gray-300 hover:text-white transition-colors"
+                aria-label="Twitter"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-5 w-5"
+                >
+                  <path
+                    d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <!-- Products -->
+          <div class="space-y-6">
+            <h6 class="font-bold text-lg">Productos</h6>
+            <ul class="space-y-3 text-gray-300">
+              <li><a href="#" class="hover:text-white transition-colors">Rosas</a></li>
+              <li><a href="#" class="hover:text-white transition-colors">Bouquets</a></li>
+              <li><a href="#" class="hover:text-white transition-colors">Plantas</a></li>
+              <li><a href="#" class="hover:text-white transition-colors">Arreglos</a></li>
+            </ul>
+          </div>
+          <!-- Occasions -->
+          <div class="space-y-6">
+            <h6 class="font-bold text-lg">Ocasiones</h6>
+            <ul class="space-y-3 text-gray-300">
+              <li><a href="#" class="hover:text-white transition-colors">Amor</a></li>
+              <li><a href="#" class="hover:text-white transition-colors">Cumpleaños</a></li>
+              <li><a href="#" class="hover:text-white transition-colors">Aniversarios</a></li>
+              <li><a href="#" class="hover:text-white transition-colors">Día de la Madre</a></li>
+            </ul>
+          </div>
+          <!-- Contact -->
+          <div class="space-y-6">
+            <h6 class="font-bold text-lg">Contacto</h6>
+            <div class="space-y-3 text-gray-300">
+              <p class="flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-4 w-4 mr-2"
+                >
+                  <path
+                    d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"
+                  />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                Gran Caracas, Venezuela
+              </p>
+              <p class="flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-4 w-4 mr-2"
+                >
+                  <path
+                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+                  />
+                </svg>
+                +58412-1234567
+              </p>
+              <p class="flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-4 w-4 mr-2"
+                >
+                  <rect width="20" height="16" x="2" y="4" rx="2" />
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                </svg>
+                contacto@floresya.com
+              </p>
+              <p class="flex items-center text-sm">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-4 w-4 mr-2"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                Lun-Vie: 8:00-18:00 | Sáb: 9:00-16:00
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="border-t border-gray-800 mt-10 pt-8 text-center md:text-left">
+          <div class="flex flex-col md:flex-row justify-between items-center">
+            <p class="text-gray-400 mb-4 md:mb-0">
+              &copy; 2025 FloresYa. Todos los derechos reservados.
+            </p>
+            <div class="flex space-x-6">
+              <a href="#" class="text-gray-400 hover:text-white transition-colors">Términos</a>
+              <a href="#" class="text-gray-400 hover:text-white transition-colors">Privacidad</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts al final (ES6 Modules) -->
+    <script type="module" src="../index-dynamic.js"></script>
+  </body>
+</html>

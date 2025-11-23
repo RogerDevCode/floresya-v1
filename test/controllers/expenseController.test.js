@@ -7,15 +7,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import expenseController from '../../api/controllers/expenseController.js'
 import { NotFoundError } from '../../api/errors/AppError.js'
-import {
-  resetAccountingData,
-  seedAccountingData,
-  createExpense,
-  findExpenses,
-  findExpenseById,
-  updateExpense,
-  deleteExpense
-} from '../mocks/supabase-accounting.js'
+import { SupabaseAccountingMock } from '../mocks/supabase-accounting.js'
 
 // Mock logger
 vi.mock('../../api/utils/logger.js', () => ({
@@ -27,19 +19,22 @@ vi.mock('../../api/utils/logger.js', () => ({
   }
 }))
 
+// Create a mock instance for the service mock to use
+let mockDb
+
 // Mock expenseService
 vi.mock('../../api/services/expenseService.js', () => ({
   default: {
     createExpense: vi.fn(async (data, userId) => {
       const expenseData = { ...data, created_by: userId }
-      const result = await createExpense(expenseData)
+      const result = await mockDb.createExpense(expenseData)
       if (result.error) {
         throw result.error
       }
       return result.data
     }),
     getExpenseById: vi.fn(async id => {
-      const result = await findExpenseById(id)
+      const result = await mockDb.findExpenseById(id)
       if (!result.data) {
         throw new NotFoundError('Expense not found')
       }
@@ -63,11 +58,11 @@ vi.mock('../../api/services/expenseService.js', () => ({
         options.offset = parseInt(filters.offset)
       }
 
-      const result = await findExpenses(queryFilters, options)
+      const result = await mockDb.findExpenses(queryFilters, options)
       return result.data
     }),
     updateExpense: vi.fn(async (id, updates) => {
-      const result = await updateExpense(id, updates)
+      const result = await mockDb.updateExpense(id, updates)
       if (result.error) {
         throw result.error
       }
@@ -77,14 +72,14 @@ vi.mock('../../api/services/expenseService.js', () => ({
       return result.data
     }),
     deleteExpense: vi.fn(async id => {
-      const result = await deleteExpense(id)
+      const result = await mockDb.deleteExpense(id)
       if (!result.data) {
         throw new NotFoundError('Expense not found')
       }
       return result.data
     }),
     getExpensesByCategory: vi.fn(async (startDate, endDate) => {
-      const result = await findExpenses({
+      const result = await mockDb.findExpenses({
         gte_expense_date: startDate.toISOString().split('T')[0],
         lte_expense_date: endDate.toISOString().split('T')[0]
       })
@@ -107,8 +102,8 @@ describe('ExpenseController - HTTP Layer', () => {
   let req, res, next
 
   beforeEach(() => {
-    resetAccountingData()
-    seedAccountingData()
+    mockDb = new SupabaseAccountingMock()
+    mockDb.seedAccountingData()
 
     // Mock request
     req = {

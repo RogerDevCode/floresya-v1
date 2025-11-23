@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mobile Navigation Integration Test</title>
+    <style>
+      /* Simulate mobile viewport */
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
+
+      .test-container {
+        max-width: 480px;
+        margin: 0 auto;
+        border: 2px solid #ccc;
+        padding: 20px;
+      }
+
+      .test-results {
+        background: #f5f5f5;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 5px;
+      }
+
+      .test-pass {
+        color: green;
+        font-weight: bold;
+      }
+
+      .test-fail {
+        color: red;
+        font-weight: bold;
+      }
+
+      /* Basic navigation styling for testing */
+      .navbar {
+        background: #333;
+        color: white;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .nav-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .mobile-menu {
+        display: none;
+      }
+
+      .mobile-menu.hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-container">
+      <h1>Mobile Navigation Integration Test</h1>
+
+      <div class="test-results" id="testResults">
+        <h3>Test Results:</h3>
+        <div id="results"></div>
+      </div>
+
+      <!-- Navigation structure from index.html -->
+      <nav class="navbar" role="navigation" aria-label="Navegación principal">
+        <div class="navbar-content">
+          <!-- Logo -->
+          <a class="navbar-brand" href="/" aria-label="Ir a la página principal de FloresYa">
+            <span class="brand-text">FloresYa</span>
+          </a>
+
+          <!-- Actions (Desktop) -->
+          <div class="nav-actions">
+            <!-- Cart -->
+            <a
+              href="/pages/cart.html"
+              class="nav-icon"
+              aria-label="Carrito de compras (0 productos)"
+            >
+              Carrito
+            </a>
+            <!-- Login -->
+            <a href="#login" class="btn btn-login">Iniciar Sesión</a>
+            <!-- Mobile menu toggle -->
+            <button
+              class="mobile-menu-toggle"
+              aria-label="Abrir menú móvil"
+              aria-expanded="false"
+              id="mobile-menu-btn"
+            >
+              Menu
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile Menu (oculto por defecto) -->
+        <div
+          class="mobile-menu hidden"
+          id="mobile-menu"
+          role="navigation"
+          aria-label="Menú de navegación móvil"
+        >
+          <div class="container">
+            <ul class="mobile-nav-links">
+              <li><a href="#inicio" class="mobile-nav-link">Inicio</a></li>
+              <li><a href="#productos" class="mobile-nav-link">Productos</a></li>
+              <li><a href="pages/contacto.html" class="mobile-nav-link">Contacto</a></li>
+              <li><a href="pages/admin/dashboard.html" class="mobile-nav-link">Admin</a></li>
+              <li><a href="#" class="mobile-nav-link">Iniciar Sesión</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <div style="margin-top: 20px">
+        <h3>Instructions:</h3>
+        <ol>
+          <li>Click the menu button to test the mobile navigation</li>
+          <li>Verify that a slide-in drawer appears from the right</li>
+          <li>Check that the hamburger menu transforms to an X</li>
+          <li>Test clicking on a navigation link</li>
+          <li>Verify the drawer closes when clicking outside</li>
+          <li>Test keyboard navigation (Tab, Escape)</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+      // @ts-nocheck
+
+      import { onDOMReady } from './js/shared/dom-ready.js'
+      import { initMobileNav } from './js/components/mobileNav.js'
+      import { initHamburgerMenu } from './js/components/hamburgerMenu.js'
+
+      let testResults = []
+
+      function addTestResult(testName, passed, message) {
+        testResults.push({
+          name: testName,
+          passed: passed,
+          message: message
+        })
+        updateTestDisplay()
+      }
+
+      function updateTestDisplay() {
+        const resultsDiv = document.getElementById('results')
+        resultsDiv.innerHTML = testResults
+          .map(
+            test =>
+              `<div class="${test.passed ? 'test-pass' : 'test-fail'}">
+                    ${test.passed ? '✓' : '✗'} ${test.name}: ${test.message}
+                </div>`
+          )
+          .join('')
+      }
+
+      function runTests() {
+        // Test 1: Check if required elements exist
+        const menuBtn = document.getElementById('mobile-menu-btn')
+        const mobileMenu = document.getElementById('mobile-menu')
+
+        addTestResult(
+          'Required Elements',
+          menuBtn && mobileMenu,
+          menuBtn && mobileMenu ? 'Found required elements' : 'Missing required elements'
+        )
+
+        // Test 2: Initialize mobile navigation
+        try {
+          const mobileNav = initMobileNav({
+            menuBtnSelector: '#mobile-menu-btn',
+            menuSelector: '#mobile-menu',
+            drawerId: 'mobile-nav-drawer',
+            overlayId: 'mobile-nav-overlay',
+            animationDuration: 250
+          })
+
+          addTestResult('MobileNav Initialization', true, 'MobileNav initialized successfully')
+
+          // Test 3: Initialize hamburger menu
+          const hamburgerMenu = initHamburgerMenu({
+            containerSelector: '.nav-actions',
+            buttonId: 'hamburger-menu-btn',
+            animationDuration: 250,
+            activeClass: 'hamburger-active',
+            onToggle: isOpen => {
+              if (isOpen) {
+                mobileNav.open()
+              } else {
+                mobileNav.close()
+              }
+            }
+          })
+
+          addTestResult(
+            'HamburgerMenu Initialization',
+            true,
+            'HamburgerMenu initialized successfully'
+          )
+
+          // Test 4: Check if drawer was created
+          setTimeout(() => {
+            const drawer = document.getElementById('mobile-nav-drawer')
+            const overlay = document.getElementById('mobile-nav-overlay')
+            const hamburgerBtn = document.getElementById('hamburger-menu-btn')
+
+            addTestResult(
+              'Drawer Creation',
+              drawer && overlay,
+              drawer && overlay ? 'Drawer and overlay created' : 'Drawer or overlay missing'
+            )
+
+            addTestResult(
+              'Hamburger Button Creation',
+              hamburgerBtn,
+              hamburgerBtn ? 'Hamburger button created' : 'Hamburger button missing'
+            )
+
+            // Test 5: Check CSS loading
+            const stylesLink = document.getElementById('mobile-nav-styles-link')
+            addTestResult(
+              'CSS Loading',
+              stylesLink,
+              stylesLink ? 'Mobile nav CSS loaded' : 'Mobile nav CSS not loaded'
+            )
+          }, 500)
+        } catch (error) {
+          addTestResult('Component Initialization', false, `Error: ${error.message}`)
+        }
+      }
+
+      // Run tests when DOM is ready
+      onDOMReady(() => {
+        runTests()
+      })
+    </script>
+  </body>
+</html>

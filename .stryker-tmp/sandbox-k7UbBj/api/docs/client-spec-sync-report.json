@@ -1,0 +1,98 @@
+{
+  "timestamp": "2025-11-20T14:43:07.673Z",
+  "valid": true,
+  "issues": [],
+  "warnings": [
+    {
+      "type": "orphaned_method",
+      "severity": "warning",
+      "message": "Client method getAllExpenses() does not match any spec endpoint",
+      "methodName": "getAllExpenses",
+      "endpoint": "/api/accounting/expenses",
+      "method": "get"
+    },
+    {
+      "type": "orphaned_method",
+      "severity": "warning",
+      "message": "Client method createExpenses() does not match any spec endpoint",
+      "methodName": "createExpenses",
+      "endpoint": "/api/accounting/expenses",
+      "method": "post"
+    },
+    {
+      "type": "orphaned_method",
+      "severity": "warning",
+      "message": "Client method createExpensesWithFormData() does not match any spec endpoint",
+      "methodName": "createExpensesWithFormData",
+      "endpoint": "/api/accounting/expenses",
+      "method": "post"
+    },
+    {
+      "type": "orphaned_method",
+      "severity": "warning",
+      "message": "Client method getExpensesById() does not match any spec endpoint",
+      "methodName": "getExpensesById",
+      "endpoint": "/api/accounting/expenses/{id}",
+      "method": "get"
+    },
+    {
+      "type": "orphaned_method",
+      "severity": "warning",
+      "message": "Client method updateExpenses() does not match any spec endpoint",
+      "methodName": "updateExpenses",
+      "endpoint": "/api/accounting/expenses/{id}",
+      "method": "put"
+    },
+    {
+      "type": "orphaned_method",
+      "severity": "warning",
+      "message": "Client method updateExpensesWithFormData() does not match any spec endpoint",
+      "methodName": "updateExpensesWithFormData",
+      "endpoint": "/api/accounting/expenses/{id}",
+      "method": "put"
+    },
+    {
+      "type": "orphaned_method",
+      "severity": "warning",
+      "message": "Client method deleteExpenses() does not match any spec endpoint",
+      "methodName": "deleteExpenses",
+      "endpoint": "/api/accounting/expenses/{id}",
+      "method": "delete"
+    },
+    {
+      "type": "orphaned_method",
+      "severity": "warning",
+      "message": "Client method getExpensesByCategory() does not match any spec endpoint",
+      "methodName": "getExpensesByCategory",
+      "endpoint": "/api/accounting/expenses/by-category",
+      "method": "get"
+    },
+    {
+      "type": "orphaned_method",
+      "severity": "warning",
+      "message": "Client method getAccountingReports() does not match any spec endpoint",
+      "methodName": "getAccountingReports",
+      "endpoint": "/api/accounting/reports",
+      "method": "get"
+    }
+  ],
+  "summary": {
+    "specEndpoints": 67,
+    "clientMethods": 76,
+    "coverage": 100,
+    "orphanedEndpoints": [],
+    "missingMethods": [],
+    "extraMethods": [],
+    "orphanedMethods": [
+      "getAllExpenses",
+      "createExpenses",
+      "createExpensesWithFormData",
+      "getExpensesById",
+      "updateExpenses",
+      "updateExpensesWithFormData",
+      "deleteExpenses",
+      "getExpensesByCategory",
+      "getAccountingReports"
+    ]
+  }
+}

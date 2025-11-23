@@ -1,0 +1,18 @@
+{
+  "success": true,
+  "data": {
+    "id": 12345,
+    "customer_email": "test@example.com",
+    "customer_name": "Juan Pérez",
+    "customer_phone": "(+58)-414-1234567",
+    "delivery_address": "Calle Principal, Edificio Test, Piso 5, Apto 10",
+    "delivery_notes": "Portón azul al lado del supermercado",
+    "notes": "Entregar por la tarde",
+    "total_amount_usd": 75.48,
+    "total_amount_ves": 3057,
+    "currency_rate": 40.5,
+    "status": "pending",
+    "created_at": "2025-11-18T19:00:00.000Z"
+  },
+  "message": "Orden creada exitosamente"
+}

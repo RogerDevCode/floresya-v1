@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "data": {
+    "payment_id": 67890,
+    "order_id": 12345,
+    "payment_method": "cash",
+    "reference_number": "FY-001234",
+    "status": "confirmed"
+  },
+  "message": "Pago confirmado exitosamente"
+}

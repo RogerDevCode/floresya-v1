@@ -53,7 +53,7 @@ class BusinessRulesEngine {
       description: 'Order amount must meet minimum threshold',
       condition: order => {
         const amount = order.total_amount_usd
-        console.log(
+        this.logger.debug(
           `🔍 MINIMUM_ORDER_AMOUNT: Checking amount=${amount}, type=${typeof amount}, >=1=${amount >= 1}`
         )
         return amount >= 1

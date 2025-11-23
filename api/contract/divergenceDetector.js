@@ -9,23 +9,25 @@
  * Uses centralized configuration from configLoader
  */
 
-import fs from 'fs/promises'
-import path from 'path'
+import { readFileSync } from 'fs'
+import { join, dirname } from 'path'
 import yaml from 'js-yaml'
+import { logger } from '../utils/logger.js'
 import config from '../config/configLoader.js'
 import { fileURLToPath } from 'node:url'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const API_DIR = path.join(__dirname, '..')
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const API_DIR = join(__dirname, '..')
 let openApiSpec = null
-const specPath = path.join(API_DIR, 'docs', 'openapi-spec.yaml')
+const specPath = join(API_DIR, 'docs', 'openapi-spec.yaml')
 
 /**
  * Load OpenAPI specification
  */
 async function loadOpenApiSpec() {
   if (!openApiSpec) {
-    const specContent = await fs.readFile(specPath, 'utf8')
+    // Note: Changed from async fs.readFile to sync readFileSync as per user's import change
+    const specContent = readFileSync(specPath, 'utf8')
     openApiSpec = yaml.load(specContent)
   }
   return openApiSpec
@@ -413,11 +415,11 @@ export function createDivergenceDetectionMiddleware() {
             if (Array.isArray(requestDivergences)) {
               requestDivergences.forEach(div => {
                 detector.addDivergence(div)
-                console.warn(`CONTRACT DIVERGENCE DETECTED: ${div.type} - ${div.message}`)
+                logger.warn(`CONTRACT DIVERGENCE DETECTED: ${div.type} - ${div.message}`)
               })
             } else {
               detector.addDivergence(requestDivergences)
-              console.warn(
+              logger.warn(
                 `CONTRACT DIVERGENCE DETECTED: ${requestDivergences.type} - ${requestDivergences.message}`
               )
             }
@@ -431,19 +433,19 @@ export function createDivergenceDetectionMiddleware() {
                 if (Array.isArray(responseDivergences)) {
                   responseDivergences.forEach(div => {
                     detector.addDivergence(div)
-                    console.warn(`CONTRACT DIVERGENCE DETECTED: ${div.type} - ${div.message}`)
+                    logger.warn(`CONTRACT DIVERGENCE DETECTED: ${div.type} - ${div.message}`)
                   })
                 } else {
                   detector.addDivergence(responseDivergences)
-                  console.warn(
+                  logger.warn(
                     `CONTRACT DIVERGENCE DETECTED: ${responseDivergences.type} - ${responseDivergences.message}`
                   )
                 }
               }
             })
-            .catch(err => console.error('Error checking response divergence:', err))
+            .catch(err => logger.error('Error checking response divergence:', err))
         })
-        .catch(err => console.error('Error checking request divergence:', err))
+        .catch(err => logger.error('Error checking request divergence:', err))
 
       // Send the original response
       return originalJson.call(this, data)
@@ -459,17 +461,17 @@ export function createDivergenceDetectionMiddleware() {
             if (Array.isArray(requestDivergences)) {
               requestDivergences.forEach(div => {
                 detector.addDivergence(div)
-                console.warn(`CONTRACT DIVERGENCE DETECTED: ${div.type} - ${div.message}`)
+                logger.warn(`CONTRACT DIVERGENCE DETECTED: ${div.type} - ${div.message}`)
               })
             } else {
               detector.addDivergence(requestDivergences)
-              console.warn(
+              logger.warn(
                 `CONTRACT DIVERGENCE DETECTED: ${requestDivergences.type} - ${requestDivergences.message}`
               )
             }
           }
         })
-        .catch(err => console.error('Error checking request divergence:', err))
+        .catch(err => logger.error('Error checking request divergence:', err))
 
       // Send the original response
       return originalSend.call(this, data)
@@ -484,7 +486,7 @@ export function createDivergenceDetectionMiddleware() {
  * Function to run a full divergence scan against all routes
  */
 export async function runFullDivergenceScan() {
-  console.log('🔍 Running full divergence scan...')
+  logger.info('🔍 Running full divergence scan...')
 
   const detector = new DivergenceDetector()
   await detector.initialize()
@@ -493,7 +495,7 @@ export async function runFullDivergenceScan() {
   // to test them against the spec. For now, we'll just return the detector instance
   // which can be used to check specific requests/responses
 
-  console.log('✅ Full divergence scan completed')
+  logger.info('✅ Full divergence scan completed')
   return detector
 }
 

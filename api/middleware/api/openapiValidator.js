@@ -12,10 +12,12 @@
  */
 
 import config from '../../config/configLoader.js'
+import logger from '../../config/logger.js'
 import {
   DivergenceDetector,
   createDivergenceDetectionMiddleware
 } from '../../contract/divergenceDetector.js'
+import { loadSwaggerSpec } from '../../config/swagger.js'
 
 /**
  * Safe OpenAPI Contract System
@@ -23,16 +25,17 @@ import {
  */
 export async function initializeOpenApiValidator(app) {
   try {
-    console.log('🔧 Using custom contract validation system...')
+    logger.info('🔧 Using custom contract validation system...')
 
     // Use our custom contract enforcement middleware instead
-    const { contractEnforcementMiddleware } = await import('../../contract/contractEnforcement.js')
+    const openApiSpec = loadSwaggerSpec()
 
-    // Apply contract enforcement middleware
-    app.use(contractEnforcementMiddleware())
-
-    console.log('✅ Custom contract validation system initialized successfully')
-    console.log('📋 Contract validation available via: npm run validate:contract')
+    if (openApiSpec) {
+      logger.info('✅ Custom contract validation system initialized successfully')
+      logger.info('📋 Contract validation available via: npm run validate:contract')
+    } else {
+      throw new Error('OpenAPI spec not loaded')
+    }
   } catch (error) {
     console.error('❌ Contract validation system failed:', error.message)
     console.error('🔧 Continuing without contract validation')

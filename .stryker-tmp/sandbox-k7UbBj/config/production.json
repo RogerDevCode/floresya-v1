@@ -1,0 +1,34 @@
+{
+  "database": {
+    "url": "postgresql://prod-db:5432/floresya",
+    "maxConnections": 50,
+    "timeout": 10000
+  },
+  "logger": {
+    "level": "WARN",
+    "colors": false,
+    "file": "/var/log/floresya/app.log"
+  },
+  "api": {
+    "port": 8080,
+    "host": "0.0.0.0",
+    "timeout": 60000
+  },
+  "orderGenerator": {
+    "minDaily": 200,
+    "maxDaily": 500,
+    "verbose": false,
+    "logFile": "/var/log/floresya/order-generator.log"
+  },
+  "testing": {
+    "timeout": 30000,
+    "retries": 5,
+    "headless": true
+  },
+  "features": {
+    "cors": true,
+    "compression": true,
+    "helmet": true,
+    "rateLimit": true
+  }
+}

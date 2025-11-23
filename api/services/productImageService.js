@@ -21,6 +21,7 @@ import {
 } from '../errors/AppError.js'
 import { QUERY_LIMITS } from '../config/constants.js'
 import { validateProductImage } from '../utils/validation.js'
+import { logger } from '../utils/logger.js'
 
 const TABLE = DB_SCHEMA.product_images?.table || 'product_images'
 const VALID_SIZES = DB_SCHEMA.product_images?.enums?.size || ['thumb', 'small', 'medium', 'large']
@@ -65,15 +66,15 @@ export async function getProductImages(productId, filters = {}) {
 
     return data
   } catch (error) {
-    console.error(`getProductImages(${productId}) failed:`, error)
+    logger.error(`getProductImages(${productId}) failed:`, error)
     throw error
   }
 }
 
 /**
  * Get primary image for a product (indexed query)
+ * Falls back to first available image if no primary image exists
  */
-/**\n * Get primary image for a product (indexed query)\n * Falls back to first available image if no primary image exists\n */
 export async function getPrimaryImage(productId) {
   try {
     if (!productId || typeof productId !== 'number' || productId <= 0) {
@@ -118,7 +119,7 @@ export async function getPrimaryImage(productId) {
 
     return primaryImage
   } catch (error) {
-    console.error(`getPrimaryImage(${productId}) failed:`, error)
+    logger.error(`getPrimaryImage(${productId}) failed:`, error)
     throw error
   }
 }
@@ -156,7 +157,7 @@ export async function getImageById(id, includeDeactivated = false) {
 
     return data
   } catch (error) {
-    console.error(`getImageById(${id}) failed:`, error)
+    logger.error(`getImageById(${id}) failed:`, error)
     throw error
   }
 }
@@ -182,7 +183,7 @@ export async function getImagesByHash(fileHash) {
 
     return data || []
   } catch (error) {
-    console.error(`getImagesByHash(${fileHash}) failed:`, error)
+    logger.error(`getImagesByHash(${fileHash}) failed:`, error)
     throw error
   }
 }
@@ -231,7 +232,7 @@ export async function createImage(imageData) {
 
     return data
   } catch (error) {
-    console.error('createImage failed:', error)
+    logger.error('createImage failed:', error)
     throw error
   }
 }
@@ -307,7 +308,7 @@ export async function createProductImagesAtomic(
 
     return data
   } catch (error) {
-    console.error(`createProductImagesAtomic(${productId}) failed:`, error)
+    logger.error(`createProductImagesAtomic(${productId}) failed:`, error)
     throw error
   }
 }
@@ -356,7 +357,7 @@ export async function updateImage(id, updates) {
 
     return data
   } catch (error) {
-    console.error(`updateImage(${id}) failed:`, error)
+    logger.error(`updateImage(${id}) failed:`, error)
     throw error
   }
 }
@@ -404,7 +405,7 @@ export async function setPrimaryImage(productId, imageIndex) {
 
     return data
   } catch (error) {
-    console.error(`setPrimaryImage(${productId}, ${imageIndex}) failed:`, error)
+    logger.error(`setPrimaryImage(${productId}, ${imageIndex}) failed:`, error)
     throw error
   }
 }
@@ -440,7 +441,7 @@ export async function deleteImage(id) {
 
     return data
   } catch (error) {
-    console.error(`deleteImage(${id}) failed:`, error)
+    logger.error(`deleteImage(${id}) failed:`, error)
     throw error
   }
 }
@@ -476,7 +477,7 @@ export async function reactivateImage(id) {
 
     return data
   } catch (error) {
-    console.error(`reactivateImage(${id}) failed:`, error)
+    logger.error(`reactivateImage(${id}) failed:`, error)
     throw error
   }
 }
@@ -507,7 +508,7 @@ export async function deleteProductImagesSafe(productId) {
 
     return { success: true, deleted_count: data?.length || 0, product_id: productId }
   } catch (error) {
-    console.error(`deleteProductImagesSafe(${productId}) failed:`, error)
+    logger.error(`deleteProductImagesSafe(${productId}) failed:`, error)
     throw error
   }
 }
@@ -538,7 +539,7 @@ export async function reactivateProductImages(productId) {
 
     return { success: true, reactivated_count: data?.length || 0, product_id: productId }
   } catch (error) {
-    console.error(`reactivateProductImages(${productId}) failed:`, error)
+    logger.error(`reactivateProductImages(${productId}) failed:`, error)
     throw error
   }
 }
@@ -582,9 +583,9 @@ export async function deleteImagesByIndex(productId, imageIndex) {
     const { deleteImageSizes } = await import('./supabaseStorageService.js')
     try {
       await deleteImageSizes(filenameBase)
-      console.log(`✓ Deleted ${filenameBase} from storage (all sizes)`)
+      logger.info(`✓ Deleted ${filenameBase} from storage (all sizes)`)
     } catch (storageError) {
-      console.warn('Failed to delete from storage:', storageError.message)
+      logger.warn('Failed to delete from storage:', storageError.message)
       // Continue to delete from database even if storage deletion fails
     }
 
@@ -603,7 +604,7 @@ export async function deleteImagesByIndex(productId, imageIndex) {
 
     return data
   } catch (error) {
-    console.error(`deleteImagesByIndex(${productId}, ${imageIndex}) failed:`, error)
+    logger.error(`deleteImagesByIndex(${productId}, ${imageIndex}) failed:`, error)
     throw error
   }
 }
@@ -645,7 +646,7 @@ export async function getProductImageBySize(productId, size) {
 
     return data
   } catch (error) {
-    console.error(`getProductImageBySize(${productId}, ${size}) failed:`, error)
+    logger.error(`getProductImageBySize(${productId}, ${size}) failed:`, error)
     throw error
   }
 }
@@ -696,7 +697,7 @@ export async function getProductWithImageSize(productId, size) {
       [`image_url_${size}`]: image?.url || null
     }
   } catch (error) {
-    console.error(`getProductWithImageSize(${productId}, ${size}) failed:`, error)
+    logger.error(`getProductWithImageSize(${productId}, ${size}) failed:`, error)
     throw error
   }
 }
@@ -725,7 +726,7 @@ export async function getProductsBatchWithImageSize(productIds, size) {
       }
     }
 
-    console.log(
+    logger.debug(
       `🔍 [DEBUG] getProductsBatchWithImageSize - Fetching ${productIds.length} products with ${size} images`
     )
 
@@ -743,7 +744,7 @@ export async function getProductsBatchWithImageSize(productIds, size) {
       throw new NotFoundError('Products', null, { productIds })
     }
 
-    console.log(`🔍 [DEBUG] getProductsBatchWithImageSize - Found ${products.length} products`)
+    logger.debug(`🔍 [DEBUG] getProductsBatchWithImageSize - Found ${products.length} products`)
 
     // Find unique product IDs to compare with requested IDs
     const retrievedProductIds = products.map(p => p.id)
@@ -771,13 +772,13 @@ export async function getProductsBatchWithImageSize(productIds, size) {
 
     images = initialImages
 
-    console.log(
+    logger.debug(
       `🔍 [DEBUG] getProductsBatchWithImageSize - Found ${images?.length || 0} images for size ${size}`
     )
 
     // Fallback to 'large' size if 'small' not found (graceful handling for missing small images)
     if (size === 'small' && (!images || images.length === 0)) {
-      console.log(
+      logger.debug(
         `🔍 [DEBUG] getProductsBatchWithImageSize - No small images found, falling back to large`
       )
       const { data: fallbackImages, error: fallbackError } = await supabase
@@ -792,32 +793,28 @@ export async function getProductsBatchWithImageSize(productIds, size) {
       }
 
       images = fallbackImages || []
-      console.log(
+      logger.debug(
         `🔍 [DEBUG] getProductsBatchWithImageSize - Fallback found ${images?.length || 0} large images`
       )
     }
 
     // Create a map for quick lookup
-    const imageMap = new Map()
-    for (const img of images || []) {
-      imageMap.set(img.product_id, img)
-      console.log(`🔍 [DEBUG] Image for product ${img.product_id}: ${img.url}`)
+    const imageMap = {}
+    if (images) {
+      images.forEach(img => {
+        // Only store the first image found for each product (since we ordered by index)
+        if (!imageMap[img.product_id]) {
+          imageMap[img.product_id] = img.url
+          logger.debug(`🔍 [DEBUG] Image for product ${img.product_id}: ${img.url}`)
+        }
+      })
     }
 
-    // Attach the appropriate image to each product
-    const productsWithImages = products.map(product => {
-      const image = imageMap.get(product.id)
-      const result = {
-        ...product,
-        [`image_url_${size}`]: image?.url || null
-      }
-
-      console.log(
-        `🔍 [DEBUG] Product ${product.id} (${product.name}) - image_url_${size}: ${result[`image_url_${size}`] || 'NULL'}`
-      )
-
-      return result
-    })
+    // Attach image URLs to products
+    const productsWithImages = products.map(product => ({
+      ...product,
+      [`image_url_${size}`]: imageMap[product.id] || null
+    }))
 
     return productsWithImages
   } catch (error) {

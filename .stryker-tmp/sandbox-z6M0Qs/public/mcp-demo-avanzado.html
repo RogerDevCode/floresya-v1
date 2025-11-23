@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🚀 MCP Avanzado - FloresYa</title>
+    <link rel="stylesheet" href="/css/tailwind.css" />
+    <style>
+      .demo-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
+        padding: 1.5rem;
+        color: white;
+        transition: transform 0.3s ease;
+      }
+      .demo-card:hover {
+        transform: translateY(-4px);
+      }
+      .mcp-tool-card {
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1rem;
+        transition: all 0.3s ease;
+      }
+      .mcp-tool-card:hover {
+        border-color: #764ba2;
+        box-shadow: 0 8px 24px rgba(118, 75, 162, 0.15);
+      }
+      .flow-diagram {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: #f7fafc;
+        border-radius: 8px;
+        margin: 1rem 0;
+      }
+      .flow-arrow {
+        font-size: 1.5rem;
+        color: #764ba2;
+      }
+      .code-example {
+        background: #1a202c;
+        color: #68d391;
+        padding: 1rem;
+        border-radius: 8px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.875rem;
+      }
+      .use-case-section {
+        border-left: 4px solid #764ba2;
+        padding-left: 1.5rem;
+        margin: 2rem 0;
+      }
+      .ai-response {
+        background: linear-gradient(135deg, #4ade80 0%, #22d3ee 100%);
+        border-radius: 12px;
+        padding: 1rem;
+        color: white;
+        margin: 1rem 0;
+      }
+      .metric-card {
+        background: #f0f9ff;
+        border: 1px solid #0ea5e9;
+        border-radius: 8px;
+        padding: 1rem;
+        text-align: center;
+      }
+      .interactive-demo {
+        border: 2px dashed #cbd5e0;
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        margin: 1rem 0;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6">
+      <div class="container mx-auto">
+        <h1 class="text-4xl font-bold mb-2">🚀 MCP Avanzado para FloresYa</h1>
+        <p class="text-xl">Descubre cómo el Model Context Protocol transforma tu e-commerce</p>
+      </div>
+    </header>
+
+    <div class="container mx-auto p-6">
+      <!-- Sección 1: ¿Qué es MCP y por qué es revolucionario? -->
+      <section class="mb-12">
+        <div class="demo-card">
+          <h2 class="text-3xl font-bold mb-4">🤖 ¿Qué es MCP?</h2>
+          <p class="text-lg mb-4">
+            <strong>Model Context Protocol</strong>
+            es el puente que conecta tu aplicación con inteligencia artificial de forma estructurada
+            y segura.
+          </p>
+
+          <div class="flow-diagram">
+            <div class="bg-white text-purple-600 px-4 py-2 rounded-lg font-bold">Tu App</div>
+            <div class="flow-arrow">→</div>
+            <div class="bg-white text-purple-600 px-4 py-2 rounded-lg font-bold">MCP</div>
+            <div class="flow-arrow">→</div>
+            <div class="bg-white text-purple-600 px-4 py-2 rounded-lg font-bold">IA/GPT</div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+            <div class="bg-white/20 backdrop-blur p-4 rounded-lg">
+              <h3 class="font-bold text-lg mb-2">🔄 Comunicación</h3>
+              <p>Protocolo estandarizado para hablar con IA</p>
+            </div>
+            <div class="bg-white/20 backdrop-blur p-4 rounded-lg">
+              <h3 class="font-bold text-lg mb-2">🛡️ Seguridad</h3>
+              <p>Control total sobre datos y permisos</p>
+            </div>
+            <div class="bg-white/20 backdrop-blur p-4 rounded-lg">
+              <h3 class="font-bold text-lg mb-2">⚡ Escalabilidad</h3>
+              <p>Conecta múltiples servicios IA fácilmente</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sección 2: MCP Tools para FloresYa -->
+      <section class="mb-12">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800">
+          🛠️ MCP Tools Especializados para FloresYa
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Tool 1: Recomendador Inteligente -->
+          <div class="mcp-tool-card">
+            <div class="text-2xl mb-3">🌹</div>
+            <h3 class="text-xl font-bold mb-2">Recomendador Inteligente</h3>
+            <p class="text-gray-600 mb-4">
+              Sugiere flores basadas en ocasión, presupuesto y preferencias
+            </p>
+
+            <div class="bg-gray-50 p-3 rounded mb-3">
+              <div class="text-sm font-bold mb-1">Ejemplo MCP Call:</div>
+              <div class="code-example text-xs">
+                { "tool": "recommend_flowers", "args": { "occasion": "aniversario", "budget": 50,
+                "recipient": "esposa", "style": "romántico" } }
+              </div>
+            </div>
+
+            <div class="ai-response text-sm">
+              💡
+              <strong>Respuesta IA:</strong>
+              "Te recomiendo nuestro ramo "Pasión Eterna" con rosas rojas y lirios blancos..."
+            </div>
+          </div>
+
+          <!-- Tool 2: Chatbot Florista -->
+          <div class="mcp-tool-card">
+            <div class="text-2xl mb-3">💬</div>
+            <h3 class="text-xl font-bold mb-2">Chatbot Florista IA</h3>
+            <p class="text-gray-600 mb-4">Asistente virtual experto en flores y arreglos</p>
+
+            <div class="bg-gray-50 p-3 rounded mb-3">
+              <div class="text-sm font-bold mb-1">Ejemplo MCP Call:</div>
+              <div class="code-example text-xs">
+                { "tool": "florist_chat", "args": { "question": "¿Qué flores duran más?", "context":
+                "cliente_nuevo", "product_id": "123" } }
+              </div>
+            </div>
+
+            <div class="ai-response text-sm">
+              💡
+              <strong>Respuesta IA:</strong>
+              "Las orquídeas pueden durar hasta 3 meses con los cuidados adecuados..."
+            </div>
+          </div>
+
+          <!-- Tool 3: Análisis de Sentimientos -->
+          <div class="mcp-tool-card">
+            <div class="text-2xl mb-3">📊</div>
+            <h3 class="text-xl font-bold mb-2">Análisis de Sentimientos</h3>
+            <p class="text-gray-600 mb-4">Analiza reseñas y feedback de clientes</p>
+
+            <div class="bg-gray-50 p-3 rounded mb-3">
+              <div class="text-sm font-bold mb-1">Ejemplo MCP Call:</div>
+              <div class="code-example text-xs">
+                { "tool": "analyze_sentiment", "args": { "review": "Las flores estaban hermosas!",
+                "customer_id": "456", "product": "rosas_rojas" } }
+              </div>
+            </div>
+
+            <div class="ai-response text-sm">
+              💡
+              <strong>Análisis:</strong>
+              Positivo (95%) - Cliente satisfecho, recomendar producto
+            </div>
+          </div>
+
+          <!-- Tool 4: Generador de Contenido -->
+          <div class="mcp-tool-card">
+            <div class="text-2xl mb-3">✍️</div>
+            <h3 class="text-xl font-bold mb-2">Generador de Contenido</h3>
+            <p class="text-gray-600 mb-4">Crea descripciones y marketing para productos</p>
+
+            <div class="bg-gray-50 p-3 rounded mb-3">
+              <div class="text-sm font-bold mb-1">Ejemplo MCP Call:</div>
+              <div class="code-example text-xs">
+                { "tool": "generate_content", "args": { "product": "ramo_rosas", "type":
+                "descripcion", "tone": "romántico", "length": 150 } }
+              </div>
+            </div>
+
+            <div class="ai-response text-sm">
+              💡
+              <strong>Contenido generado:</strong>
+              "Despierta el amor con este exquisito ramo de 24 rosas rojas..."
+            </div>
+          </div>
+
+          <!-- Tool 5: Predicción de Ventas -->
+          <div class="mcp-tool-card">
+            <div class="text-2xl mb-3">📈</div>
+            <h3 class="text-xl font-bold mb-2">Predicción de Ventas</h3>
+            <p class="text-gray-600 mb-4">Pronostica demanda basada en tendencias</p>
+
+            <div class="bg-gray-50 p-3 rounded mb-3">
+              <div class="text-sm font-bold mb-1">Ejemplo MCP Call:</div>
+              <div class="code-example text-xs">
+                { "tool": "predict_sales", "args": { "period": "san_valentin", "product": "rosas",
+                "historical_data": "true" } }
+              </div>
+            </div>
+
+            <div class="ai-response text-sm">
+              💡
+              <strong>Predicción:</strong>
+              +300% ventas, necesitas 500 rosas adicionales
+            </div>
+          </div>
+
+          <!-- Tool 6: Optimizador de Precios -->
+          <div class="mcp-tool-card">
+            <div class="text-2xl mb-3">💰</div>
+            <h3 class="text-xl font-bold mb-2">Optimizador de Precios</h3>
+            <p class="text-gray-600 mb-4">Sugiere precios óptimos basados en mercado</p>
+
+            <div class="bg-gray-50 p-3 rounded mb-3">
+              <div class="text-sm font-bold mb-1">Ejemplo MCP Call:</div>
+              <div class="code-example text-xs">
+                { "tool": "optimize_price", "args": { "product": "ramo_premium", "cost": 25,
+                "competitor_prices": [45, 55, 60], "demand": "alta" } }
+              </div>
+            </div>
+
+            <div class="ai-response text-sm">
+              💡
+              <strong>Precio sugerido:</strong>
+              $58.99 - Máximo margen manteniendo competitividad
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sección 3: Casos de Uso Reales -->
+      <section class="mb-12">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800">🎯 Casos de Uso Reales en FloresYa</h2>
+
+        <!-- Caso 1: Cliente comprando flores -->
+        <div class="use-case-section">
+          <h3 class="text-2xl font-bold mb-3 text-purple-600">
+            🌹 Caso 1: Asistente de Compra Inteligente
+          </h3>
+
+          <div class="bg-white p-6 rounded-lg shadow-lg mb-4">
+            <h4 class="font-bold mb-2">📝 Escenario:</h4>
+            <p class="mb-4">Un cliente quiere comprar flores pero no sabe qué elegir.</p>
+
+            <div class="flow-diagram">
+              <div class="bg-purple-100 px-3 py-1 rounded">
+                Cliente dice: "Necesito flores para mi mamá"
+              </div>
+              <div class="flow-arrow">→</div>
+              <div class="bg-purple-100 px-3 py-1 rounded">MCP analiza contexto</div>
+              <div class="flow-arrow">→</div>
+              <div class="bg-purple-100 px-3 py-1 rounded">IA sugiere opciones</div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <div>
+                <h5 class="font-bold mb-2">🤖 Conversación con IA:</h5>
+                <div class="bg-gray-50 p-3 rounded text-sm">
+                  <div class="mb-2">
+                    <strong>Cliente:</strong>
+                    "Quiero flores para mi mamá"
+                  </div>
+                  <div class="mb-2">
+                    <strong>IA:</strong>
+                    "¿Qué tipo de mamá es? ¿Clásica, moderna, romántica?"
+                  </div>
+                  <div class="mb-2">
+                    <strong>Cliente:</strong>
+                    "Clásica, le gustan los colores suaves"
+                  </div>
+                  <div class="text-green-600">
+                    <strong>IA recomienda:</strong>
+                    "Ramo de Gardenias y Lilas"
+                  </div>
+                </div>
+              </div>
+              <div>
+                <h5 class="font-bold mb-2">📊 Resultados:</h5>
+                <div class="grid grid-cols-3 gap-2">
+                  <div class="metric-card">
+                    <div class="text-2xl font-bold text-blue-600">85%</div>
+                    <div class="text-xs">Satisfacción</div>
+                  </div>
+                  <div class="metric-card">
+                    <div class="text-2xl font-bold text-green-600">+42%</div>
+                    <div class="text-xs">Conversión</div>
+                  </div>
+                  <div class="metric-card">
+                    <div class="text-2xl font-bold text-purple-600">3min</div>
+                    <div class="text-xs">Tiempo ahorro</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Caso 2: Gestión de Inventario -->
+        <div class="use-case-section">
+          <h3 class="text-2xl font-bold mb-3 text-purple-600">
+            📦 Caso 2: Gestión de Inventario Inteligente
+          </h3>
+
+          <div class="bg-white p-6 rounded-lg shadow-lg mb-4">
+            <h4 class="font-bold mb-2">📝 Escenario:</h4>
+            <p class="mb-4">Previsión de demanda para el Día de la Madre.</p>
+
+            <div class="bg-blue-50 p-4 rounded mb-4">
+              <h5 class="font-bold mb-2">🔮 Análisis Predictivo con MCP:</h5>
+              <div class="code-example text-sm">
+                Análisis de datos históricos + Tendencias de mercado + Previsión meteorológica 📈
+                Predicciones: - Rosas Rojas: +300% demanda - Tulipanes: +150% demanda - Orquídeas:
+                +80% demanda - Girasoles: -20% demanda (fuera de temporada) 💡 Acciones
+                recomendadas: - Incrementar stock de rosas a 2,000 unidades - Contratar 3 floristas
+                adicionales - Preparar packaging especial para regalo
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="bg-green-50 p-3 rounded">
+                <div class="text-green-600 font-bold">✅ Antes de MCP</div>
+                <ul class="text-sm mt-2">
+                  <li>• Basado en experiencia manual</li>
+                  <li>• 60% precisión</li>
+                  <li>• Pérdidas por sobrestock</li>
+                </ul>
+              </div>
+              <div class="bg-yellow-50 p-3 rounded">
+                <div class="text-yellow-600 font-bold">⚡ Con MCP</div>
+                <ul class="text-sm mt-2">
+                  <li>• IA predictiva</li>
+                  <li>• 92% precisión</li>
+                  <li>• Optimización automática</li>
+                </ul>
+              </div>
+              <div class="bg-purple-50 p-3 rounded">
+                <div class="text-purple-600 font-bold">🚀 Resultados</div>
+                <ul class="text-sm mt-2">
+                  <li>• +45% ventas</li>
+                  <li>• -30% desperdicio</li>
+                  <li>• +60% rentabilidad</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Caso 3: Marketing Personalizado -->
+        <div class="use-case-section">
+          <h3 class="text-2xl font-bold mb-3 text-purple-600">
+            📱 Caso 3: Marketing Personalizado con IA
+          </h3>
+
+          <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h4 class="font-bold mb-2">📝 Escenario:</h4>
+            <p class="mb-4">Campañas de email marketing personalizadas.</p>
+
+            <div class="interactive-demo">
+              <h5 class="font-bold mb-3">🎨 Demo: Generador de Contenido con MCP</h5>
+              <p class="mb-4">
+                Haz clic en los botones para ver cómo MCP genera contenido personalizado
+              </p>
+
+              <div class="space-x-2 mb-4">
+                <button
+                  onclick="generarContenido('aniversario')"
+                  class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+                >
+                  🎂 Aniversario
+                </button>
+                <button
+                  onclick="generarContenido('cumpleaños')"
+                  class="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700"
+                >
+                  🎈 Cumpleaños
+                </button>
+                <button
+                  onclick="generarContenido('agradecimiento')"
+                  class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                >
+                  🙏 Agradecimiento
+                </button>
+              </div>
+
+              <div id="contenido-generado" class="bg-gray-50 p-4 rounded text-left hidden">
+                <div class="text-sm font-bold mb-2">✨ Contenido generado por IA:</div>
+                <div id="texto-generado" class="text-sm"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sección 4: Implementación Técnica -->
+      <section class="mb-12">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800">⚙️ Implementación Técnica</h2>
+
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <h3 class="text-xl font-bold mb-4">🏗️ Arquitectura MCP en FloresYa</h3>
+
+          <div class="flow-diagram">
+            <div class="bg-blue-100 px-4 py-2 rounded">Frontend (React/Vanilla JS)</div>
+            <div class="flow-arrow">→</div>
+            <div class="bg-purple-100 px-4 py-2 rounded">MCP Service Layer</div>
+            <div class="flow-arrow">→</div>
+            <div class="bg-green-100 px-4 py-2 rounded">AI Models (GPT-4, Claude, etc.)</div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div>
+              <h4 class="font-bold mb-3">📦 Componentes MCP:</h4>
+              <ul class="space-y-2 text-sm">
+                <li class="flex items-center">
+                  <span class="bg-purple-200 px-2 py-1 rounded mr-2">mcpService.js</span>
+                  Gestión de conexiones
+                </li>
+                <li class="flex items-center">
+                  <span class="bg-purple-200 px-2 py-1 rounded mr-2">mcpTools.js</span>
+                  Tools especializados
+                </li>
+                <li class="flex items-center">
+                  <span class="bg-purple-200 px-2 py-1 rounded mr-2">mcpConfig.js</span>
+                  Configuración central
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="font-bold mb-3">🔧 Ventajas Técnicas:</h4>
+              <ul class="space-y-2 text-sm">
+                <li>
+                  ✅
+                  <strong>Escalabilidad:</strong>
+                  Fácil añadir nuevos tools
+                </li>
+                <li>
+                  ✅
+                  <strong>Seguridad:</strong>
+                  Control de acceso y permisos
+                </li>
+                <li>
+                  ✅
+                  <strong>Monitoreo:</strong>
+                  Logs y métricas integradas
+                </li>
+                <li>
+                  ✅
+                  <strong>Testing:</strong>
+                  Unit tests para cada tool
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sección 5: Métricas y ROI -->
+      <section class="mb-12">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800">📊 Métricas y Retorno de Inversión</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-lg">
+            <div class="text-3xl font-bold mb-2">+67%</div>
+            <div class="text-sm">Conversión de ventas</div>
+            <div class="text-xs mt-2 opacity-80">Con recomendaciones IA</div>
+          </div>
+
+          <div class="bg-gradient-to-br from-green-500 to-green-600 text-white p-6 rounded-lg">
+            <div class="text-3xl font-bold mb-2">-43%</div>
+            <div class="text-sm">Costo soporte</div>
+            <div class="text-xs mt-2 opacity-80">Chatbot automatizado</div>
+          </div>
+
+          <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-lg">
+            <div class="text-3xl font-bold mb-2">+89%</div>
+            <div class="text-sm">Satisfacción cliente</div>
+            <div class="text-xs mt-2 opacity-80">Experiencia personalizada</div>
+          </div>
+
+          <div class="bg-gradient-to-br from-orange-500 to-orange-600 text-white p-6 rounded-lg">
+            <div class="text-3xl font-bold mb-2">3.2x</div>
+            <div class="text-sm">ROI en 6 meses</div>
+            <div class="text-xs mt-2 opacity-80">Inversión MCP</div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-lg mt-6">
+          <h3 class="text-xl font-bold mb-4">🎯 roadmap de Implementación</h3>
+
+          <div class="space-y-4">
+            <div class="flex items-center">
+              <div class="bg-green-500 text-white px-3 py-1 rounded-full text-sm mr-4">Fase 1</div>
+              <div class="flex-1">
+                <strong>Chatbot básico y recomendador simple</strong>
+                <div class="text-sm text-gray-600">2-3 semanas • MVP funcional</div>
+              </div>
+            </div>
+
+            <div class="flex items-center">
+              <div class="bg-yellow-500 text-white px-3 py-1 rounded-full text-sm mr-4">Fase 2</div>
+              <div class="flex-1">
+                <strong>Análisis predictivo y optimización de precios</strong>
+                <div class="text-sm text-gray-600">4-6 semanas • Valor inmediato</div>
+              </div>
+            </div>
+
+            <div class="flex items-center">
+              <div class="bg-purple-500 text-white px-3 py-1 rounded-full text-sm mr-4">Fase 3</div>
+              <div class="flex-1">
+                <strong>Marketing personalizado y avanzado</strong>
+                <div class="text-sm text-gray-600">6-8 semanas • Escala completa</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sección 6: Demo Interactiva -->
+      <section class="mb-12">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800">🎮 Demo Interactiva MCP</h2>
+
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <div class="text-center mb-6">
+            <h3 class="text-xl font-bold mb-2">Prueba MCP en Vivo</h3>
+            <p class="text-gray-600">
+              Conecta con nuestro servidor MCP demo para experimentar el poder de la IA
+            </p>
+          </div>
+
+          <div id="mcp-demo-container">
+            <!-- Aquí se inyectará el componente MCP Connector -->
+            <div class="text-center p-8 bg-gray-50 rounded">
+              <div
+                class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"
+              ></div>
+              <p class="text-gray-600">Cargando demo MCP...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white p-8 mt-12">
+      <div class="container mx-auto text-center">
+        <h3 class="text-2xl font-bold mb-4">🚀 Transforma FloresYa con MCP</h3>
+        <p class="mb-4">El futuro del e-commerce inteligente está aquí</p>
+        <div class="flex justify-center space-x-4">
+          <button class="bg-purple-600 px-6 py-2 rounded hover:bg-purple-700">
+            💬 Contactar Asesor
+          </button>
+          <button class="bg-green-600 px-6 py-2 rounded hover:bg-green-700">
+            📊 Solicitar Demo
+          </button>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script type="module">
+      // @ts-nocheck
+
+      import { MCPConnector } from '/js/components/mcp/mcpConnector.js'
+
+      // Inicializar demo MCP cuando el DOM esté listo
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+          const container = document.getElementById('mcp-demo-container')
+          if (container) {
+            container.innerHTML = '<div id="mcp-connector-demo"></div>'
+            new MCPConnector('mcp-connector-demo')
+          }
+        }, 2000)
+      })
+
+      // Función para generar contenido demo
+      window.generarContenido = function (tipo) {
+        const contenidos = {
+          aniversario: {
+            titulo: '🎂 Celebrando tu Amor',
+            texto: `Querido(a) [Nombre],
+
+Este aniversario es especial y merece flores que expresen todo tu amor.
+Te recomendamos nuestro exclusivo "Ramo Pasión Eterna":
+
+🌹 24 Rosas Rojas Premium
+💎 Decoración con Baby's Breath
+📦 Entrega misma día
+🎁 Tarjeta personalizada GRATIS
+
+Precio especial: $89.99 (ahorrando $20)
+
+¡Haz que este aniversario sea inolvidable!
+
+Con cariño,
+El equipo de FloresYa`,
+            color: 'bg-pink-50 border-pink-200'
+          },
+          cumpleaños: {
+            titulo: '🎈 Feliz Cumpleaños',
+            texto: `¡Feliz Cumpleaños [Nombre]! 🎉
+
+Celebra con nuestro "Ramo Festival de Alegría":
+
+🌻 Girasoles frescos y vibrantes
+🦋 Margaritas coloridas
+🌈 Lleno de energía y felicidad
+🚚 Entrega puntual para la celebración
+
+Solo hoy: 15% de descuento con código CUMPLE15
+
+¡Haz que su día sea brillante!
+
+¡Felicidades!
+FloresYa`,
+            color: 'bg-yellow-50 border-yellow-200'
+          },
+          agradecimiento: {
+            titulo: '🙏 Gracias por Elegirnos',
+            texto: `Estimado(a) [Nombre],
+
+Queremos expresarte nuestro más sincero agradecimiento.
+
+Como muestra de gratitud, te regalamos este exclusivo "Ramo Agradecimiento":
+
+🌺 Orquídeas elegantes
+🌿 Follaje tropical
+✨ Eterna belleza y duración
+🎁 Detalle especial para ti
+
+Es nuestra forma de decir GRACIAS por tu preferencia.
+
+Con aprecio,
+FloresYa Premium`,
+            color: 'bg-green-50 border-green-200'
+          }
+        }
+
+        const contenido = contenidos[tipo]
+        const container = document.getElementById('contenido-generado')
+        const textContainer = document.getElementById('texto-generado')
+
+        container.className = `${contenido.color} p-4 rounded text-left border-2`
+        textContainer.innerHTML = `
+                <div class="font-bold mb-2">${contenido.titulo}</div>
+                <div class="whitespace-pre-line">${contenido.texto}</div>
+                <div class="mt-3 text-xs text-gray-600">
+                    ⚡ Generado por IA en 0.3s • Personalizado automáticamente
+                </div>
+            `
+
+        container.classList.remove('hidden')
+      }
+
+      console.log('🚀 MCP Demo Avanzado cargado exitosamente')
+    </script>
+  </body>
+</html>

@@ -172,7 +172,7 @@ describe('Product Service - Business Logic Layer', () => {
 
       expect(mockProductRepository.findAllWithFilters).toHaveBeenCalledWith(
         { sortBy: 'price_desc', includeDeactivated: false, occasionId: null },
-        { orderBy: 'price', ascending: false }
+        { orderBy: 'price_usd', ascending: false }
       )
       expect(result).toEqual(mockProducts)
     })

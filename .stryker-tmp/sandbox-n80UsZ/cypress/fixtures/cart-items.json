@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "name": "Ramo de Rosas Rojas",
+    "price_usd": 25.99,
+    "stock": 10,
+    "quantity": 2,
+    "image_thumb": "/images/products/rosas-rojas-thumb.jpg",
+    "description": "Hermoso ramo de 12 rosas rojas"
+  },
+  {
+    "id": 2,
+    "name": "Girasoles Premium",
+    "price_usd": 18.5,
+    "stock": 15,
+    "quantity": 1,
+    "image_thumb": "/images/products/girasoles-thumb.jpg",
+    "description": "Arreglo de girasoles frescos"
+  },
+  {
+    "id": 3,
+    "name": "Orquídeas Elegantes",
+    "price_usd": 45.0,
+    "stock": 5,
+    "quantity": 1,
+    "image_thumb": "/images/products/orquideas-thumb.jpg",
+    "description": "Orquídeas blancas en maceta decorativa"
+  }
+]

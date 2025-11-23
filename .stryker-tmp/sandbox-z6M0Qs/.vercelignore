@@ -1,0 +1,10 @@
+node_modules
+.env.local
+.env
+*.log
+.husky
+.git
+.vscode
+README.md
+*.md
+database/

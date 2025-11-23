@@ -27,6 +27,7 @@ import { sanitizeProductData } from '../utils/sanitize.js'
 import { CAROUSEL } from '../config/constants.js'
 import { withErrorMapping } from '../middleware/error/index.js'
 import { validateProduct } from '../utils/validation.js'
+import { logger } from '../utils/logger.js'
 
 const TABLE = DB_SCHEMA.products.table
 
@@ -74,12 +75,12 @@ export const getAllProducts = withErrorMapping(
 
       // Fail Fast: Check for no data
       if (!occasionData) {
-        console.warn(`Occasion not found for slug: ${filters.occasion}`)
+        logger.warn(`Occasion not found for slug: ${filters.occasion}`)
         return []
       }
 
       occasionId = occasionData.id
-      console.log(`🔍 Resolved occasion slug "${filters.occasion}" to ID ${occasionId}`)
+      logger.debug(`🔍 Resolved occasion slug "${filters.occasion}" to ID ${occasionId}`)
     }
 
     // Prepare repository filters
@@ -97,10 +98,10 @@ export const getAllProducts = withErrorMapping(
       repositoryOptions.orderBy = 'carousel_order'
       repositoryOptions.ascending = true
     } else if (filters.sortBy === 'price_asc') {
-      repositoryOptions.orderBy = 'price'
+      repositoryOptions.orderBy = 'price_usd' // Column name in DB is price_usd
       repositoryOptions.ascending = true
     } else if (filters.sortBy === 'price_desc') {
-      repositoryOptions.orderBy = 'price'
+      repositoryOptions.orderBy = 'price_usd' // Column name in DB is price_usd
       repositoryOptions.ascending = false
     } else if (filters.sortBy === 'name_asc') {
       repositoryOptions.orderBy = 'name'
@@ -119,7 +120,7 @@ export const getAllProducts = withErrorMapping(
       repositoryOptions.offset = filters.offset
     }
 
-    console.log(`🔍 Query filters:`, {
+    logger.debug(`🔍 Query filters:`, {
       ...filters,
       occasionId,
       includeDeactivated,
@@ -132,7 +133,7 @@ export const getAllProducts = withErrorMapping(
       repositoryOptions
     )
 
-    console.log(`📦 getAllProducts: Found ${products.length} products from database`)
+    logger.debug(`📦 getAllProducts: Found ${products.length} products from database`)
 
     // If no image size requested, return products
     if (!includeImageSize) {
@@ -221,7 +222,7 @@ export async function getProductBySku(sku) {
 
     return data
   } catch (error) {
-    console.error(`getProductBySku(${sku}) failed:`, error)
+    logger.error(`getProductBySku(${sku}) failed:`, error)
     throw error
   }
 }
@@ -252,7 +253,7 @@ export async function getProductsWithOccasions(limit = 50, offset = 0) {
 
     return productsWithOccasions
   } catch (error) {
-    console.error('getProductsWithOccasions failed:', error)
+    logger.error('getProductsWithOccasions failed:', error)
     throw error
   }
 }
@@ -280,7 +281,7 @@ export async function getProductsByOccasion(occasionId, limit = 50) {
 
     return products
   } catch (error) {
-    console.error(`getProductsByOccasion(${occasionId}) failed:`, error)
+    logger.error(`getProductsByOccasion(${occasionId}) failed:`, error)
     throw error
   }
 }
@@ -301,7 +302,7 @@ export async function getCarouselProducts() {
     // Get featured products directly from database
     const products = await productRepository.findFeatured(CAROUSEL.MAX_SIZE)
 
-    console.log('🔍 [DEBUG] getCarouselProducts - Featured products from database:', {
+    logger.debug('🔍 [DEBUG] getCarouselProducts - Featured products from database:', {
       count: products?.length || 0,
       products:
         products?.map(p => ({
@@ -323,7 +324,7 @@ export async function getCarouselProducts() {
     const { getProductsBatchWithImageSize } = await import('./productImageService.js')
     const productsWithImages = await getProductsBatchWithImageSize(productIds, 'small')
 
-    console.log('🔍 [DEBUG] getCarouselProducts - Products with images:', {
+    logger.debug('🔍 [DEBUG] getCarouselProducts - Products with images:', {
       count: productsWithImages?.length || 0,
       products:
         productsWithImages?.map(p => ({
@@ -336,7 +337,7 @@ export async function getCarouselProducts() {
 
     return productsWithImages
   } catch (error) {
-    console.error('getCarouselProducts failed:', error)
+    logger.error('getCarouselProducts failed:', error)
     throw error
   }
 }
@@ -407,7 +408,7 @@ export async function createProduct(productData) {
         originalError: error.message
       })
     }
-    console.error('createProduct failed:', error)
+    logger.error('createProduct failed:', error)
     throw new DatabaseError('INSERT', TABLE, error, { productData })
   }
 }
@@ -465,7 +466,7 @@ export async function createProductWithOccasions(productData, occasionIds = []) 
 
     return product
   } catch (error) {
-    console.error('createProductWithOccasions failed:', error)
+    logger.error('createProductWithOccasions failed:', error)
     throw error
   }
 }
@@ -559,7 +560,7 @@ export async function updateProduct(id, updates) {
         originalError: error.message
       })
     }
-    console.error(`updateProduct(${id}) failed:`, error)
+    logger.error(`updateProduct(${id}) failed:`, error)
     throw new DatabaseError('UPDATE', TABLE, error, { productId: id, updates: sanitizedData })
   }
 }
@@ -595,7 +596,7 @@ export async function updateCarouselOrder(productId, newOrder) {
 
     return data
   } catch (error) {
-    console.error(`updateCarouselOrder(${productId}) failed:`, error)
+    logger.error(`updateCarouselOrder(${productId}) failed:`, error)
     throw error
   }
 }
@@ -621,7 +622,7 @@ export async function deleteProduct(id) {
 
     return data
   } catch (error) {
-    console.error(`deleteProduct(${id}) failed:`, error)
+    logger.error(`deleteProduct(${id}) failed:`, error)
     throw error
   }
 }
@@ -649,7 +650,7 @@ export async function reactivateProduct(id) {
 
     return data
   } catch (error) {
-    console.error(`reactivateProduct(${id}) failed:`, error)
+    logger.error(`reactivateProduct(${id}) failed:`, error)
     throw error
   }
 }
@@ -682,7 +683,7 @@ export async function updateStock(id, quantity) {
 
     return data
   } catch (error) {
-    console.error(`updateStock(${id}) failed:`, error)
+    logger.error(`updateStock(${id}) failed:`, error)
     throw error
   }
 }
@@ -720,7 +721,7 @@ export async function decrementStock(id, quantity) {
       throw error
     }
     // Wrap unexpected errors
-    console.error(`decrementStock(${id}) failed:`, error)
+    logger.error(`decrementStock(${id}) failed:`, error)
     throw new DatabaseError('UPDATE', TABLE, error, { productId: id, quantity })
   }
 }
@@ -752,16 +753,16 @@ export async function replaceProductOccasions(productId, occasionIds = []) {
       throw new ValidationError('Invalid occasion IDs', { invalidIds })
     }
 
-    console.log(`Replacing occasions for product ${productId}:`, occasionIds)
+    logger.debug(`Replacing occasions for product ${productId}:`, occasionIds)
 
     // Use repository pattern instead of direct supabase access
     const productRepository = getProductRepository()
     const data = await productRepository.replaceProductOccasions(productId, occasionIds)
 
-    console.log(`✓ Occasions replaced for product ${productId}:`, data)
+    logger.debug(`✓ Occasions replaced for product ${productId}:`, data)
     return data
   } catch (error) {
-    console.error(`replaceProductOccasions(${productId}) failed:`, error)
+    logger.error(`replaceProductOccasions(${productId}) failed:`, error)
     if (error.isOperational) {
       throw error
     }

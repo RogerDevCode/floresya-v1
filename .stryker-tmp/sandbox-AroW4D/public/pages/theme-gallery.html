@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Galería de Temas - FloresYa</title>
+    <meta name="description" content="Explora y prueba todos los temas disponibles en FloresYa" />
+
+    <!-- Theme Preload -->
+    <script src="../js/themes/themePreload.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/tailwind.css" />
+    <link rel="stylesheet" href="../css/styles.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+      <div class="container">
+        <div class="navbar-content">
+          <!-- Logo -->
+          <a class="navbar-brand" href="/" aria-label="Ir a la página principal de FloresYa">
+            <img src="../images/logoFloresYa.jpeg" alt="Logo de FloresYa" class="brand-logo" />
+            <span class="brand-text">FloresYa</span>
+          </a>
+
+          <!-- Desktop Navigation -->
+          <div class="desktop-nav">
+            <ul class="nav-links" role="menubar">
+              <li><a href="/" class="nav-link">Inicio</a></li>
+              <li><a href="/#productos" class="nav-link">Productos</a></li>
+              <li><a href="/pages/contacto.html" class="nav-link">Contacto</a></li>
+            </ul>
+          </div>
+
+          <!-- Actions -->
+          <div class="nav-actions">
+            <!-- Theme Selector -->
+            <div id="theme-selector-container"></div>
+
+            <!-- Back to Home -->
+            <a href="/" class="btn btn-secondary">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="icon"
+              >
+                <path d="m12 19-7-7 7-7" />
+                <path d="M19 12H5" />
+              </svg>
+              Volver
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Spacer for fixed navbar -->
+    <div class="navbar-spacer"></div>
+
+    <!-- Gallery Header -->
+    <section class="py-12 bg-primary-50">
+      <div class="container mx-auto px-4">
+        <div class="text-center max-w-3xl mx-auto">
+          <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">🎨 Galería de Temas</h1>
+          <p class="text-lg text-gray-600 mb-6">
+            Explora nuestra colección de temas visuales. Haz clic en cualquier tarjeta para aplicar
+            el tema instantáneamente.
+          </p>
+          <div class="flex flex-wrap gap-3 justify-center">
+            <button
+              id="filter-all"
+              class="filter-btn active px-4 py-2 rounded-lg font-semibold transition-all"
+              data-category="all"
+            >
+              Todos
+            </button>
+            <button
+              id="filter-basic"
+              class="filter-btn px-4 py-2 rounded-lg font-semibold transition-all"
+              data-category="basic"
+            >
+              Básicos
+            </button>
+            <button
+              id="filter-premium"
+              class="filter-btn px-4 py-2 rounded-lg font-semibold transition-all"
+              data-category="premium"
+            >
+              Premium
+            </button>
+            <button
+              id="filter-accessibility"
+              class="filter-btn px-4 py-2 rounded-lg font-semibold transition-all"
+              data-category="accessibility"
+            >
+              Accesibilidad
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Theme Grid -->
+    <section class="py-12">
+      <div class="container mx-auto px-4">
+        <div id="theme-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Themes will be loaded here dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Current Theme Info -->
+    <section class="py-12 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="text-6xl" id="current-theme-icon">🎨</div>
+            <div class="flex-1">
+              <h2 class="text-2xl font-bold text-gray-900 mb-1" id="current-theme-name">
+                Tema Actual
+              </h2>
+              <p class="text-gray-600" id="current-theme-description">
+                Selecciona un tema de la galería arriba
+              </p>
+            </div>
+            <div class="text-right">
+              <span
+                class="inline-block px-3 py-1 rounded-full text-sm font-semibold bg-pink-100 text-pink-700"
+                id="current-theme-category"
+              >
+                Categoría
+              </span>
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <button
+              id="reset-theme-btn"
+              class="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-semibold transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="inline h-4 w-4 mr-2"
+              >
+                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+                <path d="M21 3v5h-5" />
+                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+                <path d="M8 16H3v5" />
+              </svg>
+              Restaurar por Defecto
+            </button>
+            <button
+              id="export-theme-btn"
+              class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="inline h-4 w-4 mr-2"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" x2="12" y1="15" y2="3" />
+              </svg>
+              Exportar Configuración
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-section bg-gray-900 text-white py-8">
+      <div class="container mx-auto px-4">
+        <div class="text-center">
+          <p class="text-gray-400 mb-2">&copy; 2025 FloresYa. Todos los derechos reservados.</p>
+          <div class="flex justify-center space-x-4">
+            <a href="/" class="text-gray-400 hover:text-white transition-colors">Inicio</a>
+            <a href="/#productos" class="text-gray-400 hover:text-white transition-colors">
+              Productos
+            </a>
+            <a href="/pages/contacto.html" class="text-gray-400 hover:text-white transition-colors">
+              Contacto
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script type="module" src="./theme-gallery.js"></script>
+  </body>
+</html>

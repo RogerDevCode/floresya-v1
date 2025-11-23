@@ -6,11 +6,7 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import reportService from '../../api/services/reportService.js'
-import {
-  resetAccountingData,
-  seedAccountingData,
-  findExpenses
-} from '../mocks/supabase-accounting.js'
+import { SupabaseAccountingMock } from '../mocks/supabase-accounting.js'
 
 // Mock logger
 vi.mock('../../api/utils/logger.js', () => ({
@@ -56,6 +52,9 @@ vi.mock('../../api/services/supabaseClient.js', () => ({
   }
 }))
 
+// Create a mock instance for the repository mock to use
+let mockDb
+
 // Mock expenseRepository
 vi.mock('../../api/repositories/expenseRepository.js', () => ({
   default: {
@@ -64,7 +63,7 @@ vi.mock('../../api/repositories/expenseRepository.js', () => ({
         gte_expense_date: startDate.toISOString().split('T')[0],
         lte_expense_date: endDate.toISOString().split('T')[0]
       }
-      const result = await findExpenses(filters)
+      const result = await mockDb.findExpenses(filters)
       return result.data
     }),
     getTotalExpenses: vi.fn(async (startDate, endDate) => {
@@ -72,7 +71,7 @@ vi.mock('../../api/repositories/expenseRepository.js', () => ({
         gte_expense_date: startDate.toISOString().split('T')[0],
         lte_expense_date: endDate.toISOString().split('T')[0]
       }
-      const result = await findExpenses(filters)
+      const result = await mockDb.findExpenses(filters)
       return result.data.reduce((sum, e) => sum + e.amount, 0)
     })
   }
@@ -80,8 +79,8 @@ vi.mock('../../api/repositories/expenseRepository.js', () => ({
 
 describe('ReportService - Accounting Reports', () => {
   beforeEach(() => {
-    resetAccountingData()
-    seedAccountingData()
+    mockDb = new SupabaseAccountingMock()
+    mockDb.seedAccountingData()
     vi.clearAllMocks()
   })
 

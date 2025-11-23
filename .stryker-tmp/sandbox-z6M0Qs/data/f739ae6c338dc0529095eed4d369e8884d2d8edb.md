@@ -1,0 +1,167 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+    - navigation [ref=e2]:
+        - generic [ref=e4]:
+            - link "Volver a la página principal" [ref=e6] [cursor=pointer]:
+                - /url: ../../index.html
+                - img [ref=e7]
+            - link "Logo FloresYa Admin FloresYa Admin" [ref=e9] [cursor=pointer]:
+                - /url: ../../index.html
+                - img "Logo FloresYa Admin" [ref=e10]
+                - generic [ref=e11]: FloresYa Admin
+            - generic [ref=e12]:
+                - generic [ref=e13]: Admin
+                - button "Cerrar sesión" [ref=e14]:
+                    - img [ref=e15]
+    - complementary [ref=e18]:
+        - generic [ref=e19]:
+            - generic [ref=e20]:
+                - link "Dashboard" [ref=e21] [cursor=pointer]:
+                    - /url: '#'
+                    - img [ref=e22]
+                    - generic [ref=e27]: Dashboard
+                - link "Productos" [ref=e28] [cursor=pointer]:
+                    - /url: '#'
+                    - img [ref=e29]
+                    - generic [ref=e36]: Productos
+                - link "Pedidos" [ref=e37] [cursor=pointer]:
+                    - /url: ./orders.html
+                    - img [ref=e38]
+                    - generic [ref=e42]: Pedidos
+                - link "Usuarios" [ref=e43] [cursor=pointer]:
+                    - /url: '#'
+                    - img [ref=e44]
+                    - generic [ref=e49]: Usuarios
+                - link "Ocasiones" [ref=e50] [cursor=pointer]:
+                    - /url: ./occasions.html
+                    - img [ref=e51]
+                    - generic [ref=e53]: Ocasiones
+                - link "Editor de Contacto" [ref=e54] [cursor=pointer]:
+                    - /url: ./contact-editor.html
+                    - img [ref=e55]
+                    - generic [ref=e58]: Editor de Contacto
+                - link "Configuración" [ref=e59] [cursor=pointer]:
+                    - /url: '#'
+                    - img [ref=e60]
+                    - generic [ref=e63]: Configuración
+            - generic [ref=e64]:
+                - paragraph [ref=e65]: Version 1.0.0
+                - paragraph [ref=e66]: FloresYa Admin
+    - main [ref=e67]:
+        - generic [ref=e68]:
+            - generic [ref=e70]:
+                - generic [ref=e71]:
+                    - heading "¡Bienvenido al Panel de Administración!" [level=1] [ref=e72]
+                    - paragraph [ref=e73]: Gestiona tu tienda de flores de forma eficiente y sencilla
+                - generic [ref=e74]:
+                    - generic [ref=e75]:
+                        - generic [ref=e76]: Año
+                        - combobox [ref=e77]:
+                            - option "2025" [selected]
+                            - option "2026"
+                            - option "2027"
+                            - option "2028"
+                            - option "2029"
+                            - option "2030"
+                    - generic [ref=e78]:
+                        - generic [ref=e79]: Período
+                        - combobox [ref=e80]:
+                            - option "Todos" [selected]
+                            - option "Día de hoy"
+                            - option "Este mes"
+                            - option "Mes pasado"
+                            - option "30 días"
+                            - option "60 días"
+                            - option "90 días"
+            - paragraph [ref=e82]:
+                - img [ref=e83]
+                - generic [ref=e85]: 'Mostrando: Año 2025 | Todos los pedidos'
+            - generic [ref=e86]:
+                - generic [ref=e87]:
+                    - img [ref=e89]
+                    - generic [ref=e93]: Total Pedidos
+                    - generic [ref=e94]: '138'
+                    - generic [ref=e95]: (incluye cancelados)
+                - generic [ref=e96]:
+                    - img [ref=e98]
+                    - generic [ref=e100]: Ventas Totales USD
+                    - generic [ref=e101]: $27459.88
+                    - generic [ref=e102]: (excluye cancelados)
+                - generic [ref=e103]:
+                    - img [ref=e105]
+                    - generic [ref=e108]: Pendientes
+                    - generic [ref=e109]: '36'
+                - generic [ref=e110]:
+                    - img [ref=e112]
+                    - generic [ref=e115]: Verificados
+                    - generic [ref=e116]: '3'
+                - generic [ref=e117]:
+                    - img [ref=e119]
+                    - generic [ref=e122]: Preparando
+                    - generic [ref=e123]: '4'
+                - generic [ref=e124]:
+                    - img [ref=e126]
+                    - generic [ref=e131]: Enviados
+                    - generic [ref=e132]: '11'
+                - generic [ref=e133]:
+                    - img [ref=e135]
+                    - generic [ref=e138]: Entregados
+                    - generic [ref=e139]: '84'
+                - generic [ref=e140]:
+                    - img [ref=e142]
+                    - generic [ref=e146]: Cancelados
+                    - generic [ref=e147]: '0'
+            - generic [ref=e149]:
+                - generic [ref=e151]:
+                    - heading "Ventas Mensuales" [level=3] [ref=e152]
+                    - paragraph [ref=e153]: Últimos 12 meses (pedidos no cancelados)
+                - generic [ref=e154]:
+                    - generic [ref=e155]: 'Filtrar por Estado:'
+                    - combobox [ref=e156]:
+                        - option "Todos (no cancelados)" [selected]
+                        - option "Todos (incluye cancelados)"
+                        - option "Pendientes"
+                        - option "Verificados"
+                        - option "Preparando"
+                        - option "Enviados"
+                        - option "Entregados"
+                        - option "Cancelados"
+            - generic [ref=e159]:
+                - generic [ref=e160]:
+                    - heading "Productos Más Vendidos (Top 3)" [level=2] [ref=e161]
+                    - paragraph [ref=e162]: 'Filtros: Año 2025 | Todos los pedidos (excluye cancelados)'
+                - generic [ref=e163]:
+                    - generic [ref=e164]:
+                        - generic [ref=e165]:
+                            - generic [ref=e166]: '1'
+                            - generic [ref=e167]:
+                                - paragraph [ref=e168]: Claveles Multicolor Festivos
+                                - paragraph [ref=e169]: 'ID: 91'
+                        - generic [ref=e170]:
+                            - paragraph [ref=e171]: '51'
+                            - paragraph [ref=e172]: unidades
+                    - generic [ref=e173]:
+                        - generic [ref=e174]:
+                            - generic [ref=e175]: '2'
+                            - generic [ref=e176]:
+                                - paragraph [ref=e177]: Girasoles Gigantes Alegres
+                                - paragraph [ref=e178]: 'ID: 85'
+                        - generic [ref=e179]:
+                            - paragraph [ref=e180]: '42'
+                            - paragraph [ref=e181]: unidades
+                    - generic [ref=e182]:
+                        - generic [ref=e183]:
+                            - generic [ref=e184]: '3'
+                            - generic [ref=e185]:
+                                - paragraph [ref=e186]: Roma de gatos
+                                - paragraph [ref=e187]: 'ID: 107'
+                        - generic [ref=e188]:
+                            - paragraph [ref=e189]: '42'
+                            - paragraph [ref=e190]: unidades
+    - generic [ref=e192]:
+        - img [ref=e193]
+        - generic [ref=e195]: ⚠️ DEVELOPMENT MODE - Mock Authentication Active (No real login required)
+        - button "Dismiss" [ref=e196] [cursor=pointer]
+```

@@ -43,13 +43,13 @@ describe('QueryOptimizationService', () => {
       // Mock slow query by injecting delay
       const result = await analyzeQueryPerformance('products', {})
 
-      expect(result.recommendations).toBeDefined()
+      expect(result.recommendations).toEqual(expect.any(Array))
     })
 
     it('should suggest full-text search for text searches', async () => {
       const result = await analyzeQueryPerformance('products', { search: 'roses' })
 
-      expect(result.recommendations).toBeDefined()
+      expect(result.recommendations).toEqual(expect.any(Array))
     })
 
     it('should handle multiple filters', async () => {
@@ -60,7 +60,7 @@ describe('QueryOptimizationService', () => {
         occasion: 'birthday'
       })
 
-      expect(result.recommendations).toBeDefined()
+      expect(result.recommendations).toEqual(expect.any(Array))
     })
   })
 })

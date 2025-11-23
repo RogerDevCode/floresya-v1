@@ -24,7 +24,13 @@ export default defineConfig({
         'api/docs/**',
         'api/server.js',
         'api/app.js'
-      ]
+      ],
+      thresholds: {
+        statements: 50,
+        branches: 50,
+        functions: 40,
+        lines: 50
+      }
     },
     testTimeout: 10000,
     hookTimeout: 10000

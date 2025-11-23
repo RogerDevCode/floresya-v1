@@ -35,7 +35,7 @@ describe('SupabaseStorage Service - File Storage Operations', () => {
 
   describe('Service module can be imported', () => {
     test('should import supabase storage service module without errors', () => {
-      expect(supabaseStorageService).toBeDefined()
+      expect(supabaseStorageService).not.toBeNull()
       expect(typeof supabaseStorageService).toBe('object')
     })
   })

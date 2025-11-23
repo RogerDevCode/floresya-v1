@@ -78,7 +78,7 @@ describe('Carousel Service - Carousel Management Operations', () => {
       // The mock already contains product data, we can use it directly
       const result = await getCarouselProducts()
 
-      expect(result).toBeDefined()
+      expect(result).not.toBeNull()
       expect(Array.isArray(result)).toBe(true)
     })
 

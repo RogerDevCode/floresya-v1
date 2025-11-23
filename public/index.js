@@ -4,6 +4,8 @@
  * Implementación con carga dinámica de módulos usando el patrón solicitado
  */
 
+import { initMobileNav } from './js/components/mobileNav.js'
+
 // Helper to reduce console noise in production
 const shouldLogDebug = () => {
   // Always log in development, reduce in production
@@ -118,11 +120,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       import('./js/themes/themeManager.js'),
       import('./js/components/ThemeSelector.js'),
       import('./js/components/imageCarousel.js'),
-      import('./js/components/mobileNav.js'),
+      import('./js/components/imageCarousel.js'),
+      // MobileNav imported statically
       import('./js/components/pullToRefresh.js'),
       import('./js/shared/cart.js'),
       import('./js/shared/api-client.js'),
-      import('./js/shared/touchFeedback.js')
+      import('./js/shared/touchFeedback.js'),
+      import('./js/components/ui-interactions.js').then(m => m.initUIInteractions())
     ])
 
     // Nota: Los módulos se cargan dinámicamente dentro de cada función que los necesita
@@ -182,12 +186,10 @@ document.addEventListener('DOMContentLoaded', async () => {
  * Initialize mobile navigation drawer
  * Uses the existing #mobile-menu-btn button from HTML
  */
-async function initMobileNavigation() {
+function initMobileNavigation() {
   try {
-    // First try to initialize the sophisticated mobile navigation drawer
-    const { initMobileNav } = await import('./js/components/mobileNav.js')
-
     // Initialize the mobile navigation drawer with existing button
+    // Using static import for better reliability in tests
     const mobileNav = initMobileNav({
       menuBtnSelector: '#mobile-menu-btn',
       menuSelector: '#mobile-menu',
@@ -286,8 +288,18 @@ function updateProgressBar(index) {
   if (indicators) {
     const dots = indicators.querySelectorAll('.carousel-dot')
     dots.forEach((dot, i) => {
-      dot.classList.toggle('active', i === index)
-      dot.setAttribute('aria-current', i === index ? 'true' : 'false')
+      const isActive = i === index
+      dot.classList.toggle('active', isActive)
+      dot.setAttribute('aria-current', isActive ? 'true' : 'false')
+
+      // Update inline styles for visual feedback
+      if (isActive) {
+        dot.style.backgroundColor = '#ec4899'
+        dot.style.transform = 'scale(1.3)'
+      } else {
+        dot.style.backgroundColor = 'rgba(255, 255, 255, 0.5)'
+        dot.style.transform = 'scale(1)'
+      }
     })
   }
 }
@@ -356,7 +368,15 @@ async function initCarousel() {
   const prevBtn = document.getElementById('carousel-prev')
   const nextBtn = document.getElementById('carousel-next')
 
+  log.info('🎠 [Carousel] Initializing carousel...')
+  log.info('🎠 [Carousel] Elements found:', {
+    carouselSlides: !!carouselSlides,
+    prevBtn: !!prevBtn,
+    nextBtn: !!nextBtn
+  })
+
   if (!carouselSlides || !prevBtn || !nextBtn) {
+    log.error('🎠 [Carousel] Missing required elements - carousel initialization cancelled')
     return
   }
 
@@ -428,14 +448,14 @@ async function initCarousel() {
 
       return `
     <div class="carousel-slide ${index === 0 ? 'active' : ''} absolute inset-0 transition-opacity duration-500 ${index === 0 ? 'opacity-100' : 'opacity-0'}" data-slide="${index}" data-product-id="${product.id}">
-      <div class="h-full flex items-center justify-center p-8">
-        <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      <div class="h-full flex items-center justify-center p-4 md:p-6">
+        <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
           <!-- Product Image -->
-          <div class="flex justify-center p-6">
+          <div class="flex justify-center p-3">
             <img
               src="${imageUrl}"
               alt="${product.name}"
-              class="carousel-product-image w-[300px] h-[300px] object-cover rounded-lg shadow-lg"
+              class="carousel-product-image w-[280px] h-[280px] object-cover rounded-lg shadow-lg"
               data-fallback="./images/placeholder-flower.svg"
               loading="${index === 0 ? 'eager' : 'lazy'}"
               decoding="async"
@@ -867,8 +887,10 @@ async function initProductsGrid() {
   // Add a small delay to ensure DOM is fully ready and API server is responsive
   await new Promise(resolve => setTimeout(resolve, 100))
 
-  // Load products with retry logic
+  // Load products with retry logic (without scrolling on initial load)
+  window.isInitialPageLoad = true
   await loadProductsWithFilters(currentPage)
+  window.isInitialPageLoad = false
 
   // Initialize pull-to-refresh on the products container
   initPullToRefresh()
@@ -957,6 +979,25 @@ function showToast(message, type = 'info') {
       }
     }, 300)
   }, 3000)
+}
+
+/**
+ * Get emoji for occasion
+ */
+function getOccasionEmoji(slug) {
+  const emojiMap = {
+    cumpleanos: '🎂',
+    aniversario: '💕',
+    'dia-de-la-madre': '👩',
+    'san-valentin': '💖',
+    boda: '💒',
+    graduacion: '🎓',
+    felicidades: '🎉',
+    'dia-del-padre': '👨',
+    navidad: '🎄',
+    agradecimiento: '🙏'
+  }
+  return emojiMap[slug] || '🌸'
 }
 
 /**
@@ -1061,10 +1102,11 @@ async function loadOccasionsFilter() {
     }
 
     const button = document.createElement('button')
-    button.className = 'model-4-filter'
+    button.className =
+      'model-4-filter px-4 py-2.5 bg-white/80 backdrop-blur-sm text-slate-700 text-sm font-semibold rounded-xl whitespace-nowrap transition-all hover:scale-105 hover:bg-gradient-to-r hover:from-pink-100 hover:to-violet-100 hover:shadow-md active:scale-95 border-2 border-pink-200/60 hover:border-pink-300'
     button.setAttribute('data-filter', occasion.slug)
     button.setAttribute('data-occasion', occasion.slug)
-    button.textContent = occasion.name
+    button.textContent = `${getOccasionEmoji(occasion.slug)} ${occasion.name}`
     button.id = `filter-${occasion.slug}`
 
     // Mejorar accesibilidad con atributos ARIA
@@ -1267,36 +1309,42 @@ async function loadProducts(page = 1) {
         const reviewCount = Math.floor(Math.random() * 500 + 50) // 50-550 reviews
 
         return `
-          <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group hover:-translate-y-1 border border-gray-100 hover:border-pink-200" data-product-id="${product.id}">
-            <!-- Image Container with Badges -->
-            <div class="relative aspect-square bg-gray-100 overflow-hidden" data-carousel-container data-product-id="${product.id}">
-              <!-- Badges (Trust Signals) -->
-              <div class="absolute top-3 left-3 z-10 flex gap-2">
-                ${
-                  isBestseller
-                    ? `
-                  <span class="bg-pink-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-                    ⭐ Bestseller
-                  </span>
-                `
-                    : ''
-                }
-                ${
-                  hasDiscount
-                    ? `
-                  <span class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-                    -${discountPercentage}%
-                  </span>
-                `
-                    : ''
-                }
+
+          <div class="group relative bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden hover:shadow-2xl hover:shadow-rose-500/10 hover:-translate-y-1 transition-all duration-500 reveal-on-scroll" data-product-id="${product.id}">
+            
+            <!-- Image Container -->
+            <div class="relative aspect-[4/5] overflow-hidden bg-slate-100">
+              <img
+                src="${product.image_url_small || './images/placeholder-flower.svg'}"
+                alt="${product.name}"
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                loading="lazy"
+              />
+              
+              <!-- Overlay Gradient -->
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+              <!-- Badges -->
+              <div class="absolute top-4 left-4 flex flex-col gap-2">
+                ${isBestseller ? '<span class="px-3 py-1 bg-white/90 backdrop-blur text-xs font-bold text-rose-600 rounded-full shadow-sm">Más Vendido</span>' : ''}
+                ${hasDiscount ? `<span class="px-3 py-1 bg-rose-500 text-xs font-bold text-white rounded-full shadow-sm">-${discountPercentage}% OFF</span>` : ''}
               </div>
 
+              <!-- Quick Actions (Reveal on Hover) -->
+              <div class="absolute bottom-4 left-4 right-4 flex gap-2 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                <button 
+                  class="btn-magnetic flex-1 bg-white text-slate-900 font-bold py-3 rounded-xl shadow-lg hover:bg-rose-500 hover:text-white transition-colors flex items-center justify-center gap-2 add-to-cart-btn"
+                  data-product-id="${product.id}"
+                  data-product-name="${product.name}"
+                  data-product-price="${price}"
+                  data-product-image="${product.image_url_small}"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
               <!-- Wishlist Button -->
-              <button class="absolute top-3 right-3 z-10 w-10 h-10 bg-white/90 hover:bg-white rounded-full shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110 hover:shadow-lg hover:rotate-3"
-                      type="button"
-                      aria-label="Agregar a favoritos"
-                      data-wishlist-product-id="${product.id}">
+              <button
+                class="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center bg-white/90 backdrop-blur rounded-full shadow-lg text-slate-700 hover:text-rose-500 hover:bg-white transition-all duration-300 btn-magnetic"
+                aria-label="Agregar a favoritos"
+                data-wishlist-product-id="${product.id}">
                 <span class="text-lg">🤍</span>
               </button>
 
@@ -2329,7 +2377,7 @@ async function loadProductsWithFilters(page) {
     const params = new URLSearchParams({
       page,
       limit: PRODUCTS_PER_PAGE,
-      sort: window.currentFilters.sort,
+      sortBy: window.currentFilters.sort, // Backend expects 'sortBy' not 'sort'
       ...(window.currentFilters.search && { search: window.currentFilters.search }),
       ...priceParams,
       ...(window.currentFilters.occasion && { occasion: window.currentFilters.occasion })
@@ -2341,7 +2389,7 @@ async function loadProductsWithFilters(page) {
     const apiParams = {
       limit: PRODUCTS_PER_PAGE,
       page: page,
-      sort: window.currentFilters.sort,
+      sortBy: window.currentFilters.sort, // Backend expects 'sortBy' not 'sort'
       ...(window.currentFilters.search && { search: window.currentFilters.search }),
       ...priceParams,
       ...(window.currentFilters.occasion && { occasion: window.currentFilters.occasion })
@@ -2429,13 +2477,15 @@ async function loadProductsWithFilters(page) {
         loadingAnnouncement.textContent = `Se han cargado ${result.data.length} productos filtrados correctamente`
       }
 
-      // Move focus to the products container for screen reader users
-      productsContainer.setAttribute('tabindex', '-1')
-      productsContainer.focus()
-      // Remove tabindex after focus to prevent it from being focusable in normal tab order
-      setTimeout(() => {
-        productsContainer.removeAttribute('tabindex')
-      }, 100)
+      // Move focus to the products container for screen reader users (only if not initial load)
+      if (!window.isInitialPageLoad) {
+        productsContainer.setAttribute('tabindex', '-1')
+        productsContainer.focus()
+        // Remove tabindex after focus to prevent it from being focusable in normal tab order
+        setTimeout(() => {
+          productsContainer.removeAttribute('tabindex')
+        }, 100)
+      }
     } // Close the if (!currentRequestAbortController.signal.aborted) block
   } catch (error) {
     // Only show error if it's not due to cancellation
@@ -2830,11 +2880,11 @@ async function init() {
     initSmoothScroll()
     log.success('Smooth scroll initialized')
 
-    initCarousel()
-    log.debug('Carousel initializing...')
+    await initCarousel()
+    log.success('Carousel initialized')
 
     await initProductsGrid()
-    log.debug('Products grid initializing...')
+    log.success('Products grid initialized')
 
     // Store pullToRefreshInstance globally for potential access
     window.pullToRefreshInstance = pullToRefreshInstance

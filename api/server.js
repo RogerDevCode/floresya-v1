@@ -38,7 +38,7 @@ if (!IS_VERCEL && (NODE_ENV !== 'test' || process.env.CI)) {
 
     // Final confirmation message
     setTimeout(() => {
-      console.log(`✅ Servidor iniciado sin problemas en http://localhost:${PORT}`)
+      logger.info(`✅ Servidor iniciado sin problemas en http://localhost:${PORT}`)
     }, 100)
   })
 

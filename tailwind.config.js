@@ -30,6 +30,10 @@ export default {
       xl: '1280px'
     },
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Outfit', 'system-ui', 'sans-serif']
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -49,6 +53,17 @@ export default {
           700: '#be185d',
           800: '#9d174d',
           900: '#831843'
+        },
+        // Sophisticated Palette
+        slate: {
+          850: '#1e293b', // Deep sophisticated dark
+          900: '#0f172a' // Almost black
+        },
+        rose: {
+          50: '#fff1f2',
+          100: '#ffe4e6',
+          500: '#f43f5e', // Vibrant but mature
+          900: '#881337' // Deep elegant red
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',

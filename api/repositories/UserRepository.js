@@ -11,6 +11,7 @@
 import { BaseRepository } from './BaseRepository.js'
 import { ConflictError } from '../errors/AppError.js'
 import { DB_SCHEMA } from '../services/supabaseClient.js'
+import { logger } from '../utils/logger.js'
 
 export class UserRepository extends BaseRepository {
   constructor(supabaseClient) {
@@ -155,7 +156,7 @@ export class UserRepository extends BaseRepository {
 
     // Si existe pero está inactivo, reactivar
     if (existingUser && !existingUser.active) {
-      console.log(`Reactivating inactive user: ${userData.email}`)
+      logger.info(`Reactivating inactive user: ${userData.email}`)
       const reactivatedUser = await this.reactivate(existingUser.id, null)
       return reactivatedUser
     }

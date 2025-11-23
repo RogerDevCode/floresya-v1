@@ -693,7 +693,7 @@ describe('Supabase Client Database Operations - Core CRUD', () => {
       const { data, error } = await query
 
       expect(data).toBeNull()
-      expect(error).toBeDefined()
+      expect(error).not.toBeNull()
       expect(error.code).toBe('23505')
       expect(error.message).toContain('duplicate key value')
     })
@@ -800,7 +800,7 @@ describe('Supabase Client Database Operations - Core CRUD', () => {
       const { data, error } = await query
 
       expect(data).toBeNull()
-      expect(error).toBeDefined()
+      expect(error).not.toBeNull()
       expect(error.code).toBe('23505')
       expect(error.message).toContain('duplicate key value')
     })
@@ -965,7 +965,7 @@ describe('RPC Function Tests', () => {
     const { data, error } = await client.rpc('get_user_profile', { user_id: 1 })
 
     expect(error).toBeNull()
-    expect(data).toBeDefined()
+    expect(data).not.toBeNull()
     expect(data).toMatchObject({
       id: 1,
       name: 'Mock User',
@@ -984,7 +984,7 @@ describe('RPC Function Tests', () => {
     const { data, error } = await client.rpc('test_function')
 
     expect(error).toBeNull()
-    expect(data).toBeDefined()
+    expect(data).not.toBeNull()
     expect(data).toMatchObject({
       result: expect.stringMatching(/^Mock result for test_function$/)
     })
@@ -1009,7 +1009,7 @@ describe('RPC Function Tests', () => {
     const { data, error } = await client.rpc('create_order_with_items', orderData)
 
     expect(error).toBeNull()
-    expect(data).toBeDefined()
+    expect(data).not.toBeNull()
     expect(data).toMatchObject({
       order_id: expect.any(Number),
       items_count: 2 // Should count both items
@@ -1051,7 +1051,7 @@ describe('RPC Function Tests', () => {
     const { data, error } = await client.rpc('create_product_with_occasions', productData)
 
     expect(error).toBeNull()
-    expect(data).toBeDefined()
+    expect(data).not.toBeNull()
     expect(data).toMatchObject({
       product_id: expect.any(Number),
       occasions_added: 3 // Should match array length
@@ -1135,7 +1135,7 @@ describe('RPC Function Tests', () => {
     const { data, error } = await client.rpc('test_function', {})
 
     expect(error).toBeNull()
-    expect(data).toBeDefined()
+    expect(data).not.toBeNull()
     expect(data).toMatchObject({
       result: expect.any(String)
     })
@@ -1145,7 +1145,7 @@ describe('RPC Function Tests', () => {
     const { data, error } = await client.rpc('test_function', null)
 
     expect(error).toBeNull()
-    expect(data).toBeDefined()
+    expect(data).not.toBeNull()
     expect(data).toMatchObject({
       result: expect.any(String)
     })

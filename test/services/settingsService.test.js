@@ -31,7 +31,7 @@ describe('Settings Service - Settings Management Operations', () => {
 
   describe('Service module can be imported', () => {
     test('should import settings service module without errors', () => {
-      expect(settingsService).toBeDefined()
+      expect(settingsService).not.toBeNull()
       expect(typeof settingsService).toBe('object')
     })
   })

@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-11-20T23:56:16.744Z",
+  "version": "1.0.0",
+  "endpoints": 47,
+  "schemas": 23,
+  "tags": 6,
+  "generation": {
+    "success": true,
+    "files": {
+      "json": "/home/manager/Sync/floresya-v1/api/docs/openapi-spec.json",
+      "yaml": "/home/manager/Sync/floresya-v1/api/docs/openapi-spec.yaml"
+    }
+  }
+}

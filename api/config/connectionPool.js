@@ -8,6 +8,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js'
+import { logger } from '../utils/logger.js'
 
 // Pool configuration
 const POOL_CONFIG = {
@@ -323,7 +324,7 @@ export function getPerformanceStats() {
 export function resetMetrics() {
   metrics.reset()
   requestTracker.requests = []
-  console.log('Performance metrics reset')
+  logger.info('Performance metrics reset')
 }
 
 export default {

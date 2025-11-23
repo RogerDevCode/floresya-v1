@@ -20,9 +20,34 @@ export const themeStyles = {
   `,
 
   darkula: `
-    /* Darkula theme specific styles */
+    /* Cyber Gaming theme specific styles */
     :root {
       color-scheme: dark;
+    }
+    
+    .btn, .card, .navbar, .input {
+      border-radius: 2px; /* Sharper corners for tech feel */
+    }
+  `,
+
+  kids: `
+    /* Kids theme specific styles */
+    :root {
+      color-scheme: light;
+      --radius: 1.5rem; /* Extra rounded */
+    }
+
+    body {
+      font-family: 'Outfit', 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+    }
+
+    .btn, .card, .navbar {
+      border-radius: 1.5rem !important;
+      border-width: 2px;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      letter-spacing: 0.05em;
     }
   `,
 

@@ -1,0 +1,580 @@
+/**
+ * Mobile Navigation Drawer Styles
+ * 
+ * This file contains all the necessary styles for the mobile navigation components,
+ * including smooth animations, transitions, and accessibility features.
+ * 
+ * Features:
+ * - Slide-in drawer animation from right side (250ms duration)
+ * - Smooth overlay backdrop transitions
+ * - Hamburger menu transformation to X
+ * - Hardware acceleration for smooth animations
+ * - Proper z-index management
+ * - Responsive design for mobile viewports
+ * - Focus states within drawer
+ * - Body scroll lock when drawer is open
+ * - Touch targets >44px for accessibility
+ * - Support for prefers-reduced-motion
+ */
+
+/* ===== CSS VARIABLES ===== */
+:root {
+  /* Animation timing */
+  --mobile-nav-duration: 250ms;
+  --mobile-nav-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --mobile-nav-easing-out: cubic-bezier(0, 0, 0.2, 1);
+
+  /* Z-index management */
+  --mobile-nav-z-overlay: 60;
+  --mobile-nav-z-drawer: 70;
+  --mobile-nav-z-hamburger: 80;
+
+  /* Colors */
+  --mobile-nav-bg: #ffffff;
+  --mobile-nav-overlay-bg: rgba(0, 0, 0, 0.5);
+  --mobile-nav-text: #374151;
+  --mobile-nav-text-hover: #ec4899;
+  --mobile-nav-border: #e5e7eb;
+  --mobile-nav-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+
+  /* Dimensions */
+  --mobile-nav-width: 320px;
+  --mobile-nav-max-width: 85vw;
+  --mobile-nav-touch-target: 44px;
+}
+
+/* ===== BODY SCROLL LOCK ===== */
+/* Prevents background scrolling when drawer is open */
+body.mobile-nav-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  /* Preserve scroll position */
+  top: 0;
+  left: 0;
+}
+
+/* ===== OVERLAY BACKDROP ===== */
+/* Semi-transparent backdrop that appears behind the drawer */
+.mobile-nav-overlay,
+[data-mobile-nav-overlay] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--mobile-nav-overlay-bg);
+  z-index: var(--mobile-nav-z-overlay);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--mobile-nav-duration) var(--mobile-nav-easing),
+    visibility var(--mobile-nav-duration) var(--mobile-nav-easing);
+  will-change: opacity;
+  /* Enable hardware acceleration */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Overlay visible state */
+.mobile-nav-overlay.mobile-nav-overlay-open,
+[data-mobile-nav-overlay].mobile-nav-overlay-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ===== DRAWER CONTAINER ===== */
+/* Main slide-in drawer from the right side */
+.mobile-nav-drawer,
+[data-mobile-nav-drawer] {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: var(--mobile-nav-width);
+  max-width: var(--mobile-nav-max-width);
+  background-color: var(--mobile-nav-bg);
+  box-shadow: var(--mobile-nav-shadow);
+  z-index: var(--mobile-nav-z-drawer);
+  transform: translateX(100%);
+  transition: transform var(--mobile-nav-duration) var(--mobile-nav-easing-out);
+  will-change: transform;
+  /* Enable hardware acceleration */
+  transform: translateX(100%) translateZ(0);
+  -webkit-transform: translateX(100%) translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Drawer open state */
+.mobile-nav-drawer.mobile-nav-drawer-open,
+[data-mobile-nav-drawer].mobile-nav-drawer-open {
+  transform: translateX(0) translateZ(0);
+  -webkit-transform: translateX(0) translateZ(0);
+}
+
+/* ===== DRAWER HEADER ===== */
+/* Sticky header with close button */
+.mobile-nav-drawer .drawer-header,
+[data-mobile-nav-drawer] .drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid var(--mobile-nav-border);
+  background-color: var(--mobile-nav-bg);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Drawer title */
+.mobile-nav-drawer .drawer-title,
+[data-mobile-nav-drawer] .drawer-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--mobile-nav-text);
+  margin: 0;
+}
+
+/* Close button - WCAG 44px minimum touch target requirement */
+.mobile-nav-drawer .drawer-close-btn,
+[data-mobile-nav-drawer] .drawer-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--mobile-nav-touch-target); /* 44px - meets WCAG minimum */
+  height: var(--mobile-nav-touch-target); /* 44px - meets WCAG minimum */
+  min-width: var(--mobile-nav-touch-target); /* Fallback for browsers that don't support CSS vars */
+  min-height: var(
+    --mobile-nav-touch-target
+  ); /* Fallback for browsers that don't support CSS vars */
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  color: var(--mobile-nav-text);
+  /* Ensure touch target is maintained even with padding */
+  box-sizing: border-box;
+}
+
+.mobile-nav-drawer .drawer-close-btn:hover,
+[data-mobile-nav-drawer] .drawer-close-btn:hover {
+  background-color: #f3f4f6;
+}
+
+.mobile-nav-drawer .drawer-close-btn:focus,
+[data-mobile-nav-drawer] .drawer-close-btn:focus {
+  outline: 2px solid var(--mobile-nav-text-hover);
+  outline-offset: 2px;
+}
+
+/* Close button icon */
+.mobile-nav-drawer .drawer-close-btn svg,
+[data-mobile-nav-drawer] .drawer-close-btn svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  stroke-width: 2;
+}
+
+/* ===== DRAWER CONTENT ===== */
+/* Container for navigation links */
+.mobile-nav-drawer .drawer-content,
+[data-mobile-nav-drawer] .drawer-content {
+  padding: 1rem;
+}
+
+/* ===== NAVIGATION LINKS ===== */
+/* Main navigation links in the drawer */
+.drawer-content .mobile-nav-links,
+[data-drawer-content] .mobile-nav-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+}
+
+.drawer-content .mobile-nav-link,
+[data-drawer-content] .mobile-nav-link {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: var(--mobile-nav-text);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+  /* WCAG 44px minimum touch target requirement */
+  min-height: var(--mobile-nav-touch-target); /* 44px - meets WCAG minimum */
+  min-width: var(--mobile-nav-touch-target); /* 44px - meets WCAG minimum */
+  /* Ensure touch target is maintained even with padding */
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Add a subtle ripple effect on touch */
+.drawer-content .mobile-nav-link::after,
+[data-drawer-content] .mobile-nav-link::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(236, 72, 153, 0.1);
+  transform: translate(-50%, -50%);
+  transition:
+    width 0.3s ease,
+    height 0.3s ease;
+}
+
+.drawer-content .mobile-nav-link:active::after,
+[data-drawer-content] .mobile-nav-link:active::after {
+  width: 200px;
+  height: 200px;
+}
+
+/* Hover and active states */
+.drawer-content .mobile-nav-link:hover,
+[data-drawer-content] .mobile-nav-link:hover {
+  background-color: #f9fafb;
+  color: var(--mobile-nav-text-hover);
+  transform: translateX(4px);
+}
+
+.drawer-content .mobile-nav-link:active,
+[data-drawer-content] .mobile-nav-link:active {
+  transform: translateX(2px) scale(0.98);
+}
+
+/* Focus state for accessibility */
+.drawer-content .mobile-nav-link:focus,
+[data-drawer-content] .mobile-nav-link:focus {
+  outline: 2px solid var(--mobile-nav-text-hover);
+  outline-offset: 2px;
+  background-color: #f9fafb;
+}
+
+/* Link icon styling */
+.drawer-content .mobile-nav-link svg,
+[data-drawer-content] .mobile-nav-link svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* ===== HAMBURGER MENU ===== */
+/* Three-line hamburger menu button that transforms to X - WCAG 44px minimum touch target requirement */
+.hamburger-menu-button,
+[data-hamburger-menu] {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 48px; /* Exceeds 44px WCAG minimum */
+  height: 48px; /* Exceeds 44px WCAG minimum */
+  min-width: var(--mobile-nav-touch-target); /* 44px - meets WCAG minimum */
+  min-height: var(--mobile-nav-touch-target); /* 44px - meets WCAG minimum */
+  padding: 12px;
+  background: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  position: relative;
+  z-index: var(--mobile-nav-z-hamburger);
+  /* Ensure touch target is maintained even with padding */
+  box-sizing: border-box;
+}
+
+/* Hover state */
+.hamburger-menu-button:hover,
+[data-hamburger-menu]:hover {
+  background-color: rgba(236, 72, 153, 0.1);
+}
+
+/* Focus state */
+.hamburger-menu-button:focus,
+[data-hamburger-menu]:focus {
+  outline: 2px solid #ec4899;
+  outline-offset: 2px;
+}
+
+/* Hamburger lines */
+.hamburger-menu-button .hamburger-line,
+[data-hamburger-menu] .hamburger-line {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background-color: #374151;
+  border-radius: 1px;
+  position: absolute;
+  transition:
+    transform var(--mobile-nav-duration) var(--mobile-nav-easing),
+    opacity var(--mobile-nav-duration) var(--mobile-nav-easing);
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+/* Line positioning */
+.hamburger-menu-button .hamburger-line:nth-child(1),
+[data-hamburger-menu] .hamburger-line:nth-child(1) {
+  top: 16px;
+}
+
+.hamburger-menu-button .hamburger-line:nth-child(2),
+[data-hamburger-menu] .hamburger-line:nth-child(2) {
+  top: 23px;
+}
+
+.hamburger-menu-button .hamburger-line:nth-child(3),
+[data-hamburger-menu] .hamburger-line:nth-child(3) {
+  top: 30px;
+}
+
+/* Active state - Transform to X */
+.hamburger-menu-button.hamburger-active .hamburger-line:nth-child(1),
+[data-hamburger-menu].hamburger-active .hamburger-line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger-menu-button.hamburger-active .hamburger-line:nth-child(2),
+[data-hamburger-menu].hamburger-active .hamburger-line:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.hamburger-menu-button.hamburger-active .hamburger-line:nth-child(3),
+[data-hamburger-menu].hamburger-active .hamburger-line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ===== RESPONSIVE BREAKPOINTS ===== */
+/* Adjust drawer width for smaller screens */
+@media (max-width: 640px) {
+  .mobile-nav-drawer,
+  [data-mobile-nav-drawer] {
+    width: 90vw;
+    max-width: 320px;
+  }
+
+  /* Increase touch targets on mobile */
+  .drawer-content .mobile-nav-link,
+  [data-drawer-content] .mobile-nav-link {
+    padding: 1rem;
+    font-size: 1.125rem;
+  }
+}
+
+/* Extra small screens (very small mobile devices) */
+@media (max-width: 375px) {
+  .mobile-nav-drawer,
+  [data-mobile-nav-drawer] {
+    width: 85vw;
+    max-width: 300px;
+  }
+}
+
+/* ===== ACCESSIBILITY CONSIDERATIONS ===== */
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .hamburger-menu-button .hamburger-line,
+  [data-hamburger-menu] .hamburger-line {
+    background-color: ButtonText;
+  }
+
+  .hamburger-menu-button:hover,
+  [data-hamburger-menu]:hover {
+    background-color: ButtonFace;
+  }
+
+  .mobile-nav-drawer,
+  [data-mobile-nav-drawer] {
+    border: 1px solid ButtonText;
+  }
+
+  .drawer-content .mobile-nav-link:focus,
+  [data-drawer-content] .mobile-nav-link:focus {
+    outline: 3px solid ButtonText;
+    outline-offset: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  [data-mobile-nav-overlay],
+  [data-mobile-nav-drawer],
+  .hamburger-menu-button .hamburger-line,
+  [data-hamburger-menu] .hamburger-line,
+  .drawer-content .mobile-nav-link,
+  [data-drawer-content] .mobile-nav-link {
+    transition: none;
+  }
+
+  /* Still transform the hamburger to X but without animation */
+  .hamburger-menu-button.hamburger-active .hamburger-line:nth-child(1),
+  [data-hamburger-menu].hamburger-active .hamburger-line:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .hamburger-menu-button.hamburger-active .hamburger-line:nth-child(2),
+  [data-hamburger-menu].hamburger-active .hamburger-line:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+
+  .hamburger-menu-button.hamburger-active .hamburger-line:nth-child(3),
+  [data-hamburger-menu].hamburger-active .hamburger-line:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+}
+
+/* Touch device optimizations - WCAG 44px minimum touch target requirement */
+@media (pointer: coarse) {
+  /* Ensure proper touch target size for all interactive elements */
+  .hamburger-menu-button,
+  [data-hamburger-menu],
+  .mobile-nav-drawer .drawer-close-btn,
+  [data-mobile-nav-drawer] .drawer-close-btn,
+  .drawer-content .mobile-nav-link,
+  [data-drawer-content] .mobile-nav-link {
+    min-width: var(--mobile-nav-touch-target); /* 44px - meets WCAG minimum */
+    min-height: var(--mobile-nav-touch-target); /* 44px - meets WCAG minimum */
+    /* Add extra padding to ensure touch target extends beyond visual element */
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  /* Reduce hover effects on touch devices */
+  .drawer-content .mobile-nav-link:hover,
+  [data-drawer-content] .mobile-nav-link:hover {
+    transform: none;
+  }
+
+  /* Add touch feedback */
+  .drawer-content .mobile-nav-link:active,
+  [data-drawer-content] .mobile-nav-link:active {
+    background-color: #f3f4f6;
+    transform: scale(0.98);
+  }
+}
+
+/* ===== FOCUS MANAGEMENT ===== */
+/* Ensure focus is visible within drawer */
+.mobile-nav-drawer *:focus,
+[data-mobile-nav-drawer] *:focus {
+  outline: 2px solid var(--mobile-nav-text-hover);
+  outline-offset: 2px;
+}
+
+/* Skip link for keyboard navigation */
+.mobile-nav-skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--mobile-nav-text-hover);
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 100;
+  transition: top 0.3s;
+}
+
+.mobile-nav-skip-link:focus {
+  top: 6px;
+}
+
+/* ===== ANIMATION KEYFRAMES ===== */
+/* Subtle entrance animation for drawer content */
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Apply staggered animation to navigation links */
+[data-drawer-content] .mobile-nav-link {
+  animation: slideInFromRight 0.3s ease-out forwards;
+  opacity: 0;
+}
+
+/* Stagger the animation for each link */
+.drawer-content .mobile-nav-link:nth-child(1),
+[data-drawer-content] .mobile-nav-link:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.drawer-content .mobile-nav-link:nth-child(2),
+[data-drawer-content] .mobile-nav-link:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.drawer-content .mobile-nav-link:nth-child(3),
+[data-drawer-content] .mobile-nav-link:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.drawer-content .mobile-nav-link:nth-child(4),
+[data-drawer-content] .mobile-nav-link:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.drawer-content .mobile-nav-link:nth-child(5),
+[data-drawer-content] .mobile-nav-link:nth-child(5) {
+  animation-delay: 0.25s;
+}
+.drawer-content .mobile-nav-link:nth-child(6),
+[data-drawer-content] .mobile-nav-link:nth-child(6) {
+  animation-delay: 0.3s;
+}
+.drawer-content .mobile-nav-link:nth-child(7),
+[data-drawer-content] .mobile-nav-link:nth-child(7) {
+  animation-delay: 0.35s;
+}
+.drawer-content .mobile-nav-link:nth-child(8),
+[data-drawer-content] .mobile-nav-link:nth-child(8) {
+  animation-delay: 0.4s;
+}
+
+/* Only animate when drawer is open */
+.mobile-nav-drawer.mobile-nav-drawer-open .drawer-content .mobile-nav-link,
+.mobile-nav-drawer.mobile-nav-drawer-open [data-drawer-content] .mobile-nav-link,
+[data-mobile-nav-drawer].mobile-nav-drawer-open .drawer-content .mobile-nav-link,
+[data-mobile-nav-drawer].mobile-nav-drawer-open [data-drawer-content] .mobile-nav-link {
+  opacity: 1;
+}
+
+/* ===== PRINT STYLES ===== */
+/* Hide mobile navigation when printing */
+@media print {
+  .mobile-nav-overlay,
+  [data-mobile-nav-overlay],
+  .mobile-nav-drawer,
+  [data-mobile-nav-drawer],
+  .hamburger-menu-button,
+  [data-hamburger-menu] {
+    display: none !important;
+  }
+
+  body.mobile-nav-open {
+    overflow: visible !important;
+    position: static !important;
+  }
+}

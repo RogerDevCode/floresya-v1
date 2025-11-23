@@ -30,9 +30,11 @@ class ProductController extends BaseController {
       sku: req.query.sku,
       search: req.query.search,
       occasion: req.query.occasion,
-      sortBy: req.query.sortBy,
-      limit: req.query.limit,
-      offset: req.query.offset
+      sortBy: req.query.sort || req.query.sortBy,
+      limit: req.query.limit ? parseInt(req.query.limit) : undefined,
+      offset: req.query.offset ? parseInt(req.query.offset) : undefined,
+      price_min: req.query.price_min ? parseFloat(req.query.price_min) : undefined,
+      price_max: req.query.price_max ? parseFloat(req.query.price_max) : undefined
     }
 
     const includeDeactivated = req.user?.role === 'admin' && req.query.includeDeactivated === 'true'

@@ -381,22 +381,29 @@ describe('Response Standard Middleware', () => {
 
     test('should call original json with correct arguments', () => {
       // Arrange
-      const originalJson = vi.fn()
-      mockResponse.json = originalJson
+      let capturedArgument = null
+      const originalJson = vi.fn(function (data) {
+        capturedArgument = data
+        return data
+      })
+
+      const freshResponse = {
+        statusCode: 200,
+        json: originalJson
+      }
 
       // Act
-      standardResponse(mockRequest, mockResponse, mockNext)
+      standardResponse(mockRequest, freshResponse, mockNext)
       const testData = { test: 'data' }
-      mockResponse.json(testData)
+      freshResponse.json(testData)
 
       // Assert
-      expect(originalJson).toHaveBeenCalledWith(
-        expect.objectContaining({
-          success: expect.any(Boolean),
-          data: expect.any(Object),
-          message: expect.any(String)
-        })
-      )
+      expect(originalJson).toHaveBeenCalledTimes(1)
+      expect(capturedArgument).toMatchObject({
+        success: expect.any(Boolean),
+        data: expect.any(Object),
+        message: expect.any(String)
+      })
     })
   })
 

@@ -451,7 +451,7 @@ describe('Sanitize Utility Functions', () => {
 
       // Assert
       expect(Object.keys(info)).toHaveLength(1)
-      expect(info.customer_email).toBeDefined()
+      expect(info.customer_email).toEqual(expect.any(Object))
       expect(info.unknown_field).toBeUndefined()
       expect(info.another_unknown).toBeUndefined()
     })

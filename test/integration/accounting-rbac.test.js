@@ -80,7 +80,7 @@ describe('Accounting Routes - RBAC Integration', () => {
         // Dev mode may return 403, production returns 401
         expect([401, 403]).toContain(res.status)
         expect(res.body.success).toBe(false)
-        expect(res.body.error).toBeDefined()
+        expect(res.body.error).not.toBeNull()
       })
     })
   })

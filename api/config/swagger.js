@@ -8,32 +8,34 @@
  */
 
 import swaggerJsdoc from 'swagger-jsdoc'
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
+import { readFileSync, existsSync } from 'fs'
+import yaml from 'js-yaml'
+import { logger } from '../utils/logger.js'
 
 const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+const __dirname = dirname(__filename)
 
 // Function to load OpenAPI spec from generated file
 function loadSwaggerSpec() {
   try {
-    const specPath = path.join(__dirname, '../docs/openapi-spec.json')
-    console.log('Loading OpenAPI spec from:', specPath)
-    if (fs.existsSync(specPath)) {
-      const specContent = fs.readFileSync(specPath, 'utf8')
-      const spec = JSON.parse(specContent)
-      console.log(
+    const specPath = join(__dirname, '../docs/openapi-spec.json')
+    logger.info('Loading OpenAPI spec from:', specPath)
+    if (existsSync(specPath)) {
+      const specContent = readFileSync(specPath, 'utf8')
+      const spec = yaml.load(specContent)
+      logger.info(
         'Successfully loaded OpenAPI spec with',
         Object.keys(spec.components?.schemas || {}).length,
         'schemas'
       )
-      console.log('Available schemas:', Object.keys(spec.components?.schemas || {}))
+      logger.info('Available schemas:', Object.keys(spec.components?.schemas || {}))
       // Force reload by adding timestamp
       spec._loadedAt = new Date().toISOString()
       return spec
     } else {
-      console.warn('Generated OpenAPI spec file not found at:', specPath)
+      logger.warn('Generated OpenAPI spec file not found at:', specPath)
     }
   } catch (error) {
     console.warn(
@@ -182,3 +184,4 @@ function loadSwaggerSpec() {
 
 // Export the spec - this will be loaded dynamically
 export const swaggerSpec = loadSwaggerSpec()
+export { loadSwaggerSpec }

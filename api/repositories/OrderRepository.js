@@ -19,68 +19,51 @@ export class OrderRepository extends BaseRepository {
 
   /**
    * Obtener pedidos con filtros específicos
+   * ✅ OPTIMIZADO: 100% SQL filtering usando get_orders_filtered()
+   * NO JavaScript filtering - todo se hace en PostgreSQL con índices
    * @param {Object} filters - Filtros para pedidos
    * @param {Object} options - Opciones de consulta
-   * @returns {Promise<Array>} Lista de pedidos
+   * @returns {Promise<Array>} Lista de pedidos con order_items
    */
   async findAllWithFilters(filters = {}, options = {}) {
-    let query = this.supabase.from(this.table).select(`
-        id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized,
-        users!inner(id, email, full_name, phone, role, active, email_verified, created_at, updated_at),
-        order_items(id, order_id, product_id, product_name, product_summary, unit_price_usd, unit_price_ves, quantity, subtotal_usd, subtotal_ves, created_at, updated_at)
-      `)
+    // ✅ OPTIMIZACIÓN: Usar get_orders_filtered() RPC para filtrado SQL completo
 
-    // Aplicar filtros específicos
-    if (filters.userId) {
-      query = query.eq('user_id', filters.userId)
+    // Map sortBy to SQL function parameters
+    let sortBy = 'created_at'
+    let sortOrder = 'DESC'
+
+    if (options.orderBy) {
+      sortBy = options.orderBy
+      sortOrder = options.ascending ? 'ASC' : 'DESC'
     }
 
-    if (filters.status) {
-      query = query.eq('status', filters.status)
+    // Extract year from dateFrom/dateTo if no explicit year filter
+    let year = filters.year || null
+    if (!year && filters.dateFrom) {
+      const dateObj = new Date(filters.dateFrom)
+      year = dateObj.getFullYear()
     }
 
-    if (filters.payment_status) {
-      query = query.eq('payment_status', filters.payment_status)
-    }
-
-    if (filters.dateFrom) {
-      query = query.gte('created_at', filters.dateFrom)
-    }
-
-    if (filters.dateTo) {
-      query = query.lte('created_at', filters.dateTo)
-    }
-
-    if (filters.minTotal) {
-      query = query.gte('total', filters.minTotal)
-    }
-
-    if (filters.maxTotal) {
-      query = query.lte('total', filters.maxTotal)
-    }
-
-    // Incluir pedidos inactivos solo para admins
-    if (!filters.includeDeactivated) {
-      // No active column in orders table - use status filtering instead
-    }
-
-    // Aplicar ordenamiento
-    const orderBy = options.orderBy || 'created_at'
-    const ascending = options.ascending || false
-    query = query.order(orderBy, { ascending })
-
-    // Aplicar límites
-    if (options.limit !== undefined) {
-      const offset = options.offset || 0
-      query = query.range(offset, offset + options.limit - 1)
-    }
-
-    const { data, error } = await query
+    const { data, error } = await this.supabase.rpc('get_orders_filtered', {
+      p_status: filters.status || null,
+      p_year: year,
+      p_date_from: filters.dateFrom ? new Date(filters.dateFrom).toISOString().split('T')[0] : null,
+      p_date_to: filters.dateTo ? new Date(filters.dateTo).toISOString().split('T')[0] : null,
+      p_search: filters.search || null,
+      p_sort_by: sortBy,
+      p_sort_order: sortOrder,
+      p_limit: options.limit || 50,
+      p_offset: options.offset || 0
+    })
 
     if (error) {
-      throw this.handleError(error, 'findAllWithFilters', { filters, options })
+      throw this.handleError(error, 'findAllWithFilters (get_orders_filtered RPC)', {
+        filters,
+        options
+      })
     }
 
+    // order_items viene como JSON, ya parseado por PostgreSQL
     return data || []
   }
 

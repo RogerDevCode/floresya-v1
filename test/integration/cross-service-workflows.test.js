@@ -460,7 +460,7 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
       mockRepositories.OrderRepository.findByIdWithItems.mockResolvedValue(createdOrder)
 
       const orders = await getOrderById(1) // This would need to be replaced with proper user orders query
-      expect(orders).toBeDefined()
+      expect(orders).not.toBeNull()
     })
 
     test('should handle order cancellation and stock restoration', async () => {

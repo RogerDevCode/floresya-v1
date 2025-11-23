@@ -9,6 +9,7 @@
  */
 
 import { RateLimitExceededError } from '../../errors/AppError.js'
+import { logger } from '../../utils/logger.js'
 
 // In-memory store for rate limiting (in production, use Redis)
 
@@ -221,7 +222,7 @@ export function rateLimit(type = 'general') {
 
       next()
     } catch (error) {
-      console.error('Error in rate limiting:', error)
+      logger.error('Error in rate limiting:', error)
       // Don't block on rate limiter errors, just continue
       next()
     }
@@ -297,13 +298,13 @@ export function requestMetrics(req, res, next) {
 
     // Log slow requests (> 2 seconds)
     if (duration > 2000) {
-      console.warn(`Slow request detected: ${req.method} ${req.path} - ${duration}ms`)
+      logger.warn(`Slow request detected: ${req.method} ${req.path} - ${duration}ms`)
     }
 
     // Log high frequency requests
     const entry = rateLimiter.store.get(key)
     if (entry && entry.requests.length > 50) {
-      console.warn(`High frequency requests from key: ${key}`)
+      logger.warn(`High frequency requests from key: ${key}`)
     }
   })
 
@@ -320,7 +321,7 @@ export function adaptiveRateLimit(req, res, next) {
 
   // If high load, reduce limits temporarily
   if (currentLoad > 1000) {
-    console.warn(`High load detected (${currentLoad} active keys), applying stricter rate limits`)
+    logger.warn(`High load detected (${currentLoad} active keys), applying stricter rate limits`)
 
     // Temporarily reduce limits by 50%
     const originalLimits = { ...RATE_LIMITS }
@@ -335,7 +336,7 @@ export function adaptiveRateLimit(req, res, next) {
         Object.keys(RATE_LIMITS).forEach(key => {
           RATE_LIMITS[key] = originalLimits[key]
         })
-        console.log('Rate limits restored to normal levels')
+        logger.info('Rate limits restored to normal levels')
       },
       10 * 60 * 1000
     )

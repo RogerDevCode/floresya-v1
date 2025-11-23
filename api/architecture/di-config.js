@@ -10,6 +10,7 @@
 
 import DIContainer from './di-container.js'
 import { supabaseClient } from '../config/supabaseClient.js'
+import { logger } from '../utils/logger.js'
 
 /**
  * Configure DI Container with all services
@@ -57,7 +58,7 @@ export function configureDIContainer() {
   DIContainer.registerInstance('ResponseFormatter', new ResponseFormatter())
   DIContainer.registerInstance('RequestValidator', new RequestValidator())
 
-  console.log('✅ DI Container configured successfully')
+  logger.info('✅ DI Container configured successfully')
 
   return DIContainer
 }

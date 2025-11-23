@@ -15,6 +15,7 @@ import path from 'path'
 import yaml from 'js-yaml'
 import config from '../config/configLoader.js'
 import { BadRequestError, ValidationError } from '../errors/AppError.js'
+import { logger } from '../utils/logger.js'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -457,7 +458,7 @@ function validateResponse(res, operationSpec) {
           }
         } catch (e) {
           // If validation fails for any reason, log it but don't break the response
-          console.error('Response validation error:', e.message)
+          logger.error('Response validation error:', e.message)
         }
       }
     }
@@ -487,8 +488,8 @@ export function contractEnforcementMiddleware() {
         // Validate request parameters
         const paramErrors = validateRequestParams(req, operationSpec)
         if (paramErrors.length > 0) {
-          console.warn(`CONTRACT VIOLATION - Parameters: ${JSON.stringify(paramErrors)}`)
-          console.log('🔍 DEBUG: Contract enforcement returning error type', {
+          logger.warn(`CONTRACT VIOLATION - Parameters: ${JSON.stringify(paramErrors)}`)
+          logger.debug('🔍 DEBUG: Contract enforcement returning error type', {
             shouldBe: 'validation', // Changed: Using lowercase for consistency with AppError
             currentlyReturning: 'validation',
             issue: 'Consistent error type - now using validation as per AppError'
@@ -509,8 +510,8 @@ export function contractEnforcementMiddleware() {
         // Validate request body
         const bodyErrors = validateRequestBody(req, operationSpec)
         if (bodyErrors.length > 0) {
-          console.warn(`CONTRACT VIOLATION - Request Body: ${JSON.stringify(bodyErrors)}`)
-          console.log('🔍 DEBUG: Contract enforcement returning error type for body validation', {
+          logger.warn(`CONTRACT VIOLATION - Request Body: ${JSON.stringify(bodyErrors)}`)
+          logger.debug('🔍 DEBUG: Contract enforcement returning error type for body validation', {
             shouldBe: 'validation', // Changed: Using lowercase for consistency with AppError
             currentlyReturning: 'validation',
             issue: 'Consistent error type - now using validation as per AppError'
@@ -539,7 +540,7 @@ export function contractEnforcementMiddleware() {
         if (operationSpec) {
           const responseErrors = validateResponse(res, operationSpec)
           if (responseErrors.length > 0) {
-            console.error('Response format violation:', responseErrors)
+            logger.error('Response format violation:', responseErrors)
             // In production, we might send a generic error instead
             if (config.IS_DEVELOPMENT) {
               return originalJson.call(this, {
@@ -559,7 +560,7 @@ export function contractEnforcementMiddleware() {
       // Continue to the next middleware
       next()
     } catch (error) {
-      console.error('Contract enforcement error:', error)
+      logger.error('Contract enforcement error:', error)
       next(error)
     }
   }

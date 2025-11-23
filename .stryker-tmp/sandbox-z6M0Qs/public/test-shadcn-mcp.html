@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shadcn + MCP Integration Test</title>
+    <link rel="stylesheet" href="/css/tailwind.css" />
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body class="min-h-screen bg-background">
+    <div class="container mx-auto py-8">
+      <header class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-foreground mb-2">Shadcn UI + MCP Integration</h1>
+        <p class="text-muted-foreground">
+          Test page for shadcn/ui components and Model Context Protocol integration
+        </p>
+      </header>
+
+      <main class="space-y-8">
+        <!-- MCP Connector Section -->
+        <section>
+          <h2 class="text-2xl font-semibold mb-4">MCP Connection</h2>
+          <div id="mcp-connector-container"></div>
+        </section>
+
+        <!-- Shadcn UI Components Demo -->
+        <section>
+          <h2 class="text-2xl font-semibold mb-4">UI Components Demo</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div id="button-demo"></div>
+            <div id="card-demo"></div>
+            <div id="interactive-demo"></div>
+          </div>
+        </section>
+
+        <!-- MCP Tools Demo -->
+        <section>
+          <h2 class="text-2xl font-semibold mb-4">MCP Tools Demo</h2>
+          <div id="mcp-tools-container"></div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module">
+      // @ts-nocheck
+
+      import { createButton } from '/js/components/ui/button.js'
+      import {
+        createCard,
+        createCardHeader,
+        createCardTitle,
+        createCardContent,
+        createCardDescription
+      } from '/js/components/ui/card.js'
+      import { MCPConnector } from '/js/components/mcp/mcpConnector.js'
+      import { mcpService } from '/js/services/mcpService.js'
+
+      // Initialize MCP Connector
+      const mcpConnector = new MCPConnector('mcp-connector-container')
+
+      // Button Demo
+      const buttonDemo = document.getElementById('button-demo')
+      const buttonCard = createCard()
+      buttonCard.appendChild(createCardHeader())
+      buttonCard.querySelector('.p-6').appendChild(createCardTitle('Button Variants'))
+
+      const buttonContent = createCardContent()
+      const buttonVariants = ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link']
+
+      buttonVariants.forEach(variant => {
+        const btn = createButton({
+          variant,
+          children: variant.charAt(0).toUpperCase() + variant.slice(1),
+          className: 'm-1'
+        })
+        buttonContent.appendChild(btn)
+      })
+
+      buttonCard.appendChild(buttonContent)
+      buttonDemo.appendChild(buttonCard)
+
+      // Card Demo
+      const cardDemo = document.getElementById('card-demo')
+      const sampleCard = createCard()
+      sampleCard.appendChild(createCardHeader())
+      sampleCard.querySelector('.p-6').appendChild(createCardTitle('Sample Card'))
+
+      const cardContent = createCardContent()
+      cardContent.appendChild(
+        createCardDescription(
+          'This is a sample card using shadcn/ui components with proper styling and theming.'
+        )
+      )
+
+      const cardFooter = document.createElement('div')
+      cardFooter.className = 'flex items-center p-6 pt-0'
+      const actionBtn = createButton({
+        variant: 'default',
+        children: 'Action',
+        onClick: () => alert('Card button clicked!')
+      })
+      cardFooter.appendChild(actionBtn)
+
+      sampleCard.appendChild(cardContent)
+      sampleCard.appendChild(cardFooter)
+      cardDemo.appendChild(sampleCard)
+
+      // Interactive Demo
+      const interactiveDemo = document.getElementById('interactive-demo')
+      const interactiveCard = createCard()
+      interactiveCard.appendChild(createCardHeader())
+      interactiveCard.querySelector('.p-6').appendChild(createCardTitle('Interactive Demo'))
+
+      const interactiveContent = createCardContent()
+      interactiveContent.innerHTML = `
+            <div class="space-y-4">
+                <p class="text-sm text-muted-foreground">Click buttons to test interactions</p>
+                <div class="flex flex-wrap gap-2">
+                    <button class="counter-btn" data-action="increment">+</button>
+                    <span class="px-2">Count: <span id="counter">0</span></span>
+                    <button class="counter-btn" data-action="decrement">-</button>
+                </div>
+            </div>
+        `
+
+      // Add counter functionality
+      let counter = 0
+      const counterDisplay = interactiveContent.querySelector('#counter')
+
+      interactiveContent.querySelectorAll('.counter-btn').forEach(btn => {
+        btn.className =
+          'w-8 h-8 rounded bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90'
+        btn.addEventListener('click', e => {
+          const action = e.target.dataset.action
+          if (action === 'increment') counter++
+          else if (action === 'decrement') counter--
+          counterDisplay.textContent = counter
+        })
+      })
+
+      interactiveCard.appendChild(interactiveContent)
+      interactiveDemo.appendChild(interactiveCard)
+
+      // MCP Tools Demo Container
+      const mcpToolsContainer = document.getElementById('mcp-tools-container')
+      const mcpToolsCard = createCard()
+      const mcpToolsHeader = createCardHeader()
+      mcpToolsHeader.appendChild(createCardTitle('MCP Tools'))
+      mcpToolsHeader.appendChild(createCardDescription('Execute MCP tools once connected'))
+      mcpToolsCard.appendChild(mcpToolsHeader)
+
+      const mcpToolsContent = createCardContent()
+      mcpToolsContent.innerHTML = `
+            <div class="space-y-4">
+                <div class="text-sm text-muted-foreground">
+                    Connect to an MCP server above to see and execute available tools
+                </div>
+                <div id="mcp-tools-list" class="space-y-2"></div>
+            </div>
+        `
+
+      mcpToolsCard.appendChild(mcpToolsContent)
+      mcpToolsContainer.appendChild(mcpToolsCard)
+
+      // Monitor MCP connection and update tools demo
+      setInterval(() => {
+        if (mcpService.isConnected()) {
+          updateMCPTools()
+        }
+      }, 2000)
+
+      async function updateMCPTools() {
+        try {
+          const tools = await mcpService.getAvailableTools()
+          const toolsList = document.getElementById('mcp-tools-list')
+
+          if (tools.length > 0) {
+            toolsList.innerHTML = tools
+              .map(
+                tool => `
+                        <div class="flex items-center justify-between p-2 border rounded">
+                            <div>
+                                <div class="font-medium text-sm">${tool.name}</div>
+                                <div class="text-xs text-muted-foreground">${tool.description || 'No description'}</div>
+                            </div>
+                            <button class="execute-tool-btn px-2 py-1 text-xs bg-primary text-primary-foreground rounded" data-tool="${tool.name}">
+                                Execute
+                            </button>
+                        </div>
+                    `
+              )
+              .join('')
+
+            // Add execute handlers
+            toolsList.querySelectorAll('.execute-tool-btn').forEach(btn => {
+              btn.addEventListener('click', async e => {
+                const toolName = e.target.dataset.tool
+                try {
+                  const result = await mcpService.executeTool(toolName)
+                  alert(
+                    `Tool ${toolName} executed successfully:\n${JSON.stringify(result, null, 2)}`
+                  )
+                } catch (error) {
+                  alert(`Failed to execute ${toolName}: ${error.message}`)
+                }
+              })
+            })
+          }
+        } catch (error) {
+          console.error('Failed to update MCP tools:', error)
+        }
+      }
+
+      console.log('Shadcn + MCP test page loaded successfully')
+    </script>
+  </body>
+</html>

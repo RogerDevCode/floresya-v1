@@ -10,6 +10,7 @@
 
 import { supabase } from '../services/supabaseClient.js'
 import { StorageError, InternalServerError } from '../errors/AppError.js'
+import { logger } from '../utils/logger.js'
 
 /**
  * Supabase Storage bucket names
@@ -58,7 +59,7 @@ export async function uploadToStorage(
 
     return urlData.publicUrl
   } catch (error) {
-    console.error('Error uploading to storage:', error)
+    logger.error('Error uploading to storage:', error)
     throw error
   }
 }
@@ -90,7 +91,7 @@ export async function uploadImageSizes(sizes, filenameBase, bucket = BUCKETS.PRO
 
     return urls
   } catch (error) {
-    console.error('Error uploading image sizes:', error)
+    logger.error('Error uploading image sizes:', error)
     throw error
   }
 }
@@ -111,7 +112,7 @@ export async function deleteFromStorage(path, bucket = BUCKETS.PRODUCT_IMAGES) {
 
     return true
   } catch (error) {
-    console.error('Error deleting from storage:', error)
+    logger.error('Error deleting from storage:', error)
     throw error
   }
 }
@@ -131,12 +132,12 @@ export async function reactivateFromStorage(path, bucket = BUCKETS.PRODUCT_IMAGE
     // Add a small delay to make it a real async operation
     await new Promise(resolve => setTimeout(resolve, 10))
 
-    console.log(`Reactivate file: ${path} from bucket: ${bucket}`)
+    logger.info(`Reactivate file: ${path} from bucket: ${bucket}`)
 
     // Return success for compliance with the test
     return true
   } catch (error) {
-    console.error('Error reactivating from storage:', error)
+    logger.error('Error reactivating from storage:', error)
     throw error
   }
 }
@@ -155,12 +156,12 @@ export async function deleteImageSizes(filenameBase, bucket = BUCKETS.PRODUCT_IM
     const { error } = await supabase.storage.from(bucket).remove(paths)
 
     if (error) {
-      console.warn('Some files may not have been deleted:', error.message)
+      logger.warn('Some files may not have been deleted:', { message: error.message })
     }
 
     return paths.length
   } catch (error) {
-    console.error('Error deleting image sizes:', error)
+    logger.error('Error deleting image sizes:', error)
     throw error
   }
 }
@@ -182,12 +183,12 @@ export async function reactivateImageSizes(filenameBase, bucket = BUCKETS.PRODUC
     // Add a small delay to make it a real async operation
     await new Promise(resolve => setTimeout(resolve, 10))
 
-    console.log(`Reactivate image sizes for: ${filenameBase} from bucket: ${bucket}`)
+    logger.info(`Reactivate image sizes for: ${filenameBase} from bucket: ${bucket}`)
 
     // Return count for compliance with the test
     return sizes.length
   } catch (error) {
-    console.error('Error reactivating image sizes:', error)
+    logger.error('Error reactivating image sizes:', error)
     throw error
   }
 }
@@ -207,7 +208,7 @@ export async function checkBucketExists(bucket = BUCKETS.PRODUCT_IMAGES) {
 
     return true
   } catch (error) {
-    console.error('Error checking bucket:', error)
+    logger.error('Error checking bucket:', error)
     return false
   }
 }
@@ -230,7 +231,7 @@ export async function getFileSize(path, bucket = BUCKETS.PRODUCT_IMAGES) {
 
     return data[0].metadata?.size || null
   } catch (error) {
-    console.error('Error getting file size:', error)
+    logger.error('Error getting file size:', error)
     return null
   }
 }

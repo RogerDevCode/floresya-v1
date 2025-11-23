@@ -42,16 +42,11 @@ describe('Order Repository - Order-specific Operations', () => {
     test('should return orders with user and item joins', async () => {
       const mockOrders = [testData.orders.pending]
 
-      const mockQuery = {
-        select: vi.fn().mockReturnThis(),
-        order: vi.fn().mockResolvedValue({ data: mockOrders, error: null }),
-        range: vi.fn().mockResolvedValue({ data: mockOrders, error: null })
-      }
-
-      mockSupabase.from.mockReturnValue(mockQuery)
+      mockSupabase.rpc.mockResolvedValue({ data: mockOrders, error: null })
 
       const result = await repository.findAllWithFilters()
 
+      expect(mockSupabase.rpc).toHaveBeenCalledWith('get_orders_filtered', expect.any(Object))
       expect(result).toEqual(mockOrders)
     })
 
@@ -59,17 +54,12 @@ describe('Order Repository - Order-specific Operations', () => {
       const filters = { userId: 1 }
       const mockOrders = [testData.orders.pending]
 
-      const mockQuery = {
-        select: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis(),
-        order: vi.fn().mockResolvedValue({ data: mockOrders, error: null }),
-        range: vi.fn().mockResolvedValue({ data: mockOrders, error: null })
-      }
-
-      mockSupabase.from.mockReturnValue(mockQuery)
+      mockSupabase.rpc.mockResolvedValue({ data: mockOrders, error: null })
 
       const result = await repository.findAllWithFilters(filters)
 
+      // userId should be used for search parameter
+      expect(mockSupabase.rpc).toHaveBeenCalledWith('get_orders_filtered', expect.any(Object))
       expect(result).toEqual(mockOrders)
     })
 
@@ -77,17 +67,16 @@ describe('Order Repository - Order-specific Operations', () => {
       const filters = { status: 'pending' }
       const mockOrders = [testData.orders.pending]
 
-      const mockQuery = {
-        select: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis(),
-        order: vi.fn().mockResolvedValue({ data: mockOrders, error: null }),
-        range: vi.fn().mockResolvedValue({ data: mockOrders, error: null })
-      }
-
-      mockSupabase.from.mockReturnValue(mockQuery)
+      mockSupabase.rpc.mockResolvedValue({ data: mockOrders, error: null })
 
       const result = await repository.findAllWithFilters(filters)
 
+      expect(mockSupabase.rpc).toHaveBeenCalledWith(
+        'get_orders_filtered',
+        expect.objectContaining({
+          p_status: 'pending'
+        })
+      )
       expect(result).toEqual(mockOrders)
     })
 
@@ -95,18 +84,17 @@ describe('Order Repository - Order-specific Operations', () => {
       const filters = { dateFrom: '2024-01-01', dateTo: '2024-01-31' }
       const mockOrders = [testData.orders.pending]
 
-      const mockQuery = {
-        select: vi.fn().mockReturnThis(),
-        gte: vi.fn().mockReturnThis(),
-        lte: vi.fn().mockReturnThis(),
-        order: vi.fn().mockResolvedValue({ data: mockOrders, error: null }),
-        range: vi.fn().mockResolvedValue({ data: mockOrders, error: null })
-      }
-
-      mockSupabase.from.mockReturnValue(mockQuery)
+      mockSupabase.rpc.mockResolvedValue({ data: mockOrders, error: null })
 
       const result = await repository.findAllWithFilters(filters)
 
+      expect(mockSupabase.rpc).toHaveBeenCalledWith(
+        'get_orders_filtered',
+        expect.objectContaining({
+          p_date_from: '2024-01-01',
+          p_date_to: '2024-01-31'
+        })
+      )
       expect(result).toEqual(mockOrders)
     })
 
@@ -114,18 +102,12 @@ describe('Order Repository - Order-specific Operations', () => {
       const filters = { minTotal: 10, maxTotal: 100 }
       const mockOrders = [testData.orders.pending]
 
-      const mockQuery = {
-        select: vi.fn().mockReturnThis(),
-        gte: vi.fn().mockReturnThis(),
-        lte: vi.fn().mockReturnThis(),
-        order: vi.fn().mockResolvedValue({ data: mockOrders, error: null }),
-        range: vi.fn().mockResolvedValue({ data: mockOrders, error: null })
-      }
-
-      mockSupabase.from.mockReturnValue(mockQuery)
+      mockSupabase.rpc.mockResolvedValue({ data: mockOrders, error: null })
 
       const result = await repository.findAllWithFilters(filters)
 
+      // Total amount filters not in RPC, just verify it doesn't crash
+      expect(mockSupabase.rpc).toHaveBeenCalledWith('get_orders_filtered', expect.any(Object))
       expect(result).toEqual(mockOrders)
     })
   })

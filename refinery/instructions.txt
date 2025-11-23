@@ -1,7 +1,7 @@
 lee el archivo /home/manager/Sync/floresya-v1/CLAUDE.md, y luego complementa tu perfil con esto:
 
-Concentrate en la reparacion de los test y de los mocks necesarios para estos.
-test repair mission with surgical precision
+Concentrate en index.html arranque y se vea bien, con todas las caracteristicas previstas 'Interfaz <-> Supebase'.
+code and test repair mission with surgical precision
 No sobrecargues el CPU, evita generas muchas tareas en background que sobrecaraga el sistema.
 "Less than 100% success is not success at all."﻿
 "Anything less than 100% success is failure."﻿
