@@ -2170,6 +2170,58 @@ async function initEnhancedFilters() {
     })
   }
 
+  // Reset filters button functionality
+  const resetFiltersBtn = document.getElementById('resetFiltersBtn')
+  if (resetFiltersBtn) {
+    resetFiltersBtn.addEventListener('click', () => {
+      // Reset all filter values to defaults
+      window.currentFilters = {
+        sort: 'created_desc',
+        priceRange: '',
+        search: '',
+        occasion: ''
+      }
+
+      // Reset UI elements
+      if (sortFilter) sortFilter.value = 'created_desc'
+      if (priceRange) priceRange.value = ''
+      if (searchInput) searchInput.value = ''
+
+      // Reset occasion filter buttons
+      const allOccasionBtns = document.querySelectorAll('#quickFilters button')
+      allOccasionBtns.forEach(btn => {
+        btn.classList.remove(
+          'from-pink-500',
+          'to-rose-500',
+          'border-pink-400',
+          'shadow-lg',
+          'shadow-pink-300/50'
+        )
+        btn.classList.add('from-slate-100', 'to-slate-200', 'border-slate-300', 'text-slate-700')
+      })
+
+      // Highlight "Todos" button
+      const todosBtn = document.querySelector('#quickFilters button[data-filter="all"]')
+      if (todosBtn) {
+        todosBtn.classList.remove('from-slate-100', 'to-slate-200', 'border-slate-300')
+        todosBtn.classList.add(
+          'from-pink-500',
+          'to-rose-500',
+          'border-pink-400',
+          'shadow-lg',
+          'shadow-pink-300/50',
+          'text-white'
+        )
+      }
+
+      // Reload products
+      currentPage = 1
+      loadProductsWithFilters(currentPage)
+
+      console.log('🔄 [Filters] All filters reset to defaults')
+    })
+  }
+
   console.log('✅ [Occasion Filters] Initialized successfully')
 }
 

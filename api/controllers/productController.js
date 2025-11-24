@@ -13,6 +13,7 @@ import * as carouselService from '../services/carouselService.js'
 import { asyncHandler } from '../middleware/error/index.js'
 import { BadRequestError } from '../errors/AppError.js'
 import { BaseController } from './BaseController.js'
+import { logger } from '../utils/logger.js'
 
 /**
  * Product Controller extending BaseController
@@ -89,9 +90,15 @@ class ProductController extends BaseController {
    * Get carousel products
    */
   getCarouselProducts = asyncHandler(async (req, res) => {
-    const products = await productService.getCarouselProducts()
-
-    this.sendResponse(res, products, this.getSuccessMessage('retrieve', 'Carousel products'))
+    try {
+      logger.debug('🔍 [getCarouselProducts] Starting...')
+      const products = await productService.getCarouselProducts()
+      logger.debug('✅ [getCarouselProducts] Retrieved products:', { count: products?.length || 0 })
+      this.sendResponse(res, products, this.getSuccessMessage('retrieve', 'Carousel products'))
+    } catch (error) {
+      logger.error('❌ [getCarouselProducts] Error:', error)
+      throw error
+    }
   })
 
   /**

@@ -94,9 +94,6 @@ export class OccasionRepository extends BaseRepository {
  * @param {Object} supabaseClient - Supabase client instance
  * @returns {OccasionRepository} Repository instance
  */
-export function createOccasionRepository(supabaseClient = null) {
-  if (!supabaseClient) {
-    throw new Error('SupabaseClient is required to create OccasionRepository')
-  }
+export function createOccasionRepository(supabaseClient) {
   return new OccasionRepository(supabaseClient)
 }

@@ -28,11 +28,18 @@ import {
   circuitBreakerHealthCheck
 } from './middleware/performance/index.js'
 import { metricsMiddleware } from './monitoring/metricsCollector.js'
-// Conditional import for profiling middleware (not needed in tests)
+// Conditional import for profiling middleware (not needed in tests or production)
 let profilingMiddleware = null
-if (process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
-  const { profilingMiddleware: pm } = await import('./monitoring/clinicIntegration.js')
-  profilingMiddleware = pm
+const IS_PRODUCTION = process.env.NODE_ENV === 'production'
+const IS_VERCEL = process.env.VERCEL === '1'
+if (process.env.NODE_ENV !== 'test' && !process.env.VITEST && !IS_PRODUCTION && !IS_VERCEL) {
+  try {
+    const { profilingMiddleware: pm } = await import('./monitoring/clinicIntegration.js')
+    profilingMiddleware = pm
+  } catch (error) {
+    // Clinic not available in serverless environments
+    console.warn('⚠️ Profiling middleware not available:', error.message)
+  }
 }
 import {
   comprehensiveHealthCheck,
@@ -160,8 +167,8 @@ app.use(withDatabaseCircuitBreaker())
 app.use(metricsMiddleware)
 
 // Profiling middleware (conditional profiling based on health)
-// Skip in test environment
-if (process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
+// Skip in test environment and production/serverless
+if (profilingMiddleware) {
   app.use(profilingMiddleware)
 }
 

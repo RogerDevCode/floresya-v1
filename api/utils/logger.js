@@ -48,6 +48,12 @@ class StructuredLogger {
    * Ensure log directory exists
    */
   ensureLogDirectory() {
+    // Skip directory creation in serverless environments (Vercel, Lambda)
+    if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+      this.enableFile = false
+      return
+    }
+
     try {
       if (!fs.existsSync(this.logDir)) {
         fs.mkdirSync(this.logDir, { recursive: true })

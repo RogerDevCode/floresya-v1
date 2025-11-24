@@ -184,9 +184,6 @@ export class ProductImageRepository extends BaseRepository {
  * @param {Object} supabaseClient - Supabase client instance
  * @returns {ProductImageRepository} Repository instance
  */
-export function createProductImageRepository(supabaseClient = null) {
-  if (!supabaseClient) {
-    throw new Error('SupabaseClient is required to create ProductImageRepository')
-  }
+export function createProductImageRepository(supabaseClient) {
   return new ProductImageRepository(supabaseClient)
 }

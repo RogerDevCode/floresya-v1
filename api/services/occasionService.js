@@ -44,22 +44,30 @@ function validateOccasionId(id, operation = 'operation') {
  * @throws {DatabaseError} When database query fails
  */
 export async function getAllOccasions(filters = {}, includeDeactivated = false) {
-  const occasionRepository = getOccasionRepository()
+  try {
+    const occasionRepository = getOccasionRepository()
 
-  const data = await occasionRepository.findAllWithFilters(
-    { ...filters, includeDeactivated },
-    {
-      orderBy: 'display_order',
-      ascending: true,
-      limit: filters.limit
-    }
-  )
+    const data = await occasionRepository.findAllWithFilters(
+      { ...filters, includeDeactivated },
+      {
+        orderBy: 'display_order',
+        ascending: true,
+        limit: filters.limit
+      }
+    )
 
-  if (!data || data.length === 0) {
-    throw new NotFoundError('Occasions', null)
+    logger.debug('✅ [getAllOccasions] Retrieved occasions:', {
+      count: data?.length || 0,
+      includeDeactivated,
+      filters
+    })
+
+    // Return empty array if no data - let frontend handle fallback
+    return data || []
+  } catch (error) {
+    logger.error('❌ [getAllOccasions] Error:', error)
+    throw error
   }
-
-  return data
 }
 
 /**

@@ -151,9 +151,6 @@ export class SettingsRepository extends BaseRepositoryWithErrorHandling {
  * @param {Object} supabaseClient - Supabase client instance
  * @returns {SettingsRepository} Repository instance
  */
-export function createSettingsRepository(supabaseClient = null) {
-  if (!supabaseClient) {
-    throw new Error('SupabaseClient is required to create SettingsRepository')
-  }
+export function createSettingsRepository(supabaseClient) {
   return new SettingsRepository(supabaseClient)
 }

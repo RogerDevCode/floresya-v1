@@ -279,13 +279,13 @@ function validateConfig() {
   }
 
   // Check security configuration
-  if (!IS_TEST) {
+  if (!IS_TEST && config.NODE_ENV === 'production') {
     if (!config.security.jwt.secret) {
-      errors.push('JWT_SECRET is required')
+      errors.push('JWT_SECRET is required in production')
     }
 
     if (!config.security.session.secret) {
-      errors.push('SESSION_SECRET is required')
+      errors.push('SESSION_SECRET is required in production')
     }
   }
 

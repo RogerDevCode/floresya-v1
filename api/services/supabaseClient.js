@@ -32,11 +32,18 @@ const supabaseUrl = config.database.url
 const supabaseKey = config.database.key
 
 if (!supabaseUrl || !supabaseKey) {
-  console.error('Configuration error:', {
+  console.error('❌ [Supabase Client] Configuration error:', {
     hasUrl: !!supabaseUrl,
     hasKey: !!supabaseKey,
-    isVercel: config.VERCEL,
-    nodeEnv: config.NODE_ENV
+    urlLength: supabaseUrl?.length || 0,
+    keyLength: supabaseKey?.length || 0,
+    isVercel: process.env.VERCEL === '1',
+    nodeEnv: config.NODE_ENV,
+    envVars: {
+      SUPABASE_URL: !!process.env.SUPABASE_URL,
+      SUPABASE_SERVICE_ROLE_KEY: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+      SUPABASE_ANON_KEY: !!process.env.SUPABASE_ANON_KEY
+    }
   })
   throw new ConfigurationError(
     'Missing database configuration: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY',
@@ -47,6 +54,15 @@ if (!supabaseUrl || !supabaseKey) {
     }
   )
 }
+
+console.log('✅ [Supabase Client] Configuration validated:', {
+  hasUrl: !!supabaseUrl,
+  hasKey: !!supabaseKey,
+  urlPrefix: supabaseUrl.substring(0, 30) + '...',
+  keyPrefix: supabaseKey.substring(0, 20) + '...',
+  isVercel: process.env.VERCEL === '1',
+  nodeEnv: config.NODE_ENV
+})
 
 /**
  * Supabase client instance
@@ -63,10 +79,27 @@ const rawSupabaseClient =
  * Monitored Supabase client with performance tracking
  * All database operations are automatically monitored for slow queries and performance
  */
-export const supabase =
-  process.env.NODE_ENV === 'test'
-    ? rawSupabaseClient
-    : createMonitoredSupabaseClient(rawSupabaseClient)
+let supabaseInstance
+try {
+  const IS_VERCEL = process.env.VERCEL === '1'
+  const IS_PRODUCTION = process.env.NODE_ENV === 'production'
+  
+  // Disable monitoring in Vercel/production to avoid proxy issues
+  if (process.env.NODE_ENV === 'test' || IS_VERCEL || IS_PRODUCTION) {
+    supabaseInstance = rawSupabaseClient
+    console.log('✅ [Supabase Client] Using raw client (test/vercel/production mode)')
+  } else {
+    supabaseInstance = createMonitoredSupabaseClient(rawSupabaseClient)
+    console.log('✅ [Supabase Client] Successfully created monitored client')
+  }
+} catch (error) {
+  console.error('❌ [Supabase Client] Failed to create monitored client:', error)
+  // Fallback to raw client if monitoring fails
+  supabaseInstance = rawSupabaseClient
+  console.warn('⚠️ [Supabase Client] Using raw client without monitoring')
+}
+
+export const supabase = supabaseInstance
 
 /**
  * Database schema metadata for query optimization
