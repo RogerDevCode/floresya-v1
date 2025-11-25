@@ -31,7 +31,7 @@ export const testFormValidation = async (page, formSelector, testCases) => {
 }
 
 export const testResponsive = async (page, breakpoints) => {
-  for (const [device, size] of Object.entries(breakpoints)) {
+  for (const [, size] of Object.entries(breakpoints)) {
     await page.setViewportSize({ width: size.width, height: size.height })
     await page.reload() // Reload to ensure responsive styles apply if needed
     

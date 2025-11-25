@@ -134,7 +134,7 @@ class FrontendContractValidator {
             }
           }
         })
-      } catch (error) {
+      } catch {
         // Skip directories that can't be read
       }
     }

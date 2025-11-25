@@ -10,7 +10,7 @@ const sql = readFileSync('database/migrations/fix-product-sorting.sql', 'utf8')
 
 console.log('🔧 Applying SQL fix for product sorting...\n')
 
-const { data, error } = await supabase.rpc('exec_sql', { sql_query: sql })
+const { error } = await supabase.rpc('exec_sql', { sql_query: sql })
 
 if (error) {
   console.error('❌ Error:', error.message)

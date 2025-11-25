@@ -17,7 +17,7 @@
 
 import config from '../../config/configLoader.js'
 import { log } from '../../utils/logger.js'
-import { AppError, InternalServerError, ServiceUnavailableError } from '../../errors/AppError.js'
+import { AppError, InternalServerError } from '../../errors/AppError.js'
 import { mapSupabaseError } from './supabaseErrorMapper.index.js'
 import { getCircuitBreaker } from '../performance/circuitBreaker.js'
 
@@ -66,7 +66,9 @@ class ErrorCorrelation {
    */
   findRelatedErrors(errorKey, currentTime) {
     const group = this.errorGroups.get(errorKey)
-    if (!group) return []
+    if (!group) {
+      return []
+    }
 
     // Remove expired entries
     const recentErrors = group.errors.filter(

@@ -13,15 +13,9 @@ import { TouchGestures } from '../shared/touchGestures.js'
  * Create hover-activated image carousel for product card
  * @param {HTMLElement} container - Container element
  * @param {number} productId - Product ID
- * @returns {Promise<Object>} Carousel instance
+ * @returns {Object} Carousel instance
  */
-/**
- * Create hover-activated image carousel for product card
- * @param {HTMLElement} container - Container element
- * @param {number} productId - Product ID
- * @returns {Promise<Object>} Carousel instance
- */
-export async function createImageCarousel(container, productId) {
+export function createImageCarousel(container, productId) {
   try {
     // State
     let isInitialized = false
@@ -42,14 +36,13 @@ export async function createImageCarousel(container, productId) {
       return { destroy: () => {} }
     }
 
-    // Store original src to avoid refetching if it's the same
-    const originalSrc = imgElement.src
-
     /**
      * Initialize carousel on first interaction
      */
     async function initCarousel() {
-      if (isInitialized || isLoading) return
+      if (isInitialized || isLoading) {
+        return
+      }
       isLoading = true
 
       try {
@@ -136,7 +129,9 @@ export async function createImageCarousel(container, productId) {
      * Navigate to specific image with smooth transition
      */
     function goToImage(index, animate = true) {
-      if (!isInitialized || images.length === 0) return
+      if (!isInitialized || images.length === 0) {
+        return
+      }
 
       if (index < 0) {
         index = images.length - 1
@@ -184,13 +179,17 @@ export async function createImageCarousel(container, productId) {
     }
 
     function resetToDefault() {
-      if (!isInitialized) return
+      if (!isInitialized) {
+        return
+      }
       goToImage(0, false)
     }
 
     function updateIndicators() {
       const indicators = imageContainer.querySelector('.carousel-indicators')
-      if (!indicators) return
+      if (!indicators) {
+        return
+      }
 
       indicators.setAttribute('data-current', currentIndex.toString())
       const dots = indicators.querySelectorAll('.indicator-dot')
@@ -207,7 +206,9 @@ export async function createImageCarousel(container, productId) {
 
     function initTouchGestures() {
       const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
-      if (!isTouchDevice) return
+      if (!isTouchDevice) {
+        return
+      }
 
       touchGestures = new TouchGestures({
         swipeThreshold: 50,
@@ -229,7 +230,9 @@ export async function createImageCarousel(container, productId) {
 
     function showSwipeHint() {
       const swipeHint = imageContainer.querySelector('.swipe-hint')
-      if (!swipeHint || isSwipeHintShown) return
+      if (!swipeHint || isSwipeHintShown) {
+        return
+      }
 
       setTimeout(() => {
         if (!isSwipeHintShown) {
@@ -273,7 +276,9 @@ export async function createImageCarousel(container, productId) {
     }
 
     function startCycling() {
-      if (autoplayTimer || !isInitialized) return
+      if (autoplayTimer || !isInitialized) {
+        return
+      }
       // Initial delay before cycling starts to avoid jarring effect
       autoplayTimer = setInterval(nextImage, 1200) 
     }

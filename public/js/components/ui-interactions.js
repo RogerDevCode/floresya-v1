@@ -75,7 +75,9 @@ function initMagneticButtons() {
  */
 function initParallax() {
   const heroImage = document.querySelector('.hero-image')
-  if (!heroImage) return
+  if (!heroImage) {
+    return
+  }
 
   window.addEventListener('scroll', () => {
     const scrolled = window.scrollY

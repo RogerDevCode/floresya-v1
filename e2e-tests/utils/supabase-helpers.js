@@ -16,10 +16,7 @@ export const initSupabase = async (page) => {
   await page.evaluate(({ url, key }) => {
     // @ts-ignore
     if (!window.supabase) {
-      // @ts-ignore
-      const { createClient } = window.supabaseJs || {} // Assuming supabase-js is available globally or we might need another way
-      // For now, we might just rely on the app's own initialization or mock it
-      // But based on Cypress command, it was injecting it.
+      // For now, we rely on the app's own initialization
       // In Playwright, we usually let the app initialize itself.
       // If we need to inject, we might need to expose a function.
     }
@@ -196,7 +193,7 @@ export const supabaseList = async (bucket, path = '', options = {}) => {
 }
 
 // Set up test data
-export const setupTestData = async () => {
+export const setupTestData = () => {
   const testData = {
     users: [
       {
@@ -250,7 +247,7 @@ export const cleanupTestData = async () => {
 }
 
 // Test real-time subscriptions
-export const testRealtimeSubscription = async (table, callback) => {
+export const testRealtimeSubscription = (table, callback) => {
   const channel = supabase
     .channel(`test:${table}`)
     .on('postgres_changes', { event: '*', schema: 'public', table }, callback)

@@ -497,14 +497,18 @@ test.describe('Performance E2E', () => {
       const endTime = performance.now()
       const apiDuration = endTime - startTime
 
-      if (apiDuration >= 2000) throw new Error('API too slow')
+      if (apiDuration >= 2000) {
+        throw new Error('API too slow')
+      }
       console.log(`API response time: ${apiDuration.toFixed(2)}ms`)
     })
 
     // Test bundle size
     await page.goto('/')
     await page.evaluate(() => {
-      if (!performance.timing.loadEventEnd) throw new Error('Load event not found')
+      if (!performance.timing.loadEventEnd) {
+        throw new Error('Load event not found')
+      }
     })
   })
 

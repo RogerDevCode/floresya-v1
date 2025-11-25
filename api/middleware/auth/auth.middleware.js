@@ -147,7 +147,9 @@ class SecurityEventMonitor {
    * Check for token theft attempts
    */
   checkTokenTheft(userId, ip) {
-    if (!userId) return
+    if (!userId) {
+      return
+    }
 
     const key = `TOKEN_THEFT:${userId}`
     const events = this.events.get(key) || []
@@ -174,7 +176,9 @@ class SecurityEventMonitor {
    * Check for session hijacking
    */
   checkSessionHijacking(userId, ip) {
-    if (!userId) return
+    if (!userId) {
+      return
+    }
 
     const userEvents = this.events.get(`SESSION:${userId}`) || []
     const recent = userEvents.filter(e => Date.now() - e.timestamp < 60000) // Last minute
@@ -755,7 +759,7 @@ export async function optionalAuth(req, res, next) {
     const user = await getUser(token)
     req.user = user
     req.token = token
-  } catch (error) {
+  } catch {
     // Silently fail for optional auth
     logger.debug('Optional auth failed')
   }

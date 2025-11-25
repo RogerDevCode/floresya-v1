@@ -2192,9 +2192,15 @@ async function initEnhancedFilters() {
       }
 
       // Reset UI elements
-      if (sortFilter) sortFilter.value = 'created_desc'
-      if (priceRange) priceRange.value = ''
-      if (searchInput) searchInput.value = ''
+      if (sortFilter) {
+        sortFilter.value = 'created_desc'
+      }
+      if (priceRange) {
+        priceRange.value = ''
+      }
+      if (searchInput) {
+        searchInput.value = ''
+      }
 
       // Reset occasion filter buttons
       const allOccasionBtns = document.querySelectorAll('#quickFilters button')

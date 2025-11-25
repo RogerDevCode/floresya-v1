@@ -78,8 +78,7 @@ for (const table of criticalTables) {
   if (error) {
     console.log(`   ❌ ${table.padEnd(20)} - ${error.message}`)
   } else {
-    const count = data ? 1 : 0
-    console.log(`   ✅ ${table.padEnd(20)} - Accessible`)
+    console.log(`   ✅ ${table.padEnd(20)} - Accessible (${data.length} record)`)
   }
 }
 

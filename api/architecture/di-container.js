@@ -9,7 +9,7 @@
  * CRITICAL: Prevents cascading failures through service isolation
  */
 
-import { InternalServerError, ServiceUnavailableError } from '../errors/AppError.js'
+import { InternalServerError } from '../errors/AppError.js'
 import { supabase } from '../services/supabaseClient.js'
 import { logger } from '../utils/logger.js'
 import { createProductRepository } from '../repositories/ProductRepository.js'
@@ -27,14 +27,6 @@ const SERVICE_STATUS = {
   DEGRADED: 'DEGRADED',
   FAILED: 'FAILED',
   UNKNOWN: 'UNKNOWN'
-}
-
-// Fallback mechanisms
-const FALLBACK_TYPES = {
-  NULL: 'NULL', // Return null for failed services
-  CACHE: 'CACHE', // Return cached data
-  STUB: 'STUB', // Return stub implementation
-  CIRCUIT_BREAKER: 'CIRCUIT_BREAKER' // Use circuit breaker
 }
 
 // Service health monitoring
@@ -66,7 +58,9 @@ class ServiceHealthMonitor {
 
   async performHealthCheck(serviceName) {
     const healthInfo = this.healthChecks.get(serviceName)
-    if (!healthInfo) return
+    if (!healthInfo) {
+      return
+    }
 
     try {
       const result = await healthInfo.check()

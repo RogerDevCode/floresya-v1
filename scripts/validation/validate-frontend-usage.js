@@ -113,7 +113,7 @@ class FrontendUsageValidator {
             }
           }
         })
-      } catch (error) {
+      } catch {
         // Skip directories that can't be read
       }
     }
@@ -315,7 +315,7 @@ class FrontendUsageValidator {
     let improperApiUsage = 0
 
     this.frontendFiles.forEach(file => {
-      if (!file.endsWith('.js')) return
+      if (!file.endsWith('.js')) {return}
 
       try {
         const content = fs.readFileSync(file, 'utf8')
@@ -353,7 +353,9 @@ class FrontendUsageValidator {
     let filesWithApiCalls = 0
 
     this.frontendFiles.forEach(file => {
-      if (!file.endsWith('.js')) return
+      if (!file.endsWith('.js')) {
+        return
+      }
 
       try {
         const content = fs.readFileSync(file, 'utf8')
@@ -399,7 +401,9 @@ class FrontendUsageValidator {
     let accessibilityScore = 100
 
     this.frontendFiles.forEach(file => {
-      if (!file.endsWith('.html') && !file.endsWith('.htm')) return
+      if (!file.endsWith('.html') && !file.endsWith('.htm')) {
+        return
+      }
 
       try {
         const content = fs.readFileSync(file, 'utf8')
@@ -436,8 +440,12 @@ class FrontendUsageValidator {
         totalFileSize += size
 
         const ext = path.extname(file).toLowerCase()
-        if (ext === '.js') jsFileSize += size
-        if (ext === '.css') cssFileSize += size
+        if (ext === '.js') {
+          jsFileSize += size
+        }
+        if (ext === '.css') {
+          cssFileSize += size
+        }
       } catch (error) {
         console.warn(`Warning: Could not get size for ${file}: ${error.message}`)
       }

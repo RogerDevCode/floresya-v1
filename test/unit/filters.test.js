@@ -18,10 +18,18 @@ describe('Product Filters - Basic Tests', () => {
 
   describe('Price Range Parsing', () => {
     const parsePriceRange = value => {
-      if (value === '0-30') return { price_min: 0, price_max: 30 }
-      if (value === '30-60') return { price_min: 30, price_max: 60 }
-      if (value === '60-100') return { price_min: 60, price_max: 100 }
-      if (value === '100+') return { price_min: 100 }
+      if (value === '0-30') {
+        return { price_min: 0, price_max: 30 }
+      }
+      if (value === '30-60') {
+        return { price_min: 30, price_max: 60 }
+      }
+      if (value === '60-100') {
+        return { price_min: 60, price_max: 100 }
+      }
+      if (value === '100+') {
+        return { price_min: 100 }
+      }
       return {}
     }
 

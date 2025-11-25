@@ -4,20 +4,8 @@
  * Following Supabase official documentation and MIT/Stanford best practices
  */
 
-import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest'
-import {
-  createSupabaseClientMock,
-  POSTGRESQL_ERROR_CODES,
-  PerformanceMonitor,
-  AppError,
-  ErrorMapper,
-  // BaseRepository,
-  UserRepository,
-  ProfileRepository,
-  DIContainer,
-  UserService,
-  SchemaValidator
-} from './mocks/mocks.js'
+import { describe, test, expect, beforeEach, afterEach } from 'vitest'
+import { createSupabaseClientMock } from './mocks/mocks.js'
 
 // Helper function to create test client
 function createTestClient() {

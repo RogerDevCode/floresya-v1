@@ -144,7 +144,6 @@ class OpenAPIContractValidator {
     try {
       // Load OpenAPI spec
       const spec = JSON.parse(fs.readFileSync(this.specPath, 'utf8'))
-      const specPaths = Object.keys(spec.paths || {})
 
       // Find all route files
       const routesDir = path.join(this.rootDir, 'api/routes')
@@ -167,7 +166,7 @@ class OpenAPIContractValidator {
           totalSpecEndpoints++
 
           // Check if endpoint is documented in OpenAPI
-          const normalizedPath = path.replace(/:([^\/]+)/g, '{$1}')
+          const normalizedPath = path.replace(/:([^/]+)/g, '{$1}')
           const specPathKey = Object.keys(spec.paths || {}).find(sp =>
             sp.toLowerCase() === normalizedPath.toLowerCase()
           )
@@ -208,7 +207,7 @@ class OpenAPIContractValidator {
       }
 
       let validSchemas = 0
-      let totalSchemas = Object.keys(schemas).length
+      const totalSchemas = Object.keys(schemas).length
 
       Object.entries(schemas).forEach(([name, schema]) => {
         if (this.isValidSchema(schema)) {

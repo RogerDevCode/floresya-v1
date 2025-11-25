@@ -63,7 +63,7 @@ export async function clearCart(page) {
       localStorage.removeItem('orderSummary')
       localStorage.removeItem('customerData')
     }, { timeout: 1000 })
-  } catch (e) {
+  } catch {
     // Page not loaded yet, that's fine
   }
 }

@@ -281,7 +281,6 @@ test.describe.skip('Accounting Module - Reports Dashboard (TODO: Add login page)
     })
 
     test('should refresh data periodically', async ({ page }) => {
-      const initialTime = await page.locator('[data-cy=last-updated]').innerText()
       // Wait for update - Playwright timeout is usually 30s, might need to increase for this test
       // or mock the timer.
       // Cypress test waited 60s. That's long.

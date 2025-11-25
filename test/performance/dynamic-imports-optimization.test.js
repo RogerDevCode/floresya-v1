@@ -1,9 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import path from 'path'
 
 describe('Dynamic Imports Performance Test', () => {
-  let originalRequire
-
   beforeEach(() => {
     // Reset modules cache
     vi.clearAllMocks()

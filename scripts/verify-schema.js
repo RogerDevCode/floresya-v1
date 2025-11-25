@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js'
-import { readFileSync } from 'fs'
 
 const supabase = createClient(
   'https://dcbavpdlkcjdtjdkntde.supabase.co',

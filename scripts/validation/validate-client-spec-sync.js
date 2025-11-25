@@ -178,7 +178,7 @@ class ClientSpecSyncValidator {
    */
   normalizeApiPath(path) {
     // Remove protocol and domain
-    let cleanPath = path.replace(/^https?:\/\/[^\/]+/, '')
+    let cleanPath = path.replace(/^https?:\/\/[^/]+/, '')
 
     // Remove query parameters
     cleanPath = cleanPath.split('?')[0]
