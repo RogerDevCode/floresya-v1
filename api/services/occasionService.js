@@ -14,7 +14,8 @@
 
 import DIContainer from '../architecture/di-container.js'
 import { NotFoundError, BadRequestError } from '../errors/AppError.js'
-import { validateOccasion, validateId } from '../utils/validation.js'
+import { validateOccasion } from '../utils/validation.js'
+import ValidatorService from './validation/ValidatorService.js'
 
 /**
  * Get OccasionRepository instance from DI Container
@@ -31,7 +32,7 @@ function getOccasionRepository() {
  * @throws {BadRequestError} When ID is invalid
  */
 function validateOccasionId(id, operation = 'operation') {
-  validateId(id, 'Occasion', operation)
+  ValidatorService.validateId(id, 'occasion')
 }
 
 /**

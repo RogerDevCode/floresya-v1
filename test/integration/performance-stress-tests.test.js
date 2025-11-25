@@ -210,7 +210,13 @@ describe('Performance and Stress Integration Tests', () => {
         if (Math.random() < 0.7) {
           return productService.getProductById(productId)
         } else {
-          return productService.updateProduct(productId, { price_usd: Math.random() * 100 })
+          // Include name and active to satisfy validation
+          const product = products.find(p => p.id === productId)
+          return productService.updateProduct(productId, { 
+            name: product.name,
+            active: product.active,
+            price_usd: Math.random() * 100 
+          })
         }
       })
 
@@ -388,10 +394,12 @@ describe('Performance and Stress Integration Tests', () => {
       const orderPromises = Array.from({ length: 100 }, (_, i) => {
         const basePrice = products[0].price_usd + products[1].price_usd
         const orderData = {
+          customer_id: i + 1, // Required
           customer_email: `customer${i}@example.com`,
           customer_name: `Customer ${i}`,
           delivery_address: DataGenerators.generateAddress(),
-          total_amount_usd: basePrice // Required for validation
+          total_amount_usd: basePrice, // Required for validation
+          total_amount: basePrice // Also required
         }
 
         const orderItems = [
@@ -482,7 +490,12 @@ describe('Performance and Stress Integration Tests', () => {
         throw new Error('Serialization failure')
       })
 
-      await expect(productService.updateProduct(1, { price_usd: 29.99 })).rejects.toThrow(
+      // Include name and active to pass validation before reaching the mock error
+      await expect(productService.updateProduct(1, { 
+        name: product.name,
+        active: product.active,
+        price_usd: 29.99 
+      })).rejects.toThrow(
         'Serialization failure'
       )
     })

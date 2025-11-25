@@ -3,6 +3,6 @@
  * Exports the Express app for Vercel deployment
  */
 
-import app from './app.js';
+import app from './app.js'
 
-export default app;
+export default app

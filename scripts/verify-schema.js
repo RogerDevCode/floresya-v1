@@ -43,7 +43,9 @@ console.log('📋 PRODUCTS TABLE COLUMNS:\n')
 
 if (productCols && productCols.length > 0) {
   productCols.forEach(col => {
-    console.log(`   ${col.column_name.padEnd(20)} ${col.data_type.padEnd(20)} ${col.is_nullable === 'NO' ? 'NOT NULL' : 'NULL'}`)
+    console.log(
+      `   ${col.column_name.padEnd(20)} ${col.data_type.padEnd(20)} ${col.is_nullable === 'NO' ? 'NOT NULL' : 'NULL'}`
+    )
   })
 }
 

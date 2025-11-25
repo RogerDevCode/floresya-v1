@@ -1,4 +1,4 @@
-/*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.1.17 | MIT License | https://tailwindcss.com */
 @import 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;700;900&display=swap';
 @layer properties {
   @supports (((-webkit-hyphens: none)) and (not (margin-trim: inline))) or
@@ -198,6 +198,7 @@
     --color-slate-50: oklch(98.4% 0.003 247.858);
     --color-slate-100: oklch(96.8% 0.007 247.896);
     --color-slate-200: oklch(92.9% 0.013 255.508);
+    --color-slate-300: oklch(86.9% 0.022 252.894);
     --color-slate-400: oklch(70.4% 0.04 256.788);
     --color-slate-500: oklch(55.4% 0.046 257.417);
     --color-slate-600: oklch(44.6% 0.043 257.281);
@@ -1944,6 +1945,9 @@
   .border-slate-200 {
     border-color: var(--color-slate-200);
   }
+  .border-slate-300 {
+    border-color: var(--color-slate-300);
+  }
   .border-slate-800 {
     border-color: var(--color-slate-800);
   }
@@ -2525,6 +2529,15 @@
       var(--tw-gradient-to) var(--tw-gradient-to-position)
     );
   }
+  .from-slate-100 {
+    --tw-gradient-from: var(--color-slate-100);
+    --tw-gradient-stops: var(
+      --tw-gradient-via-stops,
+      var(--tw-gradient-position),
+      var(--tw-gradient-from) var(--tw-gradient-from-position),
+      var(--tw-gradient-to) var(--tw-gradient-to-position)
+    );
+  }
   .from-slate-600 {
     --tw-gradient-from: var(--color-slate-600);
     --tw-gradient-stops: var(
@@ -2971,6 +2984,15 @@
       var(--tw-gradient-to) var(--tw-gradient-to-position)
     );
   }
+  .to-slate-200 {
+    --tw-gradient-to: var(--color-slate-200);
+    --tw-gradient-stops: var(
+      --tw-gradient-via-stops,
+      var(--tw-gradient-position),
+      var(--tw-gradient-from) var(--tw-gradient-from-position),
+      var(--tw-gradient-to) var(--tw-gradient-to-position)
+    );
+  }
   .to-slate-800 {
     --tw-gradient-to: var(--color-slate-800);
     --tw-gradient-stops: var(
@@ -3174,8 +3196,14 @@
   .pt-16 {
     padding-top: calc(var(--spacing) * 16);
   }
+  .pt-20 {
+    padding-top: calc(var(--spacing) * 20);
+  }
   .pt-24 {
     padding-top: calc(var(--spacing) * 24);
+  }
+  .pt-32 {
+    padding-top: calc(var(--spacing) * 32);
   }
   .pr-3 {
     padding-right: calc(var(--spacing) * 3);
@@ -3197,6 +3225,9 @@
   }
   .pb-12 {
     padding-bottom: calc(var(--spacing) * 12);
+  }
+  .pb-20 {
+    padding-bottom: calc(var(--spacing) * 20);
   }
   .pl-3 {
     padding-left: calc(var(--spacing) * 3);
@@ -3727,6 +3758,18 @@
       );
     }
   }
+  .shadow-pink-300\/50 {
+    --tw-shadow-color: #fda5d580;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .shadow-pink-300\/50 {
+      --tw-shadow-color: color-mix(
+        in oklab,
+        color-mix(in oklab, var(--color-pink-300) 50%, transparent) var(--tw-shadow-alpha),
+        transparent
+      );
+    }
+  }
   .shadow-slate-200\/40 {
     --tw-shadow-color: #e2e8f066;
   }
@@ -4130,6 +4173,9 @@
     .hover\:border-rose-200:hover {
       border-color: var(--color-rose-200);
     }
+    .hover\:border-slate-400:hover {
+      border-color: var(--color-slate-400);
+    }
     .hover\:border-violet-300:hover {
       border-color: var(--color-violet-300);
     }
@@ -4303,6 +4349,15 @@
         var(--tw-gradient-to) var(--tw-gradient-to-position)
       );
     }
+    .hover\:from-slate-200:hover {
+      --tw-gradient-from: var(--color-slate-200);
+      --tw-gradient-stops: var(
+        --tw-gradient-via-stops,
+        var(--tw-gradient-position),
+        var(--tw-gradient-from) var(--tw-gradient-from-position),
+        var(--tw-gradient-to) var(--tw-gradient-to-position)
+      );
+    }
     .hover\:from-teal-500:hover {
       --tw-gradient-from: var(--color-teal-500);
       --tw-gradient-stops: var(
@@ -4350,6 +4405,15 @@
     }
     .hover\:to-purple-600:hover {
       --tw-gradient-to: var(--color-purple-600);
+      --tw-gradient-stops: var(
+        --tw-gradient-via-stops,
+        var(--tw-gradient-position),
+        var(--tw-gradient-from) var(--tw-gradient-from-position),
+        var(--tw-gradient-to) var(--tw-gradient-to-position)
+      );
+    }
+    .hover\:to-slate-300:hover {
+      --tw-gradient-to: var(--color-slate-300);
       --tw-gradient-stops: var(
         --tw-gradient-via-stops,
         var(--tw-gradient-position),
@@ -4888,8 +4952,17 @@
     .lg\:pt-16 {
       padding-top: calc(var(--spacing) * 16);
     }
+    .lg\:pt-24 {
+      padding-top: calc(var(--spacing) * 24);
+    }
+    .lg\:pt-40 {
+      padding-top: calc(var(--spacing) * 40);
+    }
     .lg\:pb-16 {
       padding-bottom: calc(var(--spacing) * 16);
+    }
+    .lg\:pb-32 {
+      padding-bottom: calc(var(--spacing) * 32);
     }
     .lg\:text-3xl {
       font-size: var(--text-3xl);

@@ -195,10 +195,12 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
 
       const totalAmount = 29.99 * 2 + 15.99
       const orderData = {
+        customer_id: user.id, // Required by validateOrder
         customer_email: 'test@example.com',
         customer_name: 'Test Customer',
         delivery_address: '123 Test St',
-        total_amount_usd: totalAmount // Required for validation
+        total_amount_usd: totalAmount, // Required for validation
+        total_amount: totalAmount // Also required
       }
       const createdOrder = {
         id: 1,
@@ -259,10 +261,12 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
 
       const totalAmount = product.price_usd * 5
       const orderData = {
+        customer_id: 1, // Required
         customer_email: 'test@example.com',
         customer_name: 'Test Customer',
         delivery_address: '123 Test St',
-        total_amount_usd: totalAmount // Required for validation
+        total_amount_usd: totalAmount, // Required for validation
+        total_amount: totalAmount // Also required
       }
 
       // Order creation should fail due to insufficient stock
@@ -293,10 +297,12 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
 
       const totalAmount = product.price_usd * 2
       const orderData = {
+        customer_id: 1, // Required by validateOrder
         customer_email: 'test@example.com',
         customer_name: 'Test Customer',
         delivery_address: '123 Test St',
-        total_amount_usd: totalAmount // Required for validation
+        total_amount_usd: totalAmount, // Required for validation
+        total_amount: totalAmount // Also required
       }
 
       // First order succeeds
@@ -425,10 +431,12 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
       mockRepositories.ProductRepository.findById.mockResolvedValue(product, true)
 
       const orderData = {
+        customer_id: createdUser.id, // Required
         customer_email: userData.email,
         customer_name: userData.full_name,
         delivery_address: DataGenerators.generateAddress(),
-        total_amount_usd: product.price_usd // Required for validation
+        total_amount_usd: product.price_usd, // Required for validation
+        total_amount: product.price_usd // Also required
       }
 
       const orderItems = [
@@ -513,10 +521,12 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
       })
 
       const orderData = {
+        customer_id: 1, // Required
         customer_email: 'test@example.com',
         customer_name: 'Test Customer',
         delivery_address: '123 Test St',
-        total_amount_usd: product.price_usd // Required for validation
+        total_amount_usd: product.price_usd, // Required for validation
+        total_amount: product.price_usd // Also required
       }
 
       const orderItems = [
@@ -581,10 +591,12 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
       // Create 50 orders concurrently
       const orderPromises = Array.from({ length: 50 }, (_, i) => {
         const orderData = {
+          customer_id: i + 1, // Required
           customer_email: `customer${i}@example.com`,
           customer_name: `Customer ${i}`,
           delivery_address: DataGenerators.generateAddress(),
-          total_amount_usd: products[0].price_usd + products[1].price_usd // Required for validation
+          total_amount_usd: products[0].price_usd + products[1].price_usd, // Required for validation
+          total_amount: products[0].price_usd + products[1].price_usd // Also required
         }
 
         const orderItems = products.slice(0, 2).map(product => ({
@@ -645,11 +657,12 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
 
       // Mock order creation with non-existent user
       const orderData = {
-        user_id: 999, // Non-existent user
+        customer_id: 999, // Non-existent user (corrected field name)
         customer_email: 'test@example.com',
         customer_name: 'Test Customer',
         delivery_address: '123 Test St',
-        total_amount_usd: product.price_usd // Required for validation
+        total_amount_usd: product.price_usd, // Required for validation
+        total_amount: product.price_usd // Also required
       }
 
       mockSupabase.rpc.mockResolvedValue({
@@ -704,10 +717,12 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
       mockSupabase.rpc.mockRejectedValue(new Error('Order creation failed'))
 
       const orderData = {
+        customer_id: 1, // Required
         customer_email: 'test@example.com',
         customer_name: 'Test Customer',
         delivery_address: '123 Test St',
-        total_amount_usd: product.price_usd * 2 // Calculate from order items
+        total_amount_usd: product.price_usd * 2, // Calculate from order items
+        total_amount: product.price_usd * 2 // Also required
       }
 
       const orderItems = [

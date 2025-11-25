@@ -11,12 +11,14 @@
 ### 1. Extension in Public Schema - `pg_trgm`
 
 **Warning:**
+
 ```
-Extension `pg_trgm` is installed in the public schema. 
+Extension `pg_trgm` is installed in the public schema.
 Move it to another schema.
 ```
 
 **Fix Applied:** ✅
+
 - Created `extensions` schema
 - Moved `pg_trgm` from `public` → `extensions`
 - Granted proper permissions
@@ -28,12 +30,14 @@ Move it to another schema.
 ### 2. Extension in Public Schema - `unaccent`
 
 **Warning:**
+
 ```
-Extension `unaccent` is installed in the public schema. 
+Extension `unaccent` is installed in the public schema.
 Move it to another schema.
 ```
 
 **Fix Applied:** ✅
+
 - Moved `unaccent` from `public` → `extensions`
 - Updated search configurations
 
@@ -46,14 +50,16 @@ Move it to another schema.
 ### 3. Leaked Password Protection Disabled
 
 **Warning:**
+
 ```
-Supabase Auth prevents the use of compromised passwords 
+Supabase Auth prevents the use of compromised passwords
 by checking against HaveIBeenPwned.org. Enable this feature.
 ```
 
 **Action Required:** 🔧 **MANUAL - SUPABASE DASHBOARD**
 
 **Steps:**
+
 1. Go to **Supabase Dashboard** → Your Project
 2. Navigate to **Authentication** → **Settings**
 3. Find **"Password Strength & Protection"** section
@@ -63,6 +69,7 @@ by checking against HaveIBeenPwned.org. Enable this feature.
 **Documentation:** https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection
 
 **Impact:**
+
 - Prevents users from using compromised passwords
 - Checks against 850M+ leaked passwords database
 - Zero performance impact (async check)
@@ -74,6 +81,7 @@ by checking against HaveIBeenPwned.org. Enable this feature.
 ### 4. Vulnerable Postgres Version
 
 **Warning:**
+
 ```
 Current version: supabase-postgres-17.4.1.075
 Security patches available. Upgrade required.
@@ -82,6 +90,7 @@ Security patches available. Upgrade required.
 **Action Required:** 🔧 **MANUAL - SUPABASE SUPPORT**
 
 **Steps:**
+
 1. Go to **Supabase Dashboard** → Your Project
 2. Navigate to **Settings** → **Infrastructure**
 3. Check for **"Database Upgrade Available"** notification
@@ -91,6 +100,7 @@ Security patches available. Upgrade required.
 **Documentation:** https://supabase.com/docs/guides/platform/upgrading
 
 **Impact:**
+
 - Security patches for PostgreSQL
 - Bug fixes and performance improvements
 - Managed by Supabase (zero downtime upgrade)
@@ -98,6 +108,7 @@ Security patches available. Upgrade required.
 **Priority:** HIGH (Security patches)
 
 **Note:** This is a **managed upgrade** by Supabase. They handle:
+
 - Backup creation
 - Zero-downtime migration
 - Rollback capability
@@ -106,12 +117,12 @@ Security patches available. Upgrade required.
 
 ## 📊 Summary
 
-| Warning | Status | Action | Priority |
-|---------|--------|--------|----------|
-| `pg_trgm` in public | ✅ Fixed | SQL Migration | - |
-| `unaccent` in public | ✅ Fixed | SQL Migration | - |
-| Leaked Password Protection | ⚠️ Manual | Dashboard Toggle | MEDIUM |
-| Postgres Version | ⚠️ Manual | Platform Upgrade | HIGH |
+| Warning                    | Status    | Action           | Priority |
+| -------------------------- | --------- | ---------------- | -------- |
+| `pg_trgm` in public        | ✅ Fixed  | SQL Migration    | -        |
+| `unaccent` in public       | ✅ Fixed  | SQL Migration    | -        |
+| Leaked Password Protection | ⚠️ Manual | Dashboard Toggle | MEDIUM   |
+| Postgres Version           | ⚠️ Manual | Platform Upgrade | HIGH     |
 
 ---
 
@@ -144,7 +155,7 @@ After applying all fixes, run:
 
 ```sql
 -- Verify extensions schema
-SELECT 
+SELECT
   e.extname AS extension_name,
   n.nspname AS schema_name
 FROM pg_extension e
@@ -154,8 +165,9 @@ ORDER BY e.extname;
 ```
 
 Expected output:
+
 ```
- extension_name | schema_name 
+ extension_name | schema_name
 ----------------+-------------
  pg_trgm        | extensions
  unaccent       | extensions
@@ -169,4 +181,3 @@ Expected output:
 - [Extension Security Best Practices](https://supabase.com/docs/guides/database/database-linter?lint=0014_extension_in_public)
 - [Password Security](https://supabase.com/docs/guides/auth/password-security)
 - [Platform Upgrades](https://supabase.com/docs/guides/platform/upgrading)
-

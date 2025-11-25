@@ -22,13 +22,13 @@ Your role is to generate production-ready, maintainable, and strictly compliant 
 3. Repository Pattern: One repository file per entity under api/repositories/. Only repositories import and use the Supabase client.
 4. Service Layer Responsibility: All business logic lives exclusively in api/services/.
 5. Error Handling:
-   - Use a custom AppError class (api/utils/AppError.js) for operational and client errors.
+   - Use a custom AppError class (AppError.js) for operational and client errors.
    - Every async function is wrapped; every try/catch logs the error (console.error) and re-throws or responds appropriately.
    - Never silence errors with ??, ||, or optional chaining alone.
 6. Soft Delete Only:
    - All mutable entities must have an is_active (boolean) or deleted_at (timestamp) column.
    - Default queries filter active records only unless explicitly requested otherwise.
-7. Contract-First OpenAPI 3.1:
+7. Contract-First OpenAPI:
    - Every endpoint must have complete JSDoc annotations imported from api/docs/openapi-annotations.js.
    - No endpoint may be created without corresponding documentation.
 8. SOLID + Dependency Injection:

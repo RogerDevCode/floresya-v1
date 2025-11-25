@@ -1,0 +1,14 @@
+{
+    "cookies": [],
+    "origins": [
+        {
+            "origin": "http://127.0.0.1:3000",
+            "localStorage": [
+                {
+                    "name": "cart",
+                    "value": "[{\"id\":1,\"name\":\"Ramo de Rosas Rojas\",\"price_usd\":25.99,\"stock\":10,\"quantity\":2,\"image_thumb\":\"/images/products/rosas-rojas-thumb.jpg\"},{\"id\":2,\"name\":\"Girasoles Premium\",\"price_usd\":18.5,\"stock\":15,\"quantity\":1,\"image_thumb\":\"/images/products/girasoles-thumb.jpg\"}]"
+                }
+            ]
+        }
+    ]
+}

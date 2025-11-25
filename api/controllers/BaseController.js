@@ -24,11 +24,12 @@ export class BaseController {
    * @param {string} message - Success message
    * @returns {Object} Formatted response object
    */
-  createResponse(data, message) {
+  createResponse(data, message, meta = undefined) {
     return {
       success: true,
       data,
-      message
+      message,
+      ...(meta && { meta })
     }
   }
 
@@ -155,9 +156,9 @@ export class BaseController {
    * @param {string} message - Success message
    * @param {string} entity - Entity name for message
    */
-  sendSuccess(res, data, operation, message = null, entity = null) {
+  sendSuccess(res, data, operation, message = null, entity = null, meta = undefined) {
     const responseMessage = message || this.getSuccessMessage(operation, entity)
-    const response = this.createResponse(data, responseMessage)
+    const response = this.createResponse(data, responseMessage, meta)
     const statusCode = this.getStatusCode(operation)
 
     res.status(statusCode).json(response)
@@ -169,8 +170,8 @@ export class BaseController {
    * @param {Object|Array} data - Response data
    * @param {string} message - Success message
    */
-  sendResponse(res, data, message) {
-    const response = this.createResponse(data, message)
+  sendResponse(res, data, message, meta = undefined) {
+    const response = this.createResponse(data, message, meta)
     res.json(response)
   }
 }

@@ -20,6 +20,7 @@ import {
   InternalServerError
 } from '../errors/AppError.js'
 import { validateSetting } from '../utils/validation.js'
+import ValidatorService from './validation/ValidatorService.js'
 
 const TABLE = DB_SCHEMA.settings.table
 

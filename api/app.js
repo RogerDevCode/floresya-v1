@@ -21,6 +21,7 @@ import {
   rateLimiterSimple,
   adminAuditLogger
 } from './middleware/security/index.js'
+import { addSecurityHeaders } from './middleware/security/securityHeaders.js'
 import { requestLoggingMiddleware } from './utils/logger.js'
 import { errorHandler } from './middleware/error/index.js'
 import {
@@ -143,6 +144,8 @@ app.use(configureSanitize())
 app.use(xssProtection)
 // Apply session security headers after Helmet to override its values
 app.use(sessionSecurityHeaders)
+// Additional security headers for enhanced protection
+app.use(addSecurityHeaders)
 
 // Rate limiting (for API routes only)
 // More generous limits to support multiple simultaneous requests (carousel, occasions, products, etc.)

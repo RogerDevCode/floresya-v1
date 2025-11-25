@@ -74,10 +74,12 @@ describe('Performance Gates - Critical Paths', () => {
 
   test('Order Creation should be under 500ms', async () => {
     const orderData = {
+      customer_id: 1, // Required
       customer_email: 'perf@test.com',
       customer_name: 'Performance Tester',
       delivery_address: '123 Speed St',
-      total_amount_usd: 100
+      total_amount_usd: 100,
+      total_amount: 100 // Also required
     }
     const items = [
       { product_id: 1, quantity: 1, unit_price_usd: 100, product_name: 'Test Product' }

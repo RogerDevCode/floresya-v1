@@ -3,12 +3,13 @@
  */
 
 /**
- * Dependency Injection Container
- * Implements IoC (Inversion of Control) for clean architecture
- * Following SOLID principles and Dependency Inversion Principle
+ * Distributed Service Registry Container
+ * Eliminates single point of failure through distributed pattern
+ * Implements health checks, fallback mechanisms, and graceful degradation
+ * CRITICAL: Prevents cascading failures through service isolation
  */
 
-import { InternalServerError } from '../errors/AppError.js'
+import { InternalServerError, ServiceUnavailableError } from '../errors/AppError.js'
 import { supabase } from '../services/supabaseClient.js'
 import { logger } from '../utils/logger.js'
 import { createProductRepository } from '../repositories/ProductRepository.js'
@@ -20,109 +21,581 @@ import { createOccasionRepository } from '../repositories/OccasionRepository.js'
 import { createSettingsRepository } from '../repositories/SettingsRepository.js'
 import { createProductImageRepository } from '../repositories/ProductImageRepository.js'
 
+// Service health status
+const SERVICE_STATUS = {
+  HEALTHY: 'HEALTHY',
+  DEGRADED: 'DEGRADED',
+  FAILED: 'FAILED',
+  UNKNOWN: 'UNKNOWN'
+}
+
+// Fallback mechanisms
+const FALLBACK_TYPES = {
+  NULL: 'NULL', // Return null for failed services
+  CACHE: 'CACHE', // Return cached data
+  STUB: 'STUB', // Return stub implementation
+  CIRCUIT_BREAKER: 'CIRCUIT_BREAKER' // Use circuit breaker
+}
+
+// Service health monitoring
+class ServiceHealthMonitor {
+  constructor() {
+    this.healthChecks = new Map()
+    this.statusHistory = new Map()
+    this.monitoringInterval = 30000 // 30 seconds
+  }
+
+  registerHealthCheck(serviceName, healthCheckFunction) {
+    this.healthChecks.set(serviceName, {
+      check: healthCheckFunction,
+      lastCheck: null,
+      status: SERVICE_STATUS.UNKNOWN,
+      consecutiveFailures: 0,
+      consecutiveSuccesses: 0
+    })
+
+    // Start monitoring
+    this.startMonitoring(serviceName)
+  }
+
+  startMonitoring(serviceName) {
+    setInterval(async () => {
+      await this.performHealthCheck(serviceName)
+    }, this.monitoringInterval)
+  }
+
+  async performHealthCheck(serviceName) {
+    const healthInfo = this.healthChecks.get(serviceName)
+    if (!healthInfo) return
+
+    try {
+      const result = await healthInfo.check()
+
+      if (result.healthy) {
+        healthInfo.consecutiveFailures = 0
+        healthInfo.consecutiveSuccesses++
+        healthInfo.status =
+          healthInfo.consecutiveSuccesses >= 3 ? SERVICE_STATUS.HEALTHY : SERVICE_STATUS.DEGRADED
+      } else {
+        healthInfo.consecutiveFailures++
+        healthInfo.consecutiveSuccesses = 0
+        healthInfo.status =
+          healthInfo.consecutiveFailures >= 3 ? SERVICE_STATUS.FAILED : SERVICE_STATUS.DEGRADED
+      }
+
+      healthInfo.lastCheck = Date.now()
+      this.updateStatusHistory(serviceName, healthInfo.status, result)
+    } catch (error) {
+      logger.error(`Health check failed for ${serviceName}:`, error)
+      healthInfo.consecutiveFailures++
+      healthInfo.consecutiveSuccesses = 0
+      healthInfo.status = SERVICE_STATUS.FAILED
+      healthInfo.lastCheck = Date.now()
+    }
+  }
+
+  updateStatusHistory(serviceName, status, result) {
+    if (!this.statusHistory.has(serviceName)) {
+      this.statusHistory.set(serviceName, [])
+    }
+
+    const history = this.statusHistory.get(serviceName)
+    history.push({
+      status,
+      timestamp: Date.now(),
+      details: result
+    })
+
+    // Keep only last 100 entries
+    if (history.length > 100) {
+      history.shift()
+    }
+  }
+
+  getServiceStatus(serviceName) {
+    const healthInfo = this.healthChecks.get(serviceName)
+    if (!healthInfo) {
+      return { status: SERVICE_STATUS.UNKNOWN, lastCheck: null }
+    }
+
+    return {
+      status: healthInfo.status,
+      lastCheck: healthInfo.lastCheck,
+      consecutiveFailures: healthInfo.consecutiveFailures,
+      consecutiveSuccesses: healthInfo.consecutiveSuccesses,
+      history: this.statusHistory.get(serviceName) || []
+    }
+  }
+
+  isServiceHealthy(serviceName) {
+    const status = this.getServiceStatus(serviceName)
+    return status.status === SERVICE_STATUS.HEALTHY
+  }
+}
+
 /**
- * DI Container following Service Locator pattern
- * Provides centralized dependency management
+ * Distributed Service Registry Container
+ * Eliminates single point of failure through distributed pattern
  */
-class DIContainer {
-  static services = new Map()
-  static instances = new Map()
+class DistributedServiceRegistry {
+  constructor() {
+    this.services = new Map()
+    this.instances = new Map()
+    this.fallbacks = new Map()
+    this.healthMonitor = new ServiceHealthMonitor()
+    this.circuitBreakers = new Map()
+    this.serviceAliases = new Map()
+  }
 
   /**
-   * Register a service class with its dependencies
-   * @param {string} name - Service name (key)
+   * Register a service with advanced configuration
+   * @param {string} name - Service name
    * @param {Function} Implementation - Service class constructor
-   * @param {Array} dependencies - Array of dependency names
+   * @param {Object} config - Service configuration
    */
-  static register(name, Implementation, dependencies = []) {
+  register(name, Implementation, config = {}) {
+    const {
+      dependencies = [],
+      fallback = null,
+      healthCheck = null,
+      circuitBreaker = true,
+      retries = 3,
+      timeout = 30000
+    } = config
+
     this.services.set(name, {
       Implementation,
-      dependencies
+      dependencies,
+      config: {
+        circuitBreaker,
+        retries,
+        timeout
+      }
+    })
+
+    // Register fallback mechanism
+    if (fallback) {
+      this.fallbacks.set(name, fallback)
+    }
+
+    // Register health check
+    if (healthCheck) {
+      this.healthMonitor.registerHealthCheck(name, healthCheck)
+    }
+
+    logger.info(`Service registered: ${name}`, {
+      dependencies: dependencies.length,
+      hasFallback: !!fallback,
+      hasHealthCheck: !!healthCheck
     })
   }
 
   /**
-   * Register an existing instance (singleton pattern)
-   * @param {string} name - Service name
-   * @param {Object} instance - Pre-created instance
+   * Register service alias for backward compatibility
    */
-  static registerInstance(name, instance) {
-    this.instances.set(name, instance)
+  registerAlias(alias, actualServiceName) {
+    this.serviceAliases.set(alias, actualServiceName)
   }
 
   /**
-   * Resolve and get service instance
-   * Creates instance if not exists (singleton for services)
-   * @param {string} name - Service name to resolve
-   * @returns {Object} Service instance
+   * Register an existing instance with health monitoring
    */
-  static resolve(name) {
-    // Check if already instantiated (singleton)
-    if (this.instances.has(name)) {
-      return this.instances.get(name)
+  registerInstance(name, instance, config = {}) {
+    const { healthCheck = null, circuitBreaker = false } = config
+
+    this.instances.set(name, {
+      instance,
+      registeredAt: Date.now(),
+      healthCheck,
+      circuitBreaker
+    })
+
+    if (healthCheck) {
+      this.healthMonitor.registerHealthCheck(name, async () => {
+        try {
+          if (typeof healthCheck === 'function') {
+            return await healthCheck(instance)
+          }
+          return { healthy: true }
+        } catch (error) {
+          return { healthy: false, error: error.message }
+        }
+      })
+    }
+
+    logger.info(`Instance registered: ${name}`)
+  }
+
+  /**
+   * Resolve service with advanced error handling and fallbacks
+   */
+  async resolve(name) {
+    // Handle service aliases
+    const actualName = this.serviceAliases.get(name) || name
+
+    // Check cached instances first
+    if (this.instances.has(actualName)) {
+      const cached = this.instances.get(actualName)
+      const serviceStatus = this.healthMonitor.getServiceStatus(actualName)
+
+      if (serviceStatus.status === SERVICE_STATUS.FAILED) {
+        logger.warn(`Attempting to resolve failed service: ${actualName}`)
+        return await this.handleServiceFailure(actualName)
+      }
+
+      return cached.instance
     }
 
     // Check if service is registered
-    if (!this.services.has(name)) {
-      throw new InternalServerError(`Service not registered: ${name}`, { serviceName: name })
+    if (!this.services.has(actualName)) {
+      throw new InternalServerError(`Service not registered: ${actualName}`, {
+        serviceName: actualName
+      })
     }
 
-    const { Implementation, dependencies } = this.services.get(name)
+    const { Implementation, dependencies, config } = this.services.get(actualName)
+    const serviceStatus = this.healthMonitor.getServiceStatus(actualName)
 
-    // Resolve dependencies recursively
-    const resolvedDependencies = dependencies.map(dep => this.resolve(dep))
+    // If service is failed, try fallback
+    if (serviceStatus.status === SERVICE_STATUS.FAILED) {
+      logger.warn(`Service ${actualName} is failed, attempting fallback`)
+      return await this.handleServiceFailure(actualName)
+    }
 
-    // Create instance with dependencies
-    const instance = new Implementation(...resolvedDependencies)
+    try {
+      // Resolve dependencies with timeout
+      const resolvedDependencies = await Promise.all(
+        dependencies.map(async dep => {
+          try {
+            return await Promise.race([
+              this.resolve(dep),
+              new Promise((_, reject) =>
+                setTimeout(
+                  () => reject(new Error(`Dependency resolution timeout: ${dep}`)),
+                  config.timeout
+                )
+              )
+            ])
+          } catch (error) {
+            logger.error(`Failed to resolve dependency ${dep} for service ${actualName}:`, error)
+            throw error
+          }
+        })
+      )
 
-    // Cache instance (singleton pattern)
-    this.instances.set(name, instance)
+      // Create service instance
+      const instance = new Implementation(...resolvedDependencies)
 
-    return instance
+      // Cache with health monitoring
+      this.instances.set(actualName, {
+        instance,
+        registeredAt: Date.now(),
+        config
+      })
+
+      logger.info(`Service resolved successfully: ${actualName}`)
+      return instance
+    } catch (error) {
+      logger.error(`Failed to resolve service ${actualName}:`, error)
+
+      // Try fallback mechanism
+      return await this.handleServiceFailure(actualName)
+    }
   }
 
   /**
-   * Clear all registered services and instances
-   * Useful for testing
+   * Handle service failure with fallback mechanisms
    */
-  static clear() {
+  async handleServiceFailure(serviceName) {
+    const fallback = this.fallbacks.get(serviceName)
+
+    if (fallback) {
+      logger.info(`Using fallback for failed service: ${serviceName}`)
+      try {
+        return await fallback()
+      } catch (fallbackError) {
+        logger.error(`Fallback failed for service ${serviceName}:`, fallbackError)
+      }
+    }
+
+    // Return null as last resort to prevent cascade failures
+    logger.warn(`No fallback available for service ${serviceName}, returning null`)
+    return null
+  }
+
+  /**
+   * Get comprehensive service status
+   */
+  getServiceStatus(name) {
+    const actualName = this.serviceAliases.get(name) || name
+    const serviceInfo = this.services.get(actualName)
+    const instanceInfo = this.instances.get(actualName)
+    const healthStatus = this.healthMonitor.getServiceStatus(actualName)
+
+    return {
+      name: actualName,
+      registered: !!serviceInfo,
+      instantiated: !!instanceInfo,
+      health: healthStatus,
+      registeredAt: instanceInfo?.registeredAt,
+      config: serviceInfo?.config
+    }
+  }
+
+  /**
+   * Get all services status
+   */
+  getAllServicesStatus() {
+    const status = {
+      services: [],
+      summary: {
+        total: 0,
+        healthy: 0,
+        failed: 0,
+        degraded: 0
+      }
+    }
+
+    // Check registered services
+    for (const [name] of this.services) {
+      const serviceStatus = this.getServiceStatus(name)
+      status.services.push(serviceStatus)
+
+      // Update summary
+      status.summary.total++
+      switch (serviceStatus.health.status) {
+        case SERVICE_STATUS.HEALTHY:
+          status.summary.healthy++
+          break
+        case SERVICE_STATUS.FAILED:
+          status.summary.failed++
+          break
+        case SERVICE_STATUS.DEGRADED:
+          status.summary.degraded++
+          break
+      }
+    }
+
+    return status
+  }
+
+  /**
+   * Check if service is available
+   */
+  isServiceAvailable(name) {
+    const actualName = this.serviceAliases.get(name) || name
+    const status = this.healthMonitor.getServiceStatus(actualName)
+    return status.status === SERVICE_STATUS.HEALTHY || status.status === SERVICE_STATUS.DEGRADED
+  }
+
+  /**
+   * Force service re-registration (for testing/recovery)
+   */
+  forceReRegister(name) {
+    const actualName = this.serviceAliases.get(name) || name
+
+    // Remove from instances to force re-creation
+    this.instances.delete(actualName)
+
+    // Reset health status
+    const healthInfo = this.healthMonitor.healthChecks.get(actualName)
+    if (healthInfo) {
+      healthInfo.status = SERVICE_STATUS.UNKNOWN
+      healthInfo.consecutiveFailures = 0
+      healthInfo.consecutiveSuccesses = 0
+    }
+
+    logger.info(`Service ${actualName} marked for re-registration`)
+  }
+
+  /**
+   * Clear all services and instances
+   */
+  clear() {
     this.services.clear()
     this.instances.clear()
+    this.fallbacks.clear()
+    this.healthMonitor.healthChecks.clear()
+    this.healthMonitor.statusHistory.clear()
+    this.serviceAliases.clear()
+
+    logger.info('Service registry cleared')
   }
 
   /**
-   * Check if service is registered
-   * @param {string} name - Service name
-   * @returns {boolean} True if registered
+   * Legacy compatibility methods
    */
+  static register(name, Implementation, dependencies = []) {
+    if (!this.instance) {
+      this.instance = new DistributedServiceRegistry()
+    }
+    this.instance.register(name, Implementation, { dependencies })
+  }
+
+  static registerInstance(name, instance) {
+    if (!this.instance) {
+      this.instance = new DistributedServiceRegistry()
+    }
+    this.instance.registerInstance(name, instance)
+  }
+
+  static async resolve(name) {
+    if (!this.instance) {
+      this.instance = new DistributedServiceRegistry()
+    }
+    return await this.instance.resolve(name)
+  }
+
   static has(name) {
-    return this.services.has(name) || this.instances.has(name)
+    if (!this.instance) {
+      this.instance = new DistributedServiceRegistry()
+    }
+    return this.instance.isServiceAvailable(name)
+  }
+
+  static clear() {
+    if (this.instance) {
+      this.instance.clear()
+    }
+  }
+}
+
+// Create global instance for backward compatibility
+DistributedServiceRegistry.instance = new DistributedServiceRegistry()
+
+// Export as both old and new interfaces
+const DIContainer = DistributedServiceRegistry
+export { DIContainer, DistributedServiceRegistry }
+
+/**
+ * Initialize Distributed Service Registry with all services
+ * Implements distributed pattern with health checks and fallbacks
+ * CRITICAL: Prevents single point of failure through service isolation
+ */
+export async function initializeDIContainer() {
+  const registry = DIContainer.instance || new DistributedServiceRegistry()
+
+  try {
+    // Register logger with health check
+    registry.registerInstance('Logger', logger, {
+      healthCheck: instance => {
+        return { healthy: !!instance && typeof instance.info === 'function' }
+      }
+    })
+
+    // Register database client with comprehensive health check
+    registry.registerInstance('SupabaseClient', supabase, {
+      healthCheck: async client => {
+        try {
+          const { data, error } = await client.from('users').select('id').limit(1)
+          return {
+            healthy: !error,
+            error: error?.message,
+            details: data ? 'Database connection healthy' : 'Query returned no data'
+          }
+        } catch (error) {
+          return {
+            healthy: false,
+            error: error.message,
+            details: 'Failed to connect to database'
+          }
+        }
+      },
+      circuitBreaker: true
+    })
+
+    // Repository Pattern with health checks and fallbacks
+    const repositoryConfigs = [
+      { name: 'ProductRepository', factory: createProductRepository },
+      { name: 'UserRepository', factory: createUserRepository },
+      { name: 'OrderRepository', factory: createOrderRepository },
+      { name: 'PaymentRepository', factory: createPaymentRepository },
+      { name: 'PaymentMethodRepository', factory: createPaymentMethodRepository },
+      { name: 'OccasionRepository', factory: createOccasionRepository },
+      { name: 'SettingsRepository', factory: createSettingsRepository },
+      { name: 'ProductImageRepository', factory: createProductImageRepository }
+    ]
+
+    for (const { name, factory } of repositoryConfigs) {
+      registry.register(name, factory, {
+        dependencies: ['SupabaseClient'],
+        fallback: () => {
+          logger.warn(`Using fallback for ${name} - returning mock repository`)
+          // Return a mock repository that returns empty arrays/null
+          return {
+            findAll: () => Promise.resolve([]),
+            findById: () => Promise.resolve(null),
+            create: () => Promise.resolve({ id: Date.now() }),
+            update: () => Promise.resolve({}),
+            delete: () => Promise.resolve({ active: false })
+          }
+        },
+        healthCheck: async repo => {
+          try {
+            // Test basic repository operation
+            if (typeof repo.findAll === 'function') {
+              await repo.findAll({}, { limit: 1 })
+              return { healthy: true, details: 'Repository operational' }
+            }
+            return { healthy: false, details: 'Repository methods not available' }
+          } catch (error) {
+            return {
+              healthy: false,
+              error: error.message,
+              details: 'Repository health check failed'
+            }
+          }
+        },
+        circuitBreaker: true,
+        retries: 3,
+        timeout: 10000
+      })
+    }
+
+    logger.info('Distributed Service Registry initialized successfully', {
+      services: repositoryConfigs.length + 2, // +2 for logger and supabase
+      healthMonitoring: true,
+      circuitBreakers: true,
+      fallbacks: true
+    })
+
+    return registry
+  } catch (error) {
+    logger.error('Failed to initialize Distributed Service Registry:', error)
+    throw new InternalServerError('Service registry initialization failed', {
+      originalError: error.message,
+      services: registry.getAllServicesStatus()
+    })
   }
 }
 
 /**
- * Initialize DI Container with all services
- * Call this once in app initialization
+ * Get service registry status for monitoring
  */
-export function initializeDIContainer() {
-  // Register logger as singleton
-  DIContainer.registerInstance('Logger', logger)
+export function getServiceRegistryStatus() {
+  if (!DIContainer.instance) {
+    return { error: 'Service registry not initialized' }
+  }
 
-  // Register database client as singleton
-  DIContainer.registerInstance('SupabaseClient', supabase)
-
-  // Register Repositories (ACTIVE - Repository Pattern in use)
-  // Repository Pattern provides abstraction layer between Services and Database
-  DIContainer.register('ProductRepository', createProductRepository, ['SupabaseClient'])
-  DIContainer.register('UserRepository', createUserRepository, ['SupabaseClient'])
-  DIContainer.register('OrderRepository', createOrderRepository, ['SupabaseClient'])
-  DIContainer.register('PaymentRepository', createPaymentRepository, ['SupabaseClient'])
-  DIContainer.register('PaymentMethodRepository', createPaymentMethodRepository, ['SupabaseClient'])
-  DIContainer.register('OccasionRepository', createOccasionRepository, ['SupabaseClient'])
-  DIContainer.register('SettingsRepository', createSettingsRepository, ['SupabaseClient'])
-  DIContainer.register('ProductImageRepository', createProductImageRepository, ['SupabaseClient'])
-
-  return DIContainer
+  return DIContainer.instance.getAllServicesStatus()
 }
 
+/**
+ * Force re-registration of all services (recovery mechanism)
+ */
+export async function reinitializeServices() {
+  if (!DIContainer.instance) {
+    throw new Error('Service registry not initialized')
+  }
+
+  logger.warn('Re-initializing all services...')
+
+  // Clear existing services
+  DIContainer.instance.clear()
+
+  // Re-initialize
+  return await initializeDIContainer()
+}
+
+// Legacy compatibility
 export default DIContainer

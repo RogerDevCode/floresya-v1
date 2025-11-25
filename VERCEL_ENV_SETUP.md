@@ -5,6 +5,7 @@
 Configure these in your Vercel project settings (Settings → Environment Variables):
 
 ### Database (Supabase)
+
 ```
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
@@ -12,18 +13,21 @@ SUPABASE_ANON_KEY=your-anon-key
 ```
 
 ### Security
+
 ```
 JWT_SECRET=your-jwt-secret-min-32-chars
 SESSION_SECRET=your-session-secret-min-32-chars
 ```
 
 ### Application
+
 ```
 NODE_ENV=production
 PORT=3000
 ```
 
 ### Optional (recommended defaults)
+
 ```
 CORS_ORIGIN=*
 ENABLE_MONITORING=false
@@ -56,6 +60,7 @@ curl https://floresya-v1.vercel.app/api/products
 ## Troubleshooting
 
 If you get `FUNCTION_INVOCATION_FAILED`:
+
 - Check all env vars are set
 - Check Vercel Function Logs in dashboard
 - Verify Supabase credentials are correct

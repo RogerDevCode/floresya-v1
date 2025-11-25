@@ -9,23 +9,25 @@ console.log('🔍 SCHEMA VERIFICATION - Comparing floresya.sql vs Live DB\n')
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n')
 
 // Test products table access
-const { data: products, error } = await supabase
-  .from('products')
-  .select('*')
-  .limit(1)
+const { data: products, error } = await supabase.from('products').select('*').limit(1)
 
 if (error) {
   console.log('❌ Error accessing products:', error.message)
 } else {
   console.log('✅ Products table accessible\n')
   console.log('📋 PRODUCTS TABLE COLUMNS (from live query):\n')
-  
+
   const columns = Object.keys(products[0] || {})
   columns.forEach(col => {
     const value = products[0][col]
-    const type = typeof value === 'number' ? 'numeric' : 
-                 value instanceof Date ? 'timestamp' :
-                 typeof value === 'boolean' ? 'boolean' : 'text'
+    const type =
+      typeof value === 'number'
+        ? 'numeric'
+        : value instanceof Date
+          ? 'timestamp'
+          : typeof value === 'boolean'
+            ? 'boolean'
+            : 'text'
     console.log(`   ${col.padEnd(25)} ${type}`)
   })
 }
@@ -59,7 +61,7 @@ console.log('\n━━━━━━━━━━━━━━━━━━━━━�
 // Check critical tables
 const criticalTables = [
   'products',
-  'product_images', 
+  'product_images',
   'occasions',
   'product_occasions',
   'orders',
@@ -72,7 +74,7 @@ console.log('🔍 CHECKING CRITICAL TABLES:\n')
 
 for (const table of criticalTables) {
   const { data, error } = await supabase.from(table).select('*').limit(1)
-  
+
   if (error) {
     console.log(`   ❌ ${table.padEnd(20)} - ${error.message}`)
   } else {

@@ -1,17 +1,21 @@
 /**
- * Procesado por B
- */
-
-/**
- * Validation & Sanitization Middleware
+ * Centralized Validation Middleware
  *
- * Contains all request validation and data sanitization middleware
+ * STANDARDIZED: Now uses ValidatorService as single source of truth
+ * All validation is centralized through api/services/validation/ValidatorService.js
  *
  * @category Middleware
+ * @deprecated Direct migration to ValidatorService recommended
  */
 
-export * from './validate.index.js'
-export * from './schemas.index.js'
-export * from './sanitize.js'
-export * from './globalSanitize.js'
-export * from './advancedValidation.index.js'
+// Import ValidatorService for backward compatibility
+import ValidatorService from '../../services/validation/ValidatorService.js'
+
+// Re-export ValidatorService
+export { ValidatorService }
+export default ValidatorService
+
+// Export commonly used validation functions
+export const validate = ValidatorService.validateId.bind(ValidatorService)
+export const validateEmail = ValidatorService.validateEmail.bind(ValidatorService)
+export const sanitize = ValidatorService.sanitizeString.bind(ValidatorService)

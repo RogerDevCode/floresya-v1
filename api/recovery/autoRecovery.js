@@ -358,25 +358,23 @@ export function getRecoveryStatus(req, res) {
 /**
  * Force recovery endpoint (admin only)
  */
-export function forceRecovery(req, res) {
+export async function forceRecovery(req, res) {
   const reason = req.body.reason || 'manual_admin_trigger'
 
-  autoRecoverySystem
-    .forceRecovery(reason)
-    .then(() => {
-      res.json({
-        success: true,
-        message: `Recovery initiated: ${reason}`
-      })
+  try {
+    await autoRecoverySystem.forceRecovery(reason)
+    res.json({
+      success: true,
+      message: `Recovery initiated: ${reason}`
     })
-    .catch(error => {
-      logger.error('Failed to force recovery', error)
-      res.status(500).json({
-        success: false,
-        error: 'RecoveryFailed',
-        message: 'Failed to initiate recovery'
-      })
+  } catch (error) {
+    logger.error('Failed to force recovery', error)
+    res.status(500).json({
+      success: false,
+      error: 'RecoveryFailed',
+      message: 'Failed to initiate recovery'
     })
+  }
 }
 
 /**

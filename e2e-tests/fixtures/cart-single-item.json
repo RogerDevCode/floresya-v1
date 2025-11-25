@@ -1,0 +1,14 @@
+{
+    "cookies": [],
+    "origins": [
+        {
+            "origin": "http://127.0.0.1:3000",
+            "localStorage": [
+                {
+                    "name": "cart",
+                    "value": "[{\"id\":1,\"name\":\"Test Product\",\"price_usd\":10.0,\"stock\":5,\"quantity\":2,\"image_thumb\":\"/images/test.jpg\"}]"
+                }
+            ]
+        }
+    ]
+}

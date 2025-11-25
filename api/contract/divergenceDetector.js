@@ -406,72 +406,72 @@ export function createDivergenceDetectionMiddleware() {
     const originalSend = res.send
 
     // Intercept json responses
-    res.json = function (data) {
+    res.json = async function (data) {
       // Check for request divergences
-      detector
-        .checkRequestDivergence(req)
-        .then(requestDivergences => {
-          if (requestDivergences) {
-            if (Array.isArray(requestDivergences)) {
-              requestDivergences.forEach(div => {
+      try {
+        const requestDivergences = await detector.checkRequestDivergence(req)
+        if (requestDivergences) {
+          if (Array.isArray(requestDivergences)) {
+            requestDivergences.forEach(div => {
+              detector.addDivergence(div)
+              logger.warn(`CONTRACT DIVERGENCE DETECTED: ${div.type} - ${div.message}`)
+            })
+          } else {
+            detector.addDivergence(requestDivergences)
+            logger.warn(
+              `CONTRACT DIVERGENCE DETECTED: ${requestDivergences.type} - ${requestDivergences.message}`
+            )
+          }
+        }
+
+        // Check for response divergences
+        try {
+          const responseDivergences = await detector.checkResponseDivergence(req, res, data)
+          if (responseDivergences) {
+            if (Array.isArray(responseDivergences)) {
+              responseDivergences.forEach(div => {
                 detector.addDivergence(div)
                 logger.warn(`CONTRACT DIVERGENCE DETECTED: ${div.type} - ${div.message}`)
               })
             } else {
-              detector.addDivergence(requestDivergences)
+              detector.addDivergence(responseDivergences)
               logger.warn(
-                `CONTRACT DIVERGENCE DETECTED: ${requestDivergences.type} - ${requestDivergences.message}`
+                `CONTRACT DIVERGENCE DETECTED: ${responseDivergences.type} - ${responseDivergences.message}`
               )
             }
           }
-
-          // Check for response divergences
-          detector
-            .checkResponseDivergence(req, res, data)
-            .then(responseDivergences => {
-              if (responseDivergences) {
-                if (Array.isArray(responseDivergences)) {
-                  responseDivergences.forEach(div => {
-                    detector.addDivergence(div)
-                    logger.warn(`CONTRACT DIVERGENCE DETECTED: ${div.type} - ${div.message}`)
-                  })
-                } else {
-                  detector.addDivergence(responseDivergences)
-                  logger.warn(
-                    `CONTRACT DIVERGENCE DETECTED: ${responseDivergences.type} - ${responseDivergences.message}`
-                  )
-                }
-              }
-            })
-            .catch(err => logger.error('Error checking response divergence:', err))
-        })
-        .catch(err => logger.error('Error checking request divergence:', err))
+        } catch (err) {
+          logger.error('Error checking response divergence:', err)
+        }
+      } catch (err) {
+        logger.error('Error checking request divergence:', err)
+      }
 
       // Send the original response
       return originalJson.call(this, data)
     }
 
     // Intercept send responses
-    res.send = function (data) {
+    res.send = async function (data) {
       // For non-JSON responses, we can still check for basic divergences
-      detector
-        .checkRequestDivergence(req)
-        .then(requestDivergences => {
-          if (requestDivergences) {
-            if (Array.isArray(requestDivergences)) {
-              requestDivergences.forEach(div => {
-                detector.addDivergence(div)
-                logger.warn(`CONTRACT DIVERGENCE DETECTED: ${div.type} - ${div.message}`)
-              })
-            } else {
-              detector.addDivergence(requestDivergences)
-              logger.warn(
-                `CONTRACT DIVERGENCE DETECTED: ${requestDivergences.type} - ${requestDivergences.message}`
-              )
-            }
+      try {
+        const requestDivergences = await detector.checkRequestDivergence(req)
+        if (requestDivergences) {
+          if (Array.isArray(requestDivergences)) {
+            requestDivergences.forEach(div => {
+              detector.addDivergence(div)
+              logger.warn(`CONTRACT DIVERGENCE DETECTED: ${div.type} - ${div.message}`)
+            })
+          } else {
+            detector.addDivergence(requestDivergences)
+            logger.warn(
+              `CONTRACT DIVERGENCE DETECTED: ${requestDivergences.type} - ${requestDivergences.message}`
+            )
           }
-        })
-        .catch(err => logger.error('Error checking request divergence:', err))
+        }
+      } catch (err) {
+        logger.error('Error checking request divergence:', err)
+      }
 
       // Send the original response
       return originalSend.call(this, data)

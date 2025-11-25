@@ -21,7 +21,7 @@ import {
   BadRequestError
 } from '../errors/AppError.js'
 import { withErrorMapping } from '../middleware/error/index.js'
-import { validateId } from '../utils/validation.js'
+import ValidatorService from './validation/ValidatorService.js'
 
 const TABLE = DB_SCHEMA.users.table
 const VALID_ROLES = DB_SCHEMA.users.enums.role
@@ -38,7 +38,7 @@ function getUserRepository() {
  * Validate user ID (KISS principle)
  */
 function validateUserId(id, operation = 'operation') {
-  validateId(id, 'User', operation)
+  ValidatorService.validateId(id, 'user')
 }
 
 /**

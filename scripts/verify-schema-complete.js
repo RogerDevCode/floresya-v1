@@ -8,7 +8,7 @@ const sql = readFileSync('floresya.sql', 'utf8')
 // Extract table definitions
 const tables = [
   'users',
-  'occasions', 
+  'occasions',
   'products',
   'product_occasions',
   'product_images',
@@ -25,7 +25,9 @@ console.log('📊 CHECKING DB_SCHEMA TABLES:\n')
 for (const table of tables) {
   const regex = new RegExp(`CREATE TABLE public\\.${table}`, 'i')
   const exists = regex.test(sql)
-  console.log(`   ${exists ? '✅' : '❌'} ${table.padEnd(25)} ${exists ? 'EXISTS in floresya.sql' : 'NOT FOUND'}`)
+  console.log(
+    `   ${exists ? '✅' : '❌'} ${table.padEnd(25)} ${exists ? 'EXISTS in floresya.sql' : 'NOT FOUND'}`
+  )
 }
 
 console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n')
@@ -56,16 +58,28 @@ console.log('\n━━━━━━━━━━━━━━━━━━━━━�
 console.log('📋 CHECKING PRODUCTS COLUMNS:\n')
 
 const clientColumns = [
-  'id', 'name', 'summary', 'description', 'price_usd', 'price_ves',
-  'stock', 'sku', 'active', 'featured', 'carousel_order',
-  'created_at', 'updated_at', 'name_normalized', 'description_normalized'
+  'id',
+  'name',
+  'summary',
+  'description',
+  'price_usd',
+  'price_ves',
+  'stock',
+  'sku',
+  'active',
+  'featured',
+  'carousel_order',
+  'created_at',
+  'updated_at',
+  'name_normalized',
+  'description_normalized'
 ]
 
 // Extract products table definition
 const productsMatch = sql.match(/CREATE TABLE public\.products \(([\s\S]*?)\);/i)
 if (productsMatch) {
   const productsDef = productsMatch[1]
-  
+
   for (const col of clientColumns) {
     const colRegex = new RegExp(`${col}\\s+`, 'i')
     const exists = colRegex.test(productsDef)
@@ -81,7 +95,9 @@ const missingCols = ['price', 'base_price', 'rating', 'image_url', 'category_id'
 for (const col of missingCols) {
   const regex = new RegExp(`${col}\\s+`, 'i')
   const exists = regex.test(sql.match(/CREATE TABLE public\.products[\s\S]*?;/)?.[0] || '')
-  console.log(`   ${!exists ? '✅' : '❌'} ${col.padEnd(25)} ${!exists ? 'Correctly NOT in schema' : 'FOUND (unexpected!)'}`)
+  console.log(
+    `   ${!exists ? '✅' : '❌'} ${col.padEnd(25)} ${!exists ? 'Correctly NOT in schema' : 'FOUND (unexpected!)'}`
+  )
 }
 
 console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n')

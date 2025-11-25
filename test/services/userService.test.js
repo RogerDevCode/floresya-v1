@@ -155,11 +155,11 @@ describe('User Service - Business Logic Layer', () => {
     })
 
     test('should throw BadRequestError for invalid ID type', async () => {
-      await expect(getUserById('invalid')).rejects.toThrow(BadRequestError)
+      await expect(getUserById('invalid')).rejects.toThrow(ValidationError)
     })
 
     test('should throw BadRequestError for null ID', async () => {
-      await expect(getUserById(null)).rejects.toThrow(BadRequestError)
+      await expect(getUserById(null)).rejects.toThrow(ValidationError)
     })
   })
 
@@ -377,8 +377,8 @@ describe('User Service - Business Logic Layer', () => {
       expect(result).toEqual(updatedUser)
     })
 
-    test('should throw BadRequestError for invalid ID', async () => {
-      await expect(updateUser('invalid', { full_name: 'Test' })).rejects.toThrow(BadRequestError)
+    test('should throw ValidationError for invalid ID', async () => {
+      await expect(updateUser('invalid', { full_name: 'Test' })).rejects.toThrow(ValidationError)
     })
 
     test('should throw BadRequestError for empty updates', async () => {
@@ -402,8 +402,8 @@ describe('User Service - Business Logic Layer', () => {
       expect(result).toEqual(deletedUser)
     })
 
-    test('should throw BadRequestError for invalid ID', async () => {
-      await expect(deleteUser(null)).rejects.toThrow(BadRequestError)
+    test('should throw ValidationError for invalid ID', async () => {
+      await expect(deleteUser(null)).rejects.toThrow(ValidationError)
     })
   })
 
@@ -418,8 +418,8 @@ describe('User Service - Business Logic Layer', () => {
       expect(result).toEqual(reactivatedUser)
     })
 
-    test('should throw BadRequestError for invalid ID', async () => {
-      await expect(reactivateUser('invalid')).rejects.toThrow(BadRequestError)
+    test('should throw ValidationError for invalid ID', async () => {
+      await expect(reactivateUser('invalid')).rejects.toThrow(ValidationError)
     })
   })
 
@@ -434,8 +434,8 @@ describe('User Service - Business Logic Layer', () => {
       expect(result).toEqual(verifiedUser)
     })
 
-    test('should throw BadRequestError for invalid ID', async () => {
-      await expect(verifyUserEmail(null)).rejects.toThrow(BadRequestError)
+    test('should throw ValidationError for invalid ID', async () => {
+      await expect(verifyUserEmail(null)).rejects.toThrow(ValidationError)
     })
   })
 
@@ -480,8 +480,8 @@ describe('User Service - Business Logic Layer', () => {
 
   describe('Input Validation - Edge cases and boundary conditions', () => {
     test('should handle null and undefined inputs gracefully', async () => {
-      await expect(getUserById(null)).rejects.toThrow(BadRequestError)
-      await expect(getUserById(undefined)).rejects.toThrow(BadRequestError)
+      await expect(getUserById(null)).rejects.toThrow(ValidationError)
+      await expect(getUserById(undefined)).rejects.toThrow(ValidationError)
       await expect(getUserByEmail(null)).rejects.toThrow(BadRequestError)
       await expect(getUserByEmail(undefined)).rejects.toThrow(BadRequestError)
     })

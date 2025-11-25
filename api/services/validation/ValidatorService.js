@@ -8,10 +8,9 @@
  * Follows KISS and DRY principles from CLAUDE.md
  */
 
-import { ValidationError } from '../../errors/AppError.js'
+import { ValidationError, BadRequestError } from '../../errors/AppError.js'
 
 /**
-import { BadRequestError } from "../errors/AppError.js"
  * Centralized validation service
  * All validations in one place for maintainability
  */
@@ -497,4 +496,90 @@ export class ValidatorService {
   }
 }
 
+/**
+ * Legacy compatibility functions for utils/validation.js
+ * These functions maintain API compatibility while using ValidatorService internally
+ */
+
+/**
+ * Legacy validateId function (compatible with utils/validation.js)
+ * @param {number} id - ID to validate
+ * @param {string} entity - Entity name (unused, kept for compatibility)
+ * @param {string} actionType - Action type (unused, kept for compatibility)
+ */
+function validateIdLegacy(id, entity = 'entity', actionType = 'operation') {
+  return ValidatorService.validateId(id, entity.toLowerCase())
+}
+
+/**
+ * Legacy validateEmail function (compatible with utils/validation.js)
+ * @param {string} email - Email to validate
+ * @param {string} field - Field name
+ */
+function validateEmailLegacy(email, field = 'email') {
+  if (!email || typeof email !== 'string' || !email.includes('@')) {
+    throw new ValidationError(`${field} validation failed`, {
+      [field]: 'must be a valid email address'
+    })
+  }
+  return true
+}
+
+/**
+ * Legacy validateString function (compatible with utils/validation.js)
+ */
+function validateStringLegacy(
+  value,
+  field = 'field',
+  options = { required: false, allowEmpty: false, minLength: 0, maxLength: 255 }
+) {
+  const errors = {}
+
+  // Required check
+  if (options.required && (value === undefined || value === null)) {
+    errors[field] = 'is required'
+    throw new ValidationError(`${field} validation failed`, errors)
+  }
+
+  // Skip further validation if not required and empty
+  if (!options.required && (value === undefined || value === null)) {
+    return
+  }
+
+  // Type check
+  if (typeof value !== 'string') {
+    errors[field] = 'must be a string'
+    throw new ValidationError(`${field} validation failed`, errors)
+  }
+
+  // Empty check
+  if (!options.allowEmpty && value.trim() === '') {
+    errors[field] = 'cannot be empty'
+    throw new ValidationError(`${field} validation failed`, errors)
+  }
+
+  // Length checks
+  if (options.minLength !== undefined && value.length < options.minLength) {
+    errors[field] = `must be at least ${options.minLength} characters`
+  }
+
+  if (options.maxLength !== undefined && value.length > options.maxLength) {
+    errors[field] = `must not exceed ${options.maxLength} characters`
+  }
+
+  if (Object.keys(errors).length > 0) {
+    throw new ValidationError(`${field} validation failed`, errors)
+  }
+}
+
 export default ValidatorService
+
+// Attach legacy functions to ValidatorService class for proper binding
+ValidatorService.validateIdLegacy = validateIdLegacy
+ValidatorService.validateEmailLegacy = validateEmailLegacy
+ValidatorService.validateStringLegacy = validateStringLegacy
+
+// Export legacy compatibility functions for smooth migration
+export const validateId = ValidatorService.validateIdLegacy.bind(ValidatorService)
+export const validateEmail = ValidatorService.validateEmailLegacy.bind(ValidatorService)
+export const validateString = ValidatorService.validateStringLegacy.bind(ValidatorService)

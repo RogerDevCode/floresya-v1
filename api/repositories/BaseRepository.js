@@ -3,13 +3,15 @@
  */
 
 /**
- * Base Repository
- * Proporciona operaciones CRUD comunes para todas las entidades
- * Implementa el patrón Repository para abstraer acceso a datos
+ * Enhanced Base Repository with Performance Optimization
+ * Proporciona operaciones CRUD comunes con optimización de rendimiento
+ * Implementa el patrón Repository con query optimization y monitoring
  * @abstract
  */
 
 import { NotFoundError, ConflictError } from '../errors/AppError.js'
+import { executeQuery, getPerformanceStats } from '../config/connectionPool.js'
+import { logger } from '../utils/logger.js'
 
 export class BaseRepository {
   /**
@@ -19,25 +21,147 @@ export class BaseRepository {
   constructor(supabaseClient, tableName) {
     this.supabase = supabaseClient
     this.table = tableName
+    this.performanceMetrics = {
+      totalQueries: 0,
+      slowQueries: 0,
+      averageResponseTime: 0,
+      lastPerformanceCheck: Date.now()
+    }
   }
 
   /**
-   * Crear nuevo registro
+   * Record query performance metrics
+   */
+  recordQueryPerformance(responseTime, operation, queryInfo = {}) {
+    this.performanceMetrics.totalQueries++
+
+    // Track slow queries (>1000ms)
+    if (responseTime > 1000) {
+      this.performanceMetrics.slowQueries++
+      logger.warn('Slow database query detected', {
+        table: this.table,
+        operation,
+        responseTime,
+        query: queryInfo.query || 'unknown',
+        ...queryInfo
+      })
+    }
+
+    // Update average response time
+    const total = this.performanceMetrics.totalQueries
+    const currentAvg = this.performanceMetrics.averageResponseTime
+    this.performanceMetrics.averageResponseTime = (currentAvg * (total - 1) + responseTime) / total
+
+    // Performance check every 100 queries
+    if (this.performanceMetrics.totalQueries % 100 === 0) {
+      this.checkPerformanceThresholds()
+    }
+  }
+
+  /**
+   * Check performance thresholds and log warnings
+   */
+  checkPerformanceThresholds() {
+    const { totalQueries, slowQueries, averageResponseTime } = this.performanceMetrics
+    const slowQueryRate = (slowQueries / totalQueries) * 100
+
+    if (slowQueryRate > 10) {
+      // More than 10% slow queries
+      logger.error('High slow query rate detected', {
+        table: this.table,
+        slowQueryRate: `${slowQueryRate.toFixed(2)}%`,
+        slowQueries,
+        totalQueries,
+        averageResponseTime: `${averageResponseTime.toFixed(2)}ms`
+      })
+    }
+
+    if (averageResponseTime > 500) {
+      // Average response time > 500ms
+      logger.warn('High average response time', {
+        table: this.table,
+        averageResponseTime: `${averageResponseTime.toFixed(2)}ms`,
+        totalQueries
+      })
+    }
+
+    this.performanceMetrics.lastPerformanceCheck = Date.now()
+  }
+
+  /**
+   * Execute query with performance monitoring and retry logic
+   */
+  async executeOptimizedQuery(queryFn, operation, queryInfo = {}) {
+    const startTime = Date.now()
+
+    try {
+      const result = await executeQuery(
+        async () => {
+          return await queryFn()
+        },
+        {
+          retries: 3,
+          timeout: 30000
+        }
+      )
+
+      const responseTime = Date.now() - startTime
+      this.recordQueryPerformance(responseTime, operation, queryInfo)
+
+      return result
+    } catch (error) {
+      const responseTime = Date.now() - startTime
+      this.recordQueryPerformance(responseTime, operation, { ...queryInfo, error: true })
+      throw error
+    }
+  }
+
+  /**
+   * Get current performance metrics
+   */
+  getPerformanceMetrics() {
+    return {
+      ...this.performanceMetrics,
+      slowQueryRate:
+        this.performanceMetrics.totalQueries > 0
+          ? (
+              (this.performanceMetrics.slowQueries / this.performanceMetrics.totalQueries) *
+              100
+            ).toFixed(2) + '%'
+          : '0%'
+    }
+  }
+
+  /**
+   * Crear nuevo registro con optimización
    * @param {Object} data - Datos del registro
    * @returns {Promise<Object>} Registro creado
    */
   async create(data) {
-    const { data: result, error } = await this.supabase
-      .from(this.table)
-      .insert(data)
-      .select()
-      .single()
-
-    if (error) {
-      throw this.handleError(error, 'create')
+    const queryInfo = {
+      operation: 'create',
+      table: this.table,
+      query: `INSERT INTO ${this.table}`,
+      recordCount: 1
     }
 
-    return result
+    return await this.executeOptimizedQuery(
+      async () => {
+        const { data: result, error } = await this.supabase
+          .from(this.table)
+          .insert(data)
+          .select()
+          .single()
+
+        if (error) {
+          throw this.handleError(error, 'create')
+        }
+
+        return result
+      },
+      'create',
+      queryInfo
+    )
   }
 
   /**
@@ -67,54 +191,133 @@ export class BaseRepository {
   }
 
   /**
-   * Obtener todos los registros con filtros opcionales
+   * Obtener todos los registros con filtros y optimización
    * @param {Object} filters - Filtros a aplicar
    * @param {Object} options - Opciones adicionales (orden, límites)
    * @returns {Promise<Array>} Lista de registros
    */
   async findAll(filters = {}, options = {}) {
-    let query = this.supabase.from(this.table).select('*')
-
-    // Aplicar filtros
-    if (filters.role) {
-      query = query.eq('role', filters.role)
+    const queryInfo = {
+      operation: 'findAll',
+      table: this.table,
+      filters: Object.keys(filters).length,
+      hasLimit: !!options.limit,
+      orderBy: options.orderBy || 'created_at'
     }
 
-    if (filters.email_verified !== undefined) {
-      query = query.eq('email_verified', filters.email_verified)
+    return await this.executeOptimizedQuery(
+      async () => {
+        let query = this.supabase.from(this.table).select('*')
+
+        // Aplicar filtros con optimización
+        if (filters.role) {
+          query = query.eq('role', filters.role)
+        }
+
+        if (filters.email_verified !== undefined) {
+          query = query.eq('email_verified', filters.email_verified)
+        }
+
+        if (filters.search) {
+          // Optimized search with proper indexing assumptions
+          query = query.or(`email.ilike.%${filters.search}%,full_name.ilike.%${filters.search}%`)
+        }
+
+        if (filters.featured !== undefined) {
+          query = query.eq('featured', filters.featured)
+        }
+
+        // Incluir inactivos solo si se especifica explícitamente
+        // @note ASSUMES 'active' column exists
+        if (!filters.includeDeactivated) {
+          query = query.eq('active', true)
+        }
+
+        // Aplicar ordenamiento
+        const orderBy = options.orderBy || 'created_at'
+        query = query.order(orderBy, { ascending: options.ascending || false })
+
+        // Aplicar límites con optimizaciones
+        if (options.limit !== undefined) {
+          const offset = options.offset || 0
+          query = query.range(offset, offset + options.limit - 1)
+
+          // Log large queries for optimization review
+          if (options.limit > 1000) {
+            logger.warn('Large query limit detected', {
+              table: this.table,
+              limit: options.limit,
+              offset,
+              filters
+            })
+          }
+        }
+
+        const { data, error } = await query
+
+        if (error) {
+          throw this.handleError(error, 'findAll', { filters, options })
+        }
+
+        return data || []
+      },
+      'findAll',
+      queryInfo
+    )
+  }
+
+  /**
+   * Batch operations for multiple records
+   * @param {Array} operations - Array of operation objects { action, data, id }
+   * @returns {Promise<Object>} Results summary
+   */
+  async batchOperations(operations) {
+    const results = {
+      successful: [],
+      failed: [],
+      total: operations.length
     }
 
-    if (filters.search) {
-      query = query.or(`email.ilike.%${filters.search}%,full_name.ilike.%${filters.search}%`)
+    const startTime = Date.now()
+
+    for (const operation of operations) {
+      try {
+        let result
+        switch (operation.action) {
+          case 'create':
+            result = await this.create(operation.data)
+            break
+          case 'update':
+            result = await this.update(operation.id, operation.data)
+            break
+          case 'delete':
+            result = await this.delete(operation.id, operation.auditInfo)
+            break
+          default:
+            throw new Error(`Unknown batch operation: ${operation.action}`)
+        }
+        results.successful.push({ operation, result })
+      } catch (error) {
+        results.failed.push({ operation, error: error.message })
+      }
     }
 
-    if (filters.featured !== undefined) {
-      query = query.eq('featured', filters.featured)
-    }
+    const responseTime = Date.now() - startTime
+    this.recordQueryPerformance(responseTime, 'batchOperations', {
+      totalOperations: operations.length,
+      successful: results.successful.length,
+      failed: results.failed.length
+    })
 
-    // Incluir inactivos solo si se especifica explícitamente
-    // @note ASSUMES 'active' column exists
-    if (!filters.includeDeactivated) {
-      query = query.eq('active', true)
-    }
+    logger.info('Batch operations completed', {
+      table: this.table,
+      total: results.total,
+      successful: results.successful.length,
+      failed: results.failed.length,
+      responseTime
+    })
 
-    // Aplicar ordenamiento
-    const orderBy = options.orderBy || 'created_at'
-    query = query.order(orderBy, { ascending: options.ascending || false })
-
-    // Aplicar límites
-    if (options.limit !== undefined) {
-      const offset = options.offset || 0
-      query = query.range(offset, offset + options.limit - 1)
-    }
-
-    const { data, error } = await query
-
-    if (error) {
-      throw this.handleError(error, 'findAll', { filters, options })
-    }
-
-    return data || []
+    return results
   }
 
   /**
@@ -254,14 +457,22 @@ export class BaseRepository {
   }
 
   /**
-   * Manejar errores de Supabase
+   * Manejar errores de Supabase con enhanced logging
    * @param {Object} error - Error de Supabase
    * @param {string} operation - Operación que falló
    * @param {Object} context - Contexto adicional
    * @returns {Error} Error formateado
    */
   handleError(error, operation, context = {}) {
-    console.error(`[${this.table} Repository] Error in ${operation}:`, error, context)
+    // Enhanced error logging
+    logger.error(`Database error in ${this.table}.${operation}`, {
+      error: error.message,
+      code: error.code,
+      operation,
+      context,
+      table: this.table,
+      timestamp: new Date().toISOString()
+    })
 
     // Personalizar mensajes de error según el código
     if (error.code === '23505') {
@@ -281,5 +492,83 @@ export class BaseRepository {
 
     // Error genérico
     return new Error(`Database error in ${this.table}.${operation}: ${error.message}`)
+  }
+
+  /**
+   * Get comprehensive optimization report
+   */
+  getOptimizationReport() {
+    const performanceMetrics = this.getPerformanceMetrics()
+    const connectionStats = getPerformanceStats()
+
+    return {
+      table: this.table,
+      performance: performanceMetrics,
+      connection: connectionStats,
+      recommendations: this.generateRecommendations(),
+      timestamp: new Date().toISOString()
+    }
+  }
+
+  /**
+   * Generate optimization recommendations
+   */
+  generateRecommendations() {
+    const recommendations = []
+    const { totalQueries, slowQueries, slowQueryRate, averageResponseTime } =
+      this.performanceMetrics
+
+    if (totalQueries === 0) {
+      return recommendations
+    }
+
+    // Slow query recommendations
+    if (slowQueryRate > 10) {
+      recommendations.push({
+        type: 'PERFORMANCE',
+        priority: 'HIGH',
+        issue: `High slow query rate: ${slowQueryRate}%`,
+        recommendation: 'Consider adding database indexes or optimizing query structure',
+        impact: 'High'
+      })
+    }
+
+    // Response time recommendations
+    if (averageResponseTime > 500) {
+      recommendations.push({
+        type: 'RESPONSE_TIME',
+        priority: 'MEDIUM',
+        issue: `High average response time: ${averageResponseTime.toFixed(2)}ms`,
+        recommendation: 'Review query complexity and consider caching frequently accessed data',
+        impact: 'Medium'
+      })
+    }
+
+    // Query volume recommendations
+    if (totalQueries > 10000) {
+      recommendations.push({
+        type: 'VOLUME',
+        priority: 'LOW',
+        issue: `High query volume: ${totalQueries} queries`,
+        recommendation: 'Consider implementing query result caching or batch operations',
+        impact: 'Low'
+      })
+    }
+
+    return recommendations
+  }
+
+  /**
+   * Reset performance metrics
+   */
+  resetMetrics() {
+    this.performanceMetrics = {
+      totalQueries: 0,
+      slowQueries: 0,
+      averageResponseTime: 0,
+      lastPerformanceCheck: Date.now()
+    }
+
+    logger.info(`Performance metrics reset for table: ${this.table}`)
   }
 }

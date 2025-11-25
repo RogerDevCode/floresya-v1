@@ -1,1 +1,0 @@
-pg_dump -n public -b -v   "postgresql://postgres.dcbavpdlkcjdtjdkntde:xhd294CcshhHFCx@aws-1-sa-east-1.pooler.supabase.com:6543/postgres"  --inserts --encoding=UTF8 -f floresya.sql

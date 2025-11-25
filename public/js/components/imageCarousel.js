@@ -15,57 +15,64 @@ import { TouchGestures } from '../shared/touchGestures.js'
  * @param {number} productId - Product ID
  * @returns {Promise<Object>} Carousel instance
  */
+/**
+ * Create hover-activated image carousel for product card
+ * @param {HTMLElement} container - Container element
+ * @param {number} productId - Product ID
+ * @returns {Promise<Object>} Carousel instance
+ */
 export async function createImageCarousel(container, productId) {
   try {
-    // Fetch product images (small size)
-    const response = await api.getProductImages(productId, { size: 'small' })
+    // State
+    let isInitialized = false
+    let isLoading = false
+    let images = []
+    let currentIndex = 0
+    let autoplayTimer = null
+    let touchGestures = null
+    let isSwipeHintShown = false
 
-    // Fallback: Use placeholder if no images found
-    if (!response.success || !response.data || response.data.length === 0) {
-      const placeholders = ['/images/placeholder-flower.svg', '/images/placeholder-hero.svg']
-      const placeholderIndex = productId % placeholders.length
-      const placeholderUrl = placeholders[placeholderIndex]
-
-      container.innerHTML = `
-        <div class="product-image-container" data-product-id="${productId}">
-          <img
-            src="${placeholderUrl}"
-            alt="Product placeholder"
-            class="product-carousel-image"
-            loading="eager"
-          />
-        </div>
-      `
+    // DOM Elements
+    const imageContainer = container // The container IS the wrapper in the new HTML structure
+    const imgElement = imageContainer.querySelector('img')
+    
+    // Validate essential elements
+    if (!imgElement) {
+      console.warn(`[Carousel] Image element not found for product ${productId}`)
       return { destroy: () => {} }
     }
 
-    const images = response.data.sort((a, b) => a.image_index - b.image_index)
-    const defaultImage = images[0] // First image is default
+    // Store original src to avoid refetching if it's the same
+    const originalSrc = imgElement.src
 
-    // Check if touch device
-    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    /**
+     * Initialize carousel on first interaction
+     */
+    async function initCarousel() {
+      if (isInitialized || isLoading) return
+      isLoading = true
 
-    // Render initial HTML (default image only)
-    // First 8 products load eagerly (above the fold), rest lazy load
-    const isAboveFold =
-      Array.from(document.querySelectorAll('[data-carousel-container]')).indexOf(container) < 8
+      try {
+        // Fetch product images (small size)
+        const response = await api.getProductImages(productId, { size: 'small' })
 
-    container.innerHTML = `
-      <div class="product-image-container" data-product-id="${productId}">
-        <div class="carousel-images-wrapper">
-          <img
-            src="${defaultImage.url}"
-            alt="Product image"
-            class="product-carousel-image bg-gray-100"
-            loading="${isAboveFold ? 'eager' : 'lazy'}"
-            decoding="async"
-            fetchpriority="${isAboveFold ? 'high' : 'auto'}"
-          />
-        </div>
-        ${
-          images.length > 1
-            ? `
-          <div class="image-count-badge">${images.length} fotos</div>
+        if (!response.success || !response.data || response.data.length <= 1) {
+          // No extra images, nothing to do
+          isInitialized = true
+          isLoading = false
+          // Remove listeners since we don't need them anymore
+          cleanupInteractionListeners()
+          return
+        }
+
+        images = response.data.sort((a, b) => a.image_index - b.image_index)
+        
+        // Check if touch device
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+
+        // Build UI controls
+        const controlsHTML = `
+          <div class="image-count-badge fade-in">${images.length} fotos</div>
           <div class="carousel-indicators ${isTouchDevice ? 'touch-visible' : 'touch-hidden'}" data-current="0">
             ${images
               .map(
@@ -102,44 +109,35 @@ export async function createImageCarousel(container, productId) {
             <span>Desliza para ver más</span>
           </div>
         `
-            : ''
+
+        // Append controls
+        imageContainer.insertAdjacentHTML('beforeend', controlsHTML)
+
+        // Initialize controls
+        initNavigationControls()
+        initTouchGestures()
+        
+        if (isTouchDevice) {
+            showSwipeHint()
+        } else {
+            // If mouse, start cycling immediately since we are already hovering
+            startCycling()
         }
-      </div>
-    `
 
-    // If only 1 image, no carousel needed
-    if (images.length === 1) {
-      return { destroy: () => {} }
+        isInitialized = true
+      } catch (error) {
+        console.error(`[Carousel] Failed to load images for product ${productId}:`, error)
+      } finally {
+        isLoading = false
+      }
     }
-
-    // Carousel state
-    let currentIndex = 0
-    let autoplayTimer = null
-    let touchGestures = null
-    let isSwipeHintShown = false
-
-    const imageContainer = container.querySelector('.product-image-container')
-    const imagesWrapper = imageContainer.querySelector('.carousel-images-wrapper')
-    const imgElement = imageContainer.querySelector('img')
-
-    // Touch-specific elements
-    const indicators = imageContainer.querySelector('.carousel-indicators')
-    const prevBtn = imageContainer.querySelector('.carousel-nav.prev')
-    const nextBtn = imageContainer.querySelector('.carousel-nav.next')
-    const swipeHint = imageContainer.querySelector('.swipe-hint')
-
-    // Add error handling for image loading
-    const handleImageError = () => {
-      imgElement.src = '/images/placeholder-flower.svg'
-      imgElement.classList.add('bg-gray-100')
-      console.warn('Failed to load product image:', defaultImage.url)
-    }
-    imgElement.addEventListener('error', handleImageError)
 
     /**
      * Navigate to specific image with smooth transition
      */
     function goToImage(index, animate = true) {
+      if (!isInitialized || images.length === 0) return
+
       if (index < 0) {
         index = images.length - 1
       }
@@ -151,68 +149,50 @@ export async function createImageCarousel(container, productId) {
       currentIndex = index
 
       if (animate) {
-        // Add fade transition
-        imgElement.style.opacity = '0'
+        imgElement.style.opacity = '0.8' // Slight fade for smoother feel
+        
+        // Use requestAnimationFrame for smoother visual update
+        requestAnimationFrame(() => {
+            imgElement.src = images[currentIndex].url
+            imgElement.style.opacity = '1'
+        })
 
-        setTimeout(() => {
-          imgElement.src = images[currentIndex].url
-          imgElement.classList.remove('bg-gray-100')
-          imgElement.style.opacity = '1'
-
-          // Update indicators
-          updateIndicators()
-
-          // Haptic feedback if supported
-          if (wasChanged && navigator.vibrate) {
-            navigator.vibrate(10)
-          }
-        }, 150)
+        // Haptic feedback if supported
+        if (wasChanged && navigator.vibrate) {
+          navigator.vibrate(10)
+        }
       } else {
         imgElement.src = images[currentIndex].url
-        imgElement.classList.remove('bg-gray-100')
-        updateIndicators()
       }
 
+      updateIndicators()
+
       // Hide swipe hint after first interaction
+      const swipeHint = imageContainer.querySelector('.swipe-hint')
       if (isSwipeHintShown && swipeHint) {
         swipeHint.classList.add('hidden')
         isSwipeHintShown = true
       }
     }
 
-    /**
-     * Cycle to next image
-     */
     function nextImage() {
       goToImage(currentIndex + 1)
     }
 
-    /**
-     * Cycle to previous image
-     */
     function prevImage() {
       goToImage(currentIndex - 1)
     }
 
-    /**
-     * Reset to default image
-     */
     function resetToDefault() {
+      if (!isInitialized) return
       goToImage(0, false)
     }
 
-    /**
-     * Update visual indicators
-     */
     function updateIndicators() {
-      if (!indicators) {
-        return
-      }
+      const indicators = imageContainer.querySelector('.carousel-indicators')
+      if (!indicators) return
 
-      // Update current index attribute
       indicators.setAttribute('data-current', currentIndex.toString())
-
-      // Update active indicator
       const dots = indicators.querySelectorAll('.indicator-dot')
       dots.forEach((dot, index) => {
         if (index === currentIndex) {
@@ -225,13 +205,9 @@ export async function createImageCarousel(container, productId) {
       })
     }
 
-    /**
-     * Initialize touch gestures
-     */
     function initTouchGestures() {
-      if (!isTouchDevice || !imagesWrapper) {
-        return
-      }
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+      if (!isTouchDevice) return
 
       touchGestures = new TouchGestures({
         swipeThreshold: 50,
@@ -240,7 +216,7 @@ export async function createImageCarousel(container, productId) {
         passive: true
       })
 
-      touchGestures.init(imagesWrapper)
+      touchGestures.init(imageContainer)
 
       touchGestures.onSwipe(event => {
         if (event.direction === 'left') {
@@ -249,41 +225,15 @@ export async function createImageCarousel(container, productId) {
           prevImage()
         }
       })
-
-      // Add visual feedback during swipe
-      imagesWrapper.addEventListener(
-        'touchstart',
-        () => {
-          imagesWrapper.classList.add('swiping')
-        },
-        { passive: true }
-      )
-
-      imagesWrapper.addEventListener(
-        'touchend',
-        () => {
-          setTimeout(() => {
-            imagesWrapper.classList.remove('swiping')
-          }, 300)
-        },
-        { passive: true }
-      )
     }
 
-    /**
-     * Show swipe hint on first load
-     */
     function showSwipeHint() {
-      if (!isTouchDevice || !swipeHint || isSwipeHintShown) {
-        return
-      }
+      const swipeHint = imageContainer.querySelector('.swipe-hint')
+      if (!swipeHint || isSwipeHintShown) return
 
-      // Show hint after a delay
       setTimeout(() => {
         if (!isSwipeHintShown) {
           swipeHint.classList.add('show')
-
-          // Auto-hide after 3 seconds
           setTimeout(() => {
             swipeHint.classList.remove('show')
             isSwipeHintShown = true
@@ -292,63 +242,42 @@ export async function createImageCarousel(container, productId) {
       }, 1500)
     }
 
-    /**
-     * Initialize navigation buttons and indicators
-     */
     function initNavigationControls() {
-      if (!indicators) {
-        return
+      const indicators = imageContainer.querySelector('.carousel-indicators')
+      const prevBtn = imageContainer.querySelector('.carousel-nav.prev')
+      const nextBtn = imageContainer.querySelector('.carousel-nav.next')
+
+      if (indicators) {
+        const dots = indicators.querySelectorAll('.indicator-dot')
+        dots.forEach((dot, index) => {
+          dot.addEventListener('click', (e) => {
+            e.stopPropagation() // Prevent card click
+            goToImage(index)
+          })
+        })
       }
 
-      // Indicator clicks
-      const dots = indicators.querySelectorAll('.indicator-dot')
-      dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => goToImage(index))
-
-        // Keyboard navigation
-        dot.addEventListener('keydown', e => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            goToImage(index)
-          }
-        })
-      })
-
-      // Navigation buttons
       if (prevBtn) {
-        prevBtn.addEventListener('click', prevImage)
-        prevBtn.addEventListener('keydown', e => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation()
             prevImage()
-          }
         })
       }
 
       if (nextBtn) {
-        nextBtn.addEventListener('click', nextImage)
-        nextBtn.addEventListener('keydown', e => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation()
             nextImage()
-          }
         })
       }
     }
 
-    /**
-     * Start auto-cycling images
-     */
     function startCycling() {
-      if (autoplayTimer) {
-        return
-      }
-      autoplayTimer = setInterval(nextImage, 800) // Fast cycling on hover
+      if (autoplayTimer || !isInitialized) return
+      // Initial delay before cycling starts to avoid jarring effect
+      autoplayTimer = setInterval(nextImage, 1200) 
     }
 
-    /**
-     * Stop cycling and reset to default
-     */
     function stopCycling() {
       if (autoplayTimer) {
         clearInterval(autoplayTimer)
@@ -357,49 +286,50 @@ export async function createImageCarousel(container, productId) {
       resetToDefault()
     }
 
-    // Initialize touch and navigation controls
-    if (images.length > 1) {
-      initNavigationControls()
-      initTouchGestures()
-      showSwipeHint()
+    // --- Interaction Handlers ---
+
+    function handleInteraction() {
+        if (!isInitialized) {
+            initCarousel()
+        } else {
+            startCycling()
+        }
     }
 
-    // Attach hover events (maintain backward compatibility)
-    imageContainer.addEventListener('mouseenter', startCycling)
-    imageContainer.addEventListener('mouseleave', stopCycling)
+    function handleMouseLeave() {
+        stopCycling()
+    }
+
+    // Attach lazy load listeners
+    imageContainer.addEventListener('mouseenter', handleInteraction)
+    imageContainer.addEventListener('mouseleave', handleMouseLeave)
+    
+    // Touch start also triggers init if needed
+    imageContainer.addEventListener('touchstart', handleInteraction, { passive: true })
+
+    function cleanupInteractionListeners() {
+        imageContainer.removeEventListener('mouseenter', handleInteraction)
+        imageContainer.removeEventListener('mouseleave', handleMouseLeave)
+        imageContainer.removeEventListener('touchstart', handleInteraction)
+    }
 
     // Return control methods
     return {
       destroy: () => {
         stopCycling()
-        imageContainer.removeEventListener('mouseenter', startCycling)
-        imageContainer.removeEventListener('mouseleave', stopCycling)
-        imgElement.removeEventListener('error', handleImageError)
-
-        // Clean up touch gestures
+        cleanupInteractionListeners()
+        
         if (touchGestures) {
           touchGestures.destroy()
         }
-
-        // Clean up navigation controls
-        if (indicators) {
-          const dots = indicators.querySelectorAll('.indicator-dot')
-          dots.forEach(dot => {
-            dot.removeEventListener('click', goToImage)
-          })
-        }
-
-        if (prevBtn) {
-          prevBtn.removeEventListener('click', prevImage)
-        }
-
-        if (nextBtn) {
-          nextBtn.removeEventListener('click', nextImage)
-        }
+        
+        // Remove injected controls to clean up DOM
+        const controls = imageContainer.querySelectorAll('.image-count-badge, .carousel-indicators, .carousel-nav, .swipe-hint')
+        controls.forEach(el => el.remove())
       }
     }
   } catch (error) {
     console.error(`createImageCarousel(${productId}) failed:`, error)
-    throw error // Fail-fast: propagate error to caller
+    return { destroy: () => {} }
   }
 }

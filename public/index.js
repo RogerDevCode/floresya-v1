@@ -110,7 +110,8 @@ function showCartMessage(message, type = 'success') {
   }, 3000)
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
+// Main initialization function
+async function initApp() {
   try {
     log.info('Starting dynamic module loading...')
 
@@ -119,7 +120,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       import('./js/shared/dom-ready.js'),
       import('./js/themes/themeManager.js'),
       import('./js/components/ThemeSelector.js'),
-      import('./js/components/imageCarousel.js'),
       import('./js/components/imageCarousel.js'),
       // MobileNav imported statically
       import('./js/components/pullToRefresh.js'),
@@ -180,7 +180,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     log.error('Failed to load modules:', error)
     throw error
   }
-})
+}
+
+// Initialize app when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp)
+} else {
+  // DOM already loaded, run immediately
+  initApp()
+}
 
 /**
  * Initialize mobile navigation drawer
@@ -1255,7 +1263,8 @@ async function loadProducts(page = 1) {
 
     const params = {
       limit: PRODUCTS_PER_PAGE,
-      offset: offset
+      offset: offset,
+      imageSize: 'small' // Request optimized images
     }
 
     if (searchInput?.value) {
@@ -1313,7 +1322,7 @@ async function loadProducts(page = 1) {
           <div class="group relative bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden hover:shadow-2xl hover:shadow-rose-500/10 hover:-translate-y-1 transition-all duration-500 reveal-on-scroll" data-product-id="${product.id}">
             
             <!-- Image Container -->
-            <div class="relative aspect-[4/5] overflow-hidden bg-slate-100">
+            <div class="relative aspect-[4/5] overflow-hidden bg-slate-100" data-carousel-container data-product-id="${product.id}">
               <img
                 src="${product.image_url_small || './images/placeholder-flower.svg'}"
                 alt="${product.name}"

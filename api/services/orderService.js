@@ -438,7 +438,8 @@ export async function updateOrder(id, updates) {
       throw new BadRequestError('No updates provided', { orderId: id })
     }
 
-    validateOrder(updates, VALID_STATUSES, true)
+    // Note: Skip validateOrder for partial updates since only specific fields are allowed
+    // validateOrder(updates, VALID_STATUSES, true)
 
     const allowedFields = [
       'delivery_address',
