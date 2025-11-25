@@ -2,7 +2,6 @@ import { describe, it, expect, vi } from 'vitest'
 import {
   validateErrorResponse,
   validateErrorObject,
-  validateErrorJSON,
   batchValidateErrors,
   createErrorResponseTemplate,
   getErrorComplianceScore,
@@ -19,11 +18,21 @@ vi.mock('../../api/config/errorCodes.js', () => ({
     INTERNAL_ERROR: 5001
   },
   getErrorCategory: vi.fn((code) => {
-    if (code >= 1000 && code < 2000) return 'validation'
-    if (code >= 2000 && code < 3000) return 'authentication'
-    if (code >= 3000 && code < 4000) return 'not_found'
-    if (code >= 4000 && code < 5000) return 'business'
-    if (code >= 5000) return 'server'
+    if (code >= 1000 && code < 2000) {
+      return 'validation'
+    }
+    if (code >= 2000 && code < 3000) {
+      return 'authentication'
+    }
+    if (code >= 3000 && code < 4000) {
+      return 'not_found'
+    }
+    if (code >= 4000 && code < 5000) {
+      return 'business'
+    }
+    if (code >= 5000) {
+      return 'server'
+    }
     return 'unknown'
   }),
   isValidationError: vi.fn((code) => code >= 1000 && code < 2000),
