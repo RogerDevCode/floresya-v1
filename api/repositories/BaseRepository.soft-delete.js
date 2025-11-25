@@ -8,7 +8,7 @@
  * LEGACY: Modularizado desde BaseRepository.js (WEEK 4)
  */
 
-import { BaseRepository, NotFoundError } from './BaseRepository.helpers.js'
+import { BaseRepository, NotFoundError, ConflictError } from './BaseRepository.helpers.js'
 
 /**
  * Extend BaseRepository with soft-delete operations
