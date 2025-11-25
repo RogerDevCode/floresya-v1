@@ -38,8 +38,8 @@ describe('Order Status Service - Logic Coverage', () => {
     });
 
     it('should prevent invalid transitions', () => {
-      const from = 'delivered';
-      const to = 'pending';
+      // const from = 'delivered';
+      // const to = 'pending';
       const canTransition = false; // delivered is final
       expect(canTransition).toBe(false);
     });

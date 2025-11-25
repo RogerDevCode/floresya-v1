@@ -103,7 +103,7 @@ describe('Supabase Storage Service - File Storage', () => {
 
     it('should handle signed URLs', () => {
       const path = 'private/test.jpg';
-      const expiresIn = 3600;
+      // const expiresIn = 3600;
       const url = `https://storage.supabase.co/bucket/${path}?token=xyz`;
       expect(url).toContain('token=');
     });

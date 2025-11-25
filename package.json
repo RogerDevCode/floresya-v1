@@ -23,7 +23,7 @@
     "test:unit": "vitest run",
     "test:integration": "vitest run test/integration",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage",
+    "test:coverage": "NODE_OPTIONS='--max-old-space-size=512' vitest run --coverage --maxConcurrency=2",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:ui": "playwright test --ui",

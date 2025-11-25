@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 describe('Auto Recovery - System Self-Healing', () => {
   describe('Connection retry', () => {
@@ -31,7 +31,7 @@ describe('Auto Recovery - System Self-Healing', () => {
   describe('Circuit breaker', () => {
     it('should open circuit after threshold', () => {
       const failureThreshold = 5;
-      let failures = 6;
+      const failures = 6;
       const isOpen = failures >= failureThreshold;
       expect(isOpen).toBe(true);
     });

@@ -132,7 +132,7 @@ describe('Logger Utility - Complete Coverage', () => {
 
   describe('Log Filtering', () => {
     it('should respect log level', () => {
-      const levels = ['debug', 'info', 'warn', 'error'];
+      // const levels = ['debug', 'info', 'warn', 'error'];
       const hierarchy = { debug: 0, info: 1, warn: 2, error: 3 };
       
       expect(hierarchy.error).toBeGreaterThan(hierarchy.debug);

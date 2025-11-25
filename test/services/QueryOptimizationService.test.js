@@ -73,7 +73,7 @@ describe('Query Optimization Service - Logic Coverage', () => {
         { table: 'products', id: 2 }
       ];
       const grouped = queries.reduce((acc, q) => {
-        if (!acc[q.table]) acc[q.table] = [];
+        if (!acc[q.table]) {acc[q.table] = [];}
         acc[q.table].push(q);
         return acc;
       }, {});

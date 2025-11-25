@@ -107,7 +107,7 @@ describe('Settings Service - Logic Coverage', () => {
         { key: 'max_items', category: 'general' }
       ];
       const grouped = settings.reduce((acc, s) => {
-        if (!acc[s.category]) acc[s.category] = [];
+        if (!acc[s.category]) {acc[s.category] = [];}
         acc[s.category].push(s);
         return acc;
       }, {});

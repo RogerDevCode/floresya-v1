@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 describe('Architecture Components - Comprehensive Coverage', () => {
   describe('Dependency Injection Container', () => {
@@ -454,7 +454,7 @@ describe('Contract Enforcement - Comprehensive Coverage', () => {
     });
 
     it('should check null/undefined', () => {
-      const isValid = (value) => value != null;
+      const isValid = (value) => value !== null && value !== undefined;
       
       expect(isValid('test')).toBe(true);
       expect(isValid(null)).toBe(false);
@@ -467,7 +467,8 @@ describe('Contract Enforcement - Comprehensive Coverage', () => {
       const result = { id: 1, name: 'Test' };
       
       const postcondition = (obj) => 
-        obj.hasOwnProperty('id') && obj.hasOwnProperty('name');
+        Object.prototype.hasOwnProperty.call(obj, 'id') && 
+        Object.prototype.hasOwnProperty.call(obj, 'name');
       
       expect(postcondition(result)).toBe(true);
     });

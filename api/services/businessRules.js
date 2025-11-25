@@ -763,4 +763,3 @@ export function validateProductImages(images) {
 }
 
 // Export BusinessRulesEngine class for testing
-export { BusinessRulesEngine }

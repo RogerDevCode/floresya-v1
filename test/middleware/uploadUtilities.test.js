@@ -1,5 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import multer from 'multer';
+import { describe, it, expect } from 'vitest';
 
 describe('Upload Utilities - Comprehensive Coverage', () => {
   describe('Image Upload Configuration', () => {
@@ -58,7 +57,7 @@ describe('Upload Utilities - Comprehensive Coverage', () => {
       
       dangerousFilenames.forEach(filename => {
         const sanitized = filename.replace(/[^a-zA-Z0-9.-]/g, '_');
-        expect(sanitized).not.toMatch(/[<>\/\\]/);
+        expect(sanitized).not.toMatch(/[<>/\\]/);
       });
     });
 
@@ -289,7 +288,7 @@ describe('Upload Utilities - Comprehensive Coverage', () => {
   describe('File Organization', () => {
     it('should organize files by type', () => {
       const imageFiles = ['photo1.jpg', 'photo2.png'];
-      const receiptFiles = ['receipt1.pdf', 'receipt2.jpg'];
+      // const receiptFiles = ['receipt1.pdf', 'receipt2.jpg'];
       
       expect(imageFiles.every(f => /\.(jpg|png|gif|webp)$/i.test(f))).toBe(true);
     });

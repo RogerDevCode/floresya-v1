@@ -7,6 +7,7 @@ describe('Error Handler Utility - Complete Coverage', () => {
     vi.resetModules();
     const module = await import('../../api/utils/errorHandler.js');
     errorHandler = module;
+    expect(errorHandler).toBeDefined();
   });
 
   describe('handleError', () => {

@@ -70,7 +70,7 @@ describe('Product Image Service - Logic Coverage', () => {
 
   describe('Primary Image Logic', () => {
     it('should set new primary when changing', () => {
-      let currentPrimary = { id: 1, isPrimary: true };
+      const currentPrimary = { id: 1, isPrimary: true };
       const newPrimary = { id: 2, isPrimary: false };
       
       currentPrimary.isPrimary = false;

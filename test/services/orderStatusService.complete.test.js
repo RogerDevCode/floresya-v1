@@ -41,7 +41,7 @@ describe('Order Status Service - Order State Management', () => {
     });
 
     it('should validate transition rules', () => {
-      const from = 'pending';
+      // const from = 'pending';
       const to = 'verified';
       const allowedTransitions = ['verified', 'cancelled'];
       const isValid = allowedTransitions.includes(to);
@@ -49,7 +49,7 @@ describe('Order Status Service - Order State Management', () => {
     });
 
     it('should reject invalid transitions', () => {
-      const from = 'delivered';
+      // const from = 'delivered';
       const to = 'pending';
       const allowedTransitions = [];
       const isValid = allowedTransitions.includes(to);
