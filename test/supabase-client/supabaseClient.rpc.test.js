@@ -5,7 +5,10 @@
  */
 
 import { describe, test, expect, beforeEach, afterEach } from 'vitest'
-import { createSupabaseClientMock } from './mocks/mocks.js'
+import {
+  createSupabaseClientMock,
+  POSTGRESQL_ERROR_CODES
+} from './mocks/mocks.js'
 
 // Helper function to create test client
 function createTestClient() {

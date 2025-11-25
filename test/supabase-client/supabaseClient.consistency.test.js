@@ -6,7 +6,10 @@
 
 import { describe, test, expect, beforeEach, afterEach } from 'vitest'
 import {
-  createSupabaseClientMock
+  createSupabaseClientMock,
+  POSTGRESQL_ERROR_CODES,
+  AppError,
+  SchemaValidator
 } from './mocks/mocks.js'
 
 // Helper function to create test client

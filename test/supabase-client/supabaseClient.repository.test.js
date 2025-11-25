@@ -5,7 +5,14 @@
  */
 
 import { describe, test, expect, beforeEach, afterEach } from 'vitest'
-import { createSupabaseClientMock } from './mocks/mocks.js'
+import {
+  createSupabaseClientMock,
+  UserRepository,
+  ProfileRepository,
+  DIContainer,
+  UserService,
+  PerformanceMonitor
+} from './mocks/mocks.js'
 
 // Helper function to create test client
 function createTestClient() {
