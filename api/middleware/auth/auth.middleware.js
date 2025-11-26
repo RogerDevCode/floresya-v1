@@ -182,7 +182,7 @@ class SecurityEventMonitor {
 
     const userEvents = this.events.get(`SESSION:${userId}`) || []
     const recent = userEvents.filter(e => Date.now() - e.timestamp < 60000) // Last minute
-    
+
     const uniqueIPs = new Set(recent.map(e => e.ip))
     if (uniqueIPs.size >= SESSION_SECURITY.IP_CHANGE_THRESHOLD) {
       this.threats.set(`SESSION_HIJACK:${userId}:${Date.now()}`, {
@@ -249,7 +249,7 @@ class SecurityEventMonitor {
   cleanupEvents(key) {
     const events = this.events.get(key) || []
     const recent = events.filter(e => Date.now() - e.timestamp < 3600000) // 1 hour
-    
+
     if (recent.length === 0) {
       this.events.delete(key)
     } else {
@@ -275,7 +275,10 @@ class AdvancedJWTValidator {
     }
 
     // Length validation
-    if (token.length < JWT_SECURITY.MIN_TOKEN_LENGTH || token.length > JWT_SECURITY.MAX_TOKEN_LENGTH) {
+    if (
+      token.length < JWT_SECURITY.MIN_TOKEN_LENGTH ||
+      token.length > JWT_SECURITY.MAX_TOKEN_LENGTH
+    ) {
       securityMonitor.recordEvent('INVALID_TOKEN', {
         ip: req.ip,
         reason: 'Invalid token length',
@@ -317,7 +320,7 @@ class AdvancedJWTValidator {
       /script|javascript|vbscript/i, // Script injection
       /union|select|insert|delete|update/i, // SQL injection patterns
       /\.\./, // Path traversal
-      /eval\(|exec\(|system\(/i, // Code execution
+      /eval\(|exec\(|system\(/i // Code execution
     ]
 
     return suspiciousPatterns.some(pattern => pattern.test(token))
@@ -378,10 +381,10 @@ class AuthRateLimiter {
     }
 
     const userAttempts = this.attempts.get(key)
-    
+
     // Remove old attempts outside window
     const recentAttempts = userAttempts.filter(timestamp => timestamp > windowStart)
-    
+
     if (recentAttempts.length >= limitConfig.max) {
       return false
     }
@@ -458,7 +461,7 @@ export async function authenticate(req, res, next) {
         path: req.path,
         method: req.method
       })
-      
+
       logger.warn('Authentication failed: No token provided', {
         path: req.path,
         method: req.method,
@@ -539,7 +542,7 @@ export async function authenticate(req, res, next) {
     // Session security checks
     const sessionKey = `session:${user.id}`
     const existingSessions = securityMonitor.userSessions.get(sessionKey) || []
-    
+
     // Check for concurrent session limit
     if (existingSessions.length >= SESSION_SECURITY.MAX_CONCURRENT_SESSIONS) {
       logger.warn('Session limit exceeded', {
@@ -567,7 +570,7 @@ export async function authenticate(req, res, next) {
       loginTime: Date.now(),
       lastActivity: Date.now()
     }
-    
+
     existingSessions.push(sessionInfo)
     securityMonitor.userSessions.set(sessionKey, existingSessions)
 
@@ -592,7 +595,7 @@ export async function authenticate(req, res, next) {
     next()
   } catch (error) {
     const processingTime = Date.now() - startTime
-    
+
     // Enhanced error logging with security context
     logger.warn('Authentication failed', {
       error: error.message,

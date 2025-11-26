@@ -8,7 +8,7 @@ test.describe('Product Detail Page - Complete Functionality', () => {
   test.beforeEach(async ({ page }) => {
     // Visit product detail page
     await page.goto(`/pages/product-detail.html?id=${VALID_PRODUCT_ID}`)
-    
+
     // Monitor console
     page.on('console', msg => {
       if (msg.type() === 'error') {
@@ -27,8 +27,14 @@ test.describe('Product Detail Page - Complete Functionality', () => {
 
     test('should have required meta tags', async ({ page }) => {
       await expect(page.locator('head meta[charset="UTF-8"]')).toHaveCount(1)
-      await expect(page.locator('head meta[name="viewport"]')).toHaveAttribute('content', 'width=device-width, initial-scale=1.0')
-      await expect(page.locator('head meta[name="description"]')).toHaveAttribute('content', 'Detalles del producto - FloresYa')
+      await expect(page.locator('head meta[name="viewport"]')).toHaveAttribute(
+        'content',
+        'width=device-width, initial-scale=1.0'
+      )
+      await expect(page.locator('head meta[name="description"]')).toHaveAttribute(
+        'content',
+        'Detalles del producto - FloresYa'
+      )
     })
 
     test('should have proper title tag', async ({ page }) => {
@@ -43,7 +49,10 @@ test.describe('Product Detail Page - Complete Functionality', () => {
 
     test('should display logo and brand', async ({ page }) => {
       await expect(page.locator('.navbar-brand')).toHaveAttribute('href', '/')
-      await expect(page.locator('.navbar-brand img')).toHaveAttribute('src', '/images/logoFloresYa.jpeg')
+      await expect(page.locator('.navbar-brand img')).toHaveAttribute(
+        'src',
+        '/images/logoFloresYa.jpeg'
+      )
     })
 
     test('should render breadcrumb navigation', async ({ page }) => {
@@ -59,7 +68,7 @@ test.describe('Product Detail Page - Complete Functionality', () => {
       // Or reload and check immediately
       await page.reload()
       // If it's fast, we might miss it visibility-wise, but element should exist
-      // await expect(page.locator('#loading-spinner')).toBeVisible() 
+      // await expect(page.locator('#loading-spinner')).toBeVisible()
       // Instead, let's verify it disappears
       await expect(page.locator('#loading-spinner')).not.toBeVisible()
     })
@@ -94,7 +103,7 @@ test.describe('Product Detail Page - Complete Functionality', () => {
       const img = page.locator('#main-image')
       await expect(img).toBeVisible()
       await expect(img).toHaveAttribute('src', /.+/)
-      
+
       const naturalWidth = await img.evaluate(el => el.naturalWidth)
       expect(naturalWidth).toBeGreaterThan(0)
     })
@@ -185,7 +194,7 @@ test.describe('Product Detail Page - Complete Functionality', () => {
 
       // Click add to cart
       await page.locator('#add-to-cart-btn').click()
-      
+
       // Verify toast or cart update (if applicable, though test didn't specify)
       // Just ensuring no errors
     })

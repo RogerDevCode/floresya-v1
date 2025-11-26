@@ -209,7 +209,7 @@ describe('sanitizeData', () => {
       const original = { name: null, price: undefined }
       const fieldTypes = { name: 'string', price: 'number' }
       const result = sanitizeData(original, fieldTypes)
-      
+
       expect(original.name).toBeNull()
       expect(original.price).toBeUndefined()
       expect(result.name).toBe('')

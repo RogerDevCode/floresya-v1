@@ -81,7 +81,7 @@ describe('Rate Limit Middleware', () => {
 
     it('should return stats object', () => {
       const stats = rateLimitFuncs.getRateLimitStats()
-      
+
       expect(stats).toBeDefined()
       expect(typeof stats).toBe('object')
     })

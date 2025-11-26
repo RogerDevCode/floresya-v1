@@ -12,9 +12,9 @@ import * as Helpers from '../../api/services/userService.helpers.js'
 
 vi.mock('../../api/services/userService.helpers.js', () => ({
   getUserRepository: vi.fn(),
-  withErrorHandling: vi.fn((fn) => fn()),
-  withErrorMapping: vi.fn((fn) => fn),
-  validateUserId: vi.fn((id) => {
+  withErrorHandling: vi.fn(fn => fn()),
+  withErrorMapping: vi.fn(fn => fn),
+  validateUserId: vi.fn(id => {
     if (!id || typeof id !== 'number') {
       throw new Error('Invalid user ID')
     }
@@ -88,11 +88,15 @@ describe('User Service - Create Operations', () => {
   })
 
   it('should throw ValidationError when email has no @', async () => {
-    await expect(CreateOps.createUser({ email: 'invalidemail.com' })).rejects.toThrow('Invalid email format')
+    await expect(CreateOps.createUser({ email: 'invalidemail.com' })).rejects.toThrow(
+      'Invalid email format'
+    )
   })
 
   it('should throw ValidationError when email has no dot', async () => {
-    await expect(CreateOps.createUser({ email: 'invalid@email' })).rejects.toThrow('Invalid email format')
+    await expect(CreateOps.createUser({ email: 'invalid@email' })).rejects.toThrow(
+      'Invalid email format'
+    )
   })
 
   it('should throw ValidationError for invalid role', async () => {
@@ -102,16 +106,16 @@ describe('User Service - Create Operations', () => {
   })
 
   it('should throw ValidationError when admin has no password', async () => {
-    await expect(
-      CreateOps.createUser({ email: 'admin@test.com', role: 'admin' })
-    ).rejects.toThrow('Password is required for admin users')
+    await expect(CreateOps.createUser({ email: 'admin@test.com', role: 'admin' })).rejects.toThrow(
+      'Password is required for admin users'
+    )
   })
 
   it('should allow admin creation with password', async () => {
-    const userData = { 
-      email: 'admin@test.com', 
-      role: 'admin', 
-      password_hash: 'hashed123' 
+    const userData = {
+      email: 'admin@test.com',
+      role: 'admin',
+      password_hash: 'hashed123'
     }
     mockRepository.create.mockResolvedValue({ id: 3, ...userData })
 
@@ -136,7 +140,10 @@ describe('User Service - Read Operations', () => {
 
   describe('getAllUsers', () => {
     it('should return all users', async () => {
-      const users = [{ id: 1, email: 'u1@test.com' }, { id: 2, email: 'u2@test.com' }]
+      const users = [
+        { id: 1, email: 'u1@test.com' },
+        { id: 2, email: 'u2@test.com' }
+      ]
       mockRepository.findAllWithFilters.mockResolvedValue(users)
 
       const result = await ReadOps.getAllUsers()
@@ -257,7 +264,9 @@ describe('User Service - Update Operations', () => {
   })
 
   it('should throw BadRequestError for invalid id', async () => {
-    await expect(UpdateOps.updateUser('invalid', { name: 'Test' })).rejects.toThrow('Invalid user ID')
+    await expect(UpdateOps.updateUser('invalid', { name: 'Test' })).rejects.toThrow(
+      'Invalid user ID'
+    )
   })
 
   it('should throw BadRequestError when no updates', async () => {
@@ -287,7 +296,7 @@ describe('User Service - Delete Operations', () => {
       reactivate: vi.fn()
     }
     vi.mocked(Helpers.getUserRepository).mockReturnValue(mockRepository)
-    vi.mocked(Helpers.validateUserId).mockImplementation((id) => {
+    vi.mocked(Helpers.validateUserId).mockImplementation(id => {
       if (!id || typeof id !== 'number') {
         throw new Error('Invalid user ID')
       }

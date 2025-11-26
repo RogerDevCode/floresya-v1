@@ -1,14 +1,14 @@
 {
-    "cookies": [],
-    "origins": [
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://127.0.0.1:3000",
+      "localStorage": [
         {
-            "origin": "http://127.0.0.1:3000",
-            "localStorage": [
-                {
-                    "name": "cart",
-                    "value": "[{\"id\":1,\"name\":\"Product 1\",\"price_usd\":10,\"stock\":5,\"quantity\":1,\"image_thumb\":\"/images/test.jpg\"},{\"id\":2,\"name\":\"Product 2\",\"price_usd\":15,\"stock\":5,\"quantity\":1,\"image_thumb\":\"/images/test.jpg\"}]"
-                }
-            ]
+          "name": "cart",
+          "value": "[{\"id\":1,\"name\":\"Product 1\",\"price_usd\":10,\"stock\":5,\"quantity\":1,\"image_thumb\":\"/images/test.jpg\"},{\"id\":2,\"name\":\"Product 2\",\"price_usd\":15,\"stock\":5,\"quantity\":1,\"image_thumb\":\"/images/test.jpg\"}]"
         }
-    ]
+      ]
+    }
+  ]
 }

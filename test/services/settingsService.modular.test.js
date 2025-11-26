@@ -78,15 +78,21 @@ describe('Settings Service - Create Operations', () => {
   })
 
   it('should throw ValidationError when key is missing', async () => {
-    await expect(CreateOps.createSetting({ value: 'test' })).rejects.toThrow('Setting key is required')
+    await expect(CreateOps.createSetting({ value: 'test' })).rejects.toThrow(
+      'Setting key is required'
+    )
   })
 
   it('should throw ValidationError when value is missing', async () => {
-    await expect(CreateOps.createSetting({ key: 'test' })).rejects.toThrow('Setting value is required')
+    await expect(CreateOps.createSetting({ key: 'test' })).rejects.toThrow(
+      'Setting value is required'
+    )
   })
 
   it('should throw ValidationError when key is not string', async () => {
-    await expect(CreateOps.createSetting({ key: 123, value: 'test' })).rejects.toThrow('must be a string')
+    await expect(CreateOps.createSetting({ key: 123, value: 'test' })).rejects.toThrow(
+      'must be a string'
+    )
   })
 })
 
@@ -105,13 +111,19 @@ describe('Settings Service - Read Operations', () => {
 
   describe('getAllSettings', () => {
     it('should return all settings', async () => {
-      const settings = [{ key: 'k1', value: 'v1' }, { key: 'k2', value: 'v2' }]
+      const settings = [
+        { key: 'k1', value: 'v1' },
+        { key: 'k2', value: 'v2' }
+      ]
       mockRepository.findAll.mockResolvedValue(settings)
 
       const result = await ReadOps.getAllSettings()
 
       expect(result).toEqual(settings)
-      expect(mockRepository.findAll).toHaveBeenCalledWith({ publicOnly: false, includeDeactivated: false })
+      expect(mockRepository.findAll).toHaveBeenCalledWith({
+        publicOnly: false,
+        includeDeactivated: false
+      })
     })
 
     it('should return public settings only', async () => {
@@ -120,7 +132,10 @@ describe('Settings Service - Read Operations', () => {
 
       await ReadOps.getAllSettings(true)
 
-      expect(mockRepository.findAll).toHaveBeenCalledWith({ publicOnly: true, includeDeactivated: false })
+      expect(mockRepository.findAll).toHaveBeenCalledWith({
+        publicOnly: true,
+        includeDeactivated: false
+      })
     })
 
     it('should return empty array when null', async () => {
@@ -185,7 +200,10 @@ describe('Settings Service - Read Operations', () => {
 
   describe('getSettingsByKeys', () => {
     it('should return multiple settings', async () => {
-      const settings = [{ key: 'k1', value: 'v1' }, { key: 'k2', value: 'v2' }]
+      const settings = [
+        { key: 'k1', value: 'v1' },
+        { key: 'k2', value: 'v2' }
+      ]
       mockRepository.findByKeys.mockResolvedValue(settings)
 
       const result = await ReadOps.getSettingsByKeys(['k1', 'k2'])
@@ -194,7 +212,9 @@ describe('Settings Service - Read Operations', () => {
     })
 
     it('should throw BadRequestError when keys is not array', async () => {
-      await expect(ReadOps.getSettingsByKeys('invalid')).rejects.toThrow('must be a non-empty array')
+      await expect(ReadOps.getSettingsByKeys('invalid')).rejects.toThrow(
+        'must be a non-empty array'
+      )
     })
 
     it('should throw BadRequestError when keys is empty', async () => {
@@ -223,7 +243,9 @@ describe('Settings Service - Update Operations', () => {
     })
 
     it('should throw BadRequestError when key is invalid', async () => {
-      await expect(UpdateOps.updateSetting(null, { value: 'test' })).rejects.toThrow('must be a string')
+      await expect(UpdateOps.updateSetting(null, { value: 'test' })).rejects.toThrow(
+        'must be a string'
+      )
     })
 
     it('should throw BadRequestError when no updates', async () => {
@@ -231,7 +253,9 @@ describe('Settings Service - Update Operations', () => {
     })
 
     it('should throw ValidationError when value is not string', async () => {
-      await expect(UpdateOps.updateSetting('test', { value: 123 })).rejects.toThrow('must be a string')
+      await expect(UpdateOps.updateSetting('test', { value: 123 })).rejects.toThrow(
+        'must be a string'
+      )
     })
   })
 
@@ -253,7 +277,9 @@ describe('Settings Service - Update Operations', () => {
     })
 
     it('should throw BadRequestError when value is undefined', async () => {
-      await expect(UpdateOps.setSettingValue('test', undefined)).rejects.toThrow('Value is required')
+      await expect(UpdateOps.setSettingValue('test', undefined)).rejects.toThrow(
+        'Value is required'
+      )
     })
 
     it('should throw BadRequestError when value is null', async () => {

@@ -1,7 +1,7 @@
 /**
  * Navigation System UI - E2E Tests with Playwright
  * Migrated from Cypress
- * 
+ *
  * Purpose: Verify Navigation System UI components functionality
  * Risk Level: HIGH - Critical for user navigation and accessibility
  * Expected Outcome: 100% Success Rate
@@ -83,7 +83,7 @@ test.describe('🧭 Navigation System UI', () => {
 
     // Test mobile menu toggle functionality
     await page.waitForTimeout(500) // Wait for CSS to apply
-    
+
     // Click to open menu
     await mobileMenuBtn.click()
 
@@ -152,7 +152,7 @@ test.describe('🧭 Navigation System UI', () => {
     // Mobile menu button should have aria-expanded
     await page.setViewportSize({ width: 375, height: 667 })
     await page.waitForTimeout(500)
-    
+
     const mobileBtn = page.locator('#mobile-menu-btn')
     await expect(mobileBtn).toHaveAttribute('aria-expanded')
     await expect(mobileBtn).toHaveAttribute('aria-label')

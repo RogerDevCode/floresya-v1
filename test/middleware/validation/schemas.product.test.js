@@ -4,7 +4,10 @@
  */
 
 import { describe, it, expect } from 'vitest'
-import { productCreateSchema, productUpdateSchema } from '../../../api/middleware/validation/schemas.product.js'
+import {
+  productCreateSchema,
+  productUpdateSchema
+} from '../../../api/middleware/validation/schemas.product.js'
 
 describe('Product Validation Schemas', () => {
   describe('productCreateSchema - product field', () => {
@@ -13,7 +16,7 @@ describe('Product Validation Schemas', () => {
     it('should validate complete nested product object', () => {
       const validProduct = {
         name: 'Rose Bouquet',
-        price_usd: 25.50,
+        price_usd: 25.5,
         stock: 10
       }
 
@@ -23,14 +26,14 @@ describe('Product Validation Schemas', () => {
     it('should validate flattened product data', () => {
       const flatData = {
         name: 'Lily Arrangement',
-        price_usd: 35.00
+        price_usd: 35.0
       }
 
       expect(productValidator(null, flatData)).toBeNull()
     })
 
     it('should reject product without name', () => {
-      const product = { price_usd: 25.50 }
+      const product = { price_usd: 25.5 }
 
       expect(productValidator(product, product)).toContain('name is required')
     })
@@ -42,7 +45,7 @@ describe('Product Validation Schemas', () => {
     })
 
     it('should reject when name is not a string', () => {
-      const product = { name: 123, price_usd: 25.50 }
+      const product = { name: 123, price_usd: 25.5 }
 
       expect(productValidator(product, product)).toContain('must be a string')
     })

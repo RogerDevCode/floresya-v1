@@ -33,20 +33,21 @@ describe('Security Headers Middleware', () => {
   it('should add Referrer-Policy header', () => {
     addSecurityHeaders(mockReq, mockRes, mockNext)
 
-    expect(mockRes.setHeader).toHaveBeenCalledWith('Referrer-Policy', 'strict-origin-when-cross-origin')
+    expect(mockRes.setHeader).toHaveBeenCalledWith(
+      'Referrer-Policy',
+      'strict-origin-when-cross-origin'
+    )
   })
 
   it('should add Content-Security-Policy header', () => {
     addSecurityHeaders(mockReq, mockRes, mockNext)
 
-    const cspCall = mockRes.setHeader.mock.calls.find(call =>
-      call[0] === 'Content-Security-Policy'
-    )
+    const cspCall = mockRes.setHeader.mock.calls.find(call => call[0] === 'Content-Security-Policy')
 
     expect(cspCall).toBeDefined()
     expect(cspCall[1]).toContain("default-src 'self'")
     expect(cspCall[1]).toContain("script-src 'self'")
-    expect(cspCall[1]).toContain("https://*.supabase.co")
+    expect(cspCall[1]).toContain('https://*.supabase.co')
   })
 
   it('should call next() function', () => {

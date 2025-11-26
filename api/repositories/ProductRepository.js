@@ -26,17 +26,19 @@ export class ProductRepository extends BaseRepository {
    * @returns {Promise<Array>} Lista de productos
    */
   async findAllWithFilters(filters = {}, options = {}) {
-    // FALLBACK: Using standard Supabase query because 'get_products_filtered' RPC fails 
+    // FALLBACK: Using standard Supabase query because 'get_products_filtered' RPC fails
     // due to missing 'unaccent' extension in the database.
-    
+
     let query = this.supabase
       .from(this.table)
-      .select('id, name, summary, description, price_usd, price_ves, stock, sku, active, featured, carousel_order, created_at, updated_at')
+      .select(
+        'id, name, summary, description, price_usd, price_ves, stock, sku, active, featured, carousel_order, created_at, updated_at'
+      )
 
     // Apply filters
     if (filters.occasionId) {
-      // Note: This would require a join, but for now we might skip occasion filtering 
-      // or implement it via a separate query if strictly needed. 
+      // Note: This would require a join, but for now we might skip occasion filtering
+      // or implement it via a separate query if strictly needed.
       // Given the current task is image loading, we prioritize basic listing.
       // If occasion filtering is critical, we'd need to use !inner join on product_occasions.
       // For now, let's assume basic listing.
@@ -44,7 +46,9 @@ export class ProductRepository extends BaseRepository {
 
     if (filters.search) {
       const search = filters.search
-      query = query.or(`name.ilike.%${search}%,description.ilike.%${search}%,summary.ilike.%${search}%`)
+      query = query.or(
+        `name.ilike.%${search}%,description.ilike.%${search}%,summary.ilike.%${search}%`
+      )
     }
 
     if (filters.price_min !== undefined && filters.price_min !== null) {
@@ -124,13 +128,15 @@ export class ProductRepository extends BaseRepository {
     // 🚀 PERFORMANCE: Single JOIN query con PostgreSQL optimized
     const { data, error } = await this.supabase
       .from(this.table)
-      .select(`
+      .select(
+        `
         id, name, summary, description, price_usd, price_ves, stock, sku,
         active, featured, carousel_order, created_at, updated_at,
         product_images(
           id, product_id, image_url, size, image_index, created_at, updated_at
         )
-      `)
+      `
+      )
       .eq('id', id)
       .eq('active', includeInactive ? undefined : true)
       .single()

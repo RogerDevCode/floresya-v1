@@ -78,14 +78,14 @@ describe('Sanitization Middleware', () => {
       const data = {
         customer_email: 'test@example.com',
         customer_name: 'John Doe',
-        total_amount_usd: 100.50,
+        total_amount_usd: 100.5,
         user_id: 42
       }
 
       const result = sanitizeOrderData(data)
       expect(result.customer_email).toBe('test@example.com')
       expect(result.customer_name).toBe('John Doe')
-      expect(result.total_amount_usd).toBe(100.50)
+      expect(result.total_amount_usd).toBe(100.5)
       expect(result.user_id).toBe(42)
     })
 
@@ -110,7 +110,7 @@ describe('Sanitization Middleware', () => {
       const data = {
         customer_email: 'valid@example.com',
         customer_name: null,
-        total_amount_usd: 50.00,
+        total_amount_usd: 50.0,
         total_amount_ves: null,
         user_id: 10,
         id: null
@@ -119,7 +119,7 @@ describe('Sanitization Middleware', () => {
       const result = sanitizeOrderData(data)
       expect(result.customer_email).toBe('valid@example.com')
       expect(result.customer_name).toBe('')
-      expect(result.total_amount_usd).toBe(50.00)
+      expect(result.total_amount_usd).toBe(50.0)
       expect(result.total_amount_ves).toBe(0.0)
       expect(result.user_id).toBe(10)
       expect(result.id).toBe(0)
@@ -139,7 +139,7 @@ describe('Sanitization Middleware', () => {
           product_name: 'Product 1',
           product_id: 1,
           quantity: 2,
-          unit_price_usd: 25.00
+          unit_price_usd: 25.0
         }
       ]
 

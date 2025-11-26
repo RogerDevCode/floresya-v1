@@ -134,7 +134,12 @@ const config = {
       db: {
         schema: 'public',
         poolSize: parseInteger(process.env.DB_POOL_SIZE, 10, 1, 20),
-        connectionTimeoutMillis: parseInteger(process.env.DB_CONNECTION_TIMEOUT, 10000, 1000, 60000),
+        connectionTimeoutMillis: parseInteger(
+          process.env.DB_CONNECTION_TIMEOUT,
+          10000,
+          1000,
+          60000
+        ),
         idleTimeoutMillis: parseInteger(process.env.DB_IDLE_TIMEOUT, 30000, 5000, 300000),
         reapIntervalMillis: 1000,
         createTimeoutMillis: 30000,

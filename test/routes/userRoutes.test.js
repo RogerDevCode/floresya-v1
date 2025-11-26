@@ -6,7 +6,9 @@ import request from 'supertest'
 vi.mock('../../api/controllers/userController.js', () => ({
   getAllUsers: vi.fn((req, res) => res.json({ success: true, data: [] })),
   getUserById: vi.fn((req, res) => res.json({ success: true, data: { id: 1 } })),
-  getUserByEmail: vi.fn((req, res) => res.json({ success: true, data: { email: 'test@test.com' } })),
+  getUserByEmail: vi.fn((req, res) =>
+    res.json({ success: true, data: { email: 'test@test.com' } })
+  ),
   createUser: vi.fn((req, res) => res.status(201).json({ success: true, data: { id: 1 } })),
   updateUser: vi.fn((req, res) => res.json({ success: true, data: { id: 1 } })),
   deleteUser: vi.fn((req, res) => res.status(204).send()),
@@ -73,9 +75,7 @@ describe('User Routes', () => {
 
   describe('PUT /users/:id', () => {
     it('should update user', async () => {
-      const res = await request(app)
-        .put('/users/1')
-        .send({ full_name: 'Updated Name' })
+      const res = await request(app).put('/users/1').send({ full_name: 'Updated Name' })
       expect(res.status).toBe(200)
       expect(res.body.success).toBe(true)
     })

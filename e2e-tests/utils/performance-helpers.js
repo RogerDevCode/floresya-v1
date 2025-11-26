@@ -1,16 +1,16 @@
 // Performance helpers for Playwright
 
-export const setupPerformanceMonitoring = async (page) => {
+export const setupPerformanceMonitoring = async page => {
   await page.evaluate(() => {
     window.performance.mark('test-start')
-    
+
     if ('PerformanceObserver' in window) {
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         for (const entry of list.getEntries()) {
           window.performance.mark(`metric-${entry.name}`)
         }
       })
-      
+
       observer.observe({ entryTypes: ['measure', 'navigation', 'resource', 'paint'] })
       // @ts-ignore
       window.performanceObserver = observer
@@ -18,7 +18,7 @@ export const setupPerformanceMonitoring = async (page) => {
   })
 }
 
-export const measurePageLoadPerformance = async (page) => {
+export const measurePageLoadPerformance = async page => {
   return await page.evaluate(() => {
     const perfData = window.performance.getEntriesByType('navigation')[0]
     const paintEntries = window.performance.getEntriesByType('paint')
@@ -36,7 +36,8 @@ export const measurePageLoadPerformance = async (page) => {
 
       // Paint timing
       firstPaint: paintEntries.find(entry => entry.name === 'first-paint')?.startTime,
-      firstContentfulPaint: paintEntries.find(entry => entry.name === 'first-contentful-paint')?.startTime,
+      firstContentfulPaint: paintEntries.find(entry => entry.name === 'first-contentful-paint')
+        ?.startTime,
 
       // Resource timing
       resourceCount: window.performance.getEntriesByType('resource').length
@@ -62,11 +63,19 @@ export const validatePerformanceThresholds = async (page, customThresholds = nul
   }
 
   if (thresholds.domContentLoaded && metrics.domContentLoaded > thresholds.domContentLoaded) {
-    violations.push(`DOM content loaded: ${metrics.domContentLoaded}ms > ${thresholds.domContentLoaded}ms`)
+    violations.push(
+      `DOM content loaded: ${metrics.domContentLoaded}ms > ${thresholds.domContentLoaded}ms`
+    )
   }
 
-  if (thresholds.firstContentfulPaint && metrics.firstContentfulPaint && metrics.firstContentfulPaint > thresholds.firstContentfulPaint) {
-    violations.push(`First contentful paint: ${metrics.firstContentfulPaint}ms > ${thresholds.firstContentfulPaint}ms`)
+  if (
+    thresholds.firstContentfulPaint &&
+    metrics.firstContentfulPaint &&
+    metrics.firstContentfulPaint > thresholds.firstContentfulPaint
+  ) {
+    violations.push(
+      `First contentful paint: ${metrics.firstContentfulPaint}ms > ${thresholds.firstContentfulPaint}ms`
+    )
   }
 
   if (violations.length > 0) {

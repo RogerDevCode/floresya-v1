@@ -3,7 +3,7 @@
 export const testFormValidation = async (page, formSelector, testCases) => {
   for (const testCase of testCases) {
     const form = page.locator(formSelector)
-    
+
     // Clear all inputs
     const inputs = form.locator('input, textarea, select')
     const count = await inputs.count()
@@ -34,7 +34,7 @@ export const testResponsive = async (page, breakpoints) => {
   for (const [, size] of Object.entries(breakpoints)) {
     await page.setViewportSize({ width: size.width, height: size.height })
     await page.reload() // Reload to ensure responsive styles apply if needed
-    
+
     // Test key elements are visible
     await page.locator('header, nav, .navigation').first().waitFor({ state: 'visible' })
     await page.locator('main, .main-content').first().waitFor({ state: 'visible' })
@@ -44,9 +44,10 @@ export const testResponsive = async (page, breakpoints) => {
 
 export const testAddToCart = async (page, productSelector) => {
   await page.locator(productSelector).click()
-  await page.locator('[data-cy="cart-notification"], .cart-notification')
+  await page
+    .locator('[data-cy="cart-notification"], .cart-notification')
     .waitFor({ state: 'visible' })
-  
+
   const notification = page.locator('[data-cy="cart-notification"], .cart-notification')
   const text = await notification.innerText()
   if (!text.includes('added to cart')) {
@@ -61,7 +62,7 @@ export const testAddToCart = async (page, productSelector) => {
   }
 }
 
-export const testCheckout = async (page) => {
+export const testCheckout = async page => {
   // Add item to cart first
   await testAddToCart(page, '[data-cy="add-to-cart"], .add-to-cart')
 
@@ -89,7 +90,7 @@ export const testCheckout = async (page) => {
   await form.locator('[type="submit"], [data-cy="place-order"]').click()
 
   // Verify order completion
-  await page.waitForURL((url) => url.toString().includes('/order-confirmation'))
+  await page.waitForURL(url => url.toString().includes('/order-confirmation'))
   await page.locator('[data-cy="order-success"], .order-success').waitFor({ state: 'visible' })
 }
 
@@ -120,5 +121,7 @@ export const testFilter = async (page, filterSelector, filterValue) => {
   }
 
   // Check that results are filtered
-  await page.locator('[data-cy="filtered-results"], .filtered-results').waitFor({ state: 'visible' })
+  await page
+    .locator('[data-cy="filtered-results"], .filtered-results')
+    .waitFor({ state: 'visible' })
 }

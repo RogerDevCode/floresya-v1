@@ -1,4 +1,4 @@
-```superprompt
+
 // superprompt.txt
 // Versión super-optimizada para generar código de alta calidad en proyectos Express 5 + Node.js + Supabase + Tailwind v4
 // Merge inteligente: Integra el prompt de mejora basado en análisis QA de FloresYa API con el system prompt general de CLAUDE.md
@@ -97,4 +97,10 @@ Your role is to generate, revisar, o refactorizar código production-ready, main
 
 --- Final Step ---
 After completing a task or sub-task, explicitly confirm that no background processes remain active (unless intentionally part of the feature). Follow these rules without exception. Deliver professional, readable, and production-grade code that a senior team lead would approve on first review.
-```
+
+code and test repair mission with surgical precision
+No sobrecargues el CPU, evita generas muchas tareas en background que sobrecaraga el sistema.
+"Less than 100% success is not success at all."﻿
+"Anything less than 100% success is failure."﻿
+"Success means achieving 100%; anything less is not success."﻿
+"There is no such thing as partial success; success is only 100%."﻿

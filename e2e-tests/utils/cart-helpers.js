@@ -4,7 +4,7 @@ export async function mockSettings(page) {
   await page.route('**/api/settings/public', async route => {
     await route.fulfill({
       status: 200,
-      path: 'cypress/fixtures/settings.json' // Assuming fixtures are still there or I need to copy them? 
+      path: 'cypress/fixtures/settings.json' // Assuming fixtures are still there or I need to copy them?
       // Wait, I should check if fixtures exist. If not, I'll inline the mock data.
       // Cypress fixtures are in cypress/fixtures. I can read them or inline.
       // For now, I'll inline a basic mock or try to read the file if Playwright allows.
@@ -19,9 +19,9 @@ export async function mockSettings(page) {
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({
-        delivery_cost_usd: 5.00,
-        delivery_cost_ves: 180.00,
-        exchange_rate: 36.50
+        delivery_cost_usd: 5.0,
+        delivery_cost_ves: 180.0,
+        exchange_rate: 36.5
       })
     })
   })
@@ -46,7 +46,7 @@ export async function setupCart(page, items = null) {
       image_thumb: '/images/products/girasoles-thumb.jpg'
     }
   ]
-  
+
   // Use context.addInitScript to set localStorage BEFORE page loads
   // This ensures cart data is available when cart.js initializes
   await page.context().addInitScript(items => {
@@ -57,12 +57,15 @@ export async function setupCart(page, items = null) {
 export async function clearCart(page) {
   // Only clear if we're on a loaded page
   try {
-    await page.evaluate(() => {
-      localStorage.removeItem('cart')
-      localStorage.removeItem('deliveryMethod')
-      localStorage.removeItem('orderSummary')
-      localStorage.removeItem('customerData')
-    }, { timeout: 1000 })
+    await page.evaluate(
+      () => {
+        localStorage.removeItem('cart')
+        localStorage.removeItem('deliveryMethod')
+        localStorage.removeItem('orderSummary')
+        localStorage.removeItem('customerData')
+      },
+      { timeout: 1000 }
+    )
   } catch {
     // Page not loaded yet, that's fine
   }
@@ -122,10 +125,10 @@ export async function fillCustomerForm(page, customerData = {}) {
   // These might not exist in all forms, so check visibility or use loose selectors if needed
   // But based on Cypress, they should be there.
   if (await page.locator('#delivery-references').isVisible()) {
-      await page.locator('#delivery-references').fill(data.references)
+    await page.locator('#delivery-references').fill(data.references)
   }
   if (await page.locator('#additional-notes').isVisible()) {
-      await page.locator('#additional-notes').fill(data.notes)
+    await page.locator('#additional-notes').fill(data.notes)
   }
 }
 
@@ -155,7 +158,9 @@ export async function fillPaymentDetails(page, method, details = {}) {
       break
 
     case 'crypto':
-      await page.locator('#crypto-address').fill(details.address || 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh')
+      await page
+        .locator('#crypto-address')
+        .fill(details.address || 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh')
       break
 
     case 'cash':
@@ -164,11 +169,16 @@ export async function fillPaymentDetails(page, method, details = {}) {
   }
 }
 
-export async function completeCheckout(page, deliveryMethod = 'pickup', paymentMethod = 'cash', customerData = {}) {
+export async function completeCheckout(
+  page,
+  deliveryMethod = 'pickup',
+  paymentMethod = 'cash',
+  customerData = {}
+) {
   await fillCustomerForm(page, customerData)
   await selectDeliveryMethod(page, deliveryMethod)
   await selectPaymentMethod(page, paymentMethod)
-  
+
   if (paymentMethod !== 'cash') {
     await fillPaymentDetails(page, paymentMethod)
   }

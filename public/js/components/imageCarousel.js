@@ -29,7 +29,7 @@ export function createImageCarousel(container, productId) {
     // DOM Elements
     const imageContainer = container // The container IS the wrapper in the new HTML structure
     const imgElement = imageContainer.querySelector('img')
-    
+
     // Validate essential elements
     if (!imgElement) {
       console.warn(`[Carousel] Image element not found for product ${productId}`)
@@ -59,7 +59,7 @@ export function createImageCarousel(container, productId) {
         }
 
         images = response.data.sort((a, b) => a.image_index - b.image_index)
-        
+
         // Check if touch device
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
 
@@ -109,12 +109,12 @@ export function createImageCarousel(container, productId) {
         // Initialize controls
         initNavigationControls()
         initTouchGestures()
-        
+
         if (isTouchDevice) {
-            showSwipeHint()
+          showSwipeHint()
         } else {
-            // If mouse, start cycling immediately since we are already hovering
-            startCycling()
+          // If mouse, start cycling immediately since we are already hovering
+          startCycling()
         }
 
         isInitialized = true
@@ -145,11 +145,11 @@ export function createImageCarousel(container, productId) {
 
       if (animate) {
         imgElement.style.opacity = '0.8' // Slight fade for smoother feel
-        
+
         // Use requestAnimationFrame for smoother visual update
         requestAnimationFrame(() => {
-            imgElement.src = images[currentIndex].url
-            imgElement.style.opacity = '1'
+          imgElement.src = images[currentIndex].url
+          imgElement.style.opacity = '1'
         })
 
         // Haptic feedback if supported
@@ -253,7 +253,7 @@ export function createImageCarousel(container, productId) {
       if (indicators) {
         const dots = indicators.querySelectorAll('.indicator-dot')
         dots.forEach((dot, index) => {
-          dot.addEventListener('click', (e) => {
+          dot.addEventListener('click', e => {
             e.stopPropagation() // Prevent card click
             goToImage(index)
           })
@@ -261,16 +261,16 @@ export function createImageCarousel(container, productId) {
       }
 
       if (prevBtn) {
-        prevBtn.addEventListener('click', (e) => {
-            e.stopPropagation()
-            prevImage()
+        prevBtn.addEventListener('click', e => {
+          e.stopPropagation()
+          prevImage()
         })
       }
 
       if (nextBtn) {
-        nextBtn.addEventListener('click', (e) => {
-            e.stopPropagation()
-            nextImage()
+        nextBtn.addEventListener('click', e => {
+          e.stopPropagation()
+          nextImage()
         })
       }
     }
@@ -280,7 +280,7 @@ export function createImageCarousel(container, productId) {
         return
       }
       // Initial delay before cycling starts to avoid jarring effect
-      autoplayTimer = setInterval(nextImage, 1200) 
+      autoplayTimer = setInterval(nextImage, 1200)
     }
 
     function stopCycling() {
@@ -294,28 +294,28 @@ export function createImageCarousel(container, productId) {
     // --- Interaction Handlers ---
 
     function handleInteraction() {
-        if (!isInitialized) {
-            initCarousel()
-        } else {
-            startCycling()
-        }
+      if (!isInitialized) {
+        initCarousel()
+      } else {
+        startCycling()
+      }
     }
 
     function handleMouseLeave() {
-        stopCycling()
+      stopCycling()
     }
 
     // Attach lazy load listeners
     imageContainer.addEventListener('mouseenter', handleInteraction)
     imageContainer.addEventListener('mouseleave', handleMouseLeave)
-    
+
     // Touch start also triggers init if needed
     imageContainer.addEventListener('touchstart', handleInteraction, { passive: true })
 
     function cleanupInteractionListeners() {
-        imageContainer.removeEventListener('mouseenter', handleInteraction)
-        imageContainer.removeEventListener('mouseleave', handleMouseLeave)
-        imageContainer.removeEventListener('touchstart', handleInteraction)
+      imageContainer.removeEventListener('mouseenter', handleInteraction)
+      imageContainer.removeEventListener('mouseleave', handleMouseLeave)
+      imageContainer.removeEventListener('touchstart', handleInteraction)
     }
 
     // Return control methods
@@ -323,13 +323,15 @@ export function createImageCarousel(container, productId) {
       destroy: () => {
         stopCycling()
         cleanupInteractionListeners()
-        
+
         if (touchGestures) {
           touchGestures.destroy()
         }
-        
+
         // Remove injected controls to clean up DOM
-        const controls = imageContainer.querySelectorAll('.image-count-badge, .carousel-indicators, .carousel-nav, .swipe-hint')
+        const controls = imageContainer.querySelectorAll(
+          '.image-count-badge, .carousel-indicators, .carousel-nav, .swipe-hint'
+        )
         controls.forEach(el => el.remove())
       }
     }

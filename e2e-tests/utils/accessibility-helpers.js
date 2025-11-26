@@ -2,9 +2,8 @@ import AxeBuilder from '@axe-core/playwright'
 
 // Check accessibility
 export const checkAccessibility = async (page, context = null, options = {}) => {
-  const builder = new AxeBuilder({ page })
-    .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
-  
+  const builder = new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
+
   if (options.include) {
     builder.include(options.include)
   }
@@ -13,7 +12,7 @@ export const checkAccessibility = async (page, context = null, options = {}) => 
   }
 
   const results = await builder.analyze()
-  
+
   if (results.violations.length > 0) {
     console.error('Accessibility violations:', JSON.stringify(results.violations, null, 2))
     throw new Error(`Found ${results.violations.length} accessibility violations`)
@@ -21,14 +20,14 @@ export const checkAccessibility = async (page, context = null, options = {}) => 
 }
 
 // Verify keyboard navigation
-export const verifyKeyboardNavigation = async (page) => {
+export const verifyKeyboardNavigation = async page => {
   // Check that focus starts somewhere on the page
   const body = page.locator('body')
   await body.focus()
-  
-  // In Playwright, checking focus is a bit different. 
+
+  // In Playwright, checking focus is a bit different.
   // We can check if document.activeElement is not body if we expect specific focus
-  
+
   const criticalElements = [
     'a[href]',
     'button',
@@ -53,18 +52,25 @@ export const verifyKeyboardNavigation = async (page) => {
 }
 
 // Verify color contrast (basic check)
-export const verifyColorContrast = async (page) => {
+export const verifyColorContrast = async page => {
   // Basic check that colors are defined
   const criticalTextElements = [
-    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-    '.nav-link', '.btn', '[role="button"]'
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
+    '.nav-link',
+    '.btn',
+    '[role="button"]'
   ]
 
   for (const selector of criticalTextElements) {
     const elements = page.locator(selector)
     const count = await elements.count()
     for (let i = 0; i < count; i++) {
-      const color = await elements.nth(i).evaluate((el) => {
+      const color = await elements.nth(i).evaluate(el => {
         return window.getComputedStyle(el).color
       })
       if (color === 'rgba(0, 0, 0, 0)') {
@@ -75,7 +81,7 @@ export const verifyColorContrast = async (page) => {
 }
 
 // Verify ARIA labels
-export const verifyAriaLabels = async (page) => {
+export const verifyAriaLabels = async page => {
   // Check links
   const links = page.locator('a[href]')
   const linkCount = await links.count()
@@ -103,7 +109,7 @@ export const verifyAriaLabels = async (page) => {
 }
 
 // Verify semantic HTML
-export const verifySemanticHTML = async (page) => {
+export const verifySemanticHTML = async page => {
   const semanticElements = [
     { selector: 'header', required: true },
     { selector: 'main', required: true },
@@ -126,7 +132,7 @@ export const verifySemanticHTML = async (page) => {
 }
 
 // Verify image accessibility
-export const verifyImageAccessibility = async (page) => {
+export const verifyImageAccessibility = async page => {
   const images = page.locator('img')
   const count = await images.count()
   for (let i = 0; i < count; i++) {

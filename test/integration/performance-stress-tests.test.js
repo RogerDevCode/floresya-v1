@@ -212,10 +212,10 @@ describe('Performance and Stress Integration Tests', () => {
         } else {
           // Include name and active to satisfy validation
           const product = products.find(p => p.id === productId)
-          return productService.updateProduct(productId, { 
+          return productService.updateProduct(productId, {
             name: product.name,
             active: product.active,
-            price_usd: Math.random() * 100 
+            price_usd: Math.random() * 100
           })
         }
       })
@@ -491,13 +491,13 @@ describe('Performance and Stress Integration Tests', () => {
       })
 
       // Include name and active to pass validation before reaching the mock error
-      await expect(productService.updateProduct(1, { 
-        name: product.name,
-        active: product.active,
-        price_usd: 29.99 
-      })).rejects.toThrow(
-        'Serialization failure'
-      )
+      await expect(
+        productService.updateProduct(1, {
+          name: product.name,
+          active: product.active,
+          price_usd: 29.99
+        })
+      ).rejects.toThrow('Serialization failure')
     })
 
     test('should maintain performance under partial failures', async () => {

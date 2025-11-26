@@ -83,7 +83,7 @@ let supabaseInstance
 try {
   const IS_VERCEL = process.env.VERCEL === '1'
   const IS_PRODUCTION = process.env.NODE_ENV === 'production'
-  
+
   // Disable monitoring in Vercel/production to avoid proxy issues
   if (process.env.NODE_ENV === 'test' || IS_VERCEL || IS_PRODUCTION) {
     supabaseInstance = rawSupabaseClient

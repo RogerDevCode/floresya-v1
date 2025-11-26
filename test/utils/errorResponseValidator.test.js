@@ -17,7 +17,7 @@ vi.mock('../../api/config/errorCodes.js', () => ({
     CONFLICT: 4006,
     INTERNAL_ERROR: 5001
   },
-  getErrorCategory: vi.fn((code) => {
+  getErrorCategory: vi.fn(code => {
     if (code >= 1000 && code < 2000) {
       return 'validation'
     }
@@ -35,11 +35,11 @@ vi.mock('../../api/config/errorCodes.js', () => ({
     }
     return 'unknown'
   }),
-  isValidationError: vi.fn((code) => code >= 1000 && code < 2000),
-  isAuthError: vi.fn((code) => code >= 2000 && code < 3000),
-  isNotFoundCode: vi.fn((code) => code >= 3000 && code < 4000),
-  isBusinessError: vi.fn((code) => code >= 4000 && code < 5000),
-  isServerError: vi.fn((code) => code >= 5000)
+  isValidationError: vi.fn(code => code >= 1000 && code < 2000),
+  isAuthError: vi.fn(code => code >= 2000 && code < 3000),
+  isNotFoundCode: vi.fn(code => code >= 3000 && code < 4000),
+  isBusinessError: vi.fn(code => code >= 4000 && code < 5000),
+  isServerError: vi.fn(code => code >= 5000)
 }))
 
 describe('validateErrorResponse', () => {

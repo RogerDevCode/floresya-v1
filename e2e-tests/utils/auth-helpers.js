@@ -5,7 +5,7 @@ export const login = async (page, email, password) => {
   await page.fill('[data-cy=email-input]', email)
   await page.fill('[data-cy=password-input]', password)
   await page.click('[data-cy=login-button]')
-  await page.waitForURL((url) => !url.toString().includes('/login'))
+  await page.waitForURL(url => !url.toString().includes('/login'))
 }
 
 export const apiLogin = async (request, email, password) => {
@@ -16,7 +16,7 @@ export const apiLogin = async (request, email, password) => {
   return body
 }
 
-export const setupTestUser = async (page) => {
+export const setupTestUser = async page => {
   await page.evaluate(() => {
     const testUser = {
       id: 1,
@@ -27,7 +27,7 @@ export const setupTestUser = async (page) => {
   })
 }
 
-export const cleanupTestData = async (page) => {
+export const cleanupTestData = async page => {
   await page.evaluate(() => {
     localStorage.removeItem('testUser')
     localStorage.removeItem('cart')

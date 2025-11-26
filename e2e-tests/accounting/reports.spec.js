@@ -204,12 +204,12 @@ test.describe.skip('Accounting Module - Reports Dashboard (TODO: Add login page)
       const rows = page.locator('[data-cy=expenses-breakdown] tbody tr')
       const count = await rows.count()
       let sumPercent = 0
-      
+
       for (let i = 0; i < count; i++) {
         const percentText = await rows.nth(i).locator('[data-cy=category-percent]').innerText()
         sumPercent += parseFloat(percentText.replace('%', ''))
       }
-      
+
       expect(sumPercent).toBeCloseTo(100, 1)
     })
   })
@@ -284,7 +284,7 @@ test.describe.skip('Accounting Module - Reports Dashboard (TODO: Add login page)
       // Wait for update - Playwright timeout is usually 30s, might need to increase for this test
       // or mock the timer.
       // Cypress test waited 60s. That's long.
-      // I'll skip the long wait and just check if the element exists for now, 
+      // I'll skip the long wait and just check if the element exists for now,
       // or assume it works if the manual refresh works.
       // Let's try a shorter wait if possible, or skip.
       // I'll implement the manual refresh test instead which is more deterministic.

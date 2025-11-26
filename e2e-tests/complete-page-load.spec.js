@@ -6,7 +6,7 @@ test.describe('Index.html - Complete Page Load and Component Initialization', ()
   test.beforeEach(async ({ page }) => {
     // Visit index page
     await page.goto('/')
-    
+
     // Monitor console
     page.on('console', msg => {
       if (msg.type() === 'error') {
@@ -19,7 +19,7 @@ test.describe('Index.html - Complete Page Load and Component Initialization', ()
     test('should have valid HTML structure and DOCTYPE', async ({ request }) => {
       const response = await request.get('/')
       const body = await response.text()
-      expect(body).toContain('<!doctype html>') // Playwright request returns lowercase usually? Or text. 
+      expect(body).toContain('<!doctype html>') // Playwright request returns lowercase usually? Or text.
       // Actually doctype case might vary, but standard is case insensitive.
       // Let's check for html lang
       expect(body).toContain('lang="es"')
@@ -33,10 +33,16 @@ test.describe('Index.html - Complete Page Load and Component Initialization', ()
 
     test('should have required head meta tags', async ({ page }) => {
       await expect(page.locator('head meta[charset="UTF-8"]')).toHaveCount(1)
-      await expect(page.locator('head meta[name="viewport"]')).toHaveAttribute('content', 'width=device-width, initial-scale=1.0')
+      await expect(page.locator('head meta[name="viewport"]')).toHaveAttribute(
+        'content',
+        'width=device-width, initial-scale=1.0'
+      )
       await expect(page.locator('head meta[name="description"]')).toHaveCount(1)
       await expect(page.locator('head meta[name="keywords"]')).toHaveCount(1)
-      await expect(page.locator('head meta[name="robots"]')).toHaveAttribute('content', 'index, follow')
+      await expect(page.locator('head meta[name="robots"]')).toHaveAttribute(
+        'content',
+        'index, follow'
+      )
     })
 
     test('should have proper title tag', async ({ page }) => {
@@ -55,7 +61,10 @@ test.describe('Index.html - Complete Page Load and Component Initialization', ()
 
     test('should have Open Graph meta tags', async ({ page }) => {
       await expect(page.locator('head meta[property="og:title"]')).toHaveAttribute('content')
-      await expect(page.locator('head meta[property="og:type"]')).toHaveAttribute('content', 'website')
+      await expect(page.locator('head meta[property="og:type"]')).toHaveAttribute(
+        'content',
+        'website'
+      )
       await expect(page.locator('head meta[property="og:url"]')).toHaveCount(1)
     })
   })
@@ -66,27 +75,47 @@ test.describe('Index.html - Complete Page Load and Component Initialization', ()
     })
 
     test('should load all required stylesheets', async ({ page }) => {
-      await expect(page.locator('head link[rel="stylesheet"][href="./css/styles.css"]')).toHaveCount(1)
-      await expect(page.locator('head link[rel="stylesheet"][href="./css/tailwind.css"]')).toHaveCount(1)
-      await expect(page.locator('head link[rel="stylesheet"][href="./css/themes.css"]')).toHaveCount(1)
-      await expect(page.locator('head link[rel="stylesheet"][href="./css/themes-granular.css"]')).toHaveCount(1)
-      await expect(page.locator('head link[rel="stylesheet"][href="./css/components/cuco-clock.css"]')).toHaveCount(1)
+      await expect(
+        page.locator('head link[rel="stylesheet"][href="./css/styles.css"]')
+      ).toHaveCount(1)
+      await expect(
+        page.locator('head link[rel="stylesheet"][href="./css/tailwind.css"]')
+      ).toHaveCount(1)
+      await expect(
+        page.locator('head link[rel="stylesheet"][href="./css/themes.css"]')
+      ).toHaveCount(1)
+      await expect(
+        page.locator('head link[rel="stylesheet"][href="./css/themes-granular.css"]')
+      ).toHaveCount(1)
+      await expect(
+        page.locator('head link[rel="stylesheet"][href="./css/components/cuco-clock.css"]')
+      ).toHaveCount(1)
     })
 
     test('should preload critical resources', async ({ page }) => {
-      await expect(page.locator('head link[rel="preload"][as="image"][href="./images/hero-flowers.webp"]')).toHaveCount(1)
+      await expect(
+        page.locator('head link[rel="preload"][as="image"][href="./images/hero-flowers.webp"]')
+      ).toHaveCount(1)
       const stylePreloads = await page.locator('head link[rel="preload"][as="style"]').count()
       expect(stylePreloads).toBeGreaterThanOrEqual(2)
     })
 
     test('should have DNS prefetch for external fonts', async ({ page }) => {
-      await expect(page.locator('head link[rel="dns-prefetch"][href*="fonts.googleapis"]')).toHaveCount(1)
-      await expect(page.locator('head link[rel="dns-prefetch"][href*="fonts.gstatic"]')).toHaveCount(1)
+      await expect(
+        page.locator('head link[rel="dns-prefetch"][href*="fonts.googleapis"]')
+      ).toHaveCount(1)
+      await expect(
+        page.locator('head link[rel="dns-prefetch"][href*="fonts.gstatic"]')
+      ).toHaveCount(1)
     })
 
     test('should have preconnect for fonts', async ({ page }) => {
-      await expect(page.locator('head link[rel="preconnect"][href*="fonts.googleapis"]')).toHaveCount(1)
-      await expect(page.locator('head link[rel="preconnect"][href*="fonts.gstatic"]')).toHaveCount(1)
+      await expect(
+        page.locator('head link[rel="preconnect"][href*="fonts.googleapis"]')
+      ).toHaveCount(1)
+      await expect(page.locator('head link[rel="preconnect"][href*="fonts.gstatic"]')).toHaveCount(
+        1
+      )
     })
 
     test('should apply CSS styling to body', async ({ page }) => {
@@ -104,8 +133,14 @@ test.describe('Index.html - Complete Page Load and Component Initialization', ()
 
     test('should display logo and brand text', async ({ page }) => {
       await expect(page.locator('.navbar-brand')).toHaveAttribute('href', '/')
-      await expect(page.locator('.navbar-brand img.brand-logo')).toHaveAttribute('src', './images/logoFloresYa.jpeg')
-      await expect(page.locator('.navbar-brand img.brand-logo')).toHaveAttribute('alt', 'Logo de FloresYa')
+      await expect(page.locator('.navbar-brand img.brand-logo')).toHaveAttribute(
+        'src',
+        './images/logoFloresYa.jpeg'
+      )
+      await expect(page.locator('.navbar-brand img.brand-logo')).toHaveAttribute(
+        'alt',
+        'Logo de FloresYa'
+      )
       await expect(page.locator('.navbar-brand .brand-text')).toContainText('FloresYa')
     })
 
@@ -113,17 +148,32 @@ test.describe('Index.html - Complete Page Load and Component Initialization', ()
       await expect(page.locator('.desktop-nav .nav-links')).toHaveAttribute('role', 'menubar')
       const links = page.locator('.nav-links .nav-link')
       await expect(links.first()).toBeVisible()
-      
-      await expect(page.locator('.nav-link', { hasText: 'Inicio' })).toHaveAttribute('href', '#inicio')
-      await expect(page.locator('.nav-link', { hasText: 'Productos' })).toHaveAttribute('href', '#productos')
-      await expect(page.locator('.nav-link', { hasText: 'Contacto' })).toHaveAttribute('href', 'pages/contacto.html')
+
+      await expect(page.locator('.nav-link', { hasText: 'Inicio' })).toHaveAttribute(
+        'href',
+        '#inicio'
+      )
+      await expect(page.locator('.nav-link', { hasText: 'Productos' })).toHaveAttribute(
+        'href',
+        '#productos'
+      )
+      await expect(page.locator('.nav-link', { hasText: 'Contacto' })).toHaveAttribute(
+        'href',
+        'pages/contacto.html'
+      )
     })
 
     test('should render nav action buttons', async ({ page }) => {
-      await expect(page.locator('a[aria-label*="Carrito"]')).toHaveAttribute('href', '/pages/cart.html')
+      await expect(page.locator('a[aria-label*="Carrito"]')).toHaveAttribute(
+        'href',
+        '/pages/cart.html'
+      )
       await expect(page.locator('.cart-badge')).toContainText('0')
       await expect(page.locator('.btn-login')).toContainText('Iniciar Sesión')
-      await expect(page.locator('#mobile-menu-btn')).toHaveAttribute('aria-label', 'Abrir menú móvil')
+      await expect(page.locator('#mobile-menu-btn')).toHaveAttribute(
+        'aria-label',
+        'Abrir menú móvil'
+      )
       await expect(page.locator('#mobile-menu-btn')).toHaveAttribute('aria-expanded', 'false')
     })
 
@@ -171,11 +221,17 @@ test.describe('Index.html - Complete Page Load and Component Initialization', ()
 
   test.describe('Phase 5: Favicon and Manifest', () => {
     test('should have favicon link', async ({ page }) => {
-      await expect(page.locator('head link[rel="icon"]')).toHaveAttribute('href', './images/favicon.ico')
+      await expect(page.locator('head link[rel="icon"]')).toHaveAttribute(
+        'href',
+        './images/favicon.ico'
+      )
     })
 
     test('should have manifest link', async ({ page }) => {
-      await expect(page.locator('head link[rel="manifest"]')).toHaveAttribute('href', './manifest.json')
+      await expect(page.locator('head link[rel="manifest"]')).toHaveAttribute(
+        'href',
+        './manifest.json'
+      )
     })
 
     test('should have valid manifest.json', async ({ request }) => {
@@ -202,7 +258,7 @@ test.describe('Index.html - Complete Page Load and Component Initialization', ()
       await expect(page.locator('#mobile-nav-drawer')).toBeAttached()
       const btn = page.locator('#mobile-menu-btn')
       await expect(btn).toHaveAttribute('aria-expanded', 'false')
-      
+
       await btn.click()
       await expect(page.locator('#mobile-nav-drawer')).toHaveClass(/mobile-nav-drawer-open/)
       await expect(btn).toHaveAttribute('aria-expanded', 'true')
@@ -349,7 +405,10 @@ test.describe('Index.html - Complete Page Load and Component Initialization', ()
     })
 
     test('should have accessible search input', async ({ page }) => {
-      await expect(page.locator('#searchInput')).toHaveAttribute('placeholder', 'Buscar por nombre...')
+      await expect(page.locator('#searchInput')).toHaveAttribute(
+        'placeholder',
+        'Buscar por nombre...'
+      )
     })
 
     test('should have sort filter dropdown', async ({ page }) => {

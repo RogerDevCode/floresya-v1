@@ -24,9 +24,9 @@ describe('Dynamic Imports Performance Test', () => {
     const startTime = Date.now()
 
     // Simulate multiple concurrent requests
-    const promises = Array(10).fill().map(() =>
-      import('../../api/services/productService.js')
-    )
+    const promises = Array(10)
+      .fill()
+      .map(() => import('../../api/services/productService.js'))
 
     const results = await Promise.all(promises)
     const totalTime = Date.now() - startTime

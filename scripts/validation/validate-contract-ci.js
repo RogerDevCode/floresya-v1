@@ -51,7 +51,6 @@ class OpenAPIContractValidator {
 
       // Return exit code based on results
       return this.errors.length === 0 ? 0 : 1
-
     } catch (error) {
       console.error('❌ Validation failed with error:', error.message)
       this.errors.push(`Validation system error: ${error.message}`)
@@ -110,7 +109,6 @@ class OpenAPIContractValidator {
 
         console.log('✅ YAML specification syntax valid')
       }
-
     } catch (error) {
       this.errors.push(`Specification syntax error: ${error.message}`)
     }
@@ -157,7 +155,8 @@ class OpenAPIContractValidator {
         const content = fs.readFileSync(filePath, 'utf8')
 
         // Extract route definitions (basic pattern matching)
-        const routeMatches = content.match(/router\.(get|post|put|delete|patch)\s*\(\s*['"`]([^'"`]+)['"`]/g) || []
+        const routeMatches =
+          content.match(/router\.(get|post|put|delete|patch)\s*\(\s*['"`]([^'"`]+)['"`]/g) || []
 
         routeMatches.forEach(match => {
           const method = match.match(/\.(get|post|put|delete|patch)\s*\(/)[1]
@@ -167,8 +166,8 @@ class OpenAPIContractValidator {
 
           // Check if endpoint is documented in OpenAPI
           const normalizedPath = path.replace(/:([^/]+)/g, '{$1}')
-          const specPathKey = Object.keys(spec.paths || {}).find(sp =>
-            sp.toLowerCase() === normalizedPath.toLowerCase()
+          const specPathKey = Object.keys(spec.paths || {}).find(
+            sp => sp.toLowerCase() === normalizedPath.toLowerCase()
           )
 
           if (specPathKey && spec.paths[specPathKey] && spec.paths[specPathKey][method]) {
@@ -179,13 +178,15 @@ class OpenAPIContractValidator {
         })
       })
 
-      const coverage = totalSpecEndpoints > 0 ? (documentedEndpoints / totalSpecEndpoints * 100).toFixed(1) : 0
-      console.log(`📊 Endpoint coverage: ${documentedEndpoints}/${totalSpecEndpoints} (${coverage}%)`)
+      const coverage =
+        totalSpecEndpoints > 0 ? ((documentedEndpoints / totalSpecEndpoints) * 100).toFixed(1) : 0
+      console.log(
+        `📊 Endpoint coverage: ${documentedEndpoints}/${totalSpecEndpoints} (${coverage}%)`
+      )
 
       if (coverage < 80) {
         this.warnings.push(`Low endpoint coverage: ${coverage}% (target: >80%)`)
       }
-
     } catch (error) {
       this.errors.push(`Endpoint coverage validation failed: ${error.message}`)
     }
@@ -218,7 +219,6 @@ class OpenAPIContractValidator {
       })
 
       console.log(`📋 Schema validation: ${validSchemas}/${totalSchemas} valid`)
-
     } catch (error) {
       this.errors.push(`Schema validation failed: ${error.message}`)
     }
@@ -268,7 +268,6 @@ class OpenAPIContractValidator {
       if (annotationCount === 0) {
         this.warnings.push('No OpenAPI annotations found')
       }
-
     } catch (error) {
       this.errors.push(`Annotation sync validation failed: ${error.message}`)
     }
@@ -306,7 +305,8 @@ class OpenAPIContractValidator {
 
 // Run validation
 const validator = new OpenAPIContractValidator()
-validator.validate()
+validator
+  .validate()
   .then(exitCode => {
     process.exit(exitCode)
   })

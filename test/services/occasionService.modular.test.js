@@ -78,7 +78,13 @@ describe('Occasion Service - Create Operations', () => {
         slug: 'wedding'
       }
 
-      const expectedOccasion = { id: 2, ...occasionData, description: null, display_order: 0, active: true }
+      const expectedOccasion = {
+        id: 2,
+        ...occasionData,
+        description: null,
+        display_order: 0,
+        active: true
+      }
       mockRepository.create.mockResolvedValue(expectedOccasion)
 
       const result = await CreateOps.createOccasion(occasionData)
@@ -96,7 +102,9 @@ describe('Occasion Service - Create Operations', () => {
     it('should throw ValidationError when name is missing', async () => {
       const occasionData = { slug: 'test' }
 
-      await expect(CreateOps.createOccasion(occasionData)).rejects.toThrow('Occasion name is required')
+      await expect(CreateOps.createOccasion(occasionData)).rejects.toThrow(
+        'Occasion name is required'
+      )
     })
 
     it('should throw ValidationError when name is not a string', async () => {
@@ -108,7 +116,9 @@ describe('Occasion Service - Create Operations', () => {
     it('should throw ValidationError when slug is missing', async () => {
       const occasionData = { name: 'Test' }
 
-      await expect(CreateOps.createOccasion(occasionData)).rejects.toThrow('Occasion slug is required')
+      await expect(CreateOps.createOccasion(occasionData)).rejects.toThrow(
+        'Occasion slug is required'
+      )
     })
 
     it('should throw ValidationError when slug is not a string', async () => {
@@ -149,7 +159,10 @@ describe('Occasion Service - Read Operations', () => {
       const result = await ReadOps.getAllOccasions()
 
       expect(result).toEqual(occasions)
-      expect(mockRepository.findAllWithFilters).toHaveBeenCalledWith({}, { includeDeactivated: false })
+      expect(mockRepository.findAllWithFilters).toHaveBeenCalledWith(
+        {},
+        { includeDeactivated: false }
+      )
     })
 
     it('should return occasions with filters', async () => {
@@ -160,7 +173,9 @@ describe('Occasion Service - Read Operations', () => {
       const result = await ReadOps.getAllOccasions(filters, true)
 
       expect(result).toEqual(occasions)
-      expect(mockRepository.findAllWithFilters).toHaveBeenCalledWith(filters, { includeDeactivated: true })
+      expect(mockRepository.findAllWithFilters).toHaveBeenCalledWith(filters, {
+        includeDeactivated: true
+      })
     })
 
     it('should return empty array when no occasions found', async () => {
@@ -274,7 +289,9 @@ describe('Occasion Service - Update Operations', () => {
     })
 
     it('should throw BadRequestError when id is invalid', async () => {
-      await expect(UpdateOps.updateOccasion('invalid', { name: 'Test' })).rejects.toThrow('Invalid occasion ID')
+      await expect(UpdateOps.updateOccasion('invalid', { name: 'Test' })).rejects.toThrow(
+        'Invalid occasion ID'
+      )
     })
 
     it('should throw BadRequestError when no updates provided', async () => {
@@ -308,7 +325,9 @@ describe('Occasion Service - Update Operations', () => {
     })
 
     it('should throw BadRequestError when id is invalid', async () => {
-      await expect(UpdateOps.updateDisplayOrder('invalid', 5)).rejects.toThrow('Invalid occasion ID')
+      await expect(UpdateOps.updateDisplayOrder('invalid', 5)).rejects.toThrow(
+        'Invalid occasion ID'
+      )
     })
 
     it('should throw BadRequestError when order is negative', async () => {
@@ -316,7 +335,9 @@ describe('Occasion Service - Update Operations', () => {
     })
 
     it('should throw BadRequestError when order is not a number', async () => {
-      await expect(UpdateOps.updateDisplayOrder(1, 'invalid')).rejects.toThrow('Invalid display order')
+      await expect(UpdateOps.updateDisplayOrder(1, 'invalid')).rejects.toThrow(
+        'Invalid display order'
+      )
     })
 
     it('should allow zero as display order', async () => {

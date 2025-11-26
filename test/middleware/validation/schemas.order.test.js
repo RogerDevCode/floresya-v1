@@ -4,7 +4,10 @@
  */
 
 import { describe, it, expect } from 'vitest'
-import { orderCreateSchema, orderStatusUpdateSchema } from '../../../api/middleware/validation/schemas.order.js'
+import {
+  orderCreateSchema,
+  orderStatusUpdateSchema
+} from '../../../api/middleware/validation/schemas.order.js'
 
 describe('Order Validation Schemas', () => {
   describe('orderCreateSchema - order field', () => {
@@ -16,7 +19,7 @@ describe('Order Validation Schemas', () => {
         customer_name: 'Test Customer',
         customer_phone: '+584121234567',
         delivery_address: '123 Main St',
-        total_amount_usd: 50.00
+        total_amount_usd: 50.0
       }
 
       expect(orderValidator(validOrder)).toBeNull()
@@ -103,7 +106,7 @@ describe('Order Validation Schemas', () => {
         {
           product_id: 1,
           product_name: 'Rose',
-          unit_price_usd: 10.00,
+          unit_price_usd: 10.0,
           quantity: 2
         }
       ]

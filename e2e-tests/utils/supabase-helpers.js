@@ -12,15 +12,18 @@ export const createTestSupabaseClient = () => {
 export const supabase = createTestSupabaseClient()
 
 // Initialize Supabase client in the browser (if needed for specific tests)
-export const initSupabase = async (page) => {
-  await page.evaluate(({ url, key }) => {
-    // @ts-ignore
-    if (!window.supabase) {
-      // For now, we rely on the app's own initialization
-      // In Playwright, we usually let the app initialize itself.
-      // If we need to inject, we might need to expose a function.
-    }
-  }, { url: supabaseUrl, key: supabaseAnonKey })
+export const initSupabase = async page => {
+  await page.evaluate(
+    ({ url, key }) => {
+      // @ts-ignore
+      if (!window.supabase) {
+        // For now, we rely on the app's own initialization
+        // In Playwright, we usually let the app initialize itself.
+        // If we need to inject, we might need to expose a function.
+      }
+    },
+    { url: supabaseUrl, key: supabaseAnonKey }
+  )
 }
 
 // Sign up a test user

@@ -67,7 +67,9 @@ test.describe.skip('Accounting Module - Expenses Management (TODO: Add login pag
       await page.locator('[data-cy=expense-payment-method]').selectOption(testExpense.paymentMethod)
       await page.locator('[data-cy=expense-submit]').click()
 
-      await expect(page.locator('[data-cy=success-message]')).toContainText('Gasto registrado exitosamente')
+      await expect(page.locator('[data-cy=success-message]')).toContainText(
+        'Gasto registrado exitosamente'
+      )
       await expect(page.locator('[data-cy=expenses-table]')).toContainText(testExpense.description)
     })
 
@@ -90,7 +92,9 @@ test.describe.skip('Accounting Module - Expenses Management (TODO: Add login pag
       await page.locator('[data-cy=expense-amount]').fill('-50')
       await page.locator('[data-cy=expense-submit]').click()
 
-      await expect(page.locator('[data-cy=error-message]')).toContainText('El monto debe ser mayor a 0')
+      await expect(page.locator('[data-cy=error-message]')).toContainText(
+        'El monto debe ser mayor a 0'
+      )
     })
   })
 
@@ -147,14 +151,22 @@ test.describe.skip('Accounting Module - Expenses Management (TODO: Add login pag
     })
 
     test('should open edit form with existing data', async ({ page }) => {
-      await page.locator('[data-cy=expenses-table] tbody tr').first().locator('[data-cy=edit-btn]').click()
+      await page
+        .locator('[data-cy=expenses-table] tbody tr')
+        .first()
+        .locator('[data-cy=edit-btn]')
+        .click()
       await expect(page.locator('[data-cy=expense-form]')).toBeVisible()
       await expect(page.locator('[data-cy=expense-description]')).not.toHaveValue('')
       await expect(page.locator('[data-cy=expense-amount]')).not.toHaveValue('')
     })
 
     test('should update expense successfully', async ({ page }) => {
-      await page.locator('[data-cy=expenses-table] tbody tr').first().locator('[data-cy=edit-btn]').click()
+      await page
+        .locator('[data-cy=expenses-table] tbody tr')
+        .first()
+        .locator('[data-cy=edit-btn]')
+        .click()
 
       const newDescription = 'Updated description E2E'
       await page.locator('[data-cy=expense-description]').fill(newDescription)
@@ -173,7 +185,9 @@ test.describe.skip('Accounting Module - Expenses Management (TODO: Add login pag
       await page.locator('[data-cy=expense-cancel]').click()
 
       await expect(page.locator('[data-cy=expenses-table]')).toContainText(originalDescription)
-      await expect(page.locator('[data-cy=expenses-table]')).not.toContainText('This will be cancelled')
+      await expect(page.locator('[data-cy=expenses-table]')).not.toContainText(
+        'This will be cancelled'
+      )
     })
   })
 
@@ -226,7 +240,10 @@ test.describe.skip('Accounting Module - Expenses Management (TODO: Add login pag
     test('should apply dark theme correctly', async ({ page }) => {
       await page.locator('[data-cy=theme-toggle]').click()
       await expect(page.locator('body')).toHaveClass(/dark/)
-      await expect(page.locator('[data-cy=expenses-table]')).toHaveCSS('background-color', /rgb\(.*\)/)
+      await expect(page.locator('[data-cy=expenses-table]')).toHaveCSS(
+        'background-color',
+        /rgb\(.*\)/
+      )
     })
 
     test('should apply light theme correctly', async ({ page }) => {

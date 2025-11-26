@@ -1,7 +1,7 @@
 /**
  * FloresYa API Client
  * Auto-generated from OpenAPI specification
- * Generated: 2025-11-19T22:08:53.042Z
+ * Generated: 2025-11-26T14:55:53.301Z
  * Spec Version: 1.0.0
  * Total Endpoints: 47
  *
@@ -39,57 +39,9 @@ class ApiClient {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`)
-      }
-
-      const contentType = response.headers.get('content-type')
-      if (contentType && contentType.includes('application/json')) {
-        return await response.json()
-      }
-
-      return await response.text()
-    } catch (error) {
-      console.error(`API request failed: ${endpoint}`, error)
-      throw error
-    }
-  }
-
-  /**
-   * Make HTTP request with FormData (multipart/form-data)
-   * @param {string} endpoint - API endpoint
-   * @param {object} options - Fetch options
-   * @returns {Promise<any>} Response data
-   */
-  async requestWithFormData(endpoint, options = {}) {
-    try {
-      const url = this.baseUrl + endpoint
-      const config = {
-        method: options.method || 'POST',
-        credentials: 'include'
-      }
-
-      // Add signal if provided for request cancellation
-      if (options.signal) {
-        config.signal = options.signal
-      }
-
-      // Set Authorization header if token exists
-      const token = sessionStorage.getItem('token')
-      if (token) {
-        config.headers = {
-          Authorization: `Bearer ${token}`
-        }
-      }
-
-      if (options.body) {
-        config.body = options.body
-      }
-
-      const response = await fetch(url, config)
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`)
+        throw new Error(
+          errorData.message || `HTTP ${response.status}: ${response.statusText}`
+        )
       }
 
       const contentType = response.headers.get('content-type')
@@ -131,7 +83,7 @@ class ApiClient {
     })
     const query = queryString.toString()
     const queryPart = query ? '?' + query : ''
-    const endpoint = `/api/products${queryPart}`
+        const endpoint = `/api/products${queryPart}`
     return this.request(endpoint)
   }
 
@@ -165,7 +117,7 @@ class ApiClient {
     })
     const query = queryString.toString()
     const queryPart = query ? '?' + query : ''
-    const endpoint = `/api/products/${id}${queryPart}`
+        const endpoint = `/api/products/${id}${queryPart}`
     return this.request(endpoint)
   }
 
@@ -225,7 +177,7 @@ class ApiClient {
     })
     const query = queryString.toString()
     const queryPart = query ? '?' + query : ''
-    const endpoint = `/api/products/with-occasions${queryPart}`
+        const endpoint = `/api/products/with-occasions${queryPart}`
     return this.request(endpoint)
   }
 
@@ -301,7 +253,7 @@ class ApiClient {
     })
     const query = queryString.toString()
     const queryPart = query ? '?' + query : ''
-    const endpoint = `/api/products/${id}/images${queryPart}`
+        const endpoint = `/api/products/${id}/images${queryPart}`
     return this.request(endpoint)
   }
 
@@ -474,7 +426,7 @@ class ApiClient {
     })
     const query = queryString.toString()
     const queryPart = query ? '?' + query : ''
-    const endpoint = `/api/orders${queryPart}`
+        const endpoint = `/api/orders${queryPart}`
     return this.request(endpoint)
   }
 
@@ -597,7 +549,7 @@ class ApiClient {
     })
     const query = queryString.toString()
     const queryPart = query ? '?' + query : ''
-    const endpoint = `/api/users${queryPart}`
+        const endpoint = `/api/users${queryPart}`
     return this.request(endpoint)
   }
 
@@ -1089,148 +1041,6 @@ class ApiClient {
     return this.request(endpoint, { method: 'PATCH', body: data })
   }
 
-  // ==================== ACCOUNTING ====================
-
-  /**
-   * Get all expenses with filters
-   * Admin only - Returns paginated list of expenses with optional filters
-   * @param {any} params - Parameter
-   * @returns {Promise<any>} API response
-   */
-  getAllExpenses(params = {}) {
-    const queryString = new URLSearchParams()
-    Object.entries(params || {}).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        queryString.append(key, value.toString())
-      }
-    })
-    const query = queryString.toString()
-    const queryPart = query ? '?' + query : ''
-    const endpoint = `/api/accounting/expenses${queryPart}`
-    return this.request(endpoint)
-  }
-
-  /**
-   * Create new expense
-   * Admin only - Creates a new expense
-   * @param {any} data - Parameter
-   * @returns {Promise<any>} API response
-   */
-  createExpenses(data) {
-    const endpoint = `/api/accounting/expenses`
-    return this.request(endpoint, { method: 'POST', body: data })
-  }
-
-  /**
-   * Create new expense with FormData (for file uploads)
-   * Admin only - Creates a new expense with file upload support
-   * @param {any} formData - FormData object
-   * @returns {Promise<any>} API response
-   */
-  createExpensesWithFormData(formData) {
-    const endpoint = `/api/accounting/expenses`
-    return this.requestWithFormData(endpoint, { method: 'POST', body: formData })
-  }
-
-  /**
-   * Get expense by ID
-   * @param {any} id - Parameter
-   * @returns {Promise<any>} API response
-   */
-  getExpensesById(id) {
-    if (!id || id <= 0) {
-      throw new Error('Invalid id')
-    }
-
-    const endpoint = `/api/accounting/expenses/${id}`
-    return this.request(endpoint)
-  }
-
-  /**
-   * Update expense
-   * Admin only - Updates an existing expense
-   * @param {any} id - Parameter
-   * @param {any} data - Parameter
-   * @returns {Promise<any>} API response
-   */
-  updateExpenses(id, data) {
-    if (!id || id <= 0) {
-      throw new Error('Invalid id')
-    }
-
-    const endpoint = `/api/accounting/expenses/${id}`
-    return this.request(endpoint, { method: 'PUT', body: data })
-  }
-
-  /**
-   * Update expense with FormData (for file uploads)
-   * Admin only - Updates an existing expense with file upload support
-   * @param {any} id - Parameter
-   * @param {any} formData - FormData object
-   * @returns {Promise<any>} API response
-   */
-  updateExpensesWithFormData(id, formData) {
-    if (!id || id <= 0) {
-      throw new Error('Invalid id')
-    }
-
-    const endpoint = `/api/accounting/expenses/${id}`
-    return this.requestWithFormData(endpoint, { method: 'PUT', body: formData })
-  }
-
-  /**
-   * Delete expense (soft delete)
-   * Admin only - Soft deletes an expense (sets active to false)
-   * @param {any} id - Parameter
-   * @returns {Promise<any>} API response
-   */
-  deleteExpenses(id) {
-    if (!id || id <= 0) {
-      throw new Error('Invalid id')
-    }
-
-    const endpoint = `/api/accounting/expenses/${id}`
-    return this.request(endpoint, { method: 'DELETE' })
-  }
-
-  /**
-   * Get expenses grouped by category
-   * Admin only - Get expenses grouped by category for date range
-   * @param {any} params - Parameter
-   * @returns {Promise<any>} API response
-   */
-  getExpensesByCategory(params = {}) {
-    const queryString = new URLSearchParams()
-    Object.entries(params || {}).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        queryString.append(key, value.toString())
-      }
-    })
-    const query = queryString.toString()
-    const queryPart = query ? '?' + query : ''
-    const endpoint = `/api/accounting/expenses/by-category${queryPart}`
-    return this.request(endpoint)
-  }
-
-  /**
-   * Get accounting reports
-   * Admin only - Get accounting reports for date range
-   * @param {any} params - Parameter
-   * @returns {Promise<any>} API response
-   */
-  getAccountingReports(params = {}) {
-    const queryString = new URLSearchParams()
-    Object.entries(params || {}).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        queryString.append(key, value.toString())
-      }
-    })
-    const query = queryString.toString()
-    const queryPart = query ? '?' + query : ''
-    const endpoint = `/api/accounting/reports${queryPart}`
-    return this.request(endpoint)
-  }
-
   // ==================== UTILITIES ====================
 
   /**
@@ -1271,82 +1081,71 @@ export { ApiClient }
 // Convenience functions for common operations
 export const api = {
   getAllErrors: () => apiClient.getAllErrors(),
-  getAllProducts: params => apiClient.getAllProducts(params),
-  createProducts: data => apiClient.createProducts(data),
+  getAllProducts: (params) => apiClient.getAllProducts(params),
+  createProducts: (data) => apiClient.createProducts(data),
   getProductsById: (id, params) => apiClient.getProductsById(id, params),
   updateProducts: (id, data) => apiClient.updateProducts(id, data),
-  deleteProducts: id => apiClient.deleteProducts(id),
+  deleteProducts: (id) => apiClient.deleteProducts(id),
   getAllCarouselProducts: () => apiClient.getAllCarouselProducts(),
-  getProductsWithOccasions: params => apiClient.getProductsWithOccasions(params),
-  createProductsWithOccasions: data => apiClient.createProductsWithOccasions(data),
-  getProductsByOccasion: occasionId => apiClient.getProductsByOccasion(occasionId),
-  getAllSku: sku => apiClient.getAllSku(sku),
-  getPrimaryImage: id => apiClient.getPrimaryImage(id),
+  getProductsWithOccasions: (params) => apiClient.getProductsWithOccasions(params),
+  createProductsWithOccasions: (data) => apiClient.createProductsWithOccasions(data),
+  getProductsByOccasion: (occasionId) => apiClient.getProductsByOccasion(occasionId),
+  getAllSku: (sku) => apiClient.getAllSku(sku),
+  getPrimaryImage: (id) => apiClient.getPrimaryImage(id),
   getProductImages: (id, params) => apiClient.getProductImages(id, params),
   uploadProductImages: (id, data) => apiClient.uploadProductImages(id, data),
   updateCarouselProducts: (id, data) => apiClient.updateCarouselProducts(id, data),
   updateStock: (id, data) => apiClient.updateStock(id, data),
   deleteProductImage: (id, imageIndex) => apiClient.deleteProductImage(id, imageIndex),
   updatePrimaryImage: (id, imageIndex, data) => apiClient.updatePrimaryImage(id, imageIndex, data),
-  getProductOccasions: id => apiClient.getProductOccasions(id),
+  getProductOccasions: (id) => apiClient.getProductOccasions(id),
   updateProductOccasions: (id, data) => apiClient.updateProductOccasions(id, data),
-  createProductOccasion: (id, occasionId, data) =>
-    apiClient.createProductOccasion(id, occasionId, data),
+  createProductOccasion: (id, occasionId, data) => apiClient.createProductOccasion(id, occasionId, data),
   reactivateProducts: (id, data) => apiClient.reactivateProducts(id, data),
-  getAllOrders: params => apiClient.getAllOrders(params),
-  createOrders: data => apiClient.createOrders(data),
-  getOrdersById: id => apiClient.getOrdersById(id),
+  getAllOrders: (params) => apiClient.getAllOrders(params),
+  createOrders: (data) => apiClient.createOrders(data),
+  getOrdersById: (id) => apiClient.getOrdersById(id),
   updateOrders: (id, data) => apiClient.updateOrders(id, data),
-  getOrdersByUser: userId => apiClient.getOrdersByUser(userId),
-  getOrdersStatusHistory: id => apiClient.getOrdersStatusHistory(id),
+  getOrdersByUser: (userId) => apiClient.getOrdersByUser(userId),
+  getOrdersStatusHistory: (id) => apiClient.getOrdersStatusHistory(id),
   updateOrdersStatus: (id, data) => apiClient.updateOrdersStatus(id, data),
   cancelOrders: (id, data) => apiClient.cancelOrders(id, data),
-  getAllUsers: params => apiClient.getAllUsers(params),
-  createUsers: data => apiClient.createUsers(data),
-  getUsersById: id => apiClient.getUsersById(id),
+  getAllUsers: (params) => apiClient.getAllUsers(params),
+  createUsers: (data) => apiClient.createUsers(data),
+  getUsersById: (id) => apiClient.getUsersById(id),
   updateUsers: (id, data) => apiClient.updateUsers(id, data),
-  deleteUsers: id => apiClient.deleteUsers(id),
-  getAllEmail: email => apiClient.getAllEmail(email),
+  deleteUsers: (id) => apiClient.deleteUsers(id),
+  getAllEmail: (email) => apiClient.getAllEmail(email),
   reactivateUsers: (id, data) => apiClient.reactivateUsers(id, data),
   verifyUserEmail: (id, data) => apiClient.verifyUserEmail(id, data),
   getAllMethods: () => apiClient.getAllMethods(),
   confirmPayments: (id, data) => apiClient.confirmPayments(id, data),
   getAllOccasions: () => apiClient.getAllOccasions(),
-  createOccasions: data => apiClient.createOccasions(data),
-  getOccasionsById: id => apiClient.getOccasionsById(id),
+  createOccasions: (data) => apiClient.createOccasions(data),
+  getOccasionsById: (id) => apiClient.getOccasionsById(id),
   updateOccasions: (id, data) => apiClient.updateOccasions(id, data),
-  deleteOccasions: id => apiClient.deleteOccasions(id),
-  getAllSlug: slug => apiClient.getAllSlug(slug),
+  deleteOccasions: (id) => apiClient.deleteOccasions(id),
+  getAllSlug: (slug) => apiClient.getAllSlug(slug),
   updateOccasionDisplayOrder: (id, data) => apiClient.updateOccasionDisplayOrder(id, data),
   reactivateOccasions: (id, data) => apiClient.reactivateOccasions(id, data),
   getAllPublic: () => apiClient.getAllPublic(),
   getAllMap: () => apiClient.getAllMap(),
-  getValue: key => apiClient.getValue(key),
+  getValue: (key) => apiClient.getValue(key),
   getAllSettings: () => apiClient.getAllSettings(),
-  createSettings: data => apiClient.createSettings(data),
-  getSettingsByKey: key => apiClient.getSettingsByKey(key),
+  createSettings: (data) => apiClient.createSettings(data),
+  getSettingsByKey: (key) => apiClient.getSettingsByKey(key),
   updateSettings: (key, data) => apiClient.updateSettings(key, data),
-  deleteSettings: key => apiClient.deleteSettings(key),
-  uploadSettingImage: data => apiClient.uploadSettingImage(data),
-  createBcvprice: data => apiClient.createBcvprice(data),
+  deleteSettings: (key) => apiClient.deleteSettings(key),
+  uploadSettingImage: (data) => apiClient.uploadSettingImage(data),
+  createBcvprice: (data) => apiClient.createBcvprice(data),
   getAllBusinessrules: () => apiClient.getAllBusinessrules(),
   getAllPaymentmethods: () => apiClient.getAllPaymentmethods(),
-  createPaymentmethods: data => apiClient.createPaymentmethods(data),
-  createAddisactivetosettings: data => apiClient.createAddisactivetosettings(data),
-  getPaymentmethodsById: id => apiClient.getPaymentmethodsById(id),
+  createPaymentmethods: (data) => apiClient.createPaymentmethods(data),
+  createAddisactivetosettings: (data) => apiClient.createAddisactivetosettings(data),
+  getPaymentmethodsById: (id) => apiClient.getPaymentmethodsById(id),
   updatePaymentmethods: (id, data) => apiClient.updatePaymentmethods(id, data),
-  deletePaymentmethods: id => apiClient.deletePaymentmethods(id),
-  updatePaymentMethodDisplayOrder: (id, data) =>
-    apiClient.updatePaymentMethodDisplayOrder(id, data),
+  deletePaymentmethods: (id) => apiClient.deletePaymentmethods(id),
+  updatePaymentMethodDisplayOrder: (id, data) => apiClient.updatePaymentMethodDisplayOrder(id, data),
   reactivatePaymentMethods: (id, data) => apiClient.reactivatePaymentMethods(id, data),
-  getAllExpenses: params => apiClient.getAllExpenses(params),
-  createExpenses: data => apiClient.createExpenses(data),
-  createExpensesWithFormData: formData => apiClient.createExpensesWithFormData(formData),
-  getExpensesById: id => apiClient.getExpensesById(id),
-  updateExpenses: (id, data) => apiClient.updateExpenses(id, data),
-  updateExpensesWithFormData: (id, formData) => apiClient.updateExpensesWithFormData(id, formData),
-  deleteExpenses: id => apiClient.deleteExpenses(id),
-  getExpensesByCategory: params => apiClient.getExpensesByCategory(params),
-  getAccountingReports: params => apiClient.getAccountingReports(params),
-  handleError: error => apiClient.handleError(error)
+  handleError: (error) => apiClient.handleError(error)
 }

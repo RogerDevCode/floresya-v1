@@ -48,7 +48,6 @@ class FrontendContractValidator {
 
       // Return exit code based on results
       return this.errors.length === 0 ? 0 : 1
-
     } catch (error) {
       console.error('❌ Frontend contract validation failed:', error.message)
       this.errors.push(`Validation system error: ${error.message}`)
@@ -77,7 +76,6 @@ class FrontendContractValidator {
       })
 
       console.log(`✅ Loaded ${this.contracts.size} contracts from OpenAPI spec`)
-
     } catch (error) {
       this.errors.push(`Failed to load OpenAPI contracts: ${error.message}`)
     }
@@ -169,7 +167,8 @@ class FrontendContractValidator {
     const fields = []
 
     // Input fields
-    const inputRegex = /<input[^>]*name\s*=\s*['"`]([^'"`]+)['"`][^>]*type\s*=\s*['"`]([^'"`]+)['"`]/gi
+    const inputRegex =
+      /<input[^>]*name\s*=\s*['"`]([^'"`]+)['"`][^>]*type\s*=\s*['"`]([^'"`]+)['"`]/gi
     let match
 
     while ((match = inputRegex.exec(formContent)) !== null) {
@@ -225,13 +224,17 @@ class FrontendContractValidator {
       const contractField = contractProperties[field.name]
 
       if (!contractField) {
-        this.warnings.push(`Field '${field.name}' in ${context} not found in contract '${contractName}'`)
+        this.warnings.push(
+          `Field '${field.name}' in ${context} not found in contract '${contractName}'`
+        )
         return
       }
 
       // Basic type validation
       if (!this.validateFieldType(field, contractField)) {
-        this.errors.push(`Field '${field.name}' type mismatch in ${context}: expected ${contractField.type}, got ${field.type}`)
+        this.errors.push(
+          `Field '${field.name}' type mismatch in ${context}: expected ${contractField.type}, got ${field.type}`
+        )
       }
     })
 
@@ -275,14 +278,14 @@ class FrontendContractValidator {
 
     // Basic type mapping
     const typeMapping = {
-      'text': ['string'],
-      'email': ['string', 'email'],
-      'password': ['string'],
-      'number': ['number', 'integer'],
-      'tel': ['string'],
-      'url': ['string', 'uri'],
-      'textarea': ['string'],
-      'select': ['string']
+      text: ['string'],
+      email: ['string', 'email'],
+      password: ['string'],
+      number: ['number', 'integer'],
+      tel: ['string'],
+      url: ['string', 'uri'],
+      textarea: ['string'],
+      select: ['string']
     }
 
     const validSchemaTypes = typeMapping[frontendType] || []
@@ -349,11 +352,7 @@ class FrontendContractValidator {
     })
 
     // Look for fetch/axios calls
-    const apiCallPatterns = [
-      /fetch\s*\(/gi,
-      /axios\./gi,
-      /\$\.ajax/gi
-    ]
+    const apiCallPatterns = [/fetch\s*\(/gi, /axios\./gi, /\$\.ajax/gi]
 
     let hasApiCalls = false
     apiCallPatterns.forEach(pattern => {
@@ -439,7 +438,8 @@ class FrontendContractValidator {
 
 // Run validation
 const validator = new FrontendContractValidator()
-validator.validate()
+validator
+  .validate()
   .then(exitCode => {
     process.exit(exitCode)
   })

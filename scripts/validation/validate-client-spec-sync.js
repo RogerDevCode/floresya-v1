@@ -46,7 +46,6 @@ class ClientSpecSyncValidator {
 
       // Return exit code based on results
       return this.errors.length === 0 ? 0 : 1
-
     } catch (error) {
       console.error('❌ Client-spec sync validation failed:', error.message)
       this.errors.push(`Validation system error: ${error.message}`)
@@ -78,7 +77,6 @@ class ClientSpecSyncValidator {
       })
 
       console.log(`✅ Found ${this.apiEndpoints.size} endpoints in OpenAPI spec`)
-
     } catch (error) {
       this.errors.push(`Failed to parse OpenAPI spec: ${error.message}`)
     }
@@ -226,7 +224,9 @@ class ClientSpecSyncValidator {
       this.warnings.push(`Documented endpoint not used in frontend: ${endpoint}`)
     })
 
-    console.log(`📊 Sync analysis: ${undocumentedCalls.length} undocumented, ${unusedEndpoints.length} unused`)
+    console.log(
+      `📊 Sync analysis: ${undocumentedCalls.length} undocumented, ${unusedEndpoints.length} unused`
+    )
   }
 
   /**
@@ -286,8 +286,12 @@ class ClientSpecSyncValidator {
       })
     }
 
-    const syncRate = this.apiEndpoints.size > 0 ?
-      ((this.apiEndpoints.size - this.errors.length) / this.apiEndpoints.size * 100).toFixed(1) : 0
+    const syncRate =
+      this.apiEndpoints.size > 0
+        ? (((this.apiEndpoints.size - this.errors.length) / this.apiEndpoints.size) * 100).toFixed(
+            1
+          )
+        : 0
 
     console.log(`\n📈 Synchronization rate: ${syncRate}%`)
     console.log(`Summary: ${this.errors.length} errors, ${this.warnings.length} warnings`)
@@ -296,7 +300,8 @@ class ClientSpecSyncValidator {
 
 // Run validation
 const validator = new ClientSpecSyncValidator()
-validator.validate()
+validator
+  .validate()
   .then(exitCode => {
     process.exit(exitCode)
   })

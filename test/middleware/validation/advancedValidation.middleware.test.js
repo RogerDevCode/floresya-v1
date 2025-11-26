@@ -4,7 +4,10 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { advancedValidate, fieldValidators } from '../../../api/middleware/validation/advancedValidation.middleware.js'
+import {
+  advancedValidate,
+  fieldValidators
+} from '../../../api/middleware/validation/advancedValidation.middleware.js'
 
 vi.mock('../../../api/errors/AppError.js', () => ({
   BadRequestError: class BadRequestError extends Error {
@@ -40,15 +43,15 @@ describe('Advanced Validation Middleware', () => {
           customer_name: 'Test Customer',
           customer_phone: '+584121234567',
           delivery_address: 'Caracas, Venezuela',
-          total_amount_usd: 50.00
+          total_amount_usd: 50.0
         },
         items: [
           {
             product_id: 1,
             product_name: 'Rose',
-            unit_price_usd: 10.00,
+            unit_price_usd: 10.0,
             quantity: 2,
-            subtotal_usd: 20.00
+            subtotal_usd: 20.0
           }
         ]
       }
@@ -70,9 +73,7 @@ describe('Advanced Validation Middleware', () => {
       const middleware = advancedValidate('order')
       middleware(req, res, next)
 
-      expect(next).toHaveBeenCalledWith(
-        expect.objectContaining({ name: 'ValidationError' })
-      )
+      expect(next).toHaveBeenCalledWith(expect.objectContaining({ name: 'ValidationError' }))
     })
 
     it('should validate items if provided', () => {
@@ -90,16 +91,14 @@ describe('Advanced Validation Middleware', () => {
       const middleware = advancedValidate('order')
       middleware(req, res, next)
 
-      expect(next).toHaveBeenCalledWith(
-        expect.objectContaining({ name: 'ValidationError' })
-      )
+      expect(next).toHaveBeenCalledWith(expect.objectContaining({ name: 'ValidationError' }))
     })
   })
 
   describe('advancedValidate - product schema', () => {
     it('should pass with valid product data', () => {
       req.body = {
-        price_usd: 25.50,
+        price_usd: 25.5,
         stock: 10
       }
 
@@ -115,9 +114,7 @@ describe('Advanced Validation Middleware', () => {
       const middleware = advancedValidate('product')
       middleware(req, res, next)
 
-      expect(next).toHaveBeenCalledWith(
-        expect.objectContaining({ name: 'ValidationError' })
-      )
+      expect(next).toHaveBeenCalledWith(expect.objectContaining({ name: 'ValidationError' }))
     })
 
     it('should reject negative stock', () => {
@@ -126,9 +123,7 @@ describe('Advanced Validation Middleware', () => {
       const middleware = advancedValidate('product')
       middleware(req, res, next)
 
-      expect(next).toHaveBeenCalledWith(
-        expect.objectContaining({ name: 'ValidationError' })
-      )
+      expect(next).toHaveBeenCalledWith(expect.objectContaining({ name: 'ValidationError' }))
     })
 
     it('should allow zero stock', () => {
@@ -162,9 +157,7 @@ describe('Advanced Validation Middleware', () => {
       const middleware = advancedValidate('order')
       middleware(req, res, next)
 
-      expect(next).toHaveBeenCalledWith(
-        expect.objectContaining({ name: 'BadRequestError' })
-      )
+      expect(next).toHaveBeenCalledWith(expect.objectContaining({ name: 'BadRequestError' }))
     })
   })
 

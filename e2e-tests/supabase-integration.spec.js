@@ -148,7 +148,9 @@ test.describe('Supabase Integration E2E Tests', () => {
       const fileBuffer = Buffer.from(fileContent, 'utf-8')
 
       // Upload file
-      const uploadResult = await supabaseHelpers.supabaseUpload(bucketName, fileName, fileBuffer, { contentType: 'text/plain' })
+      const uploadResult = await supabaseHelpers.supabaseUpload(bucketName, fileName, fileBuffer, {
+        contentType: 'text/plain'
+      })
       expect(uploadResult.error).toBeNull()
       expect(uploadResult.data.path).toBe(fileName)
       // bucket property might not be in response, checking path is good enough usually
@@ -197,7 +199,7 @@ test.describe('Supabase Integration E2E Tests', () => {
     // We can skip for now or implement using route.abort()
     test('should handle network timeouts and connection errors', async ({ page }) => {
       await page.route('**/rest/v1/**', route => route.abort('timedout'))
-      
+
       // We need to use the client that makes requests. If it's the node client, we can't easily intercept with page.route unless it uses the browser's fetch.
       // The helper uses 'supabase-js' which in Node uses node-fetch.
       // So this test might be tricky if helpers run in Node.
@@ -288,7 +290,7 @@ test.describe('Supabase with UI Integration E2E', () => {
     // Let's assume apiLogin returns { token, user } and we set it.
     // But for now, let's just use UI login or assume session is handled.
     // Actually, let's just use page.goto('/login') and login via UI if needed, or set storage.
-    
+
     // Re-implementing apiLogin logic here for context setting
     const loginResponse = await request.post('/api/auth/login', {
       data: { email: 'test@example.com', password: 'password123' }
@@ -350,7 +352,9 @@ test.describe('Supabase with UI Integration E2E', () => {
     await page.locator('[data-cy="confirm-delete"]').click()
 
     await expect(page.locator('[data-cy="success-message"]')).toContainText('Product deleted')
-    await expect(page.locator('[data-cy="product-list"]')).not.toContainText('Updated E2E Test Product')
+    await expect(page.locator('[data-cy="product-list"]')).not.toContainText(
+      'Updated E2E Test Product'
+    )
   })
 
   test('should handle authentication flow through UI', async ({ page }) => {
@@ -458,7 +462,7 @@ test.describe('Accessibility E2E', () => {
     // If we can't find button, we can use page.locator('[data-cy="contact-form"]').evaluate(form => form.submit())
     // But that might bypass validation if it's HTML5 validation.
     // Let's assume there's a submit button.
-    
+
     await expect(page.locator('[data-cy="error-messages"]')).toHaveAttribute('role', 'alert')
   })
 

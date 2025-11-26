@@ -23,7 +23,8 @@ export const validatePhone = ValidatorService.validatePhone.bind(ValidatorServic
 export const validatePassword = ValidatorService.validatePassword.bind(ValidatorService)
 export const validatePrice = ValidatorService.validatePrice.bind(ValidatorService)
 export const validateEnum = ValidatorService.validateEnum.bind(ValidatorService)
-export const validateRequiredProperties = ValidatorService.validateRequiredProperties.bind(ValidatorService)
+export const validateRequiredProperties =
+  ValidatorService.validateRequiredProperties.bind(ValidatorService)
 export const validateArrayNotEmpty = ValidatorService.validateArrayNotEmpty.bind(ValidatorService)
 export const validateUrl = ValidatorService.validateUrl.bind(ValidatorService)
 export const validateDate = ValidatorService.validateDate.bind(ValidatorService)

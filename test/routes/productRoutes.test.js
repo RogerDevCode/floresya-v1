@@ -188,7 +188,9 @@ describe('Product Routes', () => {
     })
 
     it('PUT /products/:id/occasions - should replace product occasions', async () => {
-      const res = await request(app).put('/products/1/occasions').send({ occasion_ids: [1, 2] })
+      const res = await request(app)
+        .put('/products/1/occasions')
+        .send({ occasion_ids: [1, 2] })
       expect(res.status).toBe(200)
       expect(res.body.success).toBe(true)
     })

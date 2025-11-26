@@ -59,7 +59,6 @@ class FrontendUsageValidator {
 
       // Return exit code based on results
       return this.errors.length === 0 ? 0 : 1
-
     } catch (error) {
       console.error('❌ Frontend usage validation failed:', error.message)
       this.errors.push(`Validation system error: ${error.message}`)
@@ -142,12 +141,7 @@ class FrontendUsageValidator {
    */
   analyzeJavaScript(content, filePath) {
     // Count API calls
-    const apiCallPatterns = [
-      /fetch\s*\(/gi,
-      /axios\./gi,
-      /\$\.ajax/gi,
-      /XMLHttpRequest/gi
-    ]
+    const apiCallPatterns = [/fetch\s*\(/gi, /axios\./gi, /\$\.ajax/gi, /XMLHttpRequest/gi]
 
     apiCallPatterns.forEach(pattern => {
       const matches = content.match(pattern)
@@ -172,12 +166,7 @@ class FrontendUsageValidator {
     })
 
     // Count validations
-    const validationPatterns = [
-      /required/gi,
-      /validate/gi,
-      /check/gi,
-      /test/gi
-    ]
+    const validationPatterns = [/required/gi, /validate/gi, /check/gi, /test/gi]
 
     validationPatterns.forEach(pattern => {
       const matches = content.match(pattern)
@@ -195,7 +184,9 @@ class FrontendUsageValidator {
    */
   analyzeHTML(content, filePath) {
     // Check for form elements without validation
-    const formsWithoutValidation = content.match(/<form[^>]*>(?!.*required|.*pattern|.*minlength|.*maxlength)[\s\S]*?<\/form>/gi)
+    const formsWithoutValidation = content.match(
+      /<form[^>]*>(?!.*required|.*pattern|.*minlength|.*maxlength)[\s\S]*?<\/form>/gi
+    )
     if (formsWithoutValidation) {
       this.warnings.push(`${filePath}: Found forms without client-side validation`)
     }
@@ -214,7 +205,9 @@ class FrontendUsageValidator {
     // Check for performance issues
     const expensiveSelectors = content.match(/[^,]+[>+~][^,]+/g) || []
     if (expensiveSelectors.length > 10) {
-      this.warnings.push(`${filePath}: Many expensive CSS selectors found (${expensiveSelectors.length})`)
+      this.warnings.push(
+        `${filePath}: Many expensive CSS selectors found (${expensiveSelectors.length})`
+      )
     }
 
     // Check for !important usage
@@ -232,20 +225,26 @@ class FrontendUsageValidator {
     const innerHTMLMatches = content.match(/\.innerHTML\s*=/gi)
     if (innerHTMLMatches) {
       this.stats.securityIssues += innerHTMLMatches.length
-      this.errors.push(`${filePath}: Direct innerHTML assignment found (${innerHTMLMatches.length} times) - XSS risk`)
+      this.errors.push(
+        `${filePath}: Direct innerHTML assignment found (${innerHTMLMatches.length} times) - XSS risk`
+      )
     }
 
     // Check for eval usage
     const evalMatches = content.match(/eval\s*\(/gi)
     if (evalMatches) {
       this.stats.securityIssues += evalMatches.length
-      this.errors.push(`${filePath}: eval() usage found (${evalMatches.length} times) - security risk`)
+      this.errors.push(
+        `${filePath}: eval() usage found (${evalMatches.length} times) - security risk`
+      )
     }
 
     // Check for console.log in production code
     const consoleLogMatches = content.match(/console\.log/gi)
     if (consoleLogMatches && consoleLogMatches.length > 5) {
-      this.warnings.push(`${filePath}: Many console.log statements found (${consoleLogMatches.length})`)
+      this.warnings.push(
+        `${filePath}: Many console.log statements found (${consoleLogMatches.length})`
+      )
     }
 
     // Check for hardcoded secrets
@@ -271,7 +270,9 @@ class FrontendUsageValidator {
     // Check for alt attributes on images
     const imagesWithoutAlt = content.match(/<img(?![^>]*alt\s*=)[^>]*>/gi)
     if (imagesWithoutAlt) {
-      this.warnings.push(`${filePath}: Images without alt attributes found (${imagesWithoutAlt.length})`)
+      this.warnings.push(
+        `${filePath}: Images without alt attributes found (${imagesWithoutAlt.length})`
+      )
     }
 
     // Check for form labels
@@ -294,7 +295,9 @@ class FrontendUsageValidator {
     // Check for inline event handlers
     const inlineHandlers = content.match(/on\w+\s*=\s*['"`][^'"`]*['"`]/gi)
     if (inlineHandlers) {
-      this.warnings.push(`${filePath}: Inline event handlers found (${inlineHandlers.length}) - security risk`)
+      this.warnings.push(
+        `${filePath}: Inline event handlers found (${inlineHandlers.length}) - security risk`
+      )
     }
 
     // Check for javascript: URLs
@@ -315,7 +318,9 @@ class FrontendUsageValidator {
     let improperApiUsage = 0
 
     this.frontendFiles.forEach(file => {
-      if (!file.endsWith('.js')) {return}
+      if (!file.endsWith('.js')) {
+        return
+      }
 
       try {
         const content = fs.readFileSync(file, 'utf8')
@@ -359,8 +364,10 @@ class FrontendUsageValidator {
 
       try {
         const content = fs.readFileSync(file, 'utf8')
-        const hasApiCalls = content.includes('fetch(') || content.includes('axios.') || content.includes('$.ajax')
-        const hasErrorHandling = content.includes('.catch(') || content.includes('try') || content.includes('catch')
+        const hasApiCalls =
+          content.includes('fetch(') || content.includes('axios.') || content.includes('$.ajax')
+        const hasErrorHandling =
+          content.includes('.catch(') || content.includes('try') || content.includes('catch')
 
         if (hasApiCalls) {
           filesWithApiCalls++
@@ -375,8 +382,11 @@ class FrontendUsageValidator {
       }
     })
 
-    const errorHandlingRate = filesWithApiCalls > 0 ? (filesWithErrorHandling / filesWithApiCalls * 100).toFixed(1) : 0
-    console.log(`📊 Error handling rate: ${errorHandlingRate}% (${filesWithErrorHandling}/${filesWithApiCalls})`)
+    const errorHandlingRate =
+      filesWithApiCalls > 0 ? ((filesWithErrorHandling / filesWithApiCalls) * 100).toFixed(1) : 0
+    console.log(
+      `📊 Error handling rate: ${errorHandlingRate}% (${filesWithErrorHandling}/${filesWithApiCalls})`
+    )
   }
 
   /**
@@ -451,13 +461,17 @@ class FrontendUsageValidator {
       }
     })
 
-    console.log(`📊 File sizes: Total ${(totalFileSize / 1024).toFixed(1)}KB, JS ${(jsFileSize / 1024).toFixed(1)}KB, CSS ${(cssFileSize / 1024).toFixed(1)}KB`)
+    console.log(
+      `📊 File sizes: Total ${(totalFileSize / 1024).toFixed(1)}KB, JS ${(jsFileSize / 1024).toFixed(1)}KB, CSS ${(cssFileSize / 1024).toFixed(1)}KB`
+    )
 
-    if (jsFileSize > 1024 * 1024) { // 1MB
+    if (jsFileSize > 1024 * 1024) {
+      // 1MB
       this.warnings.push(`Large JavaScript bundle size: ${(jsFileSize / 1024).toFixed(1)}KB`)
     }
 
-    if (cssFileSize > 500 * 1024) { // 500KB
+    if (cssFileSize > 500 * 1024) {
+      // 500KB
       this.warnings.push(`Large CSS bundle size: ${(cssFileSize / 1024).toFixed(1)}KB`)
     }
   }
@@ -489,7 +503,8 @@ class FrontendUsageValidator {
 
     if (this.warnings.length > 0) {
       console.log(`\n⚠️ USAGE WARNINGS (${this.warnings.length}):`)
-      this.warnings.slice(0, 10).forEach((warning, index) => { // Limit to first 10 warnings
+      this.warnings.slice(0, 10).forEach((warning, index) => {
+        // Limit to first 10 warnings
         console.log(`  ${index + 1}. ${warning}`)
       })
       if (this.warnings.length > 10) {
@@ -497,7 +512,7 @@ class FrontendUsageValidator {
       }
     }
 
-    const score = Math.max(0, 100 - (this.errors.length * 10) - (this.warnings.length * 2))
+    const score = Math.max(0, 100 - this.errors.length * 10 - this.warnings.length * 2)
     console.log(`\n📈 Frontend usage score: ${score}/100`)
     console.log(`Summary: ${this.errors.length} errors, ${this.warnings.length} warnings`)
   }
@@ -505,7 +520,8 @@ class FrontendUsageValidator {
 
 // Run validation
 const validator = new FrontendUsageValidator()
-validator.validate()
+validator
+  .validate()
   .then(exitCode => {
     process.exit(exitCode)
   })

@@ -515,8 +515,7 @@ export class BaseRepository {
    */
   generateRecommendations() {
     const recommendations = []
-    const { totalQueries, slowQueryRate, averageResponseTime } =
-      this.performanceMetrics
+    const { totalQueries, slowQueryRate, averageResponseTime } = this.performanceMetrics
 
     if (totalQueries === 0) {
       return recommendations
