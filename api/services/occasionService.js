@@ -16,6 +16,7 @@ import DIContainer from '../architecture/di-container.js'
 import { NotFoundError, BadRequestError } from '../errors/AppError.js'
 import { validateOccasion } from '../utils/validation.js'
 import ValidatorService from './validation/ValidatorService.js'
+import logger from '../config/logger.js'
 
 /**
  * Get OccasionRepository instance from DI Container

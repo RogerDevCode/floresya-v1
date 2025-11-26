@@ -278,7 +278,21 @@ class DistributedServiceRegistry {
       )
 
       // Create service instance
-      const instance = new Implementation(...resolvedDependencies)
+      // For repository factories, just call them directly (they return instances)
+      // Check if it's a factory by naming convention or by trying to call it
+      let instance
+      try {
+        // Try calling as factory first
+        instance = Implementation(...resolvedDependencies)
+
+        // If it doesn't return an object, it might be a class
+        if (!instance || typeof instance !== 'object') {
+          instance = new Implementation(...resolvedDependencies)
+        }
+      } catch (error) {
+        // If factory call fails, try as class constructor
+        instance = new Implementation(...resolvedDependencies)
+      }
 
       // Cache with health monitoring
       this.instances.set(actualName, {

@@ -474,3 +474,6 @@ export {
   // Constants
   ERROR_CODES
 }
+
+// Export alias for backward compatibility
+export const TooManyRequestsError = RateLimitExceededError

@@ -28,7 +28,7 @@
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
-    "test:e2e:report": "playwright show-report",
+    "test:e2e:report": "npx playwright show-report",
     "seed": "node seed-products.js",
     "seed:test": "node seed-test-data.js",
     "cleanup:test": "node cleanup-test-data.js",
@@ -55,7 +55,8 @@
     "mutation:repositories": "bash scripts/run-mutation-tests.sh --mutate 'api/repositories/**/*.js'",
     "mutation:middleware": "bash scripts/run-mutation-tests.sh --mutate 'api/middleware/**/*.js'",
     "code-review": "node scripts/code-review-checklist.js",
-    "prepare": "husky || true"
+    "prepare": "husky || true",
+    "serve:static": "npx http-server public -p 3000 -c-1"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.22.0",

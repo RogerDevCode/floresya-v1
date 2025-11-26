@@ -31,6 +31,31 @@ export const validateDate = ValidatorService.validateDate.bind(ValidatorService)
 export const validatePagination = ValidatorService.validatePagination.bind(ValidatorService)
 export const sanitizeString = ValidatorService.sanitizeString.bind(ValidatorService)
 
+// Import advanced validations for re-export
+import { validateVenezuelanPhone } from '../middleware/validation/advancedValidation.phone.js'
+export { validateVenezuelanPhone }
+
+// Additional validation stubs for missing functions
+export function validatePaymentMethod(method) {
+  if (!method || typeof method !== 'object') {
+    throw new Error('Payment method is required')
+  }
+  ValidatorService.validateRequired(method.type, 'payment method type')
+  ValidatorService.validateEnum(
+    method.type,
+    ['cash', 'card', 'transfer', 'mobile_payment'],
+    'payment method type'
+  )
+  return true
+}
+
+export function validateCategory(category) {
+  ValidatorService.validateRequired(category, 'category')
+  ValidatorService.validateMinLength(category.name, 2, 'category name')
+  ValidatorService.validateMaxLength(category.name, 100, 'category name')
+  return true
+}
+
 // Legacy compatibility functions (maintaining original API)
 export function validateString(
   value,
@@ -143,6 +168,55 @@ export function validateSetting(setting) {
   ValidatorService.validateRequired(setting.type, 'type')
 
   return true
+}
+
+// Product Image validation
+export function validateProductImage(data, isUpdate = false) {
+  // Required fields for creation
+  if (!isUpdate) {
+    ValidatorService.validateRequired(data, 'product image')
+    ValidatorService.validateId(data.product_id, 'product_id')
+    ValidatorService.validateRequired(data.image_index, 'image_index')
+    ValidatorService.validateRequired(data.size, 'size')
+    ValidatorService.validateRequired(data.url, 'url')
+    ValidatorService.validateRequired(data.file_hash, 'file_hash')
+
+    // Additional validations
+    ValidatorService.validateMinLength(data.size, 1, 'size')
+    ValidatorService.validateMaxLength(data.size, 50, 'size')
+    ValidatorService.validateMinLength(data.url, 1, 'url')
+    ValidatorService.validateMaxLength(data.url, 1000, 'url')
+    ValidatorService.validateMinLength(data.file_hash, 1, 'file_hash')
+    ValidatorService.validateMaxLength(data.file_hash, 255, 'file_hash')
+  }
+
+  // Optional/update fields
+  if (data.image_index !== undefined) {
+    ValidatorService.validateRequired(data.image_index, 'image_index')
+  }
+
+  if (data.size !== undefined) {
+    ValidatorService.validateMinLength(data.size, 1, 'size')
+    ValidatorService.validateMaxLength(data.size, 50, 'size')
+  }
+
+  if (data.url !== undefined) {
+    ValidatorService.validateMinLength(data.url, 1, 'url')
+    ValidatorService.validateMaxLength(data.url, 1000, 'url')
+  }
+
+  if (data.file_hash !== undefined) {
+    ValidatorService.validateMinLength(data.file_hash, 1, 'file_hash')
+    ValidatorService.validateMaxLength(data.file_hash, 255, 'file_hash')
+  }
+
+  if (data.mime_type !== undefined) {
+    ValidatorService.validateMaxLength(data.mime_type, 100, 'mime_type')
+  }
+
+  if (data.is_primary !== undefined) {
+    ValidatorService.validateEnum(data.is_primary, [true, false], 'is_primary')
+  }
 }
 
 // Export ValidatorService class for direct usage

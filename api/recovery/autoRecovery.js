@@ -82,10 +82,10 @@ class AutoRecoverySystem {
       const realtimeMetrics = metricsCollector.getRealtimeMetrics()
       const circuitBreakerStatus = getCircuitBreakerStatus()
 
-      // Log current health status
+      // Log current health status (with safe access)
       logger.debug('Health check performed', {
         healthScore,
-        circuitBreakerState: circuitBreakerStatus.database.state,
+        circuitBreakerState: circuitBreakerStatus?.database?.state || 'unknown',
         memoryUsage: realtimeMetrics.memoryUsage.heapUsed,
         errorRate: realtimeMetrics.errorRate
       })

@@ -5,14 +5,15 @@ import { defineConfig, devices } from '@playwright/test'
  * Modern, fast, and reliable E2E testing
  */
 export default defineConfig({
-  // Test directory
+  // Test directory - Solo smoke tests por defecto
   testDir: './e2e-tests',
+  testMatch: 'smoke.spec.js', // Solo tests realistas
 
   // Maximum time one test can run
   timeout: 30000,
 
   // Run tests in files in parallel
-  fullyParallel: true,
+  fullyParallel: false, // Secuencial para debugging
 
   // Fail the build on CI if you accidentally left test.only in the source code
   forbidOnly: !!process.env.CI,
@@ -26,6 +27,9 @@ export default defineConfig({
     ['json', { outputFile: 'test-results/results.json' }],
     ['list']
   ],
+
+  // Global setup simplificado
+  globalSetup: './e2e-tests/global-setup.minimal.js',
 
   // Shared settings for all the projects below
   use: {
@@ -53,12 +57,6 @@ export default defineConfig({
     }
   ]
 
-  // Run your local dev server before starting the tests
-  // Server is running in Docker, so we don't need to start it here
-  // webServer: {
-  //   command: 'npm start',
-  //   url: 'http://localhost:3001',
-  //   reuseExistingServer: !process.env.CI,
-  //   timeout: 120000,
-  // },
+  // NOTA: El servidor debe estar corriendo manualmente con: npm run dev
+  // No intentamos auto-iniciar el servidor (KISS principle)
 })

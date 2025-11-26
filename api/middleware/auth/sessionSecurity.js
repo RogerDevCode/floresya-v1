@@ -90,6 +90,11 @@ export function csrfToken(req, res, next) {
  * CSRF validation middleware for state-changing operations
  */
 export function validateCsrf(req, res, next) {
+  // Bypass CSRF in development for easier API testing
+  if (process.env.NODE_ENV === 'development' && process.env.BYPASS_CSRF === 'true') {
+    return next()
+  }
+
   // Only validate for state-changing methods
   const stateChangingMethods = ['POST', 'PUT', 'DELETE', 'PATCH']
   if (!stateChangingMethods.includes(req.method)) {
