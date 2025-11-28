@@ -9,7 +9,7 @@
  * CRITICAL: Prevents cascading failures through service isolation
  */
 
-import { DatabaseError, ConfigurationError } from '../errors/AppError.js'
+import { ConfigurationError } from '../errors/AppError.js'
 // import { InternalServerError } from '../errors/AppError.js'
 // import { BadRequestError } from '../errors/AppError.js'
 import { supabase } from '../services/supabaseClient.js'
@@ -587,11 +587,17 @@ export async function initializeDIContainer() {
           // Use Proxy to handle any other missing methods gracefully
           return new Proxy(baseMock, {
             get: (target, prop) => {
-              if (prop in target) return target[prop]
+              if (prop in target) {
+                return target[prop]
+              }
               // Allow standard object properties
-              if (typeof prop !== 'string') return undefined
+              if (typeof prop !== 'string') {
+                return undefined
+              }
               // Handle 'then' to prevent Promise wrapping issues
-              if (prop === 'then') return undefined
+              if (prop === 'then') {
+                return undefined
+              }
               // Return a safe function for any other method call
               return async () => {
                 logger.warn(`Fallback repository method called: ${name}.${prop}`)

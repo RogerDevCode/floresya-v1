@@ -33,7 +33,6 @@ vi.mock('../../errors/AppError.js', () => ({
 }))
 
 import * as migrationService from '../../services/migrationService.js'
-import { log as logger } from '../../utils/logger.js'
 import { DatabaseError } from '../../errors/AppError.js'
 
 // Mock response and request objects

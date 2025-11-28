@@ -241,7 +241,7 @@ export function sanitizeRequestData(req, res, next) {
       // req.query might be read-only in some environments (like Express 5 or Supertest mocks)
       try {
         req.query = sanitizedQuery
-      } catch (e) {
+      } catch (_e) {
         // If direct assignment fails, try updating properties individually
         Object.keys(req.query).forEach(key => {
           delete req.query[key]

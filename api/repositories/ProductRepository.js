@@ -237,7 +237,7 @@ export class ProductRepository extends BaseRepository {
       const imageUrl = images.length > 0 ? images[0].url : null
 
       // Eliminar la propiedad product_images y agregar image_url_small
-      const { product_images, ...productData } = product
+      const { product_images: _product_images, ...productData } = product
       return {
         ...productData,
         image_url_small: imageUrl
