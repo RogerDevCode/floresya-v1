@@ -22,7 +22,7 @@ import {
 export function updateUser(id, updates) {
   return withErrorHandling(
     async () => {
-      const userRepository = getUserRepository()
+      const userRepository = await getUserRepository()
 
       if (!id || typeof id !== 'number') {
         throw new BadRequestError('Invalid user ID: must be a number', { userId: id })

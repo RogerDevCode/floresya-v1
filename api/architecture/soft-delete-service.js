@@ -17,6 +17,10 @@
 
 import { NotFoundError, DatabaseError, BadRequestError } from '../errors/AppError.js'
 import { logger } from '../utils/logger.js'
+import {
+  createSchemaValidationService,
+  SchemaValidationError
+} from './schema-validation-service.js'
 
 /**
  * SoftDeleteService
@@ -30,6 +34,7 @@ export class SoftDeleteService {
   constructor(supabaseClient, tableName) {
     this.supabase = supabaseClient
     this.tableName = tableName
+    this.schemaValidator = createSchemaValidationService(supabaseClient)
   }
 
   /**
@@ -51,6 +56,9 @@ export class SoftDeleteService {
         table: this.tableName
       })
     }
+
+    // Validate schema before proceeding
+    await this.validateSoftDeleteSchema()
 
     // Prepare update data with audit trail
     const updateData = {
@@ -120,6 +128,9 @@ export class SoftDeleteService {
         table: this.tableName
       })
     }
+
+    // Validate schema before proceeding
+    await this.validateSoftDeleteSchema()
 
     // Prepare update data
     const updateData = {
@@ -231,6 +242,76 @@ export class SoftDeleteService {
     logger.info(`[HARD DELETE] ${records.length} records deleted from ${this.tableName}`)
 
     return records.length
+  }
+
+  /**
+   * Validate that table supports soft delete operations
+   * @throws {SchemaValidationError} When table doesn't support soft delete
+   * @throws {DatabaseError} When schema validation fails
+   */
+  async validateSoftDeleteSchema() {
+    try {
+      const validation = await this.schemaValidator.getSoftDeleteValidation(this.tableName)
+
+      if (!validation.tableExists) {
+        throw new SchemaValidationError(
+          `Table ${this.tableName} does not exist`,
+          this.tableName,
+          validation
+        )
+      }
+
+      if (!validation.canPerformSoftDelete) {
+        const missingCols = validation.missingColumns.join(', ')
+        throw new SchemaValidationError(
+          `Table ${this.tableName} does not support soft delete operations. Missing columns: ${missingCols}`,
+          this.tableName,
+          validation
+        )
+      }
+
+      // Log warnings for incomplete audit support
+      if (!validation.hasFullAuditSupport) {
+        logger.warn(`Table ${this.tableName} has incomplete audit support`, {
+          table: this.tableName,
+          missingAuditColumns: validation.missingColumns.filter(col =>
+            ['deleted_at', 'deleted_by', 'deletion_reason', 'deletion_ip'].includes(col)
+          ),
+          recommendations: validation.recommendations
+        })
+      }
+
+      return validation
+    } catch (error) {
+      if (error instanceof SchemaValidationError) {
+        throw error
+      }
+
+      logger.error(`Schema validation failed for ${this.tableName}:`, error)
+      throw new DatabaseError('SCHEMA_VALIDATION', this.tableName, error)
+    }
+  }
+
+  /**
+   * Get schema validation information for the table
+   * @returns {Promise<Object>} Schema validation result
+   */
+  async getSchemaValidation() {
+    return await this.schemaValidator.getSoftDeleteValidation(this.tableName)
+  }
+
+  /**
+   * Check if table supports soft delete without throwing errors
+   * @returns {Promise<boolean>} True if soft delete is supported
+   */
+  async hasSoftDeleteSupport() {
+    try {
+      const validation = await this.schemaValidator.getSoftDeleteValidation(this.tableName)
+      return validation.canPerformSoftDelete
+    } catch (error) {
+      logger.warn(`Error checking soft delete support for ${this.tableName}:`, error)
+      return false
+    }
   }
 }
 

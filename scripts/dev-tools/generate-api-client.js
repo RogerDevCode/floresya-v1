@@ -593,25 +593,29 @@ function generateTypeScriptTypes(spec) {
   const schemas = spec.components?.schemas || {}
 
   let types = `/**
- * TypeScript Types for FloresYa API
+ * JSDoc Types for FloresYa API
  * Auto-generated from OpenAPI specification
  * Generated: ${new Date().toISOString()}
  * Spec Version: ${spec.info.version}
  */
 
 // Base response types
-export interface ApiResponse<T = any> {
-  success: boolean
-  data: T
-  message: string
-}
 
-export interface ApiError {
-  success: false
-  error: string
-  message: string
-  details?: string[]
-}
+/**
+ * @template T
+ * @typedef {Object} ApiResponse
+ * @property {boolean} success
+ * @property {T} data
+ * @property {string} message
+ */
+
+/**
+ * @typedef {Object} ApiError
+ * @property {false} success
+ * @property {string} error
+ * @property {string} message
+ * @property {string[]} [details]
+ */
 
 `
 
@@ -622,6 +626,7 @@ export interface ApiError {
     }
   }
 
+  types += 'export {}\n'
   return types
 }
 
@@ -632,15 +637,15 @@ function generateTypeInterface(name, schema) {
   const interfaceName = capitalize(name)
   const properties = schema.properties || {}
 
-  let interfaceCode = `export interface ${interfaceName} {\n`
+  let interfaceCode = `/**\n * @typedef {Object} ${interfaceName}\n`
 
   for (const [propName, propSchema] of Object.entries(properties)) {
     const optional = !schema.required?.includes(propName) || propSchema.nullable
     const type = mapOpenApiTypeToTS(propSchema)
-    interfaceCode += `  ${propName}${optional ? '?' : ''}: ${type}\n`
+    interfaceCode += ` * @property {${type}} ${optional ? '[' + propName + ']' : propName}\n`
   }
 
-  interfaceCode += `}\n\n`
+  interfaceCode += ` */\n\n`
   return interfaceCode
 }
 

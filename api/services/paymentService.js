@@ -20,6 +20,9 @@ import {
   InternalServerError
 } from '../errors/AppError.js'
 import { validateEmail, validateVenezuelanPhone } from '../utils/validation.js'
+import { withErrorMapping } from '../middleware/error/index.js'
+
+const TABLE = 'payments'
 
 /**
  * Get PaymentMethodRepository instance from DI Container
@@ -59,9 +62,9 @@ function getOrderRepository() {
  * @throws {DatabaseError} If database query fails
  * @throws {NotFoundError} If no payment methods found
  */
-export async function getPaymentMethods() {
-  try {
-    const paymentMethodRepository = getPaymentMethodRepository()
+export const getPaymentMethods = withErrorMapping(
+  async () => {
+    const paymentMethodRepository = await getPaymentMethodRepository()
 
     // Use repository to get active payment methods
     const data = await paymentMethodRepository.findActive()
@@ -71,15 +74,10 @@ export async function getPaymentMethods() {
     }
 
     return data
-  } catch (error) {
-    // Re-throw AppError instances as-is (fail-fast)
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    console.error('getPaymentMethods failed:', error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  'payment_methods'
+)
 
 /**
  * Validate Venezuelan phone number format (FAIL-FAST version)
@@ -143,9 +141,9 @@ export function generateOrderReference() {
  * @example
  * const cost = await getDeliveryCost() // Returns configured value or throws error
  */
-export async function getDeliveryCost() {
-  try {
-    const settingsRepository = getSettingsRepository()
+export const getDeliveryCost = withErrorMapping(
+  async () => {
+    const settingsRepository = await getSettingsRepository()
     const data = await settingsRepository.findByKey('DELIVERY_COST_USD')
 
     if (!data) {
@@ -162,15 +160,10 @@ export async function getDeliveryCost() {
     }
 
     return cost
-  } catch (error) {
-    // Re-throw AppError instances as-is (fail-fast)
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    console.error('getDeliveryCost failed:', error)
-    throw new DatabaseError('SELECT', 'settings', error, { key: 'DELIVERY_COST_USD' })
-  }
-}
+  },
+  'SELECT',
+  'settings'
+)
 
 /**
  * Get BCV exchange rate from settings (FAIL-FAST - no fallback)
@@ -181,9 +174,9 @@ export async function getDeliveryCost() {
  * @example
  * const rate = await getBCVRate() // Returns configured value or throws error
  */
-export async function getBCVRate() {
-  try {
-    const settingsRepository = getSettingsRepository()
+export const getBCVRate = withErrorMapping(
+  async () => {
+    const settingsRepository = await getSettingsRepository()
     const data = await settingsRepository.findByKey('bcv_usd_rate')
 
     if (!data) {
@@ -200,15 +193,10 @@ export async function getBCVRate() {
     }
 
     return rate
-  } catch (error) {
-    // Re-throw AppError instances as-is (fail-fast)
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    console.error('getBCVRate failed:', error)
-    throw new DatabaseError('SELECT', 'settings', error, { key: 'bcv_usd_rate' })
-  }
-}
+  },
+  'SELECT',
+  'settings'
+)
 
 /**
  * Confirm payment for an order - creates a payment record with the provided details
@@ -218,7 +206,7 @@ export async function getBCVRate() {
  * @param {string} paymentData.reference_number - Payment reference number
  * @param {string} [paymentData.payment_details] - Additional payment details
  * @param {string} [paymentData.receipt_image_url] - Receipt image URL
- * @param {number} [paymentData.confirmed_by] - User ID who confirmed the payment
+ * @param {number} [paymentData.confirmed_by] - User ID who confirmed payment
  * @returns {Object} - Created payment record
  * @throws {BadRequestError} When orderId or payment data is invalid
  * @throws {ValidationError} When payment method or reference is missing
@@ -232,8 +220,8 @@ export async function getBCVRate() {
  *   confirmed_by: 456
  * })
  */
-export async function confirmPayment(orderId, paymentData) {
-  try {
+export const confirmPayment = withErrorMapping(
+  async (orderId, paymentData) => {
     if (!orderId || typeof orderId !== 'number') {
       throw new BadRequestError('Invalid order ID', { orderId })
     }
@@ -247,7 +235,7 @@ export async function confirmPayment(orderId, paymentData) {
     }
 
     // Get payment method details using repository
-    const paymentMethodRepository = getPaymentMethodRepository()
+    const paymentMethodRepository = await getPaymentMethodRepository()
     const methods = await paymentMethodRepository.findAllWithFilters(
       { type: paymentData.payment_method, active: true },
       { limit: 1 }
@@ -260,7 +248,7 @@ export async function confirmPayment(orderId, paymentData) {
     const method = methods[0]
 
     // Get order to validate and get amount using repository
-    const orderRepository = getOrderRepository()
+    const orderRepository = await getOrderRepository()
     const order = await orderRepository.findByIdWithItems(orderId)
 
     if (!order) {
@@ -283,7 +271,7 @@ export async function confirmPayment(orderId, paymentData) {
       payment_date: new Date().toISOString()
     }
 
-    const paymentRepository = getPaymentRepository()
+    const paymentRepository = await getPaymentRepository()
     const data = await paymentRepository.create(payment)
 
     if (!data) {
@@ -293,14 +281,10 @@ export async function confirmPayment(orderId, paymentData) {
     }
 
     return data
-  } catch (error) {
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    console.error(`confirmPayment(${orderId}) failed:`, error)
-    throw new DatabaseError('INSERT', 'payments', error, { orderId })
-  }
-}
+  },
+  'INSERT',
+  TABLE
+)
 
 /**
  * Get payments for an order - retrieves all payment records for a specific order
@@ -313,13 +297,13 @@ export async function confirmPayment(orderId, paymentData) {
  * const payments = await getOrderPayments(123)
  * // Returns: [{ id: 1, order_id: 123, payment_method_name: 'Pago Móvil', amount_usd: 45.99, ... }]
  */
-export async function getOrderPayments(orderId) {
-  try {
+export const getOrderPayments = withErrorMapping(
+  async orderId => {
     if (!orderId || typeof orderId !== 'number') {
       throw new BadRequestError('Invalid order ID', { orderId })
     }
 
-    const paymentRepository = getPaymentRepository()
+    const paymentRepository = await getPaymentRepository()
     const data = await paymentRepository.findByOrderId(orderId)
 
     if (!data || data.length === 0) {
@@ -327,11 +311,7 @@ export async function getOrderPayments(orderId) {
     }
 
     return data
-  } catch (error) {
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    console.error(`getOrderPayments(${orderId}) failed:`, error)
-    throw new DatabaseError('SELECT', 'payments', error, { orderId })
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)

@@ -39,9 +39,18 @@ function getOccasionRepository() {
  * Centraliza la lógica de filtrado para evitar JOINs complejos
  */
 export class ProductFilterService {
-  constructor() {
-    this.productRepository = getProductRepository()
-    this.occasionRepository = getOccasionRepository()
+  constructor(productRepository, occasionRepository) {
+    this.productRepository = productRepository
+    this.occasionRepository = occasionRepository
+  }
+
+  /**
+   * Static Async Factory
+   */
+  static async create() {
+    const productRepository = await getProductRepository()
+    const occasionRepository = await getOccasionRepository()
+    return new ProductFilterService(productRepository, occasionRepository)
   }
 
   /**

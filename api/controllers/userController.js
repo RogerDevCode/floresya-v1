@@ -148,6 +148,8 @@ export const getUserById = asyncHandler(async (req, res) => {
   const userRole = req.user ? req.user.user_metadata?.role || req.user.role : null
 
   const includeDeactivated = req.user !== null && userRole === 'admin'
+
+  // ✅ ESPERAR SERVICIO: Asegurar que userService.getUserById devuelva Promise resuelta
   const user = await userService.getUserById(userId, includeDeactivated)
 
   const response = createResponse(user, getSuccessMessage('retrieve'))

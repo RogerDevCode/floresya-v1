@@ -469,9 +469,9 @@ describe('Product Service - Business Logic Layer', () => {
     })
 
     test('should throw InternalServerError for invalid parameters', async () => {
-      await expect(replaceProductOccasions('invalid', [1, 2])).rejects.toThrow(InternalServerError)
-      await expect(replaceProductOccasions(1, 'not-array')).rejects.toThrow(InternalServerError)
-      await expect(replaceProductOccasions(1, [1, 'invalid'])).rejects.toThrow(InternalServerError)
+      await expect(replaceProductOccasions('invalid', [1, 2])).rejects.toThrow(ValidationError)
+      await expect(replaceProductOccasions(1, 'not-array')).rejects.toThrow(ValidationError)
+      await expect(replaceProductOccasions(1, [1, 'invalid'])).rejects.toThrow(ValidationError)
     })
   })
 

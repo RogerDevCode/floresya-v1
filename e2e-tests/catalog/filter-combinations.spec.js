@@ -65,28 +65,28 @@ const PRODUCT_FIXTURES = [
 ]
 
 // Todas las categorías y ocasiones disponibles
-const ALL_CATEGORIES = ['flores', 'plantas', 'arreglos']
-const ALL_OCCASIONS = [
-  'amor',
-  'cumpleaños',
-  'agradecimiento',
-  'recuperación',
-  'decoración',
-  'inauguración',
-  'oficina',
-  'regalo',
-  'boda',
-  'aniversario',
-  'evento',
-  'celebración'
-]
-const PRICE_RANGES = {
-  '0-30': { min: 0, max: 30 },
-  '30-60': { min: 30, max: 60 },
-  '60-100': { min: 60, max: 100 },
-  '100+': { min: 100, max: Infinity }
-}
-const SORT_OPTIONS = ['created_desc', 'price_asc', 'price_desc', 'rating_desc']
+// const ALL_CATEGORIES = ['flores', 'plantas', 'arreglos']
+// const ALL_OCCASIONS = [
+//   'amor',
+//   'cumpleaños',
+//   'agradecimiento',
+//   'recuperación',
+//   'decoración',
+//   'inauguración',
+//   'oficina',
+//   'regalo',
+//   'boda',
+//   'aniversario',
+//   'evento',
+//   'celebración'
+// ]
+// const PRICE_RANGES = {
+//   '0-30': { min: 0, max: 30 },
+//   '30-60': { min: 30, max: 60 },
+//   '60-100': { min: 60, max: 100 },
+//   '100+': { min: 100, max: Infinity }
+// }
+// const SORT_OPTIONS = ['created_desc', 'price_asc', 'price_desc', 'rating_desc']
 
 test.describe('Catalog Filter Combinations - Complete Coverage', () => {
   test.beforeEach(async ({ page }) => {

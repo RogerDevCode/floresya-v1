@@ -18,7 +18,7 @@ import { getUserRepository, withErrorHandling, validateUserId } from './userServ
 export function verifyUserEmail(id) {
   return withErrorHandling(
     async () => {
-      const userRepository = getUserRepository()
+      const userRepository = await getUserRepository()
 
       validateUserId(id, 'verifyUserEmail')
 

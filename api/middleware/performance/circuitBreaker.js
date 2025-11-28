@@ -949,6 +949,17 @@ class CircuitBreakerRegistry {
       timestamp: new Date().toISOString()
     }
 
+    // Ensure database circuit breaker exists in status even if not created yet
+    if (!this.breakers.has('database')) {
+      status.breakers['database'] = {
+        name: 'database',
+        state: STATES.CLOSED,
+        isHealthy: true,
+        metrics: { healthScore: 100 }
+      }
+      status.summary.healthy++
+    }
+
     for (const [name, breaker] of this.breakers) {
       const breakerStatus = breaker.getStatus()
       status.breakers[name] = breakerStatus

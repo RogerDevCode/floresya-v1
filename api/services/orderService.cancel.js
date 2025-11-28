@@ -24,7 +24,7 @@ import { getOrderRepository, BadRequestError } from './orderService.helpers.js'
  */
 export async function cancelOrder(orderId, notes = 'Order cancelled', _changedBy = null) {
   try {
-    const orderRepository = getOrderRepository()
+    const orderRepository = await getOrderRepository()
 
     if (!orderId || typeof orderId !== 'number') {
       throw new BadRequestError('Invalid order ID: must be a number', { orderId })

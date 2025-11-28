@@ -3,8 +3,8 @@
  * Configura el ambiente de testing para todas las suites
  */
 
-const { chromium } = require('@playwright/test')
-const path = require('path')
+// const { chromium } = require('@playwright/test')
+// const path = require('path')
 
 async function globalSetup(config) {
   console.log('🚀 [GlobalSetup] Iniciando configuración global de tests E2E')
@@ -49,7 +49,7 @@ async function globalSetup(config) {
 /**
  * Limpia el ambiente de testing
  */
-async function cleanupTestEnvironment() {
+function cleanupTestEnvironment() {
   try {
     // Limpiar directorio de resultados de tests
     const fs = require('fs')
@@ -71,7 +71,7 @@ async function cleanupTestEnvironment() {
 /**
  * Configura fixtures para testing
  */
-async function setupTestFixtures() {
+function setupTestFixtures() {
   try {
     const fs = require('fs')
     const path = require('path')
@@ -128,7 +128,7 @@ async function setupTestFixtures() {
 /**
  * Asegura que el servidor de desarrollo esté corriendo
  */
-async function ensureDevServer() {
+function ensureDevServer() {
   try {
     const { exec } = require('child_process')
 
@@ -161,7 +161,7 @@ async function ensureDevServer() {
 /**
  * Configura directorios de salida para tests
  */
-async function setupOutputDirectories(config) {
+function setupOutputDirectories(config) {
   try {
     const fs = require('fs')
     const path = require('path')

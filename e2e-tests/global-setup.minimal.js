@@ -12,12 +12,13 @@ async function globalSetup() {
 
   for (let i = 0; i < maxRetries; i++) {
     try {
+      // eslint-disable-next-line no-restricted-globals
       const response = await fetch(baseURL)
       if (response.ok) {
         console.log('✅ [Setup] Servidor disponible en', baseURL)
         return
       }
-    } catch (error) {
+    } catch {
       if (i === maxRetries - 1) {
         throw new Error(`❌ Servidor no disponible en ${baseURL}. Ejecuta: npm run dev`)
       }

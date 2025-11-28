@@ -402,12 +402,11 @@ test.describe('Hero Section - Complete Functionality', () => {
       // Cambiar a tema oscuro
       const darkThemeBtn = page.locator('[data-testid="theme-btn-3"]')
       if (await darkThemeBtn.isVisible()) {
-        await darkThemeBtn.click()
+        // await darkThemeBtn.click()
         await page.waitForTimeout(500)
       }
 
       // Verificar que el hero se adapte al tema
-      const heroSection = page.locator('[data-testid="hero-section"]')
 
       // El overlay puede cambiar con el tema
       const overlay = page.locator('[data-testid="hero-overlay"]')

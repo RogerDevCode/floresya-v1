@@ -374,7 +374,9 @@ export async function checkAccessibility(page, scope = 'body') {
       const violations = []
       const container = document.querySelector(selector)
 
-      if (!container) return violations
+      if (!container) {
+        return violations
+      }
 
       // Check for missing alt text
       const images = container.querySelectorAll('img:not([alt])')

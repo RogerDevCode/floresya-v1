@@ -87,7 +87,9 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
         updateCarouselOrder: vi.fn(),
         removeFromCarousel: vi.fn(),
         getFeaturedProducts: vi.fn(),
-        getCarouselProducts: vi.fn()
+        getCarouselProducts: vi.fn(),
+        findFeaturedWithImages: vi.fn().mockResolvedValue([]),
+        findFeatured: vi.fn().mockResolvedValue([])
       }),
       OrderRepository: createMockRepository({
         findByIdWithItems: vi.fn(),
@@ -348,14 +350,7 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
 
       // Step 3: Verify product appears in carousel
       const mockCarouselProducts = [updatedProduct]
-      const mockQueryBuilder = {
-        eq: vi.fn().mockReturnThis(),
-        order: vi.fn().mockReturnThis(),
-        limit: vi.fn().mockResolvedValue({ data: mockCarouselProducts, error: null })
-      }
-      mockSupabase.from.mockReturnValue({
-        select: vi.fn().mockReturnValue(mockQueryBuilder)
-      })
+      mockRepositories.ProductRepository.findFeaturedWithImages.mockResolvedValue(mockCarouselProducts)
 
       const carousel = await getCarouselProducts()
       expect(carousel).toHaveLength(1)
@@ -403,8 +398,8 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
       // removeFromCarousel returns void, so we just verify it doesn't throw
       await expect(removeFromCarousel(1)).resolves.toBeUndefined()
 
-      // Verify the supabase update was called with correct parameters
-      expect(mockSupabase.from).toHaveBeenCalledWith('products')
+      // Verify the repository method was called
+      expect(mockRepositories.ProductRepository.updateCarouselOrder).toHaveBeenCalledWith(1, null)
     })
   })
 

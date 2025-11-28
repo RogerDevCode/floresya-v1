@@ -13,6 +13,8 @@ import { dirname, join } from 'path'
 import { readFileSync, existsSync } from 'fs'
 import yaml from 'js-yaml'
 import { logger } from '../utils/logger.js'
+// Import OpenAPI annotations to ensure they're loaded
+import '../docs/openapi-annotations.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -31,9 +33,10 @@ function loadSwaggerSpec() {
         'schemas'
       )
       logger.info('Available schemas:', Object.keys(spec.components?.schemas || {}))
-      // Force reload by adding timestamp
-      spec._loadedAt = new Date().toISOString()
-      return spec
+      // Force reload by adding timestamp (but remove for validation)
+      const specWithTimestamp = { ...spec }
+      delete specWithTimestamp._loadedAt
+      return specWithTimestamp
     } else {
       logger.warn('Generated OpenAPI spec file not found at:', specPath)
     }

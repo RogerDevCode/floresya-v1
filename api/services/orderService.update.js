@@ -102,7 +102,7 @@ export async function updateOrderStatus(orderId, newStatus, notes = null, change
  */
 export async function updateOrder(id, updates) {
   try {
-    const orderRepository = getOrderRepository()
+    const orderRepository = await getOrderRepository()
 
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid order ID: must be a number', { orderId: id })

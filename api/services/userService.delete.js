@@ -16,7 +16,7 @@ import { getUserRepository, withErrorHandling, validateUserId } from './userServ
 export function deleteUser(id) {
   return withErrorHandling(
     async () => {
-      const userRepository = getUserRepository()
+      const userRepository = await getUserRepository()
 
       validateUserId(id, 'deleteUser')
 
@@ -38,7 +38,7 @@ export function deleteUser(id) {
 export function reactivateUser(id) {
   return withErrorHandling(
     async () => {
-      const userRepository = getUserRepository()
+      const userRepository = await getUserRepository()
 
       validateUserId(id, 'reactivateUser')
 

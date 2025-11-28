@@ -23,7 +23,7 @@ import {
  */
 export async function getPaymentMethods() {
   try {
-    const paymentMethodRepository = getPaymentMethodRepository()
+    const paymentMethodRepository = await getPaymentMethodRepository()
 
     // Use repository to get active payment methods
     const data = await paymentMethodRepository.findActive()
@@ -52,7 +52,7 @@ export async function getPaymentMethods() {
  */
 export async function getDeliveryCost() {
   try {
-    const settingsRepository = getSettingsRepository()
+    const settingsRepository = await getSettingsRepository()
     const data = await settingsRepository.findByKey('DELIVERY_COST_USD')
 
     if (!data) {
@@ -83,7 +83,7 @@ export async function getDeliveryCost() {
  */
 export async function getBCVRate() {
   try {
-    const settingsRepository = getSettingsRepository()
+    const settingsRepository = await getSettingsRepository()
     const data = await settingsRepository.findByKey('USD_VES_BCV_RATE')
 
     if (!data) {
@@ -119,7 +119,7 @@ export async function getOrderPayments(orderId) {
       throw new BadRequestError('Invalid order ID: must be a number', { orderId })
     }
 
-    const paymentRepository = getPaymentRepository()
+    const paymentRepository = await getPaymentRepository()
     const data = await paymentRepository.findByOrderId(orderId)
 
     if (!data || data.length === 0) {

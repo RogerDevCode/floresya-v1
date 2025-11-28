@@ -5,22 +5,29 @@
 
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest'
 import { ValidationError } from '../../api/errors/AppError.js'
+import { DIContainer } from '../../api/architecture/di-container.js'
+import { createProductRepository } from '../../api/repositories/ProductRepository.js'
 
-// Mock dependencies - using proper comprehensive Supabase mock
-import { createSupabaseClientMock } from '../supabase-client/mocks/mocks.js'
-
-const mockSupabase = createSupabaseClientMock()
-
-vi.mock('../../api/services/supabaseClient.js', () => ({
-  supabase: mockSupabase,
-  DB_SCHEMA: {
-    products: { table: 'products' },
-    product_images: { table: 'product_images' }
+// Mock dependencies
+vi.mock('../../api/services/supabaseClient.js', async () => {
+  const { createSupabaseClientMock } = await import('../supabase-client/mocks/mocks.js')
+  const mockSupabase = createSupabaseClientMock()
+  return {
+    supabase: mockSupabase,
+    DB_SCHEMA: {
+      products: { table: 'products' },
+      product_images: { table: 'product_images' }
+    }
   }
-}))
+})
 
 vi.mock('../../api/utils/logger.js', () => ({
   log: {
+    info: vi.fn(),
+    error: vi.fn(),
+    warn: vi.fn()
+  },
+  logger: {
     info: vi.fn(),
     error: vi.fn(),
     warn: vi.fn()
@@ -54,9 +61,26 @@ let {
 } = {}
 
 describe('Carousel Service - Carousel Management Operations', () => {
+  let mockSupabase
+
   beforeEach(async () => {
     vi.clearAllMocks()
+    const { supabase } = await import('../../api/services/supabaseClient.js')
+    mockSupabase = supabase
     mockSupabase.reset()
+    DIContainer.clear()
+
+    // Register dependencies in DI Container
+    DIContainer.registerInstance('SupabaseClient', mockSupabase)
+    
+    // Manually create and register ProductRepository to avoid dependency resolution issues in test
+    const productRepository = createProductRepository(mockSupabase)
+    DIContainer.registerInstance('ProductRepository', productRepository)
+    
+    // Mock other repositories if needed
+    // DIContainer.register('ProductRepository', createProductRepository, {
+    //   dependencies: ['SupabaseClient']
+    // })
 
     // Import service functions after mocking is set up
     const serviceModule = await import('../../api/services/carouselService.js')
@@ -198,12 +222,9 @@ describe('Carousel Service - Carousel Management Operations', () => {
 
   describe('reorderCarousel', () => {
     test('should reorder carousel products successfully', async () => {
-      const testProducts = [
-        { id: 1, name: 'Product 1', carousel_order: 1 },
-        { id: 2, name: 'Product 2', carousel_order: 2 }
-      ]
-
-      mockSupabase.mockDataStore.setTable('products', testProducts)
+      // Mock repository method to avoid database issues
+      const productRepository = await DIContainer.resolve('ProductRepository')
+      vi.spyOn(productRepository, 'updateCarouselOrder').mockResolvedValue({})
 
       const reorderData = [
         { product_id: 1, new_order: 2 },

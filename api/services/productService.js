@@ -20,8 +20,7 @@ import {
   NotFoundError,
   DatabaseError,
   DatabaseConstraintError,
-  BadRequestError,
-  InternalServerError
+  BadRequestError
 } from '../errors/AppError.js'
 import { sanitizeProductData } from '../utils/sanitize.js'
 import { CAROUSEL } from '../config/constants.js'
@@ -34,11 +33,23 @@ import { getProductsBatchWithImageSize, getProductWithImageSize } from './produc
 const TABLE = DB_SCHEMA.products.table
 
 /**
- * Get ProductRepository instance from DI Container
- * @returns {ProductRepository} Repository instance
+ * ✅ STATIC ASYNC FACTORY: Get ProductRepository instance with proper async resolution
+ * @returns {Promise<ProductRepository>} Repository instance completely resolved
  */
-function getProductRepository() {
-  return DIContainer.resolve('ProductRepository')
+async function getProductRepository() {
+  try {
+    // 🚀 ESPERAR RESOLUCIÓN: Asegurar que el repositorio esté completamente inicializado
+    const repository = await DIContainer.resolve('ProductRepository')
+
+    // ✅ VALIDACIÓN: Verificar que el repositorio sea funcional
+    if (!repository || typeof repository.findById !== 'function') {
+      throw new Error('Invalid ProductRepository resolved from DI Container')
+    }
+
+    return repository
+  } catch (error) {
+    throw new Error(`Failed to resolve ProductRepository: ${error.message}`)
+  }
 }
 
 /**
@@ -66,13 +77,13 @@ function getOccasionRepository() {
  */
 export const getAllProducts = withErrorMapping(
   async (filters = {}, includeDeactivated = false, includeImageSize = null) => {
-    const productRepository = getProductRepository()
+    const productRepository = await getProductRepository()
 
     // If filtering by occasion slug, first resolve it to occasion_id
     let occasionId = null
     if (filters.occasion) {
       // Use OccasionRepository instead of direct database access
-      const occasionRepository = getOccasionRepository()
+      const occasionRepository = await getOccasionRepository()
       const occasionData = await occasionRepository.findBySlug(filters.occasion, true)
 
       // Fail Fast: Check for no data
@@ -164,7 +175,7 @@ export const getAllProducts = withErrorMapping(
  */
 export const getProductById = withErrorMapping(
   async (id, includeDeactivated = false, includeImageSize = null) => {
-    const productRepository = getProductRepository()
+    const productRepository = await getProductRepository()
 
     // Fail-fast: Validate ID
     if (id === null || id === undefined || typeof id !== 'number' || id <= 0) {
@@ -205,9 +216,9 @@ export const getProductById = withErrorMapping(
  * @example
  * const product = await getProductBySku('ROS-001')
  */
-export async function getProductBySku(sku) {
-  try {
-    const productRepository = getProductRepository()
+export const getProductBySku = withErrorMapping(
+  async sku => {
+    const productRepository = await getProductRepository()
 
     if (!sku || typeof sku !== 'string') {
       throw new BadRequestError('Invalid SKU: must be a string', { sku })
@@ -221,11 +232,10 @@ export async function getProductBySku(sku) {
     }
 
     return data
-  } catch (error) {
-    logger.error(`getProductBySku(${sku}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get products with occasions (using repository pattern - OPTIMIZED: Single JOIN query)
@@ -237,9 +247,9 @@ export async function getProductBySku(sku) {
  * @example
  * const products = await getProductsWithOccasions(20, 0)
  */
-export async function getProductsWithOccasions(limit = 50, offset = 0) {
-  try {
-    const productRepository = getProductRepository()
+export const getProductsWithOccasions = withErrorMapping(
+  async (limit = 50, offset = 0) => {
+    const productRepository = await getProductRepository()
 
     // OPTIMIZED: Use single JOIN query instead of N+1 pattern
     const productsWithOccasions = await productRepository.findAllWithOccasions(
@@ -252,11 +262,10 @@ export async function getProductsWithOccasions(limit = 50, offset = 0) {
     }
 
     return productsWithOccasions
-  } catch (error) {
-    logger.error('getProductsWithOccasions failed:', error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get products by occasion ID (using repository pattern)
@@ -269,22 +278,21 @@ export async function getProductsWithOccasions(limit = 50, offset = 0) {
  * @example
  * const products = await getProductsByOccasion(1, 25)
  */
-export async function getProductsByOccasion(occasionId, limit = 50) {
-  try {
+export const getProductsByOccasion = withErrorMapping(
+  async (occasionId, limit = 50) => {
     if (!occasionId || typeof occasionId !== 'number') {
       throw new BadRequestError('Invalid occasion ID: must be a number', { occasionId })
     }
 
     // Use repository pattern instead of direct Supabase access
-    const repository = getProductRepository()
+    const repository = await getProductRepository()
     const products = await repository.findByOccasion(occasionId, limit)
 
     return products
-  } catch (error) {
-    logger.error(`getProductsByOccasion(${occasionId}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get products in carousel (carousel_order IS NOT NULL)
@@ -295,9 +303,9 @@ export async function getProductsByOccasion(occasionId, limit = 50) {
  * @example
  * const carouselProducts = await getCarouselProducts()
  */
-export async function getCarouselProducts() {
-  try {
-    const productRepository = getProductRepository()
+export const getCarouselProducts = withErrorMapping(
+  async () => {
+    const productRepository = await getProductRepository()
 
     // Get featured products directly from database
     const products = await productRepository.findFeatured(CAROUSEL.MAX_SIZE)
@@ -335,11 +343,10 @@ export async function getCarouselProducts() {
     })
 
     return productsWithImages
-  } catch (error) {
-    logger.error('getCarouselProducts failed:', error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Create product (simple)
@@ -358,9 +365,9 @@ export async function getCarouselProducts() {
  * @throws {DatabaseConstraintError} When product violates database constraints (e.g., duplicate SKU)
  * @throws {DatabaseError} When database insert fails
  */
-export async function createProduct(productData) {
-  try {
-    const productRepository = getProductRepository()
+export const createProduct = withErrorMapping(
+  async productData => {
+    const productRepository = await getProductRepository()
     validateProduct(productData, false)
 
     // Sanitize data before database operations
@@ -395,22 +402,10 @@ export async function createProduct(productData) {
     const data = await productRepository.create(newProduct)
 
     return data
-  } catch (error) {
-    // Re-throw AppError instances as-is (fail-fast)
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    // Handle database constraint violations
-    if (error.code === '23505') {
-      throw new DatabaseConstraintError('unique_constraint', TABLE, {
-        productData,
-        originalError: error.message
-      })
-    }
-    logger.error('createProduct failed:', error)
-    throw new DatabaseError('INSERT', TABLE, error, { productData })
-  }
-}
+  },
+  'INSERT',
+  TABLE
+)
 
 /**
  * Create product with occasions (manual transaction)
@@ -436,9 +431,9 @@ export async function createProduct(productData) {
  *   stock: 5
  * }, [1, 3]) // Associate with occasions 1 and 3
  */
-export async function createProductWithOccasions(productData, occasionIds = []) {
-  try {
-    const productRepository = getProductRepository()
+export const createProductWithOccasions = withErrorMapping(
+  async (productData, occasionIds = []) => {
+    const productRepository = await getProductRepository()
     validateProduct(productData, false)
 
     if (!Array.isArray(occasionIds)) {
@@ -464,11 +459,10 @@ export async function createProductWithOccasions(productData, occasionIds = []) 
     }
 
     return product
-  } catch (error) {
-    logger.error('createProductWithOccasions failed:', error)
-    throw error
-  }
-}
+  },
+  'INSERT',
+  'product_occasions'
+)
 
 /**
  * Update product
@@ -490,10 +484,9 @@ export async function createProductWithOccasions(productData, occasionIds = []) 
  * @throws {DatabaseConstraintError} When product violates database constraints (e.g., duplicate SKU)
  * @throws {DatabaseError} When database update fails
  */
-export async function updateProduct(id, updates) {
-  let sanitizedData = {}
-  try {
-    const productRepository = getProductRepository()
+export const updateProduct = withErrorMapping(
+  async (id, updates) => {
+    const productRepository = await getProductRepository()
 
     if (!id || typeof id !== 'number' || id <= 0) {
       throw new BadRequestError('Invalid product ID: must be a positive number', { productId: id })
@@ -506,7 +499,7 @@ export async function updateProduct(id, updates) {
     validateProduct(updates, true)
 
     // Sanitize data before database operations
-    sanitizedData = sanitizeProductData(updates, true)
+    const sanitizedData = sanitizeProductData(updates, true)
 
     const allowedFields = [
       'name',
@@ -546,23 +539,10 @@ export async function updateProduct(id, updates) {
     const data = await productRepository.update(id, sanitized)
 
     return data
-  } catch (error) {
-    // Re-throw AppError instances as-is (fail-fast)
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    // Handle database constraint violations
-    if (error.code === '23505') {
-      throw new DatabaseConstraintError('unique_constraint', TABLE, {
-        productId: id,
-        updates: sanitizedData,
-        originalError: error.message
-      })
-    }
-    logger.error(`updateProduct(${id}) failed:`, error)
-    throw new DatabaseError('UPDATE', TABLE, error, { productId: id, updates: sanitizedData })
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Update carousel order (direct update)
@@ -578,9 +558,9 @@ export async function updateProduct(id, updates) {
  * // Remove product from carousel
  * await updateCarouselOrder(123, null)
  */
-export async function updateCarouselOrder(productId, newOrder) {
-  try {
-    const productRepository = getProductRepository()
+export const updateCarouselOrder = withErrorMapping(
+  async (productId, newOrder) => {
+    const productRepository = await getProductRepository()
 
     if (!productId || typeof productId !== 'number') {
       throw new BadRequestError('Invalid product ID: must be a number', { productId })
@@ -594,11 +574,10 @@ export async function updateCarouselOrder(productId, newOrder) {
     const data = await productRepository.updateCarouselOrder(productId, newOrder)
 
     return data
-  } catch (error) {
-    logger.error(`updateCarouselOrder(${productId}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Soft-delete product
@@ -608,9 +587,9 @@ export async function updateCarouselOrder(productId, newOrder) {
  * @throws {NotFoundError} When product is not found or already inactive
  * @throws {DatabaseError} When database update fails
  */
-export async function deleteProduct(id) {
-  try {
-    const productRepository = getProductRepository()
+export const deleteProduct = withErrorMapping(
+  async id => {
+    const productRepository = await getProductRepository()
 
     if (!id || typeof id !== 'number' || id <= 0) {
       throw new BadRequestError('Invalid product ID: must be a positive number', { productId: id })
@@ -620,11 +599,10 @@ export async function deleteProduct(id) {
     const data = await productRepository.delete(id)
 
     return data
-  } catch (error) {
-    logger.error(`deleteProduct(${id}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Reactivate product (reverse soft-delete)
@@ -636,9 +614,9 @@ export async function deleteProduct(id) {
  * @example
  * const product = await reactivateProduct(123)
  */
-export async function reactivateProduct(id) {
-  try {
-    const productRepository = getProductRepository()
+export const reactivateProduct = withErrorMapping(
+  async id => {
+    const productRepository = await getProductRepository()
 
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid product ID: must be a number', { productId: id })
@@ -648,11 +626,10 @@ export async function reactivateProduct(id) {
     const data = await productRepository.reactivate(id)
 
     return data
-  } catch (error) {
-    logger.error(`reactivateProduct(${id}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Update stock (direct update)
@@ -665,9 +642,9 @@ export async function reactivateProduct(id) {
  * @example
  * const product = await updateStock(123, 50)
  */
-export async function updateStock(id, quantity) {
-  try {
-    const productRepository = getProductRepository()
+export const updateStock = withErrorMapping(
+  async (id, quantity) => {
+    const productRepository = await getProductRepository()
 
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid product ID: must be a number', { productId: id })
@@ -681,11 +658,10 @@ export async function updateStock(id, quantity) {
     const data = await productRepository.updateStock(id, quantity)
 
     return data
-  } catch (error) {
-    logger.error(`updateStock(${id}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Decrement stock (for orders) - ENTERPRISE FAIL-FAST with insufficient stock check
@@ -700,9 +676,9 @@ export async function updateStock(id, quantity) {
  * // Decrement stock by 2 for order processing
  * const product = await decrementStock(123, 2)
  */
-export async function decrementStock(id, quantity) {
-  try {
-    const productRepository = getProductRepository()
+export const decrementStock = withErrorMapping(
+  async (id, quantity) => {
+    const productRepository = await getProductRepository()
 
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid product ID: must be a number', { productId: id })
@@ -714,16 +690,10 @@ export async function decrementStock(id, quantity) {
 
     // Use repository to decrement stock (handles validation internally)
     return await productRepository.decrementStock(id, quantity)
-  } catch (error) {
-    // Re-throw AppError instances as-is (fail-fast)
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    // Wrap unexpected errors
-    logger.error(`decrementStock(${id}) failed:`, error)
-    throw new DatabaseError('UPDATE', TABLE, error, { productId: id, quantity })
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Replace all occasions for a product (TRANSACTIONAL)
@@ -735,8 +705,8 @@ export async function decrementStock(id, quantity) {
  * @throws {NotFoundError} Product not found
  * @throws {DatabaseError} Database error
  */
-export async function replaceProductOccasions(productId, occasionIds = []) {
-  try {
+export const replaceProductOccasions = withErrorMapping(
+  async (productId, occasionIds = []) => {
     // Validate parameters
     if (!productId || typeof productId !== 'number') {
       throw new ValidationError('Invalid product ID', { productId })
@@ -755,23 +725,15 @@ export async function replaceProductOccasions(productId, occasionIds = []) {
     logger.debug(`Replacing occasions for product ${productId}:`, occasionIds)
 
     // Use repository pattern instead of direct supabase access
-    const productRepository = getProductRepository()
+    const productRepository = await getProductRepository()
     const data = await productRepository.replaceProductOccasions(productId, occasionIds)
 
     logger.debug(`✓ Occasions replaced for product ${productId}:`, data)
     return data
-  } catch (error) {
-    logger.error(`replaceProductOccasions(${productId}) failed:`, error)
-    if (error.isOperational) {
-      throw error
-    }
-    throw new InternalServerError('Failed to replace product occasions', {
-      productId,
-      occasionIds,
-      error
-    })
-  }
-}
+  },
+  'UPDATE',
+  'product_occasions'
+)
 
 // Alias for tests compatibility
 export const decrementProductStock = decrementStock

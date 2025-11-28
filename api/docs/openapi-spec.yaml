@@ -3109,12 +3109,19 @@ paths:
             schema:
               type: object
               required:
-                - image
+                - file
+                - key
               properties:
                 image:
                   type: string
                   format: binary
                   description: Image file to upload
+                file:
+                  type: string
+                  format: binary
+                key:
+                  type: string
+                  description: Setting key
       responses:
         '200':
           description: Image uploaded successfully
@@ -3131,7 +3138,7 @@ paths:
       tags:
         - Admin Settings
       summary: Save BCV USD rate
-      description: Admin only - Save BCV USD exchange rate
+      description: Admin only - Update BCV exchange rate
       security:
         - bearerAuth: []
       requestBody:
@@ -3162,12 +3169,12 @@ paths:
       tags:
         - Admin Settings
       summary: Get business rules status
-      description: Admin only - Get business rules engine status and configuration
+      description: Admin only - Returns business rules engine status and configuration
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: Business rules status retrieved successfully
+          description: Business rules status retrieved
           content:
             application/json:
               schema:
@@ -3468,3 +3475,680 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /health/metrics:
+    get:
+      tags:
+        - Health
+      summary: Get real-time metrics
+      description: Returns current system performance metrics including requests, errors, and response times
+      responses:
+        '200':
+          description: Real-time metrics retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          requestCount:
+                            type: integer
+                            example: 1250
+                          errorCount:
+                            type: integer
+                            example: 15
+                          averageResponseTime:
+                            type: number
+                            example: 125.5
+                          databaseResponseTime:
+                            type: number
+                            example: 45.2
+                          healthScore:
+                            type: number
+                            example: 95.5
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /health/metrics/report:
+    get:
+      tags:
+        - Health
+      summary: Get detailed metrics report
+      description: Returns comprehensive metrics analysis and performance report
+      responses:
+        '200':
+          description: Metrics report generated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          summary:
+                            type: object
+                          performance:
+                            type: object
+                          recommendations:
+                            type: array
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /health/database:
+    get:
+      tags:
+        - Health
+      summary: Database health check
+      description: Tests database connectivity and returns performance metrics
+      responses:
+        '200':
+          description: Database health check completed successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            example: connected
+                          responseTime:
+                            type: number
+                            example: 45
+                          connectionHealthy:
+                            type: boolean
+                            example: true
+        '503':
+          description: Database health check failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /health/profiling:
+    get:
+      tags:
+        - Health
+      summary: Get profiling status
+      description: Returns current profiling session status (admin only in production)
+      responses:
+        '200':
+          description: Profiling status retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          isActive:
+                            type: boolean
+                          canStart:
+                            type: boolean
+                          startTime:
+                            type: string
+                            format: date-time
+                            nullable: true
+                          duration:
+                            type: number
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /health/profiling/start:
+    post:
+      tags:
+        - Health
+      summary: Start profiling session
+      description: Starts a new profiling session for performance analysis (admin recommended)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                duration:
+                  type: integer
+                  example: 60000
+                  description: Duration in ms
+                sampleInterval:
+                  type: integer
+                  example: 10
+                  description: Sample interval in ms
+      responses:
+        '200':
+          description: Profiling started successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          success:
+                            type: boolean
+                          startTime:
+                            type: string
+                            format: date-time
+        '400':
+          description: Failed to start profiling
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /health/profiling/stop:
+    post:
+      tags:
+        - Health
+      summary: Stop profiling session
+      description: Stops the current profiling session and returns results
+      responses:
+        '200':
+          description: Profiling stopped successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          success:
+                            type: boolean
+                          duration:
+                            type: number
+                          resultsPath:
+                            type: string
+                            nullable: true
+        '400':
+          description: Failed to stop profiling
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /health/recovery:
+    get:
+      tags:
+        - Health
+      summary: Get auto-recovery status
+      description: Returns status of auto-recovery system and recent recovery attempts
+      responses:
+        '200':
+          description: Recovery status retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          enabled:
+                            type: boolean
+                          lastRecoveryAttempt:
+                            type: string
+                            format: date-time
+                            nullable: true
+                          successfulRecoveries:
+                            type: integer
+                          failedRecoveries:
+                            type: integer
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /health/diagnostics:
+    get:
+      tags:
+        - Health
+      summary: Get system diagnostics
+      description: Returns detailed system diagnostics including process, environment, and monitoring information
+      responses:
+        '200':
+          description: System diagnostics retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          process:
+                            type: object
+                            properties:
+                              pid:
+                                type: integer
+                              uptime:
+                                type: number
+                              memory:
+                                type: object
+                              cpu:
+                                type: object
+                          environment:
+                            type: object
+                            properties:
+                              nodeEnv:
+                                type: string
+                              timezone:
+                                type: string
+                          monitoring:
+                            type: object
+                            properties:
+                              overheadAcceptable:
+                                type: boolean
+                              healthScore:
+                                type: number
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/accounting/categories:
+    get:
+      tags:
+        - Accounting
+      summary: Get all expense categories
+      description: Admin only - Returns all expense categories with optional inactive filter
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: includeInactive
+          in: query
+          schema:
+            type: boolean
+          description: Include inactive categories
+      responses:
+        '200':
+          description: Categories retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+    post:
+      tags:
+        - Accounting
+      summary: Create expense category
+      description: Admin only - Creates a new expense category
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 100
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Category created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+  /api/accounting/categories/{id}:
+    get:
+      tags:
+        - Accounting
+      summary: Get expense category by ID
+      description: Admin only
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Category retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+    put:
+      tags:
+        - Accounting
+      summary: Update expense category
+      description: Admin only
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '200':
+          description: Category updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+    delete:
+      tags:
+        - Accounting
+      summary: Delete expense category
+      description: Admin only - Soft delete
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Category deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /api/accounting/expenses:
+    get:
+      tags:
+        - Accounting
+      summary: Get all expenses
+      description: Admin only - Returns expenses with optional filters
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Expenses retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      tags:
+        - Accounting
+      summary: Create expense
+      description: Admin only - Create expense with optional receipt upload
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - amount
+                - category_id
+                - date
+              properties:
+                amount:
+                  type: number
+                category_id:
+                  type: integer
+                date:
+                  type: string
+                  format: date
+                description:
+                  type: string
+                receipt:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Expense created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /api/accounting/expenses/by-category:
+    get:
+      tags:
+        - Accounting
+      summary: Get expenses grouped by category
+      description: Admin only - Requires start and end date
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Expenses by category retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /api/accounting/expenses/{id}:
+    get:
+      tags:
+        - Accounting
+      summary: Get expense by ID
+      description: Admin only
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Expense retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+    put:
+      tags:
+        - Accounting
+      summary: Update expense
+      description: Admin only - Update with optional new receipt
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                category_id:
+                  type: integer
+                date:
+                  type: string
+                  format: date
+                description:
+                  type: string
+                receipt:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Expense updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+    delete:
+      tags:
+        - Accounting
+      summary: Delete expense
+      description: Admin only
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Expense deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /api/accounting/reports/dashboard:
+    get:
+      tags:
+        - Accounting
+      summary: Get dashboard summary
+      description: Admin only - Last 7 days summary
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Dashboard data retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /api/accounting/reports/weekly:
+    get:
+      tags:
+        - Accounting
+      summary: Get weekly report
+      description: Admin only
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: weekStart
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Monday of the week (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Weekly report retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /api/accounting/reports/current-week:
+    get:
+      tags:
+        - Accounting
+      summary: Get current week report
+      description: Admin only - Helper endpoint
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Current week report retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /api/accounting/reports/monthly:
+    get:
+      tags:
+        - Accounting
+      summary: Get monthly report
+      description: Admin only
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: year
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: month
+          in: query
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+      responses:
+        '200':
+          description: Monthly report retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /api/accounting/reports/current-month:
+    get:
+      tags:
+        - Accounting
+      summary: Get current month report
+      description: Admin only - Helper endpoint
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Current month report retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'

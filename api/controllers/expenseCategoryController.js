@@ -4,105 +4,80 @@
  * @module controllers/expenseCategoryController
  */
 
-import expenseCategoryService from '../services/expenseCategoryService.js'
-import { logger } from '../utils/logger.js'
+import * as expenseCategoryService from '../services/expenseCategoryService.js'
+import { asyncHandler } from '../middleware/error/index.js'
 
 /**
  * Get all expense categories
  * @route GET /api/accounting/categories
  */
-export const getAllCategories = async (req, res, next) => {
-  try {
-    const includeInactive = req.query.includeInactive === 'true'
-    const categories = await expenseCategoryService.getAllCategories({ includeInactive })
+export const getAllCategories = asyncHandler(async (req, res) => {
+  const includeInactive = req.query.includeInactive === 'true'
+  const categories = await expenseCategoryService.getAllCategories({ includeInactive })
 
-    res.json({
-      success: true,
-      data: categories,
-      message: 'Categories retrieved successfully'
-    })
-  } catch (error) {
-    logger.error('getAllCategories error:', error)
-    next(error)
-  }
-}
+  res.json({
+    success: true,
+    data: categories,
+    message: 'Categories retrieved successfully'
+  })
+})
 
 /**
  * Get category by ID
  * @route GET /api/accounting/categories/:id
  */
-export const getCategoryById = async (req, res, next) => {
-  try {
-    const { id } = req.params
-    const category = await expenseCategoryService.getCategoryById(parseInt(id))
+export const getCategoryById = asyncHandler(async (req, res) => {
+  const { id } = req.params
+  const category = await expenseCategoryService.getCategoryById(parseInt(id))
 
-    res.json({
-      success: true,
-      data: category,
-      message: 'Category retrieved successfully'
-    })
-  } catch (error) {
-    logger.error('getCategoryById error:', error)
-    next(error)
-  }
-}
+  res.json({
+    success: true,
+    data: category,
+    message: 'Category retrieved successfully'
+  })
+})
 
 /**
  * Create new category (Admin only)
  * @route POST /api/accounting/categories
  */
-export const createCategory = async (req, res, next) => {
-  try {
-    const userId = req.user.id
-    const category = await expenseCategoryService.createCategory(req.body, userId)
+export const createCategory = asyncHandler(async (req, res) => {
+  const userId = req.user.id
+  const category = await expenseCategoryService.createCategory(req.body, userId)
 
-    res.status(201).json({
-      success: true,
-      data: category,
-      message: 'Category created successfully'
-    })
-  } catch (error) {
-    logger.error('createCategory error:', error)
-    next(error)
-  }
-}
+  res.status(201).json({
+    success: true,
+    data: category,
+    message: 'Category created successfully'
+  })
+})
 
 /**
  * Update category (Admin only)
  * @route PUT /api/accounting/categories/:id
  */
-export const updateCategory = async (req, res, next) => {
-  try {
-    const { id } = req.params
-    const category = await expenseCategoryService.updateCategory(parseInt(id), req.body)
+export const updateCategory = asyncHandler(async (req, res) => {
+  const { id } = req.params
+  const category = await expenseCategoryService.updateCategory(parseInt(id), req.body)
 
-    res.json({
-      success: true,
-      data: category,
-      message: 'Category updated successfully'
-    })
-  } catch (error) {
-    logger.error('updateCategory error:', error)
-    next(error)
-  }
-}
+  res.json({
+    success: true,
+    data: category,
+    message: 'Category updated successfully'
+  })
+})
 
 /**
  * Delete category (Admin only, soft delete)
  * @route DELETE /api/accounting/categories/:id
  */
-export const deleteCategory = async (req, res, next) => {
-  try {
-    const { id } = req.params
-    const category = await expenseCategoryService.deleteCategory(parseInt(id))
+export const deleteCategory = asyncHandler(async (req, res) => {
+  const { id } = req.params
+  const category = await expenseCategoryService.deleteCategory(parseInt(id))
 
-    res.json({
-      success: true,
-      data: category,
-      message: 'Category deleted successfully'
-    })
-  } catch (error) {
-    logger.error('deleteCategory error:', error)
-    next(error)
-  }
-}
+  res.json({
+    success: true,
+    data: category,
+    message: 'Category deleted successfully'
+  })
+})

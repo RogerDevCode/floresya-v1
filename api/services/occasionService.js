@@ -16,7 +16,10 @@ import DIContainer from '../architecture/di-container.js'
 import { NotFoundError, BadRequestError } from '../errors/AppError.js'
 import { validateOccasion } from '../utils/validation.js'
 import ValidatorService from './validation/ValidatorService.js'
+import { withErrorMapping } from '../middleware/error/index.js'
 import logger from '../config/logger.js'
+
+const TABLE = 'occasions'
 
 /**
  * Get OccasionRepository instance from DI Container
@@ -45,9 +48,9 @@ function validateOccasionId(id, operation = 'operation') {
  * @throws {NotFoundError} When no occasions are found
  * @throws {DatabaseError} When database query fails
  */
-export async function getAllOccasions(filters = {}, includeDeactivated = false) {
-  try {
-    const occasionRepository = getOccasionRepository()
+export const getAllOccasions = withErrorMapping(
+  async (filters = {}, includeDeactivated = false) => {
+    const occasionRepository = await getOccasionRepository()
 
     const data = await occasionRepository.findAllWithFilters(
       { ...filters, includeDeactivated },
@@ -66,11 +69,10 @@ export async function getAllOccasions(filters = {}, includeDeactivated = false) 
 
     // Return empty array if no data - let frontend handle fallback
     return data || []
-  } catch (error) {
-    logger.error('❌ [getAllOccasions] Error:', error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get occasion by ID
@@ -81,18 +83,22 @@ export async function getAllOccasions(filters = {}, includeDeactivated = false) 
  * @throws {NotFoundError} When occasion is not found
  * @throws {DatabaseError} When database query fails
  */
-export async function getOccasionById(id, includeDeactivated = false) {
-  validateOccasionId(id, 'getOccasionById')
+export const getOccasionById = withErrorMapping(
+  async (id, includeDeactivated = false) => {
+    validateOccasionId(id, 'getOccasionById')
 
-  const occasionRepository = getOccasionRepository()
-  const data = await occasionRepository.findById(id, includeDeactivated)
+    const occasionRepository = await getOccasionRepository()
+    const data = await occasionRepository.findById(id, includeDeactivated)
 
-  if (!data) {
-    throw new NotFoundError('Occasion', id, { includeDeactivated })
-  }
+    if (!data) {
+      throw new NotFoundError('Occasion', id, { includeDeactivated })
+    }
 
-  return data
-}
+    return data
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get occasion by slug (indexed column for SEO)
@@ -103,20 +109,24 @@ export async function getOccasionById(id, includeDeactivated = false) {
  * @throws {NotFoundError} When occasion with slug is not found
  * @throws {DatabaseError} When database query fails
  */
-export async function getOccasionBySlug(slug, includeDeactivated = false) {
-  if (!slug || typeof slug !== 'string') {
-    throw new BadRequestError('Invalid slug: must be a string', { slug })
-  }
+export const getOccasionBySlug = withErrorMapping(
+  async (slug, includeDeactivated = false) => {
+    if (!slug || typeof slug !== 'string') {
+      throw new BadRequestError('Invalid slug: must be a string', { slug })
+    }
 
-  const occasionRepository = getOccasionRepository()
-  const data = await occasionRepository.findBySlug(slug, includeDeactivated)
+    const occasionRepository = await getOccasionRepository()
+    const data = await occasionRepository.findBySlug(slug, includeDeactivated)
 
-  if (!data) {
-    throw new NotFoundError('Occasion', slug, { slug, includeDeactivated })
-  }
+    if (!data) {
+      throw new NotFoundError('Occasion', slug, { slug, includeDeactivated })
+    }
 
-  return data
-}
+    return data
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Create new occasion
@@ -130,22 +140,26 @@ export async function getOccasionBySlug(slug, includeDeactivated = false) {
  * @throws {DatabaseConstraintError} When occasion violates database constraints (e.g., duplicate slug)
  * @throws {DatabaseError} When database insert fails
  */
-export async function createOccasion(occasionData) {
-  validateOccasion(occasionData, false)
+export const createOccasion = withErrorMapping(
+  async occasionData => {
+    validateOccasion(occasionData, false)
 
-  const newOccasion = {
-    name: occasionData.name,
-    description: occasionData.description !== undefined ? occasionData.description : null,
-    slug: occasionData.slug,
-    display_order: occasionData.display_order !== undefined ? occasionData.display_order : 0,
-    active: true
-  }
+    const newOccasion = {
+      name: occasionData.name,
+      description: occasionData.description !== undefined ? occasionData.description : null,
+      slug: occasionData.slug,
+      display_order: occasionData.display_order !== undefined ? occasionData.display_order : 0,
+      active: true
+    }
 
-  const occasionRepository = getOccasionRepository()
-  const data = await occasionRepository.create(newOccasion)
+    const occasionRepository = await getOccasionRepository()
+    const data = await occasionRepository.create(newOccasion)
 
-  return data
-}
+    return data
+  },
+  'INSERT',
+  TABLE
+)
 
 /**
  * Update occasion (limited fields) - only allows updating specific occasion fields
@@ -162,37 +176,41 @@ export async function createOccasion(occasionData) {
  * @throws {DatabaseConstraintError} When occasion violates database constraints (e.g., duplicate slug)
  * @throws {DatabaseError} When database update fails
  */
-export async function updateOccasion(id, updates) {
-  validateOccasionId(id, 'updateOccasion')
+export const updateOccasion = withErrorMapping(
+  async (id, updates) => {
+    validateOccasionId(id, 'updateOccasion')
 
-  if (!updates || Object.keys(updates).length === 0) {
-    throw new BadRequestError('No updates provided', { occasionId: id })
-  }
-
-  validateOccasion(updates, true)
-
-  const allowedFields = ['name', 'description', 'slug', 'display_order']
-  const sanitized = {}
-
-  for (const key of allowedFields) {
-    if (updates[key] !== undefined) {
-      sanitized[key] = updates[key]
+    if (!updates || Object.keys(updates).length === 0) {
+      throw new BadRequestError('No updates provided', { occasionId: id })
     }
-  }
 
-  if (Object.keys(sanitized).length === 0) {
-    throw new BadRequestError('No valid fields to update', { occasionId: id })
-  }
+    validateOccasion(updates, true)
 
-  const occasionRepository = getOccasionRepository()
-  const data = await occasionRepository.update(id, sanitized)
+    const allowedFields = ['name', 'description', 'slug', 'display_order']
+    const sanitized = {}
 
-  if (!data) {
-    throw new NotFoundError('Occasion', id, { active: true })
-  }
+    for (const key of allowedFields) {
+      if (updates[key] !== undefined) {
+        sanitized[key] = updates[key]
+      }
+    }
 
-  return data
-}
+    if (Object.keys(sanitized).length === 0) {
+      throw new BadRequestError('No valid fields to update', { occasionId: id })
+    }
+
+    const occasionRepository = await getOccasionRepository()
+    const data = await occasionRepository.update(id, sanitized)
+
+    if (!data) {
+      throw new NotFoundError('Occasion', id, { active: true })
+    }
+
+    return data
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Soft-delete occasion (reverse soft-delete)
@@ -202,18 +220,22 @@ export async function updateOccasion(id, updates) {
  * @throws {NotFoundError} When occasion is not found or already inactive
  * @throws {DatabaseError} When database update fails
  */
-export async function deleteOccasion(id) {
-  validateOccasionId(id, 'deleteOccasion')
+export const deleteOccasion = withErrorMapping(
+  async id => {
+    validateOccasionId(id, 'deleteOccasion')
 
-  const occasionRepository = getOccasionRepository()
-  const data = await occasionRepository.update(id, { active: false })
+    const occasionRepository = await getOccasionRepository()
+    const data = await occasionRepository.update(id, { active: false })
 
-  if (!data) {
-    throw new NotFoundError('Occasion', id, { active: true })
-  }
+    if (!data) {
+      throw new NotFoundError('Occasion', id, { active: true })
+    }
 
-  return data
-}
+    return data
+  },
+  'DELETE',
+  TABLE
+)
 
 /**
  * Reactivate occasion (reverse soft-delete)
@@ -223,18 +245,22 @@ export async function deleteOccasion(id) {
  * @throws {NotFoundError} When occasion is not found or already active
  * @throws {DatabaseError} When database update fails
  */
-export async function reactivateOccasion(id) {
-  validateOccasionId(id, 'reactivateOccasion')
+export const reactivateOccasion = withErrorMapping(
+  async id => {
+    validateOccasionId(id, 'reactivateOccasion')
 
-  const occasionRepository = getOccasionRepository()
-  const data = await occasionRepository.update(id, { active: true })
+    const occasionRepository = await getOccasionRepository()
+    const data = await occasionRepository.update(id, { active: true })
 
-  if (!data) {
-    throw new NotFoundError('Occasion', id, { active: false })
-  }
+    if (!data) {
+      throw new NotFoundError('Occasion', id, { active: false })
+    }
 
-  return data
-}
+    return data
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Update display order for occasion sorting
@@ -245,21 +271,25 @@ export async function reactivateOccasion(id) {
  * @throws {NotFoundError} When occasion is not found or inactive
  * @throws {DatabaseError} When database update fails
  */
-export async function updateDisplayOrder(id, newOrder) {
-  validateOccasionId(id, 'updateDisplayOrder')
+export const updateDisplayOrder = withErrorMapping(
+  async (id, newOrder) => {
+    validateOccasionId(id, 'updateDisplayOrder')
 
-  if (typeof newOrder !== 'number' || newOrder < 0) {
-    throw new BadRequestError('Invalid display_order: must be a non-negative number', {
-      newOrder
-    })
-  }
+    if (typeof newOrder !== 'number' || newOrder < 0) {
+      throw new BadRequestError('Invalid display_order: must be a non-negative number', {
+        newOrder
+      })
+    }
 
-  const occasionRepository = getOccasionRepository()
-  const data = await occasionRepository.update(id, { display_order: newOrder })
+    const occasionRepository = await getOccasionRepository()
+    const data = await occasionRepository.update(id, { display_order: newOrder })
 
-  if (!data) {
-    throw new NotFoundError('Occasion', id, { active: true })
-  }
+    if (!data) {
+      throw new NotFoundError('Occasion', id, { active: true })
+    }
 
-  return data
-}
+    return data
+  },
+  'UPDATE',
+  TABLE
+)

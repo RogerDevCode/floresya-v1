@@ -52,6 +52,8 @@ const mockRequest = (overrides = {}) => ({
   ...overrides
 })
 
+const mockNext = vi.fn()
+
 describe('Migration Controller - Unit Tests with DI', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -73,7 +75,7 @@ describe('Migration Controller - Unit Tests with DI', () => {
 
       migrationService.addIsActiveToSettings.mockResolvedValue(mockResult)
 
-      await addIsActiveToSettings(req, res)
+      await addIsActiveToSettings(req, res, mockNext)
 
       expect(migrationService.addIsActiveToSettings).toHaveBeenCalled()
       expect(res.status).toHaveBeenCalledWith(200)
@@ -96,20 +98,14 @@ describe('Migration Controller - Unit Tests with DI', () => {
 
       migrationService.addIsActiveToSettings.mockRejectedValue(dbError)
 
-      await addIsActiveToSettings(req, res)
+      await addIsActiveToSettings(req, res, mockNext)
 
-      expect(logger.error).toHaveBeenCalledWith(
-        'Migration failed',
-        dbError,
-        expect.objectContaining({ operation: 'addIsActiveToSettings' })
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'DatabaseError',
+          operation: 'ALTER_TABLE'
+        })
       )
-      expect(res.status).toHaveBeenCalledWith(500)
-      expect(res.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'MigrationError',
-        message: expect.stringContaining('Failed to execute migration'),
-        context: expect.objectContaining({ column: 'is_active' })
-      })
     })
 
     it('should handle generic errors during migration', async () => {
@@ -119,15 +115,9 @@ describe('Migration Controller - Unit Tests with DI', () => {
 
       migrationService.addIsActiveToSettings.mockRejectedValue(genericError)
 
-      await addIsActiveToSettings(req, res)
+      await addIsActiveToSettings(req, res, mockNext)
 
-      expect(logger.error).toHaveBeenCalled()
-      expect(res.status).toHaveBeenCalledWith(500)
-      expect(res.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'MigrationError',
-        message: 'Failed to execute migration: Connection timeout'
-      })
+      expect(mockNext).toHaveBeenCalledWith(genericError)
     })
 
     it('should handle migration with no changes needed', async () => {
@@ -141,7 +131,7 @@ describe('Migration Controller - Unit Tests with DI', () => {
 
       migrationService.addIsActiveToSettings.mockResolvedValue(mockResult)
 
-      await addIsActiveToSettings(req, res)
+      await addIsActiveToSettings(req, res, mockNext)
 
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith({

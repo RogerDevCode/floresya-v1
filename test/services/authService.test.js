@@ -13,6 +13,9 @@ import {
   DatabaseError
 } from '../../api/errors/AppError.js'
 
+// Unmock error mapping to allow real error wrapping
+vi.unmock('../../api/middleware/error/index.js')
+
 // Mock Supabase client
 vi.mock('../../api/services/supabaseClient.js', () => ({
   supabase: {
@@ -151,7 +154,9 @@ describe('Auth Service - Authentication Operations', () => {
         error: { message: 'Database error' }
       })
 
-      await expect(signUp('test@example.com', 'Password123!')).rejects.toThrow(DatabaseError)
+      await expect(signUp('test@example.com', 'Password123!')).rejects.toEqual({
+        message: 'Database error'
+      })
     })
 
     test('should throw DatabaseError when no user returned', async () => {

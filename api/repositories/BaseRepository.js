@@ -9,16 +9,36 @@
  * @abstract
  */
 
-import { NotFoundError, ConflictError } from '../errors/AppError.js'
+import { NotFoundError, ConflictError, DatabaseError } from '../errors/AppError.js'
 import { executeQuery, getPerformanceStats } from '../config/connectionPool.js'
 import { logger } from '../utils/logger.js'
+import {
+  createSchemaValidationService,
+  SchemaValidationError
+} from '../architecture/schema-validation-service.js'
 
 export class BaseRepository {
   /**
-   * @param {Object} supabaseClient - Cliente de Supabase
+   * @param {Object} supabaseClient - Cliente de Supabase (debe estar completamente inicializado)
    * @param {string} tableName - Nombre de la tabla
    */
   constructor(supabaseClient, tableName) {
+    // ✅ FAIL FAST: Validar que el cliente no sea una promesa pendiente
+    if (supabaseClient && typeof supabaseClient.then === 'function') {
+      throw new Error(
+        `BaseRepository: supabaseClient cannot be a Promise. Use Static Async Factory pattern instead.`
+      )
+    }
+
+    if (!supabaseClient) {
+      throw new Error(`BaseRepository: supabaseClient is required and must be initialized`)
+    }
+
+    if (!tableName || typeof tableName !== 'string') {
+      throw new Error(`BaseRepository: tableName is required and must be a string`)
+    }
+
+    // ✅ ASIGNACIÓN LIMPIA: Solo aceptar cliente completamente resuelto
     this.supabase = supabaseClient
     this.table = tableName
     this.performanceMetrics = {
@@ -26,6 +46,31 @@ export class BaseRepository {
       slowQueries: 0,
       averageResponseTime: 0,
       lastPerformanceCheck: Date.now()
+    }
+    this.schemaValidator = createSchemaValidationService(supabaseClient)
+  }
+
+  /**
+   * ✅ STATIC ASYNC FACTORY: Método factory para crear instancias asíncronas
+   * Este método debe ser usado por las clases hijas para asegurar inicialización completa
+   * @param {Function} getClient - Función asíncrona que retorna el cliente de Supabase
+   * @param {string} tableName - Nombre de la tabla
+   * @returns {Promise<BaseRepository>} Instancia completamente inicializada
+   */
+  static async create(getClient, tableName) {
+    try {
+      // 🚀 ESPERAR INICIALIZACIÓN: Asegurar que el cliente esté completamente resuelto
+      const supabaseClient = await getClient()
+
+      // ✅ VALIDACIÓN: Verificar que el cliente esté funcional
+      if (!supabaseClient || typeof supabaseClient.from !== 'function') {
+        throw new Error(`BaseRepository.create: Invalid Supabase client returned from getClient`)
+      }
+
+      // 🏭 FABRICATION: Crear instancia solo con cliente resuelto
+      return new this(supabaseClient, tableName)
+    } catch (error) {
+      throw new Error(`BaseRepository.create failed for table ${tableName}: ${error.message}`)
     }
   }
 
@@ -349,9 +394,11 @@ export class BaseRepository {
    * @param {number} id - ID del registro
    * @param {Object} auditInfo - Información de auditoría
    * @returns {Promise<Object>} Registro eliminado
-   * @note ASSUMES 'active' column exists
+   * @note Validates 'active' column exists before proceeding
    */
   async delete(id, auditInfo = {}) {
+    // Validate schema before proceeding
+    await this.validateSoftDeleteSchema()
     const updateData = {
       active: false,
       deleted_at: new Date().toISOString(),
@@ -383,9 +430,11 @@ export class BaseRepository {
    * @param {number} id - ID del registro
    * @param {number} reactivatedBy - ID del usuario que reactiva
    * @returns {Promise<Object>} Registro reactivado
-   * @note ASSUMES 'active' column exists
+   * @note Validates 'active' column exists before proceeding
    */
   async reactivate(id, reactivatedBy = null) {
+    // Validate schema before proceeding
+    await this.validateSoftDeleteSchema()
     const updateData = {
       active: true,
       deleted_at: null,
@@ -569,5 +618,75 @@ export class BaseRepository {
     }
 
     logger.info(`Performance metrics reset for table: ${this.table}`)
+  }
+
+  /**
+   * Validate that table supports soft delete operations
+   * @throws {SchemaValidationError} When table doesn't support soft delete
+   * @throws {DatabaseError} When schema validation fails
+   */
+  async validateSoftDeleteSchema() {
+    try {
+      const validation = await this.schemaValidator.getSoftDeleteValidation(this.table)
+
+      if (!validation.tableExists) {
+        throw new SchemaValidationError(
+          `Table ${this.table} does not exist`,
+          this.table,
+          validation
+        )
+      }
+
+      if (!validation.canPerformSoftDelete) {
+        const missingCols = validation.missingColumns.join(', ')
+        throw new SchemaValidationError(
+          `Table ${this.table} does not support soft delete operations. Missing columns: ${missingCols}`,
+          this.table,
+          validation
+        )
+      }
+
+      // Log warnings for incomplete audit support
+      if (!validation.hasFullAuditSupport) {
+        logger.warn(`Table ${this.table} has incomplete audit support`, {
+          table: this.table,
+          missingAuditColumns: validation.missingColumns.filter(col =>
+            ['deleted_at', 'deleted_by', 'deletion_reason', 'deletion_ip'].includes(col)
+          ),
+          recommendations: validation.recommendations
+        })
+      }
+
+      return validation
+    } catch (error) {
+      if (error instanceof SchemaValidationError) {
+        throw error
+      }
+
+      logger.error(`Schema validation failed for ${this.table}:`, error)
+      throw new DatabaseError('SCHEMA_VALIDATION', this.table, error)
+    }
+  }
+
+  /**
+   * Get schema validation information for the table
+   * @returns {Promise<Object>} Schema validation result
+   */
+  async getSchemaValidation() {
+    return await this.schemaValidator.getSoftDeleteValidation(this.table)
+  }
+
+  /**
+   * Check if table supports soft delete without throwing errors
+   * @returns {Promise<boolean>} True if soft delete is supported
+   */
+  async hasSoftDeleteSupport() {
+    try {
+      const validation = await this.schemaValidator.getSoftDeleteValidation(this.table)
+      return validation.canPerformSoftDelete
+    } catch (error) {
+      logger.warn(`Error checking soft delete support for ${this.table}:`, error)
+      return false
+    }
   }
 }

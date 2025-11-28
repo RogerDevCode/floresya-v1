@@ -208,11 +208,11 @@ export class ProductController {
 /**
  * Factory function to create ProductController instance
  * Uses DI Container for dependency injection
- * @returns {ProductController} Configured controller instance
+ * @returns {Promise<ProductController>} Configured controller instance
  */
-export function createProductController() {
+export async function createProductController() {
   // Resolve dependencies from DI container
-  const productService = DIContainer.resolve('ProductService')
+  const productService = await DIContainer.resolve('ProductService')
   const responseFormatter = new ResponseFormatter()
   const requestValidator = new RequestValidator()
 
@@ -224,11 +224,34 @@ export function createProductController() {
  * Export controller instance (singleton pattern)
  * This can be used for routes
  */
-const createSingletonController = () => {
+const createSingletonController = async () => {
   if (typeof DIContainer !== 'undefined' && DIContainer.has('ProductService')) {
-    return createProductController()
+    return await createProductController()
   }
   return null // Don't create if DI not configured
 }
 
-export const productController = createSingletonController()
+// Lazy-load the controller to avoid top-level await issues during startup
+let _controllerInstance = null
+
+const getController = async () => {
+  if (!_controllerInstance) {
+    _controllerInstance = await createSingletonController()
+  }
+  return _controllerInstance
+}
+
+export const productController = new Proxy(
+  {},
+  {
+    get(target, prop) {
+      return async (...args) => {
+        const controller = await getController()
+        if (!controller) {
+          throw new Error('ProductController not initialized (DI missing ProductService)')
+        }
+        return controller[prop](...args)
+      }
+    }
+  }
+)

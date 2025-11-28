@@ -1,8 +1,8 @@
 # 🎯 FloresYa API Client - Usage Guide
 
-**Auto-generated**: 2025-11-26T14:55:53.306Z
+**Auto-generated**: 2025-11-27T17:13:46.852Z
 **Spec Version**: 1.0.0
-**Total Endpoints**: 47
+**Total Endpoints**: 65
 
 ## 📦 Installation
 
@@ -41,7 +41,7 @@ try {
 ## 📋 Available Methods
 
 This client was auto-generated from the OpenAPI specification.
-All 47 endpoints are available as methods.
+All 65 endpoints are available as methods.
 
 **IMPORTANT**: This file is regenerated automatically. Do not edit manually.
 Regenerate using: `npm run generate:client`

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { setupPages } from '../utils/page-setup.js'
+// import { setupPages } from '../utils/page-setup.js'
 
 const THEMES = ['default', 'theme-1', 'theme-2', 'theme-3', 'theme-4']
 const THEME_SELECTORS = {

@@ -21,8 +21,12 @@ import {
   rateLimiterSimple,
   adminAuditLogger
 } from './middleware/security/index.js'
-import { addSecurityHeaders } from './middleware/security/securityHeaders.js'
+// import { addSecurityHeaders } from './middleware/security/securityHeaders.js'
+import { EnhancedSecurityMiddleware } from './middleware/security/enhancedSecurity.js'
 import { requestLoggingMiddleware } from './utils/logger.js'
+// import accountSecurityService from './services/security/AccountSecurityService.js'
+import auditLoggingService from './services/security/AuditLoggingService.js'
+import dataProtectionService from './services/security/DataProtectionService.js'
 import { errorHandler } from './middleware/error/index.js'
 import {
   withDatabaseCircuitBreaker,
@@ -65,7 +69,8 @@ const app = express()
 
 // Initialize DI Container (MUST be first - before any route handlers)
 // This registers all repositories and services
-initializeDIContainer()
+// FIXED: Await initialization to prevent race conditions
+await initializeDIContainer()
 
 // Import routes after DI container initialization
 import productRoutes from './routes/productRoutes.js'
@@ -137,25 +142,114 @@ app.put('/health/recovery/config', updateRecoveryConfig)
 // Comprehensive health check (replaces basic one)
 app.get('/health/comprehensive', comprehensiveHealthCheck)
 
-// Security middleware
+// Enhanced Security Middleware Stack
+app.use(
+  EnhancedSecurityMiddleware.requestAnomalyDetection({
+    enableTimingAnalysis: true,
+    enablePatternAnalysis: true,
+    enableHeaderAnalysis: true
+  })
+)
+
+app.use(EnhancedSecurityMiddleware.requestSizeLimit('10mb'))
+
+if (IS_PRODUCTION) {
+  app.use(
+    EnhancedSecurityMiddleware.advancedRateLimit({
+      windowMs: config.security.rateLimit.windowMs,
+      maxRequests: config.security.rateLimit.maxRequests,
+      skipSuccessfulRequests: false,
+      keyGenerator: req => `${req.ip}:${req.get('User-Agent')?.substring(0, 50) || 'unknown'}`,
+      onLimitReached: (req, res) => {
+        auditLoggingService.logSecurityIncident(
+          auditLoggingService.SECURITY_EVENT_TYPES.RATE_LIMIT_EXCEEDED,
+          {
+            ip: req.ip,
+            path: req.path,
+            method: req.method,
+            userAgent: req.get('User-Agent')
+          }
+        )
+      }
+    })
+  )
+}
+
 app.use(configureCors())
 app.use(configureHelmet())
 app.use(configureSanitize())
 app.use(xssProtection)
+app.use(
+  EnhancedSecurityMiddleware.inputSanitization({
+    strictMode: true,
+    preventSQL: true,
+    preventXSS: true,
+    preventNoSQL: true,
+    preventCommand: true,
+    preventPathTraversal: true,
+    preventLDAP: true,
+    preventXXE: true,
+    encodeHTML: true,
+    normalizeUnicode: true,
+    trimWhitespace: true
+  })
+)
+
+// File upload security middleware
+app.use(
+  EnhancedSecurityMiddleware.fileUploadSecurity({
+    maxFiles: 5,
+    maxFileSize: config.upload.maxSize,
+    allowedTypes: config.upload.allowedTypes,
+    scanForMalware: true,
+    quarantineSuspicious: true
+  })
+)
+
+// Data protection middleware
+app.use((req, res, next) => {
+  try {
+    // Detect and mask PII for logging
+    if (req.body) {
+      req.sanitizedBodyForLogging = dataProtectionService.sanitizeForLogging(req.body)
+    }
+    if (req.query) {
+      req.sanitizedQueryForLogging = dataProtectionService.sanitizeForLogging(req.query)
+    }
+
+    next()
+  } catch (error) {
+    logger.error('Data protection middleware error', { error: error.message })
+    next(error)
+  }
+})
+
 // Apply session security headers after Helmet to override its values
 app.use(sessionSecurityHeaders)
-// Additional security headers for enhanced protection
-app.use(addSecurityHeaders)
+// Enhanced security headers with CSP and feature policy
+app.use(
+  EnhancedSecurityMiddleware.enhancedSecurityHeaders({
+    enableCSP: true,
+    enableHSTS: config.IS_PRODUCTION,
+    enableFeaturePolicy: true,
+    customHeaders: {
+      'X-Security-Middleware': 'enhanced',
+      'X-Protection-Level': 'enterprise'
+    }
+  })
+)
 
 // Rate limiting (for API routes only)
 // More generous limits to support multiple simultaneous requests (carousel, occasions, products, etc.)
-app.use(
-  '/api',
-  rateLimiterSimple({
-    windowMs: config.security.rateLimit.windowMs,
-    max: config.security.rateLimit.maxRequests
-  })
-)
+if (IS_PRODUCTION) {
+  app.use(
+    '/api',
+    rateLimiterSimple({
+      windowMs: config.security.rateLimit.windowMs,
+      max: config.security.rateLimit.maxRequests
+    })
+  )
+}
 
 // Logging middleware
 app.use(requestLoggingMiddleware)
@@ -184,11 +278,66 @@ app.use(standardResponse)
 // Initialize OpenAPI validator (antes de rutas API)
 // Valida requests contra esquemas OpenAPI - contrato enforceable
 try {
-  await initializeOpenApiValidator(app)
-  // Add divergence detector middleware
-  app.use(createDivergenceDetectionMiddleware())
-  // Add documentation compliance middleware
-  app.use(createDocumentationComplianceMiddleware())
+  const validatorInitialized = await initializeOpenApiValidator(app)
+  if (validatorInitialized) {
+    // Add OpenAPI validation error handler
+    app.use((err, req, res, next) => {
+      if (err.status === 400 && err.errors) {
+        // OpenAPI request validation error
+        return res.status(400).json({
+          success: false,
+          error: 'ValidationError',
+          code: 1001,
+          category: 'validation',
+          type: 'https://api.floresya.com/errors/validation/validationfailed',
+          title: 'Validation Failed',
+          status: 400,
+          detail: 'Request does not conform to API specification',
+          message: 'Validation failed. Please check your input.',
+          timestamp: new Date().toISOString(),
+          path: req.path,
+          requestId: req.id || 'unknown',
+          errors: err.errors.map(error => ({
+            field: error.path.replace(/^\//, '').replace(/\//g, '.') || 'general',
+            message: error.message,
+            value: error.value,
+            location: error.location || 'body'
+          }))
+        })
+      }
+
+      if (err.status === 500 && err.message?.includes('response schema')) {
+        // OpenAPI response validation error
+        console.error('❌ Response validation failed:', {
+          path: req.path,
+          method: req.method,
+          error: err.message
+        })
+
+        return res.status(500).json({
+          success: false,
+          error: 'InternalServerError',
+          code: 5001,
+          category: 'server',
+          type: 'https://api.floresya.com/errors/server/internalerror',
+          title: 'Internal Server Error',
+          status: 500,
+          detail: 'Response format validation failed',
+          message: 'An unexpected error occurred. Please try again later.',
+          timestamp: new Date().toISOString(),
+          path: req.path,
+          requestId: req.id || 'unknown'
+        })
+      }
+
+      next(err)
+    })
+
+    // Add divergence detector middleware
+    app.use(createDivergenceDetectionMiddleware())
+    // Add documentation compliance middleware
+    app.use(createDocumentationComplianceMiddleware())
+  }
 } catch (error) {
   console.error('❌ Failed to initialize OpenAPI validator:', error)
 }

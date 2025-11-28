@@ -52,6 +52,25 @@ export function configureDIContainer() {
   // DIContainer.register('ProductService', ProductService, ['SupabaseClient'])
 
   /**
+   * ✅ STATIC ASYNC FACTORY: Register repositories with proper async initialization
+   * Updated to use Static Async Factory pattern to eliminate race conditions
+   */
+  DIContainer.registerFactory('UserRepository', async () => {
+    const { UserRepository } = await import('../repositories/UserRepository.js')
+    return await UserRepository.create()
+  })
+
+  DIContainer.registerFactory('ProductRepository', async () => {
+    const { ProductRepository } = await import('../repositories/ProductRepository.js')
+    return await ProductRepository.create()
+  })
+
+  DIContainer.registerFactory('OrderRepository', async () => {
+    const { OrderRepository } = await import('../repositories/OrderRepository.js')
+    return await OrderRepository.create()
+  })
+
+  /**
    * Register response formatter and validator as singletons
    * These are stateless and can be shared
    */

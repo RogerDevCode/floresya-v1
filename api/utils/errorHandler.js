@@ -10,8 +10,8 @@
  * Follows CLAUDE.md guidelines: Fail Fast AF, consistent error logging + rethrowing
  */
 
-import { log } from './logger.js'
-import { AppError, InternalServerError } from '../errors/AppError.js'
+// Imports removed as they were unused
+import { withErrorMapping } from '../middleware/error/supabaseErrorMapper.wrapper.js'
 
 /**
  * Generic error handler wrapper for service operations
@@ -21,22 +21,13 @@ import { AppError, InternalServerError } from '../errors/AppError.js'
  * @returns {*} Operation result
  * @throws {AppError} Rethrows any error after logging
  */
-export async function handleServiceError(operation, operationName, context = {}) {
-  try {
+export const handleServiceError = withErrorMapping(
+  async (operation, operationName, context = {}) => {
     return await operation()
-  } catch (error) {
-    // Log error with structured context
-    log.error(`Service operation failed: ${operationName}`, {
-      operation: operationName,
-      error: error.message,
-      context,
-      stack: error.stack
-    })
-
-    // Rethrow to maintain fail-fast behavior
-    throw error
-  }
-}
+  },
+  'SERVICE_OPERATION',
+  'unknown'
+)
 
 /**
  * Error handler for repository operations with database context
@@ -47,23 +38,13 @@ export async function handleServiceError(operation, operationName, context = {})
  * @returns {*} Operation result
  * @throws {AppError} Rethrows any error after logging
  */
-export async function handleRepositoryError(operation, entity, method, params = {}) {
-  try {
+export const handleRepositoryError = withErrorMapping(
+  async (operation, entity, method, params = {}) => {
     return await operation()
-  } catch (error) {
-    // Log with database operation context
-    log.error(`Repository operation failed: ${entity}.${method}`, {
-      entity,
-      method,
-      params,
-      error: error.message,
-      stack: error.stack
-    })
-
-    // Rethrow to maintain fail-fast behavior
-    throw error
-  }
-}
+  },
+  'REPOSITORY_OPERATION',
+  'unknown'
+)
 
 /**
  * Error handler for external API calls
@@ -74,23 +55,13 @@ export async function handleRepositoryError(operation, entity, method, params = 
  * @returns {*} Operation result
  * @throws {AppError} Rethrows any error after logging
  */
-export async function handleApiError(operation, serviceName, endpoint, requestData = {}) {
-  try {
+export const handleApiError = withErrorMapping(
+  async (operation, serviceName, endpoint, requestData = {}) => {
     return await operation()
-  } catch (error) {
-    // Log with API context
-    log.error(`External API call failed: ${serviceName} - ${endpoint}`, {
-      service: serviceName,
-      endpoint,
-      requestData,
-      error: error.message,
-      stack: error.stack
-    })
-
-    // Rethrow to maintain fail-fast behavior
-    throw error
-  }
-}
+  },
+  'API_CALL',
+  'unknown'
+)
 
 /**
  * Error handler for file system operations
@@ -100,22 +71,13 @@ export async function handleApiError(operation, serviceName, endpoint, requestDa
  * @returns {*} Operation result
  * @throws {AppError} Rethrows any error after logging
  */
-export async function handleFileError(operation, operationType, filePath) {
-  try {
+export const handleFileError = withErrorMapping(
+  async (operation, operationType, filePath) => {
     return await operation()
-  } catch (error) {
-    // Log with file system context
-    log.error(`File operation failed: ${operationType} - ${filePath}`, {
-      operation: operationType,
-      filePath,
-      error: error.message,
-      stack: error.stack
-    })
-
-    // Rethrow to maintain fail-fast behavior
-    throw error
-  }
-}
+  },
+  'FILE_OPERATION',
+  'unknown'
+)
 
 /**
  * Error handler for validation operations
@@ -125,22 +87,13 @@ export async function handleFileError(operation, operationType, filePath) {
  * @returns {*} Operation result
  * @throws {AppError} Rethrows any error after logging
  */
-export async function handleValidationError(operation, entity, data = {}) {
-  try {
+export const handleValidationError = withErrorMapping(
+  async (operation, entity, data = {}) => {
     return await operation()
-  } catch (error) {
-    // Log with validation context
-    log.error(`Validation failed: ${entity}`, {
-      entity,
-      data,
-      error: error.message,
-      stack: error.stack
-    })
-
-    // Rethrow to maintain fail-fast behavior
-    throw error
-  }
-}
+  },
+  'VALIDATION',
+  'unknown'
+)
 
 /**
  * Generic error handler with custom context
@@ -149,21 +102,13 @@ export async function handleValidationError(operation, entity, data = {}) {
  * @returns {*} Operation result
  * @throws {AppError} Rethrows any error after logging
  */
-export async function handleError(operation, context = {}) {
-  try {
+export const handleError = withErrorMapping(
+  async (operation, context = {}) => {
     return await operation()
-  } catch (error) {
-    // Log with full context
-    log.error(`Operation failed: ${context.operation || 'unknown'}`, {
-      ...context,
-      error: error.message,
-      stack: error.stack
-    })
-
-    // Rethrow to maintain fail-fast behavior
-    throw error
-  }
-}
+  },
+  'OPERATION',
+  'unknown'
+)
 
 /**
  * Safe execution wrapper that converts errors to AppError
@@ -172,29 +117,10 @@ export async function handleError(operation, context = {}) {
  * @param {Object} context - Additional context
  * @returns {*} Operation result or throws AppError
  */
-export async function safeExecute(operation, operationName, context = {}) {
-  try {
+export const safeExecute = withErrorMapping(
+  async (operation, operationName, context = {}) => {
     return await operation()
-  } catch (error) {
-    // Convert to AppError if not already
-    const appError =
-      error instanceof AppError
-        ? error
-        : new InternalServerError(`${operationName} failed: ${error.message}`, {
-            originalError: error.message,
-            operation: operationName,
-            context,
-            stack: error.stack
-          })
-
-    // Log error
-    log.error(`Safe execution failed: ${operationName}`, {
-      operation: operationName,
-      context,
-      error: appError.message,
-      stack: appError.stack
-    })
-
-    throw appError
-  }
-}
+  },
+  'SAFE_EXECUTION',
+  'unknown'
+)

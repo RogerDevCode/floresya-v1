@@ -1,12 +1,14 @@
 /**
- * Procesado por B
- */
-
-/**
- * Data Sanitization Middleware
+ * Enhanced Data Sanitization Middleware
+ * Integrates with comprehensive security services for enterprise-grade protection
  * Converts null/undefined values based on PostgreSQL column types
  * Applied before validation to ensure data consistency
  */
+
+import { InputSanitizationService } from '../../services/security/InputSanitizationService.js'
+import { MalwareScanningService } from '../../services/security/MalwareScanningService.js'
+import { DataProtectionService } from '../../services/security/DataProtectionService.js'
+import { logger } from '../../utils/logger.js'
 
 // Database column type mappings for orders and order_items
 const ORDERS_COLUMN_TYPES = {
@@ -169,19 +171,34 @@ export function sanitizeOrderItems(items) {
 }
 
 /**
- * Main sanitization middleware
- * Applied before validation to ensure consistent data types
+ * Enhanced sanitization middleware with comprehensive security protection
+ * Applied before validation to ensure consistent data types and security
  */
 export function sanitizeRequestData(req, res, next) {
   try {
-    // Also sanitize at the top level for other endpoints
+    // Enhanced input sanitization using InputSanitizationService
     if (req.body && typeof req.body === 'object') {
-      // Sanitize order data if present
+      // Apply comprehensive security sanitization
+      req.body = InputSanitizationService.sanitizeObject(req.body, {
+        preventSQL: true,
+        preventXSS: true,
+        preventNoSQL: true,
+        preventCommand: true,
+        preventPathTraversal: true,
+        preventLDAP: true,
+        preventXXE: true,
+        encodeHTML: true,
+        normalizeUnicode: true,
+        trimWhitespace: true,
+        field: 'request_body'
+      })
+
+      // Apply database-specific sanitization for order data
       if (req.body.order) {
         req.body.order = sanitizeOrderData(req.body.order)
       }
 
-      // Sanitize order items if present
+      // Apply database-specific sanitization for order items
       if (req.body.items) {
         req.body.items = sanitizeOrderItems(req.body.items)
       }
@@ -208,9 +225,176 @@ export function sanitizeRequestData(req, res, next) {
       }
     }
 
+    // Sanitize query parameters
+    if (req.query && typeof req.query === 'object') {
+      const sanitizedQuery = InputSanitizationService.sanitizeObject(req.query, {
+        preventSQL: true,
+        preventXSS: true,
+        preventNoSQL: true,
+        preventCommand: true,
+        preventPathTraversal: true,
+        encodeHTML: true,
+        field: 'query_params'
+      })
+      
+      // Safely update query parameters
+      // req.query might be read-only in some environments (like Express 5 or Supertest mocks)
+      try {
+        req.query = sanitizedQuery
+      } catch (e) {
+        // If direct assignment fails, try updating properties individually
+        Object.keys(req.query).forEach(key => {
+          delete req.query[key]
+        })
+        Object.assign(req.query, sanitizedQuery)
+      }
+    }
+
+    // Sanitize route parameters
+    if (req.params && typeof req.params === 'object') {
+      req.params = InputSanitizationService.sanitizeObject(req.params, {
+        preventSQL: true,
+        preventXSS: true,
+        preventNoSQL: true,
+        preventCommand: true,
+        preventPathTraversal: true,
+        encodeHTML: false, // Don't encode URL parameters
+        field: 'route_params'
+      })
+    }
+
+    // Log sanitization for audit purposes
+    logger.debug('Request data sanitized', {
+      path: req.path,
+      method: req.method,
+      ip: req.ip,
+      userAgent: req.get('User-Agent')
+    })
+
     next()
   } catch (error) {
-    console.error('Error in sanitization middleware:', error)
+    console.error('Error in enhanced sanitization middleware:', error)
+    logger.error('Sanitization middleware error', {
+      error: error.message,
+      path: req.path,
+      method: req.method,
+      ip: req.ip
+    })
+    next(error)
+  }
+}
+
+/**
+ * Enhanced file upload sanitization middleware
+ * Integrates malware scanning and security validation
+ */
+export function sanitizeFileUpload(req, res, next) {
+  try {
+    // If no files, continue
+    if (!req.file && !req.files) {
+      return next()
+    }
+
+    const files = req.files ? (Array.isArray(req.files) ? req.files : [req.files]) : [req.file]
+
+    // Scan each file for malware
+    const scanPromises = files.map(async file => {
+      if (!file) {
+        return null
+      }
+
+      try {
+        const scanResult = await MalwareScanningService.scanFile(file, {
+          strictMode: true,
+          scanForMalware: true,
+          quarantineSuspicious: true
+        })
+
+        // Log scan result
+        logger.info('File scan completed', {
+          filename: file.originalname,
+          isClean: scanResult.isClean,
+          threats: scanResult.threats.length,
+          quarantined: scanResult.quarantined
+        })
+
+        return scanResult
+      } catch (error) {
+        logger.error('File scan failed', {
+          filename: file.originalname,
+          error: error.message
+        })
+        throw error
+      }
+    })
+
+    // Wait for all scans to complete
+    Promise.all(scanPromises)
+      .then(scanResults => {
+        // Check if any files are malicious
+        const maliciousFiles = scanResults.filter(result => result && !result.isClean)
+
+        if (maliciousFiles.length > 0) {
+          const error = new Error('Malicious files detected and blocked')
+          error.code = 'MALICIOUS_FILES_DETECTED'
+          error.details = maliciousFiles.map(result => ({
+            filename: result.filename,
+            threats: result.threats,
+            quarantined: result.quarantined
+          }))
+          return next(error)
+        }
+
+        // Attach scan results to request
+        req.fileScanResults = scanResults
+        next()
+      })
+      .catch(error => {
+        logger.error('File upload sanitization failed', {
+          error: error.message,
+          path: req.path
+        })
+        next(error)
+      })
+  } catch (error) {
+    console.error('Error in file upload sanitization:', error)
+    logger.error('File upload sanitization error', {
+      error: error.message,
+      path: req.path,
+      ip: req.ip
+    })
+    next(error)
+  }
+}
+
+/**
+ * Data protection middleware for sensitive information
+ * Applies encryption and masking where appropriate
+ */
+export function protectSensitiveData(req, res, next) {
+  try {
+    // Detect and mask PII in request data for logging
+    if (req.body) {
+      req.sanitizedBodyForLogging = DataProtectionService.sanitizeForLogging(req.body)
+    }
+
+    // Detect PII in query parameters
+    if (req.query) {
+      req.sanitizedQueryForLogging = DataProtectionService.sanitizeForLogging(req.query)
+    }
+
+    // Add security headers for sensitive data handling
+    res.setHeader('X-Content-Type-Options', 'nosniff')
+    res.setHeader('X-Frame-Options', 'DENY')
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+
+    next()
+  } catch (error) {
+    console.error('Error in data protection middleware:', error)
+    logger.error('Data protection middleware error', {
+      error: error.message,
+      path: req.path
+    })
     next(error)
   }
 }

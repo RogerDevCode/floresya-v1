@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import { initializeDIContainer, DIContainer } from '../api/architecture/di-container.js'
-import { logger } from '../api/utils/logger.js'
+// import { logger } from '../api/utils/logger.js'
 
 async function verifySupabase() {
   console.log('🚀 Starting Supabase Verification...')

@@ -10,13 +10,20 @@
  * Uses centralized structured logging
  */
 
-import { supabase, DB_SCHEMA } from './supabaseClient.js'
+import DIContainer from '../architecture/di-container.js'
 import { ValidationError } from '../errors/AppError.js'
 import { withErrorMapping } from '../middleware/error/index.js'
-import { CAROUSEL, QUERY_LIMITS } from '../config/constants.js'
+import { CAROUSEL } from '../config/constants.js'
 import { log as logger } from '../utils/logger.js'
 
-const TABLE = DB_SCHEMA.products.table
+const TABLE = 'products'
+
+/**
+ * Get ProductRepository instance
+ */
+async function getProductRepository() {
+  return await DIContainer.resolve('ProductRepository')
+}
 
 /**
  * Get all featured products in carousel (ordered)
@@ -25,85 +32,11 @@ const TABLE = DB_SCHEMA.products.table
 export const getCarouselProducts = withErrorMapping(
   async () => {
     logger.info('Fetching carousel products')
+    const productRepository = await getProductRepository()
+    const products = await productRepository.findFeaturedWithImages(CAROUSEL.MAX_SIZE)
 
-    // Get all featured and active products, ordered by creation date (newest first)
-    const { data: products, error } = await supabase
-      .from(TABLE)
-      .select('*')
-      .eq('featured', true)
-      .eq('active', true)
-      .order('created_at', { ascending: false })
-      .limit(CAROUSEL.MAX_SIZE)
-
-    if (error) {
-      logger.error('Error fetching products from database', { error: error.message })
-      // Map Supabase error automatically
-      throw error
-    }
-
-    logger.info('Products query result', { count: products?.length || 0 })
-
-    if (!products || products.length === 0) {
-      logger.info('No featured products found')
-      return []
-    }
-
-    // Fetch small image for each product (first image, image_index=1)
-    const IMAGES_TABLE = DB_SCHEMA.product_images.table
-    logger.info('Fetching images for products', { productCount: products.length })
-
-    let productsWithImages = []
-
-    try {
-      const productsWithImagesPromises = products.map(async product => {
-        try {
-          const { data: images, error: imgError } = await supabase
-            .from(IMAGES_TABLE)
-            .select('url')
-            .eq('product_id', product.id)
-            .eq('size', 'small')
-            .order('image_index', { ascending: true })
-            .limit(QUERY_LIMITS.SINGLE_RECORD)
-            .maybeSingle()
-
-          if (imgError) {
-            logger.warn('Failed to fetch image for product', {
-              productId: product.id,
-              error: imgError.message
-            })
-          }
-
-          return {
-            ...product,
-            image_url_small: images?.url || null
-          }
-        } catch (imgErr) {
-          logger.error('Error fetching image for product', {
-            productId: product.id,
-            error: imgErr.message
-          })
-          return {
-            ...product,
-            image_url_small: null
-          }
-        }
-      })
-
-      productsWithImages = await Promise.all(productsWithImagesPromises)
-      logger.info('Successfully processed products with images', {
-        count: productsWithImages.length
-      })
-    } catch (allErr) {
-      logger.error('Error in Promise.all for image fetching', { error: allErr.message })
-      // Fallback: return products without images
-      productsWithImages = products.map(product => ({
-        ...product,
-        image_url_small: null
-      }))
-    }
-
-    logger.info('Carousel products prepared', { count: productsWithImages.length })
-    return productsWithImages
+    logger.info('Carousel products retrieved', { count: products.length })
+    return products
   },
   'SELECT',
   TABLE
@@ -142,22 +75,14 @@ export function validateCarouselOrder(carouselOrder) {
  */
 export const isCarouselFull = withErrorMapping(
   async (excludeProductId = null) => {
-    let query = supabase
-      .from(TABLE)
-      .select('id', { count: 'exact', head: true })
-      .eq('featured', true)
-      .eq('active', true)
+    const productRepository = await getProductRepository()
+    const products = await productRepository.findFeatured(CAROUSEL.MAX_SIZE + 1)
 
+    let count = products.length
     if (excludeProductId) {
-      query = query.filter('id', 'neq', excludeProductId)
+      count = products.filter(p => p.id !== excludeProductId).length
     }
 
-    const { count, error } = await query
-
-    if (error) {
-      // Map Supabase error automatically
-      throw error
-    }
     return count >= CAROUSEL.MAX_SIZE
   },
   'COUNT',
@@ -179,30 +104,21 @@ export const resolveCarouselOrderConflict = withErrorMapping(
   async (newOrder, excludeProductId = null) => {
     if (!newOrder) {
       return { shiftedCount: 0, removedProducts: [] }
-    } // Not featured, skip
+    }
 
     validateCarouselOrder(newOrder)
 
-    // Get products with same or higher order (process in reverse to avoid conflicts)
-    let query = supabase
-      .from(TABLE)
-      .select('id, name, carousel_order')
-      .eq('featured', true)
-      .eq('active', true)
-      .gte('carousel_order', newOrder)
-      .order('carousel_order', { ascending: false }) // Process from highest to lowest
+    const productRepository = await getProductRepository()
 
-    if (excludeProductId) {
-      query = query.filter('id', 'neq', excludeProductId)
-    }
+    // Get all featured products to process in memory (small dataset)
+    const products = await productRepository.findFeatured(CAROUSEL.MAX_SIZE + 5)
 
-    const { data: conflicts, error } = await query
+    // Filter conflicts: active, featured, order >= newOrder, not excluded
+    const conflicts = products
+      .filter(p => p.carousel_order >= newOrder && p.id !== excludeProductId)
+      .sort((a, b) => b.carousel_order - a.carousel_order) // Process highest to lowest
 
-    if (error) {
-      // Map Supabase error automatically
-      throw error
-    }
-    if (!conflicts || conflicts.length === 0) {
+    if (conflicts.length === 0) {
       return { shiftedCount: 0, removedProducts: [] }
     }
 
@@ -220,14 +136,7 @@ export const resolveCarouselOrderConflict = withErrorMapping(
 
       if (newCarouselOrder > CAROUSEL.MAX_SIZE) {
         // Remove from carousel (beyond limit)
-        const { error: updateError } = await supabase
-          .from(TABLE)
-          .update({ featured: false, carousel_order: null })
-          .eq('id', product.id)
-
-        if (updateError) {
-          throw updateError // Mapeo automático
-        }
+        await productRepository.updateCarouselOrder(product.id, null)
 
         removedProducts.push({ id: product.id, name: product.name })
         logger.info('Removed product from carousel', {
@@ -238,14 +147,7 @@ export const resolveCarouselOrderConflict = withErrorMapping(
         })
       } else {
         // Shift down
-        const { error: updateError } = await supabase
-          .from(TABLE)
-          .update({ carousel_order: newCarouselOrder })
-          .eq('id', product.id)
-
-        if (updateError) {
-          throw updateError // Mapeo automático
-        }
+        await productRepository.updateCarouselOrder(product.id, newCarouselOrder)
 
         shiftedCount++
         logger.info('Shifted product in carousel', {
@@ -276,22 +178,12 @@ export const reorderCarousel = withErrorMapping(
       throw new ValidationError('reorderMap must be a non-empty array')
     }
 
+    const productRepository = await getProductRepository()
     let updatedCount = 0
 
     for (const { productId, newOrder } of reorderMap) {
       validateCarouselOrder(newOrder)
-
-      const { error } = await supabase
-        .from(TABLE)
-        .update({ carousel_order: newOrder })
-        .eq('id', productId)
-        .eq('featured', true)
-        .eq('active', true)
-
-      if (error) {
-        // Map Supabase error automatically
-        throw error
-      }
+      await productRepository.updateCarouselOrder(productId, newOrder)
       updatedCount++
     }
 
@@ -311,15 +203,8 @@ export const reorderCarousel = withErrorMapping(
  */
 export const removeFromCarousel = withErrorMapping(
   async productId => {
-    const { error } = await supabase
-      .from(TABLE)
-      .update({ featured: false, carousel_order: null })
-      .eq('id', productId)
-
-    if (error) {
-      // Map Supabase error automatically
-      throw error
-    }
+    const productRepository = await getProductRepository()
+    await productRepository.updateCarouselOrder(productId, null)
 
     logger.info('Removed product from carousel', {
       productId

@@ -85,7 +85,7 @@ class AutoRecoverySystem {
       // Log current health status (with safe access)
       logger.debug('Health check performed', {
         healthScore,
-        circuitBreakerState: circuitBreakerStatus?.database?.state || 'unknown',
+        circuitBreakerState: circuitBreakerStatus?.breakers?.database?.state || 'unknown',
         memoryUsage: realtimeMetrics.memoryUsage.heapUsed,
         errorRate: realtimeMetrics.errorRate
       })
@@ -116,9 +116,9 @@ class AutoRecoverySystem {
     }
 
     // Check for stuck circuit breaker
-    if (circuitBreakerStatus.database.state === 'OPEN') {
-      const timeInOpenState = circuitBreakerStatus.database.lastFailure
-        ? Date.now() - new Date(circuitBreakerStatus.database.lastFailure).getTime()
+    if (circuitBreakerStatus?.breakers?.database?.state === 'OPEN') {
+      const timeInOpenState = circuitBreakerStatus.breakers.database.lastFailure
+        ? Date.now() - new Date(circuitBreakerStatus.breakers.database.lastFailure).getTime()
         : 0
 
       // If circuit breaker has been open for more than 10 minutes, try recovery
@@ -303,7 +303,10 @@ class AutoRecoverySystem {
 
       // Reset circuit breaker if it's been successful for a while
       const cbStatus = getCircuitBreakerStatus()
-      if (cbStatus.database.state === 'CLOSED' && cbStatus.database.successCount > 10) {
+      if (
+        cbStatus?.breakers?.database?.state === 'CLOSED' &&
+        cbStatus?.breakers?.database?.successCount > 10
+      ) {
         // Circuit breaker is healthy, no action needed
       }
     } catch (error) {

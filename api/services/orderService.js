@@ -29,19 +29,43 @@ const TABLE = DB_SCHEMA.orders.table
 const VALID_STATUSES = DB_SCHEMA.orders.enums.status
 
 /**
- * Get OrderRepository instance from DI Container
- * @returns {OrderRepository} Repository instance
+ * ✅ STATIC ASYNC FACTORY: Get OrderRepository instance with proper async resolution
+ * @returns {Promise<OrderRepository>} Repository instance completely resolved
  */
-function getOrderRepository() {
-  return DIContainer.resolve('OrderRepository')
+async function getOrderRepository() {
+  try {
+    // 🚀 ESPERAR RESOLUCIÓN: Asegurar que el repositorio esté completamente inicializado
+    const repository = await DIContainer.resolve('OrderRepository')
+
+    // ✅ VALIDACIÓN: Verificar que el repositorio sea funcional
+    if (!repository || typeof repository.findById !== 'function') {
+      throw new Error('Invalid OrderRepository resolved from DI Container')
+    }
+
+    return repository
+  } catch (error) {
+    throw new Error(`Failed to resolve OrderRepository: ${error.message}`)
+  }
 }
 
 /**
- * Get ProductRepository instance from DI Container
- * @returns {ProductRepository} Repository instance
+ * ✅ STATIC ASYNC FACTORY: Get ProductRepository instance with proper async resolution
+ * @returns {Promise<ProductRepository>} Repository instance completely resolved
  */
-function getProductRepository() {
-  return DIContainer.resolve('ProductRepository')
+async function getProductRepository() {
+  try {
+    // 🚀 ESPERAR RESOLUCIÓN: Asegurar que el repositorio esté completamente inicializado
+    const repository = await DIContainer.resolve('ProductRepository')
+
+    // ✅ VALIDACIÓN: Verificar que el repositorio sea funcional
+    if (!repository || typeof repository.findById !== 'function') {
+      throw new Error('Invalid ProductRepository resolved from DI Container')
+    }
+
+    return repository
+  } catch (error) {
+    throw new Error(`Failed to resolve ProductRepository: ${error.message}`)
+  }
 }
 
 /**
@@ -63,7 +87,7 @@ function getProductRepository() {
  */
 export const getAllOrders = withErrorMapping(
   async (filters = {}, includeDeactivated = false) => {
-    const orderRepository = getOrderRepository()
+    const orderRepository = await getOrderRepository()
 
     // Use repository to get orders with filters
     const data = await orderRepository.findAllWithFilters(filters, { includeDeactivated })
@@ -89,9 +113,9 @@ export const getAllOrders = withErrorMapping(
  * @example
  * const order = await getOrderById(123)
  */
-export async function getOrderById(id, includeDeactivated = false) {
-  try {
-    const orderRepository = getOrderRepository()
+export const getOrderById = withErrorMapping(
+  async (id, includeDeactivated = false) => {
+    const orderRepository = await getOrderRepository()
 
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid order ID: must be a number', { orderId: id })
@@ -105,11 +129,10 @@ export async function getOrderById(id, includeDeactivated = false) {
     }
 
     return data
-  } catch (error) {
-    console.error(`getOrderById(${id}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get orders by user (indexed query) with optional status filtering
@@ -124,9 +147,9 @@ export async function getOrderById(id, includeDeactivated = false) {
  * @example
  * const orders = await getOrdersByUser(123, { status: 'delivered', limit: 10 })
  */
-export async function getOrdersByUser(userId, filters = {}) {
-  try {
-    const orderRepository = getOrderRepository()
+export const getOrdersByUser = withErrorMapping(
+  async (userId, filters = {}) => {
+    const orderRepository = await getOrderRepository()
 
     if (!userId || typeof userId !== 'number') {
       throw new BadRequestError('Invalid user ID: must be a number', { userId })
@@ -140,11 +163,10 @@ export async function getOrdersByUser(userId, filters = {}) {
     }
 
     return data
-  } catch (error) {
-    console.error(`getOrdersByUser(${userId}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Create order with items (uses atomic stored function)
@@ -208,7 +230,7 @@ export async function createOrderWithItems(orderData, orderItems) {
       }
 
       // Validate stock availability using ProductRepository
-      const productRepository = getProductRepository()
+      const productRepository = await getProductRepository()
       const product = await productRepository.findById(item.product_id, true)
 
       if (!product) {
@@ -356,8 +378,8 @@ export async function createOrderWithItems(orderData, orderItems) {
 /**
  * Update order status with history (uses atomic stored function)
  */
-export async function updateOrderStatus(orderId, newStatus, notes = null, changedBy = null) {
-  try {
+export const updateOrderStatus = withErrorMapping(
+  async (orderId, newStatus, notes = null, changedBy = null) => {
     if (!orderId || typeof orderId !== 'number') {
       throw new BadRequestError('Invalid order ID: must be a number', { orderId })
     }
@@ -399,11 +421,10 @@ export async function updateOrderStatus(orderId, newStatus, notes = null, change
     }
 
     return data
-  } catch (error) {
-    console.error(`updateOrderStatus(${orderId}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'RPC',
+  'update_order_status_with_history'
+)
 
 /**
  * Update order (limited fields) - only allows updating delivery and note fields
@@ -426,9 +447,9 @@ export async function updateOrderStatus(orderId, newStatus, notes = null, change
  *   delivery_notes: 'Llamar al timbre'
  * })
  */
-export async function updateOrder(id, updates) {
-  try {
-    const orderRepository = getOrderRepository()
+export const updateOrder = withErrorMapping(
+  async (id, updates) => {
+    const orderRepository = await getOrderRepository()
 
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid order ID: must be a number', { orderId: id })
@@ -465,11 +486,10 @@ export async function updateOrder(id, updates) {
     const data = await orderRepository.update(id, sanitized)
 
     return data
-  } catch (error) {
-    console.error(`updateOrder(${id}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Cancel order - wrapper for updateOrderStatus that sets status to 'cancelled'
@@ -483,9 +503,9 @@ export async function updateOrder(id, updates) {
  * @example
  * const order = await cancelOrder(123, 'Cliente solicitó cancelación', 456)
  */
-export async function cancelOrder(orderId, notes = 'Order cancelled', _changedBy = null) {
-  try {
-    const orderRepository = getOrderRepository()
+export const cancelOrder = withErrorMapping(
+  async (orderId, notes = 'Order cancelled', _changedBy = null) => {
+    const orderRepository = await getOrderRepository()
 
     if (!orderId || typeof orderId !== 'number') {
       throw new BadRequestError('Invalid order ID: must be a number', { orderId })
@@ -495,11 +515,10 @@ export async function cancelOrder(orderId, notes = 'Order cancelled', _changedBy
     const data = await orderRepository.cancel(orderId, notes)
 
     return data
-  } catch (error) {
-    console.error(`cancelOrder(${orderId}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Get order status history - chronological record of all status changes
@@ -512,13 +531,13 @@ export async function cancelOrder(orderId, notes = 'Order cancelled', _changedBy
  * const history = await getOrderStatusHistory(123)
  * // Returns: [{ id: 1, order_id: 123, old_status: 'pending', new_status: 'verified', created_at: '...' }]
  */
-export async function getOrderStatusHistory(orderId) {
-  try {
+export const getOrderStatusHistory = withErrorMapping(
+  async orderId => {
     if (!orderId || typeof orderId !== 'number') {
       throw new BadRequestError('Invalid order ID: must be a number', { orderId })
     }
 
-    const orderRepository = getOrderRepository()
+    const orderRepository = await getOrderRepository()
     const data = await orderRepository.findStatusHistoryByOrderId(orderId)
 
     if (!data || data.length === 0) {
@@ -526,8 +545,7 @@ export async function getOrderStatusHistory(orderId) {
     }
 
     return data
-  } catch (error) {
-    console.error(`getOrderStatusHistory(${orderId}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  'order_status_history'
+)

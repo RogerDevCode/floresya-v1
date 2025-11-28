@@ -13,16 +13,19 @@
 import { supabase } from './supabaseClient.js'
 import { log as logger } from '../utils/logger.js'
 import { DatabaseError } from '../errors/AppError.js'
+import { withErrorMapping } from '../middleware/error/index.js'
+
+const TABLE = 'migrations'
 
 /**
  * Execute migration to add active column to settings table
  * @returns {Object} Migration result
  * @throws {DatabaseError} If migration fails
  */
-export async function addIsActiveToSettings() {
-  logger.info('Executing migration: Adding active column to settings table')
+export const addIsActiveToSettings = withErrorMapping(
+  async () => {
+    logger.info('Executing migration: Adding active column to settings table')
 
-  try {
     // Check if column exists
     const { data: columnExists, error: checkError } = await supabase.rpc('execute_sql', {
       sql_query: `
@@ -83,11 +86,7 @@ export async function addIsActiveToSettings() {
       message: 'Successfully added active column to settings table',
       columnExisted: false
     }
-  } catch (error) {
-    logger.error('Migration failed', error)
-    if (error instanceof DatabaseError) {
-      throw error
-    }
-    throw new DatabaseError('MIGRATION', 'settings', error)
-  }
-}
+  },
+  'MIGRATION',
+  TABLE
+)

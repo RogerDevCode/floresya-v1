@@ -17,6 +17,9 @@ import {
   DatabaseError,
   InternalServerError
 } from '../errors/AppError.js'
+import { withErrorMapping } from '../middleware/error/index.js'
+
+const TABLE = 'auth.users'
 
 /**
  * Sign up new user (PRODUCTION ONLY)
@@ -28,8 +31,8 @@ import {
  * @throws {ConflictError} If email already exists
  * @throws {DatabaseError} If signup fails
  */
-export async function signUp(email, password, metadata = {}) {
-  try {
+export const signUp = withErrorMapping(
+  async (email, password, metadata = {}) => {
     // Validation - FAIL FAST
     if (!email || typeof email !== 'string') {
       throw new BadRequestError('Email is required and must be a string', { email })
@@ -101,7 +104,7 @@ export async function signUp(email, password, metadata = {}) {
       ) {
         throw new ConflictError('Email already registered', { email })
       }
-      throw new DatabaseError('SIGNUP', 'auth.users', error, { email })
+      throw error
     }
 
     if (!data.user) {
@@ -115,15 +118,10 @@ export async function signUp(email, password, metadata = {}) {
       session: data.session,
       message: 'Check your email to verify your account'
     }
-  } catch (error) {
-    console.error(`signUp(${email}) failed:`, error)
-    // Re-throw AppError instances as-is (fail-fast)
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    throw new DatabaseError('SIGNUP', 'auth.users', error, { email })
-  }
-}
+  },
+  'SIGNUP',
+  TABLE
+)
 
 /**
  * Sign in user (PRODUCTION ONLY)
@@ -133,8 +131,8 @@ export async function signUp(email, password, metadata = {}) {
  * @throws {BadRequestError} If invalid input
  * @throws {UnauthorizedError} If credentials invalid
  */
-export async function signIn(email, password) {
-  try {
+export const signIn = withErrorMapping(
+  async (email, password) => {
     // Validation
     if (!email || typeof email !== 'string') {
       throw new BadRequestError('Email is required', { email })
@@ -164,15 +162,10 @@ export async function signIn(email, password) {
       accessToken: data.session.access_token,
       refreshToken: data.session.refresh_token
     }
-  } catch (error) {
-    console.error(`signIn(${email}) failed:`, error)
-    // Re-throw AppError instances as-is (fail-fast)
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    throw new DatabaseError('SIGNIN', 'auth.users', error, { email })
-  }
-}
+  },
+  'SIGNIN',
+  TABLE
+)
 
 /**
  * Sign out user (PRODUCTION ONLY)
@@ -180,8 +173,8 @@ export async function signIn(email, password) {
  * @returns {Object} { message }
  * @throws {DatabaseError} If signout fails
  */
-export async function signOut(accessToken) {
-  try {
+export const signOut = withErrorMapping(
+  async accessToken => {
     const { error } = await supabase.auth.signOut(accessToken)
 
     if (error) {
@@ -189,15 +182,10 @@ export async function signOut(accessToken) {
     }
 
     return { message: 'Signed out successfully' }
-  } catch (error) {
-    console.error('signOut failed:', error)
-    // Re-throw AppError instances as-is (fail-fast)
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    throw new DatabaseError('SIGNOUT', 'auth.users', error, {})
-  }
-}
+  },
+  'SIGNOUT',
+  TABLE
+)
 
 /**
  * Refresh access token (PRODUCTION ONLY)
@@ -205,8 +193,8 @@ export async function signOut(accessToken) {
  * @returns {Object} { session, accessToken }
  * @throws {UnauthorizedError} If refresh token invalid
  */
-export async function refreshToken(refreshToken) {
-  try {
+export const refreshToken = withErrorMapping(
+  async refreshToken => {
     const { data, error } = await supabase.auth.refreshSession({ refreshToken })
 
     if (error) {
@@ -221,15 +209,10 @@ export async function refreshToken(refreshToken) {
       session: data.session,
       accessToken: data.session.access_token
     }
-  } catch (error) {
-    console.error('refreshToken failed:', error)
-    // Re-throw AppError instances as-is (fail-fast)
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    throw new DatabaseError('REFRESH_TOKEN', 'auth.users', error, {})
-  }
-}
+  },
+  'REFRESH_TOKEN',
+  TABLE
+)
 
 /**
  * Get user from access token (PRODUCTION ONLY)
@@ -238,8 +221,8 @@ export async function refreshToken(refreshToken) {
  * @returns {Object} user
  * @throws {UnauthorizedError} If token invalid or expired
  */
-export async function getUser(accessToken) {
-  try {
+export const getUser = withErrorMapping(
+  async accessToken => {
     const { data, error } = await supabase.auth.getUser(accessToken)
 
     if (error) {
@@ -251,15 +234,10 @@ export async function getUser(accessToken) {
     }
 
     return data.user
-  } catch (error) {
-    console.error('getUser failed:', error)
-    // Re-throw AppError instances as-is (fail-fast)
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    throw new DatabaseError('GET_USER', 'auth.users', error, {})
-  }
-}
+  },
+  'GET_USER',
+  TABLE
+)
 
 /**
  * Reset password request (PRODUCTION ONLY)
@@ -268,8 +246,8 @@ export async function getUser(accessToken) {
  * @throws {BadRequestError} If invalid input
  * @throws {DatabaseError} If operation fails
  */
-export async function resetPassword(email) {
-  try {
+export const resetPassword = withErrorMapping(
+  async email => {
     if (!email || typeof email !== 'string') {
       throw new BadRequestError('Email is required', { email })
     }
@@ -285,15 +263,10 @@ export async function resetPassword(email) {
     return {
       message: 'Password reset email sent. Check your inbox.'
     }
-  } catch (error) {
-    console.error(`resetPassword(${email}) failed:`, error)
-    // Re-throw AppError instances as-is (fail-fast)
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    throw new DatabaseError('RESET_PASSWORD', 'auth.users', error, { email })
-  }
-}
+  },
+  'RESET_PASSWORD',
+  TABLE
+)
 
 /**
  * Update password (PRODUCTION ONLY)
@@ -304,8 +277,8 @@ export async function resetPassword(email) {
  * @throws {UnauthorizedError} If token invalid
  * @throws {DatabaseError} If operation fails
  */
-export async function updatePassword(accessToken, newPassword) {
-  try {
+export const updatePassword = withErrorMapping(
+  async (accessToken, newPassword) => {
     if (!newPassword || typeof newPassword !== 'string') {
       throw new BadRequestError('New password is required', {})
     }
@@ -331,12 +304,7 @@ export async function updatePassword(accessToken, newPassword) {
     return {
       message: 'Password updated successfully'
     }
-  } catch (error) {
-    console.error('updatePassword failed:', error)
-    // Re-throw AppError instances as-is (fail-fast)
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    throw new DatabaseError('UPDATE_PASSWORD', 'auth.users', error, {})
-  }
-}
+  },
+  'UPDATE_PASSWORD',
+  TABLE
+)

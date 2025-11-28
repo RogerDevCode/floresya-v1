@@ -6,22 +6,20 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { NotFoundError, ValidationError, ConflictError } from '../../api/errors/AppError.js'
 
 // Mock repository
-const expenseCategoryRepository = {
+const expenseCategoryRepository = vi.hoisted(() => ({
   findAll: vi.fn(),
   findById: vi.fn(),
   findByName: vi.fn(),
   create: vi.fn(),
   update: vi.fn(),
   delete: vi.fn()
-}
+}))
 
 vi.mock('../../api/repositories/expenseCategoryRepository.js', () => ({
   default: expenseCategoryRepository
 }))
 
-const { default: expenseCategoryService } = await import(
-  '../../api/services/expenseCategoryService.js'
-)
+import * as expenseCategoryService from '../../api/services/expenseCategoryService.js'
 
 describe('ExpenseCategoryService', () => {
   beforeEach(() => {

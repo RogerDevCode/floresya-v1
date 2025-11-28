@@ -18,6 +18,22 @@ export class ProductRepository extends BaseRepository {
   }
 
   /**
+   * ✅ STATIC ASYNC FACTORY: Crea ProductRepository con inicialización completa
+   * @returns {Promise<ProductRepository>} Instancia completamente inicializada
+   */
+  static async create() {
+    try {
+      // 🚀 OBTENER CLIENTE: Usar factory de BaseRepository para asegurar inicialización
+      return await BaseRepository.create(
+        () => import('../services/supabaseClient.js').then(m => m.supabase),
+        DB_SCHEMA.products.table
+      )
+    } catch (error) {
+      throw new Error(`ProductRepository.create failed: ${error.message}`)
+    }
+  }
+
+  /**
    * Obtener productos con filtros específicos
    * ✅ OPTIMIZADO: 100% SQL filtering usando get_products_filtered()
    * NO JavaScript filtering - todo se hace en PostgreSQL con índices
@@ -186,6 +202,47 @@ export class ProductRepository extends BaseRepository {
     }
 
     return data || []
+  }
+
+  /**
+   * Obtener productos destacados con imágenes (para carrusel)
+   * @param {number} limit - Límite de productos
+   * @returns {Promise<Array>} Lista de productos destacados con imagen pequeña
+   */
+  async findFeaturedWithImages(limit = 10) {
+    // JOIN query para obtener productos destacados con su imagen pequeña
+    const { data, error } = await this.supabase
+      .from(this.table)
+      .select(
+        `
+        id, name, summary, description, price_usd, price_ves, stock, sku,
+        active, featured, carousel_order, created_at, updated_at,
+        product_images(url)
+      `
+      )
+      .eq('featured', true)
+      .eq('active', true)
+      .eq('product_images.size', 'small')
+      .order('carousel_order', { ascending: true })
+      .limit(limit)
+
+    if (error) {
+      throw this.handleError(error, 'findFeaturedWithImages', { limit })
+    }
+
+    // Transformar resultado para aplanar la imagen
+    return (data || []).map(product => {
+      // product_images será un array (posiblemente vacío si no hay imagen small)
+      const images = product.product_images || []
+      const imageUrl = images.length > 0 ? images[0].url : null
+
+      // Eliminar la propiedad product_images y agregar image_url_small
+      const { product_images, ...productData } = product
+      return {
+        ...productData,
+        image_url_small: imageUrl
+      }
+    })
   }
 
   /**

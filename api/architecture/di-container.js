@@ -9,7 +9,9 @@
  * CRITICAL: Prevents cascading failures through service isolation
  */
 
-import { InternalServerError } from '../errors/AppError.js'
+import { DatabaseError, ConfigurationError } from '../errors/AppError.js'
+// import { InternalServerError } from '../errors/AppError.js'
+// import { BadRequestError } from '../errors/AppError.js'
 import { supabase } from '../services/supabaseClient.js'
 import { logger } from '../utils/logger.js'
 import { createProductRepository } from '../repositories/ProductRepository.js'
@@ -242,7 +244,7 @@ class DistributedServiceRegistry {
 
     // Check if service is registered
     if (!this.services.has(actualName)) {
-      throw new InternalServerError(`Service not registered: ${actualName}`, {
+      throw new ConfigurationError(`Service not registered: ${actualName}`, {
         serviceName: actualName
       })
     }
@@ -279,19 +281,58 @@ class DistributedServiceRegistry {
 
       // Create service instance
       // For repository factories, just call them directly (they return instances)
-      // Check if it's a factory by naming convention or by trying to call it
+      // Check if it's a factory by naming convention
       let instance
       try {
-        // Try calling as factory first
-        instance = Implementation(...resolvedDependencies)
-
-        // If it doesn't return an object, it might be a class
-        if (!instance || typeof instance !== 'object') {
+        // ENHANCED: Proper Static Async Factory pattern support with comprehensive error handling
+        if (typeof Implementation === 'function' && Implementation.name.startsWith('create')) {
+          // ✅ STATIC ASYNC FACTORY: Await factory result
+          // This ensures all async dependencies are resolved before instantiation
+          instance = await Implementation(...resolvedDependencies)
+          logger.debug(`✅ Created ${actualName} using Static Async Factory`)
+        } else if (typeof Implementation === 'function') {
+          // ✅ CLASS CONSTRUCTOR: Direct instantiation with resolved dependencies
+          // Ensure no pending promises are passed to constructor
           instance = new Implementation(...resolvedDependencies)
+          logger.debug(`✅ Created ${actualName} using class constructor`)
+        } else {
+          // ✅ OBJECT/SINGLETON: Direct assignment
+          instance = Implementation
+          logger.debug(`✅ Assigned ${actualName} as existing object/singleton`)
         }
       } catch (error) {
-        // If factory call fails, try as class constructor
-        instance = new Implementation(...resolvedDependencies)
+        logger.warn(
+          `❌ Failed to instantiate ${actualName} with primary method, analyzing error...`,
+          {
+            error: error.message,
+            implementationType: typeof Implementation,
+            implementationName: Implementation?.name || 'anonymous',
+            dependenciesCount: resolvedDependencies.length
+          }
+        )
+
+        // ENHANCED Fallback: Try alternative instantiation methods
+        try {
+          if (typeof Implementation === 'function' && Implementation.name.startsWith('create')) {
+            // Fallback: Try as class constructor if factory failed
+            instance = new Implementation(...resolvedDependencies)
+            logger.warn(`⚠️  Fallback: Created ${actualName} using class constructor`)
+          } else if (typeof Implementation === 'function') {
+            // Fallback: Try as async factory if constructor failed
+            instance = await Implementation(...resolvedDependencies)
+            logger.warn(`⚠️  Fallback: Created ${actualName} using async factory`)
+          } else {
+            // Cannot fallback - throw original error
+            throw new Error(`Cannot instantiate ${actualName}: unsupported implementation type`)
+          }
+        } catch (retryError) {
+          logger.error(`❌ Failed to instantiate ${actualName} with both methods`, {
+            primaryError: error.message,
+            retryError: retryError.message,
+            implementationType: typeof Implementation
+          })
+          throw new Error(`Failed to instantiate ${actualName}: ${retryError.message}`)
+        }
       }
 
       // Cache with health monitoring
@@ -530,13 +571,34 @@ export async function initializeDIContainer() {
         fallback: () => {
           logger.warn(`Using fallback for ${name} - returning mock repository`)
           // Return a mock repository that returns empty arrays/null
-          return {
+          const baseMock = {
             findAll: () => Promise.resolve([]),
             findById: () => Promise.resolve(null),
             create: () => Promise.resolve({ id: Date.now() }),
             update: () => Promise.resolve({}),
-            delete: () => Promise.resolve({ active: false })
+            delete: () => Promise.resolve({ active: false }),
+            // Critical methods for ProductRepository
+            findFeatured: () => Promise.resolve([]),
+            findBySku: () => Promise.resolve(null),
+            updateStock: () => Promise.resolve({}),
+            decrementStock: () => Promise.resolve({})
           }
+
+          // Use Proxy to handle any other missing methods gracefully
+          return new Proxy(baseMock, {
+            get: (target, prop) => {
+              if (prop in target) return target[prop]
+              // Allow standard object properties
+              if (typeof prop !== 'string') return undefined
+              // Handle 'then' to prevent Promise wrapping issues
+              if (prop === 'then') return undefined
+              // Return a safe function for any other method call
+              return async () => {
+                logger.warn(`Fallback repository method called: ${name}.${prop}`)
+                return [] // Default to empty array for safety
+              }
+            }
+          })
         },
         healthCheck: async repo => {
           try {

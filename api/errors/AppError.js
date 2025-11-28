@@ -228,6 +228,12 @@ class ValidationError extends AppError {
     // Ensure validationErrors are included in the response
     if (this.context?.validationErrors) {
       errorResponse.validationErrors = this.context.validationErrors
+      // Alias 'errors' for compatibility if it exists inside validationErrors
+      if (this.context.validationErrors.errors) {
+        errorResponse.errors = this.context.validationErrors.errors
+      } else if (Array.isArray(this.context.validationErrors)) {
+        errorResponse.errors = this.context.validationErrors
+      }
     }
     return errorResponse
   }
@@ -438,6 +444,18 @@ class ConfigurationError extends AppError {
   }
 }
 
+class SecurityError extends AppError {
+  constructor(message, context = {}) {
+    super(message, {
+      statusCode: 403,
+      code: ERROR_CODES.FORBIDDEN,
+      context,
+      userMessage: 'Security violation detected.',
+      severity: 'high'
+    })
+  }
+}
+
 /**
  * Export all error classes
  */
@@ -471,6 +489,7 @@ export {
   StorageError,
   // Configuration
   ConfigurationError,
+  SecurityError,
   // Constants
   ERROR_CODES
 }

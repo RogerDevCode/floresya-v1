@@ -26,7 +26,7 @@ import {
 export function getAllUsers(filters = {}, includeDeactivated = false) {
   return withErrorHandling(
     async () => {
-      const userRepository = getUserRepository()
+      const userRepository = await getUserRepository()
 
       // Use repository to get users with filters
       const data = await userRepository.findAllWithFilters(filters, {
@@ -48,7 +48,7 @@ export function getAllUsers(filters = {}, includeDeactivated = false) {
  */
 export const getUserById = withErrorMapping(
   async (id, includeDeactivated = false) => {
-    const userRepository = getUserRepository()
+    const userRepository = await getUserRepository()
 
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid user ID: must be a number', { userId: id })
@@ -73,7 +73,7 @@ export const getUserById = withErrorMapping(
 export function getUserByEmail(email, includeDeactivated = false) {
   return withErrorHandling(
     async () => {
-      const userRepository = getUserRepository()
+      const userRepository = await getUserRepository()
 
       // FAIL FAST - Validate email parameter
       if (!email) {
@@ -114,7 +114,7 @@ export function getUserByEmail(email, includeDeactivated = false) {
 export function getUsersByFilter(filters = {}) {
   return withErrorHandling(
     async () => {
-      const userRepository = getUserRepository()
+      const userRepository = await getUserRepository()
 
       // Use repository's filter method instead of direct supabase query
       const data = await userRepository.findByFilter(filters)

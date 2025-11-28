@@ -24,78 +24,76 @@ let mockDb
 
 // Mock expenseService
 vi.mock('../../api/services/expenseService.js', () => ({
-  default: {
-    createExpense: vi.fn(async (data, userId) => {
-      const expenseData = { ...data, created_by: userId }
-      const result = await mockDb.createExpense(expenseData)
-      if (result.error) {
-        throw result.error
-      }
-      return result.data
-    }),
-    getExpenseById: vi.fn(async id => {
-      const result = await mockDb.findExpenseById(id)
-      if (!result.data) {
-        throw new NotFoundError('Expense not found')
-      }
-      return result.data
-    }),
-    getExpenses: vi.fn(async filters => {
-      const queryFilters = {}
-      if (filters.startDate && filters.endDate) {
-        queryFilters.gte_expense_date = filters.startDate.toISOString().split('T')[0]
-        queryFilters.lte_expense_date = filters.endDate.toISOString().split('T')[0]
-      }
-      if (filters.category) {
-        queryFilters.eq_category = filters.category
-      }
+  createExpense: vi.fn(async (data, userId) => {
+    const expenseData = { ...data, created_by: userId }
+    const result = await mockDb.createExpense(expenseData)
+    if (result.error) {
+      throw result.error
+    }
+    return result.data
+  }),
+  getExpenseById: vi.fn(async id => {
+    const result = await mockDb.findExpenseById(id)
+    if (!result.data) {
+      throw new NotFoundError('Expense not found')
+    }
+    return result.data
+  }),
+  getExpenses: vi.fn(async filters => {
+    const queryFilters = {}
+    if (filters.startDate && filters.endDate) {
+      queryFilters.gte_expense_date = filters.startDate.toISOString().split('T')[0]
+      queryFilters.lte_expense_date = filters.endDate.toISOString().split('T')[0]
+    }
+    if (filters.category) {
+      queryFilters.eq_category = filters.category
+    }
 
-      const options = {}
-      if (filters.limit) {
-        options.limit = parseInt(filters.limit)
-      }
-      if (filters.offset) {
-        options.offset = parseInt(filters.offset)
-      }
+    const options = {}
+    if (filters.limit) {
+      options.limit = parseInt(filters.limit)
+    }
+    if (filters.offset) {
+      options.offset = parseInt(filters.offset)
+    }
 
-      const result = await mockDb.findExpenses(queryFilters, options)
-      return result.data
-    }),
-    updateExpense: vi.fn(async (id, updates) => {
-      const result = await mockDb.updateExpense(id, updates)
-      if (result.error) {
-        throw result.error
-      }
-      if (!result.data) {
-        throw new NotFoundError('Expense not found')
-      }
-      return result.data
-    }),
-    deleteExpense: vi.fn(async id => {
-      const result = await mockDb.deleteExpense(id)
-      if (!result.data) {
-        throw new NotFoundError('Expense not found')
-      }
-      return result.data
-    }),
-    getExpensesByCategory: vi.fn(async (startDate, endDate) => {
-      const result = await mockDb.findExpenses({
-        gte_expense_date: startDate.toISOString().split('T')[0],
-        lte_expense_date: endDate.toISOString().split('T')[0]
-      })
-
-      const grouped = result.data.reduce((acc, exp) => {
-        if (!acc[exp.category]) {
-          acc[exp.category] = { category: exp.category, total: 0, count: 0 }
-        }
-        acc[exp.category].total += exp.amount
-        acc[exp.category].count += 1
-        return acc
-      }, {})
-
-      return Object.values(grouped)
+    const result = await mockDb.findExpenses(queryFilters, options)
+    return result.data
+  }),
+  updateExpense: vi.fn(async (id, updates) => {
+    const result = await mockDb.updateExpense(id, updates)
+    if (result.error) {
+      throw result.error
+    }
+    if (!result.data) {
+      throw new NotFoundError('Expense not found')
+    }
+    return result.data
+  }),
+  deleteExpense: vi.fn(async id => {
+    const result = await mockDb.deleteExpense(id)
+    if (!result.data) {
+      throw new NotFoundError('Expense not found')
+    }
+    return result.data
+  }),
+  getExpensesByCategory: vi.fn(async (startDate, endDate) => {
+    const result = await mockDb.findExpenses({
+      gte_expense_date: startDate.toISOString().split('T')[0],
+      lte_expense_date: endDate.toISOString().split('T')[0]
     })
-  }
+
+    const grouped = result.data.reduce((acc, exp) => {
+      if (!acc[exp.category]) {
+        acc[exp.category] = { category: exp.category, total: 0, count: 0 }
+      }
+      acc[exp.category].total += exp.amount
+      acc[exp.category].count += 1
+      return acc
+    }, {})
+
+    return Object.values(grouped)
+  })
 }))
 
 describe('ExpenseController - HTTP Layer', () => {
@@ -333,12 +331,9 @@ describe('ExpenseController - HTTP Layer', () => {
 
       await expenseController.getByCategory(req, res, next)
 
-      expect(res.status).toHaveBeenCalledWith(400)
-      expect(res.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'startDate and endDate are required'
-      })
-      expect(next).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(expect.any(Error))
+      expect(res.status).not.toHaveBeenCalled()
+      expect(res.json).not.toHaveBeenCalled()
     })
 
     it('should require endDate', async () => {
@@ -346,12 +341,9 @@ describe('ExpenseController - HTTP Layer', () => {
 
       await expenseController.getByCategory(req, res, next)
 
-      expect(res.status).toHaveBeenCalledWith(400)
-      expect(res.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'startDate and endDate are required'
-      })
-      expect(next).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(expect.any(Error))
+      expect(res.status).not.toHaveBeenCalled()
+      expect(res.json).not.toHaveBeenCalled()
     })
   })
 })

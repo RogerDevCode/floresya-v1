@@ -34,7 +34,7 @@ import {
  */
 export const getAllOrders = withErrorMapping(
   async (filters = {}, includeDeactivated = false) => {
-    const orderRepository = getOrderRepository()
+    const orderRepository = await getOrderRepository()
 
     // Use repository to get orders with filters
     const data = await orderRepository.findAllWithFilters(filters, { includeDeactivated })
@@ -62,7 +62,7 @@ export const getAllOrders = withErrorMapping(
  */
 export async function getOrderById(id, includeDeactivated = false) {
   try {
-    const orderRepository = getOrderRepository()
+    const orderRepository = await getOrderRepository()
 
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid order ID: must be a number', { orderId: id })
@@ -97,7 +97,7 @@ export async function getOrderById(id, includeDeactivated = false) {
  */
 export async function getOrdersByUser(userId, filters = {}) {
   try {
-    const orderRepository = getOrderRepository()
+    const orderRepository = await getOrderRepository()
 
     if (!userId || typeof userId !== 'number') {
       throw new BadRequestError('Invalid user ID: must be a number', { userId })

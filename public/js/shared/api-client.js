@@ -1,9 +1,9 @@
 /**
  * FloresYa API Client
  * Auto-generated from OpenAPI specification
- * Generated: 2025-11-26T14:55:53.301Z
+ * Generated: 2025-11-27T17:13:46.846Z
  * Spec Version: 1.0.0
- * Total Endpoints: 47
+ * Total Endpoints: 65
  *
  * IMPORTANT: This file is AUTO-GENERATED. Do not edit manually.
  * Regenerate using: npm run generate:client
@@ -910,7 +910,7 @@ class ApiClient {
 
   /**
    * Save BCV USD rate
-   * Admin only - Save BCV USD exchange rate
+   * Admin only - Update BCV exchange rate
    * @param {any} data - Parameter
    * @returns {Promise<any>} API response
    */
@@ -921,7 +921,7 @@ class ApiClient {
 
   /**
    * Get business rules status
-   * Admin only - Get business rules engine status and configuration
+   * Admin only - Returns business rules engine status and configuration
    * @returns {Promise<any>} API response
    */
   getAllBusinessrules() {
@@ -1039,6 +1039,327 @@ class ApiClient {
     return this.request(endpoint, { method: 'PATCH', body: data })
   }
 
+  /**
+   * Get real-time metrics
+   * Returns current system performance metrics including requests, errors, and response times
+   * @returns {Promise<any>} API response
+   */
+  getAllMetrics() {
+    const endpoint = `/health/metrics`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Get detailed metrics report
+   * Returns comprehensive metrics analysis and performance report
+   * @returns {Promise<any>} API response
+   */
+  getAllReport() {
+    const endpoint = `/health/metrics/report`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Database health check
+   * Tests database connectivity and returns performance metrics
+   * @returns {Promise<any>} API response
+   */
+  getAllDatabase() {
+    const endpoint = `/health/database`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Get profiling status
+   * Returns current profiling session status (admin only in production)
+   * @returns {Promise<any>} API response
+   */
+  getAllProfiling() {
+    const endpoint = `/health/profiling`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Start profiling session
+   * Starts a new profiling session for performance analysis (admin recommended)
+   * @param {any} data - Parameter
+   * @returns {Promise<any>} API response
+   */
+  createStart(data) {
+    const endpoint = `/health/profiling/start`
+    return this.request(endpoint, { method: 'POST', body: data })
+  }
+
+  /**
+   * Stop profiling session
+   * Stops the current profiling session and returns results
+   * @param {any} data - Parameter
+   * @returns {Promise<any>} API response
+   */
+  createStop(data) {
+    const endpoint = `/health/profiling/stop`
+    return this.request(endpoint, { method: 'POST', body: data })
+  }
+
+  /**
+   * Get auto-recovery status
+   * Returns status of auto-recovery system and recent recovery attempts
+   * @returns {Promise<any>} API response
+   */
+  getAllRecovery() {
+    const endpoint = `/health/recovery`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Get system diagnostics
+   * Returns detailed system diagnostics including process, environment, and monitoring information
+   * @returns {Promise<any>} API response
+   */
+  getAllDiagnostics() {
+    const endpoint = `/health/diagnostics`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Get all expense categories
+   * Admin only - Returns all expense categories with optional inactive filter
+   * @param {any} params - Parameter
+   * @returns {Promise<any>} API response
+   */
+  getAllCategories(params = {}) {
+    const queryString = new URLSearchParams()
+    Object.entries(params || {}).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        queryString.append(key, value.toString())
+      }
+    })
+    const query = queryString.toString()
+    const queryPart = query ? '?' + query : ''
+    const endpoint = `/api/accounting/categories${queryPart}`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Create expense category
+   * Admin only - Creates a new expense category
+   * @param {any} data - Parameter
+   * @returns {Promise<any>} API response
+   */
+  createCategories(data) {
+    const endpoint = `/api/accounting/categories`
+    return this.request(endpoint, { method: 'POST', body: data })
+  }
+
+  /**
+   * Get expense category by ID
+   * Admin only
+   * @param {any} id - Parameter
+   * @returns {Promise<any>} API response
+   */
+  getCategoriesById(id) {
+    if (!id || id <= 0) {
+      throw new Error('Invalid id')
+    }
+
+    const endpoint = `/api/accounting/categories/${id}`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Update expense category
+   * Admin only
+   * @param {any} id - Parameter
+   * @param {any} data - Parameter
+   * @returns {Promise<any>} API response
+   */
+  updateCategories(id, data) {
+    if (!id || id <= 0) {
+      throw new Error('Invalid id')
+    }
+
+    const endpoint = `/api/accounting/categories/${id}`
+    return this.request(endpoint, { method: 'PUT', body: data })
+  }
+
+  /**
+   * Delete expense category
+   * Admin only - Soft delete
+   * @param {any} id - Parameter
+   * @returns {Promise<any>} API response
+   */
+  deleteCategories(id) {
+    if (!id || id <= 0) {
+      throw new Error('Invalid id')
+    }
+
+    const endpoint = `/api/accounting/categories/${id}`
+    return this.request(endpoint, { method: 'DELETE' })
+  }
+
+  /**
+   * Get all expenses
+   * Admin only - Returns expenses with optional filters
+   * @param {any} params - Parameter
+   * @returns {Promise<any>} API response
+   */
+  getAllExpenses(params = {}) {
+    const queryString = new URLSearchParams()
+    Object.entries(params || {}).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        queryString.append(key, value.toString())
+      }
+    })
+    const query = queryString.toString()
+    const queryPart = query ? '?' + query : ''
+    const endpoint = `/api/accounting/expenses${queryPart}`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Create expense
+   * Admin only - Create expense with optional receipt upload
+   * @param {any} data - Parameter
+   * @returns {Promise<any>} API response
+   */
+  createExpenses(data) {
+    const endpoint = `/api/accounting/expenses`
+    return this.request(endpoint, { method: 'POST', body: data })
+  }
+
+  /**
+   * Get expenses grouped by category
+   * Admin only - Requires start and end date
+   * @param {any} params - Parameter
+   * @returns {Promise<any>} API response
+   */
+  getAllBycategory(params = {}) {
+    const queryString = new URLSearchParams()
+    Object.entries(params || {}).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        queryString.append(key, value.toString())
+      }
+    })
+    const query = queryString.toString()
+    const queryPart = query ? '?' + query : ''
+    const endpoint = `/api/accounting/expenses/by-category${queryPart}`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Get expense by ID
+   * Admin only
+   * @param {any} id - Parameter
+   * @returns {Promise<any>} API response
+   */
+  getExpensesById(id) {
+    if (!id || id <= 0) {
+      throw new Error('Invalid id')
+    }
+
+    const endpoint = `/api/accounting/expenses/${id}`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Update expense
+   * Admin only - Update with optional new receipt
+   * @param {any} id - Parameter
+   * @param {any} data - Parameter
+   * @returns {Promise<any>} API response
+   */
+  updateExpenses(id, data) {
+    if (!id || id <= 0) {
+      throw new Error('Invalid id')
+    }
+
+    const endpoint = `/api/accounting/expenses/${id}`
+    return this.request(endpoint, { method: 'PUT', body: data })
+  }
+
+  /**
+   * Delete expense
+   * Admin only
+   * @param {any} id - Parameter
+   * @returns {Promise<any>} API response
+   */
+  deleteExpenses(id) {
+    if (!id || id <= 0) {
+      throw new Error('Invalid id')
+    }
+
+    const endpoint = `/api/accounting/expenses/${id}`
+    return this.request(endpoint, { method: 'DELETE' })
+  }
+
+  /**
+   * Get dashboard summary
+   * Admin only - Last 7 days summary
+   * @returns {Promise<any>} API response
+   */
+  getAllDashboard() {
+    const endpoint = `/api/accounting/reports/dashboard`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Get weekly report
+   * Admin only
+   * @param {any} params - Parameter
+   * @returns {Promise<any>} API response
+   */
+  getAllWeekly(params = {}) {
+    const queryString = new URLSearchParams()
+    Object.entries(params || {}).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        queryString.append(key, value.toString())
+      }
+    })
+    const query = queryString.toString()
+    const queryPart = query ? '?' + query : ''
+    const endpoint = `/api/accounting/reports/weekly${queryPart}`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Get current week report
+   * Admin only - Helper endpoint
+   * @returns {Promise<any>} API response
+   */
+  getAllCurrentweek() {
+    const endpoint = `/api/accounting/reports/current-week`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Get monthly report
+   * Admin only
+   * @param {any} params - Parameter
+   * @returns {Promise<any>} API response
+   */
+  getAllMonthly(params = {}) {
+    const queryString = new URLSearchParams()
+    Object.entries(params || {}).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        queryString.append(key, value.toString())
+      }
+    })
+    const query = queryString.toString()
+    const queryPart = query ? '?' + query : ''
+    const endpoint = `/api/accounting/reports/monthly${queryPart}`
+    return this.request(endpoint)
+  }
+
+  /**
+   * Get current month report
+   * Admin only - Helper endpoint
+   * @returns {Promise<any>} API response
+   */
+  getAllCurrentmonth() {
+    const endpoint = `/api/accounting/reports/current-month`
+    return this.request(endpoint)
+  }
+
   // ==================== UTILITIES ====================
 
   /**
@@ -1147,5 +1468,29 @@ export const api = {
   updatePaymentMethodDisplayOrder: (id, data) =>
     apiClient.updatePaymentMethodDisplayOrder(id, data),
   reactivatePaymentMethods: (id, data) => apiClient.reactivatePaymentMethods(id, data),
+  getAllMetrics: () => apiClient.getAllMetrics(),
+  getAllReport: () => apiClient.getAllReport(),
+  getAllDatabase: () => apiClient.getAllDatabase(),
+  getAllProfiling: () => apiClient.getAllProfiling(),
+  createStart: data => apiClient.createStart(data),
+  createStop: data => apiClient.createStop(data),
+  getAllRecovery: () => apiClient.getAllRecovery(),
+  getAllDiagnostics: () => apiClient.getAllDiagnostics(),
+  getAllCategories: params => apiClient.getAllCategories(params),
+  createCategories: data => apiClient.createCategories(data),
+  getCategoriesById: id => apiClient.getCategoriesById(id),
+  updateCategories: (id, data) => apiClient.updateCategories(id, data),
+  deleteCategories: id => apiClient.deleteCategories(id),
+  getAllExpenses: params => apiClient.getAllExpenses(params),
+  createExpenses: data => apiClient.createExpenses(data),
+  getAllBycategory: params => apiClient.getAllBycategory(params),
+  getExpensesById: id => apiClient.getExpensesById(id),
+  updateExpenses: (id, data) => apiClient.updateExpenses(id, data),
+  deleteExpenses: id => apiClient.deleteExpenses(id),
+  getAllDashboard: () => apiClient.getAllDashboard(),
+  getAllWeekly: params => apiClient.getAllWeekly(params),
+  getAllCurrentweek: () => apiClient.getAllCurrentweek(),
+  getAllMonthly: params => apiClient.getAllMonthly(params),
+  getAllCurrentmonth: () => apiClient.getAllCurrentmonth(),
   handleError: error => apiClient.handleError(error)
 }

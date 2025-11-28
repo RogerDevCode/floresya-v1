@@ -1,10 +1,7 @@
 /**
- * Procesado por B
- */
-
-/**
- * Security Middleware
- * CORS, Helmet, and Input Sanitization
+ * Enhanced Security Middleware
+ * Integrates comprehensive security services for enterprise-grade protection
+ * CORS, Helmet, Input Sanitization, Malware Scanning, and Audit Logging
  * Uses centralized configuration
  */
 
@@ -13,6 +10,15 @@ import helmet from 'helmet'
 import { BadRequestError } from '../../errors/AppError.js'
 import config from '../../config/configLoader.js'
 import { log } from '../../utils/logger.js'
+// Unused service imports - keeping for future use
+// import { SecurityError } from '../../errors/AppError.js'
+// import { log as logger } from '../../utils/logger.js'
+// import { InputSanitizationService } from '../../services/security/InputSanitizationService.js'
+// import { MalwareScanningService } from '../../services/security/MalwareScanningService.js'
+// import { DataProtectionService } from '../../services/security/DataProtectionService.js'
+// import { AccountSecurityService } from '../../services/security/AccountSecurityService.js'
+// import { AuditLoggingService } from '../../services/security/AuditLoggingService.js'
+// import { SECURITY_EVENT_TYPES, AUDIT_CATEGORIES, SEVERITY_LEVELS } from '../../services/security/AuditLoggingService.js'
 
 /**
  * CORS Configuration

@@ -27,7 +27,7 @@ export async function getOrderStatusHistory(orderId) {
       throw new BadRequestError('Invalid order ID: must be a number', { orderId })
     }
 
-    const orderRepository = getOrderRepository()
+    const orderRepository = await getOrderRepository()
     const data = await orderRepository.findStatusHistoryByOrderId(orderId)
 
     if (!data || data.length === 0) {

@@ -21,7 +21,7 @@ import {
 export function createUser(userData) {
   return withErrorHandling(
     async () => {
-      const userRepository = getUserRepository()
+      const userRepository = await getUserRepository()
 
       // Validate required fields for client registration
       if (!userData.email || typeof userData.email !== 'string') {

@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import reportService from '../../api/services/reportService.js'
+import * as reportService from '../../api/services/reportService.js'
 import { SupabaseAccountingMock } from '../mocks/supabase-accounting.js'
 
 // Mock logger
@@ -19,38 +19,79 @@ vi.mock('../../api/utils/logger.js', () => ({
 }))
 
 // Mock supabase client
-vi.mock('../../api/services/supabaseClient.js', () => ({
-  supabase: {
-    from: vi.fn(() => ({
-      select: vi.fn(() => ({
-        gte: vi.fn(() => ({
-          lte: vi.fn(() => ({
-            in: vi.fn(() => ({
-              data: [
-                {
-                  created_at: '2025-11-15T10:00:00Z',
-                  total: '150.50',
-                  status: 'delivered'
-                },
-                {
-                  created_at: '2025-11-16T11:00:00Z',
-                  total: '200.00',
-                  status: 'confirmed'
-                },
-                {
-                  created_at: '2025-11-16T15:00:00Z',
-                  total: '75.25',
-                  status: 'delivered'
-                }
-              ],
-              error: null
+// Mock supabase client
+vi.mock('../../api/services/supabaseClient.js', () => {
+  const mockOrders = [
+    {
+      id: 1,
+      created_at: '2025-11-15T10:00:00Z',
+      total: '150.50',
+      status: 'delivered'
+    },
+    {
+      id: 2,
+      created_at: '2025-11-16T11:00:00Z',
+      total: '200.00',
+      status: 'confirmed'
+    },
+    {
+      id: 3,
+      created_at: '2025-11-16T15:00:00Z',
+      total: '75.25',
+      status: 'delivered'
+    }
+  ]
+
+  const mockOrderItems = [
+    {
+      product_name: 'Rose Bouquet',
+      quantity: 2,
+      subtotal: 100.0
+    },
+    {
+      product_name: 'Tulips',
+      quantity: 1,
+      subtotal: 50.5
+    }
+  ]
+
+  return {
+    supabase: {
+      from: vi.fn(table => {
+        if (table === 'orders') {
+          return {
+            select: vi.fn(() => ({
+              gte: vi.fn(() => ({
+                lte: vi.fn(() => ({
+                  in: vi.fn(() => ({
+                    data: mockOrders,
+                    error: null
+                  }))
+                }))
+              }))
             }))
+          }
+        }
+        if (table === 'order_items') {
+          return {
+            select: vi.fn(() => ({
+              in: vi.fn(() => ({
+                data: mockOrderItems,
+                error: null
+              }))
+            }))
+          }
+        }
+        return {
+          select: vi.fn(() => ({
+            data: [],
+            error: null
           }))
-        }))
-      }))
-    }))
+        }
+      })
+    }
   }
-}))
+})
 
 // Create a mock instance for the repository mock to use
 let mockDb

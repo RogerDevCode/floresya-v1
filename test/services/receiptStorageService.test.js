@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import receiptStorageService from '../../api/services/receiptStorageService.js'
+import * as receiptStorageService from '../../api/services/receiptStorageService.js'
 import { supabase } from '../../api/services/supabaseClient.js'
 
 // Mock Supabase

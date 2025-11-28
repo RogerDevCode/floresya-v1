@@ -16,6 +16,29 @@ vi.mock('../../api/services/supabaseClient.js', () => ({
   }
 }))
 
+// Mock SchemaValidationService
+vi.mock('../../api/architecture/schema-validation-service.js', () => ({
+  createSchemaValidationService: vi.fn(() => ({
+    getSoftDeleteValidation: vi.fn().mockResolvedValue({
+      tableExists: true,
+      canPerformSoftDelete: true,
+      hasFullAuditSupport: true,
+      hasReactivationSupport: true,
+      missingColumns: [],
+      existingColumns: [
+        'active',
+        'deleted_at',
+        'deleted_by',
+        'deletion_reason',
+        'deletion_ip',
+        'reactivated_at',
+        'reactivated_by'
+      ]
+    })
+  })),
+  SchemaValidationError: class SchemaValidationError extends Error {}
+}))
+
 describe('User Repository - User-specific Operations', () => {
   let mockSupabase
   let repository

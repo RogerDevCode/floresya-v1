@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { setupPages } from '../utils/page-setup.js'
+// import { setupPages } from '../utils/page-setup.js'
 
 // Responsive Viewports para testing
 const VIEWPORTS = {

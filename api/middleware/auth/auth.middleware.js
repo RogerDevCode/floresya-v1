@@ -15,11 +15,17 @@
  * - Security event monitoring and alerting
  */
 
-import { getUser } from '../../services/authService.index.js'
+import { getUser } from '../../services/authService.js'
 import { UnauthorizedError, ForbiddenError, TooManyRequestsError } from '../../errors/AppError.js'
 import { log as logger } from '../../utils/logger.js'
 import { IS_DEV, DEV_MOCK_USER, getUserRole } from './auth.helpers.js'
 import { ROLE_PERMISSIONS } from '../../config/constants.js'
+import accountSecurityService from '../../services/security/AccountSecurityService.js'
+import dataProtectionService from '../../services/security/DataProtectionService.js'
+import auditLoggingService, {
+  SECURITY_EVENT_TYPES
+} from '../../services/security/AuditLoggingService.js'
+import { asyncHandler } from '../error/errorHandler.js'
 
 // Security threat types
 const THREAT_TYPES = {
@@ -413,209 +419,243 @@ const authRateLimiter = new AuthRateLimiter()
  * - Test Mode: Use authService mocks directly
  * - Production: Enhanced JWT verification with threat protection
  */
-export async function authenticate(req, res, next) {
+export const authenticate = asyncHandler(async (req, res, next) => {
   const startTime = Date.now()
   let user = null
 
-  try {
-    // DEVELOPMENT MODE: Use authService (allows proper test mocking)
-    if (IS_DEV && process.env.NODE_ENV !== 'test') {
-      logger.debug('🔍 AUTH MIDDLEWARE - Development mode, using authService')
-      req.user = DEV_MOCK_USER
-      req.token = 'dev-mock-token'
-      logger.info('🔓 DEV MODE: Auto-authenticated', {
+  // DEVELOPMENT MODE: Use authService (allows proper test mocking)
+  if (IS_DEV && process.env.NODE_ENV !== 'test') {
+    logger.debug('🔍 AUTH MIDDLEWARE - Development mode, using authService')
+    req.user = DEV_MOCK_USER
+    req.token = 'dev-mock-token'
+
+    // Log authentication event for audit
+    auditLoggingService.logAuthEvent(
+      SECURITY_EVENT_TYPES.LOGIN_SUCCESS,
+      {
         email: DEV_MOCK_USER.email,
-        role: DEV_MOCK_USER.user_metadata.role
-      })
-      return next()
-    }
-
-    // Rate limiting check for token validation
-    const rateLimitKey = `token_validation:${req.ip}`
-    if (!authRateLimiter.checkLimit(rateLimitKey, RATE_LIMITS.TOKEN_VALIDATION)) {
-      securityMonitor.recordEvent('RATE_LIMIT_EXCEEDED', {
         ip: req.ip,
-        type: 'TOKEN_VALIDATION',
-        path: req.path
-      })
-      throw new TooManyRequestsError('Too many token validation attempts. Please try again later.')
-    }
+        userAgent: req.get('User-Agent'),
+        mode: 'development'
+      },
+      { userId: DEV_MOCK_USER.id }
+    )
 
-    // Check if IP is flagged as suspicious
-    if (securityMonitor.isSuspiciousIP(req.ip)) {
-      securityMonitor.recordEvent('SUSPICIOUS_IP_ACCESS', {
-        ip: req.ip,
-        path: req.path,
-        userAgent: req.get('user-agent')
-      })
-      throw new UnauthorizedError('Access denied: suspicious activity detected')
-    }
+    logger.info('🔓 DEV MODE: Auto-authenticated', {
+      email: DEV_MOCK_USER.email,
+      role: DEV_MOCK_USER.user_metadata.role
+    })
+    return next()
+  }
 
-    // PRODUCTION MODE: Enhanced JWT verification
-    const authHeader = req.headers.authorization
+  // Enhanced security checks before authentication
+  const rateLimitKey = `token_validation:${req.ip}`
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      securityMonitor.recordEvent('AUTH_FAILED', {
-        ip: req.ip,
-        reason: 'No token provided',
-        path: req.path,
-        method: req.method
-      })
-
-      logger.warn('Authentication failed: No token provided', {
-        path: req.path,
-        method: req.method,
-        ip: req.ip
-      })
-      throw new UnauthorizedError('Authentication required: No token provided', {
-        path: req.path,
-        hasAuthHeader: !!authHeader
-      })
-    }
-
-    const token = authHeader.replace('Bearer ', '')
-
-    // Enhanced JWT validation
-    try {
-      AdvancedJWTValidator.validateJWT(token, req)
-    } catch (jwtError) {
-      securityMonitor.recordEvent('INVALID_TOKEN', {
-        ip: req.ip,
-        reason: jwtError.message,
-        path: req.path,
-        tokenLength: token.length
-      })
-      throw jwtError
-    }
-
-    // Verify token with Supabase (enhanced error handling)
-    try {
-      user = await getUser(token)
-    } catch (supabaseError) {
-      // Record authentication failure
-      securityMonitor.recordEvent('AUTH_FAILED', {
-        ip: req.ip,
-        reason: supabaseError.message,
-        path: req.path,
-        method: req.method
-      })
-
-      // Enhanced error classification
-      if (supabaseError.message?.includes('Invalid JWT')) {
-        securityMonitor.recordEvent('INVALID_TOKEN', {
-          ip: req.ip,
-          reason: 'Supabase JWT validation failed',
-          path: req.path
-        })
-      } else if (supabaseError.message?.includes('expired')) {
-        securityMonitor.recordEvent('TOKEN_EXPIRED', {
-          ip: req.ip,
-          path: req.path
-        })
-      }
-
-      throw supabaseError
-    }
-
-    // Additional security validations
-    if (!user || !user.id) {
-      securityMonitor.recordEvent('INVALID_TOKEN', {
-        ip: req.ip,
-        reason: 'No user data returned',
-        path: req.path
-      })
-      throw new UnauthorizedError('Invalid authentication token: no user data')
-    }
-
-    // Enhanced user validation
-    const userRole = getUserRole(user)
-    if (!userRole) {
-      securityMonitor.recordEvent('INVALID_USER', {
-        ip: req.ip,
-        userId: user.id,
-        reason: 'No valid role assigned',
-        path: req.path
-      })
-      throw new UnauthorizedError('Invalid user profile: no role assigned')
-    }
-
-    // Session security checks
-    const sessionKey = `session:${user.id}`
-    const existingSessions = securityMonitor.userSessions.get(sessionKey) || []
-
-    // Check for concurrent session limit
-    if (existingSessions.length >= SESSION_SECURITY.MAX_CONCURRENT_SESSIONS) {
-      logger.warn('Session limit exceeded', {
-        userId: user.id,
-        activeSessions: existingSessions.length,
-        limit: SESSION_SECURITY.MAX_CONCURRENT_SESSIONS,
-        ip: req.ip
-      })
-    }
-
-    // Record successful authentication
-    securityMonitor.recordEvent('AUTH_SUCCESS', {
+  // Check IP lockout status
+  const ipLockoutStatus = accountSecurityService.isIPLockedOut(req.ip)
+  if (ipLockoutStatus.locked) {
+    auditLoggingService.logSecurityIncident(SECURITY_EVENT_TYPES.LOGIN_FAILED, {
       ip: req.ip,
-      userId: user.id,
-      role: userRole,
+      reason: 'IP_LOCKED_OUT',
+      lockoutUntil: ipLockoutStatus.lockoutUntil,
+      remainingTime: ipLockoutStatus.remainingTime
+    })
+
+    throw new UnauthorizedError('Access denied: IP address is locked out', {
+      ip: req.ip,
+      lockoutUntil: ipLockoutStatus.lockoutUntil,
+      remainingTime: ipLockoutStatus.remainingTime
+    })
+  }
+
+  // Rate limiting check for token validation
+  if (!authRateLimiter.checkLimit(rateLimitKey, RATE_LIMITS.TOKEN_VALIDATION)) {
+    auditLoggingService.logSecurityIncident(SECURITY_EVENT_TYPES.RATE_LIMIT_EXCEEDED, {
+      ip: req.ip,
+      type: 'TOKEN_VALIDATION',
+      path: req.path
+    })
+
+    throw new TooManyRequestsError('Too many token validation attempts. Please try again later.')
+  }
+
+  // Check if IP is flagged as suspicious
+  if (securityMonitor.isSuspiciousIP(req.ip)) {
+    securityMonitor.recordEvent('SUSPICIOUS_IP_ACCESS', {
+      ip: req.ip,
       path: req.path,
-      method: req.method,
       userAgent: req.get('user-agent')
     })
+    throw new UnauthorizedError('Access denied: suspicious activity detected')
+  }
 
-    // Update session tracking
-    const sessionInfo = {
+  // PRODUCTION MODE: Enhanced JWT verification
+  const authHeader = req.headers.authorization
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    // Log authentication failure
+    auditLoggingService.logAuthEvent(SECURITY_EVENT_TYPES.LOGIN_FAILED, {
       ip: req.ip,
-      userAgent: req.get('user-agent'),
-      loginTime: Date.now(),
-      lastActivity: Date.now()
-    }
-
-    existingSessions.push(sessionInfo)
-    securityMonitor.userSessions.set(sessionKey, existingSessions)
-
-    // Attach user and token to request
-    req.user = user
-    req.token = token
-    req.sessionInfo = sessionInfo
-
-    // Enhanced logging with security context
-    logger.info('User authenticated successfully', {
-      userId: user.id,
-      email: user.email,
-      role: userRole,
-      path: req.path,
-      ip: req.ip,
-      userAgent: req.get('user-agent'),
-      sessionAge: Date.now() - sessionInfo.loginTime,
-      activeSessions: existingSessions.length,
-      processingTime: Date.now() - startTime
-    })
-
-    next()
-  } catch (error) {
-    const processingTime = Date.now() - startTime
-
-    // Enhanced error logging with security context
-    logger.warn('Authentication failed', {
-      error: error.message,
-      errorType: error.constructor.name,
+      reason: 'No token provided',
       path: req.path,
       method: req.method,
-      ip: req.ip,
-      userAgent: req.get('user-agent'),
-      processingTime,
-      isSecurityError: error.name === 'UnauthorizedError' || error.name === 'TooManyRequestsError'
+      userAgent: req.get('User-Agent')
     })
 
-    // Don't leak user information in error messages
-    if (error.name === 'UnauthorizedError' && user) {
-      error.message = 'Authentication failed'
+    logger.warn('Authentication failed: No token provided', {
+      path: req.path,
+      method: req.method,
+      ip: req.ip
+    })
+    throw new UnauthorizedError('Authentication required: No token provided', {
+      path: req.path,
+      hasAuthHeader: !!authHeader
+    })
+  }
+
+  const token = authHeader.replace('Bearer ', '')
+
+  // Enhanced JWT validation
+  try {
+    AdvancedJWTValidator.validateJWT(token, req)
+  } catch (jwtError) {
+    securityMonitor.recordEvent('INVALID_TOKEN', {
+      ip: req.ip,
+      reason: jwtError.message,
+      path: req.path,
+      tokenLength: token.length
+    })
+    throw jwtError
+  }
+
+  // Verify token with Supabase (enhanced error handling)
+  try {
+    user = await getUser(token)
+  } catch (supabaseError) {
+    // Record failed authentication attempt
+    accountSecurityService.recordFailedLogin(
+      user?.email || 'unknown',
+      req.ip,
+      req.get('User-Agent'),
+      supabaseError.message
+    )
+
+    // Enhanced error classification and audit logging
+    if (supabaseError.message?.includes('Invalid JWT')) {
+      auditLoggingService.logSecurityIncident(SECURITY_EVENT_TYPES.LOGIN_FAILED, {
+        ip: req.ip,
+        reason: 'Invalid JWT token',
+        path: req.path,
+        method: req.method,
+        userAgent: req.get('User-Agent'),
+        tokenLength: token.length
+      })
+    } else if (supabaseError.message?.includes('expired')) {
+      auditLoggingService.logAuthEvent(SECURITY_EVENT_TYPES.LOGIN_FAILED, {
+        ip: req.ip,
+        reason: 'Token expired',
+        path: req.path,
+        method: req.method,
+        tokenAge: 'expired'
+      })
     }
 
-    next(error)
+    throw supabaseError
   }
-}
+
+  // Additional security validations
+  if (!user || !user.id) {
+    securityMonitor.recordEvent('INVALID_TOKEN', {
+      ip: req.ip,
+      reason: 'No user data returned',
+      path: req.path
+    })
+    throw new UnauthorizedError('Invalid authentication token: no user data')
+  }
+
+  // Enhanced user validation
+  const userRole = getUserRole(user)
+  if (!userRole) {
+    securityMonitor.recordEvent('INVALID_USER', {
+      ip: req.ip,
+      userId: user.id,
+      reason: 'No valid role assigned',
+      path: req.path
+    })
+    throw new UnauthorizedError('Invalid user profile: no role assigned')
+  }
+
+  // Session security checks
+  const sessionKey = `session:${user.id}`
+  const existingSessions = securityMonitor.userSessions.get(sessionKey) || []
+
+  // Check for concurrent session limit
+  if (existingSessions.length >= SESSION_SECURITY.MAX_CONCURRENT_SESSIONS) {
+    logger.warn('Session limit exceeded', {
+      userId: user.id,
+      activeSessions: existingSessions.length,
+      limit: SESSION_SECURITY.MAX_CONCURRENT_SESSIONS,
+      ip: req.ip
+    })
+  }
+
+  // Record successful authentication with enhanced security tracking
+  accountSecurityService.recordSuccessfulLogin(user.email, req.ip, req.get('User-Agent'), user)
+
+  // Log authentication success for audit
+  auditLoggingService.logAuthEvent(
+    SECURITY_EVENT_TYPES.LOGIN_SUCCESS,
+    {
+      email: user.email,
+      ip: req.ip,
+      path: req.path,
+      method: req.method,
+      userAgent: req.get('User-Agent'),
+      userId: user.id,
+      role: userRole
+    },
+    { userId: user.id }
+  )
+
+  // Update session tracking
+  const sessionInfo = {
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    loginTime: Date.now(),
+    lastActivity: Date.now()
+  }
+
+  existingSessions.push(sessionInfo)
+  securityMonitor.userSessions.set(sessionKey, existingSessions)
+
+  // Attach user and token to request
+  req.user = user
+  req.token = token
+  req.sessionInfo = sessionInfo
+
+  // Sanitize user data for logging (used for security audit)
+  dataProtectionService.sanitizeForLogging({
+    userId: user.id,
+    email: user.email,
+    role: userRole,
+    metadata: user.user_metadata
+  })
+
+  // Enhanced logging with security context
+  logger.info('User authenticated successfully', {
+    userId: user.id,
+    email: user.email,
+    role: userRole,
+    path: req.path,
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    sessionAge: Date.now() - sessionInfo.loginTime,
+    activeSessions: existingSessions.length,
+    processingTime: Date.now() - startTime
+  })
+
+  next()
+})
 
 /**
  * Authorize by role (works in both modes)
@@ -741,7 +781,7 @@ export function requireEmailVerified(req, res, next) {
  * Optional authentication (works in both modes)
  * Attaches user if token is present, but doesn't fail if missing
  */
-export async function optionalAuth(req, res, next) {
+export const optionalAuth = asyncHandler(async (req, res, next) => {
   // DEVELOPMENT MODE: Auto-inject mock user
   if (IS_DEV) {
     req.user = DEV_MOCK_USER
@@ -767,7 +807,7 @@ export async function optionalAuth(req, res, next) {
     logger.debug('Optional auth failed')
   }
   next()
-}
+})
 
 /**
  * Check if authenticated user is owner of resource

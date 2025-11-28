@@ -19,6 +19,22 @@ export class UserRepository extends BaseRepository {
   }
 
   /**
+   * ✅ STATIC ASYNC FACTORY: Crea UserRepository con inicialización completa
+   * @returns {Promise<UserRepository>} Instancia completamente inicializada
+   */
+  static async create() {
+    try {
+      // 🚀 OBTENER CLIENTE: Usar factory de BaseRepository para asegurar inicialización
+      return await BaseRepository.create(
+        () => import('../services/supabaseClient.js').then(m => m.supabase),
+        DB_SCHEMA.users.table
+      )
+    } catch (error) {
+      throw new Error(`UserRepository.create failed: ${error.message}`)
+    }
+  }
+
+  /**
    * Obtener usuario por email
    * @param {string} email - Email del usuario
    * @param {boolean} includeInactive - Incluir usuarios inactivos

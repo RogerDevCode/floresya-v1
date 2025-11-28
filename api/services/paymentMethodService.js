@@ -20,6 +20,9 @@ import {
   InternalServerError
 } from '../errors/AppError.js'
 import { validatePaymentMethod } from '../utils/validation.js'
+import { withErrorMapping } from '../middleware/error/index.js'
+
+const TABLE = 'payment_methods'
 
 /**
  * Get PaymentMethodRepository instance from DI Container
@@ -38,24 +41,28 @@ function getPaymentMethodRepository() {
  * @throws {NotFoundError} When no payment methods are found
  * @throws {DatabaseError} When database query fails
  */
-export async function getAllPaymentMethods(filters = {}, includeDeactivated = false) {
-  const paymentMethodRepository = getPaymentMethodRepository()
+export const getAllPaymentMethods = withErrorMapping(
+  async (filters = {}, includeDeactivated = false) => {
+    const paymentMethodRepository = await getPaymentMethodRepository()
 
-  const data = await paymentMethodRepository.findAllWithFilters(
-    { ...filters, includeDeactivated },
-    {
-      orderBy: 'display_order',
-      ascending: true,
-      limit: filters.limit
+    const data = await paymentMethodRepository.findAllWithFilters(
+      { ...filters, includeDeactivated },
+      {
+        orderBy: 'display_order',
+        ascending: true,
+        limit: filters.limit
+      }
+    )
+
+    if (!data || data.length === 0) {
+      throw new NotFoundError('Payment methods')
     }
-  )
 
-  if (!data || data.length === 0) {
-    throw new NotFoundError('Payment methods')
-  }
-
-  return data
-}
+    return data
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get payment method by ID
@@ -66,22 +73,26 @@ export async function getAllPaymentMethods(filters = {}, includeDeactivated = fa
  * @throws {NotFoundError} When payment method is not found
  * @throws {DatabaseError} When database query fails
  */
-export async function getPaymentMethodById(id, includeDeactivated = false) {
-  if (!id || typeof id !== 'number' || id <= 0) {
-    throw new BadRequestError('Invalid payment method ID: must be a positive number', {
-      paymentMethodId: id
-    })
-  }
+export const getPaymentMethodById = withErrorMapping(
+  async (id, includeDeactivated = false) => {
+    if (!id || typeof id !== 'number' || id <= 0) {
+      throw new BadRequestError('Invalid payment method ID: must be a positive number', {
+        paymentMethodId: id
+      })
+    }
 
-  const paymentMethodRepository = getPaymentMethodRepository()
-  const data = await paymentMethodRepository.findById(id, includeDeactivated)
+    const paymentMethodRepository = await getPaymentMethodRepository()
+    const data = await paymentMethodRepository.findById(id, includeDeactivated)
 
-  if (!data) {
-    throw new NotFoundError('Payment method', id, { includeDeactivated })
-  }
+    if (!data) {
+      throw new NotFoundError('Payment method', id, { includeDeactivated })
+    }
 
-  return data
-}
+    return data
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Create new payment method
@@ -89,15 +100,15 @@ export async function getPaymentMethodById(id, includeDeactivated = false) {
  * @param {string} paymentMethodData.name - Payment method name (required)
  * @param {string} paymentMethodData.type - Payment method type (required, must be valid enum value)
  * @param {string} [paymentMethodData.description] - Payment method description
- * @param {string} [paymentMethodData.account_info] - Account information for the payment method
+ * @param {string} [paymentMethodData.account_info] - Account information for payment method
  * @param {number} [paymentMethodData.display_order=0] - Display order for sorting
  * @returns {Object} - Created payment method
  * @throws {ValidationError} When payment method data is invalid
  * @throws {DatabaseConstraintError} When payment method violates database constraints (e.g., duplicate name)
  * @throws {DatabaseError} When database insert fails
  */
-export async function createPaymentMethod(paymentMethodData) {
-  try {
+export const createPaymentMethod = withErrorMapping(
+  async paymentMethodData => {
     validatePaymentMethod(paymentMethodData, false)
 
     const newPaymentMethod = {
@@ -109,7 +120,7 @@ export async function createPaymentMethod(paymentMethodData) {
       display_order: paymentMethodData.display_order || 0
     }
 
-    const paymentMethodRepository = getPaymentMethodRepository()
+    const paymentMethodRepository = await getPaymentMethodRepository()
     const data = await paymentMethodRepository.create(newPaymentMethod)
 
     if (!data) {
@@ -124,14 +135,10 @@ export async function createPaymentMethod(paymentMethodData) {
     }
 
     return data
-  } catch (error) {
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    console.error('createPaymentMethod failed:', error)
-    throw new DatabaseError('INSERT', 'payment_methods', error, { paymentMethodData })
-  }
-}
+  },
+  'INSERT',
+  TABLE
+)
 
 /**
  * Update payment method (limited fields) - only allows updating specific payment method fields
@@ -140,8 +147,8 @@ export async function createPaymentMethod(paymentMethodData) {
  * @param {string} [updates.name] - Payment method name
  * @param {string} [updates.type] - Payment method type
  * @param {string} [updates.description] - Payment method description
- * @param {string} [updates.account_info] - Account information for the payment method
- * @param {boolean} [updates.active] - Whether the payment method is active
+ * @param {string} [updates.account_info] - Account information for payment method
+ * @param {boolean} [updates.active] - Whether payment method is active
  * @param {number} [updates.display_order] - Display order for sorting
  * @returns {Object} - Updated payment method
  * @throws {BadRequestError} When ID is invalid or no valid updates are provided
@@ -150,8 +157,8 @@ export async function createPaymentMethod(paymentMethodData) {
  * @throws {DatabaseConstraintError} When payment method violates database constraints (e.g., duplicate name)
  * @throws {DatabaseError} When database update fails
  */
-export async function updatePaymentMethod(id, updates) {
-  try {
+export const updatePaymentMethod = withErrorMapping(
+  async (id, updates) => {
     if (!id || typeof id !== 'number' || id <= 0) {
       throw new BadRequestError('Invalid payment method ID: must be a positive number', {
         paymentMethodId: id
@@ -177,7 +184,7 @@ export async function updatePaymentMethod(id, updates) {
       throw new BadRequestError('No valid fields to update', { paymentMethodId: id })
     }
 
-    const paymentMethodRepository = getPaymentMethodRepository()
+    const paymentMethodRepository = await getPaymentMethodRepository()
     const data = await paymentMethodRepository.update(id, sanitized)
 
     if (!data) {
@@ -185,14 +192,10 @@ export async function updatePaymentMethod(id, updates) {
     }
 
     return data
-  } catch (error) {
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    console.error(`updatePaymentMethod(${id}) failed:`, error)
-    throw new DatabaseError('UPDATE', 'payment_methods', error, { paymentMethodId: id })
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Soft-delete payment method (reverse soft-delete)
@@ -202,15 +205,15 @@ export async function updatePaymentMethod(id, updates) {
  * @throws {NotFoundError} When payment method is not found or already inactive
  * @throws {DatabaseError} When database update fails
  */
-export async function deletePaymentMethod(id) {
-  try {
+export const deletePaymentMethod = withErrorMapping(
+  async id => {
     if (!id || typeof id !== 'number' || id <= 0) {
       throw new BadRequestError('Invalid payment method ID: must be a positive number', {
         paymentMethodId: id
       })
     }
 
-    const paymentMethodRepository = getPaymentMethodRepository()
+    const paymentMethodRepository = await getPaymentMethodRepository()
     const data = await paymentMethodRepository.update(id, { active: false })
 
     if (!data) {
@@ -218,14 +221,10 @@ export async function deletePaymentMethod(id) {
     }
 
     return data
-  } catch (error) {
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    console.error(`deletePaymentMethod(${id}) failed:`, error)
-    throw new DatabaseError('UPDATE', 'payment_methods', error, { paymentMethodId: id })
-  }
-}
+  },
+  'DELETE',
+  TABLE
+)
 
 /**
  * Reactivate payment method (reverse soft-delete)
@@ -235,15 +234,15 @@ export async function deletePaymentMethod(id) {
  * @throws {NotFoundError} When payment method is not found or already active
  * @throws {DatabaseError} When database update fails
  */
-export async function reactivatePaymentMethod(id) {
-  try {
+export const reactivatePaymentMethod = withErrorMapping(
+  async id => {
     if (!id || typeof id !== 'number' || id <= 0) {
       throw new BadRequestError('Invalid payment method ID: must be a positive number', {
         paymentMethodId: id
       })
     }
 
-    const paymentMethodRepository = getPaymentMethodRepository()
+    const paymentMethodRepository = await getPaymentMethodRepository()
     const data = await paymentMethodRepository.update(id, { active: true })
 
     if (!data) {
@@ -251,14 +250,10 @@ export async function reactivatePaymentMethod(id) {
     }
 
     return data
-  } catch (error) {
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    console.error(`reactivatePaymentMethod(${id}) failed:`, error)
-    throw new DatabaseError('UPDATE', 'payment_methods', error, { paymentMethodId: id })
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Update display order for payment method sorting
@@ -269,8 +264,8 @@ export async function reactivatePaymentMethod(id) {
  * @throws {NotFoundError} When payment method is not found or inactive
  * @throws {DatabaseError} When database update fails
  */
-export async function updateDisplayOrder(id, newOrder) {
-  try {
+export const updateDisplayOrder = withErrorMapping(
+  async (id, newOrder) => {
     if (!id || typeof id !== 'number' || id <= 0) {
       throw new BadRequestError('Invalid payment method ID: must be a positive number', {
         paymentMethodId: id
@@ -283,7 +278,7 @@ export async function updateDisplayOrder(id, newOrder) {
       })
     }
 
-    const paymentMethodRepository = getPaymentMethodRepository()
+    const paymentMethodRepository = await getPaymentMethodRepository()
     const data = await paymentMethodRepository.updateDisplayOrder(id, newOrder)
 
     if (!data) {
@@ -291,11 +286,7 @@ export async function updateDisplayOrder(id, newOrder) {
     }
 
     return data
-  } catch (error) {
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    console.error(`updateDisplayOrder(${id}) failed:`, error)
-    throw new DatabaseError('UPDATE', 'payment_methods', error, { paymentMethodId: id })
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)

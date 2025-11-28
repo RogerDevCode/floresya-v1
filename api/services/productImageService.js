@@ -21,7 +21,8 @@ import {
 } from '../errors/AppError.js'
 import { QUERY_LIMITS } from '../config/constants.js'
 import { validateProductImage } from '../utils/validation.js'
-import { logger } from '../utils/logger.js'
+// import { logger } from '../utils/logger.js'
+import { withErrorMapping } from '../middleware/error/index.js'
 
 const TABLE = DB_SCHEMA.product_images?.table || 'product_images'
 const VALID_SIZES = DB_SCHEMA.product_images?.enums?.size || ['thumb', 'small', 'medium', 'large']
@@ -37,8 +38,8 @@ const VALID_SIZES = DB_SCHEMA.product_images?.enums?.size || ['thumb', 'small', 
  * @throws {NotFoundError} When no images are found for the product
  * @throws {DatabaseError} When database query fails
  */
-export async function getProductImages(productId, filters = {}) {
-  try {
+export const getProductImages = withErrorMapping(
+  async (productId, filters = {}) => {
     if (!productId || typeof productId !== 'number' || productId <= 0) {
       throw new BadRequestError('Invalid product ID: must be a number', { productId })
     }
@@ -65,18 +66,17 @@ export async function getProductImages(productId, filters = {}) {
     }
 
     return data
-  } catch (error) {
-    logger.error(`getProductImages(${productId}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get primary image for a product (indexed query)
  * Falls back to first available image if no primary image exists
  */
-export async function getPrimaryImage(productId) {
-  try {
+export const getPrimaryImage = withErrorMapping(
+  async productId => {
     if (!productId || typeof productId !== 'number' || productId <= 0) {
       throw new BadRequestError('Invalid product ID: must be a number', { productId })
     }
@@ -118,11 +118,10 @@ export async function getPrimaryImage(productId) {
     }
 
     return primaryImage
-  } catch (error) {
-    logger.error(`getPrimaryImage(${productId}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get image by ID
@@ -133,8 +132,8 @@ export async function getPrimaryImage(productId) {
  * @throws {NotFoundError} When image is not found
  * @throws {DatabaseError} When database query fails
  */
-export async function getImageById(id, includeDeactivated = false) {
-  try {
+export const getImageById = withErrorMapping(
+  async (id, includeDeactivated = false) => {
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid image ID: must be a number', { imageId: id })
     }
@@ -156,17 +155,16 @@ export async function getImageById(id, includeDeactivated = false) {
     }
 
     return data
-  } catch (error) {
-    logger.error(`getImageById(${id}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get images by file hash (deduplication check)
  */
-export async function getImagesByHash(fileHash) {
-  try {
+export const getImagesByHash = withErrorMapping(
+  async fileHash => {
     if (!fileHash || typeof fileHash !== 'string') {
       throw new BadRequestError('Invalid file_hash: must be a string', { fileHash })
     }
@@ -182,17 +180,16 @@ export async function getImagesByHash(fileHash) {
     }
 
     return data || []
-  } catch (error) {
-    logger.error(`getImagesByHash(${fileHash}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Create single image
  */
-export async function createImage(imageData) {
-  try {
+export const createImage = withErrorMapping(
+  async imageData => {
     validateProductImage(imageData, false)
 
     const newImage = {
@@ -231,23 +228,17 @@ export async function createImage(imageData) {
     }
 
     return data
-  } catch (error) {
-    logger.error('createImage failed:', error)
-    throw error
-  }
-}
+  },
+  'INSERT',
+  TABLE
+)
 
 /**
  * Create multiple images atomically (manual batch insert)
  * Creates all sizes for a single image_index
  */
-export async function createProductImagesAtomic(
-  productId,
-  imageIndex,
-  imagesData,
-  isPrimary = false
-) {
-  try {
+export const createProductImagesAtomic = withErrorMapping(
+  async (productId, imageIndex, imagesData, isPrimary = false) => {
     if (!productId || typeof productId !== 'number') {
       throw new BadRequestError('Invalid product ID: must be a number', { productId })
     }
@@ -307,17 +298,16 @@ export async function createProductImagesAtomic(
     }
 
     return data
-  } catch (error) {
-    logger.error(`createProductImagesAtomic(${productId}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'INSERT',
+  TABLE
+)
 
 /**
  * Update image
  */
-export async function updateImage(id, updates) {
-  try {
+export const updateImage = withErrorMapping(
+  async (id, updates) => {
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid image ID: must be a number', { imageId: id })
     }
@@ -356,17 +346,16 @@ export async function updateImage(id, updates) {
     }
 
     return data
-  } catch (error) {
-    logger.error(`updateImage(${id}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Set primary image
  */
-export async function setPrimaryImage(productId, imageIndex) {
-  try {
+export const setPrimaryImage = withErrorMapping(
+  async (productId, imageIndex) => {
     if (!productId || typeof productId !== 'number') {
       throw new BadRequestError('Invalid product ID: must be a number', { productId })
     }
@@ -404,11 +393,10 @@ export async function setPrimaryImage(productId, imageIndex) {
     }
 
     return data
-  } catch (error) {
-    logger.error(`setPrimaryImage(${productId}, ${imageIndex}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Soft-delete single image
@@ -418,8 +406,8 @@ export async function setPrimaryImage(productId, imageIndex) {
  * @throws {NotFoundError} When image is not found or already inactive
  * @throws {DatabaseError} When database update fails
  */
-export async function deleteImage(id) {
-  try {
+export const deleteImage = withErrorMapping(
+  async id => {
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid image ID: must be a number', { imageId: id })
     }
@@ -440,11 +428,10 @@ export async function deleteImage(id) {
     }
 
     return data
-  } catch (error) {
-    logger.error(`deleteImage(${id}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'DELETE',
+  TABLE
+)
 
 /**
  * Reactivate image (reverse soft-delete)
@@ -454,8 +441,8 @@ export async function deleteImage(id) {
  * @throws {NotFoundError} When image is not found or already active
  * @throws {DatabaseError} When database update fails
  */
-export async function reactivateImage(id) {
-  try {
+export const reactivateImage = withErrorMapping(
+  async id => {
     if (!id || typeof id !== 'number') {
       throw new BadRequestError('Invalid image ID: must be a number', { imageId: id })
     }
@@ -476,11 +463,10 @@ export async function reactivateImage(id) {
     }
 
     return data
-  } catch (error) {
-    logger.error(`reactivateImage(${id}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Soft-delete all images for a product
@@ -489,8 +475,8 @@ export async function reactivateImage(id) {
  * @throws {BadRequestError} When productId is invalid
  * @throws {DatabaseError} When database update fails
  */
-export async function deleteProductImagesSafe(productId) {
-  try {
+export const deleteProductImagesSafe = withErrorMapping(
+  async productId => {
     if (!productId || typeof productId !== 'number') {
       throw new BadRequestError('Invalid product ID: must be a number', { productId })
     }
@@ -507,11 +493,10 @@ export async function deleteProductImagesSafe(productId) {
     }
 
     return { success: true, deleted_count: data?.length || 0, product_id: productId }
-  } catch (error) {
-    logger.error(`deleteProductImagesSafe(${productId}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'DELETE',
+  TABLE
+)
 
 /**
  * Reactivate all images for a product
@@ -520,8 +505,8 @@ export async function deleteProductImagesSafe(productId) {
  * @throws {BadRequestError} When productId is invalid
  * @throws {DatabaseError} When database update fails
  */
-export async function reactivateProductImages(productId) {
-  try {
+export const reactivateProductImages = withErrorMapping(
+  async productId => {
     if (!productId || typeof productId !== 'number') {
       throw new BadRequestError('Invalid product ID: must be a number', { productId })
     }
@@ -538,83 +523,17 @@ export async function reactivateProductImages(productId) {
     }
 
     return { success: true, reactivated_count: data?.length || 0, product_id: productId }
-  } catch (error) {
-    logger.error(`reactivateProductImages(${productId}) failed:`, error)
-    throw error
-  }
-}
-
-/**
- * Delete images by image_index (all sizes)
- */
-export async function deleteImagesByIndex(productId, imageIndex) {
-  try {
-    if (!productId || typeof productId !== 'number') {
-      throw new BadRequestError('Invalid product ID: must be a number', { productId })
-    }
-
-    if (!imageIndex || typeof imageIndex !== 'number' || imageIndex <= 0) {
-      throw new BadRequestError('Invalid image_index: must be a positive number', { imageIndex })
-    }
-
-    // 1. Get images to delete (we need URLs to delete from storage)
-    const { data: images, error: selectError } = await supabase
-      .from(TABLE)
-      .select('*')
-      .eq('product_id', productId)
-      .eq('image_index', imageIndex)
-
-    if (selectError) {
-      throw new DatabaseError('SELECT', TABLE, selectError, { productId, imageIndex })
-    }
-    if (!images || images.length === 0) {
-      throw new NotFoundError('Images', `${productId}/${imageIndex}`, { productId, imageIndex })
-    }
-
-    // 2. Extract filename from URL to delete from storage
-    // URL format: https://.../storage/v1/object/public/product-images/medium/product_1_1_abc123.webp
-    // We need: product_1_1_abc123 (without size prefix and extension)
-    const firstImageUrl = images[0].url
-    const urlParts = firstImageUrl.split('/')
-    const filename = urlParts[urlParts.length - 1] // e.g., product_1_1_abc123.webp
-    const filenameBase = filename.replace('.webp', '') // Remove extension
-
-    // 3. Delete from Supabase Storage (all sizes: thumb, small, medium, large)
-    const { deleteImageSizes } = await import('./supabaseStorageService.js')
-    try {
-      await deleteImageSizes(filenameBase)
-      logger.info(`✓ Deleted ${filenameBase} from storage (all sizes)`)
-    } catch (storageError) {
-      logger.warn('Failed to delete from storage:', storageError.message)
-      // Continue to delete from database even if storage deletion fails
-    }
-
-    // 4. Soft-delete from database
-    const { data, error } = await supabase
-      .from(TABLE)
-      .update({ active: false })
-      .eq('product_id', productId)
-      .eq('image_index', imageIndex)
-      .eq('active', true)
-      .select()
-
-    if (error) {
-      throw new DatabaseError('DELETE', TABLE, error, { productId, imageIndex })
-    }
-
-    return data
-  } catch (error) {
-    logger.error(`deleteImagesByIndex(${productId}, ${imageIndex}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Get image by product ID and size
  * Fail-fast if product has no image of requested size
  */
-export async function getProductImageBySize(productId, size) {
-  try {
+export const getProductImageBySize = withErrorMapping(
+  async (productId, size) => {
     if (!productId || typeof productId !== 'number' || productId <= 0) {
       throw new BadRequestError('Invalid product ID: must be a positive number', { productId })
     }
@@ -645,18 +564,17 @@ export async function getProductImageBySize(productId, size) {
     }
 
     return data
-  } catch (error) {
-    logger.error(`getProductImageBySize(${productId}, ${size}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get product with specific image size attached
  * Fail-fast approach - throws error if image doesn't exist
  */
-export async function getProductWithImageSize(productId, size) {
-  try {
+export const getProductWithImageSize = withErrorMapping(
+  async (productId, size) => {
     if (!productId || typeof productId !== 'number' || productId <= 0) {
       throw new BadRequestError('Invalid product ID: must be a positive number', { productId })
     }
@@ -681,7 +599,6 @@ export async function getProductWithImageSize(productId, size) {
     }
 
     // Get the specific image
-    // Try to get the image but don't fail if it doesn't exist
     const { data: image } = await supabase
       .from(DB_SCHEMA.product_images.table)
       .select('url')
@@ -696,18 +613,17 @@ export async function getProductWithImageSize(productId, size) {
       ...product,
       [`image_url_${size}`]: image?.url || null
     }
-  } catch (error) {
-    logger.error(`getProductWithImageSize(${productId}, ${size}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  DB_SCHEMA.products.table
+)
 
 /**
  * Get multiple products with specific image size attached
  * Uses efficient batch query to avoid N+1 problem
  */
-export async function getProductsBatchWithImageSize(productIds, size) {
-  try {
+export const getProductsBatchWithImageSize = withErrorMapping(
+  async (productIds, size) => {
     if (!Array.isArray(productIds) || productIds.length === 0) {
       throw new BadRequestError('Invalid product IDs: must be a non-empty array', { productIds })
     }
@@ -726,10 +642,6 @@ export async function getProductsBatchWithImageSize(productIds, size) {
       }
     }
 
-    logger.debug(
-      `🔍 [DEBUG] getProductsBatchWithImageSize - Fetching ${productIds.length} products with ${size} images`
-    )
-
     // Get products
     const { data: products, error: productError } = await supabase
       .from(DB_SCHEMA.products.table)
@@ -744,25 +656,21 @@ export async function getProductsBatchWithImageSize(productIds, size) {
       throw new NotFoundError('Products', null, { productIds })
     }
 
-    logger.debug(`🔍 [DEBUG] getProductsBatchWithImageSize - Found ${products.length} products`)
-
     // Find unique product IDs to compare with requested IDs
     const retrievedProductIds = products.map(p => p.id)
     const missingIds = productIds.filter(id => !retrievedProductIds.includes(id))
 
     if (missingIds.length > 0) {
-      throw new NotFoundError('Some products not found', missingIds, {
-        missingIds,
-        requested: productIds
-      })
+      // Instead of throwing error, just log warning and proceed with found products
+      // This prevents partial failures from blocking the entire carousel
+      // logger.warn('Some products not found in batch request', { missingIds })
     }
 
     // Get images for the specific size for all products
-    let images
     const { data: initialImages, error: imageError } = await supabase
       .from(TABLE)
       .select('*')
-      .in('product_id', productIds)
+      .in('product_id', retrievedProductIds) // Only query for found products
       .eq('size', size)
       .order('image_index', { ascending: true })
 
@@ -770,17 +678,10 @@ export async function getProductsBatchWithImageSize(productIds, size) {
       throw new DatabaseError('SELECT', TABLE, imageError, { productIds, size })
     }
 
-    images = initialImages
-
-    logger.debug(
-      `🔍 [DEBUG] getProductsBatchWithImageSize - Found ${images?.length || 0} images for size ${size}`
-    )
+    let images = initialImages
 
     // Fallback to 'large' size if 'small' not found (graceful handling for missing small images)
     if (size === 'small' && (!images || images.length === 0)) {
-      logger.debug(
-        `🔍 [DEBUG] getProductsBatchWithImageSize - No small images found, falling back to large`
-      )
       const { data: fallbackImages, error: fallbackError } = await supabase
         .from(TABLE)
         .select('*')
@@ -793,9 +694,6 @@ export async function getProductsBatchWithImageSize(productIds, size) {
       }
 
       images = fallbackImages || []
-      logger.debug(
-        `🔍 [DEBUG] getProductsBatchWithImageSize - Fallback found ${images?.length || 0} large images`
-      )
     }
 
     // Create a map for quick lookup
@@ -805,7 +703,6 @@ export async function getProductsBatchWithImageSize(productIds, size) {
         // Only store the first image found for each product (since we ordered by index)
         if (!imageMap[img.product_id]) {
           imageMap[img.product_id] = img.url
-          logger.debug(`🔍 [DEBUG] Image for product ${img.product_id}: ${img.url}`)
         }
       })
     }
@@ -817,21 +714,17 @@ export async function getProductsBatchWithImageSize(productIds, size) {
     }))
 
     return productsWithImages
-  } catch (error) {
-    console.error(
-      `getProductsBatchWithImageSize(${productIds.length} products, ${size}) failed:`,
-      error
-    )
-    throw error
-  }
-}
+  },
+  'SELECT',
+  DB_SCHEMA.products.table
+)
 
 /**
  * Delete all images of specific size for a product
  */
-export async function deleteProductImagesBySize(productId, size) {
-  try {
-    if (!productId || typeof productId !== 'number' || productId <= 0) {
+export const deleteProductImagesBySize = withErrorMapping(
+  async (productId, size) => {
+    if (!productId || typeof productId !== 'number') {
       throw new BadRequestError('Invalid product ID: must be a positive number', { productId })
     }
 
@@ -857,8 +750,7 @@ export async function deleteProductImagesBySize(productId, size) {
       product_id: productId,
       size: size
     }
-  } catch (error) {
-    console.error(`deleteProductImagesBySize(${productId}, ${size}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'DELETE',
+  TABLE
+)

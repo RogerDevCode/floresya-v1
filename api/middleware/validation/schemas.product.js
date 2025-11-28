@@ -28,6 +28,9 @@ export const productCreateSchema = {
       if (productData.price_usd === undefined || typeof productData.price_usd !== 'number') {
         return 'product.price_usd is required and must be a number'
       }
+      if (productData.price_usd < 0) {
+        return 'product.price_usd must be non-negative'
+      }
 
       return null
     }

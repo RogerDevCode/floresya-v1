@@ -48,7 +48,7 @@ async function globalTeardown(config) {
 /**
  * Limpia procesos residuales de testing
  */
-async function cleanupResidualProcesses() {
+function cleanupResidualProcesses() {
   try {
     const { exec } = require('child_process')
     const os = require('os')
@@ -58,7 +58,7 @@ async function cleanupResidualProcesses() {
       let command = ''
 
       if (platform === 'darwin') {
-        command = 'pkill -f "chromium\|google-chrome\|playwright"'
+        command = 'pkill -f "chromium|google-chrome|playwright"'
       } else if (platform === 'linux') {
         command = 'pkill -f chromium || pkill -f google-chrome || pkill -f playwright'
       } else if (platform === 'win32') {
@@ -86,7 +86,7 @@ async function cleanupResidualProcesses() {
 /**
  * Genera reporte de resumen de ejecución
  */
-async function generateSummaryReport(config) {
+function generateSummaryReport(config) {
   try {
     const fs = require('fs')
     const path = require('path')
@@ -137,7 +137,7 @@ async function generateSummaryReport(config) {
 /**
  * Limpia archivos temporales de CI
  */
-async function cleanupCITemporaryFiles() {
+function cleanupCITemporaryFiles() {
   try {
     const fs = require('fs')
     const path = require('path')
@@ -167,7 +167,7 @@ async function cleanupCITemporaryFiles() {
 /**
  * Libera recursos del sistema
  */
-async function releaseResources() {
+function releaseResources() {
   try {
     // Forzar garbage collection si está disponible
     if (global.gc) {
@@ -183,7 +183,9 @@ async function releaseResources() {
     if (process.env.NODE_ENV === 'test') {
       const modules = Object.keys(require.cache)
       for (const module of modules) {
-        if (module.includes('node_modules')) continue
+        if (module.includes('node_modules')) {
+          continue
+        }
         delete require.cache[module]
       }
       console.log('🗑️ Módulos cacheados liberados')

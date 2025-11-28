@@ -5,10 +5,8 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import expenseService, {
-  EXPENSE_CATEGORIES,
-  PAYMENT_METHODS
-} from '../../api/services/expenseService.js'
+import * as expenseService from '../../api/services/expenseService.js'
+import { EXPENSE_CATEGORIES, PAYMENT_METHODS } from '../../api/services/expenseService.js'
 import { ValidationError, NotFoundError } from '../../api/errors/AppError.js'
 import { SupabaseAccountingMock } from '../mocks/supabase-accounting.js'
 

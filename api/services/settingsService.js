@@ -31,8 +31,8 @@ const TABLE = DB_SCHEMA.settings.table
  * @throws {NotFoundError} When no settings are found
  * @throws {DatabaseError} When database query fails
  */
-export async function getAllSettings(publicOnly = false, includeDeactivated = false) {
-  try {
+export const getAllSettings = withErrorMapping(
+  async (publicOnly = false, includeDeactivated = false) => {
     let query = supabase.from(TABLE).select('*')
 
     // Apply activity filter explicitly for test compliance
@@ -58,11 +58,10 @@ export async function getAllSettings(publicOnly = false, includeDeactivated = fa
     }
 
     return data
-  } catch (error) {
-    console.error('getAllSettings failed:', error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get public settings only - wrapper for getAllSettings with publicOnly=true
@@ -70,14 +69,13 @@ export async function getAllSettings(publicOnly = false, includeDeactivated = fa
  * @throws {NotFoundError} When no public settings are found
  * @throws {DatabaseError} When database query fails
  */
-export async function getPublicSettings() {
-  try {
+export const getPublicSettings = withErrorMapping(
+  async () => {
     return await getAllSettings(true)
-  } catch (error) {
-    console.error('getPublicSettings failed:', error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get setting by key (indexed column)
@@ -88,8 +86,8 @@ export async function getPublicSettings() {
  * @throws {NotFoundError} When setting with key is not found
  * @throws {DatabaseError} When database query fails
  */
-export async function getSettingById(key, includeDeactivated = false) {
-  try {
+export const getSettingById = withErrorMapping(
+  async (key, includeDeactivated = false) => {
     if (!key || typeof key !== 'string') {
       throw new BadRequestError('Invalid key: must be a string', { key })
     }
@@ -114,11 +112,10 @@ export async function getSettingById(key, includeDeactivated = false) {
     }
 
     return data
-  } catch (error) {
-    console.error(`getSettingById(${key}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get setting by key (indexed column)
@@ -161,8 +158,8 @@ export const getSettingByKey = withErrorMapping(
  * const deliveryCost = await getSettingValue('DELIVERY_COST_USD') // Returns: 7.0 (number)
  * const isMaintenance = await getSettingValue('MAINTENANCE_MODE') // Returns: false (boolean)
  */
-export async function getSettingValue(key) {
-  try {
+export const getSettingValue = withErrorMapping(
+  async key => {
     const setting = await getSettingByKey(key)
 
     // Parse value based on type
@@ -176,11 +173,10 @@ export async function getSettingValue(key) {
       default:
         return setting.value
     }
-  } catch (error) {
-    console.error(`getSettingValue(${key}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Create setting - key-value configuration entry
@@ -195,8 +191,8 @@ export async function getSettingValue(key) {
  * @throws {DatabaseConstraintError} When setting violates database constraints (e.g., duplicate key)
  * @throws {DatabaseError} When database insert fails
  */
-export async function createSetting(settingData) {
-  try {
+export const createSetting = withErrorMapping(
+  async settingData => {
     validateSetting(settingData, false)
 
     const newSetting = {
@@ -231,14 +227,10 @@ export async function createSetting(settingData) {
     }
 
     return data
-  } catch (error) {
-    if (error.name && error.name.includes('Error')) {
-      throw error
-    }
-    console.error('createSetting failed:', error)
-    throw new DatabaseError('INSERT', TABLE, error, { settingData })
-  }
-}
+  },
+  'INSERT',
+  TABLE
+)
 
 /**
  * Update setting (limited fields) - only allows updating specific setting fields
@@ -254,8 +246,8 @@ export async function createSetting(settingData) {
  * @throws {NotFoundError} When setting is not found
  * @throws {DatabaseError} When database update fails
  */
-export async function updateSetting(key, updates) {
-  try {
+export const updateSetting = withErrorMapping(
+  async (key, updates) => {
     if (!key || typeof key !== 'string') {
       throw new BadRequestError('Invalid key: must be a string', { key })
     }
@@ -294,11 +286,10 @@ export async function updateSetting(key, updates) {
     }
 
     return data
-  } catch (error) {
-    console.error(`updateSetting(${key}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Update setting value (convenience method) - automatically converts value to string
@@ -311,14 +302,13 @@ export async function updateSetting(key, updates) {
  * @example
  * const setting = await setSettingValue('DELIVERY_COST_USD', 8.50)
  */
-export async function setSettingValue(key, value) {
-  try {
+export const setSettingValue = withErrorMapping(
+  async (key, value) => {
     return await updateSetting(key, { value: String(value) })
-  } catch (error) {
-    console.error(`setSettingValue(${key}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Soft-delete setting (sets active to false)
@@ -328,8 +318,8 @@ export async function setSettingValue(key, value) {
  * @throws {NotFoundError} When setting is not found or already inactive
  * @throws {DatabaseError} When database update fails
  */
-export async function deleteSetting(key) {
-  try {
+export const deleteSetting = withErrorMapping(
+  async key => {
     if (!key || typeof key !== 'string') {
       throw new BadRequestError('Invalid key: must be a string', { key })
     }
@@ -350,11 +340,10 @@ export async function deleteSetting(key) {
     }
 
     return data
-  } catch (error) {
-    console.error(`deleteSetting(${key}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Reactivate setting (reverse soft-delete)
@@ -364,8 +353,8 @@ export async function deleteSetting(key) {
  * @throws {NotFoundError} When setting is not found or already active
  * @throws {DatabaseError} When database update fails
  */
-export async function reactivateSetting(key) {
-  try {
+export const reactivateSetting = withErrorMapping(
+  async key => {
     if (!key || typeof key !== 'string') {
       throw new BadRequestError('Invalid key: must be a string', { key })
     }
@@ -386,11 +375,10 @@ export async function reactivateSetting(key) {
     }
 
     return data
-  } catch (error) {
-    console.error(`reactivateSetting(${key}) failed:`, error)
-    throw error
-  }
-}
+  },
+  'UPDATE',
+  TABLE
+)
 
 /**
  * Bulk get settings by keys - retrieves multiple settings in a single query
@@ -402,8 +390,8 @@ export async function reactivateSetting(key) {
  * @example
  * const settings = await getSettingsByKeys(['DELIVERY_COST_USD', 'bcv_usd_rate'])
  */
-export async function getSettingsByKeys(keys) {
-  try {
+export const getSettingsByKeys = withErrorMapping(
+  async keys => {
     if (!Array.isArray(keys) || keys.length === 0) {
       throw new BadRequestError('Invalid keys: must be a non-empty array', { keys })
     }
@@ -418,11 +406,10 @@ export async function getSettingsByKeys(keys) {
     }
 
     return data
-  } catch (error) {
-    console.error('getSettingsByKeys failed:', error)
-    throw error
-  }
-}
+  },
+  'SELECT',
+  TABLE
+)
 
 /**
  * Get settings as key-value map - returns typed values based on setting type

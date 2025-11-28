@@ -974,7 +974,7 @@ export class MockQueryBuilder {
 
       // Simulate timeout
       if (this.simulatedTimeout) {
-        await this.delay(30000) // 30 second timeout
+        await this.delay(100) // Reduced from 30000 for faster tests
         throw new Error('Connection timeout')
       }
 

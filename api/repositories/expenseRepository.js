@@ -7,9 +7,19 @@
 import { BaseRepository } from './BaseRepository.js'
 import { logger } from '../utils/logger.js'
 
-class ExpenseRepository extends BaseRepository {
-  constructor() {
-    super('expenses')
+export class ExpenseRepository extends BaseRepository {
+  constructor(supabaseClient) {
+    super(supabaseClient, 'expenses')
+  }
+
+  /**
+   * ✅ STATIC ASYNC FACTORY
+   */
+  static async create() {
+    return await BaseRepository.create(
+      () => import('../services/supabaseClient.js').then(m => m.supabase),
+      'expenses'
+    )
   }
 
   /**
@@ -143,4 +153,24 @@ class ExpenseRepository extends BaseRepository {
   }
 }
 
-export default new ExpenseRepository()
+// Lazy singleton proxy to avoid top-level await issues
+let instance = null
+
+async function getInstance() {
+  if (!instance) {
+    instance = await ExpenseRepository.create()
+  }
+  return instance
+}
+
+export default new Proxy(
+  {},
+  {
+    get(target, prop) {
+      return async (...args) => {
+        const repo = await getInstance()
+        return repo[prop](...args)
+      }
+    }
+  }
+)

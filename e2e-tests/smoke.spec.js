@@ -104,7 +104,7 @@ test.describe('Navegación Real - Mobile', () => {
 
     // Verificar que existe un elemento de menú móvil
     // Usar selector más genérico si #mobile-menu-drawer no existe
-    const mobileMenu = page.locator('#mobile-menu, #mobile-menu-drawer, [role="dialog"]')
+    // const mobileMenu = page.locator('#mobile-menu, #mobile-menu-drawer, [role="dialog"]')
 
     // Si el botón es clickeable, intentar abrir el menú
     if (await mobileMenuBtn.isVisible()) {

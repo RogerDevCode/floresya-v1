@@ -18,22 +18,46 @@ import { withErrorMapping } from '../middleware/error/index.js'
 import { validateId } from '../utils/validation.js'
 
 /**
- * Get Logger instance from DI Container
- * @returns {Object} Logger instance
+ * ✅ STATIC ASYNC FACTORY: Get Logger instance with proper async resolution
+ * @returns {Promise<Object>} Logger instance completely resolved
  */
-function getLogger() {
-  return DIContainer.resolve('Logger')
+async function getLogger() {
+  try {
+    // 🚀 ESPERAR RESOLUCIÓN: Asegurar que el logger esté completamente inicializado
+    const logger = await DIContainer.resolve('Logger')
+
+    // ✅ VALIDACIÓN: Verificar que el logger sea funcional
+    if (!logger || typeof logger.error !== 'function') {
+      throw new Error('Invalid Logger resolved from DI Container')
+    }
+
+    return logger
+  } catch (error) {
+    throw new Error(`Failed to resolve Logger: ${error.message}`)
+  }
 }
 
 const TABLE = DB_SCHEMA.users.table
 const VALID_ROLES = DB_SCHEMA.users.enums.role
 
 /**
- * Get UserRepository instance from DI Container
- * @returns {UserRepository} Repository instance
+ * ✅ STATIC ASYNC FACTORY: Get UserRepository instance with proper async resolution
+ * @returns {Promise<UserRepository>} Repository instance completely resolved
  */
-function getUserRepository() {
-  return DIContainer.resolve('UserRepository')
+async function getUserRepository() {
+  try {
+    // 🚀 ESPERAR RESOLUCIÓN: Asegurar que el repositorio esté completamente inicializado
+    const repository = await DIContainer.resolve('UserRepository')
+
+    // ✅ VALIDACIÓN: Verificar que el repositorio sea funcional
+    if (!repository || typeof repository.findById !== 'function') {
+      throw new Error('Invalid UserRepository resolved from DI Container')
+    }
+
+    return repository
+  } catch (error) {
+    throw new Error(`Failed to resolve UserRepository: ${error.message}`)
+  }
 }
 
 /**
@@ -50,7 +74,7 @@ async function withErrorHandling(operation, operationName, context = {}) {
   try {
     return await operation()
   } catch (error) {
-    const logger = getLogger()
+    const logger = await getLogger()
     logger.error(`${operationName} failed:`, error, context)
     throw error
   }
@@ -69,7 +93,7 @@ async function withErrorHandling(operation, operationName, context = {}) {
 export function getAllUsers(filters = {}, includeDeactivated = false) {
   return withErrorHandling(
     async () => {
-      const userRepository = getUserRepository()
+      const userRepository = await getUserRepository()
 
       // Use repository to get users with filters
       const data = await userRepository.findAllWithFilters(filters, {
@@ -91,7 +115,7 @@ export function getAllUsers(filters = {}, includeDeactivated = false) {
  */
 export const getUserById = withErrorMapping(
   async (id, includeDeactivated = false) => {
-    const userRepository = getUserRepository()
+    const userRepository = await getUserRepository()
 
     validateUserId(id, 'getUserById')
 
@@ -114,7 +138,7 @@ export const getUserById = withErrorMapping(
 export function getUserByEmail(email, includeDeactivated = false) {
   return withErrorHandling(
     async () => {
-      const userRepository = getUserRepository()
+      const userRepository = await getUserRepository()
 
       // FAIL FAST - Validate email parameter
       if (!email) {
@@ -155,7 +179,7 @@ export function getUserByEmail(email, includeDeactivated = false) {
 export function getUsersByFilter(filters = {}) {
   return withErrorHandling(
     async () => {
-      const userRepository = getUserRepository()
+      const userRepository = await getUserRepository()
 
       // FAIL FAST - Require at least one filter
       if (!filters.role && filters.state === undefined && filters.email_verified === undefined) {
@@ -229,7 +253,7 @@ export function getUsersByFilter(filters = {}) {
 export function createUser(userData) {
   return withErrorHandling(
     async () => {
-      const userRepository = getUserRepository()
+      const userRepository = await getUserRepository()
 
       // Validate required fields for client registration
       if (!userData.email || typeof userData.email !== 'string') {
@@ -294,7 +318,7 @@ export function createUser(userData) {
 export function updateUser(id, updates) {
   return withErrorHandling(
     async () => {
-      const userRepository = getUserRepository()
+      const userRepository = await getUserRepository()
 
       validateUserId(id, 'updateUser')
 
@@ -327,7 +351,7 @@ export function updateUser(id, updates) {
 export function deleteUser(id) {
   return withErrorHandling(
     async () => {
-      const userRepository = getUserRepository()
+      const userRepository = await getUserRepository()
 
       validateUserId(id, 'deleteUser')
 
@@ -349,7 +373,7 @@ export function deleteUser(id) {
 export function reactivateUser(id) {
   return withErrorHandling(
     async () => {
-      const userRepository = getUserRepository()
+      const userRepository = await getUserRepository()
 
       validateUserId(id, 'reactivateUser')
 
@@ -371,7 +395,7 @@ export function reactivateUser(id) {
 export function verifyUserEmail(id) {
   return withErrorHandling(
     async () => {
-      const userRepository = getUserRepository()
+      const userRepository = await getUserRepository()
 
       validateUserId(id, 'verifyUserEmail')
 

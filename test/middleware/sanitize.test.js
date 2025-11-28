@@ -29,7 +29,9 @@ describe('Sanitize Utility Functions', () => {
       path: '/api/orders',
       body: null,
       query: null,
-      params: null
+      params: null,
+      get: vi.fn().mockReturnValue('test-user-agent'),
+      ip: '127.0.0.1'
     }
 
     mockResponse = {}

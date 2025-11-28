@@ -18,6 +18,22 @@ export class OrderRepository extends BaseRepository {
   }
 
   /**
+   * ✅ STATIC ASYNC FACTORY: Crea OrderRepository con inicialización completa
+   * @returns {Promise<OrderRepository>} Instancia completamente inicializada
+   */
+  static async create() {
+    try {
+      // 🚀 OBTENER CLIENTE: Usar factory de BaseRepository para asegurar inicialización
+      return await BaseRepository.create(
+        () => import('../services/supabaseClient.js').then(m => m.supabase),
+        DB_SCHEMA.orders.table
+      )
+    } catch (error) {
+      throw new Error(`OrderRepository.create failed: ${error.message}`)
+    }
+  }
+
+  /**
    * Obtener pedidos con filtros específicos
    * ✅ OPTIMIZADO: 100% SQL filtering usando get_orders_filtered()
    * NO JavaScript filtering - todo se hace en PostgreSQL con índices

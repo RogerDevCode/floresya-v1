@@ -89,7 +89,7 @@ export async function createOrderWithItems(orderData, orderItems) {
       }
 
       // Validate stock availability using ProductRepository
-      const productRepository = getProductRepository()
+      const productRepository = await getProductRepository()
       const product = await productRepository.findById(item.product_id, true)
 
       if (!product) {

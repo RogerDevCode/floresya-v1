@@ -30,7 +30,7 @@ export async function confirmPayment(orderId, paymentData) {
       throw new BadRequestError('Payment data is required', { orderId })
     }
 
-    const paymentRepository = getPaymentRepository()
+    const paymentRepository = await getPaymentRepository()
 
     // Validate payment method
     if (!paymentData.payment_method_id) {
