@@ -20,7 +20,7 @@ import {
 import { validateProductImage } from '../utils/validation.js'
 import { withErrorMapping } from '../middleware/error/index.js'
 
-const TABLE = DB_SCHEMA.product_images?.table || 'product_images'
+
 const VALID_SIZES = DB_SCHEMA.product_images?.enums?.size || ['thumb', 'small', 'medium', 'large']
 
 /**

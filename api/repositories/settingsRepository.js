@@ -40,7 +40,9 @@ export const findByKey = withErrorMapping(
     const { data, error } = await query.single()
 
     if (error) {
-      if (error.code === 'PGRST116') return null
+      if (error.code === 'PGRST116') {
+        return null
+      }
       throw new DatabaseError('SELECT', TABLE, error, { key })
     }
     return data
