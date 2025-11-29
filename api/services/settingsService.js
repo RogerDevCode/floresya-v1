@@ -10,18 +10,12 @@
  * ENTERPRISE FAIL-FAST: Uses custom error classes with metadata
  */
 
-import { supabase, DB_SCHEMA } from './supabaseClient.js'
-import { withErrorMapping } from '../middleware/error/index.js'
+import * as SettingsRepository from '../repositories/settingsRepository.js'
 import {
   NotFoundError,
-  DatabaseError,
-  DatabaseConstraintError,
-  BadRequestError,
-  InternalServerError
+  BadRequestError
 } from '../errors/AppError.js'
 import { validateSetting } from '../utils/validation.js'
-
-const TABLE = DB_SCHEMA.settings.table
 
 /**
  * Get all settings - optionally filter for public settings only
@@ -31,37 +25,15 @@ const TABLE = DB_SCHEMA.settings.table
  * @throws {NotFoundError} When no settings are found
  * @throws {DatabaseError} When database query fails
  */
-export const getAllSettings = withErrorMapping(
-  async (publicOnly = false, includeDeactivated = false) => {
-    let query = supabase.from(TABLE).select('*')
+export const getAllSettings = async (publicOnly = false, includeDeactivated = false) => {
+  const data = await SettingsRepository.findAll({ publicOnly, includeDeactivated })
 
-    // Apply activity filter explicitly for test compliance
-    if (!includeDeactivated) {
-      query = query.eq('active', true)
-    }
+  if (!data || data.length === 0) {
+    throw new NotFoundError('Settings')
+  }
 
-    // Filter for public settings if requested
-    if (publicOnly) {
-      query = query.eq('is_public', true)
-    }
-
-    // Order by key
-    query = query.order('key', { ascending: true })
-
-    const { data, error } = await query
-
-    if (error) {
-      throw new DatabaseError('SELECT', TABLE, error)
-    }
-    if (!data) {
-      throw new NotFoundError('Settings')
-    }
-
-    return data
-  },
-  'SELECT',
-  TABLE
-)
+  return data
+}
 
 /**
  * Get public settings only - wrapper for getAllSettings with publicOnly=true
@@ -69,13 +41,9 @@ export const getAllSettings = withErrorMapping(
  * @throws {NotFoundError} When no public settings are found
  * @throws {DatabaseError} When database query fails
  */
-export const getPublicSettings = withErrorMapping(
-  async () => {
-    return await getAllSettings(true)
-  },
-  'SELECT',
-  TABLE
-)
+export const getPublicSettings = async () => {
+  return await getAllSettings(true)
+}
 
 /**
  * Get setting by key (indexed column)
@@ -86,36 +54,19 @@ export const getPublicSettings = withErrorMapping(
  * @throws {NotFoundError} When setting with key is not found
  * @throws {DatabaseError} When database query fails
  */
-export const getSettingById = withErrorMapping(
-  async (key, includeDeactivated = false) => {
-    if (!key || typeof key !== 'string') {
-      throw new BadRequestError('Invalid key: must be a string', { key })
-    }
+export const getSettingById = async (key, includeDeactivated = false) => {
+  if (!key || typeof key !== 'string') {
+    throw new BadRequestError('Invalid key: must be a string', { key })
+  }
 
-    let query = supabase.from(TABLE).select('*').eq('key', key)
+  const data = await SettingsRepository.findByKey(key, includeDeactivated)
 
-    // Apply activity filter explicitly for test compliance
-    if (!includeDeactivated) {
-      query = query.eq('active', true)
-    }
+  if (!data) {
+    throw new NotFoundError('Setting', key, { key, includeDeactivated })
+  }
 
-    const { data, error } = await query.single()
-
-    if (error) {
-      if (error.code === 'PGRST116') {
-        throw new NotFoundError('Setting', key, { key, includeDeactivated })
-      }
-      throw new DatabaseError('SELECT', TABLE, error, { key })
-    }
-    if (!data) {
-      throw new NotFoundError('Setting', key, { key, includeDeactivated })
-    }
-
-    return data
-  },
-  'SELECT',
-  TABLE
-)
+  return data
+}
 
 /**
  * Get setting by key (indexed column)
@@ -125,27 +76,19 @@ export const getSettingById = withErrorMapping(
  * @throws {NotFoundError} When setting with key is not found
  * @throws {DatabaseError} When database query fails
  */
-export const getSettingByKey = withErrorMapping(
-  async key => {
-    if (!key || typeof key !== 'string') {
-      throw new BadRequestError('Invalid key: must be a string', { key })
-    }
+export const getSettingByKey = async key => {
+  if (!key || typeof key !== 'string') {
+    throw new BadRequestError('Invalid key: must be a string', { key })
+  }
 
-    const { data, error } = await supabase.from(TABLE).select('*').eq('key', key).single()
+  const data = await SettingsRepository.findByKey(key)
 
-    if (error) {
-      // Map Supabase error automatically
-      throw error
-    }
-    if (!data) {
-      throw new NotFoundError('Setting', key, { key })
-    }
+  if (!data) {
+    throw new NotFoundError('Setting', key, { key })
+  }
 
-    return data
-  },
-  'SELECT',
-  TABLE
-)
+  return data
+}
 
 /**
  * Get setting value (typed) - automatically parses value based on setting type
@@ -158,25 +101,21 @@ export const getSettingByKey = withErrorMapping(
  * const deliveryCost = await getSettingValue('DELIVERY_COST_USD') // Returns: 7.0 (number)
  * const isMaintenance = await getSettingValue('MAINTENANCE_MODE') // Returns: false (boolean)
  */
-export const getSettingValue = withErrorMapping(
-  async key => {
-    const setting = await getSettingByKey(key)
+export const getSettingValue = async key => {
+  const setting = await getSettingByKey(key)
 
-    // Parse value based on type
-    switch (setting.type) {
-      case 'number':
-        return parseFloat(setting.value)
-      case 'boolean':
-        return setting.value === 'true' || setting.value === '1'
-      case 'json':
-        return JSON.parse(setting.value)
-      default:
-        return setting.value
-    }
-  },
-  'SELECT',
-  TABLE
-)
+  // Parse value based on type
+  switch (setting.type) {
+    case 'number':
+      return parseFloat(setting.value)
+    case 'boolean':
+      return setting.value === 'true' || setting.value === '1'
+    case 'json':
+      return JSON.parse(setting.value)
+    default:
+      return setting.value
+  }
+}
 
 /**
  * Create setting - key-value configuration entry
@@ -191,46 +130,19 @@ export const getSettingValue = withErrorMapping(
  * @throws {DatabaseConstraintError} When setting violates database constraints (e.g., duplicate key)
  * @throws {DatabaseError} When database insert fails
  */
-export const createSetting = withErrorMapping(
-  async settingData => {
-    validateSetting(settingData, false)
+export const createSetting = async settingData => {
+  validateSetting(settingData, false)
 
-    const newSetting = {
-      key: settingData.key,
-      value: settingData.value,
-      description: settingData.description || null,
-      type: settingData.type || 'string',
-      is_public: settingData.is_public || false
-    }
+  const newSetting = {
+    key: settingData.key,
+    value: settingData.value,
+    description: settingData.description || null,
+    type: settingData.type || 'string',
+    is_public: settingData.is_public || false
+  }
 
-    const { data, error } = await supabase.from(TABLE).insert(newSetting).select().single()
-
-    if (error) {
-      if (error.code === '23505') {
-        throw new DatabaseConstraintError('unique_key', TABLE, {
-          key: settingData.key,
-          message: `Setting with key "${settingData.key}" already exists`
-        })
-      }
-      throw new DatabaseError('INSERT', TABLE, error, { settingData: newSetting })
-    }
-
-    if (!data) {
-      throw new DatabaseError(
-        'INSERT',
-        TABLE,
-        new InternalServerError('No data returned after insert'),
-        {
-          settingData: newSetting
-        }
-      )
-    }
-
-    return data
-  },
-  'INSERT',
-  TABLE
-)
+  return await SettingsRepository.create(newSetting)
+}
 
 /**
  * Update setting (limited fields) - only allows updating specific setting fields
@@ -246,50 +158,38 @@ export const createSetting = withErrorMapping(
  * @throws {NotFoundError} When setting is not found
  * @throws {DatabaseError} When database update fails
  */
-export const updateSetting = withErrorMapping(
-  async (key, updates) => {
-    if (!key || typeof key !== 'string') {
-      throw new BadRequestError('Invalid key: must be a string', { key })
+export const updateSetting = async (key, updates) => {
+  if (!key || typeof key !== 'string') {
+    throw new BadRequestError('Invalid key: must be a string', { key })
+  }
+
+  if (!updates || Object.keys(updates).length === 0) {
+    throw new BadRequestError('No updates provided', { key })
+  }
+
+  validateSetting(updates, true)
+
+  const allowedFields = ['value', 'description', 'type', 'is_public']
+  const sanitized = {}
+
+  for (const field of allowedFields) {
+    if (updates[field] !== undefined) {
+      sanitized[field] = updates[field]
     }
+  }
 
-    if (!updates || Object.keys(updates).length === 0) {
-      throw new BadRequestError('No updates provided', { key })
-    }
+  if (Object.keys(sanitized).length === 0) {
+    throw new BadRequestError('No valid fields to update', { key })
+  }
 
-    validateSetting(updates, true)
+  const data = await SettingsRepository.update(key, sanitized)
 
-    const allowedFields = ['value', 'description', 'type', 'is_public']
-    const sanitized = {}
+  if (!data) {
+    throw new NotFoundError('Setting', key, { key })
+  }
 
-    for (const field of allowedFields) {
-      if (updates[field] !== undefined) {
-        sanitized[field] = updates[field]
-      }
-    }
-
-    if (Object.keys(sanitized).length === 0) {
-      throw new BadRequestError('No valid fields to update', { key })
-    }
-
-    const { data, error } = await supabase
-      .from(TABLE)
-      .update(sanitized)
-      .eq('key', key)
-      .select()
-      .single()
-
-    if (error) {
-      throw new DatabaseError('UPDATE', TABLE, error, { key })
-    }
-    if (!data) {
-      throw new NotFoundError('Setting', key, { key })
-    }
-
-    return data
-  },
-  'UPDATE',
-  TABLE
-)
+  return data
+}
 
 /**
  * Update setting value (convenience method) - automatically converts value to string
@@ -302,13 +202,9 @@ export const updateSetting = withErrorMapping(
  * @example
  * const setting = await setSettingValue('DELIVERY_COST_USD', 8.50)
  */
-export const setSettingValue = withErrorMapping(
-  async (key, value) => {
-    return await updateSetting(key, { value: String(value) })
-  },
-  'UPDATE',
-  TABLE
-)
+export const setSettingValue = async (key, value) => {
+  return await updateSetting(key, { value: String(value) })
+}
 
 /**
  * Soft-delete setting (sets active to false)
@@ -318,32 +214,19 @@ export const setSettingValue = withErrorMapping(
  * @throws {NotFoundError} When setting is not found or already inactive
  * @throws {DatabaseError} When database update fails
  */
-export const deleteSetting = withErrorMapping(
-  async key => {
-    if (!key || typeof key !== 'string') {
-      throw new BadRequestError('Invalid key: must be a string', { key })
-    }
+export const deleteSetting = async key => {
+  if (!key || typeof key !== 'string') {
+    throw new BadRequestError('Invalid key: must be a string', { key })
+  }
 
-    const { data, error } = await supabase
-      .from(TABLE)
-      .update({ active: false })
-      .eq('key', key)
-      .eq('active', true)
-      .select()
-      .single()
+  const data = await SettingsRepository.softDelete(key)
 
-    if (error) {
-      throw new DatabaseError('UPDATE', TABLE, error, { key })
-    }
-    if (!data) {
-      throw new NotFoundError('Setting', key, { active: true })
-    }
+  if (!data) {
+    throw new NotFoundError('Setting', key, { active: true })
+  }
 
-    return data
-  },
-  'UPDATE',
-  TABLE
-)
+  return data
+}
 
 /**
  * Reactivate setting (reverse soft-delete)
@@ -353,32 +236,19 @@ export const deleteSetting = withErrorMapping(
  * @throws {NotFoundError} When setting is not found or already active
  * @throws {DatabaseError} When database update fails
  */
-export const reactivateSetting = withErrorMapping(
-  async key => {
-    if (!key || typeof key !== 'string') {
-      throw new BadRequestError('Invalid key: must be a string', { key })
-    }
+export const reactivateSetting = async key => {
+  if (!key || typeof key !== 'string') {
+    throw new BadRequestError('Invalid key: must be a string', { key })
+  }
 
-    const { data, error } = await supabase
-      .from(TABLE)
-      .update({ active: true })
-      .eq('key', key)
-      .eq('active', false)
-      .select()
-      .single()
+  const data = await SettingsRepository.reactivate(key)
 
-    if (error) {
-      throw new DatabaseError('UPDATE', TABLE, error, { key })
-    }
-    if (!data) {
-      throw new NotFoundError('Setting', key, { active: false })
-    }
+  if (!data) {
+    throw new NotFoundError('Setting', key, { active: false })
+  }
 
-    return data
-  },
-  'UPDATE',
-  TABLE
-)
+  return data
+}
 
 /**
  * Bulk get settings by keys - retrieves multiple settings in a single query
@@ -390,26 +260,19 @@ export const reactivateSetting = withErrorMapping(
  * @example
  * const settings = await getSettingsByKeys(['DELIVERY_COST_USD', 'bcv_usd_rate'])
  */
-export const getSettingsByKeys = withErrorMapping(
-  async keys => {
-    if (!Array.isArray(keys) || keys.length === 0) {
-      throw new BadRequestError('Invalid keys: must be a non-empty array', { keys })
-    }
+export const getSettingsByKeys = async keys => {
+  if (!Array.isArray(keys) || keys.length === 0) {
+    throw new BadRequestError('Invalid keys: must be a non-empty array', { keys })
+  }
 
-    const { data, error } = await supabase.from(TABLE).select('*').in('key', keys)
+  const data = await SettingsRepository.findByKeys(keys)
 
-    if (error) {
-      throw new DatabaseError('SELECT', TABLE, error, { keys })
-    }
-    if (!data) {
-      throw new NotFoundError('Settings', keys, { keys })
-    }
+  if (!data) {
+    throw new NotFoundError('Settings', keys, { keys })
+  }
 
-    return data
-  },
-  'SELECT',
-  TABLE
-)
+  return data
+}
 
 /**
  * Get settings as key-value map - returns typed values based on setting type
@@ -421,30 +284,26 @@ export const getSettingsByKeys = withErrorMapping(
  * const settings = await getSettingsMap()
  * // Returns: { DELIVERY_COST_USD: 7.0, bcv_usd_rate: 40.0, MAINTENANCE_MODE: false }
  */
-export const getSettingsMap = withErrorMapping(
-  async (publicOnly = false) => {
-    const settings = await getAllSettings(publicOnly)
+export const getSettingsMap = async (publicOnly = false) => {
+  const settings = await getAllSettings(publicOnly)
 
-    const map = {}
-    for (const setting of settings) {
-      // Parse value based on type
-      switch (setting.type) {
-        case 'number':
-          map[setting.key] = parseFloat(setting.value)
-          break
-        case 'boolean':
-          map[setting.key] = setting.value === 'true' || setting.value === '1'
-          break
-        case 'json':
-          map[setting.key] = JSON.parse(setting.value)
-          break
-        default:
-          map[setting.key] = setting.value
-      }
+  const map = {}
+  for (const setting of settings) {
+    // Parse value based on type
+    switch (setting.type) {
+      case 'number':
+        map[setting.key] = parseFloat(setting.value)
+        break
+      case 'boolean':
+        map[setting.key] = setting.value === 'true' || setting.value === '1'
+        break
+      case 'json':
+        map[setting.key] = JSON.parse(setting.value)
+        break
+      default:
+        map[setting.key] = setting.value
     }
+  }
 
-    return map
-  },
-  'SELECT',
-  TABLE
-)
+  return map
+}
