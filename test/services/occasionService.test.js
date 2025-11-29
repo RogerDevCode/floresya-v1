@@ -18,7 +18,9 @@ vi.mock('../../api/architecture/di-container.js', () => ({
 vi.mock('../../api/services/validation/ValidatorService.js', () => ({
   default: {
     validateId: vi.fn((id) => {
-      if (!id || id === 'invalid') throw new Error('Invalid ID')
+      if (!id || id === 'invalid') {
+        throw new Error('Invalid ID')
+      }
       return id
     })
   }

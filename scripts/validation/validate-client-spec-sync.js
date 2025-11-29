@@ -236,19 +236,25 @@ class ClientSpecSyncValidator {
         const methodMatch = method === 'UNKNOWN' || specMethod === method
         
         // Try matching exact path
-        if (methodMatch && this.pathsMatch(specPath, path)) return true
+        if (methodMatch && this.pathsMatch(specPath, path)) {
+          return true
+        }
         
         // Try matching with /api prefix difference
         // If spec has /health and frontend has /api/health
         if (methodMatch && path.startsWith('/api') && !specPath.startsWith('/api')) {
            const pathWithoutApi = path.replace('/api', '')
-           if (this.pathsMatch(specPath, pathWithoutApi)) return true
+           if (this.pathsMatch(specPath, pathWithoutApi)) {
+             return true
+           }
         }
         
         // If spec has /api/health and frontend has /health (unlikely but possible)
         if (methodMatch && !path.startsWith('/api') && specPath.startsWith('/api')) {
            const pathWithApi = '/api' + path
-           if (this.pathsMatch(specPath, pathWithApi)) return true
+           if (this.pathsMatch(specPath, pathWithApi)) {
+             return true
+           }
         }
         
         return false
