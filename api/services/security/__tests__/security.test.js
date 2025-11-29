@@ -18,7 +18,10 @@ import InputSanitizationService from '../InputSanitizationService.js'
 import MalwareScanningService from '../MalwareScanningService.js'
 import AccountSecurityService from '../AccountSecurityService.js'
 import DataProtectionService from '../DataProtectionService.js'
-import AuditLoggingService, { SECURITY_EVENT_TYPES, COMPLIANCE_FRAMEWORKS } from '../AuditLoggingService.js'
+import AuditLoggingService, {
+  SECURITY_EVENT_TYPES,
+  COMPLIANCE_FRAMEWORKS
+} from '../AuditLoggingService.js'
 import { ValidationError, SecurityError } from '../../../errors/AppError.js'
 
 describe('Security Services', () => {
@@ -246,9 +249,11 @@ describe('Security Services', () => {
         path: testMaliciousPath
       }
 
-      await expect(MalwareScanningService.scanFile(file, {
-        strictMode: true
-      })).rejects.toThrow(SecurityError)
+      await expect(
+        MalwareScanningService.scanFile(file, {
+          strictMode: true
+        })
+      ).rejects.toThrow(SecurityError)
     })
 
     it('should validate file size limits', async () => {
@@ -399,7 +404,7 @@ describe('Security Services', () => {
 
       const decrypted = DataProtectionService.decrypt(encrypted)
       expect(decrypted).toBe(testData)
-      
+
       encryptSpy.mockRestore()
       decryptSpy.mockRestore()
     })
@@ -587,7 +592,9 @@ describe('Security Services', () => {
       writeFileSync(maliciousFile.path, maliciousContent)
 
       // Mock quarantineFile to avoid FS issues
-      const quarantineSpy = vi.spyOn(MalwareScanningService, 'quarantineFile').mockResolvedValue(true)
+      const quarantineSpy = vi
+        .spyOn(MalwareScanningService, 'quarantineFile')
+        .mockResolvedValue(true)
 
       try {
         // Should detect multiple threats

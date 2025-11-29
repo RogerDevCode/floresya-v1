@@ -94,13 +94,17 @@ describe('Product Image Service (Monolithic)', () => {
     })
 
     it('should throw BadRequestError for invalid productId', async () => {
-      await expect(ProductImageService.getProductImages('invalid')).rejects.toThrow('Invalid product ID')
+      await expect(ProductImageService.getProductImages('invalid')).rejects.toThrow(
+        'Invalid product ID'
+      )
     })
 
     it('should throw NotFoundError when no images found', async () => {
       mocks.findAll.mockResolvedValue([])
 
-      await expect(ProductImageService.getProductImages(1)).rejects.toThrow('Product images with ID 1 not found')
+      await expect(ProductImageService.getProductImages(1)).rejects.toThrow(
+        'Product images with ID 1 not found'
+      )
     })
   })
 
@@ -136,7 +140,7 @@ describe('Product Image Service (Monolithic)', () => {
         file_hash: 'hash123'
       }
       const createdImage = { id: 1, ...imageData }
-      
+
       mocks.create.mockResolvedValue(createdImage)
 
       const result = await ProductImageService.createImage(imageData)
@@ -150,7 +154,7 @@ describe('Product Image Service (Monolithic)', () => {
     it('should update an image', async () => {
       const updates = { url: 'new-url.jpg' }
       const updatedImage = { id: 1, url: 'new-url.jpg' }
-      
+
       mocks.update.mockResolvedValue(updatedImage)
 
       const result = await ProductImageService.updateImage(1, updates)
@@ -167,7 +171,7 @@ describe('Product Image Service (Monolithic)', () => {
   describe('deleteImage', () => {
     it('should soft delete an image', async () => {
       const deletedImage = { id: 1, active: false }
-      
+
       mocks.softDelete.mockResolvedValue(deletedImage)
 
       const result = await ProductImageService.deleteImage(1)
@@ -180,7 +184,7 @@ describe('Product Image Service (Monolithic)', () => {
   describe('setPrimaryImage', () => {
     it('should set primary image', async () => {
       const newPrimary = { id: 1, is_primary: true }
-      
+
       mocks.unsetPrimary.mockResolvedValue()
       mocks.setPrimary.mockResolvedValue(newPrimary)
 
@@ -199,7 +203,7 @@ describe('Product Image Service (Monolithic)', () => {
         { size: 'small', url: 'url2', file_hash: 'hash2' }
       ]
       const createdImages = imagesData.map((img, i) => ({ id: i + 1, ...img }))
-      
+
       mocks.createBatch.mockResolvedValue(createdImages)
 
       const result = await ProductImageService.createProductImagesAtomic(1, 1, imagesData)
@@ -209,13 +213,18 @@ describe('Product Image Service (Monolithic)', () => {
     })
 
     it('should throw BadRequestError for invalid input', async () => {
-      await expect(ProductImageService.createProductImagesAtomic(1, 1, [])).rejects.toThrow('Invalid imagesData')
+      await expect(ProductImageService.createProductImagesAtomic(1, 1, [])).rejects.toThrow(
+        'Invalid imagesData'
+      )
     })
   })
 
   describe('getProductsBatchWithImageSize', () => {
     it('should return products with images', async () => {
-      const products = [{ id: 1, name: 'P1' }, { id: 2, name: 'P2' }]
+      const products = [
+        { id: 1, name: 'P1' },
+        { id: 2, name: 'P2' }
+      ]
       const images = [
         { product_id: 1, url: 'url1', size: 'medium' },
         { product_id: 2, url: 'url2', size: 'medium' }
@@ -299,7 +308,9 @@ describe('Product Image Service (Monolithic)', () => {
     it('should throw NotFoundError when not found', async () => {
       mocks.findByProductAndSize.mockResolvedValue(null)
 
-      await expect(ProductImageService.getProductImageBySize(1, 'medium')).rejects.toThrow('No medium image found')
+      await expect(ProductImageService.getProductImageBySize(1, 'medium')).rejects.toThrow(
+        'No medium image found'
+      )
     })
   })
 

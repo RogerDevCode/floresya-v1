@@ -160,17 +160,17 @@ class ClientSpecSyncValidator {
         let url
 
         if (defaultMethod) {
-           url = match[1]
-           method = defaultMethod
+          url = match[1]
+          method = defaultMethod
         } else {
-           // Logic for other patterns
-           if (['get', 'post', 'put', 'delete', 'patch'].includes(match[1].toLowerCase())) {
-             method = match[1]
-             url = match[2]
-           } else {
-             url = match[1]
-             method = match[2] || 'GET'
-           }
+          // Logic for other patterns
+          if (['get', 'post', 'put', 'delete', 'patch'].includes(match[1].toLowerCase())) {
+            method = match[1]
+            url = match[2]
+          } else {
+            url = match[1]
+            method = match[2] || 'GET'
+          }
         }
 
         // Clean up the URL
@@ -200,21 +200,21 @@ class ClientSpecSyncValidator {
 
     // Replace /${...} with /{param} (path parameters)
     cleanPath = cleanPath.replace(/\/\$\{[^}]+\}/g, '/{param}')
-    
+
     // Replace remaining ${...} with nothing (likely query params)
     cleanPath = cleanPath.replace(/\$\{[^}]+\}/g, '')
 
     // Normalize to lowercase
     cleanPath = cleanPath.toLowerCase()
-    
+
     // Ensure it starts with /
     if (!cleanPath.startsWith('/')) {
       cleanPath = '/' + cleanPath
     }
-    
+
     // Handle double slashes
     cleanPath = cleanPath.replace(/\/+/g, '/')
-    
+
     // Note: We don't force /api prefix here anymore to allow matching /health endpoints
     // But we might need to handle it in extraction or validation
 
@@ -234,29 +234,29 @@ class ClientSpecSyncValidator {
         const [specMethod, specPath] = specCall.split(' ')
         // If method is UNKNOWN, match any method
         const methodMatch = method === 'UNKNOWN' || specMethod === method
-        
+
         // Try matching exact path
         if (methodMatch && this.pathsMatch(specPath, path)) {
           return true
         }
-        
+
         // Try matching with /api prefix difference
         // If spec has /health and frontend has /api/health
         if (methodMatch && path.startsWith('/api') && !specPath.startsWith('/api')) {
-           const pathWithoutApi = path.replace('/api', '')
-           if (this.pathsMatch(specPath, pathWithoutApi)) {
-             return true
-           }
+          const pathWithoutApi = path.replace('/api', '')
+          if (this.pathsMatch(specPath, pathWithoutApi)) {
+            return true
+          }
         }
-        
+
         // If spec has /api/health and frontend has /health (unlikely but possible)
         if (methodMatch && !path.startsWith('/api') && specPath.startsWith('/api')) {
-           const pathWithApi = '/api' + path
-           if (this.pathsMatch(specPath, pathWithApi)) {
-             return true
-           }
+          const pathWithApi = '/api' + path
+          if (this.pathsMatch(specPath, pathWithApi)) {
+            return true
+          }
         }
-        
+
         return false
       })
     })

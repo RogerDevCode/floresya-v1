@@ -39,9 +39,7 @@ class ApiClient {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(
-          errorData.message || `HTTP ${response.status}: ${response.statusText}`
-        )
+        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`)
       }
 
       const contentType = response.headers.get('content-type')
@@ -83,7 +81,7 @@ class ApiClient {
     })
     const query = queryString.toString()
     const queryPart = query ? '?' + query : ''
-        const endpoint = `/api/products${queryPart}`
+    const endpoint = `/api/products${queryPart}`
     return this.request(endpoint)
   }
 
@@ -117,7 +115,7 @@ class ApiClient {
     })
     const query = queryString.toString()
     const queryPart = query ? '?' + query : ''
-        const endpoint = `/api/products/${id}${queryPart}`
+    const endpoint = `/api/products/${id}${queryPart}`
     return this.request(endpoint)
   }
 
@@ -177,7 +175,7 @@ class ApiClient {
     })
     const query = queryString.toString()
     const queryPart = query ? '?' + query : ''
-        const endpoint = `/api/products/with-occasions${queryPart}`
+    const endpoint = `/api/products/with-occasions${queryPart}`
     return this.request(endpoint)
   }
 
@@ -253,7 +251,7 @@ class ApiClient {
     })
     const query = queryString.toString()
     const queryPart = query ? '?' + query : ''
-        const endpoint = `/api/products/${id}/images${queryPart}`
+    const endpoint = `/api/products/${id}/images${queryPart}`
     return this.request(endpoint)
   }
 
@@ -426,7 +424,7 @@ class ApiClient {
     })
     const query = queryString.toString()
     const queryPart = query ? '?' + query : ''
-        const endpoint = `/api/orders${queryPart}`
+    const endpoint = `/api/orders${queryPart}`
     return this.request(endpoint)
   }
 
@@ -549,7 +547,7 @@ class ApiClient {
     })
     const query = queryString.toString()
     const queryPart = query ? '?' + query : ''
-        const endpoint = `/api/users${queryPart}`
+    const endpoint = `/api/users${queryPart}`
     return this.request(endpoint)
   }
 
@@ -1138,7 +1136,7 @@ class ApiClient {
     })
     const query = queryString.toString()
     const queryPart = query ? '?' + query : ''
-        const endpoint = `/api/accounting/categories${queryPart}`
+    const endpoint = `/api/accounting/categories${queryPart}`
     return this.request(endpoint)
   }
 
@@ -1214,7 +1212,7 @@ class ApiClient {
     })
     const query = queryString.toString()
     const queryPart = query ? '?' + query : ''
-        const endpoint = `/api/accounting/expenses${queryPart}`
+    const endpoint = `/api/accounting/expenses${queryPart}`
     return this.request(endpoint)
   }
 
@@ -1244,7 +1242,7 @@ class ApiClient {
     })
     const query = queryString.toString()
     const queryPart = query ? '?' + query : ''
-        const endpoint = `/api/accounting/expenses/by-category${queryPart}`
+    const endpoint = `/api/accounting/expenses/by-category${queryPart}`
     return this.request(endpoint)
   }
 
@@ -1319,7 +1317,7 @@ class ApiClient {
     })
     const query = queryString.toString()
     const queryPart = query ? '?' + query : ''
-        const endpoint = `/api/accounting/reports/weekly${queryPart}`
+    const endpoint = `/api/accounting/reports/weekly${queryPart}`
     return this.request(endpoint)
   }
 
@@ -1348,7 +1346,7 @@ class ApiClient {
     })
     const query = queryString.toString()
     const queryPart = query ? '?' + query : ''
-        const endpoint = `/api/accounting/reports/monthly${queryPart}`
+    const endpoint = `/api/accounting/reports/monthly${queryPart}`
     return this.request(endpoint)
   }
 
@@ -1402,95 +1400,97 @@ export { ApiClient }
 // Convenience functions for common operations
 export const api = {
   getAllErrors: () => apiClient.getAllErrors(),
-  getAllProducts: (params) => apiClient.getAllProducts(params),
-  createProducts: (data) => apiClient.createProducts(data),
+  getAllProducts: params => apiClient.getAllProducts(params),
+  createProducts: data => apiClient.createProducts(data),
   getProductsById: (id, params) => apiClient.getProductsById(id, params),
   updateProducts: (id, data) => apiClient.updateProducts(id, data),
-  deleteProducts: (id) => apiClient.deleteProducts(id),
+  deleteProducts: id => apiClient.deleteProducts(id),
   getAllCarouselProducts: () => apiClient.getAllCarouselProducts(),
-  getProductsWithOccasions: (params) => apiClient.getProductsWithOccasions(params),
-  createProductsWithOccasions: (data) => apiClient.createProductsWithOccasions(data),
-  getProductsByOccasion: (occasionId) => apiClient.getProductsByOccasion(occasionId),
-  getAllSku: (sku) => apiClient.getAllSku(sku),
-  getPrimaryImage: (id) => apiClient.getPrimaryImage(id),
+  getProductsWithOccasions: params => apiClient.getProductsWithOccasions(params),
+  createProductsWithOccasions: data => apiClient.createProductsWithOccasions(data),
+  getProductsByOccasion: occasionId => apiClient.getProductsByOccasion(occasionId),
+  getAllSku: sku => apiClient.getAllSku(sku),
+  getPrimaryImage: id => apiClient.getPrimaryImage(id),
   getProductImages: (id, params) => apiClient.getProductImages(id, params),
   uploadProductImages: (id, data) => apiClient.uploadProductImages(id, data),
   updateCarouselProducts: (id, data) => apiClient.updateCarouselProducts(id, data),
   updateStock: (id, data) => apiClient.updateStock(id, data),
   deleteProductImage: (id, imageIndex) => apiClient.deleteProductImage(id, imageIndex),
   updatePrimaryImage: (id, imageIndex, data) => apiClient.updatePrimaryImage(id, imageIndex, data),
-  getProductOccasions: (id) => apiClient.getProductOccasions(id),
+  getProductOccasions: id => apiClient.getProductOccasions(id),
   updateProductOccasions: (id, data) => apiClient.updateProductOccasions(id, data),
-  createProductOccasion: (id, occasionId, data) => apiClient.createProductOccasion(id, occasionId, data),
+  createProductOccasion: (id, occasionId, data) =>
+    apiClient.createProductOccasion(id, occasionId, data),
   reactivateProducts: (id, data) => apiClient.reactivateProducts(id, data),
-  getAllOrders: (params) => apiClient.getAllOrders(params),
-  createOrders: (data) => apiClient.createOrders(data),
-  getOrdersById: (id) => apiClient.getOrdersById(id),
+  getAllOrders: params => apiClient.getAllOrders(params),
+  createOrders: data => apiClient.createOrders(data),
+  getOrdersById: id => apiClient.getOrdersById(id),
   updateOrders: (id, data) => apiClient.updateOrders(id, data),
-  getOrdersByUser: (userId) => apiClient.getOrdersByUser(userId),
-  getOrdersStatusHistory: (id) => apiClient.getOrdersStatusHistory(id),
+  getOrdersByUser: userId => apiClient.getOrdersByUser(userId),
+  getOrdersStatusHistory: id => apiClient.getOrdersStatusHistory(id),
   updateOrdersStatus: (id, data) => apiClient.updateOrdersStatus(id, data),
   cancelOrders: (id, data) => apiClient.cancelOrders(id, data),
-  getAllUsers: (params) => apiClient.getAllUsers(params),
-  createUsers: (data) => apiClient.createUsers(data),
-  getUsersById: (id) => apiClient.getUsersById(id),
+  getAllUsers: params => apiClient.getAllUsers(params),
+  createUsers: data => apiClient.createUsers(data),
+  getUsersById: id => apiClient.getUsersById(id),
   updateUsers: (id, data) => apiClient.updateUsers(id, data),
-  deleteUsers: (id) => apiClient.deleteUsers(id),
-  getAllEmail: (email) => apiClient.getAllEmail(email),
+  deleteUsers: id => apiClient.deleteUsers(id),
+  getAllEmail: email => apiClient.getAllEmail(email),
   reactivateUsers: (id, data) => apiClient.reactivateUsers(id, data),
   verifyUserEmail: (id, data) => apiClient.verifyUserEmail(id, data),
   getAllMethods: () => apiClient.getAllMethods(),
   confirmPayments: (id, data) => apiClient.confirmPayments(id, data),
   getAllOccasions: () => apiClient.getAllOccasions(),
-  createOccasions: (data) => apiClient.createOccasions(data),
-  getOccasionsById: (id) => apiClient.getOccasionsById(id),
+  createOccasions: data => apiClient.createOccasions(data),
+  getOccasionsById: id => apiClient.getOccasionsById(id),
   updateOccasions: (id, data) => apiClient.updateOccasions(id, data),
-  deleteOccasions: (id) => apiClient.deleteOccasions(id),
-  getAllSlug: (slug) => apiClient.getAllSlug(slug),
+  deleteOccasions: id => apiClient.deleteOccasions(id),
+  getAllSlug: slug => apiClient.getAllSlug(slug),
   updateOccasionDisplayOrder: (id, data) => apiClient.updateOccasionDisplayOrder(id, data),
   reactivateOccasions: (id, data) => apiClient.reactivateOccasions(id, data),
   getAllPublic: () => apiClient.getAllPublic(),
   getAllMap: () => apiClient.getAllMap(),
-  getValue: (key) => apiClient.getValue(key),
+  getValue: key => apiClient.getValue(key),
   getAllSettings: () => apiClient.getAllSettings(),
-  createSettings: (data) => apiClient.createSettings(data),
-  getSettingsByKey: (key) => apiClient.getSettingsByKey(key),
+  createSettings: data => apiClient.createSettings(data),
+  getSettingsByKey: key => apiClient.getSettingsByKey(key),
   updateSettings: (key, data) => apiClient.updateSettings(key, data),
-  deleteSettings: (key) => apiClient.deleteSettings(key),
-  uploadSettingImage: (data) => apiClient.uploadSettingImage(data),
-  createBcvprice: (data) => apiClient.createBcvprice(data),
+  deleteSettings: key => apiClient.deleteSettings(key),
+  uploadSettingImage: data => apiClient.uploadSettingImage(data),
+  createBcvprice: data => apiClient.createBcvprice(data),
   getAllBusinessrules: () => apiClient.getAllBusinessrules(),
   getAllPaymentmethods: () => apiClient.getAllPaymentmethods(),
-  createPaymentmethods: (data) => apiClient.createPaymentmethods(data),
-  createAddisactivetosettings: (data) => apiClient.createAddisactivetosettings(data),
-  getPaymentmethodsById: (id) => apiClient.getPaymentmethodsById(id),
+  createPaymentmethods: data => apiClient.createPaymentmethods(data),
+  createAddisactivetosettings: data => apiClient.createAddisactivetosettings(data),
+  getPaymentmethodsById: id => apiClient.getPaymentmethodsById(id),
   updatePaymentmethods: (id, data) => apiClient.updatePaymentmethods(id, data),
-  deletePaymentmethods: (id) => apiClient.deletePaymentmethods(id),
-  updatePaymentMethodDisplayOrder: (id, data) => apiClient.updatePaymentMethodDisplayOrder(id, data),
+  deletePaymentmethods: id => apiClient.deletePaymentmethods(id),
+  updatePaymentMethodDisplayOrder: (id, data) =>
+    apiClient.updatePaymentMethodDisplayOrder(id, data),
   reactivatePaymentMethods: (id, data) => apiClient.reactivatePaymentMethods(id, data),
   getAllMetrics: () => apiClient.getAllMetrics(),
   getAllReport: () => apiClient.getAllReport(),
   getAllDatabase: () => apiClient.getAllDatabase(),
   getAllProfiling: () => apiClient.getAllProfiling(),
-  createStart: (data) => apiClient.createStart(data),
-  createStop: (data) => apiClient.createStop(data),
+  createStart: data => apiClient.createStart(data),
+  createStop: data => apiClient.createStop(data),
   getAllRecovery: () => apiClient.getAllRecovery(),
   getAllDiagnostics: () => apiClient.getAllDiagnostics(),
-  getAllCategories: (params) => apiClient.getAllCategories(params),
-  createCategories: (data) => apiClient.createCategories(data),
-  getCategoriesById: (id) => apiClient.getCategoriesById(id),
+  getAllCategories: params => apiClient.getAllCategories(params),
+  createCategories: data => apiClient.createCategories(data),
+  getCategoriesById: id => apiClient.getCategoriesById(id),
   updateCategories: (id, data) => apiClient.updateCategories(id, data),
-  deleteCategories: (id) => apiClient.deleteCategories(id),
-  getAllExpenses: (params) => apiClient.getAllExpenses(params),
-  createExpenses: (data) => apiClient.createExpenses(data),
-  getAllBycategory: (params) => apiClient.getAllBycategory(params),
-  getExpensesById: (id) => apiClient.getExpensesById(id),
+  deleteCategories: id => apiClient.deleteCategories(id),
+  getAllExpenses: params => apiClient.getAllExpenses(params),
+  createExpenses: data => apiClient.createExpenses(data),
+  getAllBycategory: params => apiClient.getAllBycategory(params),
+  getExpensesById: id => apiClient.getExpensesById(id),
   updateExpenses: (id, data) => apiClient.updateExpenses(id, data),
-  deleteExpenses: (id) => apiClient.deleteExpenses(id),
+  deleteExpenses: id => apiClient.deleteExpenses(id),
   getAllDashboard: () => apiClient.getAllDashboard(),
-  getAllWeekly: (params) => apiClient.getAllWeekly(params),
+  getAllWeekly: params => apiClient.getAllWeekly(params),
   getAllCurrentweek: () => apiClient.getAllCurrentweek(),
-  getAllMonthly: (params) => apiClient.getAllMonthly(params),
+  getAllMonthly: params => apiClient.getAllMonthly(params),
   getAllCurrentmonth: () => apiClient.getAllCurrentmonth(),
-  handleError: (error) => apiClient.handleError(error)
+  handleError: error => apiClient.handleError(error)
 }

@@ -14,13 +14,13 @@ vi.mock('../api/services/supabaseClient.js', async () => {
     supabase: mockSupabase,
     DB_SCHEMA: {
       products: { table: 'products' },
-      users: { 
+      users: {
         table: 'users',
         enums: {
           role: ['user', 'admin']
         }
       },
-      orders: { 
+      orders: {
         table: 'orders',
         enums: {
           status: ['pending', 'verified', 'preparing', 'shipped', 'delivered', 'cancelled']
@@ -38,7 +38,7 @@ vi.mock('../api/services/supabaseClient.js', async () => {
 })
 
 // Mock authentication middleware to bypass security for basic testing
-vi.mock('../api/middleware/auth/index.js', async (importOriginal) => {
+vi.mock('../api/middleware/auth/index.js', async importOriginal => {
   const actual = await importOriginal()
   return {
     ...actual,
@@ -46,7 +46,10 @@ vi.mock('../api/middleware/auth/index.js', async (importOriginal) => {
       req.user = { id: 1, role: 'admin', email: 'admin@example.com' }
       next()
     },
-    authorize: (...roles) => (req, res, next) => next(),
+    authorize:
+      (...roles) =>
+      (req, res, next) =>
+        next(),
     requireAdmin: (req, res, next) => next()
   }
 })
@@ -59,9 +62,15 @@ vi.mock('../api/repositories/ProductRepository.js', () => {
       count: async () => 0
     }),
     ProductRepository: class {
-      static async create() { return new this() }
-      async findAllWithFilters() { return [] }
-      async count() { return 0 }
+      static async create() {
+        return new this()
+      }
+      async findAllWithFilters() {
+        return []
+      }
+      async count() {
+        return 0
+      }
     }
   }
 })
@@ -90,7 +99,7 @@ vi.mock('../api/architecture/di-container.js', () => {
 })
 
 // Mock OpenAPI Validator to prevent middleware issues
-vi.mock('../api/middleware/api/index.js', async (importOriginal) => {
+vi.mock('../api/middleware/api/index.js', async importOriginal => {
   const actual = await importOriginal()
   return {
     ...actual,
@@ -145,7 +154,7 @@ describe('OpenAPI Basic Functionality', () => {
 
     it('should serve Swagger UI', async () => {
       const response = await request(app).get('/api-docs/').redirects(5)
-      
+
       // Accept either 200 (if redirects followed) or 302 (if redirected to index.html)
       expect([200, 302]).toContain(response.status)
       if (response.status === 200) {

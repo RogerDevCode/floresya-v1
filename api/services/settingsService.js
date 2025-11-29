@@ -11,10 +11,7 @@
  */
 
 import * as SettingsRepository from '../repositories/settingsRepository.js'
-import {
-  NotFoundError,
-  BadRequestError
-} from '../errors/AppError.js'
+import { NotFoundError, BadRequestError } from '../errors/AppError.js'
 import { validateSetting } from '../utils/validation.js'
 
 /**

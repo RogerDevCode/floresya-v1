@@ -181,78 +181,81 @@ export async function createOrderWithItems(orderData, orderItems) {
       })
     }
 
-    // Validate each item and check stock
-    for (const item of orderItems) {
-      // Convert string IDs to numbers if needed
-      let productId = item.product_id
-      if (typeof productId === 'string') {
-        productId = parseInt(productId, 10)
-      }
+    // Validate stock availability using ProductRepository
+    const productRepository = await getProductRepository()
 
-      if (!productId || typeof productId !== 'number' || isNaN(productId)) {
-        throw new ValidationError('Order validation failed', {
-          'orderItems.product_id': 'must be a number'
-        })
-      }
-      if (!item.product_name || typeof item.product_name !== 'string') {
-        throw new ValidationError('Order validation failed', {
-          'orderItems.product_name': 'must be a string'
-        })
-      }
+    // Validate each item and check stock in parallel
+    await Promise.all(
+      orderItems.map(async item => {
+        // Convert string IDs to numbers if needed
+        let productId = item.product_id
+        if (typeof productId === 'string') {
+          productId = parseInt(productId, 10)
+        }
 
-      // Convert string quantities to numbers if needed
-      let quantity = item.quantity
-      if (typeof quantity === 'string') {
-        quantity = parseInt(quantity, 10)
-      }
+        if (!productId || typeof productId !== 'number' || isNaN(productId)) {
+          throw new ValidationError('Order validation failed', {
+            'orderItems.product_id': 'must be a number'
+          })
+        }
+        if (!item.product_name || typeof item.product_name !== 'string') {
+          throw new ValidationError('Order validation failed', {
+            'orderItems.product_name': 'must be a string'
+          })
+        }
 
-      if (!quantity || typeof quantity !== 'number' || isNaN(quantity) || quantity <= 0) {
-        throw new ValidationError('Order validation failed', {
-          'orderItems.quantity': 'must be positive'
-        })
-      }
+        // Convert string quantities to numbers if needed
+        let quantity = item.quantity
+        if (typeof quantity === 'string') {
+          quantity = parseInt(quantity, 10)
+        }
 
-      // Convert string prices to numbers if needed
-      let unitPriceUsd = item.unit_price_usd
-      if (typeof unitPriceUsd === 'string') {
-        unitPriceUsd = parseFloat(unitPriceUsd)
-      }
+        if (!quantity || typeof quantity !== 'number' || isNaN(quantity) || quantity <= 0) {
+          throw new ValidationError('Order validation failed', {
+            'orderItems.quantity': 'must be positive'
+          })
+        }
 
-      if (
-        !unitPriceUsd ||
-        typeof unitPriceUsd !== 'number' ||
-        isNaN(unitPriceUsd) ||
-        unitPriceUsd <= 0
-      ) {
-        throw new ValidationError('Order validation failed', {
-          'orderItems.unit_price_usd': 'must be positive'
-        })
-      }
+        // Convert string prices to numbers if needed
+        let unitPriceUsd = item.unit_price_usd
+        if (typeof unitPriceUsd === 'string') {
+          unitPriceUsd = parseFloat(unitPriceUsd)
+        }
 
-      // Validate stock availability using ProductRepository
-      const productRepository = await getProductRepository()
-      const product = await productRepository.findById(item.product_id, true)
+        if (
+          !unitPriceUsd ||
+          typeof unitPriceUsd !== 'number' ||
+          isNaN(unitPriceUsd) ||
+          unitPriceUsd <= 0
+        ) {
+          throw new ValidationError('Order validation failed', {
+            'orderItems.unit_price_usd': 'must be positive'
+          })
+        }
 
-      if (!product) {
-        throw new NotFoundError('Product', item.product_id, { productId: item.product_id })
-      }
+        const product = await productRepository.findById(item.product_id, true)
 
-      if (!product.active) {
-        throw new ValidationError('Product is not active', {
-          productId: item.product_id,
-          productName: product.name
-        })
-      }
+        if (!product) {
+          throw new NotFoundError('Product', item.product_id, { productId: item.product_id })
+        }
 
-      if (product.stock < item.quantity) {
-        throw new ValidationError('Insufficient stock', {
-          productId: item.product_id,
-          productName: product.name,
-          requested: item.quantity,
-          available: product.stock
-        })
-      }
-    }
+        if (!product.active) {
+          throw new ValidationError('Product is not active', {
+            productId: item.product_id,
+            productName: product.name
+          })
+        }
+
+        if (product.stock < item.quantity) {
+          throw new ValidationError('Insufficient stock', {
+            productId: item.product_id,
+            productName: product.name,
+            requested: item.quantity,
+            available: product.stock
+          })
+        }
+      })
+    )
 
     // Sanitize order data before database operations
     const sanitizedOrderData = sanitizeOrderData(orderData, false)
@@ -340,33 +343,8 @@ export async function createOrderWithItems(orderData, orderItems) {
     })
 
     // Use atomic stored function (SSOT: DB_FUNCTIONS.createOrderWithItems)
-    const result = await supabase.rpc('create_order_with_items', {
-      order_data: orderPayload,
-      order_items: itemsPayload
-    })
-
-    const data = result?.data ?? result
-    const error = result?.error
-
-    if (error) {
-      throw new DatabaseError('RPC', 'create_order_with_items', error, {
-        orderData,
-        itemCount: orderItems.length
-      })
-    }
-
-    // RPC functions return single values, not arrays
-    if (data === null || (Array.isArray(data) && data.length === 0)) {
-      throw new DatabaseError(
-        'RPC',
-        'create_order_with_items',
-        new InternalServerError('No data returned'),
-        {
-          orderData,
-          itemCount: orderItems.length
-        }
-      )
-    }
+    const orderRepository = await getOrderRepository()
+    const data = await orderRepository.createWithItems(orderPayload, itemsPayload)
 
     return data
   } catch (error) {
@@ -380,6 +358,8 @@ export async function createOrderWithItems(orderData, orderItems) {
  */
 export const updateOrderStatus = withErrorMapping(
   async (orderId, newStatus, notes = null, changedBy = null) => {
+    const orderRepository = await getOrderRepository()
+
     if (!orderId || typeof orderId !== 'number') {
       throw new BadRequestError('Invalid order ID: must be a number', { orderId })
     }
@@ -391,34 +371,7 @@ export const updateOrderStatus = withErrorMapping(
     }
 
     // Use atomic stored function (SSOT: DB_FUNCTIONS.updateOrderStatusWithHistory)
-    const { data, error } = await supabase.rpc('update_order_status_with_history', {
-      order_id: orderId,
-      new_status: newStatus,
-      notes: notes,
-      changed_by: changedBy
-    })
-
-    if (error) {
-      if (error.message?.includes('not found')) {
-        throw new NotFoundError('Order', orderId)
-      }
-      throw new DatabaseError('RPC', 'update_order_status_with_history', error, {
-        orderId,
-        newStatus
-      })
-    }
-
-    if (!data) {
-      throw new DatabaseError(
-        'RPC',
-        'update_order_status_with_history',
-        new InternalServerError('No data returned'),
-        {
-          orderId,
-          newStatus
-        }
-      )
-    }
+    const data = await orderRepository.updateStatusWithHistory(orderId, newStatus, notes, changedBy)
 
     return data
   },

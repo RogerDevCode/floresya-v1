@@ -94,7 +94,9 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
       OrderRepository: createMockRepository({
         findByIdWithItems: vi.fn(),
         findAllWithFilters: vi.fn(),
-        cancel: vi.fn()
+        cancel: vi.fn(),
+        createWithItems: vi.fn(),
+        updateStatusWithHistory: vi.fn()
       }),
       UserRepository: createMockRepository({
         findByEmail: vi.fn(),
@@ -212,7 +214,8 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
         order_items: orderItems
       }
 
-      mockSupabase.rpc.mockResolvedValue({ data: createdOrder, error: null })
+      // mockSupabase.rpc.mockResolvedValue({ data: createdOrder, error: null })
+      mockRepositories.OrderRepository.createWithItems.mockResolvedValue(createdOrder)
       mockRepositories.OrderRepository.findByIdWithItems.mockResolvedValue(createdOrder)
 
       const order = await createOrderWithItems(orderData, orderItems)
@@ -228,7 +231,8 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
 
       for (const transition of statusTransitions) {
         const updatedOrder = { ...order, status: transition.to }
-        mockSupabase.rpc.mockResolvedValue({ data: updatedOrder, error: null })
+        // mockSupabase.rpc.mockResolvedValue({ data: updatedOrder, error: null })
+        mockRepositories.OrderRepository.updateStatusWithHistory.mockResolvedValue(updatedOrder)
         mockRepositories.OrderRepository.findByIdWithItems.mockResolvedValue(updatedOrder)
 
         const processedOrder = await updateOrderStatus(1, transition.to)
@@ -314,13 +318,17 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
         status: 'pending',
         total_amount_usd: totalAmount
       }
-      mockSupabase.rpc.mockResolvedValueOnce({ data: order1, error: null })
+      // mockSupabase.rpc.mockResolvedValueOnce({ data: order1, error: null })
+      mockRepositories.OrderRepository.createWithItems.mockResolvedValueOnce(order1)
 
       // Second order fails due to insufficient stock
-      mockSupabase.rpc.mockResolvedValueOnce({
-        data: null,
-        error: { message: 'Insufficient stock', code: 'INSUFFICIENT_STOCK' }
-      })
+      // mockSupabase.rpc.mockResolvedValueOnce({
+      //   data: null,
+      //   error: { message: 'Insufficient stock', code: 'INSUFFICIENT_STOCK' }
+      // })
+      mockRepositories.OrderRepository.createWithItems.mockRejectedValueOnce(
+        new Error('Insufficient stock')
+      )
 
       const firstOrder = await createOrderWithItems(orderData, orderItems)
       expect(firstOrder.id).toBe(1)
@@ -350,7 +358,9 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
 
       // Step 3: Verify product appears in carousel
       const mockCarouselProducts = [updatedProduct]
-      mockRepositories.ProductRepository.findFeaturedWithImages.mockResolvedValue(mockCarouselProducts)
+      mockRepositories.ProductRepository.findFeaturedWithImages.mockResolvedValue(
+        mockCarouselProducts
+      )
 
       const carousel = await getCarouselProducts()
       expect(carousel).toHaveLength(1)
@@ -450,7 +460,8 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
         user_id: user.id,
         total_amount_usd: product.price_usd // Calculate from order items
       }
-      mockSupabase.rpc.mockResolvedValue({ data: order, error: null })
+      // mockSupabase.rpc.mockResolvedValue({ data: order, error: null })
+      mockRepositories.OrderRepository.createWithItems.mockResolvedValue(order)
 
       const createdOrder = await createOrderWithItems(orderData, orderItems)
       expect(createdOrder.user_id).toBe(user.id)
@@ -507,13 +518,16 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
       mockRepositories.ProductRepository.findById.mockResolvedValue(product, true)
 
       // Mock RPC failure
-      mockSupabase.rpc.mockResolvedValue({
-        data: null,
-        error: {
-          message: 'Transaction failed due to constraint violation',
-          code: POSTGRESQL_ERROR_CODES.FOREIGN_KEY_VIOLATION
-        }
-      })
+      // mockSupabase.rpc.mockResolvedValue({
+      //   data: null,
+      //   error: {
+      //     message: 'Transaction failed due to constraint violation',
+      //     code: POSTGRESQL_ERROR_CODES.FOREIGN_KEY_VIOLATION
+      //   }
+      // })
+      const dbError = new Error('Transaction failed due to constraint violation')
+      dbError.code = POSTGRESQL_ERROR_CODES.FOREIGN_KEY_VIOLATION
+      mockRepositories.OrderRepository.createWithItems.mockRejectedValue(dbError)
 
       const orderData = {
         customer_id: 1, // Required
@@ -534,7 +548,8 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
       ]
 
       await expect(createOrderWithItems(orderData, orderItems)).rejects.toThrow()
-      expect(mockSupabase.rpc).toHaveBeenCalledWith('create_order_with_items', expect.any(Object))
+      // expect(mockSupabase.rpc).toHaveBeenCalledWith('create_order_with_items', expect.any(Object))
+      expect(mockRepositories.OrderRepository.createWithItems).toHaveBeenCalled()
     })
 
     test('should handle concurrent modification conflicts', async () => {
@@ -602,7 +617,8 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
         }))
 
         const order = { id: i + 1, ...orderData, status: 'pending' }
-        mockSupabase.rpc.mockResolvedValue({ data: order, error: null })
+        // mockSupabase.rpc.mockResolvedValue({ data: order, error: null })
+        mockRepositories.OrderRepository.createWithItems.mockResolvedValue(order)
 
         return createOrderWithItems(orderData, orderItems)
       })
@@ -660,13 +676,16 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
         total_amount: product.price_usd // Also required
       }
 
-      mockSupabase.rpc.mockResolvedValue({
-        data: null,
-        error: {
-          message: 'Foreign key violation',
-          code: POSTGRESQL_ERROR_CODES.FOREIGN_KEY_VIOLATION
-        }
-      })
+      // mockSupabase.rpc.mockResolvedValue({
+      //   data: null,
+      //   error: {
+      //     message: 'Foreign key violation',
+      //     code: POSTGRESQL_ERROR_CODES.FOREIGN_KEY_VIOLATION
+      //   }
+      // })
+      const fkError = new Error('Foreign key violation')
+      fkError.code = POSTGRESQL_ERROR_CODES.FOREIGN_KEY_VIOLATION
+      mockRepositories.OrderRepository.createWithItems.mockRejectedValue(fkError)
 
       const orderItems = [
         {
@@ -709,7 +728,10 @@ describe('Cross-Service Integration Tests - Business Workflows', () => {
         return Promise.resolve({ ...product, stock: 3 })
       })
 
-      mockSupabase.rpc.mockRejectedValue(new Error('Order creation failed'))
+      // mockSupabase.rpc.mockRejectedValue(new Error('Order creation failed'))
+      mockRepositories.OrderRepository.createWithItems.mockRejectedValue(
+        new Error('Order creation failed')
+      )
 
       const orderData = {
         customer_id: 1, // Required

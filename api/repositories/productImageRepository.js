@@ -329,7 +329,7 @@ export const findImagesByProductIdsAndSize = withErrorMapping(
 )
 
 export const findFallbackImagesByProductIds = withErrorMapping(
-  async (productIds) => {
+  async productIds => {
     const { data, error } = await supabase
       .from(TABLE)
       .select('*')

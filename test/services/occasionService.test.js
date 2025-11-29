@@ -17,7 +17,7 @@ vi.mock('../../api/architecture/di-container.js', () => ({
 // Mock ValidatorService
 vi.mock('../../api/services/validation/ValidatorService.js', () => ({
   default: {
-    validateId: vi.fn((id) => {
+    validateId: vi.fn(id => {
       if (!id || id === 'invalid') {
         throw new Error('Invalid ID')
       }
@@ -99,7 +99,9 @@ describe('Occasion Service (Monolithic)', () => {
     it('should throw NotFoundError when occasion not found', async () => {
       mockRepository.findById.mockResolvedValue(null)
 
-      await expect(OccasionService.getOccasionById(999)).rejects.toThrow('Occasion with ID 999 not found')
+      await expect(OccasionService.getOccasionById(999)).rejects.toThrow(
+        'Occasion with ID 999 not found'
+      )
     })
   })
 
@@ -121,7 +123,9 @@ describe('Occasion Service (Monolithic)', () => {
     it('should throw NotFoundError when occasion not found', async () => {
       mockRepository.findBySlug.mockResolvedValue(null)
 
-      await expect(OccasionService.getOccasionBySlug('nonexistent')).rejects.toThrow('Occasion with ID nonexistent not found')
+      await expect(OccasionService.getOccasionBySlug('nonexistent')).rejects.toThrow(
+        'Occasion with ID nonexistent not found'
+      )
     })
   })
 
@@ -140,11 +144,13 @@ describe('Occasion Service (Monolithic)', () => {
       const result = await OccasionService.createOccasion(occasionData)
 
       expect(result).toEqual(expectedOccasion)
-      expect(mockRepository.create).toHaveBeenCalledWith(expect.objectContaining({
-        name: 'Birthday',
-        slug: 'birthday',
-        active: true
-      }))
+      expect(mockRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Birthday',
+          slug: 'birthday',
+          active: true
+        })
+      )
     })
   })
 
@@ -165,12 +171,16 @@ describe('Occasion Service (Monolithic)', () => {
     })
 
     it('should throw BadRequestError when no valid fields to update', async () => {
-      await expect(OccasionService.updateOccasion(1, { invalidField: 'value' })).rejects.toThrow('No valid fields to update')
+      await expect(OccasionService.updateOccasion(1, { invalidField: 'value' })).rejects.toThrow(
+        'No valid fields to update'
+      )
     })
 
     it('should throw NotFoundError when update fails (returns null)', async () => {
       mockRepository.update.mockResolvedValue(null)
-      await expect(OccasionService.updateOccasion(1, { name: 'Test' })).rejects.toThrow('Occasion with ID 1 not found')
+      await expect(OccasionService.updateOccasion(1, { name: 'Test' })).rejects.toThrow(
+        'Occasion with ID 1 not found'
+      )
     })
   })
 
@@ -187,7 +197,9 @@ describe('Occasion Service (Monolithic)', () => {
 
     it('should throw NotFoundError when delete fails', async () => {
       mockRepository.update.mockResolvedValue(null)
-      await expect(OccasionService.deleteOccasion(1)).rejects.toThrow('Occasion with ID 1 not found')
+      await expect(OccasionService.deleteOccasion(1)).rejects.toThrow(
+        'Occasion with ID 1 not found'
+      )
     })
   })
 
@@ -204,7 +216,9 @@ describe('Occasion Service (Monolithic)', () => {
 
     it('should throw NotFoundError when reactivate fails', async () => {
       mockRepository.update.mockResolvedValue(null)
-      await expect(OccasionService.reactivateOccasion(1)).rejects.toThrow('Occasion with ID 1 not found')
+      await expect(OccasionService.reactivateOccasion(1)).rejects.toThrow(
+        'Occasion with ID 1 not found'
+      )
     })
   })
 
@@ -220,7 +234,9 @@ describe('Occasion Service (Monolithic)', () => {
     })
 
     it('should throw BadRequestError when order is invalid', async () => {
-      await expect(OccasionService.updateDisplayOrder(1, -1)).rejects.toThrow('Invalid display_order')
+      await expect(OccasionService.updateDisplayOrder(1, -1)).rejects.toThrow(
+        'Invalid display_order'
+      )
     })
   })
 })

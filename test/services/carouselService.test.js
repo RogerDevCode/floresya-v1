@@ -72,11 +72,11 @@ describe('Carousel Service - Carousel Management Operations', () => {
 
     // Register dependencies in DI Container
     DIContainer.registerInstance('SupabaseClient', mockSupabase)
-    
+
     // Manually create and register ProductRepository to avoid dependency resolution issues in test
     const productRepository = createProductRepository(mockSupabase)
     DIContainer.registerInstance('ProductRepository', productRepository)
-    
+
     // Mock other repositories if needed
     // DIContainer.register('ProductRepository', createProductRepository, {
     //   dependencies: ['SupabaseClient']

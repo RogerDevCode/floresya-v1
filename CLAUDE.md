@@ -123,7 +123,6 @@ throw new Error(`Error creando Item: ${error.message}`);
 }
 // Uso: const item = await Item.create(1);
 
-
 1. **Detección de "Zonas de Peligro":**
    Escanea el código provisto buscando:
    - Llamadas a funciones asíncronas sin `await`.

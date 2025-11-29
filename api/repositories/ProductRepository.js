@@ -239,7 +239,7 @@ export class ProductRepository extends BaseRepository {
       // Eliminar la propiedad product_images y agregar image_url_small
       const productData = { ...product }
       delete productData.product_images
-      
+
       return {
         ...productData,
         image_url_small: imageUrl

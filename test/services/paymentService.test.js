@@ -42,13 +42,18 @@ describe('Payment Service (Monolithic)', () => {
       findByIdWithItems: vi.fn()
     }
 
-    vi.mocked(DIContainer.resolve).mockImplementation((key) => {
+    vi.mocked(DIContainer.resolve).mockImplementation(key => {
       switch (key) {
-        case 'PaymentMethodRepository': return mockPaymentMethodRepo
-        case 'PaymentRepository': return mockPaymentRepo
-        case 'SettingsRepository': return mockSettingsRepo
-        case 'OrderRepository': return mockOrderRepo
-        default: return null
+        case 'PaymentMethodRepository':
+          return mockPaymentMethodRepo
+        case 'PaymentRepository':
+          return mockPaymentRepo
+        case 'SettingsRepository':
+          return mockSettingsRepo
+        case 'OrderRepository':
+          return mockOrderRepo
+        default:
+          return null
       }
     })
   })
@@ -66,7 +71,9 @@ describe('Payment Service (Monolithic)', () => {
     it('should throw NotFoundError when no methods found', async () => {
       mockPaymentMethodRepo.findActive.mockResolvedValue([])
 
-      await expect(PaymentService.getPaymentMethods()).rejects.toThrow('Payment Methods with ID active not found')
+      await expect(PaymentService.getPaymentMethods()).rejects.toThrow(
+        'Payment Methods with ID active not found'
+      )
     })
   })
 
@@ -76,13 +83,15 @@ describe('Payment Service (Monolithic)', () => {
 
       const result = await PaymentService.getDeliveryCost()
 
-      expect(result).toBe(5.00)
+      expect(result).toBe(5.0)
     })
 
     it('should throw NotFoundError when setting not found', async () => {
       mockSettingsRepo.findByKey.mockResolvedValue(null)
 
-      await expect(PaymentService.getDeliveryCost()).rejects.toThrow('Setting with ID DELIVERY_COST_USD not found')
+      await expect(PaymentService.getDeliveryCost()).rejects.toThrow(
+        'Setting with ID DELIVERY_COST_USD not found'
+      )
     })
   })
 
@@ -113,18 +122,21 @@ describe('Payment Service (Monolithic)', () => {
       const result = await PaymentService.confirmPayment(1, paymentData)
 
       expect(result).toEqual(createdPayment)
-      expect(mockPaymentRepo.create).toHaveBeenCalledWith(expect.objectContaining({
-        order_id: 1,
-        payment_method_id: 1,
-        amount_usd: 10
-      }))
+      expect(mockPaymentRepo.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          order_id: 1,
+          payment_method_id: 1,
+          amount_usd: 10
+        })
+      )
     })
 
     it('should throw NotFoundError when payment method not found', async () => {
       mockPaymentMethodRepo.findAllWithFilters.mockResolvedValue([])
 
-      await expect(PaymentService.confirmPayment(1, { payment_method: 'invalid', reference_number: '123' }))
-        .rejects.toThrow('Payment Method with ID invalid not found')
+      await expect(
+        PaymentService.confirmPayment(1, { payment_method: 'invalid', reference_number: '123' })
+      ).rejects.toThrow('Payment Method with ID invalid not found')
     })
   })
 

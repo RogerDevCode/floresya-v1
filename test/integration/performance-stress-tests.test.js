@@ -113,7 +113,9 @@ describe('Performance and Stress Integration Tests', () => {
       }),
       OrderRepository: createMockRepository({
         findAllWithFilters: vi.fn(),
-        findByIdWithItems: vi.fn()
+        findByIdWithItems: vi.fn(),
+        createWithItems: vi.fn().mockResolvedValue({ id: 1, status: 'pending' }),
+        updateStatusWithHistory: vi.fn().mockResolvedValue({ id: 1, status: 'shipped' })
       }),
       UserRepository: createMockRepository(),
       OccasionRepository: createMockRepository()

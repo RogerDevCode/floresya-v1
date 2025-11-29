@@ -105,12 +105,15 @@ export const validate = (schemaOrParam = 'id') => {
                 errors.push({ field, message: `${field} must be at most ${rules.max}` })
               }
             }
-            
+
             // String checks
             if (typeof value === 'string') {
-               if (rules.minLength !== undefined && value.length < rules.minLength) {
-                  errors.push({ field, message: `${field} must be at least ${rules.minLength} characters` })
-               }
+              if (rules.minLength !== undefined && value.length < rules.minLength) {
+                errors.push({
+                  field,
+                  message: `${field} must be at least ${rules.minLength} characters`
+                })
+              }
             }
           }
         }

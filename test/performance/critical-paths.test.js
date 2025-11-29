@@ -55,7 +55,9 @@ vi.mock('../../api/architecture/di-container.js', () => {
         if (name === 'OrderRepository') {
           return {
             create: vi.fn().mockResolvedValue({ id: 1 }),
-            findByIdWithItems: vi.fn().mockResolvedValue({ id: 1, items: [] })
+            findById: vi.fn().mockResolvedValue({ id: 1 }),
+            findByIdWithItems: vi.fn().mockResolvedValue({ id: 1, items: [] }),
+            createWithItems: vi.fn().mockResolvedValue({ id: 1, status: 'pending' })
           }
         }
         return {}

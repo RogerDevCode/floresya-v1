@@ -64,7 +64,9 @@ describe('Settings Service (Monolithic)', () => {
     it('should throw NotFoundError when not found', async () => {
       mocks.findByKey.mockResolvedValue(null)
 
-      await expect(SettingsService.getSettingByKey('test')).rejects.toThrow('Setting with ID test not found')
+      await expect(SettingsService.getSettingByKey('test')).rejects.toThrow(
+        'Setting with ID test not found'
+      )
     })
   })
 

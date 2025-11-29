@@ -14,13 +14,13 @@ vi.mock('../api/services/supabaseClient.js', async () => {
     supabase: mockSupabase,
     DB_SCHEMA: {
       products: { table: 'products' },
-      users: { 
+      users: {
         table: 'users',
         enums: {
           role: ['user', 'admin']
         }
       },
-      orders: { 
+      orders: {
         table: 'orders',
         enums: {
           status: ['pending', 'verified', 'preparing', 'shipped', 'delivered', 'cancelled']
@@ -49,13 +49,27 @@ vi.mock('../api/repositories/ProductRepository.js', () => {
       findById: async () => ({ id: 1 })
     }),
     ProductRepository: class {
-      static async create() { return new this() }
-      async findAllWithFilters() { return [] }
-      async count() { return 0 }
-      async create() { return { id: 1 } }
-      async update() { return { id: 1 } }
-      async delete() { return { id: 1 } }
-      async findById() { return { id: 1 } }
+      static async create() {
+        return new this()
+      }
+      async findAllWithFilters() {
+        return []
+      }
+      async count() {
+        return 0
+      }
+      async create() {
+        return { id: 1 }
+      }
+      async update() {
+        return { id: 1 }
+      }
+      async delete() {
+        return { id: 1 }
+      }
+      async findById() {
+        return { id: 1 }
+      }
     }
   }
 })
@@ -68,7 +82,7 @@ vi.mock('../api/repositories/UserRepository.js', async () => {
       findAllWithFilters: async () => [],
       findById: async () => ({ id: 1 }),
       findByEmail: async () => null,
-      create: async (data) => {
+      create: async data => {
         if (data.email === 'already@exists.com') {
           throw new AppError('User already exists', {
             statusCode: 409,
@@ -81,7 +95,9 @@ vi.mock('../api/repositories/UserRepository.js', async () => {
       delete: async () => ({ id: 1 })
     }),
     UserRepository: class {
-      static async create() { return new this() }
+      static async create() {
+        return new this()
+      }
       async create(data) {
         if (data.email === 'already@exists.com') {
           throw new AppError('User already exists', {
@@ -112,7 +128,7 @@ vi.mock('../api/services/productService.js', () => {
 })
 
 // Mock authentication middleware to bypass security for contract testing
-vi.mock('../api/middleware/auth/index.js', async (importOriginal) => {
+vi.mock('../api/middleware/auth/index.js', async importOriginal => {
   const actual = await importOriginal()
   return {
     ...actual,
@@ -120,7 +136,7 @@ vi.mock('../api/middleware/auth/index.js', async (importOriginal) => {
       req.user = { id: 1, role: 'admin' } // Mock admin user
       next()
     },
-    authorize: (role) => (req, res, next) => next(),
+    authorize: role => (req, res, next) => next(),
     validateSession: (req, res, next) => next(),
     validateCsrf: (req, res, next) => next()
   }
@@ -129,7 +145,7 @@ vi.mock('../api/middleware/auth/index.js', async (importOriginal) => {
 // Mock DI Container to prevent real DB connections
 vi.mock('../api/architecture/di-container.js', () => {
   const mockDIContainer = {
-    resolve: async (name) => {
+    resolve: async name => {
       if (name === 'ProductRepository') {
         return {
           findAllWithFilters: async () => [],
@@ -141,12 +157,12 @@ vi.mock('../api/architecture/di-container.js', () => {
         }
       }
       if (name === 'UserRepository') {
-         const { AppError } = await import('../api/errors/AppError.js')
-         return {
+        const { AppError } = await import('../api/errors/AppError.js')
+        return {
           findAllWithFilters: async () => [],
           findById: async () => ({ id: 1 }),
           findByEmail: async () => null,
-          create: async (data) => {
+          create: async data => {
             if (data.email === 'already@exists.com') {
               throw new AppError('User already exists', {
                 statusCode: 409,
@@ -189,7 +205,7 @@ vi.mock('../api/middleware/performance/index.js', () => {
 })
 
 // Mock OpenAPI Validator to prevent middleware issues
-vi.mock('../api/middleware/api/index.js', async (importOriginal) => {
+vi.mock('../api/middleware/api/index.js', async importOriginal => {
   const actual = await importOriginal()
   return {
     ...actual,
@@ -237,7 +253,7 @@ vi.mock('../api/middleware/validation/index.js', () => {
   return {
     validatePagination: (req, res, next) => next(),
     validateId: () => (req, res, next) => next(),
-    validate: (schema) => (req, res, next) => {
+    validate: schema => (req, res, next) => {
       // Simple validation logic for tests
       if (req.method === 'POST' && (!req.body || Object.keys(req.body).length === 0)) {
         const err = new Error('Validation failed')
@@ -281,13 +297,13 @@ vi.mock('../api/middleware/validation/index.js', () => {
 })
 
 // Mock Error Handler to debug 500 errors and ensure simple handling
-vi.mock('../api/middleware/error/index.js', async (importOriginal) => {
+vi.mock('../api/middleware/error/index.js', async importOriginal => {
   const actual = await importOriginal()
   return {
     ...actual,
     errorHandler: (err, req, res, next) => {
       const statusCode = err.statusCode || 500
-      
+
       // Extract validation errors correctly
       let validationErrors = []
       if (err.details && err.details.errors) {
@@ -303,13 +319,13 @@ vi.mock('../api/middleware/error/index.js', async (importOriginal) => {
         success: false,
         error: err.name || 'Error',
         category: 'validation', // Mock category for tests
-        status: statusCode,     // Mock status for tests
+        status: statusCode, // Mock status for tests
         message: err.message,
         validationErrors: validationErrors,
         errors: validationErrors // For compatibility
       })
     },
-    asyncHandler: (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
+    asyncHandler: fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
   }
 })
 
@@ -381,7 +397,9 @@ describe('OpenAPI Contract Enforcement', () => {
       if (!emailError.message && !emailError.reason) {
         console.error('Email error object:', JSON.stringify(emailError, null, 2))
       }
-      expect(emailError.message || emailError.reason || JSON.stringify(emailError)).toMatch(/email/i)
+      expect(emailError.message || emailError.reason || JSON.stringify(emailError)).toMatch(
+        /email/i
+      )
     })
 
     it('should validate numeric constraints', async () => {
@@ -523,14 +541,12 @@ describe('OpenAPI Contract Enforcement', () => {
 
   describe('Error Code Compliance', () => {
     it('should use proper error codes from OpenAPI spec', async () => {
-      const response = await request(app)
-        .post('/api/users')
-        .send({
-          email: 'already@exists.com',
-          password: 'StrongPassword123.', // Valid password, safe char
-          full_name: 'Test User'
-        })
-      
+      const response = await request(app).post('/api/users').send({
+        email: 'already@exists.com',
+        password: 'StrongPassword123.', // Valid password, safe char
+        full_name: 'Test User'
+      })
+
       expect(response.status).toBe(409)
     })
   })

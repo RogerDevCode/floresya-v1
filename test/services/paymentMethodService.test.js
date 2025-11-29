@@ -50,7 +50,9 @@ describe('Payment Method Service (Monolithic)', () => {
     it('should throw NotFoundError when no methods found', async () => {
       mockRepository.findAllWithFilters.mockResolvedValue([])
 
-      await expect(PaymentMethodService.getAllPaymentMethods()).rejects.toThrow('Payment methods with ID undefined not found')
+      await expect(PaymentMethodService.getAllPaymentMethods()).rejects.toThrow(
+        'Payment methods with ID undefined not found'
+      )
     })
   })
 
@@ -67,7 +69,9 @@ describe('Payment Method Service (Monolithic)', () => {
     it('should throw NotFoundError when not found', async () => {
       mockRepository.findById.mockResolvedValue(null)
 
-      await expect(PaymentMethodService.getPaymentMethodById(999)).rejects.toThrow('Payment method with ID 999 not found')
+      await expect(PaymentMethodService.getPaymentMethodById(999)).rejects.toThrow(
+        'Payment method with ID 999 not found'
+      )
     })
   })
 

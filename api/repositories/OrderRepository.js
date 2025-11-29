@@ -438,6 +438,54 @@ export class OrderRepository extends BaseRepository {
   }
 
   /**
+   * Create order with items using RPC
+   * @param {Object} orderPayload - Order data
+   * @param {Array} itemsPayload - Order items data
+   * @returns {Promise<Object>} Created order
+   */
+  async createWithItems(orderPayload, itemsPayload) {
+    const { data, error } = await this.supabase.rpc('create_order_with_items', {
+      order_data: orderPayload,
+      order_items: itemsPayload
+    })
+
+    if (error) {
+      throw this.handleError(error, 'createWithItems (RPC)', {
+        orderPayload,
+        itemCount: itemsPayload.length
+      })
+    }
+
+    return data
+  }
+
+  /**
+   * Update order status with history using RPC
+   * @param {number} orderId - Order ID
+   * @param {string} newStatus - New status
+   * @param {string} notes - Notes
+   * @param {number} changedBy - User ID who changed the status
+   * @returns {Promise<Object>} Updated order
+   */
+  async updateStatusWithHistory(orderId, newStatus, notes = null, changedBy = null) {
+    const { data, error } = await this.supabase.rpc('update_order_status_with_history', {
+      order_id: orderId,
+      new_status: newStatus,
+      notes: notes,
+      changed_by: changedBy
+    })
+
+    if (error) {
+      throw this.handleError(error, 'updateStatusWithHistory (RPC)', {
+        orderId,
+        newStatus
+      })
+    }
+
+    return data
+  }
+
+  /**
    * Obtener historial de estados de un pedido
    * @param {number} orderId - ID del pedido
    * @returns {Promise<Array>} Historial de estados

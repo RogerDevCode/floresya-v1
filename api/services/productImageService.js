@@ -12,14 +12,9 @@
 
 import * as ProductImageRepository from '../repositories/productImageRepository.js'
 import { DB_SCHEMA, supabase } from './supabaseClient.js' // Keep supabase for product query for now, or move to productRepo
-import {
-  ValidationError,
-  NotFoundError,
-  BadRequestError
-} from '../errors/AppError.js'
+import { ValidationError, NotFoundError, BadRequestError } from '../errors/AppError.js'
 import { validateProductImage } from '../utils/validation.js'
 import { withErrorMapping } from '../middleware/error/index.js'
-
 
 const VALID_SIZES = DB_SCHEMA.product_images?.enums?.size || ['thumb', 'small', 'medium', 'large']
 
@@ -130,7 +125,12 @@ export const createImage = async imageData => {
  * Create multiple images atomically (manual batch insert)
  * Creates all sizes for a single image_index
  */
-export const createProductImagesAtomic = async (productId, imageIndex, imagesData, isPrimary = false) => {
+export const createProductImagesAtomic = async (
+  productId,
+  imageIndex,
+  imagesData,
+  isPrimary = false
+) => {
   if (!productId || typeof productId !== 'number') {
     throw new BadRequestError('Invalid product ID: must be a number', { productId })
   }
@@ -423,13 +423,17 @@ export const getProductsBatchWithImageSize = withErrorMapping(
 
     // Find unique product IDs to compare with requested IDs
     const retrievedProductIds = products.map(p => p.id)
-    
+
     // Get images for the specific size for all products using Repo
-    let images = await ProductImageRepository.findImagesByProductIdsAndSize(retrievedProductIds, size)
+    let images = await ProductImageRepository.findImagesByProductIdsAndSize(
+      retrievedProductIds,
+      size
+    )
 
     // Fallback to 'large' size if 'small' not found (graceful handling for missing small images)
     if (size === 'small' && (!images || images.length === 0)) {
-      images = await ProductImageRepository.findFallbackImagesByProductIds(retrievedProductIds) || []
+      images =
+        (await ProductImageRepository.findFallbackImagesByProductIds(retrievedProductIds)) || []
     }
 
     // Create a map for quick lookup

@@ -69,7 +69,9 @@ describe('Order Service - Business Logic Layer', () => {
       findByUserId: vi.fn(),
       findStatusHistoryByOrderId: vi.fn(),
       update: vi.fn(),
-      cancel: vi.fn()
+      cancel: vi.fn(),
+      createWithItems: vi.fn(),
+      updateStatusWithHistory: vi.fn()
     })
 
     mockProductRepository = createMockRepository({
@@ -233,19 +235,19 @@ describe('Order Service - Business Logic Layer', () => {
       ]
 
       const createdOrder = { id: 1, ...orderData }
-      mockSupabase.rpc.mockResolvedValue({ data: createdOrder, error: null })
+      mockOrderRepository.createWithItems.mockResolvedValue(createdOrder)
       mockProductRepository.findById.mockResolvedValue(testData.products.active)
 
       const result = await createOrderWithItems(orderData, orderItems)
 
-      expect(mockSupabase.rpc).toHaveBeenCalledWith('create_order_with_items', {
-        order_data: expect.objectContaining({
+      expect(mockOrderRepository.createWithItems).toHaveBeenCalledWith(
+        expect.objectContaining({
           user_id: null, // customer_id is transformed to user_id in sanitization
           customer_email: expect.any(String),
           total_amount_usd: expect.any(Number)
         }),
-        order_items: expect.any(Array)
-      })
+        expect.any(Array)
+      )
       expect(result).toEqual(createdOrder)
     })
 
@@ -325,31 +327,31 @@ describe('Order Service - Business Logic Layer', () => {
   describe('updateOrderStatus - Update order status with history', () => {
     test('should update order status successfully', async () => {
       const updatedOrder = { ...testData.orders.pending, status: 'shipped' }
-      mockSupabase.rpc.mockResolvedValue({ data: updatedOrder, error: null })
+      mockOrderRepository.updateStatusWithHistory.mockResolvedValue(updatedOrder)
 
       const result = await updateOrderStatus(1, 'shipped')
 
-      expect(mockSupabase.rpc).toHaveBeenCalledWith('update_order_status_with_history', {
-        order_id: 1,
-        new_status: 'shipped',
-        notes: null,
-        changed_by: null
-      })
+      expect(mockOrderRepository.updateStatusWithHistory).toHaveBeenCalledWith(
+        1,
+        'shipped',
+        null,
+        null
+      )
       expect(result).toEqual(updatedOrder)
     })
 
     test('should include notes and changed_by', async () => {
       const updatedOrder = { ...testData.orders.pending, status: 'delivered' }
-      mockSupabase.rpc.mockResolvedValue({ data: updatedOrder, error: null })
+      mockOrderRepository.updateStatusWithHistory.mockResolvedValue(updatedOrder)
 
       const result = await updateOrderStatus(1, 'delivered', 'Order delivered successfully', 2)
 
-      expect(mockSupabase.rpc).toHaveBeenCalledWith('update_order_status_with_history', {
-        order_id: 1,
-        new_status: 'delivered',
-        notes: 'Order delivered successfully',
-        changed_by: 2
-      })
+      expect(mockOrderRepository.updateStatusWithHistory).toHaveBeenCalledWith(
+        1,
+        'delivered',
+        'Order delivered successfully',
+        2
+      )
       expect(result).toEqual(updatedOrder)
     })
 
@@ -362,10 +364,7 @@ describe('Order Service - Business Logic Layer', () => {
     })
 
     test('should throw NotFoundError when order not found', async () => {
-      mockSupabase.rpc.mockResolvedValue({
-        data: null,
-        error: { message: 'not found' }
-      })
+      mockOrderRepository.updateStatusWithHistory.mockRejectedValue(new NotFoundError('Order', 999))
 
       await expect(updateOrderStatus(999, 'shipped')).rejects.toThrow(NotFoundError)
     })
@@ -480,10 +479,9 @@ describe('Order Service - Business Logic Layer', () => {
     })
 
     test('should handle RPC errors', async () => {
-      mockSupabase.rpc.mockResolvedValue({
-        data: null,
-        error: { message: 'RPC failed' }
-      })
+      mockOrderRepository.updateStatusWithHistory.mockRejectedValue(
+        new DatabaseError('RPC', 'update_order_status_with_history', { message: 'RPC failed' })
+      )
 
       await expect(updateOrderStatus(1, 'shipped')).rejects.toThrow(DatabaseError)
     })
@@ -541,7 +539,7 @@ describe('Order Service - Business Logic Layer', () => {
       }
 
       mockProductRepository.findById.mockResolvedValue(testData.products.active)
-      mockSupabase.rpc.mockResolvedValue({ data: { id: 1 }, error: null })
+      mockOrderRepository.createWithItems.mockResolvedValue({ id: 1 })
 
       await expect(createOrderWithItems(orderData, orderItems)).resolves.toMatchObject({
         id: 1
@@ -572,9 +570,9 @@ describe('Order Service - Business Logic Layer', () => {
       }
 
       mockProductRepository.findById.mockResolvedValue(testData.products.active)
-      mockSupabase.rpc.mockResolvedValue({
-        data: { id: 1, customer_name: specialName },
-        error: null
+      mockOrderRepository.createWithItems.mockResolvedValue({
+        id: 1,
+        customer_name: specialName
       })
 
       const result = await createOrderWithItems(orderData, orderItems)
@@ -607,9 +605,9 @@ describe('Order Service - Business Logic Layer', () => {
 
       const productWithLowPrice = { ...testData.products.active, price_usd: 0.01, stock: 1 }
       mockProductRepository.findById.mockResolvedValue(productWithLowPrice)
-      mockSupabase.rpc.mockResolvedValue({
-        data: { id: 1, total_amount_usd: totalAmount },
-        error: null
+      mockOrderRepository.createWithItems.mockResolvedValue({
+        id: 1,
+        total_amount_usd: totalAmount
       })
 
       const result = await createOrderWithItems(orderData, orderItems)
@@ -641,9 +639,9 @@ describe('Order Service - Business Logic Layer', () => {
       }
 
       mockProductRepository.findById.mockResolvedValue(testData.products.active)
-      mockSupabase.rpc.mockImplementation(async () => {
+      mockOrderRepository.createWithItems.mockImplementation(async () => {
         await new Promise(resolve => setTimeout(resolve, 10))
-        return { data: { id: Math.random() }, error: null }
+        return { id: Math.random() }
       })
 
       const promises = [
@@ -697,7 +695,7 @@ describe('Order Service - Business Logic Layer', () => {
         return Promise.resolve(id === 1 ? product1 : product2)
       })
 
-      mockSupabase.rpc.mockResolvedValue({ data: { id: 1 }, error: null })
+      mockOrderRepository.createWithItems.mockResolvedValue({ id: 1 })
 
       await expect(createOrderWithItems(orderData, orderItems)).resolves.toMatchObject({
         id: 1
@@ -716,7 +714,7 @@ describe('Order Service - Business Logic Layer', () => {
 
       for (const transition of statusTransitions) {
         const updatedOrder = { ...testData.orders.pending, status: transition.to }
-        mockSupabase.rpc.mockResolvedValue({ data: updatedOrder, error: null })
+        mockOrderRepository.updateStatusWithHistory.mockResolvedValue(updatedOrder)
 
         const result = await updateOrderStatus(1, transition.to)
         expect(result.status).toBe(transition.to)
@@ -835,14 +833,14 @@ describe('Order Service - Business Logic Layer', () => {
 
       const createdOrder = { id: 1, ...orderData, status: 'pending' }
       mockProductRepository.findById.mockResolvedValue(testData.products.active)
-      mockSupabase.rpc.mockResolvedValueOnce({ data: createdOrder, error: null })
+      mockOrderRepository.createWithItems.mockResolvedValueOnce(createdOrder)
 
       const order = await createOrderWithItems(orderData, orderItems)
       expect(order.status).toBe('pending')
 
       // 2. Update status to verified
       const verifiedOrder = { ...createdOrder, status: 'verified' }
-      mockSupabase.rpc.mockResolvedValueOnce({ data: verifiedOrder, error: null })
+      mockOrderRepository.updateStatusWithHistory.mockResolvedValueOnce(verifiedOrder)
 
       const updatedOrder = await updateOrderStatus(1, 'verified')
       expect(updatedOrder.status).toBe('verified')
@@ -898,7 +896,7 @@ describe('Order Service - Business Logic Layer', () => {
 
       const product = { ...testData.products.active, stock: 10 }
       mockProductRepository.findById.mockResolvedValue(product)
-      mockSupabase.rpc.mockResolvedValue({ data: { id: 1 }, error: null })
+      mockOrderRepository.createWithItems.mockResolvedValue({ id: 1 })
 
       await createOrderWithItems(orderData, orderItems)
 

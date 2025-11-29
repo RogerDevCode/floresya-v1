@@ -145,7 +145,9 @@ class OpenAPIContractValidator {
 
       // Find all route files
       const routesDir = path.join(this.rootDir, 'api/routes')
-      const routeFiles = fs.readdirSync(routesDir).filter(f => f.endsWith('.routes.js') || f.endsWith('Routes.js'))
+      const routeFiles = fs
+        .readdirSync(routesDir)
+        .filter(f => f.endsWith('.routes.js') || f.endsWith('Routes.js'))
 
       // Map route files to prefixes
       const routePrefixes = {
@@ -167,18 +169,20 @@ class OpenAPIContractValidator {
 
       // Handle nested routes (admin/settingsRoutes.js)
       const allRouteFiles = []
-      
+
       // Add root level files
       routeFiles.forEach(file => allRouteFiles.push({ file, path: path.join(routesDir, file) }))
-      
+
       // Add admin level files
       const adminRoutesDir = path.join(routesDir, 'admin')
       if (fs.existsSync(adminRoutesDir)) {
         const adminFiles = fs.readdirSync(adminRoutesDir).filter(f => f.endsWith('Routes.js'))
-        adminFiles.forEach(file => allRouteFiles.push({ 
-          file: `admin/${file}`, 
-          path: path.join(adminRoutesDir, file) 
-        }))
+        adminFiles.forEach(file =>
+          allRouteFiles.push({
+            file: `admin/${file}`,
+            path: path.join(adminRoutesDir, file)
+          })
+        )
       }
 
       allRouteFiles.forEach(({ file, path: filePath }) => {
@@ -192,7 +196,7 @@ class OpenAPIContractValidator {
         routeMatches.forEach(match => {
           const method = match.match(/\.(get|post|put|delete|patch)\s*\(/)[1]
           const routePath = match.match(/['"`]([^'"`]+)['"`]/)[1]
-          
+
           // Construct full path
           let fullPath = prefix + routePath
           // Remove trailing slash if not root

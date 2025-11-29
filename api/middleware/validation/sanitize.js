@@ -236,7 +236,7 @@ export function sanitizeRequestData(req, res, next) {
         encodeHTML: true,
         field: 'query_params'
       })
-      
+
       // Safely update query parameters
       // req.query might be read-only in some environments (like Express 5 or Supertest mocks)
       try {

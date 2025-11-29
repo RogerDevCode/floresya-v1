@@ -16,7 +16,6 @@ import {
   DatabaseError,
   InternalServerError
 } from './orderService.helpers.js'
-import { supabase } from './supabaseClient.js'
 import { validateOrder } from '../utils/validation.js'
 
 /**
@@ -32,6 +31,8 @@ import { validateOrder } from '../utils/validation.js'
  */
 export async function updateOrderStatus(orderId, newStatus, notes = null, changedBy = null) {
   try {
+    const orderRepository = await getOrderRepository()
+
     if (!orderId || typeof orderId !== 'number') {
       throw new BadRequestError('Invalid order ID: must be a number', { orderId })
     }
@@ -43,34 +44,7 @@ export async function updateOrderStatus(orderId, newStatus, notes = null, change
     }
 
     // Use atomic stored function (SSOT: DB_FUNCTIONS.updateOrderStatusWithHistory)
-    const { data, error } = await supabase.rpc('update_order_status_with_history', {
-      order_id: orderId,
-      new_status: newStatus,
-      notes: notes,
-      changed_by: changedBy
-    })
-
-    if (error) {
-      if (error.message?.includes('not found')) {
-        throw new NotFoundError('Order', orderId)
-      }
-      throw new DatabaseError('RPC', 'update_order_status_with_history', error, {
-        orderId,
-        newStatus
-      })
-    }
-
-    if (!data) {
-      throw new DatabaseError(
-        'RPC',
-        'update_order_status_with_history',
-        new InternalServerError('No data returned'),
-        {
-          orderId,
-          newStatus
-        }
-      )
-    }
+    const data = await orderRepository.updateStatusWithHistory(orderId, newStatus, notes, changedBy)
 
     return data
   } catch (error) {
