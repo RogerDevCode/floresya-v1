@@ -788,3 +788,79 @@
     --form-border: #ffffff;
   }
 }
+
+/* ==========================================================================
+   DARK THEME GRANULAR OVERRIDES
+   ========================================================================== */
+
+[data-theme='dark'] {
+  /* Navigation dark theme */
+  --nav-bg-primary: var(--theme-bg-primary, #1f2937);
+  --nav-bg-glass: rgba(31, 41, 55, 0.95);
+  --nav-text-primary: var(--theme-text-primary, #f9fafb);
+  --nav-text-secondary: var(--theme-text-secondary, #e5e7eb);
+  --nav-border: var(--theme-border, #374151);
+
+  /* Breadcrumb dark theme */
+  --breadcrumb-bg: var(--theme-bg-primary, #1f2937);
+  --breadcrumb-text: var(--theme-text-secondary, #e5e7eb);
+
+  /* Hero dark theme */
+  --hero-text-dark: var(--theme-text-primary, #f9fafb);
+
+  /* Carousel dark theme */
+  --carousel-bg: var(--theme-bg-primary, #1f2937);
+  --carousel-text-on-bg: var(--theme-text-primary, #f9fafb);
+  --carousel-border: var(--theme-border, #374151);
+
+  /* Products dark theme */
+  --products-bg: var(--theme-bg-primary, #1f2937);
+  --products-bg-secondary: var(--theme-bg-secondary, #111827);
+  --products-card-bg: var(--theme-bg-primary, #1f2937);
+  --products-card-border: var(--theme-border, #374151);
+  --products-border: var(--theme-border, #374151);
+
+  /* Product cards text */
+  --card-bg: var(--theme-bg-primary, #1f2937);
+  --card-border: var(--theme-border, #374151);
+  --card-title-color: var(--theme-text-primary, #f9fafb);
+  --card-text-color: var(--theme-text-secondary, #e5e7eb);
+  --card-text-on-bg: var(--theme-text-primary, #f9fafb);
+
+  /* Product detail dark theme */
+  --product-detail-bg: var(--theme-bg-primary, #1f2937);
+  --product-detail-bg-secondary: var(--theme-bg-secondary, #111827);
+  --product-detail-border: var(--theme-border, #374151);
+  --product-detail-image-bg: var(--theme-bg-secondary, #111827);
+
+  /* Cart dark theme */
+  --cart-bg-primary: rgba(31, 41, 55, 0.95);
+  --cart-bg-card: rgba(31, 41, 55, 0.95);
+  --cart-border: rgba(55, 65, 81, 0.5);
+  --cart-border-light: rgba(75, 85, 99, 0.5);
+
+  /* Forms dark theme */
+  --form-bg: var(--theme-bg-primary, #1f2937);
+  --form-bg-filled: var(--theme-bg-secondary, #111827);
+  --form-border: var(--theme-border, #374151);
+  --form-text: var(--theme-text-primary, #f9fafb);
+
+  /* Buttons dark theme - keep primary colors vibrant */
+  --btn-bg-secondary: var(--theme-bg-secondary, #111827);
+  --btn-text-secondary: var(--theme-text-primary, #f9fafb);
+  --btn-border: var(--theme-border, #374151);
+
+  /* Testimonials dark theme */
+  --testimonial-bg: var(--theme-bg-primary, #1f2937);
+  --testimonial-border: var(--theme-border, #374151);
+  --testimonial-text: var(--theme-text-primary, #f9fafb);
+  --testimonial-text-on-bg: var(--theme-text-primary, #f9fafb);
+
+  /* Features dark theme */
+  --features-bg: var(--theme-bg-secondary, #111827);
+  --features-card-bg: var(--theme-bg-primary, #1f2937);
+  --features-border: var(--theme-border, #374151);
+
+  /* Footer already uses dark colors, just ensure text is visible */
+  --footer-text-on-bg: var(--theme-text-secondary, #e5e7eb);
+}

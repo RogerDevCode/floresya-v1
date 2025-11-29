@@ -8,11 +8,7 @@
  * LEGACY: Modularizado desde orderService.js (WEEK 3)
  */
 
-import {
-  getOrderRepository,
-  VALID_STATUSES,
-  BadRequestError
-} from './orderService.helpers.js'
+import { getOrderRepository, VALID_STATUSES, BadRequestError } from './orderService.helpers.js'
 import { validateOrder } from '../utils/validation.js'
 
 /**

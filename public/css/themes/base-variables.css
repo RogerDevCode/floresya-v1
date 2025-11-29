@@ -30,21 +30,21 @@
   --theme-bg-secondary: var(--theme-bg-secondary, #f8fafc);
   --theme-bg-tertiary: var(--theme-bg-tertiary, #f1f5f9);
 
-  /* Texto */
-  --theme-text-primary: var(--theme-text-primary, #1f2937);
-  --theme-text-secondary: var(--theme-text-secondary, #6b7280);
-  --theme-text-tertiary: var(--theme-text-tertiary, #9ca3af);
+  /* Texto - Optimized for WCAG AA contrast */
+  --theme-text-primary: var(--theme-text-primary, #111827);
+  --theme-text-secondary: var(--theme-text-secondary, #374151);
+  --theme-text-tertiary: var(--theme-text-tertiary, #6b7280);
   --theme-text-inverted: var(--theme-text-inverted, #ffffff);
 
   /* Texto granular para mejor contraste - Heredan del tema global */
   --theme-text-on-primary: var(--theme-text-on-primary, #ffffff);
   --theme-text-on-secondary: var(--theme-text-on-secondary, #ffffff);
   --theme-text-on-accent: var(--theme-text-on-accent, #ffffff);
-  --theme-text-on-bg-primary: var(--theme-text-on-bg-primary, #1f2937);
-  --theme-text-on-bg-secondary: var(--theme-text-on-bg-secondary, #374151);
-  --theme-text-on-bg-tertiary: var(--theme-text-on-bg-tertiary, #4b5563);
-  --theme-text-on-card: var(--theme-text-on-card, #1f2937);
-  --theme-text-on-hero: var(--theme-text-on-hero, #1f2937);
+  --theme-text-on-bg-primary: var(--theme-text-on-bg-primary, #111827);
+  --theme-text-on-bg-secondary: var(--theme-text-on-bg-secondary, #1f2937);
+  --theme-text-on-bg-tertiary: var(--theme-text-on-bg-tertiary, #374151);
+  --theme-text-on-card: var(--theme-text-on-card, #111827);
+  --theme-text-on-hero: var(--theme-text-on-hero, #111827);
   --theme-text-on-footer: var(--theme-text-on-footer, #f9fafb);
   --theme-text-muted: var(--theme-text-muted, #6b7280);
   --theme-text-subtle: var(--theme-text-subtle, #9ca3af);
@@ -63,7 +63,7 @@
   /* ==================== NAVBAR ==================== */
   /* Heredan de las variables del tema global */
   --navbar-bg: var(--navbar-bg, rgba(255, 255, 255, 0.95));
-  --navbar-text: var(--navbar-text, #374151);
+  --navbar-text: var(--navbar-text, var(--theme-text-primary, #111827));
   --navbar-text-hover: var(--navbar-text-hover, #ec4899);
   --navbar-border: var(--navbar-border, #e5e7eb);
   --navbar-shadow: var(--navbar-shadow, 0 2px 12px rgba(0, 0, 0, 0.08));
@@ -92,7 +92,7 @@
   --carousel-shadow: var(--carousel-shadow, 0 4px 6px rgba(0, 0, 0, 0.1));
 
   /* Carousel granular */
-  --carousel-text-on-bg: var(--carousel-text-on-bg, #1f2937);
+  --carousel-text-on-bg: var(--theme-text-on-card, var(--theme-text-primary, #111827));
   --carousel-text-on-nav: var(--carousel-text-on-nav, #ffffff);
   --carousel-text-on-indicator: var(--carousel-text-on-indicator, #ffffff);
 
@@ -126,7 +126,7 @@
   --card-overlay-bg: var(--card-overlay-bg, rgba(0, 0, 0, 0.7));
 
   /* Card granular */
-  --card-text-on-bg: var(--card-text-on-bg, #1f2937);
+  --card-text-on-bg: var(--theme-text-on-card, var(--theme-text-primary, #111827));
   --card-text-on-overlay: var(--card-text-on-overlay, #ffffff);
   --card-text-on-badge: var(--card-text-on-badge, #ffffff);
 
