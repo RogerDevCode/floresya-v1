@@ -5,7 +5,7 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     setupFiles: ['./test/setup.js'],
-    include: ['test/**/*.test.js', 'api/controllers/__tests__/**/*.test.js'],
+    include: ['test/**/*.test.js', 'api/**/*.test.js'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
@@ -23,7 +23,8 @@ export default defineConfig({
         'test/supabase-client/mocks/',
         'api/docs/**',
         'api/server.js',
-        'api/app.js'
+        'api/app.js',
+        '**/__tests__/**'
       ],
       thresholds: {
         statements: 80,

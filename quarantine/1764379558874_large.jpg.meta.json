@@ -1,0 +1,23 @@
+{
+  "originalFilename": "large.jpg",
+  "quarantineFilename": "1764379558874_large.jpg",
+  "quarantinePath": "quarantine/1764379558874_large.jpg",
+  "quarantinedAt": "2025-11-29T01:25:58.874Z",
+  "threats": [
+    {
+      "type": "FILE_SIZE_EXCEEDED",
+      "severity": "medium",
+      "description": "File size 10485760 exceeds maximum allowed size 5242880",
+      "detectedAt": "2025-11-29T01:25:58.874Z"
+    },
+    {
+      "type": "MAGIC_NUMBER_MISMATCH",
+      "severity": "high",
+      "description": "File magic numbers don't match MIME type image/jpeg",
+      "detectedAt": "2025-11-29T01:25:58.874Z"
+    }
+  ],
+  "fileHash": "8160a182f0b57a149e431d6534c88bf4bf3ccbd71d8ed20a3586e3e2d5bea3f3",
+  "size": 10485760,
+  "mimetype": "image/jpeg"
+}
