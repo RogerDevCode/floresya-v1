@@ -145,14 +145,45 @@ class OpenAPIContractValidator {
 
       // Find all route files
       const routesDir = path.join(this.rootDir, 'api/routes')
-      const routeFiles = fs.readdirSync(routesDir).filter(f => f.endsWith('.routes.js'))
+      const routeFiles = fs.readdirSync(routesDir).filter(f => f.endsWith('.routes.js') || f.endsWith('Routes.js'))
+
+      // Map route files to prefixes
+      const routePrefixes = {
+        'productRoutes.js': '/api/products',
+        'orderRoutes.js': '/api/orders',
+        'userRoutes.js': '/api/users',
+        'paymentRoutes.js': '/api/payments',
+        'paymentMethodRoutes.js': '/api/payment-methods',
+        'occasionRoutes.js': '/api/occasions',
+        'settingsRoutes.js': '/api/settings',
+        'admin/settingsRoutes.js': '/api/admin/settings',
+        'migrationRoutes.js': '/api/migrations',
+        'healthRoutes.js': '/health',
+        'accounting.routes.js': '/api/accounting'
+      }
 
       let totalSpecEndpoints = 0
       let documentedEndpoints = 0
 
-      routeFiles.forEach(file => {
-        const filePath = path.join(routesDir, file)
+      // Handle nested routes (admin/settingsRoutes.js)
+      const allRouteFiles = []
+      
+      // Add root level files
+      routeFiles.forEach(file => allRouteFiles.push({ file, path: path.join(routesDir, file) }))
+      
+      // Add admin level files
+      const adminRoutesDir = path.join(routesDir, 'admin')
+      if (fs.existsSync(adminRoutesDir)) {
+        const adminFiles = fs.readdirSync(adminRoutesDir).filter(f => f.endsWith('Routes.js'))
+        adminFiles.forEach(file => allRouteFiles.push({ 
+          file: `admin/${file}`, 
+          path: path.join(adminRoutesDir, file) 
+        }))
+      }
+
+      allRouteFiles.forEach(({ file, path: filePath }) => {
         const content = fs.readFileSync(filePath, 'utf8')
+        const prefix = routePrefixes[file] || ''
 
         // Extract route definitions (basic pattern matching)
         const routeMatches =
@@ -160,12 +191,21 @@ class OpenAPIContractValidator {
 
         routeMatches.forEach(match => {
           const method = match.match(/\.(get|post|put|delete|patch)\s*\(/)[1]
-          const path = match.match(/['"`]([^'"`]+)['"`]/)[1]
+          const routePath = match.match(/['"`]([^'"`]+)['"`]/)[1]
+          
+          // Construct full path
+          let fullPath = prefix + routePath
+          // Remove trailing slash if not root
+          if (fullPath.length > 1 && fullPath.endsWith('/')) {
+            fullPath = fullPath.slice(0, -1)
+          }
+          // Ensure no double slashes
+          fullPath = fullPath.replace('//', '/')
 
           totalSpecEndpoints++
 
           // Check if endpoint is documented in OpenAPI
-          const normalizedPath = path.replace(/:([^/]+)/g, '{$1}')
+          const normalizedPath = fullPath.replace(/:([^/]+)/g, '{$1}')
           const specPathKey = Object.keys(spec.paths || {}).find(
             sp => sp.toLowerCase() === normalizedPath.toLowerCase()
           )
@@ -173,7 +213,7 @@ class OpenAPIContractValidator {
           if (specPathKey && spec.paths[specPathKey] && spec.paths[specPathKey][method]) {
             documentedEndpoints++
           } else {
-            this.warnings.push(`Undocumented endpoint: ${method.toUpperCase()} ${path}`)
+            this.warnings.push(`Undocumented endpoint: ${method.toUpperCase()} ${fullPath}`)
           }
         })
       })

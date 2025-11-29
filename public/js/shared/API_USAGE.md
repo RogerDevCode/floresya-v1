@@ -1,6 +1,6 @@
 # 🎯 FloresYa API Client - Usage Guide
 
-**Auto-generated**: 2025-11-27T17:13:46.852Z
+**Auto-generated**: 2025-11-29T13:28:25.490Z
 **Spec Version**: 1.0.0
 **Total Endpoints**: 65
 

@@ -1,7 +1,7 @@
 /**
  * JSDoc Types for FloresYa API
  * Auto-generated from OpenAPI specification
- * Generated: 2025-11-27T17:13:46.851Z
+ * Generated: 2025-11-29T13:28:25.488Z
  * Spec Version: 1.0.0
  */
 

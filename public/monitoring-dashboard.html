@@ -571,59 +571,30 @@
 
       // Benchmark event listeners
       document.getElementById('runBenchmarkBtn').addEventListener('click', async () => {
-        try {
-          document.getElementById('benchmarkStatus').textContent = 'Benchmark status: Running...';
-          const response = await fetch('/health/benchmark/run', { method: 'POST' });
-          const data = await response.json();
-          alert(data.message || 'Benchmark completed');
-          updateBenchmarkStatus();
-        } catch (error) {
-          alert('Failed to run benchmarks');
-          document.getElementById('benchmarkStatus').textContent = 'Benchmark status: Error';
-        }
+        alert('Benchmark feature is currently disabled.');
       });
 
       document.getElementById('runQuickBenchmarkBtn').addEventListener('click', async () => {
-        try {
-          document.getElementById('benchmarkStatus').textContent = 'Benchmark status: Running quick...';
-          const response = await fetch('/health/benchmark/run?quick=true', { method: 'POST' });
-          const data = await response.json();
-          alert(data.message || 'Quick benchmark completed');
-          updateBenchmarkStatus();
-        } catch (error) {
-          alert('Failed to run quick benchmarks');
-          document.getElementById('benchmarkStatus').textContent = 'Benchmark status: Error';
-        }
+        alert('Benchmark feature is currently disabled.');
       });
 
       document.getElementById('viewBenchmarkReportsBtn').addEventListener('click', () => {
-        window.open('/benchmark-results/', '_blank');
+        alert('Benchmark reports are currently disabled.');
       });
 
       document.getElementById('checkRegressionsBtn').addEventListener('click', async () => {
-        try {
-          const response = await fetch('/health/benchmark/regressions');
-          const data = await response.json();
-          if (data.success && data.data.regressions.length > 0) {
-            alert(`Found ${data.data.regressions.length} performance regression(s). Check console for details.`);
-            console.log('Performance Regressions:', data.data.regressions);
-          } else {
-            alert('No performance regressions detected.');
-          }
-        } catch (error) {
-          alert('Failed to check regressions');
-        }
+        alert('Regression check is currently disabled.');
       });
 
       // Initialize
       updateDashboard();
       updateProfilingStatus();
-      updateBenchmarkStatus();
+      // updateBenchmarkStatus();
 
       // Start auto-refresh
       autoRefreshInterval = setInterval(updateDashboard, 5000);
       setInterval(updateProfilingStatus, 10000); // Update profiling status every 10 seconds
-      setInterval(updateBenchmarkStatus, 30000); // Update benchmark status every 30 seconds
+      // setInterval(updateBenchmarkStatus, 30000); // Update benchmark status every 30 seconds
     </script>
   </body>
 </html>

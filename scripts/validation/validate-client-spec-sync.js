@@ -148,14 +148,30 @@ class ClientSpecSyncValidator {
       // jQuery AJAX
       /\$\.ajax\s*\(\s*\{[^}]*url\s*:\s*['"`]([^'"`]+)['"`][^}]*type\s*:\s*['"`]([^'"`]+)['"`]/gi,
       // Simple URL patterns (fallback)
-      /['"`](\/api\/[^'"`]+)['"`]/g
+      { pattern: /['"`](\/api\/[^'"`]+)['"`]/g, defaultMethod: 'UNKNOWN' }
     ]
 
-    patterns.forEach(pattern => {
+    patterns.forEach(item => {
+      const pattern = item.pattern || item
+      const defaultMethod = item.defaultMethod
       let match
       while ((match = pattern.exec(content)) !== null) {
-        const method = match[2] || match[1] || 'GET'
-        const url = match[1] || match[0]
+        let method
+        let url
+
+        if (defaultMethod) {
+           url = match[1]
+           method = defaultMethod
+        } else {
+           // Logic for other patterns
+           if (['get', 'post', 'put', 'delete', 'patch'].includes(match[1].toLowerCase())) {
+             method = match[1]
+             url = match[2]
+           } else {
+             url = match[1]
+             method = match[2] || 'GET'
+           }
+        }
 
         // Clean up the URL
         const cleanUrl = url.replace(/^['"`]|['"`]$/g, '')
@@ -164,7 +180,8 @@ class ClientSpecSyncValidator {
         const normalizedPath = this.normalizeApiPath(cleanUrl)
         const normalizedMethod = method.toUpperCase()
 
-        if (normalizedPath.startsWith('/api')) {
+        // Add to set (allow /api and /health endpoints)
+        if (normalizedPath.startsWith('/api') || normalizedPath.startsWith('/health')) {
           this.frontendApiCalls.add(`${normalizedMethod} ${normalizedPath}`)
         }
       }
@@ -181,11 +198,25 @@ class ClientSpecSyncValidator {
     // Remove query parameters
     cleanPath = cleanPath.split('?')[0]
 
-    // Normalize to lowercase and ensure it starts with /api
+    // Replace /${...} with /{param} (path parameters)
+    cleanPath = cleanPath.replace(/\/\$\{[^}]+\}/g, '/{param}')
+    
+    // Replace remaining ${...} with nothing (likely query params)
+    cleanPath = cleanPath.replace(/\$\{[^}]+\}/g, '')
+
+    // Normalize to lowercase
     cleanPath = cleanPath.toLowerCase()
-    if (!cleanPath.startsWith('/api')) {
-      cleanPath = '/api' + (cleanPath.startsWith('/') ? cleanPath : '/' + cleanPath)
+    
+    // Ensure it starts with /
+    if (!cleanPath.startsWith('/')) {
+      cleanPath = '/' + cleanPath
     }
+    
+    // Handle double slashes
+    cleanPath = cleanPath.replace(/\/+/g, '/')
+    
+    // Note: We don't force /api prefix here anymore to allow matching /health endpoints
+    // But we might need to handle it in extraction or validation
 
     return cleanPath
   }
@@ -201,7 +232,26 @@ class ClientSpecSyncValidator {
       const [method, path] = call.split(' ')
       return !Array.from(this.apiEndpoints).some(specCall => {
         const [specMethod, specPath] = specCall.split(' ')
-        return specMethod === method && this.pathsMatch(specPath, path)
+        // If method is UNKNOWN, match any method
+        const methodMatch = method === 'UNKNOWN' || specMethod === method
+        
+        // Try matching exact path
+        if (methodMatch && this.pathsMatch(specPath, path)) return true
+        
+        // Try matching with /api prefix difference
+        // If spec has /health and frontend has /api/health
+        if (methodMatch && path.startsWith('/api') && !specPath.startsWith('/api')) {
+           const pathWithoutApi = path.replace('/api', '')
+           if (this.pathsMatch(specPath, pathWithoutApi)) return true
+        }
+        
+        // If spec has /api/health and frontend has /health (unlikely but possible)
+        if (methodMatch && !path.startsWith('/api') && specPath.startsWith('/api')) {
+           const pathWithApi = '/api' + path
+           if (this.pathsMatch(specPath, pathWithApi)) return true
+        }
+        
+        return false
       })
     })
 
@@ -210,7 +260,9 @@ class ClientSpecSyncValidator {
       const [method, path] = specCall.split(' ')
       return !Array.from(this.frontendApiCalls).some(call => {
         const [callMethod, callPath] = call.split(' ')
-        return callMethod === method && this.pathsMatch(path, callPath)
+        // If callMethod is UNKNOWN, match any method
+        const methodMatch = callMethod === 'UNKNOWN' || callMethod === method
+        return methodMatch && this.pathsMatch(path, callPath)
       })
     })
 
