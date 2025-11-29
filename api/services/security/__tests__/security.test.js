@@ -11,8 +11,8 @@
  * - Security Middleware
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { unlinkSync, writeFileSync, mkdirSync } from 'fs'
+import { describe, it, expect, beforeEach, afterEach, afterAll } from 'vitest'
+import { unlinkSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'fs'
 import { join } from 'path'
 import InputSanitizationService from '../InputSanitizationService.js'
 import MalwareScanningService from '../MalwareScanningService.js'
@@ -180,6 +180,7 @@ describe('Security Services', () => {
     const testFilesDir = './test-files'
     const testImagePath = join(testFilesDir, 'sample.jpg')
     const testMaliciousPath = join(testFilesDir, 'malicious.js')
+    const quarantineDir = './quarantine'
 
     beforeEach(() => {
       // Create test directory
@@ -206,6 +207,17 @@ describe('Security Services', () => {
         unlinkSync(testMaliciousPath)
       } catch {
         // Files might not exist
+      }
+    })
+
+    afterAll(() => {
+      // Clean up quarantine directory
+      try {
+        if (existsSync(quarantineDir)) {
+          rmSync(quarantineDir, { recursive: true, force: true })
+        }
+      } catch (error) {
+        console.error('Failed to clean up quarantine directory:', error)
       }
     })
 
