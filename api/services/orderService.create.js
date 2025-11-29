@@ -13,9 +13,7 @@ import {
   getProductRepository,
   VALID_STATUSES,
   ValidationError,
-  NotFoundError,
-  DatabaseError,
-  InternalServerError
+  NotFoundError
 } from './orderService.helpers.js'
 import { sanitizeOrderData, sanitizeOrderItemData } from '../utils/sanitize.js'
 import { validateOrder } from '../utils/validation.js'

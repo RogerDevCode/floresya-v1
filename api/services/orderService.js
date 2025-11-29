@@ -12,14 +12,12 @@
  * Following Service Layer Exclusive principle
  */
 
-import { DB_SCHEMA, supabase } from './supabaseClient.js'
+import { DB_SCHEMA } from './supabaseClient.js'
 import DIContainer from '../architecture/di-container.js'
 import {
   ValidationError,
   NotFoundError,
-  DatabaseError,
-  BadRequestError,
-  InternalServerError
+  BadRequestError
 } from '../errors/AppError.js'
 import { sanitizeOrderData, sanitizeOrderItemData } from '../utils/sanitize.js'
 import { withErrorMapping } from '../middleware/error/index.js'

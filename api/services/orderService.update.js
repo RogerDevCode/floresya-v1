@@ -11,10 +11,7 @@
 import {
   getOrderRepository,
   VALID_STATUSES,
-  BadRequestError,
-  NotFoundError,
-  DatabaseError,
-  InternalServerError
+  BadRequestError
 } from './orderService.helpers.js'
 import { validateOrder } from '../utils/validation.js'
 
