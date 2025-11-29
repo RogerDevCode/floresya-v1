@@ -8,7 +8,7 @@ export default defineConfig({
     include: ['test/**/*.test.js', 'api/**/*.test.js'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json', 'html', 'json-summary'],
       include: ['api/**/*.js'],
       exclude: [
         'node_modules/',
