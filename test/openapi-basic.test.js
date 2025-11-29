@@ -3,7 +3,7 @@
  * Verifies that OpenAPI documentation and basic validation is working
  */
 
-import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import request from 'supertest'
 
 // Mock Supabase client to avoid real DB connection

@@ -361,7 +361,7 @@ export class EnhancedSecurityMiddleware {
           // Try to assign, if fails (getter-only), modify in place
           try {
             req.body = sanitizedBody
-          } catch (_e) {
+          } catch {
             Object.keys(req.body).forEach(key => delete req.body[key])
             Object.assign(req.body, sanitizedBody)
           }
@@ -374,7 +374,7 @@ export class EnhancedSecurityMiddleware {
           })
           try {
             req.query = sanitizedQuery
-          } catch (_e) {
+          } catch {
             Object.keys(req.query).forEach(key => delete req.query[key])
             Object.assign(req.query, sanitizedQuery)
           }
@@ -387,7 +387,7 @@ export class EnhancedSecurityMiddleware {
           })
           try {
             req.params = sanitizedParams
-          } catch (_e) {
+          } catch {
             Object.keys(req.params).forEach(key => delete req.params[key])
             Object.assign(req.params, sanitizedParams)
           }

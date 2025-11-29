@@ -10,8 +10,7 @@ import {
   ValidationError,
   NotFoundError,
   DatabaseConstraintError,
-  BadRequestError,
-  InternalServerError
+  BadRequestError
 } from '../../api/errors/AppError.js'
 
 // Mock DIContainer before importing services

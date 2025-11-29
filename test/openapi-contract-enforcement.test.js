@@ -3,10 +3,8 @@
  * Verifies that automatic validation is working correctly
  */
 
-import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import request from 'supertest'
-import { DIContainer } from '../api/architecture/di-container.js'
-import { AppError } from '../api/errors/AppError.js'
 
 // Mock Supabase client to avoid real DB connection
 vi.mock('../api/services/supabaseClient.js', async () => {
