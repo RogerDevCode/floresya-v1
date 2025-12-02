@@ -4,7 +4,7 @@
  * Populates the database with initial data for E2E tests
  */
 import { initializeDIContainer } from './api/architecture/di-container.js'
-import { logger } from './api/utils/logger.js'
+// import { logger } from './api/utils/logger.js'
 
 async function seed() {
   try {

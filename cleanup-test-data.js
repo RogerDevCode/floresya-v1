@@ -4,7 +4,7 @@
  * Removes data created during E2E tests
  */
 import { initializeDIContainer } from './api/architecture/di-container.js'
-import { logger } from './api/utils/logger.js'
+// import { logger } from './api/utils/logger.js'
 
 async function cleanup() {
   try {
