@@ -94,7 +94,7 @@ test.describe('Smoke Tests - Funcionalidad Real', () => {
     await page.goto('/')
 
     // Verificar que el contenedor de productos existe
-    const productGrid = page.locator('#products-grid, .products-grid, [data-test="product-grid"]')
+    const productGrid = page.locator('#productsContainer')
     await expect(productGrid).toBeAttached()
     // Usar un selector más amplio por si acaso
 

@@ -1,6 +1,7 @@
 # Guía Completa de Configuración para KiloCode CLI
 
 ## Tabla de Contenidos
+
 1. [Introducción a KiloCode CLI](#introducción)
 2. [Instalación Paso a Paso](#instalación)
 3. [Configuración de Modelos de IA](#configuracion-modelos)
@@ -31,6 +32,7 @@ KiloCode CLI se integra perfectamente en flujos de trabajo de desarrollo moderno
 ## <a name="instalación"></a>2. Instalación Paso a Paso
 
 ### Requisitos Previos
+
 - Node.js v20.0.0 o superior
 - npm v10.0.0 o superior
 - Sistema operativo: Windows 10+, macOS 10.15+, o Linux (Ubuntu 18.04+)
@@ -74,6 +76,7 @@ touch .kilocode.json
 ### <a name="configuracion-openai"></a>3.1 Configuración para OpenAI (GPT-4, GPT-3.5)
 
 #### Obtener API Key
+
 1. Visita [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 2. Inicia sesión o crea una cuenta
 3. Genera una nueva API key
@@ -130,6 +133,7 @@ export OPENAI_ORGANIZATION="org-your-organization-id"
 ### <a name="configuracion-anthropic"></a>3.2 Configuración para Anthropic (Claude)
 
 #### Obtener API Key
+
 1. Visita [https://console.anthropic.com/](https://console.anthropic.com/)
 2. Crea una cuenta o inicia sesión
 3. Genera una API key en la sección de API Keys
@@ -331,6 +335,7 @@ export SPECTRE_BASE_URL="https://api.spectre.ai/v1"
 1. **Compatibilidad Limitada**: Los modelos no oficiales pueden no ser compatibles con todas las características de KiloCode CLI
 
 2. **Riesgos de Seguridad**:
+
    ```json
    {
      "security": {
@@ -345,6 +350,7 @@ export SPECTRE_BASE_URL="https://api.spectre.ai/v1"
    ```
 
 3. **Manejo de Errores Específico**:
+
    ```json
    {
      "errorHandling": {
@@ -605,7 +611,7 @@ module.exports = {
     model: 'claude-3-opus-20240229',
     maxTokens: 8192
   }
-};
+}
 ```
 
 ---
@@ -615,12 +621,13 @@ module.exports = {
 ### Seguridad de API Keys
 
 1. **Nunca exponer API Keys en el código**
+
    ```json
    // ❌ MAL
    {
      "apiKey": "sk-your-actual-api-key-here"
    }
-   
+
    // ✅ BIEN
    {
      "apiKey": "${OPENAI_API_KEY}"
@@ -628,6 +635,7 @@ module.exports = {
    ```
 
 2. **Usar variables de entorno**
+
    ```bash
    # Archivo .env (agregar a .gitignore)
    OPENAI_API_KEY=sk-your-api-key-here
@@ -643,6 +651,7 @@ module.exports = {
 ### Optimización de Costos
 
 1. **Configurar límites de tokens**
+
    ```json
    {
      "openai": {
@@ -653,6 +662,7 @@ module.exports = {
    ```
 
 2. **Usar modelos más económicos para tareas simples**
+
    ```json
    {
      "profiles": {
@@ -671,10 +681,11 @@ module.exports = {
    ```
 
 3. **Monitoreo de uso**
+
    ```bash
    # Ver estadísticas de uso
    kilocode stats --month
-   
+
    # Configurar alertas de uso
    kilocode config set alerts.monthlyLimit 100
    ```
@@ -682,6 +693,7 @@ module.exports = {
 ### Mejores Prácticas de Desarrollo
 
 1. **Configuración por entorno**
+
    ```json
    {
      "development": {
@@ -703,10 +715,11 @@ module.exports = {
    ```
 
 2. **Validación de configuración**
+
    ```bash
    # Validar configuración antes de usar
    kilocode validate --strict
-   
+
    # Probar conexión con el modelo
    kilocode test-connection
    ```
@@ -726,6 +739,7 @@ module.exports = {
 ### Consideraciones de Rendimiento
 
 1. **Caching de respuestas**
+
    ```json
    {
      "cache": {
@@ -738,6 +752,7 @@ module.exports = {
    ```
 
 2. **Paralelización de solicitudes**
+
    ```bash
    # Procesamiento por lotes
    kilocode batch --input ./files --concurrent 5
@@ -757,6 +772,7 @@ module.exports = {
 ### Registro y Auditoría
 
 1. **Configurar logging detallado**
+
    ```json
    {
      "logging": {
@@ -771,10 +787,11 @@ module.exports = {
    ```
 
 2. **Auditoría de uso**
+
    ```bash
    # Generar reporte de auditoría
    kilocode audit --start 2024-01-01 --end 2024-12-31
-   
+
    # Exportar datos de uso
    kilocode export --format csv --output usage-report.csv
    ```
@@ -782,6 +799,7 @@ module.exports = {
 ### Integración con Herramientas Existentes
 
 1. **Configuración para Git Hooks**
+
    ```json
    {
      "gitHooks": {
