@@ -25,19 +25,19 @@ vi.mock('../../api/services/supabaseClient.js', () => {
     {
       id: 1,
       created_at: '2025-11-15T10:00:00Z',
-      total: '150.50',
+      total_amount_usd: '150.50',
       status: 'delivered'
     },
     {
       id: 2,
       created_at: '2025-11-16T11:00:00Z',
-      total: '200.00',
+      total_amount_usd: '200.00',
       status: 'confirmed'
     },
     {
       id: 3,
       created_at: '2025-11-16T15:00:00Z',
-      total: '75.25',
+      total_amount_usd: '75.25',
       status: 'delivered'
     }
   ]
@@ -46,12 +46,12 @@ vi.mock('../../api/services/supabaseClient.js', () => {
     {
       product_name: 'Rose Bouquet',
       quantity: 2,
-      subtotal: 100.0
+      subtotal_usd: 100.0
     },
     {
       product_name: 'Tulips',
       quantity: 1,
-      subtotal: 50.5
+      subtotal_usd: 50.5
     }
   ]
 

@@ -144,7 +144,25 @@ export const validateId = (paramName = 'id') => {
 }
 
 export const validateEmail = ValidatorService.validateEmail.bind(ValidatorService)
-export const validatePagination = ValidatorService.validatePagination.bind(ValidatorService)
+
+export const validatePagination = (req, res, next) => {
+  try {
+    const params = {
+      limit: req.query.limit,
+      offset: req.query.offset
+    }
+    const validated = ValidatorService.validatePagination(params)
+
+    // Update req.query with validated values
+    if (validated.limit !== undefined) req.query.limit = validated.limit
+    if (validated.offset !== undefined) req.query.offset = validated.offset
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const sanitize = ValidatorService.sanitizeString.bind(ValidatorService)
 
 // Export advanced validation

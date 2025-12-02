@@ -8,7 +8,7 @@ async function globalSetup() {
 
   // Verificar que el servidor esté disponible
   const maxRetries = 10
-  const baseURL = 'http://127.0.0.1:3000'
+  const baseURL = process.env.BASE_URL || 'http://127.0.0.1:3000'
 
   for (let i = 0; i < maxRetries; i++) {
     try {

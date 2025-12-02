@@ -17,6 +17,21 @@ export class PaymentMethodRepository extends BaseRepository {
   }
 
   /**
+   * ✅ STATIC ASYNC FACTORY: Crea PaymentMethodRepository con inicialización completa
+   * @returns {Promise<PaymentMethodRepository>} Instancia completamente inicializada
+   */
+  static async create() {
+    try {
+      // 🚀 OBTENER CLIENTE: Usar factory de BaseRepository para asegurar inicialización
+      // ✅ STATIC ASYNC FACTORY: Implementar patrón correcto
+      const supabaseClient = await import('../services/supabaseClient.js').then(m => m.supabase)
+      return new PaymentMethodRepository(supabaseClient)
+    } catch (error) {
+      throw new Error(`PaymentMethodRepository.create failed: ${error.message}`)
+    }
+  }
+
+  /**
    * Obtener métodos de pago activos
    * @returns {Promise<Array>} Lista de métodos de pago activos
    */
@@ -97,29 +112,6 @@ export class PaymentMethodRepository extends BaseRepository {
         return null
       }
       throw this.handleError(error, 'findById', { id })
-    }
-
-    return data
-  }
-
-  /**
-   * Obtener método de pago por código
-   * @param {string} code - Código del método de pago
-   * @returns {Promise<Object>} Método de pago encontrado
-   */
-  async findByCode(code) {
-    const { data, error } = await this.supabase
-      .from(this.table)
-      .select('*')
-      .eq('code', code)
-      .eq('active', true)
-      .single()
-
-    if (error) {
-      if (error.code === 'PGRST116') {
-        return null
-      }
-      throw this.handleError(error, 'findByCode', { code })
     }
 
     return data
@@ -212,6 +204,7 @@ export class PaymentMethodRepository extends BaseRepository {
  * @param {Object} supabaseClient - Supabase client
  * @returns {PaymentMethodRepository} Repository instance
  */
-export function createPaymentMethodRepository(supabaseClient = null) {
-  return new PaymentMethodRepository(supabaseClient)
+export async function createPaymentMethodRepository(supabaseClient = null) {
+  if (supabaseClient) return new PaymentMethodRepository(supabaseClient)
+  return await PaymentMethodRepository.create()
 }

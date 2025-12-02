@@ -17,6 +17,21 @@ export class SettingsRepository extends BaseRepositoryWithErrorHandling {
   }
 
   /**
+   * ✅ STATIC ASYNC FACTORY: Crea SettingsRepository con inicialización completa
+   * @returns {Promise<SettingsRepository>} Instancia completamente inicializada
+   */
+  static async create() {
+    try {
+      // 🚀 OBTENER CLIENTE: Usar factory de BaseRepository para asegurar inicialización
+      // ✅ STATIC ASYNC FACTORY: Implementar patrón correcto
+      const supabaseClient = await import('../services/supabaseClient.js').then(m => m.supabase)
+      return new SettingsRepository(supabaseClient)
+    } catch (error) {
+      throw new Error(`SettingsRepository.create failed: ${error.message}`)
+    }
+  }
+
+  /**
    * Obtener configuración por clave
    * @param {string} key - Clave de configuración
    * @returns {Promise<Object|null>} Configuración encontrada
@@ -58,7 +73,7 @@ export class SettingsRepository extends BaseRepositoryWithErrorHandling {
    * @returns {Promise<Object>} Mapa clave-valor
    */
   async getSettingsMap(onlyPublic = true) {
-    let query = this.supabase.from(this.table).select('key, value, type, description')
+    let query = this.supabase.from(this.table).select('key, value, type, description, active')
 
     if (onlyPublic) {
       query = query.eq('is_public', true)
@@ -151,6 +166,7 @@ export class SettingsRepository extends BaseRepositoryWithErrorHandling {
  * @param {Object} supabaseClient - Supabase client instance
  * @returns {SettingsRepository} Repository instance
  */
-export function createSettingsRepository(supabaseClient) {
-  return new SettingsRepository(supabaseClient)
+export async function createSettingsRepository(supabaseClient = null) {
+  if (supabaseClient) return new SettingsRepository(supabaseClient)
+  return await SettingsRepository.create()
 }

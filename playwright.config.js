@@ -7,7 +7,7 @@ import { defineConfig, devices } from '@playwright/test'
 export default defineConfig({
   // Test directory - Solo smoke tests por defecto
   testDir: './e2e-tests',
-  testMatch: 'smoke.spec.js', // Solo tests realistas
+  testMatch: '**/*.spec.js', // Match all spec files
 
   // Maximum time one test can run
   timeout: 30000,
@@ -34,7 +34,7 @@ export default defineConfig({
   // Shared settings for all the projects below
   use: {
     // Base URL to use in actions like `await page.goto('/')`
-    baseURL: 'http://127.0.0.1:3000',
+    baseURL: process.env.BASE_URL || 'http://127.0.0.1:3000',
 
     // Collect trace when retrying the failed test
     trace: 'on-first-retry',

@@ -24,10 +24,9 @@ export class ProductRepository extends BaseRepository {
   static async create() {
     try {
       // 🚀 OBTENER CLIENTE: Usar factory de BaseRepository para asegurar inicialización
-      return await BaseRepository.create(
-        () => import('../services/supabaseClient.js').then(m => m.supabase),
-        DB_SCHEMA.products.table
-      )
+      // ✅ STATIC ASYNC FACTORY: Implementar patrón correcto
+      const supabaseClient = await import('../services/supabaseClient.js').then(m => m.supabase)
+      return new ProductRepository(supabaseClient)
     } catch (error) {
       throw new Error(`ProductRepository.create failed: ${error.message}`)
     }
@@ -149,7 +148,7 @@ export class ProductRepository extends BaseRepository {
         id, name, summary, description, price_usd, price_ves, stock, sku,
         active, featured, carousel_order, created_at, updated_at,
         product_images(
-          id, product_id, image_url, size, image_index, created_at, updated_at
+          id, product_id, url, size, image_index, created_at, updated_at, active
         )
       `
       )
@@ -540,6 +539,7 @@ export class ProductRepository extends BaseRepository {
         id, name, summary, description, price_usd, price_ves, stock, sku, active, featured, carousel_order, created_at, updated_at,
         product_occasions(
           occasion_id,
+          active,
           occasions(id, name, slug, active)
         )
       `)
@@ -656,6 +656,7 @@ export class ProductRepository extends BaseRepository {
  * @param {Object} supabaseClient - Supabase client
  * @returns {ProductRepository} Repository instance
  */
-export function createProductRepository(supabaseClient = null) {
-  return new ProductRepository(supabaseClient)
+export async function createProductRepository(supabaseClient = null) {
+  if (supabaseClient) return new ProductRepository(supabaseClient)
+  return await ProductRepository.create()
 }

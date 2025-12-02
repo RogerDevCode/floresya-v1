@@ -16,10 +16,9 @@ export class ExpenseRepository extends BaseRepository {
    * ✅ STATIC ASYNC FACTORY
    */
   static async create() {
-    return await BaseRepository.create(
-      () => import('../services/supabaseClient.js').then(m => m.supabase),
-      'expenses'
-    )
+    // ✅ STATIC ASYNC FACTORY: Implementar patrón correcto
+    const supabaseClient = await import('../services/supabaseClient.js').then(m => m.supabase)
+    return new ExpenseRepository(supabaseClient)
   }
 
   /**
@@ -95,18 +94,9 @@ export class ExpenseRepository extends BaseRepository {
    */
   async getExpensesByCategory(startDate, endDate) {
     try {
-      const { data, error } = await this.supabase.rpc('get_expenses_by_category', {
-        start_date: startDate,
-        end_date: endDate
-      })
-
-      if (error) {
-        // Fallback to manual grouping if RPC doesn't exist
-        const expenses = await this.findByDateRange(startDate, endDate)
-        return this.groupByCategory(expenses)
-      }
-
-      return data || []
+      // Use manual grouping as RPC doesn't exist in current schema
+      const expenses = await this.findByDateRange(startDate, endDate)
+      return this.groupByCategory(expenses)
     } catch (error) {
       logger.error('Error getting expenses by category', { error })
       throw error

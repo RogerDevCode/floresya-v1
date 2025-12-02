@@ -24,10 +24,9 @@ export class OrderRepository extends BaseRepository {
   static async create() {
     try {
       // 🚀 OBTENER CLIENTE: Usar factory de BaseRepository para asegurar inicialización
-      return await BaseRepository.create(
-        () => import('../services/supabaseClient.js').then(m => m.supabase),
-        DB_SCHEMA.orders.table
-      )
+      // ✅ STATIC ASYNC FACTORY: Implementar patrón correcto
+      const supabaseClient = await import('../services/supabaseClient.js').then(m => m.supabase)
+      return new OrderRepository(supabaseClient)
     } catch (error) {
       throw new Error(`OrderRepository.create failed: ${error.message}`)
     }
@@ -94,10 +93,10 @@ export class OrderRepository extends BaseRepository {
       .from(this.table)
       .select(
         `
-        id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized,
+        id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_city, delivery_state, delivery_zip, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized, active,
         users(id, email, full_name, phone, role, active, email_verified, created_at, updated_at),
         order_items(
-          id, order_id, product_id, product_name, product_summary, unit_price_usd, unit_price_ves, quantity, subtotal_usd, subtotal_ves, created_at, updated_at,
+          id, order_id, product_id, product_name, product_summary, unit_price_usd, unit_price_ves, quantity, subtotal_usd, subtotal_ves, created_at, updated_at, active,
           products(id, name, summary, description, price_usd, price_ves, stock, sku, active, featured, carousel_order, created_at, updated_at)
         )
       `
@@ -131,8 +130,8 @@ export class OrderRepository extends BaseRepository {
       .from(this.table)
       .select(
         `
-        id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized,
-        order_items(id, order_id, product_id, product_name, product_summary, unit_price_usd, unit_price_ves, quantity, subtotal_usd, subtotal_ves, created_at, updated_at)
+        id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_city, delivery_state, delivery_zip, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized, active,
+        order_items(id, order_id, product_id, product_name, product_summary, unit_price_usd, unit_price_ves, quantity, subtotal_usd, subtotal_ves, created_at, updated_at, active)
       `
       )
       .eq('user_id', userId)
@@ -237,7 +236,7 @@ export class OrderRepository extends BaseRepository {
     const query = this.supabase
       .from(this.table)
       .select(
-        'id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized, users(id, email, full_name, phone, role, active, email_verified, created_at, updated_at)'
+        'id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_city, delivery_state, delivery_zip, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized, active, users(id, email, full_name, phone, role, active, email_verified, created_at, updated_at)'
       )
       .eq('status', status)
 
@@ -264,7 +263,7 @@ export class OrderRepository extends BaseRepository {
     const query = this.supabase
       .from(this.table)
       .select(
-        'id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized, users(id, email, full_name, phone, role, active, email_verified, created_at, updated_at)'
+        'id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_city, delivery_state, delivery_zip, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized, active, users(id, email, full_name, phone, role, active, email_verified, created_at, updated_at)'
       )
       .eq('payment_status', paymentStatus)
 
@@ -333,7 +332,7 @@ export class OrderRepository extends BaseRepository {
     let query = this.supabase
       .from(this.table)
       .select(
-        'id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized, users(id, email, full_name, phone, role, active, email_verified, created_at, updated_at), order_items(id, order_id, product_id, product_name, product_summary, unit_price_usd, unit_price_ves, quantity, subtotal_usd, subtotal_ves, created_at, updated_at)'
+        'id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_city, delivery_state, delivery_zip, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized, active, users(id, email, full_name, phone, role, active, email_verified, created_at, updated_at), order_items(id, order_id, product_id, product_name, product_summary, unit_price_usd, unit_price_ves, quantity, subtotal_usd, subtotal_ves, created_at, updated_at, active)'
       )
       .gte('created_at', dateFrom)
       .lte('created_at', dateTo)
@@ -387,9 +386,9 @@ export class OrderRepository extends BaseRepository {
       .from(this.table)
       .select(
         `
-        id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized,
+        id, user_id, customer_email, customer_name, customer_phone, delivery_address, delivery_city, delivery_state, delivery_zip, delivery_date, delivery_time_slot, delivery_notes, status, total_amount_usd, total_amount_ves, currency_rate, notes, admin_notes, created_at, updated_at, customer_name_normalized, customer_email_normalized, active,
         users!inner(email, full_name),
-        order_items(id, order_id, product_id, product_name, product_summary, unit_price_usd, unit_price_ves, quantity, subtotal_usd, subtotal_ves, created_at, updated_at)
+        order_items(id, order_id, product_id, product_name, product_summary, unit_price_usd, unit_price_ves, quantity, subtotal_usd, subtotal_ves, created_at, updated_at, active)
       `
       )
       .or(
@@ -510,6 +509,7 @@ export class OrderRepository extends BaseRepository {
  * @param {Object} supabaseClient - Supabase client
  * @returns {OrderRepository} Repository instance
  */
-export function createOrderRepository(supabaseClient = null) {
-  return new OrderRepository(supabaseClient)
+export async function createOrderRepository(supabaseClient = null) {
+  if (supabaseClient) return new OrderRepository(supabaseClient)
+  return await OrderRepository.create()
 }

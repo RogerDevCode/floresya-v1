@@ -18,6 +18,21 @@ export class ProductImageRepository extends BaseRepository {
   }
 
   /**
+   * ✅ STATIC ASYNC FACTORY: Crea ProductImageRepository con inicialización completa
+   * @returns {Promise<ProductImageRepository>} Instancia completamente inicializada
+   */
+  static async create() {
+    try {
+      // 🚀 OBTENER CLIENTE: Usar factory de BaseRepository para asegurar inicialización
+      // ✅ STATIC ASYNC FACTORY: Implementar patrón correcto
+      const supabaseClient = await import('../services/supabaseClient.js').then(m => m.supabase)
+      return new ProductImageRepository(supabaseClient)
+    } catch (error) {
+      throw new Error(`ProductImageRepository.create failed: ${error.message}`)
+    }
+  }
+
+  /**
    * Obtener imágenes de un producto
    * @param {number} productId - ID del producto
    * @param {boolean} includeInactive - Incluir imágenes inactivas
@@ -177,6 +192,47 @@ export class ProductImageRepository extends BaseRepository {
 
     return data?.length || 0
   }
+
+  /**
+   * Find images for multiple products by size
+   * @param {Array<number>} productIds - List of product IDs
+   * @param {string} size - Image size
+   * @returns {Promise<Array>} List of images
+   */
+  async findImagesByProductIdsAndSize(productIds, size) {
+    const { data, error } = await this.supabase
+      .from(this.table)
+      .select('*')
+      .in('product_id', productIds)
+      .eq('size', size)
+      .order('image_index', { ascending: true })
+
+    if (error) {
+      throw this.handleError(error, 'findImagesByProductIdsAndSize', { productIds, size })
+    }
+
+    return data || []
+  }
+
+  /**
+   * Find fallback images (any size) for multiple products
+   * @param {Array<number>} productIds - List of product IDs
+   * @returns {Promise<Array>} List of images
+   */
+  async findFallbackImagesByProductIds(productIds) {
+    const { data, error } = await this.supabase
+      .from(this.table)
+      .select('*')
+      .in('product_id', productIds)
+      .eq('size', 'large')
+      .order('image_index', { ascending: true })
+
+    if (error) {
+      throw this.handleError(error, 'findFallbackImagesByProductIds', { productIds })
+    }
+
+    return data || []
+  }
 }
 
 /**
@@ -184,6 +240,7 @@ export class ProductImageRepository extends BaseRepository {
  * @param {Object} supabaseClient - Supabase client instance
  * @returns {ProductImageRepository} Repository instance
  */
-export function createProductImageRepository(supabaseClient) {
-  return new ProductImageRepository(supabaseClient)
+export async function createProductImageRepository(supabaseClient = null) {
+  if (supabaseClient) return new ProductImageRepository(supabaseClient)
+  return await ProductImageRepository.create()
 }

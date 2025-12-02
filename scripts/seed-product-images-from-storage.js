@@ -1,12 +1,10 @@
 /**
- * @fileoverview Seed product_images table with images from Supabase storage
- * @description Randomly assigns images to products 191-202
- * @version 2.1.0
+ * @fileoverview Seed product_images table distributing existing Supabase Storage images
+ * @description Reads images from Supabase Storage and assigns them to products 191-202
+ * @version 3.0.0 - Direct from Storage (sin archivos locales)
  */
 
 import { createClient } from '@supabase/supabase-js'
-import { readdir } from 'fs/promises'
-import { join } from 'path'
 import dotenv from 'dotenv'
 
 dotenv.config()
@@ -21,7 +19,7 @@ const STORAGE_BASE_URL =
   'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images'
 const IMAGE_SIZES = ['thumb', 'small', 'medium', 'large']
 const PRODUCT_IDS = [191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202]
-const IMG_TEMP_PATH = join(process.cwd(), 'img-temp', 'large')
+const BUCKET_NAME = 'product-images'
 
 /**
  * Extract image info from filename
@@ -96,6 +94,32 @@ function buildImageUrls(imageInfo) {
   })
 
   return urls
+}
+
+/**
+ * Get images from Supabase Storage
+ */
+async function getImagesFromStorage() {
+  console.log('\n📂 Reading images from Supabase Storage...')
+
+  const { data, error } = await supabase.storage.from(BUCKET_NAME).list('large', { limit: 1000 })
+
+  if (error) {
+    console.error('❌ Error reading from storage:', error)
+    throw error
+  }
+
+  if (!data || data.length === 0) {
+    throw new Error('No images found in storage bucket')
+  }
+
+  const imageFiles = data
+    .map(file => parseFilename(file.name))
+    .filter(Boolean)
+    .sort((a, b) => a.oldProductId - b.oldProductId || a.position - b.position)
+
+  console.log(`✅ Found ${imageFiles.length} valid images in Storage`)
+  return imageFiles
 }
 
 /**
@@ -180,21 +204,11 @@ function displaySummary(assignments) {
  * Main execution
  */
 async function main() {
-  console.log('🚀 Starting product image seeding...\n')
+  console.log('🚀 Starting product image seeding from Supabase Storage...\n')
 
   try {
-    console.log('📂 Reading image files from img-temp/large...')
-    const files = await readdir(IMG_TEMP_PATH)
-    const imageFiles = files
-      .map(parseFilename)
-      .filter(Boolean)
-      .sort((a, b) => a.oldProductId - b.oldProductId || a.position - b.position)
-
-    console.log(`✅ Found ${imageFiles.length} valid image files`)
-
-    if (imageFiles.length === 0) {
-      throw new Error('No valid image files found in img-temp/large')
-    }
+    // Get images directly from Storage
+    const imageFiles = await getImagesFromStorage()
 
     console.log('\n🎲 Distributing images randomly across products...')
     const assignments = distributeImages(imageFiles, PRODUCT_IDS)

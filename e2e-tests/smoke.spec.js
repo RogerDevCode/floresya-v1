@@ -89,6 +89,24 @@ test.describe('Smoke Tests - Funcionalidad Real', () => {
     const count = await desktopNav.count()
     expect(count).toBeGreaterThan(0)
   })
+
+  test('productos deben cargarse en la home', async ({ page }) => {
+    await page.goto('/')
+
+    // Verificar que el contenedor de productos existe
+    const productGrid = page.locator('#products-grid, .products-grid, [data-test="product-grid"]')
+    // Usar un selector más amplio por si acaso
+
+    // Esperar a que carguen los productos (puede tardar un poco por la API)
+    // Buscamos tarjetas de producto
+    const productCards = page.locator('article, .product-card, [data-product-id]')
+
+    // Esperar explícitamente
+    await expect(productCards.first()).toBeVisible({ timeout: 10000 })
+
+    const count = await productCards.count()
+    expect(count).toBeGreaterThan(0)
+  })
 })
 
 test.describe('Navegación Real - Mobile', () => {

@@ -22,7 +22,7 @@ export const getDailySales = withErrorMapping(
   async (startDate, endDate) => {
     const { data, error } = await supabase
       .from('orders')
-      .select('created_at, total, status')
+      .select('created_at, total_amount_usd, status')
       .gte('created_at', startDate)
       .lte('created_at', endDate)
       .in('status', ['confirmed', 'processing', 'delivering', 'delivered'])
@@ -42,7 +42,7 @@ export const getDailySales = withErrorMapping(
           count: 0
         }
       }
-      salesByDate[date].total += parseFloat(order.total)
+      salesByDate[date].total += parseFloat(order.total_amount_usd)
       salesByDate[date].count += 1
     })
 
@@ -207,7 +207,7 @@ export const getTopProducts = withErrorMapping(
     // Get order items for these orders
     const { data: items, error: itemsError } = await supabase
       .from('order_items')
-      .select('product_name, quantity, subtotal')
+      .select('product_name, quantity, subtotal_usd')
       .in('order_id', orderIds)
 
     if (itemsError) {
@@ -224,7 +224,7 @@ export const getTopProducts = withErrorMapping(
         }
       }
       acc[item.product_name].quantity += item.quantity
-      acc[item.product_name].revenue += parseFloat(item.subtotal)
+      acc[item.product_name].revenue += parseFloat(item.subtotal_usd)
       return acc
     }, {})
 

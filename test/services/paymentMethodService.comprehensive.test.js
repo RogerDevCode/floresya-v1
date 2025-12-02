@@ -174,7 +174,7 @@ describe('Payment Method Service - Comprehensive Coverage', () => {
     it('should validate expiry date', () => {
       const validateExpiry = (month, year) => {
         const now = new Date()
-        const expiry = new Date(2000 + year, month - 1)
+        const expiry = new Date(2000 + year, month)
         return expiry > now
       }
 

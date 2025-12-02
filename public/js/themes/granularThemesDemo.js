@@ -30,9 +30,9 @@ export function initHomepageGranularThemes() {
     footer: document.querySelector('footer')
   }
 
-  // Verificar que los elementos existen
+  // Verificar que los elementos existen (footer se carga dinámicamente, así que se omite el warning)
   Object.entries(mappings).forEach(([key, element]) => {
-    if (!element) {
+    if (!element && key !== 'footer') {
       console.warn(`⚠️ Elemento no encontrado para: ${key}`)
     }
   })

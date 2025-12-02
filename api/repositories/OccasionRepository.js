@@ -17,6 +17,21 @@ export class OccasionRepository extends BaseRepository {
   }
 
   /**
+   * ✅ STATIC ASYNC FACTORY: Crea OccasionRepository con inicialización completa
+   * @returns {Promise<OccasionRepository>} Instancia completamente inicializada
+   */
+  static async create() {
+    try {
+      // 🚀 OBTENER CLIENTE: Usar factory de BaseRepository para asegurar inicialización
+      // ✅ STATIC ASYNC FACTORY: Implementar patrón correcto
+      const supabaseClient = await import('../services/supabaseClient.js').then(m => m.supabase)
+      return new OccasionRepository(supabaseClient)
+    } catch (error) {
+      throw new Error(`OccasionRepository.create failed: ${error.message}`)
+    }
+  }
+
+  /**
    * Obtener ocasión por slug
    * @param {string} slug - Slug de la ocasión
    * @param {boolean} includeInactive - Incluir ocasiones inactivas
@@ -94,6 +109,7 @@ export class OccasionRepository extends BaseRepository {
  * @param {Object} supabaseClient - Supabase client instance
  * @returns {OccasionRepository} Repository instance
  */
-export function createOccasionRepository(supabaseClient) {
-  return new OccasionRepository(supabaseClient)
+export async function createOccasionRepository(supabaseClient = null) {
+  if (supabaseClient) return new OccasionRepository(supabaseClient)
+  return await OccasionRepository.create()
 }

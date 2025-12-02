@@ -288,7 +288,7 @@ export function sanitizeRequestData(req, res, next) {
  * Enhanced file upload sanitization middleware
  * Integrates malware scanning and security validation
  */
-export function sanitizeFileUpload(req, res, next) {
+export async function sanitizeFileUpload(req, res, next) {
   try {
     // If no files, continue
     if (!req.file && !req.files) {
@@ -328,34 +328,34 @@ export function sanitizeFileUpload(req, res, next) {
       }
     })
 
-    // Wait for all scans to complete
-    Promise.all(scanPromises)
-      .then(scanResults => {
-        // Check if any files are malicious
-        const maliciousFiles = scanResults.filter(result => result && !result.isClean)
+    // Wait for all scans to complete using async/await pattern
+    try {
+      const scanResults = await Promise.all(scanPromises)
 
-        if (maliciousFiles.length > 0) {
-          const error = new Error('Malicious files detected and blocked')
-          error.code = 'MALICIOUS_FILES_DETECTED'
-          error.details = maliciousFiles.map(result => ({
-            filename: result.filename,
-            threats: result.threats,
-            quarantined: result.quarantined
-          }))
-          return next(error)
-        }
+      // Check if any files are malicious
+      const maliciousFiles = scanResults.filter(result => result && !result.isClean)
 
-        // Attach scan results to request
-        req.fileScanResults = scanResults
-        next()
+      if (maliciousFiles.length > 0) {
+        const error = new Error('Malicious files detected and blocked')
+        error.code = 'MALICIOUS_FILES_DETECTED'
+        error.details = maliciousFiles.map(result => ({
+          filename: result.filename,
+          threats: result.threats,
+          quarantined: result.quarantined
+        }))
+        return next(error)
+      }
+
+      // Attach scan results to request
+      req.fileScanResults = scanResults
+      next()
+    } catch (error) {
+      logger.error('File upload sanitization failed', {
+        error: error.message,
+        path: req.path
       })
-      .catch(error => {
-        logger.error('File upload sanitization failed', {
-          error: error.message,
-          path: req.path
-        })
-        next(error)
-      })
+      next(error)
+    }
   } catch (error) {
     console.error('Error in file upload sanitization:', error)
     logger.error('File upload sanitization error', {

@@ -25,6 +25,7 @@ import { logger } from '../../utils/logger.js'
 import { InputSanitizationService } from '../../services/security/InputSanitizationService.js'
 import { MalwareScanningService } from '../../services/security/MalwareScanningService.js'
 import config from '../../config/configLoader.js'
+import { randomBytes } from 'node:crypto'
 
 /**
  * Suspicious IP patterns
@@ -524,15 +525,20 @@ export class EnhancedSecurityMiddleware {
     return (req, res, next) => {
       try {
         // Basic security headers
-        res.setHeader('X-Frame-Options', 'DENY')
-        res.setHeader('X-Content-Type-Options', 'nosniff')
-        res.setHeader('X-XSS-Protection', '1; mode=block')
-        res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
-        res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()')
+        if (!res.headersSent) {
+          res.setHeader('X-Frame-Options', 'DENY')
+          res.setHeader('X-Content-Type-Options', 'nosniff')
+          res.setHeader('X-XSS-Protection', '1; mode=block')
+          res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+          res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()')
 
-        // HSTS (HTTPS Strict Transport Security)
-        if (enableHSTS && (req.secure || req.headers['x-forwarded-proto'] === 'https')) {
-          res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
+          // HSTS (HTTPS Strict Transport Security)
+          if (enableHSTS && (req.secure || req.headers['x-forwarded-proto'] === 'https')) {
+            res.setHeader(
+              'Strict-Transport-Security',
+              'max-age=31536000; includeSubDomains; preload'
+            )
+          }
         }
 
         // Content Security Policy with nonce
@@ -556,11 +562,13 @@ export class EnhancedSecurityMiddleware {
             'upgrade-insecure-requests'
           ]
 
-          res.setHeader('Content-Security-Policy', cspDirectives.join('; '))
+          if (!res.headersSent) {
+            res.setHeader('Content-Security-Policy', cspDirectives.join('; '))
+          }
         }
 
         // Feature Policy
-        if (enableFeaturePolicy) {
+        if (enableFeaturePolicy && !res.headersSent) {
           const featurePolicy = [
             'geolocation=()',
             'microphone=()',
@@ -581,17 +589,24 @@ export class EnhancedSecurityMiddleware {
         }
 
         // Custom headers
-        Object.entries(customHeaders).forEach(([key, value]) => {
-          res.setHeader(key, value)
-        })
+        if (!res.headersSent) {
+          Object.entries(customHeaders).forEach(([key, value]) => {
+            res.setHeader(key, value)
+          })
+        }
 
         // Security information headers
-        res.setHeader('X-Security-Middleware', 'enhanced')
-        res.setHeader('X-Content-Security-Policy-Nonce', req.cspNonce || '')
+        if (!res.headersSent) {
+          res.setHeader('X-Security-Middleware', 'enhanced')
+          res.setHeader('X-Content-Security-Policy-Nonce', req.cspNonce || '')
+        }
 
         next()
       } catch (error) {
-        logger.error('Security headers error', { error: error.message })
+        // Only log if there's an actual error message
+        if (error && error.message) {
+          logger.error('Security headers error', { error: error.message, stack: error.stack })
+        }
         next()
       }
     }
@@ -732,7 +747,7 @@ export class EnhancedSecurityMiddleware {
    * @returns {string} Nonce string
    */
   static generateNonce() {
-    return require('crypto').randomBytes(16).toString('base64')
+    return randomBytes(16).toString('base64')
   }
 
   /**

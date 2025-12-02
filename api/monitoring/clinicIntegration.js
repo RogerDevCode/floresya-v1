@@ -247,7 +247,7 @@ const clinicProfiler = new ClinicProfiler()
 /**
  * Profiling middleware for conditional profiling
  */
-function profilingMiddleware(req, res, next) {
+async function profilingMiddleware(req, res, next) {
   // Skip profiling in test environment
   if (process.env.NODE_ENV === 'test' || process.env.VITEST) {
     return next()
@@ -258,10 +258,12 @@ function profilingMiddleware(req, res, next) {
   const profilingStatus = clinicProfiler.getProfilingStatus()
 
   if (healthScore < 60 && !profilingStatus.isActive && profilingStatus.canStart) {
-    // Start background profiling for poor health
-    clinicProfiler.runAutomatedProfiling().catch(error => {
+    // Start background profiling for poor health with proper error handling
+    try {
+      await clinicProfiler.runAutomatedProfiling()
+    } catch (error) {
       logger.error('Automated profiling failed', error)
-    })
+    }
   }
 
   next()

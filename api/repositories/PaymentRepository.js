@@ -17,6 +17,21 @@ export class PaymentRepository extends BaseRepository {
   }
 
   /**
+   * ✅ STATIC ASYNC FACTORY: Crea PaymentRepository con inicialización completa
+   * @returns {Promise<PaymentRepository>} Instancia completamente inicializada
+   */
+  static async create() {
+    try {
+      // 🚀 OBTENER CLIENTE: Usar factory de BaseRepository para asegurar inicialización
+      // ✅ STATIC ASYNC FACTORY: Implementar patrón correcto
+      const supabaseClient = await import('../services/supabaseClient.js').then(m => m.supabase)
+      return new PaymentRepository(supabaseClient)
+    } catch (error) {
+      throw new Error(`PaymentRepository.create failed: ${error.message}`)
+    }
+  }
+
+  /**
    * Obtener pagos con filtros específicos
    * @param {Object} filters - Filtros para pagos
    * @param {Object} options - Opciones de consulta
@@ -43,7 +58,7 @@ export class PaymentRepository extends BaseRepository {
     }
 
     if (filters.reference) {
-      query = query.ilike('reference', `%${filters.reference}%`)
+      query = query.ilike('reference_number', `%${filters.reference}%`)
     }
 
     // Filtrar por rango de fechas
@@ -161,7 +176,7 @@ export class PaymentRepository extends BaseRepository {
         payment_methods(*)
       `
       )
-      .eq('reference', reference)
+      .eq('reference_number', reference)
       .single()
 
     if (error) {
@@ -273,6 +288,7 @@ export class PaymentRepository extends BaseRepository {
  * @param {Object} supabaseClient - Supabase client
  * @returns {PaymentRepository} Repository instance
  */
-export function createPaymentRepository(supabaseClient = null) {
-  return new PaymentRepository(supabaseClient)
+export async function createPaymentRepository(supabaseClient = null) {
+  if (supabaseClient) return new PaymentRepository(supabaseClient)
+  return await PaymentRepository.create()
 }

@@ -175,40 +175,6 @@ describe('Payment Method Repository - Payment Method-specific Operations', () =>
     })
   })
 
-  describe('findByCode - Find payment method by code', () => {
-    test('should return payment method when found', async () => {
-      mockSupabase.from.mockReturnValue({
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({ data: testData.paymentMethods.card, error: null })
-            })
-          })
-        })
-      })
-
-      const result = await repository.findByCode('CARD')
-
-      expect(result).toEqual(testData.paymentMethods.card)
-    })
-
-    test('should return null when code not found', async () => {
-      mockSupabase.from.mockReturnValue({
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({ data: null, error: mockErrors.notFound })
-            })
-          })
-        })
-      })
-
-      const result = await repository.findByCode('INVALID')
-
-      expect(result).toBeNull()
-    })
-  })
-
   describe('findByType - Find payment methods by type', () => {
     test('should return payment methods of specified type', async () => {
       const mockMethods = [testData.paymentMethods.card]

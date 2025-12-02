@@ -25,10 +25,9 @@ export class UserRepository extends BaseRepository {
   static async create() {
     try {
       // 🚀 OBTENER CLIENTE: Usar factory de BaseRepository para asegurar inicialización
-      return await BaseRepository.create(
-        () => import('../services/supabaseClient.js').then(m => m.supabase),
-        DB_SCHEMA.users.table
-      )
+      // ✅ STATIC ASYNC FACTORY: Implementar patrón correcto
+      const supabaseClient = await import('../services/supabaseClient.js').then(m => m.supabase)
+      return new UserRepository(supabaseClient)
     } catch (error) {
       throw new Error(`UserRepository.create failed: ${error.message}`)
     }
@@ -387,6 +386,7 @@ export class UserRepository extends BaseRepository {
  * @param {Object} supabaseClient - Supabase client
  * @returns {UserRepository} Repository instance
  */
-export function createUserRepository(supabaseClient = null) {
-  return new UserRepository(supabaseClient)
+export async function createUserRepository(supabaseClient = null) {
+  if (supabaseClient) return new UserRepository(supabaseClient)
+  return await UserRepository.create()
 }

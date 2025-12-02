@@ -878,7 +878,7 @@ async function initCarousel() {
 }
 
 // API Configuration
-const API_BASE_URL = 'http://localhost:3000' // ← Constante para API calls
+const API_BASE_URL = '' // Relative path for same-origin API calls
 
 /**
  * Initialize Featured Products Grid
@@ -2639,7 +2639,7 @@ function createProductCardModel4(product) {
   const reviewCount = Math.floor(Math.random() * 300 + 50)
 
   return `
-    <div class="model-4-card group" data-product-category="${productCategory}" data-product-id="${product.id}">
+    <div class="model-4-card product-card group" data-product-category="${productCategory}" data-product-id="${product.id}">
       <!-- Image Container -->
       <div class="relative aspect-square bg-gray-100 overflow-hidden model-4-image-container" data-carousel-container data-product-id="${product.id}">
         <!-- Product Image -->

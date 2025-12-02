@@ -183,7 +183,7 @@ export const DB_SCHEMA = {
     pk: 'id',
     indexes: ['product_id', 'occasion_id'],
     unique: ['product_id', 'occasion_id'],
-    columns: ['id', 'product_id', 'occasion_id', 'created_at']
+    columns: ['id', 'product_id', 'occasion_id', 'created_at', 'updated_at', 'active']
   },
   product_images: {
     table: 'product_images',
@@ -203,7 +203,8 @@ export const DB_SCHEMA = {
       'file_hash',
       'mime_type',
       'created_at',
-      'updated_at'
+      'updated_at',
+      'active'
     ]
   },
   orders: {
@@ -230,6 +231,9 @@ export const DB_SCHEMA = {
       'customer_name',
       'customer_phone',
       'delivery_address',
+      'delivery_city',
+      'delivery_state',
+      'delivery_zip',
       'delivery_date',
       'delivery_time_slot',
       'delivery_notes',
@@ -242,7 +246,8 @@ export const DB_SCHEMA = {
       'created_at',
       'updated_at',
       'customer_name_normalized',
-      'customer_email_normalized'
+      'customer_email_normalized',
+      'active'
     ]
   },
   order_items: {
@@ -262,7 +267,8 @@ export const DB_SCHEMA = {
       'subtotal_usd',
       'subtotal_ves',
       'created_at',
-      'updated_at'
+      'updated_at',
+      'active'
     ]
   },
   order_status_history: {
@@ -271,7 +277,16 @@ export const DB_SCHEMA = {
     indexes: ['order_id', 'created_at'],
     filters: ['order_id'],
     sorts: ['created_at'],
-    columns: ['id', 'order_id', 'old_status', 'new_status', 'notes', 'changed_by', 'created_at']
+    columns: [
+      'id',
+      'order_id',
+      'old_status',
+      'new_status',
+      'notes',
+      'changed_by',
+      'created_at',
+      'active'
+    ]
   },
   payment_methods: {
     table: 'payment_methods',
@@ -320,7 +335,8 @@ export const DB_SCHEMA = {
       'payment_date',
       'confirmed_date',
       'created_at',
-      'updated_at'
+      'updated_at',
+      'active'
     ]
   },
   settings: {
@@ -328,7 +344,71 @@ export const DB_SCHEMA = {
     pk: 'id',
     indexes: ['key'],
     filters: ['is_public'],
-    columns: ['id', 'key', 'value', 'description', 'type', 'is_public', 'created_at', 'updated_at']
+    columns: [
+      'id',
+      'key',
+      'value',
+      'description',
+      'type',
+      'is_public',
+      'created_at',
+      'updated_at',
+      'active'
+    ]
+  },
+  expenses: {
+    table: 'expenses',
+    pk: 'id',
+    indexes: ['category', 'expense_date', 'payment_method'],
+    filters: ['category', 'expense_date', 'payment_method'],
+    columns: [
+      'id',
+      'category',
+      'description',
+      'amount',
+      'expense_date',
+      'payment_method',
+      'receipt_url',
+      'notes',
+      'created_by',
+      'created_at',
+      'updated_at',
+      'active'
+    ]
+  },
+  busquedas_log: {
+    table: 'busquedas_log',
+    pk: 'id',
+    indexes: ['termino_busqueda', 'created_at'],
+    columns: [
+      'id',
+      'termino_busqueda',
+      'resultados',
+      'tiempo_ejecucion',
+      'ip_cliente',
+      'user_agent',
+      'created_at',
+      'active'
+    ]
+  },
+  query_timeouts_log: {
+    table: 'query_timeouts_log',
+    pk: 'id',
+    indexes: ['nombre_consulta', 'tipo_consulta', 'fecha_hora'],
+    columns: [
+      'id',
+      'nombre_consulta',
+      'tipo_consulta',
+      'duracion_timeout',
+      'tiempo_ejecucion_ms',
+      'estado',
+      'mensaje',
+      'parametros',
+      'usuario_id',
+      'ip_cliente',
+      'fecha_hora',
+      'active'
+    ]
   }
 }
 
@@ -341,19 +421,57 @@ export const DB_FUNCTIONS = {
   // Order operations (lines 122-268 in floresya.sql)
   createOrderWithItems: 'create_order_with_items',
   updateOrderStatusWithHistory: 'update_order_status_with_history',
+  validateOrderTotal: 'validate_order_total',
+  getOrdersFiltered: 'get_orders_filtered',
 
   // Product operations (lines 352-677 in floresya.sql)
   createProductWithOccasions: 'create_product_with_occasions',
   createProductImagesAtomic: 'create_product_images_atomic',
   updateCarouselOrderAtomic: 'update_carousel_order_atomic',
   deleteProductImagesSafe: 'delete_product_images_safe',
+  getProductsFiltered: 'get_products_filtered',
+  buscarProductosRanking: 'buscar_productos_ranking',
+  actualizarVectorBusquedaProductos: 'actualizar_vector_busqueda_productos',
+  productosSimilares: 'productos_similares',
 
   // Query functions (lines 468-568 in floresya.sql)
   getProductOccasions: 'get_product_occasions',
   getProductsByOccasion: 'get_products_by_occasion',
   getProductsWithOccasions: 'get_products_with_occasions',
   getExistingImageByHash: 'get_existing_image_by_hash',
+  sugerenciasBusqueda: 'sugerencias_busqueda',
+  registrarBusqueda: 'registrar_busqueda',
+
+  // Expenses
+  getExpensesFiltered: 'get_expenses_filtered',
+
+  // System & Monitoring
+  getSystemHealthOverview: 'get_system_health_overview',
+  getDatabaseMetrics: 'get_database_metrics',
+  getRedisMetrics: 'get_redis_metrics',
+  getSystemAlerts: 'get_system_alerts',
+  getTimeoutStatistics: 'get_timeout_statistics',
+  getOptimizationMessages: 'get_optimization_messages',
+  getBackendMessages: 'get_backend_messages',
+  sugerirOptimizaciones: 'sugerir_optimizaciones',
+  analizarRendimientoConexiones: 'analizar_rendimiento_conexiones',
+  configuracionConexiones: 'configuracion_conexiones',
+  generarAlertasConexiones: 'generar_alertas_conexiones',
+  limpiarConexionesInactivas: 'limpiar_conexiones_inactivas',
+  limpiarLogsTimeouts: 'limpiar_logs_timeouts',
+  estadisticasRendimiento: 'estadisticas_rendimiento',
+  analizarConsulta: 'analizar_consulta',
+  ejecutarConTimeout: 'ejecutar_con_timeout',
+  configurarTimeoutConsulta: 'configurar_timeout_consulta',
+  consultasProblematicas: 'consultas_problematicas',
+  estadisticasTimeouts: 'estadisticas_timeouts',
+  acknowledgeAlert: 'acknowledge_alert',
+  resolveAlert: 'resolve_alert',
 
   // Utility (lines 575-584 in floresya.sql)
-  resetSequence: 'reset_sequence'
+  resetSequence: 'reset_sequence',
+  syncPaymentMethodName: 'sync_payment_method_name',
+  compareUserId: 'compare_user_id',
+  isAdmin: 'is_admin',
+  round: 'round'
 }

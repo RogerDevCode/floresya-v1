@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict eBkse3eg3aumsA54PslbfN3K0LEfS5M6PvPofSp4YwwXrgRfGAm0L5nxaoKFTaJ
+\restrict j7P7HKjgjsfOc9NDACjgGjvMEwy4gxzyeMjkpqXCWRHj1Gfqm4WkALeJlqCXBAD
 
 -- Dumped from database version 17.4
 -- Dumped by pg_dump version 17.6 (Ubuntu 17.6-2.pgdg24.04+1)
 
--- Started on 2025-11-22 20:16:22 -03
+-- Started on 2025-11-30 07:22:19 -03
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -22,7 +22,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 107 (class 2615 OID 2200)
+-- TOC entry 106 (class 2615 OID 2200)
 -- Name: public; Type: SCHEMA; Schema: -; Owner: pg_database_owner
 --
 
@@ -32,8 +32,8 @@ CREATE SCHEMA public;
 ALTER SCHEMA public OWNER TO pg_database_owner;
 
 --
--- TOC entry 4425 (class 0 OID 0)
--- Dependencies: 107
+-- TOC entry 4427 (class 0 OID 0)
+-- Dependencies: 106
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pg_database_owner
 --
 
@@ -41,7 +41,7 @@ COMMENT ON SCHEMA public IS 'standard public schema';
 
 
 --
--- TOC entry 1446 (class 1247 OID 32337)
+-- TOC entry 1448 (class 1247 OID 32337)
 -- Name: image_size; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -56,7 +56,7 @@ CREATE TYPE public.image_size AS ENUM (
 ALTER TYPE public.image_size OWNER TO postgres;
 
 --
--- TOC entry 1407 (class 1247 OID 31954)
+-- TOC entry 1409 (class 1247 OID 31954)
 -- Name: order_status; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -73,7 +73,7 @@ CREATE TYPE public.order_status AS ENUM (
 ALTER TYPE public.order_status OWNER TO postgres;
 
 --
--- TOC entry 1354 (class 1247 OID 28694)
+-- TOC entry 1356 (class 1247 OID 28694)
 -- Name: payment_method_type; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -89,7 +89,7 @@ CREATE TYPE public.payment_method_type AS ENUM (
 ALTER TYPE public.payment_method_type OWNER TO postgres;
 
 --
--- TOC entry 1410 (class 1247 OID 31968)
+-- TOC entry 1412 (class 1247 OID 31968)
 -- Name: payment_status; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -105,7 +105,7 @@ CREATE TYPE public.payment_status AS ENUM (
 ALTER TYPE public.payment_status OWNER TO postgres;
 
 --
--- TOC entry 1457 (class 1247 OID 77594)
+-- TOC entry 1459 (class 1247 OID 77594)
 -- Name: query_timeout_estado; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -120,7 +120,7 @@ CREATE TYPE public.query_timeout_estado AS ENUM (
 ALTER TYPE public.query_timeout_estado OWNER TO postgres;
 
 --
--- TOC entry 1460 (class 1247 OID 77604)
+-- TOC entry 1462 (class 1247 OID 77604)
 -- Name: query_timeout_tipo; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -137,7 +137,7 @@ CREATE TYPE public.query_timeout_tipo AS ENUM (
 ALTER TYPE public.query_timeout_tipo OWNER TO postgres;
 
 --
--- TOC entry 1454 (class 1247 OID 77583)
+-- TOC entry 1456 (class 1247 OID 77583)
 -- Name: setting_type; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -153,7 +153,7 @@ CREATE TYPE public.setting_type AS ENUM (
 ALTER TYPE public.setting_type OWNER TO postgres;
 
 --
--- TOC entry 1413 (class 1247 OID 31980)
+-- TOC entry 1415 (class 1247 OID 31980)
 -- Name: user_role; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -166,7 +166,7 @@ CREATE TYPE public.user_role AS ENUM (
 ALTER TYPE public.user_role OWNER TO postgres;
 
 --
--- TOC entry 545 (class 1255 OID 60002)
+-- TOC entry 550 (class 1255 OID 60002)
 -- Name: acknowledge_alert(bigint); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -185,7 +185,7 @@ $$;
 ALTER FUNCTION public.acknowledge_alert(alert_id bigint) OWNER TO postgres;
 
 --
--- TOC entry 610 (class 1255 OID 59797)
+-- TOC entry 611 (class 1255 OID 59797)
 -- Name: actualizar_vector_busqueda_productos(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -207,7 +207,7 @@ $$;
 ALTER FUNCTION public.actualizar_vector_busqueda_productos() OWNER TO postgres;
 
 --
--- TOC entry 574 (class 1255 OID 59773)
+-- TOC entry 577 (class 1255 OID 59773)
 -- Name: analizar_consulta(text, text[]); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -246,7 +246,7 @@ $$;
 ALTER FUNCTION public.analizar_consulta(consulta_sql text, parametros text[]) OWNER TO postgres;
 
 --
--- TOC entry 658 (class 1255 OID 59863)
+-- TOC entry 660 (class 1255 OID 59863)
 -- Name: analizar_rendimiento_conexiones(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -340,7 +340,7 @@ $$;
 ALTER FUNCTION public.analizar_rendimiento_conexiones() OWNER TO postgres;
 
 --
--- TOC entry 429 (class 1255 OID 59801)
+-- TOC entry 434 (class 1255 OID 59801)
 -- Name: buscar_productos_ranking(text, integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -388,7 +388,7 @@ $$;
 ALTER FUNCTION public.buscar_productos_ranking(termino_busqueda text, limite integer, offset_param integer) OWNER TO postgres;
 
 --
--- TOC entry 483 (class 1255 OID 76121)
+-- TOC entry 490 (class 1255 OID 76121)
 -- Name: compare_user_id(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -406,7 +406,7 @@ $$;
 ALTER FUNCTION public.compare_user_id(order_user_id integer) OWNER TO postgres;
 
 --
--- TOC entry 421 (class 1255 OID 59865)
+-- TOC entry 425 (class 1255 OID 59865)
 -- Name: configuracion_conexiones(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -457,7 +457,7 @@ $$;
 ALTER FUNCTION public.configuracion_conexiones() OWNER TO postgres;
 
 --
--- TOC entry 478 (class 1255 OID 59956)
+-- TOC entry 485 (class 1255 OID 59956)
 -- Name: configurar_timeout_consulta(text, integer, text); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -489,7 +489,7 @@ $$;
 ALTER FUNCTION public.configurar_timeout_consulta(patron_consulta text, timeout_ms integer, tipo_consulta text) OWNER TO postgres;
 
 --
--- TOC entry 625 (class 1255 OID 59955)
+-- TOC entry 627 (class 1255 OID 59955)
 -- Name: consultas_problematicas(numeric, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -543,7 +543,7 @@ $$;
 ALTER FUNCTION public.consultas_problematicas(porcentaje_minimo_timeout numeric, consultas_minimas integer) OWNER TO postgres;
 
 --
--- TOC entry 497 (class 1255 OID 58540)
+-- TOC entry 504 (class 1255 OID 58540)
 -- Name: create_order_with_items(jsonb, jsonb[]); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -718,7 +718,7 @@ $$;
 ALTER FUNCTION public.create_order_with_items(order_data jsonb, order_items jsonb[]) OWNER TO postgres;
 
 --
--- TOC entry 560 (class 1255 OID 75909)
+-- TOC entry 564 (class 1255 OID 75909)
 -- Name: create_order_with_items(jsonb, jsonb); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -749,7 +749,7 @@ CREATE FUNCTION public.create_order_with_items(p_order_data jsonb, p_order_items
 ALTER FUNCTION public.create_order_with_items(p_order_data jsonb, p_order_items jsonb) OWNER TO postgres;
 
 --
--- TOC entry 621 (class 1255 OID 34868)
+-- TOC entry 623 (class 1255 OID 34868)
 -- Name: create_product_images_atomic(integer, integer, jsonb[], boolean); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -830,7 +830,7 @@ $$;
 ALTER FUNCTION public.create_product_images_atomic(product_id integer, image_index integer, images_data jsonb[], is_primary boolean) OWNER TO postgres;
 
 --
--- TOC entry 473 (class 1255 OID 75914)
+-- TOC entry 479 (class 1255 OID 75914)
 -- Name: create_product_with_occasions(jsonb, integer[]); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -859,7 +859,7 @@ CREATE FUNCTION public.create_product_with_occasions(p_product_data jsonb, p_occ
 ALTER FUNCTION public.create_product_with_occasions(p_product_data jsonb, p_occasion_ids integer[]) OWNER TO postgres;
 
 --
--- TOC entry 553 (class 1255 OID 34869)
+-- TOC entry 558 (class 1255 OID 34869)
 -- Name: delete_product_images_safe(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -895,7 +895,7 @@ $$;
 ALTER FUNCTION public.delete_product_images_safe(product_id integer) OWNER TO postgres;
 
 --
--- TOC entry 596 (class 1255 OID 59953)
+-- TOC entry 597 (class 1255 OID 59953)
 -- Name: ejecutar_con_timeout(text, integer, text, text, jsonb); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1010,7 +1010,7 @@ $$;
 ALTER FUNCTION public.ejecutar_con_timeout(consulta_sql text, timeout_ms integer, nombre_consulta text, tipo_consulta text, parametros jsonb) OWNER TO postgres;
 
 --
--- TOC entry 595 (class 1255 OID 59774)
+-- TOC entry 596 (class 1255 OID 59774)
 -- Name: estadisticas_rendimiento(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1070,7 +1070,7 @@ $$;
 ALTER FUNCTION public.estadisticas_rendimiento() OWNER TO postgres;
 
 --
--- TOC entry 627 (class 1255 OID 59954)
+-- TOC entry 629 (class 1255 OID 59954)
 -- Name: estadisticas_timeouts(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1103,7 +1103,7 @@ $$;
 ALTER FUNCTION public.estadisticas_timeouts(horas_atras integer) OWNER TO postgres;
 
 --
--- TOC entry 486 (class 1255 OID 59866)
+-- TOC entry 492 (class 1255 OID 59866)
 -- Name: generar_alertas_conexiones(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1164,7 +1164,7 @@ $$;
 ALTER FUNCTION public.generar_alertas_conexiones() OWNER TO postgres;
 
 --
--- TOC entry 631 (class 1255 OID 60000)
+-- TOC entry 634 (class 1255 OID 60000)
 -- Name: get_backend_messages(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1198,7 +1198,7 @@ $$;
 ALTER FUNCTION public.get_backend_messages() OWNER TO postgres;
 
 --
--- TOC entry 546 (class 1255 OID 59997)
+-- TOC entry 552 (class 1255 OID 59997)
 -- Name: get_database_metrics(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1221,7 +1221,7 @@ $$;
 ALTER FUNCTION public.get_database_metrics() OWNER TO postgres;
 
 --
--- TOC entry 442 (class 1255 OID 22541)
+-- TOC entry 448 (class 1255 OID 22541)
 -- Name: get_existing_image_by_hash(character varying); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1244,7 +1244,7 @@ CREATE FUNCTION public.get_existing_image_by_hash(hash_input character varying) 
 ALTER FUNCTION public.get_existing_image_by_hash(hash_input character varying) OWNER TO postgres;
 
 --
--- TOC entry 471 (class 1255 OID 86914)
+-- TOC entry 477 (class 1255 OID 86914)
 -- Name: get_expenses_filtered(text, date, date, text, text, text, integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1308,7 +1308,7 @@ $$;
 ALTER FUNCTION public.get_expenses_filtered(p_category text, p_date_from date, p_date_to date, p_payment_method text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer) OWNER TO postgres;
 
 --
--- TOC entry 529 (class 1255 OID 59999)
+-- TOC entry 533 (class 1255 OID 59999)
 -- Name: get_optimization_messages(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1342,7 +1342,7 @@ $$;
 ALTER FUNCTION public.get_optimization_messages() OWNER TO postgres;
 
 --
--- TOC entry 460 (class 1255 OID 86913)
+-- TOC entry 465 (class 1255 OID 86913)
 -- Name: get_orders_filtered(text, integer, date, date, text, text, text, integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1436,7 +1436,7 @@ $$;
 ALTER FUNCTION public.get_orders_filtered(p_status text, p_year integer, p_date_from date, p_date_to date, p_search text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer) OWNER TO postgres;
 
 --
--- TOC entry 517 (class 1255 OID 75913)
+-- TOC entry 521 (class 1255 OID 75913)
 -- Name: get_product_occasions(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1457,7 +1457,7 @@ CREATE FUNCTION public.get_product_occasions(p_product_id integer) RETURNS TABLE
 ALTER FUNCTION public.get_product_occasions(p_product_id integer) OWNER TO postgres;
 
 --
--- TOC entry 646 (class 1255 OID 86915)
+-- TOC entry 649 (class 1255 OID 86915)
 -- Name: get_products_by_occasion(integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1478,7 +1478,7 @@ $$;
 ALTER FUNCTION public.get_products_by_occasion(p_occasion_id integer, p_limit integer) OWNER TO postgres;
 
 --
--- TOC entry 521 (class 1255 OID 87186)
+-- TOC entry 525 (class 1255 OID 87186)
 -- Name: get_products_filtered(integer, text, numeric, numeric, boolean, text, text, text, integer, integer, boolean); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1509,49 +1509,67 @@ BEGIN
     p_offset := 0;
   END IF;
 
+  -- Use subquery to deduplicate products, then apply sorting
   RETURN QUERY
-  SELECT DISTINCT ON (p.id)
-    p.id,
-    p.name,
-    p.summary,
-    p.description,
-    p.price_usd,
-    p.price_ves,
-    p.stock,
-    p.sku,
-    p.active,
-    p.featured,
-    p.carousel_order,
-    p.created_at,
-    p.updated_at
-  FROM products p
-  LEFT JOIN product_occasions po ON p.id = po.product_id
-  WHERE
-    (p_include_inactive OR p.active = TRUE)
-    AND (p_occasion_id IS NULL OR po.occasion_id = p_occasion_id)
-    AND (
-      p_search IS NULL OR (
-        LOWER(UNACCENT(p.name)) LIKE LOWER(UNACCENT('%' || p_search || '%'))
-        OR LOWER(UNACCENT(COALESCE(p.description, ''))) LIKE LOWER(UNACCENT('%' || p_search || '%'))
-        OR LOWER(UNACCENT(COALESCE(p.summary, ''))) LIKE LOWER(UNACCENT('%' || p_search || '%'))
+  SELECT 
+    deduped.id,
+    deduped.name,
+    deduped.summary,
+    deduped.description,
+    deduped.price_usd,
+    deduped.price_ves,
+    deduped.stock,
+    deduped.sku,
+    deduped.active,
+    deduped.featured,
+    deduped.carousel_order,
+    deduped.created_at,
+    deduped.updated_at
+  FROM (
+    SELECT DISTINCT ON (p.id)
+      p.id,
+      p.name,
+      p.summary,
+      p.description,
+      p.price_usd,
+      p.price_ves,
+      p.stock,
+      p.sku,
+      p.active,
+      p.featured,
+      p.carousel_order,
+      p.created_at,
+      p.updated_at
+    FROM products p
+    LEFT JOIN product_occasions po ON p.id = po.product_id
+    WHERE
+      (p_include_inactive OR p.active = TRUE)
+      AND (p_occasion_id IS NULL OR po.occasion_id = p_occasion_id)
+      AND (
+        p_search IS NULL OR (
+          LOWER(UNACCENT(p.name)) LIKE LOWER(UNACCENT('%' || p_search || '%'))
+          OR LOWER(UNACCENT(COALESCE(p.description, ''))) LIKE LOWER(UNACCENT('%' || p_search || '%'))
+          OR LOWER(UNACCENT(COALESCE(p.summary, ''))) LIKE LOWER(UNACCENT('%' || p_search || '%'))
+        )
       )
-    )
-    AND (p_price_min IS NULL OR p.price_usd >= p_price_min)
-    AND (p_price_max IS NULL OR p.price_usd <= p_price_max)
-    AND (p_featured IS NULL OR p.featured = p_featured)
-    AND (p_sku IS NULL OR p.sku = p_sku)
+      AND (p_price_min IS NULL OR p.price_usd >= p_price_min)
+      AND (p_price_max IS NULL OR p.price_usd <= p_price_max)
+      AND (p_featured IS NULL OR p.featured = p_featured)
+      AND (p_sku IS NULL OR p_sku = p_sku)
+    ORDER BY p.id
+  ) deduped
   ORDER BY
-    p.id,
-    CASE WHEN p_sort_by = 'price_usd' AND p_sort_order = 'ASC' THEN p.price_usd END ASC NULLS LAST,
-    CASE WHEN p_sort_by = 'price_usd' AND p_sort_order = 'DESC' THEN p.price_usd END DESC NULLS LAST,
-    CASE WHEN p_sort_by = 'name' AND p_sort_order = 'ASC' THEN p.name END ASC NULLS LAST,
-    CASE WHEN p_sort_by = 'name' AND p_sort_order = 'DESC' THEN p.name END DESC NULLS LAST,
-    CASE WHEN p_sort_by = 'stock' AND p_sort_order = 'ASC' THEN p.stock END ASC NULLS LAST,
-    CASE WHEN p_sort_by = 'stock' AND p_sort_order = 'DESC' THEN p.stock END DESC NULLS LAST,
-    CASE WHEN p_sort_by = 'carousel_order' AND p_sort_order = 'ASC' THEN p.carousel_order END ASC NULLS LAST,
-    CASE WHEN p_sort_by = 'carousel_order' AND p_sort_order = 'DESC' THEN p.carousel_order END DESC NULLS LAST,
-    CASE WHEN p_sort_by = 'created_at' AND p_sort_order = 'ASC' THEN p.created_at END ASC NULLS LAST,
-    CASE WHEN p_sort_by = 'created_at' AND p_sort_order = 'DESC' THEN p.created_at END DESC NULLS LAST
+    CASE WHEN p_sort_by = 'price_usd' AND p_sort_order = 'ASC' THEN deduped.price_usd END ASC NULLS LAST,
+    CASE WHEN p_sort_by = 'price_usd' AND p_sort_order = 'DESC' THEN deduped.price_usd END DESC NULLS LAST,
+    CASE WHEN p_sort_by = 'name' AND p_sort_order = 'ASC' THEN deduped.name END ASC NULLS LAST,
+    CASE WHEN p_sort_by = 'name' AND p_sort_order = 'DESC' THEN deduped.name END DESC NULLS LAST,
+    CASE WHEN p_sort_by = 'stock' AND p_sort_order = 'ASC' THEN deduped.stock END ASC NULLS LAST,
+    CASE WHEN p_sort_by = 'stock' AND p_sort_order = 'DESC' THEN deduped.stock END DESC NULLS LAST,
+    CASE WHEN p_sort_by = 'carousel_order' AND p_sort_order = 'ASC' THEN deduped.carousel_order END ASC NULLS LAST,
+    CASE WHEN p_sort_by = 'carousel_order' AND p_sort_order = 'DESC' THEN deduped.carousel_order END DESC NULLS LAST,
+    CASE WHEN p_sort_by = 'created_at' AND p_sort_order = 'ASC' THEN deduped.created_at END ASC NULLS LAST,
+    CASE WHEN p_sort_by = 'created_at' AND p_sort_order = 'DESC' THEN deduped.created_at END DESC NULLS LAST,
+    deduped.id
   LIMIT p_limit
   OFFSET p_offset;
 END;
@@ -1561,18 +1579,16 @@ $$;
 ALTER FUNCTION public.get_products_filtered(p_occasion_id integer, p_search text, p_price_min numeric, p_price_max numeric, p_featured boolean, p_sku text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer, p_include_inactive boolean) OWNER TO postgres;
 
 --
--- TOC entry 4453 (class 0 OID 0)
--- Dependencies: 521
+-- TOC entry 4455 (class 0 OID 0)
+-- Dependencies: 525
 -- Name: FUNCTION get_products_filtered(p_occasion_id integer, p_search text, p_price_min numeric, p_price_max numeric, p_featured boolean, p_sku text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer, p_include_inactive boolean); Type: COMMENT; Schema: public; Owner: postgres
 --
 
-COMMENT ON FUNCTION public.get_products_filtered(p_occasion_id integer, p_search text, p_price_min numeric, p_price_max numeric, p_featured boolean, p_sku text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer, p_include_inactive boolean) IS 'Optimized product filtering with all parameters in SQL.
-Fixed: Changed DECIMAL to NUMERIC for price parameters.
-Returns paginated, sorted, and filtered products in a single query.';
+COMMENT ON FUNCTION public.get_products_filtered(p_occasion_id integer, p_search text, p_price_min numeric, p_price_max numeric, p_featured boolean, p_sku text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer, p_include_inactive boolean) IS 'Optimized product filtering with correct sorting. Uses subquery to deduplicate products first, then applies user-requested sort order.';
 
 
 --
--- TOC entry 571 (class 1255 OID 19043)
+-- TOC entry 574 (class 1255 OID 19043)
 -- Name: get_products_with_occasions(integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1617,7 +1633,7 @@ $$;
 ALTER FUNCTION public.get_products_with_occasions(p_limit integer, p_offset integer) OWNER TO postgres;
 
 --
--- TOC entry 650 (class 1255 OID 59996)
+-- TOC entry 653 (class 1255 OID 59996)
 -- Name: get_redis_metrics(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1640,7 +1656,7 @@ $$;
 ALTER FUNCTION public.get_redis_metrics() OWNER TO postgres;
 
 --
--- TOC entry 468 (class 1255 OID 60001)
+-- TOC entry 473 (class 1255 OID 60001)
 -- Name: get_system_alerts(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1676,7 +1692,7 @@ $$;
 ALTER FUNCTION public.get_system_alerts() OWNER TO postgres;
 
 --
--- TOC entry 434 (class 1255 OID 59998)
+-- TOC entry 440 (class 1255 OID 59998)
 -- Name: get_system_health_overview(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1702,7 +1718,7 @@ $$;
 ALTER FUNCTION public.get_system_health_overview() OWNER TO postgres;
 
 --
--- TOC entry 415 (class 1255 OID 59995)
+-- TOC entry 417 (class 1255 OID 59995)
 -- Name: get_timeout_statistics(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1731,7 +1747,7 @@ $$;
 ALTER FUNCTION public.get_timeout_statistics() OWNER TO postgres;
 
 --
--- TOC entry 547 (class 1255 OID 76122)
+-- TOC entry 553 (class 1255 OID 76122)
 -- Name: is_admin(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1752,7 +1768,7 @@ CREATE FUNCTION public.is_admin() RETURNS boolean
 ALTER FUNCTION public.is_admin() OWNER TO postgres;
 
 --
--- TOC entry 598 (class 1255 OID 59864)
+-- TOC entry 599 (class 1255 OID 59864)
 -- Name: limpiar_conexiones_inactivas(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1778,7 +1794,7 @@ $$;
 ALTER FUNCTION public.limpiar_conexiones_inactivas(horas_inactividad integer) OWNER TO postgres;
 
 --
--- TOC entry 603 (class 1255 OID 59957)
+-- TOC entry 604 (class 1255 OID 59957)
 -- Name: limpiar_logs_timeouts(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1803,7 +1819,7 @@ $$;
 ALTER FUNCTION public.limpiar_logs_timeouts(dias_a_conservar integer) OWNER TO postgres;
 
 --
--- TOC entry 454 (class 1255 OID 59803)
+-- TOC entry 459 (class 1255 OID 59803)
 -- Name: productos_similares(integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1848,7 +1864,7 @@ $$;
 ALTER FUNCTION public.productos_similares(producto_id integer, limite integer) OWNER TO postgres;
 
 --
--- TOC entry 643 (class 1255 OID 59816)
+-- TOC entry 646 (class 1255 OID 59816)
 -- Name: registrar_busqueda(text, integer, numeric, text, text); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1877,7 +1893,7 @@ $$;
 ALTER FUNCTION public.registrar_busqueda(termino_busqueda text, resultados integer, tiempo_ejecucion numeric, ip_cliente text, user_agent text) OWNER TO postgres;
 
 --
--- TOC entry 588 (class 1255 OID 51636)
+-- TOC entry 591 (class 1255 OID 51636)
 -- Name: reset_sequence(text); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1912,7 +1928,7 @@ CREATE FUNCTION public.reset_sequence(sequence_name character varying) RETURNS b
 ALTER FUNCTION public.reset_sequence(sequence_name character varying) OWNER TO postgres;
 
 --
--- TOC entry 498 (class 1255 OID 60003)
+-- TOC entry 506 (class 1255 OID 60003)
 -- Name: resolve_alert(bigint); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1931,7 +1947,7 @@ $$;
 ALTER FUNCTION public.resolve_alert(alert_id bigint) OWNER TO postgres;
 
 --
--- TOC entry 422 (class 1255 OID 59994)
+-- TOC entry 426 (class 1255 OID 59994)
 -- Name: round(numeric, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1948,7 +1964,7 @@ $_$;
 ALTER FUNCTION public.round(numeric, integer) OWNER TO postgres;
 
 --
--- TOC entry 519 (class 1255 OID 59802)
+-- TOC entry 524 (class 1255 OID 59802)
 -- Name: sugerencias_busqueda(text, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1988,7 +2004,7 @@ $$;
 ALTER FUNCTION public.sugerencias_busqueda(termino_parcial text, limite integer) OWNER TO postgres;
 
 --
--- TOC entry 611 (class 1255 OID 59775)
+-- TOC entry 612 (class 1255 OID 59775)
 -- Name: sugerir_optimizaciones(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -2039,7 +2055,7 @@ $$;
 ALTER FUNCTION public.sugerir_optimizaciones() OWNER TO postgres;
 
 --
--- TOC entry 430 (class 1255 OID 77631)
+-- TOC entry 435 (class 1255 OID 77631)
 -- Name: sync_payment_method_name(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -2063,7 +2079,7 @@ CREATE FUNCTION public.sync_payment_method_name() RETURNS trigger
 ALTER FUNCTION public.sync_payment_method_name() OWNER TO postgres;
 
 --
--- TOC entry 543 (class 1255 OID 75915)
+-- TOC entry 548 (class 1255 OID 75915)
 -- Name: update_carousel_order_atomic(integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -2081,7 +2097,7 @@ CREATE FUNCTION public.update_carousel_order_atomic(p_product_id integer, p_orde
 ALTER FUNCTION public.update_carousel_order_atomic(p_product_id integer, p_order integer) OWNER TO postgres;
 
 --
--- TOC entry 656 (class 1255 OID 75910)
+-- TOC entry 658 (class 1255 OID 75910)
 -- Name: update_order_status_with_history(integer, character varying, text, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -2099,7 +2115,7 @@ CREATE FUNCTION public.update_order_status_with_history(p_order_id integer, p_ne
 ALTER FUNCTION public.update_order_status_with_history(p_order_id integer, p_new_status character varying, p_notes text, p_changed_by integer) OWNER TO postgres;
 
 --
--- TOC entry 530 (class 1255 OID 34865)
+-- TOC entry 534 (class 1255 OID 34865)
 -- Name: update_order_status_with_history(integer, public.order_status, text, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -2162,7 +2178,7 @@ $$;
 ALTER FUNCTION public.update_order_status_with_history(order_id integer, new_status public.order_status, notes text, changed_by integer) OWNER TO postgres;
 
 --
--- TOC entry 576 (class 1255 OID 28932)
+-- TOC entry 581 (class 1255 OID 28932)
 -- Name: update_updated_at_column(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -2180,7 +2196,7 @@ CREATE FUNCTION public.update_updated_at_column() RETURNS trigger
 ALTER FUNCTION public.update_updated_at_column() OWNER TO postgres;
 
 --
--- TOC entry 495 (class 1255 OID 77629)
+-- TOC entry 501 (class 1255 OID 77629)
 -- Name: validate_order_total(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -2210,7 +2226,7 @@ CREATE FUNCTION public.validate_order_total() RETURNS trigger
 ALTER FUNCTION public.validate_order_total() OWNER TO postgres;
 
 --
--- TOC entry 2673 (class 3602 OID 59796)
+-- TOC entry 2675 (class 3602 OID 59796)
 -- Name: floresya_spanish; Type: TEXT SEARCH CONFIGURATION; Schema: public; Owner: postgres
 --
 
@@ -2282,7 +2298,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 401 (class 1259 OID 59805)
+-- TOC entry 403 (class 1259 OID 59805)
 -- Name: busquedas_log; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2304,7 +2320,7 @@ CREATE TABLE public.busquedas_log (
 ALTER TABLE public.busquedas_log OWNER TO postgres;
 
 --
--- TOC entry 400 (class 1259 OID 59804)
+-- TOC entry 402 (class 1259 OID 59804)
 -- Name: busquedas_log_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2320,8 +2336,8 @@ CREATE SEQUENCE public.busquedas_log_id_seq
 ALTER SEQUENCE public.busquedas_log_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4478 (class 0 OID 0)
--- Dependencies: 400
+-- TOC entry 4480 (class 0 OID 0)
+-- Dependencies: 402
 -- Name: busquedas_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2329,7 +2345,7 @@ ALTER SEQUENCE public.busquedas_log_id_seq OWNED BY public.busquedas_log.id;
 
 
 --
--- TOC entry 410 (class 1259 OID 84803)
+-- TOC entry 412 (class 1259 OID 84803)
 -- Name: expenses; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2355,7 +2371,7 @@ CREATE TABLE public.expenses (
 ALTER TABLE public.expenses OWNER TO postgres;
 
 --
--- TOC entry 412 (class 1259 OID 86920)
+-- TOC entry 414 (class 1259 OID 86920)
 -- Name: daily_expenses; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -2373,7 +2389,7 @@ CREATE VIEW public.daily_expenses WITH (security_invoker='on') AS
 ALTER VIEW public.daily_expenses OWNER TO postgres;
 
 --
--- TOC entry 389 (class 1259 OID 32093)
+-- TOC entry 391 (class 1259 OID 32093)
 -- Name: orders; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2419,7 +2435,7 @@ CREATE TABLE public.orders (
 ALTER TABLE public.orders OWNER TO postgres;
 
 --
--- TOC entry 411 (class 1259 OID 86916)
+-- TOC entry 413 (class 1259 OID 86916)
 -- Name: daily_sales; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -2437,7 +2453,7 @@ CREATE VIEW public.daily_sales WITH (security_invoker='on') AS
 ALTER VIEW public.daily_sales OWNER TO postgres;
 
 --
--- TOC entry 414 (class 1259 OID 86928)
+-- TOC entry 416 (class 1259 OID 86928)
 -- Name: daily_profit_loss; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -2457,7 +2473,7 @@ CREATE VIEW public.daily_profit_loss WITH (security_invoker='on') AS
 ALTER VIEW public.daily_profit_loss OWNER TO postgres;
 
 --
--- TOC entry 409 (class 1259 OID 84802)
+-- TOC entry 411 (class 1259 OID 84802)
 -- Name: expenses_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2473,8 +2489,8 @@ CREATE SEQUENCE public.expenses_id_seq
 ALTER SEQUENCE public.expenses_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4485 (class 0 OID 0)
--- Dependencies: 409
+-- TOC entry 4487 (class 0 OID 0)
+-- Dependencies: 411
 -- Name: expenses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2482,7 +2498,7 @@ ALTER SEQUENCE public.expenses_id_seq OWNED BY public.expenses.id;
 
 
 --
--- TOC entry 379 (class 1259 OID 31986)
+-- TOC entry 381 (class 1259 OID 31986)
 -- Name: occasions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2501,7 +2517,7 @@ CREATE TABLE public.occasions (
 ALTER TABLE public.occasions OWNER TO postgres;
 
 --
--- TOC entry 378 (class 1259 OID 31985)
+-- TOC entry 380 (class 1259 OID 31985)
 -- Name: occasions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2517,8 +2533,8 @@ CREATE SEQUENCE public.occasions_id_seq
 ALTER SEQUENCE public.occasions_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4488 (class 0 OID 0)
--- Dependencies: 378
+-- TOC entry 4490 (class 0 OID 0)
+-- Dependencies: 380
 -- Name: occasions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2526,7 +2542,7 @@ ALTER SEQUENCE public.occasions_id_seq OWNED BY public.occasions.id;
 
 
 --
--- TOC entry 391 (class 1259 OID 32112)
+-- TOC entry 393 (class 1259 OID 32112)
 -- Name: order_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2561,7 +2577,7 @@ CREATE TABLE public.order_items (
 ALTER TABLE public.order_items OWNER TO postgres;
 
 --
--- TOC entry 390 (class 1259 OID 32111)
+-- TOC entry 392 (class 1259 OID 32111)
 -- Name: order_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2577,8 +2593,8 @@ CREATE SEQUENCE public.order_items_id_seq
 ALTER SEQUENCE public.order_items_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4491 (class 0 OID 0)
--- Dependencies: 390
+-- TOC entry 4493 (class 0 OID 0)
+-- Dependencies: 392
 -- Name: order_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2586,7 +2602,7 @@ ALTER SEQUENCE public.order_items_id_seq OWNED BY public.order_items.id;
 
 
 --
--- TOC entry 393 (class 1259 OID 32136)
+-- TOC entry 395 (class 1259 OID 32136)
 -- Name: order_status_history; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2605,7 +2621,7 @@ CREATE TABLE public.order_status_history (
 ALTER TABLE public.order_status_history OWNER TO postgres;
 
 --
--- TOC entry 392 (class 1259 OID 32135)
+-- TOC entry 394 (class 1259 OID 32135)
 -- Name: order_status_history_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2621,8 +2637,8 @@ CREATE SEQUENCE public.order_status_history_id_seq
 ALTER SEQUENCE public.order_status_history_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4494 (class 0 OID 0)
--- Dependencies: 392
+-- TOC entry 4496 (class 0 OID 0)
+-- Dependencies: 394
 -- Name: order_status_history_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2630,7 +2646,7 @@ ALTER SEQUENCE public.order_status_history_id_seq OWNED BY public.order_status_h
 
 
 --
--- TOC entry 388 (class 1259 OID 32092)
+-- TOC entry 390 (class 1259 OID 32092)
 -- Name: orders_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2646,8 +2662,8 @@ CREATE SEQUENCE public.orders_id_seq
 ALTER SEQUENCE public.orders_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4496 (class 0 OID 0)
--- Dependencies: 388
+-- TOC entry 4498 (class 0 OID 0)
+-- Dependencies: 390
 -- Name: orders_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2655,7 +2671,7 @@ ALTER SEQUENCE public.orders_id_seq OWNED BY public.orders.id;
 
 
 --
--- TOC entry 395 (class 1259 OID 32156)
+-- TOC entry 397 (class 1259 OID 32156)
 -- Name: payment_methods; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2675,7 +2691,7 @@ CREATE TABLE public.payment_methods (
 ALTER TABLE public.payment_methods OWNER TO postgres;
 
 --
--- TOC entry 394 (class 1259 OID 32155)
+-- TOC entry 396 (class 1259 OID 32155)
 -- Name: payment_methods_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2691,8 +2707,8 @@ CREATE SEQUENCE public.payment_methods_id_seq
 ALTER SEQUENCE public.payment_methods_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4499 (class 0 OID 0)
--- Dependencies: 394
+-- TOC entry 4501 (class 0 OID 0)
+-- Dependencies: 396
 -- Name: payment_methods_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2700,7 +2716,7 @@ ALTER SEQUENCE public.payment_methods_id_seq OWNED BY public.payment_methods.id;
 
 
 --
--- TOC entry 397 (class 1259 OID 32169)
+-- TOC entry 399 (class 1259 OID 32169)
 -- Name: payments; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2734,7 +2750,7 @@ CREATE TABLE public.payments (
 ALTER TABLE public.payments OWNER TO postgres;
 
 --
--- TOC entry 396 (class 1259 OID 32168)
+-- TOC entry 398 (class 1259 OID 32168)
 -- Name: payments_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2750,8 +2766,8 @@ CREATE SEQUENCE public.payments_id_seq
 ALTER SEQUENCE public.payments_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4502 (class 0 OID 0)
--- Dependencies: 396
+-- TOC entry 4504 (class 0 OID 0)
+-- Dependencies: 398
 -- Name: payments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2759,7 +2775,7 @@ ALTER SEQUENCE public.payments_id_seq OWNED BY public.payments.id;
 
 
 --
--- TOC entry 399 (class 1259 OID 32525)
+-- TOC entry 401 (class 1259 OID 32525)
 -- Name: product_images; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2787,7 +2803,7 @@ CREATE TABLE public.product_images (
 ALTER TABLE public.product_images OWNER TO postgres;
 
 --
--- TOC entry 398 (class 1259 OID 32524)
+-- TOC entry 400 (class 1259 OID 32524)
 -- Name: product_images_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2803,8 +2819,8 @@ CREATE SEQUENCE public.product_images_id_seq
 ALTER SEQUENCE public.product_images_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4505 (class 0 OID 0)
--- Dependencies: 398
+-- TOC entry 4507 (class 0 OID 0)
+-- Dependencies: 400
 -- Name: product_images_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2812,7 +2828,7 @@ ALTER SEQUENCE public.product_images_id_seq OWNED BY public.product_images.id;
 
 
 --
--- TOC entry 387 (class 1259 OID 32072)
+-- TOC entry 389 (class 1259 OID 32072)
 -- Name: product_occasions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2829,8 +2845,8 @@ CREATE TABLE public.product_occasions (
 ALTER TABLE public.product_occasions OWNER TO postgres;
 
 --
--- TOC entry 4507 (class 0 OID 0)
--- Dependencies: 387
+-- TOC entry 4509 (class 0 OID 0)
+-- Dependencies: 389
 -- Name: TABLE product_occasions; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2838,7 +2854,7 @@ COMMENT ON TABLE public.product_occasions IS 'Relación muchos-a-muchos entre pr
 
 
 --
--- TOC entry 386 (class 1259 OID 32071)
+-- TOC entry 388 (class 1259 OID 32071)
 -- Name: product_occasions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2854,8 +2870,8 @@ CREATE SEQUENCE public.product_occasions_id_seq
 ALTER SEQUENCE public.product_occasions_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4509 (class 0 OID 0)
--- Dependencies: 386
+-- TOC entry 4511 (class 0 OID 0)
+-- Dependencies: 388
 -- Name: product_occasions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2863,7 +2879,7 @@ ALTER SEQUENCE public.product_occasions_id_seq OWNED BY public.product_occasions
 
 
 --
--- TOC entry 385 (class 1259 OID 32033)
+-- TOC entry 387 (class 1259 OID 32033)
 -- Name: products; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2903,8 +2919,8 @@ CREATE TABLE public.products (
 ALTER TABLE public.products OWNER TO postgres;
 
 --
--- TOC entry 4511 (class 0 OID 0)
--- Dependencies: 385
+-- TOC entry 4513 (class 0 OID 0)
+-- Dependencies: 387
 -- Name: TABLE products; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2912,8 +2928,8 @@ COMMENT ON TABLE public.products IS 'Productos vendidos en la tienda. Cada produ
 
 
 --
--- TOC entry 4512 (class 0 OID 0)
--- Dependencies: 385
+-- TOC entry 4514 (class 0 OID 0)
+-- Dependencies: 387
 -- Name: COLUMN products.carousel_order; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -2921,7 +2937,7 @@ COMMENT ON COLUMN public.products.carousel_order IS 'Orden en que aparece en el 
 
 
 --
--- TOC entry 384 (class 1259 OID 32032)
+-- TOC entry 386 (class 1259 OID 32032)
 -- Name: products_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2937,8 +2953,8 @@ CREATE SEQUENCE public.products_id_seq
 ALTER SEQUENCE public.products_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4514 (class 0 OID 0)
--- Dependencies: 384
+-- TOC entry 4516 (class 0 OID 0)
+-- Dependencies: 386
 -- Name: products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2946,7 +2962,7 @@ ALTER SEQUENCE public.products_id_seq OWNED BY public.products.id;
 
 
 --
--- TOC entry 403 (class 1259 OID 59940)
+-- TOC entry 405 (class 1259 OID 59940)
 -- Name: query_timeouts_log; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -2969,7 +2985,7 @@ CREATE TABLE public.query_timeouts_log (
 ALTER TABLE public.query_timeouts_log OWNER TO postgres;
 
 --
--- TOC entry 402 (class 1259 OID 59939)
+-- TOC entry 404 (class 1259 OID 59939)
 -- Name: query_timeouts_log_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -2985,8 +3001,8 @@ CREATE SEQUENCE public.query_timeouts_log_id_seq
 ALTER SEQUENCE public.query_timeouts_log_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4517 (class 0 OID 0)
--- Dependencies: 402
+-- TOC entry 4519 (class 0 OID 0)
+-- Dependencies: 404
 -- Name: query_timeouts_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -2994,7 +3010,7 @@ ALTER SEQUENCE public.query_timeouts_log_id_seq OWNED BY public.query_timeouts_l
 
 
 --
--- TOC entry 383 (class 1259 OID 32018)
+-- TOC entry 385 (class 1259 OID 32018)
 -- Name: settings; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -3014,7 +3030,7 @@ CREATE TABLE public.settings (
 ALTER TABLE public.settings OWNER TO postgres;
 
 --
--- TOC entry 382 (class 1259 OID 32017)
+-- TOC entry 384 (class 1259 OID 32017)
 -- Name: settings_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -3030,8 +3046,8 @@ CREATE SEQUENCE public.settings_id_seq
 ALTER SEQUENCE public.settings_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4520 (class 0 OID 0)
--- Dependencies: 382
+-- TOC entry 4522 (class 0 OID 0)
+-- Dependencies: 384
 -- Name: settings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -3039,7 +3055,7 @@ ALTER SEQUENCE public.settings_id_seq OWNED BY public.settings.id;
 
 
 --
--- TOC entry 413 (class 1259 OID 86924)
+-- TOC entry 415 (class 1259 OID 86924)
 -- Name: test_daily_expenses; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -3057,7 +3073,7 @@ CREATE VIEW public.test_daily_expenses WITH (security_invoker='on') AS
 ALTER VIEW public.test_daily_expenses OWNER TO postgres;
 
 --
--- TOC entry 381 (class 1259 OID 32002)
+-- TOC entry 383 (class 1259 OID 32002)
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -3086,7 +3102,7 @@ CREATE TABLE public.users (
 ALTER TABLE public.users OWNER TO postgres;
 
 --
--- TOC entry 380 (class 1259 OID 32001)
+-- TOC entry 382 (class 1259 OID 32001)
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -3102,8 +3118,8 @@ CREATE SEQUENCE public.users_id_seq
 ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4524 (class 0 OID 0)
--- Dependencies: 380
+-- TOC entry 4526 (class 0 OID 0)
+-- Dependencies: 382
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -3111,7 +3127,7 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- TOC entry 3934 (class 2604 OID 59808)
+-- TOC entry 3936 (class 2604 OID 59808)
 -- Name: busquedas_log id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -3119,7 +3135,7 @@ ALTER TABLE ONLY public.busquedas_log ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
--- TOC entry 3941 (class 2604 OID 84806)
+-- TOC entry 3943 (class 2604 OID 84806)
 -- Name: expenses id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -3127,7 +3143,7 @@ ALTER TABLE ONLY public.expenses ALTER COLUMN id SET DEFAULT nextval('public.exp
 
 
 --
--- TOC entry 3872 (class 2604 OID 31989)
+-- TOC entry 3874 (class 2604 OID 31989)
 -- Name: occasions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -3135,7 +3151,7 @@ ALTER TABLE ONLY public.occasions ALTER COLUMN id SET DEFAULT nextval('public.oc
 
 
 --
--- TOC entry 3911 (class 2604 OID 32115)
+-- TOC entry 3913 (class 2604 OID 32115)
 -- Name: order_items id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -3143,7 +3159,7 @@ ALTER TABLE ONLY public.order_items ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
--- TOC entry 3915 (class 2604 OID 32139)
+-- TOC entry 3917 (class 2604 OID 32139)
 -- Name: order_status_history id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -3151,7 +3167,7 @@ ALTER TABLE ONLY public.order_status_history ALTER COLUMN id SET DEFAULT nextval
 
 
 --
--- TOC entry 3903 (class 2604 OID 32096)
+-- TOC entry 3905 (class 2604 OID 32096)
 -- Name: orders id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -3159,7 +3175,7 @@ ALTER TABLE ONLY public.orders ALTER COLUMN id SET DEFAULT nextval('public.order
 
 
 --
--- TOC entry 3918 (class 2604 OID 32159)
+-- TOC entry 3920 (class 2604 OID 32159)
 -- Name: payment_methods id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -3167,7 +3183,7 @@ ALTER TABLE ONLY public.payment_methods ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
--- TOC entry 3923 (class 2604 OID 32172)
+-- TOC entry 3925 (class 2604 OID 32172)
 -- Name: payments id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -3175,7 +3191,7 @@ ALTER TABLE ONLY public.payments ALTER COLUMN id SET DEFAULT nextval('public.pay
 
 
 --
--- TOC entry 3928 (class 2604 OID 32528)
+-- TOC entry 3930 (class 2604 OID 32528)
 -- Name: product_images id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -3183,7 +3199,7 @@ ALTER TABLE ONLY public.product_images ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
--- TOC entry 3899 (class 2604 OID 32075)
+-- TOC entry 3901 (class 2604 OID 32075)
 -- Name: product_occasions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -3191,7 +3207,7 @@ ALTER TABLE ONLY public.product_occasions ALTER COLUMN id SET DEFAULT nextval('p
 
 
 --
--- TOC entry 3891 (class 2604 OID 32036)
+-- TOC entry 3893 (class 2604 OID 32036)
 -- Name: products id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -3199,7 +3215,7 @@ ALTER TABLE ONLY public.products ALTER COLUMN id SET DEFAULT nextval('public.pro
 
 
 --
--- TOC entry 3937 (class 2604 OID 59943)
+-- TOC entry 3939 (class 2604 OID 59943)
 -- Name: query_timeouts_log id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -3207,7 +3223,7 @@ ALTER TABLE ONLY public.query_timeouts_log ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
--- TOC entry 3885 (class 2604 OID 32021)
+-- TOC entry 3887 (class 2604 OID 32021)
 -- Name: settings id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -3215,7 +3231,7 @@ ALTER TABLE ONLY public.settings ALTER COLUMN id SET DEFAULT nextval('public.set
 
 
 --
--- TOC entry 3877 (class 2604 OID 32005)
+-- TOC entry 3879 (class 2604 OID 32005)
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -3223,16 +3239,16 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- TOC entry 4415 (class 0 OID 59805)
--- Dependencies: 401
+-- TOC entry 4417 (class 0 OID 59805)
+-- Dependencies: 403
 -- Data for Name: busquedas_log; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 
 
 --
--- TOC entry 4419 (class 0 OID 84803)
--- Dependencies: 410
+-- TOC entry 4421 (class 0 OID 84803)
+-- Dependencies: 412
 -- Data for Name: expenses; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -3240,47 +3256,47 @@ INSERT INTO public.expenses VALUES (1, 'flores', 'Test expense', 10.50, '2025-11
 
 
 --
--- TOC entry 4393 (class 0 OID 31986)
--- Dependencies: 379
+-- TOC entry 4395 (class 0 OID 31986)
+-- Dependencies: 381
 -- Data for Name: occasions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.occasions VALUES (404, 'Cumpleaños', 'Flores para cumpleaños', true, 0, '2025-11-11 23:41:17.860442+00', '2025-11-11 23:41:17.860442+00', 'cumpleanos');
-INSERT INTO public.occasions VALUES (405, 'Aniversario', 'Flores para aniversarios', true, 0, '2025-11-11 23:41:17.860442+00', '2025-11-11 23:41:17.860442+00', 'aniversario');
-INSERT INTO public.occasions VALUES (406, 'Día de la Madre', 'Flores para el día de la madre', true, 0, '2025-11-11 23:41:17.860442+00', '2025-11-11 23:41:17.860442+00', 'dia-de-la-madre');
-INSERT INTO public.occasions VALUES (407, 'San Valentín', 'Flores para san valentín', true, 0, '2025-11-11 23:41:17.860442+00', '2025-11-11 23:41:17.860442+00', 'san-valentin');
-INSERT INTO public.occasions VALUES (408, 'Boda', 'Flores para bodas', true, 0, '2025-11-11 23:41:17.860442+00', '2025-11-11 23:41:17.860442+00', 'boda');
-INSERT INTO public.occasions VALUES (409, 'Graduación', 'Flores para graduaciones', true, 0, '2025-11-11 23:41:17.860442+00', '2025-11-11 23:41:17.860442+00', 'graduacion');
-INSERT INTO public.occasions VALUES (410, 'Felicidades', 'Flores para felicitar', true, 0, '2025-11-11 23:41:17.860442+00', '2025-11-11 23:41:17.860442+00', 'felicidades');
+INSERT INTO public.occasions VALUES (411, 'Cumpleaños', 'Flores para cumpleaños', true, 0, '2025-11-27 14:17:04.546276+00', '2025-11-27 14:17:04.546276+00', 'cumpleanos');
+INSERT INTO public.occasions VALUES (412, 'Aniversario', 'Flores para aniversarios', true, 0, '2025-11-27 14:17:04.546276+00', '2025-11-27 14:17:04.546276+00', 'aniversario');
+INSERT INTO public.occasions VALUES (413, 'Día de la Madre', 'Flores para el día de la madre', true, 0, '2025-11-27 14:17:04.546276+00', '2025-11-27 14:17:04.546276+00', 'dia-de-la-madre');
+INSERT INTO public.occasions VALUES (414, 'San Valentín', 'Flores para san valentín', true, 0, '2025-11-27 14:17:04.546276+00', '2025-11-27 14:17:04.546276+00', 'san-valentin');
+INSERT INTO public.occasions VALUES (415, 'Boda', 'Flores para bodas', true, 0, '2025-11-27 14:17:04.546276+00', '2025-11-27 14:17:04.546276+00', 'boda');
+INSERT INTO public.occasions VALUES (416, 'Graduación', 'Flores para graduaciones', true, 0, '2025-11-27 14:17:04.546276+00', '2025-11-27 14:17:04.546276+00', 'graduacion');
+INSERT INTO public.occasions VALUES (417, 'Felicidades', 'Flores para felicitar', true, 0, '2025-11-27 14:17:04.546276+00', '2025-11-27 14:17:04.546276+00', 'felicidades');
 
 
 --
--- TOC entry 4405 (class 0 OID 32112)
--- Dependencies: 391
+-- TOC entry 4407 (class 0 OID 32112)
+-- Dependencies: 393
 -- Data for Name: order_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 
 
 --
--- TOC entry 4407 (class 0 OID 32136)
--- Dependencies: 393
+-- TOC entry 4409 (class 0 OID 32136)
+-- Dependencies: 395
 -- Data for Name: order_status_history; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 
 
 --
--- TOC entry 4403 (class 0 OID 32093)
--- Dependencies: 389
+-- TOC entry 4405 (class 0 OID 32093)
+-- Dependencies: 391
 -- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 
 
 --
--- TOC entry 4409 (class 0 OID 32156)
--- Dependencies: 395
+-- TOC entry 4411 (class 0 OID 32156)
+-- Dependencies: 397
 -- Data for Name: payment_methods; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -4168,97 +4184,52 @@ INSERT INTO public.payment_methods VALUES (884, 'Banco Mercantil', 'bank_transfe
 
 
 --
--- TOC entry 4411 (class 0 OID 32169)
--- Dependencies: 397
+-- TOC entry 4413 (class 0 OID 32169)
+-- Dependencies: 399
 -- Data for Name: payments; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 
 
 --
--- TOC entry 4413 (class 0 OID 32525)
--- Dependencies: 399
+-- TOC entry 4415 (class 0 OID 32525)
+-- Dependencies: 401
 -- Data for Name: product_images; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.product_images VALUES (600, 179, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_7_3_f43a3636e3f93d9c15beab832ddb3e1895c896df585732d84f2f55f3f8d5c82f.webp', 'f43a3636e3f93d9c15beab832ddb3e1895c896df585732d84f2f55f3f8d5c82f', 'image/webp', true, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
-INSERT INTO public.product_images VALUES (601, 179, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_2_2_1c2252a79ee507ee099618f91aa0d79353d3758b923fa4adb0ab24d4fa59ea9b.webp', '1c2252a79ee507ee099618f91aa0d79353d3758b923fa4adb0ab24d4fa59ea9b', 'image/webp', false, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
-INSERT INTO public.product_images VALUES (602, 179, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_1_1_17e2d03c735674d8fd1770a7f042573f6ca5a4bf25d1bad7bfa76b72c9033881.webp', '17e2d03c735674d8fd1770a7f042573f6ca5a4bf25d1bad7bfa76b72c9033881', 'image/webp', false, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
-INSERT INTO public.product_images VALUES (603, 179, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_4_3_703f65845872a02e72e1516bbe174f24a8f7ed609afcded31747857ce05ff309.webp', '703f65845872a02e72e1516bbe174f24a8f7ed609afcded31747857ce05ff309', 'image/webp', false, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
-INSERT INTO public.product_images VALUES (604, 180, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_13_4_12ca76f2374b66fe8783434c3a8571f2f61c93c4a4044ae1c2eb169421bba8ef.webp', '12ca76f2374b66fe8783434c3a8571f2f61c93c4a4044ae1c2eb169421bba8ef', 'image/webp', true, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
-INSERT INTO public.product_images VALUES (605, 180, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_10_2_60428b746ec9a677e4dd7283e37d867602bdfa3fde53c2592c0214f6d1b25368.webp', '60428b746ec9a677e4dd7283e37d867602bdfa3fde53c2592c0214f6d1b25368', 'image/webp', false, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
-INSERT INTO public.product_images VALUES (606, 180, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_106_1_234fded092ca2f02ffdbf10ea13b8c73ea5150dad853ee472b31be36f6b63ce9.webp', '234fded092ca2f02ffdbf10ea13b8c73ea5150dad853ee472b31be36f6b63ce9', 'image/webp', false, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
-INSERT INTO public.product_images VALUES (607, 180, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_4_2_04eb4768eb6cb84374d23528fb5d5330b3683c850105a2efa17a94cebc4c00e7.webp', '04eb4768eb6cb84374d23528fb5d5330b3683c850105a2efa17a94cebc4c00e7', 'image/webp', false, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
-INSERT INTO public.product_images VALUES (608, 181, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_7_4_4e4ae2d7a1cf1603aef25657961057884962e30488a74e90b1cf6e840cb23141.webp', '4e4ae2d7a1cf1603aef25657961057884962e30488a74e90b1cf6e840cb23141', 'image/webp', true, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
-INSERT INTO public.product_images VALUES (609, 181, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_4_1_7b23c0e6c08d32c2650e6018b6962be17aaa638d367acb87f879f1eb080d9b45.webp', '7b23c0e6c08d32c2650e6018b6962be17aaa638d367acb87f879f1eb080d9b45', 'image/webp', false, '2025-11-21 22:09:37.396943+00', '2025-11-21 22:09:37.396943+00', true);
-INSERT INTO public.product_images VALUES (610, 181, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_12_3_e5da83e94b522e11b17d9cc608022520acdcb89a309b8cbec80434629a54de5f.webp', 'e5da83e94b522e11b17d9cc608022520acdcb89a309b8cbec80434629a54de5f', 'image/webp', false, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
-INSERT INTO public.product_images VALUES (611, 181, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_11_1_b185482b2084a7e92f67c69046b6d3d4c0cccc911835c3c41e97164d88e93a0f.webp', 'b185482b2084a7e92f67c69046b6d3d4c0cccc911835c3c41e97164d88e93a0f', 'image/webp', false, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
-INSERT INTO public.product_images VALUES (612, 182, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_14_1_1ebbff6e009fdad38588c522063bd0b0a8c42965a1df26c7f12d9dec4d10f640.webp', '1ebbff6e009fdad38588c522063bd0b0a8c42965a1df26c7f12d9dec4d10f640', 'image/webp', true, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
-INSERT INTO public.product_images VALUES (613, 182, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_12_2_64defb63144bc231795ccfd2ea89f64f292110dface20d389dfdb4e3a5e70341.webp', '64defb63144bc231795ccfd2ea89f64f292110dface20d389dfdb4e3a5e70341', 'image/webp', false, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
-INSERT INTO public.product_images VALUES (614, 182, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_12_1_956dd99d024b7a395ed612bd65ac976ae7a2615680acc2c3938e2bd1a2d4a78f.webp', '956dd99d024b7a395ed612bd65ac976ae7a2615680acc2c3938e2bd1a2d4a78f', 'image/webp', false, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
-INSERT INTO public.product_images VALUES (615, 182, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_107_2_f1863916521b81cdcbd6ad3d11fd19e89a8401a0304966381863fa516dfb98d2.webp', 'f1863916521b81cdcbd6ad3d11fd19e89a8401a0304966381863fa516dfb98d2', 'image/webp', false, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
-INSERT INTO public.product_images VALUES (616, 183, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_2_3_ec9ce4c3217c4fa5962fe566e6626356582d47ebccb0762fe5a8eeec4f29c859.webp', 'ec9ce4c3217c4fa5962fe566e6626356582d47ebccb0762fe5a8eeec4f29c859', 'image/webp', true, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
-INSERT INTO public.product_images VALUES (617, 183, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_12_4_ac25c93b8f3d28b22ec5a0af4b5ddea8f44e741206d48abcb871db24484c175c.webp', 'ac25c93b8f3d28b22ec5a0af4b5ddea8f44e741206d48abcb871db24484c175c', 'image/webp', false, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
-INSERT INTO public.product_images VALUES (618, 183, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_10_3_0352ce0c3b2326fd0483eced9794053fd28d05869f28dc88ff387285fc8b9a96.webp', '0352ce0c3b2326fd0483eced9794053fd28d05869f28dc88ff387285fc8b9a96', 'image/webp', false, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
-INSERT INTO public.product_images VALUES (619, 183, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_1_4_ef3d8dd703b989b15baf319626ec0d6c3377f99c6b7032c4d7070f47fa586260.webp', 'ef3d8dd703b989b15baf319626ec0d6c3377f99c6b7032c4d7070f47fa586260', 'image/webp', false, '2025-11-21 22:09:37.634458+00', '2025-11-21 22:09:37.634458+00', true);
-INSERT INTO public.product_images VALUES (620, 184, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_11_3_56426a418954cfb02df930324bd0dd0900fa2f4d25abb00fe898c32d44d3e05b.webp', '56426a418954cfb02df930324bd0dd0900fa2f4d25abb00fe898c32d44d3e05b', 'image/webp', true, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
-INSERT INTO public.product_images VALUES (621, 184, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_13_1_0f5d40f67f8d05ff70d6b6dd62bb05ee2d675502d78647152eb86d15b4686b8d.webp', '0f5d40f67f8d05ff70d6b6dd62bb05ee2d675502d78647152eb86d15b4686b8d', 'image/webp', false, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
-INSERT INTO public.product_images VALUES (622, 184, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_3_1_a54078e720522a6433aa98246b29ea1568f9af6bd520351486f4142c53d239cf.webp', 'a54078e720522a6433aa98246b29ea1568f9af6bd520351486f4142c53d239cf', 'image/webp', false, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
-INSERT INTO public.product_images VALUES (623, 184, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_9_2_31902a6d557687f069c164a929eb43a19275498482f444391c643cd0e5927d1f.webp', '31902a6d557687f069c164a929eb43a19275498482f444391c643cd0e5927d1f', 'image/webp', false, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
-INSERT INTO public.product_images VALUES (624, 185, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_11_4_85f0bdd1c886d81554188836363bfe56d93001bffea11452e0e68560f4111332.webp', '85f0bdd1c886d81554188836363bfe56d93001bffea11452e0e68560f4111332', 'image/webp', true, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
-INSERT INTO public.product_images VALUES (625, 185, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_13_2_75d29c93f688e53c58702b99cd4f67da767638e3d7badbbfbd27f2e724fe0930.webp', '75d29c93f688e53c58702b99cd4f67da767638e3d7badbbfbd27f2e724fe0930', 'image/webp', false, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
-INSERT INTO public.product_images VALUES (626, 185, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_1_2_90b58d2a3bb547c632b69b932b8fcdf6811362464549b8837ab5aa65b912f88e.webp', '90b58d2a3bb547c632b69b932b8fcdf6811362464549b8837ab5aa65b912f88e', 'image/webp', false, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
-INSERT INTO public.product_images VALUES (627, 185, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_11_2_3013ec05e7208c7b7cb6a26ddb7079afd9504695e570c65c4f1f8ddccdc030cd.webp', '3013ec05e7208c7b7cb6a26ddb7079afd9504695e570c65c4f1f8ddccdc030cd', 'image/webp', false, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
-INSERT INTO public.product_images VALUES (628, 186, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_9_3_f99d96a70b4e59beb42964d959d45aa4cd2b74769eb5306576eca2e416d34ccc.webp', 'f99d96a70b4e59beb42964d959d45aa4cd2b74769eb5306576eca2e416d34ccc', 'image/webp', true, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
-INSERT INTO public.product_images VALUES (629, 186, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_9_1_b26cfaed00334261b502e19fb48f40e21db02c5e3550a87a0f07e981047c2662.webp', 'b26cfaed00334261b502e19fb48f40e21db02c5e3550a87a0f07e981047c2662', 'image/webp', false, '2025-11-21 22:09:37.792453+00', '2025-11-21 22:09:37.792453+00', true);
-INSERT INTO public.product_images VALUES (630, 186, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_5_2_735540ce4a1b90812851f0a873c4a0005da6bc3fbba4c6b662cd800387d50855.webp', '735540ce4a1b90812851f0a873c4a0005da6bc3fbba4c6b662cd800387d50855', 'image/webp', false, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
-INSERT INTO public.product_images VALUES (631, 186, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_10_4_a3442f17209984253dc088a6ad3f2c46bd68bc1560cfdfce2c3794194e458f81.webp', 'a3442f17209984253dc088a6ad3f2c46bd68bc1560cfdfce2c3794194e458f81', 'image/webp', false, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
-INSERT INTO public.product_images VALUES (632, 187, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_3_2_275afc6a8363b280e00a80f85fd338e5e25d6d10be6ffc3a935093eedb6e67bb.webp', '275afc6a8363b280e00a80f85fd338e5e25d6d10be6ffc3a935093eedb6e67bb', 'image/webp', true, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
-INSERT INTO public.product_images VALUES (633, 187, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_103_1_955959497c02f9ed157c9f9d423c29663cc46ca33e8964855bda56650538f281.webp', '955959497c02f9ed157c9f9d423c29663cc46ca33e8964855bda56650538f281', 'image/webp', false, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
-INSERT INTO public.product_images VALUES (634, 187, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_1_3_65da340aff6eeb1a5e1c16a682bc7c52fc5a877dcadc09033af89fee3e3e8184.webp', '65da340aff6eeb1a5e1c16a682bc7c52fc5a877dcadc09033af89fee3e3e8184', 'image/webp', false, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
-INSERT INTO public.product_images VALUES (635, 187, 4, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_7_2_5a31789270fc9364641e5823ae7df6ccdcf78691ecf122875c2fff50418fca38.webp', '5a31789270fc9364641e5823ae7df6ccdcf78691ecf122875c2fff50418fca38', 'image/webp', false, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
-INSERT INTO public.product_images VALUES (636, 188, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_10_1_3b83d695a4dd98e49aff32326fb99214ea2838acd41ffe14fafa866022342729.webp', '3b83d695a4dd98e49aff32326fb99214ea2838acd41ffe14fafa866022342729', 'image/webp', true, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
-INSERT INTO public.product_images VALUES (637, 188, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_104_1_955959497c02f9ed157c9f9d423c29663cc46ca33e8964855bda56650538f281.webp', '955959497c02f9ed157c9f9d423c29663cc46ca33e8964855bda56650538f281', 'image/webp', false, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
-INSERT INTO public.product_images VALUES (638, 188, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_7_1_2d109697081bea3d10c57431479648e9c908d9a3fe25fe6092fbfbe5f3e12b43.webp', '2d109697081bea3d10c57431479648e9c908d9a3fe25fe6092fbfbe5f3e12b43', 'image/webp', false, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
-INSERT INTO public.product_images VALUES (639, 189, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_8_1_ebb66be7c823ecf934632f192ea47c305238facb61d3213aefb72018ab300606.webp', 'ebb66be7c823ecf934632f192ea47c305238facb61d3213aefb72018ab300606', 'image/webp', true, '2025-11-21 22:09:37.981242+00', '2025-11-21 22:09:37.981242+00', true);
-INSERT INTO public.product_images VALUES (640, 189, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_107_1_fb1aa7b52a915ae07c3792d0e471f459d3bcb953f27b665675672d762374bda5.webp', 'fb1aa7b52a915ae07c3792d0e471f459d3bcb953f27b665675672d762374bda5', 'image/webp', false, '2025-11-21 22:09:38.210231+00', '2025-11-21 22:09:38.210231+00', true);
-INSERT INTO public.product_images VALUES (641, 189, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_5_1_a94420c5792bf1f5a2447f471b8bb6adfb2500a5ae395bceacd50698a340cc07.webp', 'a94420c5792bf1f5a2447f471b8bb6adfb2500a5ae395bceacd50698a340cc07', 'image/webp', false, '2025-11-21 22:09:38.210231+00', '2025-11-21 22:09:38.210231+00', true);
-INSERT INTO public.product_images VALUES (642, 190, 1, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_2_1_ac1439cdc3783a9105eec13dac3eeaecea6bff84ac58daf32f2006e044bfacb3.webp', 'ac1439cdc3783a9105eec13dac3eeaecea6bff84ac58daf32f2006e044bfacb3', 'image/webp', true, '2025-11-21 22:09:38.210231+00', '2025-11-21 22:09:38.210231+00', true);
-INSERT INTO public.product_images VALUES (643, 190, 2, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_6_1_28c156112854440297676d63d390f07d6d2823f52d191c7eeacb7f47b8bdd256.webp', '28c156112854440297676d63d390f07d6d2823f52d191c7eeacb7f47b8bdd256', 'image/webp', false, '2025-11-21 22:09:38.210231+00', '2025-11-21 22:09:38.210231+00', true);
-INSERT INTO public.product_images VALUES (644, 190, 3, 'large', 'https://dcbavpdlkcjdtjdkntde.supabase.co/storage/v1/object/public/product-images/large/product_13_3_5e58f5689aefd64ca1339d5757218869f491efd1ca3419e062e1ca0bf007efa2.webp', '5e58f5689aefd64ca1339d5757218869f491efd1ca3419e062e1ca0bf007efa2', 'image/webp', false, '2025-11-21 22:09:38.210231+00', '2025-11-21 22:09:38.210231+00', true);
 
 
 --
--- TOC entry 4401 (class 0 OID 32072)
--- Dependencies: 387
+-- TOC entry 4403 (class 0 OID 32072)
+-- Dependencies: 389
 -- Data for Name: product_occasions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 
 
 --
--- TOC entry 4399 (class 0 OID 32033)
--- Dependencies: 385
+-- TOC entry 4401 (class 0 OID 32033)
+-- Dependencies: 387
 -- Data for Name: products; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.products VALUES (179, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 'Explosión de colores tropicales con aves del paraíso, heliconias y flores exóticas', 45.99, 1676.34, 25, 'FY-001', true, true, 1, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-001'':21 ''aves'':13C ''color'':10C ''exot'':6B,19C ''explosion'':8C ''flor'':4B,18C ''fy'':20 ''heliconi'':16C ''parais'':15C ''ram'':1A ''tropical'':2A,5B,11C ''vibrant'':3A,7B');
-INSERT INTO public.products VALUES (180, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 'Rosas multicolores que forman un hermoso arcoíris de emociones', 52.99, 1931.49, 30, 'FY-002', true, true, 2, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-002'':18 ''arcoiris'':2A,14C ''bouquet'':1A ''emocion'':16C ''espectacular'':7B ''form'':11C ''fy'':17 ''hermos'':13C ''multicolor'':6B,9C ''ros'':4A,5B,8C');
-INSERT INTO public.products VALUES (181, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 'Girasoles enormes que irradian alegría y energía positiva', 38.99, 1421.19, 20, 'FY-003', true, false, NULL, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-003'':17 ''alegr'':3A,12C ''energ'':14C ''enorm'':5B,9C ''fy'':16 ''gigant'':2A ''girasol'':1A,4B,8C ''irradi'':11C ''posit'':15C ''radiant'':7B');
-INSERT INTO public.products VALUES (182, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 'Orquídeas exóticas de alta calidad en arreglo sofisticado', 68.99, 2514.69, 15, 'FY-004', true, true, 3, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-004'':16 ''alta'':10C ''arregl'':13C ''calid'':11C ''eleg'':2A ''exot'':5B,8C ''fy'':15 ''orquid'':1A,4B,7C ''premium'':3A ''sofistic'':6B,14C');
-INSERT INTO public.products VALUES (183, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 'Lirios blancos simbolizando pureza y elegancia', 42.99, 1566.99, 18, 'FY-005', true, false, NULL, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-005'':16 ''blanc'':2A,5B,10C ''eleg'':14C ''fy'':15 ''liri'':1A,4B,9C ''pur'':3A ''purez'':8B,12C ''simbol'':6B ''simboliz'':11C');
-INSERT INTO public.products VALUES (184, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 'Tulipanes importados en colores vibrantes del valle holandés', 49.99, 1822.14, 22, 'FY-006', true, true, 4, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-006'':16 ''color'':10C ''fy'':15 ''holandes'':2A,14C ''import'':5B,8C ''mix'':3A ''tulipan'':1A,4B,7C ''vall'':13C ''vibrant'':6B,11C');
-INSERT INTO public.products VALUES (185, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 'Docena de rosas rojas, el símbolo eterno del amor', 55.99, 2040.84, 40, 'FY-007', true, true, 5, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-007'':19 ''amor'':8B,17C ''clasic'':3A ''docen'':9C ''etern'':15C ''fy'':18 ''roj'':2A,5B,12C ''ros'':1A,4B,11C ''simbol'':6B,14C');
-INSERT INTO public.products VALUES (186, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 'Hortensias azules en arreglo romántico y delicado', 46.99, 1712.79, 16, 'FY-008', true, false, NULL, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-008'':15 ''arregl'':10C ''azul'':2A,5B,8C ''delic'':6B,13C ''fy'':14 ''hortensi'':1A,4B,7C ''romant'':3A,11C');
-INSERT INTO public.products VALUES (187, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 'Claveles coloridos perfectos para celebraciones alegres', 32.99, 1202.49, 28, 'FY-009', true, false, NULL, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-009'':14 ''alegr'':6B,12C ''celebr'':11C ''clavel'':1A,4B,7C ''color'':5B,8C ''festiv'':3A ''fy'':13 ''multicolor'':2A ''perfect'':9C');
-INSERT INTO public.products VALUES (188, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 'Flores silvestres en arreglo natural y espontáneo', 39.99, 1457.64, 24, 'FY-010', true, true, 6, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-010'':15 ''arregl'':10C ''campestr'':2A ''espontane'':13C ''flor'':4B,7C ''fy'':14 ''natural'':6B,11C ''ram'':1A ''silvestr'':3A,5B,8C');
-INSERT INTO public.products VALUES (189, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 'Margaritas blancas que transmiten frescura y simplicidad', 29.99, 1093.14, 35, 'FY-011', true, false, NULL, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-011'':15 ''blanc'':2A,5B,8C ''fresc'':3A ''frescur'':11C ''fy'':14 ''margarit'':1A,4B,7C ''simpl'':6B ''simplic'':13C ''transmit'':10C');
-INSERT INTO public.products VALUES (190, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 'Peonías rosadas de temporada, suaves y voluminosas', 72.99, 2660.49, 12, 'FY-012', true, true, 7, '2025-11-11 23:33:29.846019+00', '2025-11-11 23:33:29.846019+00', DEFAULT, DEFAULT, '''-012'':16 ''delux'':3A ''fy'':15 ''peon'':1A,4B,8C ''ros'':2A,5B,9C ''suav'':12C ''tempor'':7B,11C ''volumin'':14C');
+INSERT INTO public.products VALUES (195, 'Lirios Blancos Puros', 'Lirios blancos símbolo de pureza', 'Lirios blancos simbolizando pureza y elegancia', 42.99, 1566.99, 18, 'FY-005', true, false, NULL, '2025-11-27 14:17:05.824705+00', '2025-11-27 14:17:05.824705+00', DEFAULT, DEFAULT, '''-005'':16 ''blanc'':2A,5B,10C ''eleg'':14C ''fy'':15 ''liri'':1A,4B,9C ''pur'':3A ''purez'':8B,12C ''simbol'':6B ''simboliz'':11C');
+INSERT INTO public.products VALUES (196, 'Tulipanes Holandeses Mix', 'Tulipanes importados vibrantes', 'Tulipanes importados en colores vibrantes del valle holandés', 49.99, 1822.14, 22, 'FY-006', true, true, 4, '2025-11-27 14:17:05.824705+00', '2025-11-27 14:17:05.824705+00', DEFAULT, DEFAULT, '''-006'':16 ''color'':10C ''fy'':15 ''holandes'':2A,14C ''import'':5B,8C ''mix'':3A ''tulipan'':1A,4B,7C ''vall'':13C ''vibrant'':6B,11C');
+INSERT INTO public.products VALUES (197, 'Rosas Rojas Clásicas', 'Rosas rojas símbolo del amor', 'Docena de rosas rojas, el símbolo eterno del amor', 55.99, 2040.84, 40, 'FY-007', true, true, 5, '2025-11-27 14:17:05.824705+00', '2025-11-27 14:17:05.824705+00', DEFAULT, DEFAULT, '''-007'':19 ''amor'':8B,17C ''clasic'':3A ''docen'':9C ''etern'':15C ''fy'':18 ''roj'':2A,5B,12C ''ros'':1A,4B,11C ''simbol'':6B,14C');
+INSERT INTO public.products VALUES (198, 'Hortensias Azules Románticas', 'Hortensias azules delicadas', 'Hortensias azules en arreglo romántico y delicado', 46.99, 1712.79, 16, 'FY-008', true, false, NULL, '2025-11-27 14:17:05.824705+00', '2025-11-27 14:17:05.824705+00', DEFAULT, DEFAULT, '''-008'':15 ''arregl'':10C ''azul'':2A,5B,8C ''delic'':6B,13C ''fy'':14 ''hortensi'':1A,4B,7C ''romant'':3A,11C');
+INSERT INTO public.products VALUES (199, 'Claveles Multicolor Festivos', 'Claveles coloridos alegres', 'Claveles coloridos perfectos para celebraciones alegres', 32.99, 1202.49, 28, 'FY-009', true, false, NULL, '2025-11-27 14:17:05.824705+00', '2025-11-27 14:17:05.824705+00', DEFAULT, DEFAULT, '''-009'':14 ''alegr'':6B,12C ''celebr'':11C ''clavel'':1A,4B,7C ''color'':5B,8C ''festiv'':3A ''fy'':13 ''multicolor'':2A ''perfect'':9C');
+INSERT INTO public.products VALUES (200, 'Ramo Campestre Silvestre', 'Flores silvestres naturales', 'Flores silvestres en arreglo natural y espontáneo', 39.99, 1457.64, 24, 'FY-010', true, true, 6, '2025-11-27 14:17:05.824705+00', '2025-11-27 14:17:05.824705+00', DEFAULT, DEFAULT, '''-010'':15 ''arregl'':10C ''campestr'':2A ''espontane'':13C ''flor'':4B,7C ''fy'':14 ''natural'':6B,11C ''ram'':1A ''silvestr'':3A,5B,8C');
+INSERT INTO public.products VALUES (201, 'Margaritas Blancas Frescas', 'Margaritas blancas simples', 'Margaritas blancas que transmiten frescura y simplicidad', 29.99, 1093.14, 35, 'FY-011', true, false, NULL, '2025-11-27 14:17:05.824705+00', '2025-11-27 14:17:05.824705+00', DEFAULT, DEFAULT, '''-011'':15 ''blanc'':2A,5B,8C ''fresc'':3A ''frescur'':11C ''fy'':14 ''margarit'':1A,4B,7C ''simpl'':6B ''simplic'':13C ''transmit'':10C');
+INSERT INTO public.products VALUES (202, 'Peonías Rosadas Deluxe', 'Peonías rosadas de temporada', 'Peonías rosadas de temporada, suaves y voluminosas', 72.99, 2660.49, 12, 'FY-012', true, true, 7, '2025-11-27 14:17:05.824705+00', '2025-11-27 14:17:05.824705+00', DEFAULT, DEFAULT, '''-012'':16 ''delux'':3A ''fy'':15 ''peon'':1A,4B,8C ''ros'':2A,5B,9C ''suav'':12C ''tempor'':7B,11C ''volumin'':14C');
+INSERT INTO public.products VALUES (191, 'Ramo Tropical Vibrante', 'Flores tropicales exóticas vibrantes', 'Explosión de colores tropicales con aves del paraíso, heliconias y flores exóticas', 45.99, 1676.34, 25, 'FY-001', true, true, 1, '2025-11-27 14:17:05.824705+00', '2025-11-27 14:17:05.824705+00', DEFAULT, DEFAULT, '''-001'':21 ''aves'':13C ''color'':10C ''exot'':6B,19C ''explosion'':8C ''flor'':4B,18C ''fy'':20 ''heliconi'':16C ''parais'':15C ''ram'':1A ''tropical'':2A,5B,11C ''vibrant'':3A,7B');
+INSERT INTO public.products VALUES (192, 'Bouquet Arcoíris de Rosas', 'Rosas multicolores espectaculares', 'Rosas multicolores que forman un hermoso arcoíris de emociones', 52.99, 1931.49, 30, 'FY-002', true, true, 2, '2025-11-27 14:17:05.824705+00', '2025-11-27 14:17:05.824705+00', DEFAULT, DEFAULT, '''-002'':18 ''arcoiris'':2A,14C ''bouquet'':1A ''emocion'':16C ''espectacular'':7B ''form'':11C ''fy'':17 ''hermos'':13C ''multicolor'':6B,9C ''ros'':4A,5B,8C');
+INSERT INTO public.products VALUES (193, 'Girasoles Gigantes Alegres', 'Girasoles enormes y radiantes', 'Girasoles enormes que irradian alegría y energía positiva', 38.99, 1421.19, 20, 'FY-003', true, false, NULL, '2025-11-27 14:17:05.824705+00', '2025-11-27 14:17:05.824705+00', DEFAULT, DEFAULT, '''-003'':17 ''alegr'':3A,12C ''energ'':14C ''enorm'':5B,9C ''fy'':16 ''gigant'':2A ''girasol'':1A,4B,8C ''irradi'':11C ''posit'':15C ''radiant'':7B');
+INSERT INTO public.products VALUES (194, 'Orquídeas Elegantes Premium', 'Orquídeas exóticas sofisticadas', 'Orquídeas exóticas de alta calidad en arreglo sofisticado', 68.99, 2514.69, 15, 'FY-004', true, true, 3, '2025-11-27 14:17:05.824705+00', '2025-11-27 14:17:05.824705+00', DEFAULT, DEFAULT, '''-004'':16 ''alta'':10C ''arregl'':13C ''calid'':11C ''eleg'':2A ''exot'':5B,8C ''fy'':15 ''orquid'':1A,4B,7C ''premium'':3A ''sofistic'':6B,14C');
 
 
 --
--- TOC entry 4417 (class 0 OID 59940)
--- Dependencies: 403
+-- TOC entry 4419 (class 0 OID 59940)
+-- Dependencies: 405
 -- Data for Name: query_timeouts_log; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -4276,8 +4247,8 @@ INSERT INTO public.query_timeouts_log VALUES (11, 'CONFIG: get_popular_searches'
 
 
 --
--- TOC entry 4397 (class 0 OID 32018)
--- Dependencies: 383
+-- TOC entry 4399 (class 0 OID 32018)
+-- Dependencies: 385
 -- Data for Name: settings; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -4326,8 +4297,8 @@ INSERT INTO public.settings VALUES (85, 'bcv_usd_rate', '40.00', 'Tasa de cambio
 
 
 --
--- TOC entry 4395 (class 0 OID 32002)
--- Dependencies: 381
+-- TOC entry 4397 (class 0 OID 32002)
+-- Dependencies: 383
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -5421,8 +5392,8 @@ INSERT INTO public.users VALUES (1238, 'testuser1761575394865@example.com', 'tes
 
 
 --
--- TOC entry 4526 (class 0 OID 0)
--- Dependencies: 400
+-- TOC entry 4528 (class 0 OID 0)
+-- Dependencies: 402
 -- Name: busquedas_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -5430,8 +5401,8 @@ SELECT pg_catalog.setval('public.busquedas_log_id_seq', 1, false);
 
 
 --
--- TOC entry 4527 (class 0 OID 0)
--- Dependencies: 409
+-- TOC entry 4529 (class 0 OID 0)
+-- Dependencies: 411
 -- Name: expenses_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -5439,17 +5410,17 @@ SELECT pg_catalog.setval('public.expenses_id_seq', 1, true);
 
 
 --
--- TOC entry 4528 (class 0 OID 0)
--- Dependencies: 378
+-- TOC entry 4530 (class 0 OID 0)
+-- Dependencies: 380
 -- Name: occasions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.occasions_id_seq', 410, true);
+SELECT pg_catalog.setval('public.occasions_id_seq', 417, true);
 
 
 --
--- TOC entry 4529 (class 0 OID 0)
--- Dependencies: 390
+-- TOC entry 4531 (class 0 OID 0)
+-- Dependencies: 392
 -- Name: order_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -5457,8 +5428,8 @@ SELECT pg_catalog.setval('public.order_items_id_seq', 1083, true);
 
 
 --
--- TOC entry 4530 (class 0 OID 0)
--- Dependencies: 392
+-- TOC entry 4532 (class 0 OID 0)
+-- Dependencies: 394
 -- Name: order_status_history_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -5466,8 +5437,8 @@ SELECT pg_catalog.setval('public.order_status_history_id_seq', 844, true);
 
 
 --
--- TOC entry 4531 (class 0 OID 0)
--- Dependencies: 388
+-- TOC entry 4533 (class 0 OID 0)
+-- Dependencies: 390
 -- Name: orders_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -5475,8 +5446,8 @@ SELECT pg_catalog.setval('public.orders_id_seq', 614, true);
 
 
 --
--- TOC entry 4532 (class 0 OID 0)
--- Dependencies: 394
+-- TOC entry 4534 (class 0 OID 0)
+-- Dependencies: 396
 -- Name: payment_methods_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -5484,8 +5455,8 @@ SELECT pg_catalog.setval('public.payment_methods_id_seq', 886, true);
 
 
 --
--- TOC entry 4533 (class 0 OID 0)
--- Dependencies: 396
+-- TOC entry 4535 (class 0 OID 0)
+-- Dependencies: 398
 -- Name: payments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -5493,8 +5464,8 @@ SELECT pg_catalog.setval('public.payments_id_seq', 206, true);
 
 
 --
--- TOC entry 4534 (class 0 OID 0)
--- Dependencies: 398
+-- TOC entry 4536 (class 0 OID 0)
+-- Dependencies: 400
 -- Name: product_images_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -5502,8 +5473,8 @@ SELECT pg_catalog.setval('public.product_images_id_seq', 644, true);
 
 
 --
--- TOC entry 4535 (class 0 OID 0)
--- Dependencies: 386
+-- TOC entry 4537 (class 0 OID 0)
+-- Dependencies: 388
 -- Name: product_occasions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -5511,17 +5482,17 @@ SELECT pg_catalog.setval('public.product_occasions_id_seq', 126, true);
 
 
 --
--- TOC entry 4536 (class 0 OID 0)
--- Dependencies: 384
+-- TOC entry 4538 (class 0 OID 0)
+-- Dependencies: 386
 -- Name: products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.products_id_seq', 190, true);
+SELECT pg_catalog.setval('public.products_id_seq', 202, true);
 
 
 --
--- TOC entry 4537 (class 0 OID 0)
--- Dependencies: 402
+-- TOC entry 4539 (class 0 OID 0)
+-- Dependencies: 404
 -- Name: query_timeouts_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -5529,17 +5500,17 @@ SELECT pg_catalog.setval('public.query_timeouts_log_id_seq', 11, true);
 
 
 --
--- TOC entry 4538 (class 0 OID 0)
--- Dependencies: 382
+-- TOC entry 4540 (class 0 OID 0)
+-- Dependencies: 384
 -- Name: settings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.settings_id_seq', 85, true);
+SELECT pg_catalog.setval('public.settings_id_seq', 87, true);
 
 
 --
--- TOC entry 4539 (class 0 OID 0)
--- Dependencies: 380
+-- TOC entry 4541 (class 0 OID 0)
+-- Dependencies: 382
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -5547,7 +5518,7 @@ SELECT pg_catalog.setval('public.users_id_seq', 1241, true);
 
 
 --
--- TOC entry 4126 (class 2606 OID 59813)
+-- TOC entry 4128 (class 2606 OID 59813)
 -- Name: busquedas_log busquedas_log_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5556,7 +5527,7 @@ ALTER TABLE ONLY public.busquedas_log
 
 
 --
--- TOC entry 4139 (class 2606 OID 84817)
+-- TOC entry 4141 (class 2606 OID 84817)
 -- Name: expenses expenses_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5565,7 +5536,7 @@ ALTER TABLE ONLY public.expenses
 
 
 --
--- TOC entry 4008 (class 2606 OID 32000)
+-- TOC entry 4010 (class 2606 OID 32000)
 -- Name: occasions occasions_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5574,7 +5545,7 @@ ALTER TABLE ONLY public.occasions
 
 
 --
--- TOC entry 4011 (class 2606 OID 31998)
+-- TOC entry 4013 (class 2606 OID 31998)
 -- Name: occasions occasions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5583,7 +5554,7 @@ ALTER TABLE ONLY public.occasions
 
 
 --
--- TOC entry 4013 (class 2606 OID 32573)
+-- TOC entry 4015 (class 2606 OID 32573)
 -- Name: occasions occasions_slug_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5592,7 +5563,7 @@ ALTER TABLE ONLY public.occasions
 
 
 --
--- TOC entry 4098 (class 2606 OID 32124)
+-- TOC entry 4100 (class 2606 OID 32124)
 -- Name: order_items order_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5601,7 +5572,7 @@ ALTER TABLE ONLY public.order_items
 
 
 --
--- TOC entry 4101 (class 2606 OID 32144)
+-- TOC entry 4103 (class 2606 OID 32144)
 -- Name: order_status_history order_status_history_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5610,7 +5581,7 @@ ALTER TABLE ONLY public.order_status_history
 
 
 --
--- TOC entry 4091 (class 2606 OID 32105)
+-- TOC entry 4093 (class 2606 OID 32105)
 -- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5619,7 +5590,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- TOC entry 4104 (class 2606 OID 32167)
+-- TOC entry 4106 (class 2606 OID 32167)
 -- Name: payment_methods payment_methods_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5628,7 +5599,7 @@ ALTER TABLE ONLY public.payment_methods
 
 
 --
--- TOC entry 4110 (class 2606 OID 32180)
+-- TOC entry 4112 (class 2606 OID 32180)
 -- Name: payments payments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5637,7 +5608,7 @@ ALTER TABLE ONLY public.payments
 
 
 --
--- TOC entry 4122 (class 2606 OID 32537)
+-- TOC entry 4124 (class 2606 OID 32537)
 -- Name: product_images product_images_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5646,7 +5617,7 @@ ALTER TABLE ONLY public.product_images
 
 
 --
--- TOC entry 4124 (class 2606 OID 32539)
+-- TOC entry 4126 (class 2606 OID 32539)
 -- Name: product_images product_images_product_id_image_index_size_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5655,7 +5626,7 @@ ALTER TABLE ONLY public.product_images
 
 
 --
--- TOC entry 4066 (class 2606 OID 32079)
+-- TOC entry 4068 (class 2606 OID 32079)
 -- Name: product_occasions product_occasions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5664,7 +5635,7 @@ ALTER TABLE ONLY public.product_occasions
 
 
 --
--- TOC entry 4068 (class 2606 OID 32081)
+-- TOC entry 4070 (class 2606 OID 32081)
 -- Name: product_occasions product_occasions_product_id_occasion_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5673,7 +5644,7 @@ ALTER TABLE ONLY public.product_occasions
 
 
 --
--- TOC entry 4057 (class 2606 OID 32048)
+-- TOC entry 4059 (class 2606 OID 32048)
 -- Name: products products_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5682,7 +5653,7 @@ ALTER TABLE ONLY public.products
 
 
 --
--- TOC entry 4059 (class 2606 OID 32050)
+-- TOC entry 4061 (class 2606 OID 32050)
 -- Name: products products_sku_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5691,7 +5662,7 @@ ALTER TABLE ONLY public.products
 
 
 --
--- TOC entry 4137 (class 2606 OID 59949)
+-- TOC entry 4139 (class 2606 OID 59949)
 -- Name: query_timeouts_log query_timeouts_log_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5700,7 +5671,7 @@ ALTER TABLE ONLY public.query_timeouts_log
 
 
 --
--- TOC entry 4029 (class 2606 OID 32031)
+-- TOC entry 4031 (class 2606 OID 32031)
 -- Name: settings settings_key_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5709,7 +5680,7 @@ ALTER TABLE ONLY public.settings
 
 
 --
--- TOC entry 4032 (class 2606 OID 32029)
+-- TOC entry 4034 (class 2606 OID 32029)
 -- Name: settings settings_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5718,7 +5689,7 @@ ALTER TABLE ONLY public.settings
 
 
 --
--- TOC entry 4022 (class 2606 OID 32016)
+-- TOC entry 4024 (class 2606 OID 32016)
 -- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5727,7 +5698,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4024 (class 2606 OID 77922)
+-- TOC entry 4026 (class 2606 OID 77922)
 -- Name: users users_email_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5736,7 +5707,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4026 (class 2606 OID 32014)
+-- TOC entry 4028 (class 2606 OID 32014)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5745,7 +5716,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4127 (class 1259 OID 59815)
+-- TOC entry 4129 (class 1259 OID 59815)
 -- Name: idx_busquedas_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5753,7 +5724,7 @@ CREATE INDEX idx_busquedas_fecha ON public.busquedas_log USING btree (created_at
 
 
 --
--- TOC entry 4128 (class 1259 OID 77627)
+-- TOC entry 4130 (class 1259 OID 77627)
 -- Name: idx_busquedas_ip_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5761,7 +5732,7 @@ CREATE INDEX idx_busquedas_ip_fecha ON public.busquedas_log USING btree (ip_clie
 
 
 --
--- TOC entry 4129 (class 1259 OID 77813)
+-- TOC entry 4131 (class 1259 OID 77813)
 -- Name: idx_busquedas_log_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5769,7 +5740,7 @@ CREATE INDEX idx_busquedas_log_active ON public.busquedas_log USING btree (activ
 
 
 --
--- TOC entry 4130 (class 1259 OID 77628)
+-- TOC entry 4132 (class 1259 OID 77628)
 -- Name: idx_busquedas_resultados; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5777,7 +5748,7 @@ CREATE INDEX idx_busquedas_resultados ON public.busquedas_log USING btree (resul
 
 
 --
--- TOC entry 4131 (class 1259 OID 59814)
+-- TOC entry 4133 (class 1259 OID 59814)
 -- Name: idx_busquedas_termino_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5785,7 +5756,7 @@ CREATE INDEX idx_busquedas_termino_fecha ON public.busquedas_log USING btree (te
 
 
 --
--- TOC entry 4140 (class 1259 OID 84822)
+-- TOC entry 4142 (class 1259 OID 84822)
 -- Name: idx_expenses_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5793,7 +5764,7 @@ CREATE INDEX idx_expenses_active ON public.expenses USING btree (active);
 
 
 --
--- TOC entry 4141 (class 1259 OID 86509)
+-- TOC entry 4143 (class 1259 OID 86509)
 -- Name: idx_expenses_amount; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5801,7 +5772,7 @@ CREATE INDEX idx_expenses_amount ON public.expenses USING btree (amount DESC);
 
 
 --
--- TOC entry 4142 (class 1259 OID 86506)
+-- TOC entry 4144 (class 1259 OID 86506)
 -- Name: idx_expenses_category; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5809,7 +5780,7 @@ CREATE INDEX idx_expenses_category ON public.expenses USING btree (category);
 
 
 --
--- TOC entry 4143 (class 1259 OID 86511)
+-- TOC entry 4145 (class 1259 OID 86511)
 -- Name: idx_expenses_category_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5817,7 +5788,7 @@ CREATE INDEX idx_expenses_category_date ON public.expenses USING btree (category
 
 
 --
--- TOC entry 4144 (class 1259 OID 86510)
+-- TOC entry 4146 (class 1259 OID 86510)
 -- Name: idx_expenses_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5825,7 +5796,7 @@ CREATE INDEX idx_expenses_created_at ON public.expenses USING btree (created_at 
 
 
 --
--- TOC entry 4145 (class 1259 OID 84820)
+-- TOC entry 4147 (class 1259 OID 84820)
 -- Name: idx_expenses_created_by; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5833,7 +5804,7 @@ CREATE INDEX idx_expenses_created_by ON public.expenses USING btree (created_by)
 
 
 --
--- TOC entry 4146 (class 1259 OID 86507)
+-- TOC entry 4148 (class 1259 OID 86507)
 -- Name: idx_expenses_expense_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5841,7 +5812,7 @@ CREATE INDEX idx_expenses_expense_date ON public.expenses USING btree (expense_d
 
 
 --
--- TOC entry 4147 (class 1259 OID 86508)
+-- TOC entry 4149 (class 1259 OID 86508)
 -- Name: idx_expenses_payment_method; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5849,7 +5820,7 @@ CREATE INDEX idx_expenses_payment_method ON public.expenses USING btree (payment
 
 
 --
--- TOC entry 4004 (class 1259 OID 77804)
+-- TOC entry 4006 (class 1259 OID 77804)
 -- Name: idx_occasions_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5857,7 +5828,7 @@ CREATE INDEX idx_occasions_active ON public.occasions USING btree (active);
 
 
 --
--- TOC entry 4005 (class 1259 OID 77626)
+-- TOC entry 4007 (class 1259 OID 77626)
 -- Name: idx_occasions_active_display_order; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5865,7 +5836,7 @@ CREATE INDEX idx_occasions_active_display_order ON public.occasions USING btree 
 
 
 --
--- TOC entry 4006 (class 1259 OID 67986)
+-- TOC entry 4008 (class 1259 OID 67986)
 -- Name: idx_occasions_is_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5873,7 +5844,7 @@ CREATE INDEX idx_occasions_is_active ON public.occasions USING btree (active) WH
 
 
 --
--- TOC entry 4092 (class 1259 OID 77811)
+-- TOC entry 4094 (class 1259 OID 77811)
 -- Name: idx_order_items_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5881,7 +5852,7 @@ CREATE INDEX idx_order_items_active ON public.order_items USING btree (active);
 
 
 --
--- TOC entry 4093 (class 1259 OID 86504)
+-- TOC entry 4095 (class 1259 OID 86504)
 -- Name: idx_order_items_order_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5889,7 +5860,7 @@ CREATE INDEX idx_order_items_order_id ON public.order_items USING btree (order_i
 
 
 --
--- TOC entry 4094 (class 1259 OID 59745)
+-- TOC entry 4096 (class 1259 OID 59745)
 -- Name: idx_order_items_order_product; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5897,7 +5868,7 @@ CREATE INDEX idx_order_items_order_product ON public.order_items USING btree (or
 
 
 --
--- TOC entry 4095 (class 1259 OID 86505)
+-- TOC entry 4097 (class 1259 OID 86505)
 -- Name: idx_order_items_product_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5905,7 +5876,7 @@ CREATE INDEX idx_order_items_product_id ON public.order_items USING btree (produ
 
 
 --
--- TOC entry 4096 (class 1259 OID 59746)
+-- TOC entry 4098 (class 1259 OID 59746)
 -- Name: idx_order_items_product_quantity; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5913,7 +5884,7 @@ CREATE INDEX idx_order_items_product_quantity ON public.order_items USING btree 
 
 
 --
--- TOC entry 4099 (class 1259 OID 77812)
+-- TOC entry 4101 (class 1259 OID 77812)
 -- Name: idx_order_status_history_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5921,7 +5892,7 @@ CREATE INDEX idx_order_status_history_active ON public.order_status_history USIN
 
 
 --
--- TOC entry 4069 (class 1259 OID 77807)
+-- TOC entry 4071 (class 1259 OID 77807)
 -- Name: idx_orders_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5929,7 +5900,7 @@ CREATE INDEX idx_orders_active ON public.orders USING btree (active);
 
 
 --
--- TOC entry 4070 (class 1259 OID 59742)
+-- TOC entry 4072 (class 1259 OID 59742)
 -- Name: idx_orders_amount_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5937,7 +5908,7 @@ CREATE INDEX idx_orders_amount_date ON public.orders USING btree (total_amount_u
 
 
 --
--- TOC entry 4071 (class 1259 OID 86495)
+-- TOC entry 4073 (class 1259 OID 86495)
 -- Name: idx_orders_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5945,7 +5916,7 @@ CREATE INDEX idx_orders_created_at ON public.orders USING btree (created_at DESC
 
 
 --
--- TOC entry 4072 (class 1259 OID 86498)
+-- TOC entry 4074 (class 1259 OID 86498)
 -- Name: idx_orders_customer_email; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5953,7 +5924,7 @@ CREATE INDEX idx_orders_customer_email ON public.orders USING btree (customer_em
 
 
 --
--- TOC entry 4073 (class 1259 OID 52861)
+-- TOC entry 4075 (class 1259 OID 52861)
 -- Name: idx_orders_customer_email_normalized; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5961,7 +5932,7 @@ CREATE INDEX idx_orders_customer_email_normalized ON public.orders USING btree (
 
 
 --
--- TOC entry 4074 (class 1259 OID 86497)
+-- TOC entry 4076 (class 1259 OID 86497)
 -- Name: idx_orders_customer_name; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5969,7 +5940,7 @@ CREATE INDEX idx_orders_customer_name ON public.orders USING btree (customer_nam
 
 
 --
--- TOC entry 4075 (class 1259 OID 52849)
+-- TOC entry 4077 (class 1259 OID 52849)
 -- Name: idx_orders_customer_name_normalized; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5977,7 +5948,7 @@ CREATE INDEX idx_orders_customer_name_normalized ON public.orders USING btree (c
 
 
 --
--- TOC entry 4076 (class 1259 OID 86500)
+-- TOC entry 4078 (class 1259 OID 86500)
 -- Name: idx_orders_customer_phone; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5985,7 +5956,7 @@ CREATE INDEX idx_orders_customer_phone ON public.orders USING btree (customer_ph
 
 
 --
--- TOC entry 4077 (class 1259 OID 59741)
+-- TOC entry 4079 (class 1259 OID 59741)
 -- Name: idx_orders_delivered; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5993,7 +5964,7 @@ CREATE INDEX idx_orders_delivered ON public.orders USING btree (created_at DESC)
 
 
 --
--- TOC entry 4078 (class 1259 OID 86499)
+-- TOC entry 4080 (class 1259 OID 86499)
 -- Name: idx_orders_delivery_address; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6001,7 +5972,7 @@ CREATE INDEX idx_orders_delivery_address ON public.orders USING btree (delivery_
 
 
 --
--- TOC entry 4079 (class 1259 OID 86502)
+-- TOC entry 4081 (class 1259 OID 86502)
 -- Name: idx_orders_delivery_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6009,7 +5980,7 @@ CREATE INDEX idx_orders_delivery_date ON public.orders USING btree (delivery_dat
 
 
 --
--- TOC entry 4080 (class 1259 OID 59740)
+-- TOC entry 4082 (class 1259 OID 59740)
 -- Name: idx_orders_recent_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6017,7 +5988,7 @@ CREATE INDEX idx_orders_recent_active ON public.orders USING btree (created_at D
 
 
 --
--- TOC entry 4081 (class 1259 OID 86496)
+-- TOC entry 4083 (class 1259 OID 86496)
 -- Name: idx_orders_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6025,7 +5996,7 @@ CREATE INDEX idx_orders_status ON public.orders USING btree (status);
 
 
 --
--- TOC entry 4082 (class 1259 OID 77931)
+-- TOC entry 4084 (class 1259 OID 77931)
 -- Name: idx_orders_status_created; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6033,7 +6004,7 @@ CREATE INDEX idx_orders_status_created ON public.orders USING btree (status, cre
 
 
 --
--- TOC entry 4083 (class 1259 OID 86503)
+-- TOC entry 4085 (class 1259 OID 86503)
 -- Name: idx_orders_status_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6041,7 +6012,7 @@ CREATE INDEX idx_orders_status_created_at ON public.orders USING btree (status, 
 
 
 --
--- TOC entry 4084 (class 1259 OID 59738)
+-- TOC entry 4086 (class 1259 OID 59738)
 -- Name: idx_orders_status_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6049,7 +6020,7 @@ CREATE INDEX idx_orders_status_date ON public.orders USING btree (status, create
 
 
 --
--- TOC entry 4085 (class 1259 OID 67988)
+-- TOC entry 4087 (class 1259 OID 67988)
 -- Name: idx_orders_total_amount; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6057,7 +6028,7 @@ CREATE INDEX idx_orders_total_amount ON public.orders USING btree (total_amount_
 
 
 --
--- TOC entry 4086 (class 1259 OID 86501)
+-- TOC entry 4088 (class 1259 OID 86501)
 -- Name: idx_orders_total_amount_usd; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6065,7 +6036,7 @@ CREATE INDEX idx_orders_total_amount_usd ON public.orders USING btree (total_amo
 
 
 --
--- TOC entry 4087 (class 1259 OID 67991)
+-- TOC entry 4089 (class 1259 OID 67991)
 -- Name: idx_orders_user_created; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6073,7 +6044,7 @@ CREATE INDEX idx_orders_user_created ON public.orders USING btree (user_id, crea
 
 
 --
--- TOC entry 4088 (class 1259 OID 59739)
+-- TOC entry 4090 (class 1259 OID 59739)
 -- Name: idx_orders_user_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6081,7 +6052,7 @@ CREATE INDEX idx_orders_user_date ON public.orders USING btree (user_id, created
 
 
 --
--- TOC entry 4089 (class 1259 OID 32199)
+-- TOC entry 4091 (class 1259 OID 32199)
 -- Name: idx_orders_user_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6089,7 +6060,7 @@ CREATE INDEX idx_orders_user_id ON public.orders USING btree (user_id);
 
 
 --
--- TOC entry 4102 (class 1259 OID 77805)
+-- TOC entry 4104 (class 1259 OID 77805)
 -- Name: idx_payment_methods_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6097,7 +6068,7 @@ CREATE INDEX idx_payment_methods_active ON public.payment_methods USING btree (a
 
 
 --
--- TOC entry 4105 (class 1259 OID 77808)
+-- TOC entry 4107 (class 1259 OID 77808)
 -- Name: idx_payments_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6105,7 +6076,7 @@ CREATE INDEX idx_payments_active ON public.payments USING btree (active);
 
 
 --
--- TOC entry 4106 (class 1259 OID 32203)
+-- TOC entry 4108 (class 1259 OID 32203)
 -- Name: idx_payments_order_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6113,7 +6084,7 @@ CREATE INDEX idx_payments_order_id ON public.payments USING btree (order_id);
 
 
 --
--- TOC entry 4107 (class 1259 OID 67990)
+-- TOC entry 4109 (class 1259 OID 67990)
 -- Name: idx_payments_payment_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6121,7 +6092,7 @@ CREATE INDEX idx_payments_payment_date ON public.payments USING btree (payment_d
 
 
 --
--- TOC entry 4108 (class 1259 OID 32204)
+-- TOC entry 4110 (class 1259 OID 32204)
 -- Name: idx_payments_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6129,7 +6100,7 @@ CREATE INDEX idx_payments_status ON public.payments USING btree (status);
 
 
 --
--- TOC entry 4111 (class 1259 OID 77809)
+-- TOC entry 4113 (class 1259 OID 77809)
 -- Name: idx_product_images_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6137,7 +6108,7 @@ CREATE INDEX idx_product_images_active ON public.product_images USING btree (act
 
 
 --
--- TOC entry 4112 (class 1259 OID 58597)
+-- TOC entry 4114 (class 1259 OID 58597)
 -- Name: idx_product_images_file_hash; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6145,7 +6116,7 @@ CREATE INDEX idx_product_images_file_hash ON public.product_images USING btree (
 
 
 --
--- TOC entry 4113 (class 1259 OID 59744)
+-- TOC entry 4115 (class 1259 OID 59744)
 -- Name: idx_product_images_hash; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6153,7 +6124,7 @@ CREATE INDEX idx_product_images_hash ON public.product_images USING btree (file_
 
 
 --
--- TOC entry 4114 (class 1259 OID 32548)
+-- TOC entry 4116 (class 1259 OID 32548)
 -- Name: idx_product_images_only_one_primary; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6161,7 +6132,7 @@ CREATE UNIQUE INDEX idx_product_images_only_one_primary ON public.product_images
 
 
 --
--- TOC entry 4115 (class 1259 OID 58513)
+-- TOC entry 4117 (class 1259 OID 58513)
 -- Name: idx_product_images_only_one_primary_per_size; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6169,7 +6140,7 @@ CREATE UNIQUE INDEX idx_product_images_only_one_primary_per_size ON public.produ
 
 
 --
--- TOC entry 4116 (class 1259 OID 32546)
+-- TOC entry 4118 (class 1259 OID 32546)
 -- Name: idx_product_images_primary; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6177,7 +6148,7 @@ CREATE INDEX idx_product_images_primary ON public.product_images USING btree (pr
 
 
 --
--- TOC entry 4117 (class 1259 OID 32545)
+-- TOC entry 4119 (class 1259 OID 32545)
 -- Name: idx_product_images_product_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6185,7 +6156,7 @@ CREATE INDEX idx_product_images_product_id ON public.product_images USING btree 
 
 
 --
--- TOC entry 4118 (class 1259 OID 58514)
+-- TOC entry 4120 (class 1259 OID 58514)
 -- Name: idx_product_images_product_id_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6193,7 +6164,7 @@ CREATE INDEX idx_product_images_product_id_active ON public.product_images USING
 
 
 --
--- TOC entry 4119 (class 1259 OID 59743)
+-- TOC entry 4121 (class 1259 OID 59743)
 -- Name: idx_product_images_product_primary; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6201,7 +6172,7 @@ CREATE INDEX idx_product_images_product_primary ON public.product_images USING b
 
 
 --
--- TOC entry 4120 (class 1259 OID 32547)
+-- TOC entry 4122 (class 1259 OID 32547)
 -- Name: idx_product_images_size; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6209,7 +6180,7 @@ CREATE INDEX idx_product_images_size ON public.product_images USING btree (size)
 
 
 --
--- TOC entry 4061 (class 1259 OID 77810)
+-- TOC entry 4063 (class 1259 OID 77810)
 -- Name: idx_product_occasions_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6217,7 +6188,7 @@ CREATE INDEX idx_product_occasions_active ON public.product_occasions USING btre
 
 
 --
--- TOC entry 4062 (class 1259 OID 86494)
+-- TOC entry 4064 (class 1259 OID 86494)
 -- Name: idx_product_occasions_composite; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6225,7 +6196,7 @@ CREATE INDEX idx_product_occasions_composite ON public.product_occasions USING b
 
 
 --
--- TOC entry 4063 (class 1259 OID 86493)
+-- TOC entry 4065 (class 1259 OID 86493)
 -- Name: idx_product_occasions_occasion_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6233,7 +6204,7 @@ CREATE INDEX idx_product_occasions_occasion_id ON public.product_occasions USING
 
 
 --
--- TOC entry 4064 (class 1259 OID 86492)
+-- TOC entry 4066 (class 1259 OID 86492)
 -- Name: idx_product_occasions_product_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6241,7 +6212,7 @@ CREATE INDEX idx_product_occasions_product_id ON public.product_occasions USING 
 
 
 --
--- TOC entry 4033 (class 1259 OID 86483)
+-- TOC entry 4035 (class 1259 OID 86483)
 -- Name: idx_products_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6249,7 +6220,7 @@ CREATE INDEX idx_products_active ON public.products USING btree (active);
 
 
 --
--- TOC entry 4034 (class 1259 OID 86491)
+-- TOC entry 4036 (class 1259 OID 86491)
 -- Name: idx_products_active_created; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6257,7 +6228,7 @@ CREATE INDEX idx_products_active_created ON public.products USING btree (active,
 
 
 --
--- TOC entry 4035 (class 1259 OID 59733)
+-- TOC entry 4037 (class 1259 OID 59733)
 -- Name: idx_products_active_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6265,7 +6236,7 @@ CREATE INDEX idx_products_active_created_at ON public.products USING btree (acti
 
 
 --
--- TOC entry 4036 (class 1259 OID 86489)
+-- TOC entry 4038 (class 1259 OID 86489)
 -- Name: idx_products_active_featured; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6273,7 +6244,7 @@ CREATE INDEX idx_products_active_featured ON public.products USING btree (active
 
 
 --
--- TOC entry 4037 (class 1259 OID 59732)
+-- TOC entry 4039 (class 1259 OID 59732)
 -- Name: idx_products_active_name_normalized; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6281,7 +6252,7 @@ CREATE INDEX idx_products_active_name_normalized ON public.products USING btree 
 
 
 --
--- TOC entry 4038 (class 1259 OID 86490)
+-- TOC entry 4040 (class 1259 OID 86490)
 -- Name: idx_products_active_price; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6289,7 +6260,7 @@ CREATE INDEX idx_products_active_price ON public.products USING btree (active, p
 
 
 --
--- TOC entry 4039 (class 1259 OID 59800)
+-- TOC entry 4041 (class 1259 OID 59800)
 -- Name: idx_products_active_search_gin; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6297,7 +6268,7 @@ CREATE INDEX idx_products_active_search_gin ON public.products USING gin (search
 
 
 --
--- TOC entry 4040 (class 1259 OID 86487)
+-- TOC entry 4042 (class 1259 OID 86487)
 -- Name: idx_products_carousel_order; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6305,7 +6276,7 @@ CREATE INDEX idx_products_carousel_order ON public.products USING btree (carouse
 
 
 --
--- TOC entry 4041 (class 1259 OID 86488)
+-- TOC entry 4043 (class 1259 OID 86488)
 -- Name: idx_products_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6313,7 +6284,7 @@ CREATE INDEX idx_products_created_at ON public.products USING btree (created_at 
 
 
 --
--- TOC entry 4042 (class 1259 OID 52886)
+-- TOC entry 4044 (class 1259 OID 52886)
 -- Name: idx_products_description_normalized; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6321,7 +6292,7 @@ CREATE INDEX idx_products_description_normalized ON public.products USING btree 
 
 
 --
--- TOC entry 4043 (class 1259 OID 86484)
+-- TOC entry 4045 (class 1259 OID 86484)
 -- Name: idx_products_featured; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6329,7 +6300,7 @@ CREATE INDEX idx_products_featured ON public.products USING btree (featured);
 
 
 --
--- TOC entry 4044 (class 1259 OID 59735)
+-- TOC entry 4046 (class 1259 OID 59735)
 -- Name: idx_products_featured_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6337,7 +6308,7 @@ CREATE INDEX idx_products_featured_active ON public.products USING btree (featur
 
 
 --
--- TOC entry 4045 (class 1259 OID 67987)
+-- TOC entry 4047 (class 1259 OID 67987)
 -- Name: idx_products_featured_created; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6345,7 +6316,7 @@ CREATE INDEX idx_products_featured_created ON public.products USING btree (featu
 
 
 --
--- TOC entry 4046 (class 1259 OID 86482)
+-- TOC entry 4048 (class 1259 OID 86482)
 -- Name: idx_products_name; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6353,7 +6324,7 @@ CREATE INDEX idx_products_name ON public.products USING btree (name);
 
 
 --
--- TOC entry 4047 (class 1259 OID 52873)
+-- TOC entry 4049 (class 1259 OID 52873)
 -- Name: idx_products_name_normalized; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6361,7 +6332,7 @@ CREATE INDEX idx_products_name_normalized ON public.products USING btree (name_n
 
 
 --
--- TOC entry 4048 (class 1259 OID 59736)
+-- TOC entry 4050 (class 1259 OID 59736)
 -- Name: idx_products_price_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6369,7 +6340,7 @@ CREATE INDEX idx_products_price_active ON public.products USING btree (price_usd
 
 
 --
--- TOC entry 4049 (class 1259 OID 86481)
+-- TOC entry 4051 (class 1259 OID 86481)
 -- Name: idx_products_price_usd; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6377,7 +6348,7 @@ CREATE INDEX idx_products_price_usd ON public.products USING btree (price_usd);
 
 
 --
--- TOC entry 4050 (class 1259 OID 59734)
+-- TOC entry 4052 (class 1259 OID 59734)
 -- Name: idx_products_search_full; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6385,7 +6356,7 @@ CREATE INDEX idx_products_search_full ON public.products USING btree (name_norma
 
 
 --
--- TOC entry 4051 (class 1259 OID 77625)
+-- TOC entry 4053 (class 1259 OID 77625)
 -- Name: idx_products_search_vector; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6393,7 +6364,7 @@ CREATE INDEX idx_products_search_vector ON public.products USING gin (search_vec
 
 
 --
--- TOC entry 4052 (class 1259 OID 59799)
+-- TOC entry 4054 (class 1259 OID 59799)
 -- Name: idx_products_search_vector_gin; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6401,7 +6372,7 @@ CREATE INDEX idx_products_search_vector_gin ON public.products USING gin (search
 
 
 --
--- TOC entry 4053 (class 1259 OID 86485)
+-- TOC entry 4055 (class 1259 OID 86485)
 -- Name: idx_products_sku; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6409,7 +6380,7 @@ CREATE INDEX idx_products_sku ON public.products USING btree (sku);
 
 
 --
--- TOC entry 4054 (class 1259 OID 86486)
+-- TOC entry 4056 (class 1259 OID 86486)
 -- Name: idx_products_stock; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6417,7 +6388,7 @@ CREATE INDEX idx_products_stock ON public.products USING btree (stock);
 
 
 --
--- TOC entry 4055 (class 1259 OID 59737)
+-- TOC entry 4057 (class 1259 OID 59737)
 -- Name: idx_products_stock_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6425,7 +6396,7 @@ CREATE INDEX idx_products_stock_active ON public.products USING btree (stock, ac
 
 
 --
--- TOC entry 4132 (class 1259 OID 59952)
+-- TOC entry 4134 (class 1259 OID 59952)
 -- Name: idx_query_timeouts_estado; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6433,7 +6404,7 @@ CREATE INDEX idx_query_timeouts_estado ON public.query_timeouts_log USING btree 
 
 
 --
--- TOC entry 4133 (class 1259 OID 59950)
+-- TOC entry 4135 (class 1259 OID 59950)
 -- Name: idx_query_timeouts_fecha_hora; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6441,7 +6412,7 @@ CREATE INDEX idx_query_timeouts_fecha_hora ON public.query_timeouts_log USING bt
 
 
 --
--- TOC entry 4134 (class 1259 OID 77814)
+-- TOC entry 4136 (class 1259 OID 77814)
 -- Name: idx_query_timeouts_log_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6449,7 +6420,7 @@ CREATE INDEX idx_query_timeouts_log_active ON public.query_timeouts_log USING bt
 
 
 --
--- TOC entry 4135 (class 1259 OID 59951)
+-- TOC entry 4137 (class 1259 OID 59951)
 -- Name: idx_query_timeouts_nombre_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6457,7 +6428,7 @@ CREATE INDEX idx_query_timeouts_nombre_fecha ON public.query_timeouts_log USING 
 
 
 --
--- TOC entry 4027 (class 1259 OID 77806)
+-- TOC entry 4029 (class 1259 OID 77806)
 -- Name: idx_settings_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6465,7 +6436,7 @@ CREATE INDEX idx_settings_active ON public.settings USING btree (active);
 
 
 --
--- TOC entry 4014 (class 1259 OID 77803)
+-- TOC entry 4016 (class 1259 OID 77803)
 -- Name: idx_users_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6473,7 +6444,7 @@ CREATE INDEX idx_users_active ON public.users USING btree (active);
 
 
 --
--- TOC entry 4015 (class 1259 OID 32205)
+-- TOC entry 4017 (class 1259 OID 32205)
 -- Name: idx_users_email; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6481,7 +6452,7 @@ CREATE INDEX idx_users_email ON public.users USING btree (email);
 
 
 --
--- TOC entry 4016 (class 1259 OID 58515)
+-- TOC entry 4018 (class 1259 OID 58515)
 -- Name: idx_users_email_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6489,7 +6460,7 @@ CREATE INDEX idx_users_email_active ON public.users USING btree (email) WHERE (a
 
 
 --
--- TOC entry 4017 (class 1259 OID 52907)
+-- TOC entry 4019 (class 1259 OID 52907)
 -- Name: idx_users_email_normalized; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6497,7 +6468,7 @@ CREATE INDEX idx_users_email_normalized ON public.users USING btree (email_norma
 
 
 --
--- TOC entry 4018 (class 1259 OID 52896)
+-- TOC entry 4020 (class 1259 OID 52896)
 -- Name: idx_users_full_name_normalized; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6505,7 +6476,7 @@ CREATE INDEX idx_users_full_name_normalized ON public.users USING btree (full_na
 
 
 --
--- TOC entry 4019 (class 1259 OID 77930)
+-- TOC entry 4021 (class 1259 OID 77930)
 -- Name: idx_users_phone; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6513,7 +6484,7 @@ CREATE INDEX idx_users_phone ON public.users USING btree (phone);
 
 
 --
--- TOC entry 4020 (class 1259 OID 58516)
+-- TOC entry 4022 (class 1259 OID 58516)
 -- Name: idx_users_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6521,7 +6492,7 @@ CREATE INDEX idx_users_role ON public.users USING btree (role) WHERE (active = t
 
 
 --
--- TOC entry 4009 (class 1259 OID 77924)
+-- TOC entry 4011 (class 1259 OID 77924)
 -- Name: occasions_name_unique_idx; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6529,7 +6500,7 @@ CREATE UNIQUE INDEX occasions_name_unique_idx ON public.occasions USING btree (u
 
 
 --
--- TOC entry 4060 (class 1259 OID 77923)
+-- TOC entry 4062 (class 1259 OID 77923)
 -- Name: products_sku_unique_idx; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6537,7 +6508,7 @@ CREATE UNIQUE INDEX products_sku_unique_idx ON public.products USING btree (uppe
 
 
 --
--- TOC entry 4030 (class 1259 OID 77926)
+-- TOC entry 4032 (class 1259 OID 77926)
 -- Name: settings_key_unique_idx; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6545,7 +6516,7 @@ CREATE UNIQUE INDEX settings_key_unique_idx ON public.settings USING btree (uppe
 
 
 --
--- TOC entry 4168 (class 2620 OID 59798)
+-- TOC entry 4170 (class 2620 OID 59798)
 -- Name: products actualizar_search_products; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -6553,7 +6524,7 @@ CREATE TRIGGER actualizar_search_products BEFORE INSERT OR UPDATE ON public.prod
 
 
 --
--- TOC entry 4171 (class 2620 OID 77769)
+-- TOC entry 4173 (class 2620 OID 77769)
 -- Name: payments trigger_sync_payment_method_name; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -6561,7 +6532,7 @@ CREATE TRIGGER trigger_sync_payment_method_name BEFORE INSERT OR UPDATE ON publi
 
 
 --
--- TOC entry 4170 (class 2620 OID 77768)
+-- TOC entry 4172 (class 2620 OID 77768)
 -- Name: order_items trigger_validate_order_total; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -6569,7 +6540,7 @@ CREATE TRIGGER trigger_validate_order_total AFTER INSERT OR DELETE OR UPDATE ON 
 
 
 --
--- TOC entry 4169 (class 2620 OID 75911)
+-- TOC entry 4171 (class 2620 OID 75911)
 -- Name: products update_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -6577,7 +6548,7 @@ CREATE TRIGGER update_updated_at BEFORE UPDATE ON public.products FOR EACH ROW E
 
 
 --
--- TOC entry 4154 (class 2606 OID 77881)
+-- TOC entry 4156 (class 2606 OID 77881)
 -- Name: order_items fk_order_items_order; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6586,7 +6557,7 @@ ALTER TABLE ONLY public.order_items
 
 
 --
--- TOC entry 4155 (class 2606 OID 77886)
+-- TOC entry 4157 (class 2606 OID 77886)
 -- Name: order_items fk_order_items_product; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6595,7 +6566,7 @@ ALTER TABLE ONLY public.order_items
 
 
 --
--- TOC entry 4158 (class 2606 OID 77916)
+-- TOC entry 4160 (class 2606 OID 77916)
 -- Name: order_status_history fk_order_status_history_order; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6604,7 +6575,7 @@ ALTER TABLE ONLY public.order_status_history
 
 
 --
--- TOC entry 4152 (class 2606 OID 77876)
+-- TOC entry 4154 (class 2606 OID 77876)
 -- Name: orders fk_orders_user; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6613,7 +6584,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- TOC entry 4161 (class 2606 OID 77891)
+-- TOC entry 4163 (class 2606 OID 77891)
 -- Name: payments fk_payments_order; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6622,7 +6593,7 @@ ALTER TABLE ONLY public.payments
 
 
 --
--- TOC entry 4162 (class 2606 OID 77896)
+-- TOC entry 4164 (class 2606 OID 77896)
 -- Name: payments fk_payments_payment_method; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6631,7 +6602,7 @@ ALTER TABLE ONLY public.payments
 
 
 --
--- TOC entry 4166 (class 2606 OID 77901)
+-- TOC entry 4168 (class 2606 OID 77901)
 -- Name: product_images fk_product_images_product; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6640,7 +6611,7 @@ ALTER TABLE ONLY public.product_images
 
 
 --
--- TOC entry 4148 (class 2606 OID 77911)
+-- TOC entry 4150 (class 2606 OID 77911)
 -- Name: product_occasions fk_product_occasions_occasion; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6649,7 +6620,7 @@ ALTER TABLE ONLY public.product_occasions
 
 
 --
--- TOC entry 4149 (class 2606 OID 77906)
+-- TOC entry 4151 (class 2606 OID 77906)
 -- Name: product_occasions fk_product_occasions_product; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6658,7 +6629,7 @@ ALTER TABLE ONLY public.product_occasions
 
 
 --
--- TOC entry 4156 (class 2606 OID 32125)
+-- TOC entry 4158 (class 2606 OID 32125)
 -- Name: order_items order_items_order_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6667,7 +6638,7 @@ ALTER TABLE ONLY public.order_items
 
 
 --
--- TOC entry 4157 (class 2606 OID 32130)
+-- TOC entry 4159 (class 2606 OID 32130)
 -- Name: order_items order_items_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6676,7 +6647,7 @@ ALTER TABLE ONLY public.order_items
 
 
 --
--- TOC entry 4159 (class 2606 OID 32150)
+-- TOC entry 4161 (class 2606 OID 32150)
 -- Name: order_status_history order_status_history_changed_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6685,7 +6656,7 @@ ALTER TABLE ONLY public.order_status_history
 
 
 --
--- TOC entry 4160 (class 2606 OID 32145)
+-- TOC entry 4162 (class 2606 OID 32145)
 -- Name: order_status_history order_status_history_order_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6694,7 +6665,7 @@ ALTER TABLE ONLY public.order_status_history
 
 
 --
--- TOC entry 4153 (class 2606 OID 32106)
+-- TOC entry 4155 (class 2606 OID 32106)
 -- Name: orders orders_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6703,7 +6674,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- TOC entry 4163 (class 2606 OID 32181)
+-- TOC entry 4165 (class 2606 OID 32181)
 -- Name: payments payments_order_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6712,7 +6683,7 @@ ALTER TABLE ONLY public.payments
 
 
 --
--- TOC entry 4164 (class 2606 OID 32186)
+-- TOC entry 4166 (class 2606 OID 32186)
 -- Name: payments payments_payment_method_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6721,7 +6692,7 @@ ALTER TABLE ONLY public.payments
 
 
 --
--- TOC entry 4165 (class 2606 OID 32191)
+-- TOC entry 4167 (class 2606 OID 32191)
 -- Name: payments payments_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6730,7 +6701,7 @@ ALTER TABLE ONLY public.payments
 
 
 --
--- TOC entry 4167 (class 2606 OID 32540)
+-- TOC entry 4169 (class 2606 OID 32540)
 -- Name: product_images product_images_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6739,7 +6710,7 @@ ALTER TABLE ONLY public.product_images
 
 
 --
--- TOC entry 4150 (class 2606 OID 32087)
+-- TOC entry 4152 (class 2606 OID 32087)
 -- Name: product_occasions product_occasions_occasion_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6748,7 +6719,7 @@ ALTER TABLE ONLY public.product_occasions
 
 
 --
--- TOC entry 4151 (class 2606 OID 32082)
+-- TOC entry 4153 (class 2606 OID 32082)
 -- Name: product_occasions product_occasions_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6757,7 +6728,7 @@ ALTER TABLE ONLY public.product_occasions
 
 
 --
--- TOC entry 4360 (class 3256 OID 76309)
+-- TOC entry 4362 (class 3256 OID 76309)
 -- Name: occasions Admins can create occasions; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6765,7 +6736,7 @@ CREATE POLICY "Admins can create occasions" ON public.occasions FOR INSERT WITH 
 
 
 --
--- TOC entry 4366 (class 3256 OID 76315)
+-- TOC entry 4368 (class 3256 OID 76315)
 -- Name: payment_methods Admins can create payment methods; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6773,7 +6744,7 @@ CREATE POLICY "Admins can create payment methods" ON public.payment_methods FOR 
 
 
 --
--- TOC entry 4370 (class 3256 OID 76319)
+-- TOC entry 4372 (class 3256 OID 76319)
 -- Name: product_images Admins can create product images; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6781,7 +6752,7 @@ CREATE POLICY "Admins can create product images" ON public.product_images FOR IN
 
 
 --
--- TOC entry 4374 (class 3256 OID 76323)
+-- TOC entry 4376 (class 3256 OID 76323)
 -- Name: product_occasions Admins can create product occasions; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6789,7 +6760,7 @@ CREATE POLICY "Admins can create product occasions" ON public.product_occasions 
 
 
 --
--- TOC entry 4378 (class 3256 OID 76327)
+-- TOC entry 4380 (class 3256 OID 76327)
 -- Name: products Admins can create products; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6797,7 +6768,7 @@ CREATE POLICY "Admins can create products" ON public.products FOR INSERT WITH CH
 
 
 --
--- TOC entry 4384 (class 3256 OID 76333)
+-- TOC entry 4386 (class 3256 OID 76333)
 -- Name: settings Admins can create settings; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6805,7 +6776,7 @@ CREATE POLICY "Admins can create settings" ON public.settings FOR INSERT WITH CH
 
 
 --
--- TOC entry 4362 (class 3256 OID 76311)
+-- TOC entry 4364 (class 3256 OID 76311)
 -- Name: occasions Admins can delete occasions; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6813,7 +6784,7 @@ CREATE POLICY "Admins can delete occasions" ON public.occasions FOR DELETE USING
 
 
 --
--- TOC entry 4368 (class 3256 OID 76317)
+-- TOC entry 4370 (class 3256 OID 76317)
 -- Name: payment_methods Admins can delete payment methods; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6821,7 +6792,7 @@ CREATE POLICY "Admins can delete payment methods" ON public.payment_methods FOR 
 
 
 --
--- TOC entry 4372 (class 3256 OID 76321)
+-- TOC entry 4374 (class 3256 OID 76321)
 -- Name: product_images Admins can delete product images; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6829,7 +6800,7 @@ CREATE POLICY "Admins can delete product images" ON public.product_images FOR DE
 
 
 --
--- TOC entry 4376 (class 3256 OID 76325)
+-- TOC entry 4378 (class 3256 OID 76325)
 -- Name: product_occasions Admins can delete product occasions; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6837,7 +6808,7 @@ CREATE POLICY "Admins can delete product occasions" ON public.product_occasions 
 
 
 --
--- TOC entry 4380 (class 3256 OID 76329)
+-- TOC entry 4382 (class 3256 OID 76329)
 -- Name: products Admins can delete products; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6845,7 +6816,7 @@ CREATE POLICY "Admins can delete products" ON public.products FOR DELETE USING (
 
 
 --
--- TOC entry 4386 (class 3256 OID 76335)
+-- TOC entry 4388 (class 3256 OID 76335)
 -- Name: settings Admins can delete settings; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6853,7 +6824,7 @@ CREATE POLICY "Admins can delete settings" ON public.settings FOR DELETE USING (
 
 
 --
--- TOC entry 4390 (class 3256 OID 76339)
+-- TOC entry 4392 (class 3256 OID 76339)
 -- Name: users Admins can delete users; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6861,7 +6832,7 @@ CREATE POLICY "Admins can delete users" ON public.users FOR DELETE USING (public
 
 
 --
--- TOC entry 4361 (class 3256 OID 76310)
+-- TOC entry 4363 (class 3256 OID 76310)
 -- Name: occasions Admins can update occasions; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6869,7 +6840,7 @@ CREATE POLICY "Admins can update occasions" ON public.occasions FOR UPDATE USING
 
 
 --
--- TOC entry 4367 (class 3256 OID 76316)
+-- TOC entry 4369 (class 3256 OID 76316)
 -- Name: payment_methods Admins can update payment methods; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6877,7 +6848,7 @@ CREATE POLICY "Admins can update payment methods" ON public.payment_methods FOR 
 
 
 --
--- TOC entry 4371 (class 3256 OID 76320)
+-- TOC entry 4373 (class 3256 OID 76320)
 -- Name: product_images Admins can update product images; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6885,7 +6856,7 @@ CREATE POLICY "Admins can update product images" ON public.product_images FOR UP
 
 
 --
--- TOC entry 4375 (class 3256 OID 76324)
+-- TOC entry 4377 (class 3256 OID 76324)
 -- Name: product_occasions Admins can update product occasions; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6893,7 +6864,7 @@ CREATE POLICY "Admins can update product occasions" ON public.product_occasions 
 
 
 --
--- TOC entry 4379 (class 3256 OID 76328)
+-- TOC entry 4381 (class 3256 OID 76328)
 -- Name: products Admins can update products; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6901,7 +6872,7 @@ CREATE POLICY "Admins can update products" ON public.products FOR UPDATE USING (
 
 
 --
--- TOC entry 4385 (class 3256 OID 76334)
+-- TOC entry 4387 (class 3256 OID 76334)
 -- Name: settings Admins can update settings; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6909,7 +6880,7 @@ CREATE POLICY "Admins can update settings" ON public.settings FOR UPDATE USING (
 
 
 --
--- TOC entry 4357 (class 3256 OID 76306)
+-- TOC entry 4359 (class 3256 OID 76306)
 -- Name: busquedas_log Admins can view search logs; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6917,7 +6888,7 @@ CREATE POLICY "Admins can view search logs" ON public.busquedas_log FOR SELECT U
 
 
 --
--- TOC entry 4381 (class 3256 OID 76330)
+-- TOC entry 4383 (class 3256 OID 76330)
 -- Name: query_timeouts_log Admins can view timeout logs; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6925,7 +6896,7 @@ CREATE POLICY "Admins can view timeout logs" ON public.query_timeouts_log FOR SE
 
 
 --
--- TOC entry 4358 (class 3256 OID 76307)
+-- TOC entry 4360 (class 3256 OID 76307)
 -- Name: busquedas_log Allow search log insertion; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6933,7 +6904,7 @@ CREATE POLICY "Allow search log insertion" ON public.busquedas_log FOR INSERT WI
 
 
 --
--- TOC entry 4351 (class 3256 OID 76197)
+-- TOC entry 4353 (class 3256 OID 76197)
 -- Name: busquedas_log Allow search log insertion from functions; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6941,7 +6912,7 @@ CREATE POLICY "Allow search log insertion from functions" ON public.busquedas_lo
 
 
 --
--- TOC entry 4364 (class 3256 OID 76313)
+-- TOC entry 4366 (class 3256 OID 76313)
 -- Name: order_status_history Allow status history insertion; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6949,7 +6920,7 @@ CREATE POLICY "Allow status history insertion" ON public.order_status_history FO
 
 
 --
--- TOC entry 4382 (class 3256 OID 76331)
+-- TOC entry 4384 (class 3256 OID 76331)
 -- Name: query_timeouts_log Allow timeout log insertion; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6957,7 +6928,7 @@ CREATE POLICY "Allow timeout log insertion" ON public.query_timeouts_log FOR INS
 
 
 --
--- TOC entry 4352 (class 3256 OID 86934)
+-- TOC entry 4354 (class 3256 OID 86934)
 -- Name: expenses Authenticated users can create expenses; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6965,7 +6936,7 @@ CREATE POLICY "Authenticated users can create expenses" ON public.expenses FOR I
 
 
 --
--- TOC entry 4353 (class 3256 OID 86935)
+-- TOC entry 4355 (class 3256 OID 86935)
 -- Name: expenses Authenticated users can update expenses; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6973,7 +6944,7 @@ CREATE POLICY "Authenticated users can update expenses" ON public.expenses FOR U
 
 
 --
--- TOC entry 4350 (class 3256 OID 86933)
+-- TOC entry 4352 (class 3256 OID 86933)
 -- Name: expenses Authenticated users can view expenses; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6981,7 +6952,7 @@ CREATE POLICY "Authenticated users can view expenses" ON public.expenses FOR SEL
 
 
 --
--- TOC entry 4342 (class 3256 OID 86806)
+-- TOC entry 4344 (class 3256 OID 86806)
 -- Name: expenses Enable full access for authenticated users; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6989,7 +6960,7 @@ CREATE POLICY "Enable full access for authenticated users" ON public.expenses TO
 
 
 --
--- TOC entry 4359 (class 3256 OID 76308)
+-- TOC entry 4361 (class 3256 OID 76308)
 -- Name: occasions Everyone can view active occasions; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -6997,7 +6968,7 @@ CREATE POLICY "Everyone can view active occasions" ON public.occasions FOR SELEC
 
 
 --
--- TOC entry 4365 (class 3256 OID 76314)
+-- TOC entry 4367 (class 3256 OID 76314)
 -- Name: payment_methods Everyone can view active payment methods; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7005,7 +6976,7 @@ CREATE POLICY "Everyone can view active payment methods" ON public.payment_metho
 
 
 --
--- TOC entry 4377 (class 3256 OID 76326)
+-- TOC entry 4379 (class 3256 OID 76326)
 -- Name: products Everyone can view active products; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7013,7 +6984,7 @@ CREATE POLICY "Everyone can view active products" ON public.products FOR SELECT 
 
 
 --
--- TOC entry 4369 (class 3256 OID 76318)
+-- TOC entry 4371 (class 3256 OID 76318)
 -- Name: product_images Everyone can view product images; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7023,7 +6994,7 @@ CREATE POLICY "Everyone can view product images" ON public.product_images FOR SE
 
 
 --
--- TOC entry 4373 (class 3256 OID 76322)
+-- TOC entry 4375 (class 3256 OID 76322)
 -- Name: product_occasions Everyone can view product occasions; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7033,7 +7004,7 @@ CREATE POLICY "Everyone can view product occasions" ON public.product_occasions 
 
 
 --
--- TOC entry 4383 (class 3256 OID 76332)
+-- TOC entry 4385 (class 3256 OID 76332)
 -- Name: settings Everyone can view public settings; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7041,7 +7012,7 @@ CREATE POLICY "Everyone can view public settings" ON public.settings FOR SELECT 
 
 
 --
--- TOC entry 4355 (class 3256 OID 76222)
+-- TOC entry 4357 (class 3256 OID 76222)
 -- Name: settings Everyone can view public settings, admins can view all; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7049,7 +7020,7 @@ CREATE POLICY "Everyone can view public settings, admins can view all" ON public
 
 
 --
--- TOC entry 4388 (class 3256 OID 76337)
+-- TOC entry 4390 (class 3256 OID 76337)
 -- Name: users Users can create own profile; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7057,7 +7028,7 @@ CREATE POLICY "Users can create own profile" ON public.users FOR INSERT WITH CHE
 
 
 --
--- TOC entry 4389 (class 3256 OID 76338)
+-- TOC entry 4391 (class 3256 OID 76338)
 -- Name: users Users can update own profile; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7065,7 +7036,7 @@ CREATE POLICY "Users can update own profile" ON public.users FOR UPDATE USING ((
 
 
 --
--- TOC entry 4354 (class 3256 OID 76202)
+-- TOC entry 4356 (class 3256 OID 76202)
 -- Name: order_status_history Users can view order status history of own orders; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7075,7 +7046,7 @@ CREATE POLICY "Users can view order status history of own orders" ON public.orde
 
 
 --
--- TOC entry 4363 (class 3256 OID 76312)
+-- TOC entry 4365 (class 3256 OID 76312)
 -- Name: order_status_history Users can view own order history; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7085,7 +7056,7 @@ CREATE POLICY "Users can view own order history" ON public.order_status_history 
 
 
 --
--- TOC entry 4387 (class 3256 OID 76336)
+-- TOC entry 4389 (class 3256 OID 76336)
 -- Name: users Users can view own profile; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7093,7 +7064,7 @@ CREATE POLICY "Users can view own profile" ON public.users FOR SELECT USING ((((
 
 
 --
--- TOC entry 4356 (class 3256 OID 76226)
+-- TOC entry 4358 (class 3256 OID 76226)
 -- Name: users Users can view own profile, admins can view all; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7101,23 +7072,23 @@ CREATE POLICY "Users can view own profile, admins can view all" ON public.users 
 
 
 --
--- TOC entry 4335 (class 0 OID 59805)
--- Dependencies: 401
+-- TOC entry 4337 (class 0 OID 59805)
+-- Dependencies: 403
 -- Name: busquedas_log; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.busquedas_log ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4337 (class 0 OID 84803)
--- Dependencies: 410
+-- TOC entry 4339 (class 0 OID 84803)
+-- Dependencies: 412
 -- Name: expenses; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.expenses ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4341 (class 3256 OID 86784)
+-- TOC entry 4343 (class 3256 OID 86784)
 -- Name: expenses expenses_delete_policy; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7125,7 +7096,7 @@ CREATE POLICY expenses_delete_policy ON public.expenses FOR DELETE TO authentica
 
 
 --
--- TOC entry 4339 (class 3256 OID 86782)
+-- TOC entry 4341 (class 3256 OID 86782)
 -- Name: expenses expenses_insert_policy; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7133,7 +7104,7 @@ CREATE POLICY expenses_insert_policy ON public.expenses FOR INSERT TO authentica
 
 
 --
--- TOC entry 4338 (class 3256 OID 86781)
+-- TOC entry 4340 (class 3256 OID 86781)
 -- Name: expenses expenses_select_policy; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7141,7 +7112,7 @@ CREATE POLICY expenses_select_policy ON public.expenses FOR SELECT TO authentica
 
 
 --
--- TOC entry 4340 (class 3256 OID 86783)
+-- TOC entry 4342 (class 3256 OID 86783)
 -- Name: expenses expenses_update_policy; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7149,23 +7120,23 @@ CREATE POLICY expenses_update_policy ON public.expenses FOR UPDATE TO authentica
 
 
 --
--- TOC entry 4324 (class 0 OID 31986)
--- Dependencies: 379
+-- TOC entry 4326 (class 0 OID 31986)
+-- Dependencies: 381
 -- Name: occasions; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.occasions ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4330 (class 0 OID 32112)
--- Dependencies: 391
+-- TOC entry 4332 (class 0 OID 32112)
+-- Dependencies: 393
 -- Name: order_items; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4347 (class 3256 OID 76127)
+-- TOC entry 4349 (class 3256 OID 76127)
 -- Name: order_items order_items_admin_all; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7173,7 +7144,7 @@ CREATE POLICY order_items_admin_all ON public.order_items USING (public.is_admin
 
 
 --
--- TOC entry 4346 (class 3256 OID 76126)
+-- TOC entry 4348 (class 3256 OID 76126)
 -- Name: order_items order_items_select_visible; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7183,23 +7154,23 @@ CREATE POLICY order_items_select_visible ON public.order_items FOR SELECT USING 
 
 
 --
--- TOC entry 4331 (class 0 OID 32136)
--- Dependencies: 393
+-- TOC entry 4333 (class 0 OID 32136)
+-- Dependencies: 395
 -- Name: order_status_history; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.order_status_history ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4329 (class 0 OID 32093)
--- Dependencies: 389
+-- TOC entry 4331 (class 0 OID 32093)
+-- Dependencies: 391
 -- Name: orders; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4345 (class 3256 OID 76125)
+-- TOC entry 4347 (class 3256 OID 76125)
 -- Name: orders orders_admin_all; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7207,7 +7178,7 @@ CREATE POLICY orders_admin_all ON public.orders USING (public.is_admin());
 
 
 --
--- TOC entry 4344 (class 3256 OID 76124)
+-- TOC entry 4346 (class 3256 OID 76124)
 -- Name: orders orders_insert_own; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7215,7 +7186,7 @@ CREATE POLICY orders_insert_own ON public.orders FOR INSERT WITH CHECK ((public.
 
 
 --
--- TOC entry 4343 (class 3256 OID 76123)
+-- TOC entry 4345 (class 3256 OID 76123)
 -- Name: orders orders_select_own_or_admin; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7223,23 +7194,23 @@ CREATE POLICY orders_select_own_or_admin ON public.orders FOR SELECT USING ((pub
 
 
 --
--- TOC entry 4332 (class 0 OID 32156)
--- Dependencies: 395
+-- TOC entry 4334 (class 0 OID 32156)
+-- Dependencies: 397
 -- Name: payment_methods; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.payment_methods ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4333 (class 0 OID 32169)
--- Dependencies: 397
+-- TOC entry 4335 (class 0 OID 32169)
+-- Dependencies: 399
 -- Name: payments; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4349 (class 3256 OID 76129)
+-- TOC entry 4351 (class 3256 OID 76129)
 -- Name: payments payments_admin_all; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7247,7 +7218,7 @@ CREATE POLICY payments_admin_all ON public.payments USING (public.is_admin());
 
 
 --
--- TOC entry 4348 (class 3256 OID 76128)
+-- TOC entry 4350 (class 3256 OID 76128)
 -- Name: payments payments_select_visible; Type: POLICY; Schema: public; Owner: postgres
 --
 
@@ -7257,56 +7228,56 @@ CREATE POLICY payments_select_visible ON public.payments FOR SELECT USING ((EXIS
 
 
 --
--- TOC entry 4334 (class 0 OID 32525)
--- Dependencies: 399
+-- TOC entry 4336 (class 0 OID 32525)
+-- Dependencies: 401
 -- Name: product_images; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.product_images ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4328 (class 0 OID 32072)
--- Dependencies: 387
+-- TOC entry 4330 (class 0 OID 32072)
+-- Dependencies: 389
 -- Name: product_occasions; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.product_occasions ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4327 (class 0 OID 32033)
--- Dependencies: 385
+-- TOC entry 4329 (class 0 OID 32033)
+-- Dependencies: 387
 -- Name: products; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4336 (class 0 OID 59940)
--- Dependencies: 403
+-- TOC entry 4338 (class 0 OID 59940)
+-- Dependencies: 405
 -- Name: query_timeouts_log; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.query_timeouts_log ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4326 (class 0 OID 32018)
--- Dependencies: 383
+-- TOC entry 4328 (class 0 OID 32018)
+-- Dependencies: 385
 -- Name: settings; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.settings ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4325 (class 0 OID 32002)
--- Dependencies: 381
+-- TOC entry 4327 (class 0 OID 32002)
+-- Dependencies: 383
 -- Name: users; Type: ROW SECURITY; Schema: public; Owner: postgres
 --
 
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 
 --
--- TOC entry 4426 (class 0 OID 0)
--- Dependencies: 107
+-- TOC entry 4428 (class 0 OID 0)
+-- Dependencies: 106
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: pg_database_owner
 --
 
@@ -7318,8 +7289,8 @@ GRANT ALL ON SCHEMA public TO prisma;
 
 
 --
--- TOC entry 4427 (class 0 OID 0)
--- Dependencies: 545
+-- TOC entry 4429 (class 0 OID 0)
+-- Dependencies: 550
 -- Name: FUNCTION acknowledge_alert(alert_id bigint); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7330,8 +7301,8 @@ GRANT ALL ON FUNCTION public.acknowledge_alert(alert_id bigint) TO prisma;
 
 
 --
--- TOC entry 4428 (class 0 OID 0)
--- Dependencies: 610
+-- TOC entry 4430 (class 0 OID 0)
+-- Dependencies: 611
 -- Name: FUNCTION actualizar_vector_busqueda_productos(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7342,8 +7313,8 @@ GRANT ALL ON FUNCTION public.actualizar_vector_busqueda_productos() TO prisma;
 
 
 --
--- TOC entry 4429 (class 0 OID 0)
--- Dependencies: 574
+-- TOC entry 4431 (class 0 OID 0)
+-- Dependencies: 577
 -- Name: FUNCTION analizar_consulta(consulta_sql text, parametros text[]); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7354,8 +7325,8 @@ GRANT ALL ON FUNCTION public.analizar_consulta(consulta_sql text, parametros tex
 
 
 --
--- TOC entry 4430 (class 0 OID 0)
--- Dependencies: 658
+-- TOC entry 4432 (class 0 OID 0)
+-- Dependencies: 660
 -- Name: FUNCTION analizar_rendimiento_conexiones(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7366,8 +7337,8 @@ GRANT ALL ON FUNCTION public.analizar_rendimiento_conexiones() TO prisma;
 
 
 --
--- TOC entry 4431 (class 0 OID 0)
--- Dependencies: 429
+-- TOC entry 4433 (class 0 OID 0)
+-- Dependencies: 434
 -- Name: FUNCTION buscar_productos_ranking(termino_busqueda text, limite integer, offset_param integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7378,8 +7349,8 @@ GRANT ALL ON FUNCTION public.buscar_productos_ranking(termino_busqueda text, lim
 
 
 --
--- TOC entry 4432 (class 0 OID 0)
--- Dependencies: 483
+-- TOC entry 4434 (class 0 OID 0)
+-- Dependencies: 490
 -- Name: FUNCTION compare_user_id(order_user_id integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7390,8 +7361,8 @@ GRANT ALL ON FUNCTION public.compare_user_id(order_user_id integer) TO prisma;
 
 
 --
--- TOC entry 4433 (class 0 OID 0)
--- Dependencies: 421
+-- TOC entry 4435 (class 0 OID 0)
+-- Dependencies: 425
 -- Name: FUNCTION configuracion_conexiones(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7402,8 +7373,8 @@ GRANT ALL ON FUNCTION public.configuracion_conexiones() TO prisma;
 
 
 --
--- TOC entry 4434 (class 0 OID 0)
--- Dependencies: 478
+-- TOC entry 4436 (class 0 OID 0)
+-- Dependencies: 485
 -- Name: FUNCTION configurar_timeout_consulta(patron_consulta text, timeout_ms integer, tipo_consulta text); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7414,8 +7385,8 @@ GRANT ALL ON FUNCTION public.configurar_timeout_consulta(patron_consulta text, t
 
 
 --
--- TOC entry 4435 (class 0 OID 0)
--- Dependencies: 625
+-- TOC entry 4437 (class 0 OID 0)
+-- Dependencies: 627
 -- Name: FUNCTION consultas_problematicas(porcentaje_minimo_timeout numeric, consultas_minimas integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7426,8 +7397,8 @@ GRANT ALL ON FUNCTION public.consultas_problematicas(porcentaje_minimo_timeout n
 
 
 --
--- TOC entry 4436 (class 0 OID 0)
--- Dependencies: 497
+-- TOC entry 4438 (class 0 OID 0)
+-- Dependencies: 504
 -- Name: FUNCTION create_order_with_items(order_data jsonb, order_items jsonb[]); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7438,8 +7409,8 @@ GRANT ALL ON FUNCTION public.create_order_with_items(order_data jsonb, order_ite
 
 
 --
--- TOC entry 4437 (class 0 OID 0)
--- Dependencies: 560
+-- TOC entry 4439 (class 0 OID 0)
+-- Dependencies: 564
 -- Name: FUNCTION create_order_with_items(p_order_data jsonb, p_order_items jsonb); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7450,8 +7421,8 @@ GRANT ALL ON FUNCTION public.create_order_with_items(p_order_data jsonb, p_order
 
 
 --
--- TOC entry 4438 (class 0 OID 0)
--- Dependencies: 621
+-- TOC entry 4440 (class 0 OID 0)
+-- Dependencies: 623
 -- Name: FUNCTION create_product_images_atomic(product_id integer, image_index integer, images_data jsonb[], is_primary boolean); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7462,8 +7433,8 @@ GRANT ALL ON FUNCTION public.create_product_images_atomic(product_id integer, im
 
 
 --
--- TOC entry 4439 (class 0 OID 0)
--- Dependencies: 473
+-- TOC entry 4441 (class 0 OID 0)
+-- Dependencies: 479
 -- Name: FUNCTION create_product_with_occasions(p_product_data jsonb, p_occasion_ids integer[]); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7474,8 +7445,8 @@ GRANT ALL ON FUNCTION public.create_product_with_occasions(p_product_data jsonb,
 
 
 --
--- TOC entry 4440 (class 0 OID 0)
--- Dependencies: 553
+-- TOC entry 4442 (class 0 OID 0)
+-- Dependencies: 558
 -- Name: FUNCTION delete_product_images_safe(product_id integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7486,8 +7457,8 @@ GRANT ALL ON FUNCTION public.delete_product_images_safe(product_id integer) TO p
 
 
 --
--- TOC entry 4441 (class 0 OID 0)
--- Dependencies: 596
+-- TOC entry 4443 (class 0 OID 0)
+-- Dependencies: 597
 -- Name: FUNCTION ejecutar_con_timeout(consulta_sql text, timeout_ms integer, nombre_consulta text, tipo_consulta text, parametros jsonb); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7498,8 +7469,8 @@ GRANT ALL ON FUNCTION public.ejecutar_con_timeout(consulta_sql text, timeout_ms 
 
 
 --
--- TOC entry 4442 (class 0 OID 0)
--- Dependencies: 595
+-- TOC entry 4444 (class 0 OID 0)
+-- Dependencies: 596
 -- Name: FUNCTION estadisticas_rendimiento(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7510,8 +7481,8 @@ GRANT ALL ON FUNCTION public.estadisticas_rendimiento() TO prisma;
 
 
 --
--- TOC entry 4443 (class 0 OID 0)
--- Dependencies: 627
+-- TOC entry 4445 (class 0 OID 0)
+-- Dependencies: 629
 -- Name: FUNCTION estadisticas_timeouts(horas_atras integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7522,8 +7493,8 @@ GRANT ALL ON FUNCTION public.estadisticas_timeouts(horas_atras integer) TO prism
 
 
 --
--- TOC entry 4444 (class 0 OID 0)
--- Dependencies: 486
+-- TOC entry 4446 (class 0 OID 0)
+-- Dependencies: 492
 -- Name: FUNCTION generar_alertas_conexiones(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7534,8 +7505,8 @@ GRANT ALL ON FUNCTION public.generar_alertas_conexiones() TO prisma;
 
 
 --
--- TOC entry 4445 (class 0 OID 0)
--- Dependencies: 631
+-- TOC entry 4447 (class 0 OID 0)
+-- Dependencies: 634
 -- Name: FUNCTION get_backend_messages(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7546,8 +7517,8 @@ GRANT ALL ON FUNCTION public.get_backend_messages() TO prisma;
 
 
 --
--- TOC entry 4446 (class 0 OID 0)
--- Dependencies: 546
+-- TOC entry 4448 (class 0 OID 0)
+-- Dependencies: 552
 -- Name: FUNCTION get_database_metrics(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7558,8 +7529,8 @@ GRANT ALL ON FUNCTION public.get_database_metrics() TO prisma;
 
 
 --
--- TOC entry 4447 (class 0 OID 0)
--- Dependencies: 442
+-- TOC entry 4449 (class 0 OID 0)
+-- Dependencies: 448
 -- Name: FUNCTION get_existing_image_by_hash(hash_input character varying); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7570,8 +7541,8 @@ GRANT ALL ON FUNCTION public.get_existing_image_by_hash(hash_input character var
 
 
 --
--- TOC entry 4448 (class 0 OID 0)
--- Dependencies: 471
+-- TOC entry 4450 (class 0 OID 0)
+-- Dependencies: 477
 -- Name: FUNCTION get_expenses_filtered(p_category text, p_date_from date, p_date_to date, p_payment_method text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7582,8 +7553,8 @@ GRANT ALL ON FUNCTION public.get_expenses_filtered(p_category text, p_date_from 
 
 
 --
--- TOC entry 4449 (class 0 OID 0)
--- Dependencies: 529
+-- TOC entry 4451 (class 0 OID 0)
+-- Dependencies: 533
 -- Name: FUNCTION get_optimization_messages(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7594,8 +7565,8 @@ GRANT ALL ON FUNCTION public.get_optimization_messages() TO prisma;
 
 
 --
--- TOC entry 4450 (class 0 OID 0)
--- Dependencies: 460
+-- TOC entry 4452 (class 0 OID 0)
+-- Dependencies: 465
 -- Name: FUNCTION get_orders_filtered(p_status text, p_year integer, p_date_from date, p_date_to date, p_search text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7606,8 +7577,8 @@ GRANT ALL ON FUNCTION public.get_orders_filtered(p_status text, p_year integer, 
 
 
 --
--- TOC entry 4451 (class 0 OID 0)
--- Dependencies: 517
+-- TOC entry 4453 (class 0 OID 0)
+-- Dependencies: 521
 -- Name: FUNCTION get_product_occasions(p_product_id integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7618,8 +7589,8 @@ GRANT ALL ON FUNCTION public.get_product_occasions(p_product_id integer) TO pris
 
 
 --
--- TOC entry 4452 (class 0 OID 0)
--- Dependencies: 646
+-- TOC entry 4454 (class 0 OID 0)
+-- Dependencies: 649
 -- Name: FUNCTION get_products_by_occasion(p_occasion_id integer, p_limit integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7630,8 +7601,8 @@ GRANT ALL ON FUNCTION public.get_products_by_occasion(p_occasion_id integer, p_l
 
 
 --
--- TOC entry 4454 (class 0 OID 0)
--- Dependencies: 521
+-- TOC entry 4456 (class 0 OID 0)
+-- Dependencies: 525
 -- Name: FUNCTION get_products_filtered(p_occasion_id integer, p_search text, p_price_min numeric, p_price_max numeric, p_featured boolean, p_sku text, p_sort_by text, p_sort_order text, p_limit integer, p_offset integer, p_include_inactive boolean); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7642,8 +7613,8 @@ GRANT ALL ON FUNCTION public.get_products_filtered(p_occasion_id integer, p_sear
 
 
 --
--- TOC entry 4455 (class 0 OID 0)
--- Dependencies: 571
+-- TOC entry 4457 (class 0 OID 0)
+-- Dependencies: 574
 -- Name: FUNCTION get_products_with_occasions(p_limit integer, p_offset integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7654,8 +7625,8 @@ GRANT ALL ON FUNCTION public.get_products_with_occasions(p_limit integer, p_offs
 
 
 --
--- TOC entry 4456 (class 0 OID 0)
--- Dependencies: 650
+-- TOC entry 4458 (class 0 OID 0)
+-- Dependencies: 653
 -- Name: FUNCTION get_redis_metrics(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7666,8 +7637,8 @@ GRANT ALL ON FUNCTION public.get_redis_metrics() TO prisma;
 
 
 --
--- TOC entry 4457 (class 0 OID 0)
--- Dependencies: 468
+-- TOC entry 4459 (class 0 OID 0)
+-- Dependencies: 473
 -- Name: FUNCTION get_system_alerts(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7678,8 +7649,8 @@ GRANT ALL ON FUNCTION public.get_system_alerts() TO prisma;
 
 
 --
--- TOC entry 4458 (class 0 OID 0)
--- Dependencies: 434
+-- TOC entry 4460 (class 0 OID 0)
+-- Dependencies: 440
 -- Name: FUNCTION get_system_health_overview(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7690,8 +7661,8 @@ GRANT ALL ON FUNCTION public.get_system_health_overview() TO prisma;
 
 
 --
--- TOC entry 4459 (class 0 OID 0)
--- Dependencies: 415
+-- TOC entry 4461 (class 0 OID 0)
+-- Dependencies: 417
 -- Name: FUNCTION get_timeout_statistics(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7702,8 +7673,8 @@ GRANT ALL ON FUNCTION public.get_timeout_statistics() TO prisma;
 
 
 --
--- TOC entry 4460 (class 0 OID 0)
--- Dependencies: 547
+-- TOC entry 4462 (class 0 OID 0)
+-- Dependencies: 553
 -- Name: FUNCTION is_admin(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7714,8 +7685,8 @@ GRANT ALL ON FUNCTION public.is_admin() TO prisma;
 
 
 --
--- TOC entry 4461 (class 0 OID 0)
--- Dependencies: 598
+-- TOC entry 4463 (class 0 OID 0)
+-- Dependencies: 599
 -- Name: FUNCTION limpiar_conexiones_inactivas(horas_inactividad integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7726,8 +7697,8 @@ GRANT ALL ON FUNCTION public.limpiar_conexiones_inactivas(horas_inactividad inte
 
 
 --
--- TOC entry 4462 (class 0 OID 0)
--- Dependencies: 603
+-- TOC entry 4464 (class 0 OID 0)
+-- Dependencies: 604
 -- Name: FUNCTION limpiar_logs_timeouts(dias_a_conservar integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7738,8 +7709,8 @@ GRANT ALL ON FUNCTION public.limpiar_logs_timeouts(dias_a_conservar integer) TO 
 
 
 --
--- TOC entry 4463 (class 0 OID 0)
--- Dependencies: 454
+-- TOC entry 4465 (class 0 OID 0)
+-- Dependencies: 459
 -- Name: FUNCTION productos_similares(producto_id integer, limite integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7750,8 +7721,8 @@ GRANT ALL ON FUNCTION public.productos_similares(producto_id integer, limite int
 
 
 --
--- TOC entry 4464 (class 0 OID 0)
--- Dependencies: 643
+-- TOC entry 4466 (class 0 OID 0)
+-- Dependencies: 646
 -- Name: FUNCTION registrar_busqueda(termino_busqueda text, resultados integer, tiempo_ejecucion numeric, ip_cliente text, user_agent text); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7762,8 +7733,8 @@ GRANT ALL ON FUNCTION public.registrar_busqueda(termino_busqueda text, resultado
 
 
 --
--- TOC entry 4465 (class 0 OID 0)
--- Dependencies: 588
+-- TOC entry 4467 (class 0 OID 0)
+-- Dependencies: 591
 -- Name: FUNCTION reset_sequence(sequence_name text); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7774,7 +7745,7 @@ GRANT ALL ON FUNCTION public.reset_sequence(sequence_name text) TO prisma;
 
 
 --
--- TOC entry 4466 (class 0 OID 0)
+-- TOC entry 4468 (class 0 OID 0)
 -- Dependencies: 618
 -- Name: FUNCTION reset_sequence(sequence_name character varying); Type: ACL; Schema: public; Owner: postgres
 --
@@ -7786,8 +7757,8 @@ GRANT ALL ON FUNCTION public.reset_sequence(sequence_name character varying) TO 
 
 
 --
--- TOC entry 4467 (class 0 OID 0)
--- Dependencies: 498
+-- TOC entry 4469 (class 0 OID 0)
+-- Dependencies: 506
 -- Name: FUNCTION resolve_alert(alert_id bigint); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7798,8 +7769,8 @@ GRANT ALL ON FUNCTION public.resolve_alert(alert_id bigint) TO prisma;
 
 
 --
--- TOC entry 4468 (class 0 OID 0)
--- Dependencies: 422
+-- TOC entry 4470 (class 0 OID 0)
+-- Dependencies: 426
 -- Name: FUNCTION round(numeric, integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7810,8 +7781,8 @@ GRANT ALL ON FUNCTION public.round(numeric, integer) TO prisma;
 
 
 --
--- TOC entry 4469 (class 0 OID 0)
--- Dependencies: 519
+-- TOC entry 4471 (class 0 OID 0)
+-- Dependencies: 524
 -- Name: FUNCTION sugerencias_busqueda(termino_parcial text, limite integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7822,8 +7793,8 @@ GRANT ALL ON FUNCTION public.sugerencias_busqueda(termino_parcial text, limite i
 
 
 --
--- TOC entry 4470 (class 0 OID 0)
--- Dependencies: 611
+-- TOC entry 4472 (class 0 OID 0)
+-- Dependencies: 612
 -- Name: FUNCTION sugerir_optimizaciones(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7834,8 +7805,8 @@ GRANT ALL ON FUNCTION public.sugerir_optimizaciones() TO prisma;
 
 
 --
--- TOC entry 4471 (class 0 OID 0)
--- Dependencies: 430
+-- TOC entry 4473 (class 0 OID 0)
+-- Dependencies: 435
 -- Name: FUNCTION sync_payment_method_name(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7846,8 +7817,8 @@ GRANT ALL ON FUNCTION public.sync_payment_method_name() TO prisma;
 
 
 --
--- TOC entry 4472 (class 0 OID 0)
--- Dependencies: 543
+-- TOC entry 4474 (class 0 OID 0)
+-- Dependencies: 548
 -- Name: FUNCTION update_carousel_order_atomic(p_product_id integer, p_order integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7858,8 +7829,8 @@ GRANT ALL ON FUNCTION public.update_carousel_order_atomic(p_product_id integer, 
 
 
 --
--- TOC entry 4473 (class 0 OID 0)
--- Dependencies: 656
+-- TOC entry 4475 (class 0 OID 0)
+-- Dependencies: 658
 -- Name: FUNCTION update_order_status_with_history(p_order_id integer, p_new_status character varying, p_notes text, p_changed_by integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7870,8 +7841,8 @@ GRANT ALL ON FUNCTION public.update_order_status_with_history(p_order_id integer
 
 
 --
--- TOC entry 4474 (class 0 OID 0)
--- Dependencies: 530
+-- TOC entry 4476 (class 0 OID 0)
+-- Dependencies: 534
 -- Name: FUNCTION update_order_status_with_history(order_id integer, new_status public.order_status, notes text, changed_by integer); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7882,8 +7853,8 @@ GRANT ALL ON FUNCTION public.update_order_status_with_history(order_id integer, 
 
 
 --
--- TOC entry 4475 (class 0 OID 0)
--- Dependencies: 576
+-- TOC entry 4477 (class 0 OID 0)
+-- Dependencies: 581
 -- Name: FUNCTION update_updated_at_column(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7894,8 +7865,8 @@ GRANT ALL ON FUNCTION public.update_updated_at_column() TO prisma;
 
 
 --
--- TOC entry 4476 (class 0 OID 0)
--- Dependencies: 495
+-- TOC entry 4478 (class 0 OID 0)
+-- Dependencies: 501
 -- Name: FUNCTION validate_order_total(); Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7906,8 +7877,8 @@ GRANT ALL ON FUNCTION public.validate_order_total() TO prisma;
 
 
 --
--- TOC entry 4477 (class 0 OID 0)
--- Dependencies: 401
+-- TOC entry 4479 (class 0 OID 0)
+-- Dependencies: 403
 -- Name: TABLE busquedas_log; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7918,8 +7889,8 @@ GRANT ALL ON TABLE public.busquedas_log TO prisma;
 
 
 --
--- TOC entry 4479 (class 0 OID 0)
--- Dependencies: 400
+-- TOC entry 4481 (class 0 OID 0)
+-- Dependencies: 402
 -- Name: SEQUENCE busquedas_log_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7930,8 +7901,8 @@ GRANT ALL ON SEQUENCE public.busquedas_log_id_seq TO prisma;
 
 
 --
--- TOC entry 4480 (class 0 OID 0)
--- Dependencies: 410
+-- TOC entry 4482 (class 0 OID 0)
+-- Dependencies: 412
 -- Name: TABLE expenses; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7942,8 +7913,8 @@ GRANT ALL ON TABLE public.expenses TO prisma;
 
 
 --
--- TOC entry 4481 (class 0 OID 0)
--- Dependencies: 412
+-- TOC entry 4483 (class 0 OID 0)
+-- Dependencies: 414
 -- Name: TABLE daily_expenses; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7954,8 +7925,8 @@ GRANT ALL ON TABLE public.daily_expenses TO prisma;
 
 
 --
--- TOC entry 4482 (class 0 OID 0)
--- Dependencies: 389
+-- TOC entry 4484 (class 0 OID 0)
+-- Dependencies: 391
 -- Name: TABLE orders; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7966,8 +7937,8 @@ GRANT ALL ON TABLE public.orders TO prisma;
 
 
 --
--- TOC entry 4483 (class 0 OID 0)
--- Dependencies: 411
+-- TOC entry 4485 (class 0 OID 0)
+-- Dependencies: 413
 -- Name: TABLE daily_sales; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7978,8 +7949,8 @@ GRANT ALL ON TABLE public.daily_sales TO prisma;
 
 
 --
--- TOC entry 4484 (class 0 OID 0)
--- Dependencies: 414
+-- TOC entry 4486 (class 0 OID 0)
+-- Dependencies: 416
 -- Name: TABLE daily_profit_loss; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -7990,8 +7961,8 @@ GRANT ALL ON TABLE public.daily_profit_loss TO prisma;
 
 
 --
--- TOC entry 4486 (class 0 OID 0)
--- Dependencies: 409
+-- TOC entry 4488 (class 0 OID 0)
+-- Dependencies: 411
 -- Name: SEQUENCE expenses_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8002,8 +7973,8 @@ GRANT ALL ON SEQUENCE public.expenses_id_seq TO prisma;
 
 
 --
--- TOC entry 4487 (class 0 OID 0)
--- Dependencies: 379
+-- TOC entry 4489 (class 0 OID 0)
+-- Dependencies: 381
 -- Name: TABLE occasions; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8014,8 +7985,8 @@ GRANT ALL ON TABLE public.occasions TO prisma;
 
 
 --
--- TOC entry 4489 (class 0 OID 0)
--- Dependencies: 378
+-- TOC entry 4491 (class 0 OID 0)
+-- Dependencies: 380
 -- Name: SEQUENCE occasions_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8026,8 +7997,8 @@ GRANT ALL ON SEQUENCE public.occasions_id_seq TO prisma;
 
 
 --
--- TOC entry 4490 (class 0 OID 0)
--- Dependencies: 391
+-- TOC entry 4492 (class 0 OID 0)
+-- Dependencies: 393
 -- Name: TABLE order_items; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8038,8 +8009,8 @@ GRANT ALL ON TABLE public.order_items TO prisma;
 
 
 --
--- TOC entry 4492 (class 0 OID 0)
--- Dependencies: 390
+-- TOC entry 4494 (class 0 OID 0)
+-- Dependencies: 392
 -- Name: SEQUENCE order_items_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8050,8 +8021,8 @@ GRANT ALL ON SEQUENCE public.order_items_id_seq TO prisma;
 
 
 --
--- TOC entry 4493 (class 0 OID 0)
--- Dependencies: 393
+-- TOC entry 4495 (class 0 OID 0)
+-- Dependencies: 395
 -- Name: TABLE order_status_history; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8062,8 +8033,8 @@ GRANT ALL ON TABLE public.order_status_history TO prisma;
 
 
 --
--- TOC entry 4495 (class 0 OID 0)
--- Dependencies: 392
+-- TOC entry 4497 (class 0 OID 0)
+-- Dependencies: 394
 -- Name: SEQUENCE order_status_history_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8074,8 +8045,8 @@ GRANT ALL ON SEQUENCE public.order_status_history_id_seq TO prisma;
 
 
 --
--- TOC entry 4497 (class 0 OID 0)
--- Dependencies: 388
+-- TOC entry 4499 (class 0 OID 0)
+-- Dependencies: 390
 -- Name: SEQUENCE orders_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8086,8 +8057,8 @@ GRANT ALL ON SEQUENCE public.orders_id_seq TO prisma;
 
 
 --
--- TOC entry 4498 (class 0 OID 0)
--- Dependencies: 395
+-- TOC entry 4500 (class 0 OID 0)
+-- Dependencies: 397
 -- Name: TABLE payment_methods; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8098,8 +8069,8 @@ GRANT ALL ON TABLE public.payment_methods TO prisma;
 
 
 --
--- TOC entry 4500 (class 0 OID 0)
--- Dependencies: 394
+-- TOC entry 4502 (class 0 OID 0)
+-- Dependencies: 396
 -- Name: SEQUENCE payment_methods_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8110,8 +8081,8 @@ GRANT ALL ON SEQUENCE public.payment_methods_id_seq TO prisma;
 
 
 --
--- TOC entry 4501 (class 0 OID 0)
--- Dependencies: 397
+-- TOC entry 4503 (class 0 OID 0)
+-- Dependencies: 399
 -- Name: TABLE payments; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8122,8 +8093,8 @@ GRANT ALL ON TABLE public.payments TO prisma;
 
 
 --
--- TOC entry 4503 (class 0 OID 0)
--- Dependencies: 396
+-- TOC entry 4505 (class 0 OID 0)
+-- Dependencies: 398
 -- Name: SEQUENCE payments_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8134,8 +8105,8 @@ GRANT ALL ON SEQUENCE public.payments_id_seq TO prisma;
 
 
 --
--- TOC entry 4504 (class 0 OID 0)
--- Dependencies: 399
+-- TOC entry 4506 (class 0 OID 0)
+-- Dependencies: 401
 -- Name: TABLE product_images; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8146,8 +8117,8 @@ GRANT ALL ON TABLE public.product_images TO prisma;
 
 
 --
--- TOC entry 4506 (class 0 OID 0)
--- Dependencies: 398
+-- TOC entry 4508 (class 0 OID 0)
+-- Dependencies: 400
 -- Name: SEQUENCE product_images_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8158,8 +8129,8 @@ GRANT ALL ON SEQUENCE public.product_images_id_seq TO prisma;
 
 
 --
--- TOC entry 4508 (class 0 OID 0)
--- Dependencies: 387
+-- TOC entry 4510 (class 0 OID 0)
+-- Dependencies: 389
 -- Name: TABLE product_occasions; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8170,8 +8141,8 @@ GRANT ALL ON TABLE public.product_occasions TO prisma;
 
 
 --
--- TOC entry 4510 (class 0 OID 0)
--- Dependencies: 386
+-- TOC entry 4512 (class 0 OID 0)
+-- Dependencies: 388
 -- Name: SEQUENCE product_occasions_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8182,8 +8153,8 @@ GRANT ALL ON SEQUENCE public.product_occasions_id_seq TO prisma;
 
 
 --
--- TOC entry 4513 (class 0 OID 0)
--- Dependencies: 385
+-- TOC entry 4515 (class 0 OID 0)
+-- Dependencies: 387
 -- Name: TABLE products; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8194,8 +8165,8 @@ GRANT ALL ON TABLE public.products TO prisma;
 
 
 --
--- TOC entry 4515 (class 0 OID 0)
--- Dependencies: 384
+-- TOC entry 4517 (class 0 OID 0)
+-- Dependencies: 386
 -- Name: SEQUENCE products_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8206,8 +8177,8 @@ GRANT ALL ON SEQUENCE public.products_id_seq TO prisma;
 
 
 --
--- TOC entry 4516 (class 0 OID 0)
--- Dependencies: 403
+-- TOC entry 4518 (class 0 OID 0)
+-- Dependencies: 405
 -- Name: TABLE query_timeouts_log; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8218,8 +8189,8 @@ GRANT ALL ON TABLE public.query_timeouts_log TO prisma;
 
 
 --
--- TOC entry 4518 (class 0 OID 0)
--- Dependencies: 402
+-- TOC entry 4520 (class 0 OID 0)
+-- Dependencies: 404
 -- Name: SEQUENCE query_timeouts_log_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8230,8 +8201,8 @@ GRANT ALL ON SEQUENCE public.query_timeouts_log_id_seq TO prisma;
 
 
 --
--- TOC entry 4519 (class 0 OID 0)
--- Dependencies: 383
+-- TOC entry 4521 (class 0 OID 0)
+-- Dependencies: 385
 -- Name: TABLE settings; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8242,8 +8213,8 @@ GRANT ALL ON TABLE public.settings TO prisma;
 
 
 --
--- TOC entry 4521 (class 0 OID 0)
--- Dependencies: 382
+-- TOC entry 4523 (class 0 OID 0)
+-- Dependencies: 384
 -- Name: SEQUENCE settings_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8254,8 +8225,8 @@ GRANT ALL ON SEQUENCE public.settings_id_seq TO prisma;
 
 
 --
--- TOC entry 4522 (class 0 OID 0)
--- Dependencies: 413
+-- TOC entry 4524 (class 0 OID 0)
+-- Dependencies: 415
 -- Name: TABLE test_daily_expenses; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8266,8 +8237,8 @@ GRANT ALL ON TABLE public.test_daily_expenses TO prisma;
 
 
 --
--- TOC entry 4523 (class 0 OID 0)
--- Dependencies: 381
+-- TOC entry 4525 (class 0 OID 0)
+-- Dependencies: 383
 -- Name: TABLE users; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8278,8 +8249,8 @@ GRANT ALL ON TABLE public.users TO prisma;
 
 
 --
--- TOC entry 4525 (class 0 OID 0)
--- Dependencies: 380
+-- TOC entry 4527 (class 0 OID 0)
+-- Dependencies: 382
 -- Name: SEQUENCE users_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
@@ -8290,7 +8261,7 @@ GRANT ALL ON SEQUENCE public.users_id_seq TO prisma;
 
 
 --
--- TOC entry 2698 (class 826 OID 16490)
+-- TOC entry 2700 (class 826 OID 16490)
 -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: public; Owner: postgres
 --
 
@@ -8302,7 +8273,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON SEQUENC
 
 
 --
--- TOC entry 2675 (class 826 OID 16491)
+-- TOC entry 2677 (class 826 OID 16491)
 -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: public; Owner: supabase_admin
 --
 
@@ -8313,7 +8284,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON S
 
 
 --
--- TOC entry 2697 (class 826 OID 16489)
+-- TOC entry 2699 (class 826 OID 16489)
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: public; Owner: postgres
 --
 
@@ -8325,7 +8296,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON FUNCTIO
 
 
 --
--- TOC entry 2677 (class 826 OID 16493)
+-- TOC entry 2679 (class 826 OID 16493)
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: public; Owner: supabase_admin
 --
 
@@ -8336,7 +8307,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON F
 
 
 --
--- TOC entry 2696 (class 826 OID 16488)
+-- TOC entry 2698 (class 826 OID 16488)
 -- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: postgres
 --
 
@@ -8348,7 +8319,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES 
 
 
 --
--- TOC entry 2676 (class 826 OID 16492)
+-- TOC entry 2678 (class 826 OID 16492)
 -- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: supabase_admin
 --
 
@@ -8358,11 +8329,11 @@ ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON T
 ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON TABLES TO service_role;
 
 
--- Completed on 2025-11-22 20:16:47 -03
+-- Completed on 2025-11-30 07:22:43 -03
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict eBkse3eg3aumsA54PslbfN3K0LEfS5M6PvPofSp4YwwXrgRfGAm0L5nxaoKFTaJ
+\unrestrict j7P7HKjgjsfOc9NDACjgGjvMEwy4gxzyeMjkpqXCWRHj1Gfqm4WkALeJlqCXBAD
 
