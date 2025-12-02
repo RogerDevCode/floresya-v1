@@ -289,6 +289,8 @@ export class PaymentRepository extends BaseRepository {
  * @returns {PaymentRepository} Repository instance
  */
 export async function createPaymentRepository(supabaseClient = null) {
-  if (supabaseClient) return new PaymentRepository(supabaseClient)
+  if (supabaseClient) {
+    return new PaymentRepository(supabaseClient)
+  }
   return await PaymentRepository.create()
 }

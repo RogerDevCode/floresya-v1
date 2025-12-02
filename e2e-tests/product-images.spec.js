@@ -25,7 +25,7 @@ test.describe('Product Images Loading', () => {
     try {
       await expect(slides.first()).toBeVisible({ timeout: 10000 })
     } catch (e) {
-      console.warn('⚠️ Timeout waiting for slides. Checking for error message.')
+      console.warn('⚠️ Timeout waiting for slides. Checking for error message.', e)
     }
 
     const slideCount = await slides.count()
@@ -99,7 +99,7 @@ test.describe('Product Images Loading', () => {
           const response = await page.request.get(src)
           expect(response.status()).toBe(200)
         } catch (error) {
-          console.warn(`⚠️ Image check failed for ${src}`)
+          console.warn(`⚠️ Image check failed for ${src}`, error)
         }
       }
     }
@@ -134,7 +134,9 @@ test.describe('Product Images Loading', () => {
     const productCards = productsContainer.locator('> div[data-product-id]')
     const count = await productCards.count()
 
-    if (count === 0) return
+    if (count === 0) {
+      return
+    }
 
     // Verificar que cada card tiene al menos una imagen
     for (let i = 0; i < count; i++) {

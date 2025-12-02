@@ -1,5 +1,5 @@
 import { productController } from './api/controllers/productController.js'
-import { logger } from './api/utils/logger.js'
+// import { logger } from './api/utils/logger.js'
 import { initializeDIContainer } from './api/architecture/di-container.js'
 
 async function test() {
@@ -28,8 +28,11 @@ async function test() {
       headersSent: false
     }
     const next = err => {
-      if (err) console.error('Next called with error:', err)
-      else console.log('Next called without error')
+      if (err) {
+        console.error('Next called with error:', err)
+      } else {
+        console.log('Next called without error')
+      }
     }
 
     await productController.getAllProducts(req, res, next)

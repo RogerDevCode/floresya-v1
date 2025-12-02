@@ -657,6 +657,8 @@ export class ProductRepository extends BaseRepository {
  * @returns {ProductRepository} Repository instance
  */
 export async function createProductRepository(supabaseClient = null) {
-  if (supabaseClient) return new ProductRepository(supabaseClient)
+  if (supabaseClient) {
+    return new ProductRepository(supabaseClient)
+  }
   return await ProductRepository.create()
 }

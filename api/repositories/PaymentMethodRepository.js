@@ -205,6 +205,8 @@ export class PaymentMethodRepository extends BaseRepository {
  * @returns {PaymentMethodRepository} Repository instance
  */
 export async function createPaymentMethodRepository(supabaseClient = null) {
-  if (supabaseClient) return new PaymentMethodRepository(supabaseClient)
+  if (supabaseClient) {
+    return new PaymentMethodRepository(supabaseClient)
+  }
   return await PaymentMethodRepository.create()
 }

@@ -167,6 +167,8 @@ export class SettingsRepository extends BaseRepositoryWithErrorHandling {
  * @returns {SettingsRepository} Repository instance
  */
 export async function createSettingsRepository(supabaseClient = null) {
-  if (supabaseClient) return new SettingsRepository(supabaseClient)
+  if (supabaseClient) {
+    return new SettingsRepository(supabaseClient)
+  }
   return await SettingsRepository.create()
 }

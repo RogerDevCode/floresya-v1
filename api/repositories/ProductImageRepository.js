@@ -241,6 +241,8 @@ export class ProductImageRepository extends BaseRepository {
  * @returns {ProductImageRepository} Repository instance
  */
 export async function createProductImageRepository(supabaseClient = null) {
-  if (supabaseClient) return new ProductImageRepository(supabaseClient)
+  if (supabaseClient) {
+    return new ProductImageRepository(supabaseClient)
+  }
   return await ProductImageRepository.create()
 }

@@ -154,8 +154,12 @@ export const validatePagination = (req, res, next) => {
     const validated = ValidatorService.validatePagination(params)
 
     // Update req.query with validated values
-    if (validated.limit !== undefined) req.query.limit = validated.limit
-    if (validated.offset !== undefined) req.query.offset = validated.offset
+    if (validated.limit !== undefined) {
+      req.query.limit = validated.limit
+    }
+    if (validated.offset !== undefined) {
+      req.query.offset = validated.offset
+    }
 
     next()
   } catch (error) {

@@ -510,6 +510,8 @@ export class OrderRepository extends BaseRepository {
  * @returns {OrderRepository} Repository instance
  */
 export async function createOrderRepository(supabaseClient = null) {
-  if (supabaseClient) return new OrderRepository(supabaseClient)
+  if (supabaseClient) {
+    return new OrderRepository(supabaseClient)
+  }
   return await OrderRepository.create()
 }

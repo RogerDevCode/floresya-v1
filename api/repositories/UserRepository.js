@@ -387,6 +387,8 @@ export class UserRepository extends BaseRepository {
  * @returns {UserRepository} Repository instance
  */
 export async function createUserRepository(supabaseClient = null) {
-  if (supabaseClient) return new UserRepository(supabaseClient)
+  if (supabaseClient) {
+    return new UserRepository(supabaseClient)
+  }
   return await UserRepository.create()
 }

@@ -110,6 +110,8 @@ export class OccasionRepository extends BaseRepository {
  * @returns {OccasionRepository} Repository instance
  */
 export async function createOccasionRepository(supabaseClient = null) {
-  if (supabaseClient) return new OccasionRepository(supabaseClient)
+  if (supabaseClient) {
+    return new OccasionRepository(supabaseClient)
+  }
   return await OccasionRepository.create()
 }
