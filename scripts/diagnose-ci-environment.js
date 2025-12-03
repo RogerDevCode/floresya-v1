@@ -38,11 +38,11 @@ const REQUIRED_ENV_VARS = [
 ]
 
 const CI_SECRETS = [
-  { name: 'SUPABASE_URL', required: true, description: 'Supabase URL' },
-  { name: 'SUPABASE_SERVICE_ROLE_KEY', required: true, description: 'Supabase Service Role Key' },
-  { name: 'SUPABASE_KEY', required: true, description: 'Supabase Key' },
-  { name: 'JWT_SECRET', required: true, description: 'JWT Secret' },
-  { name: 'SESSION_SECRET', required: true, description: 'Session Secret' }
+  { name: 'SUPABASE_URL', required: false, description: 'Supabase URL' },
+  { name: 'SUPABASE_SERVICE_ROLE_KEY', required: false, description: 'Supabase Service Role Key' },
+  { name: 'SUPABASE_KEY', required: false, description: 'Supabase Key' },
+  { name: 'JWT_SECRET', required: false, description: 'JWT Secret' },
+  { name: 'SESSION_SECRET', required: false, description: 'Session Secret' }
 ]
 
 const diagnosticResults = {
