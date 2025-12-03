@@ -21,7 +21,7 @@ import {
   SecurityError,
   PayloadTooLargeError
 } from '../../errors/AppError.js'
-import { logger } from '../../utils/logger.js'
+import { logger } from '../../config/logger.js'
 import { InputSanitizationService } from '../../services/security/InputSanitizationService.js'
 import { MalwareScanningService } from '../../services/security/MalwareScanningService.js'
 import config from '../../config/configLoader.js'
@@ -607,6 +607,7 @@ export class EnhancedSecurityMiddleware {
         if (error && error.message) {
           logger.error('Security headers error', { error: error.message, stack: error.stack })
         }
+        // Continue even if security headers fail - don't block requests
         next()
       }
     }

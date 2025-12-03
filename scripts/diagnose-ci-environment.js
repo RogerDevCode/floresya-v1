@@ -19,7 +19,7 @@ const REQUIRED_FILES = [
   { path: 'api/app.js', description: 'Express app' },
   { path: 'public/index.html', description: 'Frontend entry point' },
   { path: 'playwright.config.js', description: 'Playwright configuration' },
-  { path: 'seed-test-data-improved.js', description: 'Improved seed script' }
+  { path: 'seed-test-data.js', description: 'Seed script' }
 ]
 
 const REQUIRED_DIRECTORIES = [
