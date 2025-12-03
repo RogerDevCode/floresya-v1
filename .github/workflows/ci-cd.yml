@@ -1,4 +1,4 @@
-name: FloresYa CI/CD Pipeline - Optimized
+name: FloresYa CI/CD Pipeline - Fixed
 
 permissions:
   contents: read
@@ -17,9 +17,33 @@ env:
   COVERAGE_THRESHOLD: 30
 
 jobs:
+  diagnose-environment:
+    name: Diagnose CI Environment
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run environment diagnostics
+      run: node scripts/diagnose-ci-environment.js
+      env:
+        CI: true
+        NODE_ENV: test
+
   lint-and-format:
     name: Lint & Format Check
     runs-on: ubuntu-latest
+    needs: diagnose-environment
 
     steps:
     - name: Checkout code
@@ -309,15 +333,36 @@ jobs:
         echo "PORT=3000" >> .env
         echo "BASE_URL=http://localhost:3000" >> .env
 
-    - name: Seed test data
-      run: npm run seed:test
+    - name: Verify environment variables
+      run: |
+        echo "🔍 Verifying environment variables..."
+        if [ -z "${{ secrets.SUPABASE_URL }}" ]; then
+          echo "❌ SUPABASE_URL secret is missing"
+          exit 1
+        fi
+        if [ -z "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" ]; then
+          echo "❌ SUPABASE_SERVICE_ROLE_KEY secret is missing"
+          exit 1
+        fi
+        if [ -z "${{ secrets.JWT_SECRET }}" ]; then
+          echo "❌ JWT_SECRET secret is missing"
+          exit 1
+        fi
+        if [ -z "${{ secrets.SESSION_SECRET }}" ]; then
+          echo "❌ SESSION_SECRET secret is missing"
+          exit 1
+        fi
+        echo "✅ All required secrets are available"
+
+    - name: Seed test data with improved script
+      run: node seed-test-data-improved.js
       env:
         NODE_ENV: test
         SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
         SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       continue-on-error: true
 
-    - name: Start App
+    - name: Start App with Enhanced Logging and Robust Wait Loop
       env:
         SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
         SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
@@ -329,14 +374,60 @@ jobs:
         START_SERVER_IN_TEST: true
       run: |
         echo "🚀 Starting app on port 3000..."
-        npm start &
+        echo "Environment: $NODE_ENV"
+        echo "Port: $PORT"
+        echo "START_SERVER_IN_TEST: $START_SERVER_IN_TEST"
         
+        # Start server with enhanced logging
+        npm start > server.log 2>&1 &
+        SERVER_PID=$!
+        
+        echo "Server PID: $SERVER_PID"
         echo "Waiting for app service..."
-        timeout 120 bash -c 'until curl -f http://localhost:3000/health 2>/dev/null; do sleep 5; done' || {
-          echo "❌ App service failed to start"
+        
+        # Wait for server with enhanced error handling and robust loop
+        MAX_ATTEMPTS=24
+        WAIT_TIME=5
+        READY=false
+        
+        for i in $(seq 1 $MAX_ATTEMPTS); do
+          echo "Attempt $i/$MAX_ATTEMPTS: Checking server status..."
+          
+          # Check if server process is still running
+          if ! kill -0 $SERVER_PID 2>/dev/null; then
+            echo "❌ Server process died unexpectedly"
+            echo "Server logs:"
+            cat server.log
+            exit 1
+          fi
+          
+          # Try to connect to server
+          if curl -f http://localhost:3000/health >/dev/null 2>&1; then
+            echo "✅ App service is ready after $((i*WAIT_TIME)) seconds!"
+            READY=true
+            break
+          fi
+          
+          # Show recent logs for debugging
+          if [ $i -eq 5 ] || [ $i -eq 10 ] || [ $i -eq 15 ] || [ $i -eq 20 ]; then
+            echo "--- Recent server logs (attempt $i) ---"
+            tail -10 server.log
+            echo "--- End of logs ---"
+          fi
+          
+          sleep $WAIT_TIME
+        done
+        
+        if [ "$READY" = false ]; then
+          echo "❌ App service failed to start within $((MAX_ATTEMPTS*WAIT_TIME)) seconds"
+          echo "Full server logs:"
+          cat server.log
+          echo "Process status:"
+          ps aux | grep node || echo "No node processes found"
+          echo "Network connections:"
+          netstat -tlnp 2>/dev/null | grep :3000 || echo "No process listening on port 3000"
           exit 1
-        }
-        echo "✅ App service is ready!"
+        fi
 
     - name: Run Playwright tests
       run: npm run test:e2e
@@ -344,6 +435,15 @@ jobs:
         CI: true
         NODE_ENV: test
         BASE_URL: http://localhost:3000
+
+    - name: Upload server logs
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: server-logs-${{ github.run_number }}
+        path: server.log
+        retention-days: 7
+        if-no-files-found: ignore
 
     - name: Upload Playwright report
       uses: actions/upload-artifact@v4
