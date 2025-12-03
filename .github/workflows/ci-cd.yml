@@ -39,6 +39,11 @@ jobs:
       env:
         CI: true
         NODE_ENV: test
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
 
   lint-and-format:
     name: Lint & Format Check
