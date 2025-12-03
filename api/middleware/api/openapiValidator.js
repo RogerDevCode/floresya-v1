@@ -13,6 +13,7 @@
 
 import config from '../../config/configLoader.js'
 import logger from '../../config/logger.js'
+import * as OpenApiValidator from 'express-openapi-validator'
 import {
   DivergenceDetector,
   createDivergenceDetectionMiddleware
@@ -21,7 +22,7 @@ import { loadSwaggerSpec } from '../../config/swagger.js'
 
 /**
  * Safe OpenAPI Contract System
- * Uses custom validation instead of problematic express-openapi-validator
+ * Uses express-openapi-validator for strict contract enforcement
  */
 export async function initializeOpenApiValidator(app) {
   try {
@@ -36,6 +37,23 @@ export async function initializeOpenApiValidator(app) {
 
     logger.info('✅ OpenAPI spec loaded successfully')
     logger.info('📋 Contract validation available via: npm run validate:contract')
+
+    // Install OpenApiValidator middleware
+    app.use(
+      OpenApiValidator.middleware({
+        apiSpec: openApiSpec,
+        validateRequests: true,
+        validateResponses: false, // process.env.NODE_ENV !== 'production', // Validate responses in dev/test
+        ignorePaths: path => {
+          return (
+            path.startsWith('/api-docs') ||
+            path.startsWith('/health') ||
+            path.startsWith('/admin') ||
+            path === '/'
+          )
+        }
+      })
+    )
 
     // Create a simple validation middleware that logs contract violations
     app.use((req, res, next) => {

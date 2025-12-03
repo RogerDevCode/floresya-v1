@@ -282,18 +282,18 @@ try {
   if (validatorInitialized) {
     // Add OpenAPI validation error handler
     app.use((err, req, res, next) => {
-      if (err.status === 400 && err.errors) {
+      if ((err.status === 400 || err.status === 404) && err.errors) {
         // OpenAPI request validation error
-        return res.status(400).json({
+        return res.status(err.status).json({
           success: false,
-          error: 'ValidationError',
-          code: 1001,
+          error: err.status === 404 ? 'NotFoundError' : 'ValidationError',
+          code: err.status === 404 ? 4004 : 1001,
           category: 'validation',
           type: 'https://api.floresya.com/errors/validation/validationfailed',
-          title: 'Validation Failed',
-          status: 400,
+          title: err.status === 404 ? 'Resource Not Found' : 'Validation Failed',
+          status: err.status,
           detail: 'Request does not conform to API specification',
-          message: 'Validation failed. Please check your input.',
+          message: err.message || 'Validation failed',
           timestamp: new Date().toISOString(),
           path: req.path,
           requestId: req.id || 'unknown',

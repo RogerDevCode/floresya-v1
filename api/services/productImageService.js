@@ -38,11 +38,6 @@ export const getProductImages = async (productId, filters = {}) => {
     const data = await ProductImageRepository.findAll(productId, filters)
 
     if (!data || data.length === 0) {
-      // In test environment, return empty array instead of throwing error
-      if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'testing') {
-        console.warn(`⚠️ No images found for product ${productId} in test environment`)
-        return []
-      }
       throw new NotFoundError('Product images', productId, { productId })
     }
 
@@ -52,13 +47,7 @@ export const getProductImages = async (productId, filters = {}) => {
     if (error instanceof NotFoundError) {
       throw error
     }
-    
-    // Log other errors but don't fail the entire request in test environment
-    if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'testing') {
-      console.error(`❌ Error getting product images for ${productId}:`, error.message)
-      return []
-    }
-    
+
     throw error
   }
 }
@@ -69,43 +58,23 @@ export const getProductImages = async (productId, filters = {}) => {
  */
 export const getPrimaryImage = async productId => {
   if (!productId || typeof productId !== 'number' || productId <= 0) {
-    // In test environment, return null instead of throwing error
-    if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'testing') {
-      console.warn(`⚠️ Invalid product ID ${productId} in test environment`)
-      return null
-    }
     throw new BadRequestError('Invalid product ID: must be a number', { productId })
   }
 
-  try {
-    const primaryImage = await ProductImageRepository.findPrimary(productId)
+  const primaryImage = await ProductImageRepository.findPrimary(productId)
 
-    if (primaryImage) {
-      return primaryImage
-    }
-
-    // Fallback
-    const fallbackImage = await ProductImageRepository.findFirstAvailable(productId)
-
-    if (fallbackImage) {
-      return fallbackImage
-    }
-
-    // In test environment, return null instead of throwing error
-    if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'testing') {
-      console.warn(`⚠️ No primary image found for product ${productId} in test environment`)
-      return null
-    }
-    
-    throw new NotFoundError('Primary image', productId, { productId })
-  } catch (error) {
-    // In test environment, return null for any error
-    if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'testing') {
-      console.error(`❌ Error getting primary image for ${productId}:`, error.message)
-      return null
-    }
-    throw error
+  if (primaryImage) {
+    return primaryImage
   }
+
+  // Fallback
+  const fallbackImage = await ProductImageRepository.findFirstAvailable(productId)
+
+  if (fallbackImage) {
+    return fallbackImage
+  }
+
+  throw new NotFoundError('Primary image', productId, { productId })
 }
 
 /**
@@ -119,35 +88,16 @@ export const getPrimaryImage = async productId => {
  */
 export const getImageById = async (id, includeDeactivated = false) => {
   if (!id || typeof id !== 'number') {
-    // In test environment, return null instead of throwing error
-    if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'testing') {
-      console.warn(`⚠️ Invalid image ID ${id} in test environment`)
-      return null
-    }
     throw new BadRequestError('Invalid image ID: must be a number', { imageId: id })
   }
 
-  try {
-    const data = await ProductImageRepository.findById(id, includeDeactivated)
+  const data = await ProductImageRepository.findById(id, includeDeactivated)
 
-    if (!data) {
-      // In test environment, return null instead of throwing error
-      if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'testing') {
-        console.warn(`⚠️ No image found with ID ${id} in test environment`)
-        return null
-      }
-      throw new NotFoundError('Image', id)
-    }
-
-    return data
-  } catch (error) {
-    // In test environment, return null for any error
-    if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'testing') {
-      console.error(`❌ Error getting image by ID ${id}:`, error.message)
-      return null
-    }
-    throw error
+  if (!data) {
+    throw new NotFoundError('Image', id)
   }
+
+  return data
 }
 
 /**
@@ -379,48 +329,24 @@ export const reactivateProductImages = async productId => {
  */
 export const getProductImageBySize = async (productId, size) => {
   if (!productId || typeof productId !== 'number' || productId <= 0) {
-    // In test environment, return null instead of throwing error
-    if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'testing') {
-      console.warn(`⚠️ Invalid product ID ${productId} in test environment`)
-      return null
-    }
     throw new BadRequestError('Invalid product ID: must be a positive number', { productId })
   }
 
   if (!size || !VALID_SIZES.includes(size)) {
-    // In test environment, return null instead of throwing error
-    if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'testing') {
-      console.warn(`⚠️ Invalid size ${size} in test environment`)
-      return null
-    }
     throw new ValidationError('Invalid size: must be one of ' + VALID_SIZES.join(', '), { size })
   }
 
-  try {
-    const data = await ProductImageRepository.findByProductAndSize(productId, size)
+  const data = await ProductImageRepository.findByProductAndSize(productId, size)
 
-    if (!data) {
-      // In test environment, return null instead of throwing error
-      if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'testing') {
-        console.warn(`⚠️ No ${size} image found for product ${productId} in test environment`)
-        return null
-      }
-      throw new NotFoundError(`No ${size} image found for product`, productId, {
-        productId,
-        size,
-        availableSizes: VALID_SIZES
-      })
-    }
-
-    return data
-  } catch (error) {
-    // In test environment, return null for any error
-    if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'testing') {
-      console.error(`❌ Error getting ${size} image for product ${productId}:`, error.message)
-      return null
-    }
-    throw error
+  if (!data) {
+    throw new NotFoundError(`No ${size} image found for product`, productId, {
+      productId,
+      size,
+      availableSizes: VALID_SIZES
+    })
   }
+
+  return data
 }
 
 /**
