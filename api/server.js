@@ -29,7 +29,7 @@ if (IS_VERCEL) {
 export default app
 
 // Start server only in local development
-if (!IS_VERCEL && (NODE_ENV !== 'test' || process.env.CI)) {
+if (!IS_VERCEL && (NODE_ENV !== 'test' || process.env.CI || process.env.START_SERVER_IN_TEST)) {
   const server = app.listen(PORT, () => {
     logger.info(`🚀 FloresYa API running in ${NODE_ENV} mode`)
     logger.info(`🌐 Server listening on port ${PORT}`)

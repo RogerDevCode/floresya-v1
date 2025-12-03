@@ -326,6 +326,7 @@ jobs:
         SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
         NODE_ENV: test
         PORT: 3000
+        START_SERVER_IN_TEST: true
       run: |
         echo "🚀 Starting app on port 3000..."
         npm start &
